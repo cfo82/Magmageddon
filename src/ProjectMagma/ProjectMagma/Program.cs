@@ -11,6 +11,7 @@ namespace ProjectMagma
         {
             using (Game1 game = new Game1())
             {
+                Console.WriteLine("Fun");
                 game.Run();
             }
         }

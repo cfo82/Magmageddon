@@ -1,4 +1,4 @@
-<Project DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003" ToolsVersion="3.5">
+﻿<Project DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003" ToolsVersion="3.5">
   <PropertyGroup>
     <ProjectGuid>40e4caf0-0f79-43c3-85f2-3a79d2038879</ProjectGuid>
     <ProjectTypeGuids>{96E2B04D-8817-42c6-938A-82C39BA4D311};{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}</ProjectTypeGuids>
@@ -34,8 +34,35 @@
       <Private>False</Private>
     </Reference>
   </ItemGroup>
+  <ItemGroup>
+    <Compile Include="Models\island_primitive.fbx">
+      <Name>island_primitive</Name>
+      <Importer>FbxImporter</Importer>
+      <Processor>IslandProcessor</Processor>
+    </Compile>
+    <Compile Include="Models\lava_primitive.fbx">
+      <Name>lava_primitive</Name>
+      <Importer>FbxImporter</Importer>
+      <Processor>LavaProcessor</Processor>
+    </Compile>
+    <Compile Include="Models\pillar_primitive.fbx">
+      <Name>pillar_primitive</Name>
+      <Importer>FbxImporter</Importer>
+      <Processor>PillarProcessor</Processor>
+    </Compile>
+    <Compile Include="Models\player_primitive.fbx">
+      <Name>player_primitive</Name>
+      <Importer>FbxImporter</Importer>
+      <Processor>PlayerProcessor</Processor>
+    </Compile>
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\..\ProjectMagmaContentPipeline\ProjectMagmaContentPipeline.csproj">
+      <Project>{41D8590B-0AD9-4E4A-B1ED-9E6E571364A2}</Project>
+      <Name>ProjectMagmaContentPipeline</Name>
+    </ProjectReference>
+  </ItemGroup>
   <Import Project="$(MSBuildExtensionsPath)\Microsoft\XNA Game Studio\v3.0\Microsoft.Xna.GameStudio.ContentPipeline.targets" />
-
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.
   <Target Name="BeforeBuild">
@@ -43,5 +70,4 @@
   <Target Name="AfterBuild">
   </Target>
   -->
-
 </Project>

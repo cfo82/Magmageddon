@@ -20,6 +20,13 @@ namespace ProjectMagma
     {
         GraphicsDeviceManager graphics;
         SpriteBatch spriteBatch;
+        Model islandPrimitive;
+        Model lavaPrimitive;
+        Model pillarPrimitive;
+        Model playerPrimitive;
+        Matrix world;
+        Matrix view;
+        Matrix projection;
 
         public Game1()
         {
@@ -48,7 +55,20 @@ namespace ProjectMagma
         {
             // Create a new SpriteBatch, which can be used to draw textures.
             spriteBatch = new SpriteBatch(GraphicsDevice);
+            islandPrimitive = Content.Load<Model>("Models/island_primitive");
+            lavaPrimitive = Content.Load<Model>("Models/lava_primitive");
+            pillarPrimitive = Content.Load<Model>("Models/pillar_primitive");
+            playerPrimitive = Content.Load<Model>("Models/player_primitive");
 
+            Viewport viewport = graphics.GraphicsDevice.Viewport;
+
+            float aspectRatio = (float)viewport.Width / (float)viewport.Height;
+
+            view = Matrix.CreateLookAt(new Vector3(1000, 500, 0),
+                                       new Vector3(0, 150, 0), Vector3.Up);
+
+            projection = Matrix.CreatePerspectiveFieldOfView(MathHelper.PiOver4,
+                                                             aspectRatio, 10, 10000);
             // TODO: use this.Content to load your game content here
         }
 
@@ -73,8 +93,59 @@ namespace ProjectMagma
                 this.Exit();
 
             // TODO: Add your update logic here
+            float time = (float)gameTime.TotalGameTime.TotalSeconds;
+
+            world = Matrix.CreateRotationY(time * 0.1f);
 
             base.Update(gameTime);
+        }
+
+        protected void Draw(GameTime gameTime, Model model)
+        {
+            foreach (ModelMesh mesh in model.Meshes)
+            {
+                foreach (ModelMeshPart part in mesh.MeshParts)
+                {
+                    // Look up the effect, and set effect parameters on it. This sample
+                    // assumes the model will only be using BasicEffect, but a more robust
+                    // implementation would probably want to handle custom effects as well.
+                    BasicEffect effect = (BasicEffect)part.Effect;
+
+                    effect.EnableDefaultLighting();
+
+                    effect.World = world;
+                    effect.View = view;
+                    effect.Projection = projection;
+
+                    // Set the graphics device to use our vertex declaration,
+                    // vertex buffer, and index buffer.
+                    GraphicsDevice device = effect.GraphicsDevice;
+
+                    device.VertexDeclaration = part.VertexDeclaration;
+
+                    device.Vertices[0].SetSource(mesh.VertexBuffer, 0,
+                                                 part.VertexStride);
+
+                    device.Indices = mesh.IndexBuffer;
+
+                    // Begin the effect, and loop over all the effect passes.
+                    effect.Begin();
+
+                    foreach (EffectPass pass in effect.CurrentTechnique.Passes)
+                    {
+                        pass.Begin();
+
+                        // Draw the geometry.
+                        device.DrawIndexedPrimitives(PrimitiveType.TriangleList,
+                                                     part.BaseVertex, 0, part.NumVertices,
+                                                     part.StartIndex, part.PrimitiveCount);
+
+                        pass.End();
+                    }
+
+                    effect.End();
+                }
+            }
         }
 
         /// <summary>
@@ -86,6 +157,10 @@ namespace ProjectMagma
             GraphicsDevice.Clear(Color.CornflowerBlue);
 
             // TODO: Add your drawing code here
+            Draw(gameTime, islandPrimitive);
+            Draw(gameTime, lavaPrimitive);
+            Draw(gameTime, pillarPrimitive);
+            Draw(gameTime, playerPrimitive);
 
             base.Draw(gameTime);
         }

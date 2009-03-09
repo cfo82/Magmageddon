@@ -2,12 +2,50 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Reflection;
 using ProjectMagma.Framework.Attributes;
+
+using ProjectMagma.Shared.Serialization.LevelData;
 
 namespace ProjectMagma.Framework
 {
-    class Simulation
+    public class Simulation
     {
-        protected AttributeManager attributeManager;
+        public Simulation()
+        {
+            attributeTemplateManager = new AttributeTemplateManager();
+            entityManager = new EntityManager(this);
+        }
+
+        public void Initialize(LevelData levelData)
+        {
+            foreach (AttributeTemplateData attributeTemplateData in levelData.attributeTemplates)
+            {
+                attributeTemplateManager.AddAttributeTemplate(attributeTemplateData);
+            }
+            foreach (EntityData entityData in levelData.entities)
+            {
+                entityManager.AddEntity(entityData);
+            }
+        }
+
+        public AttributeTemplateManager AttributeTemplateManager
+        {
+            get
+            {
+                return this.attributeTemplateManager;
+            }
+        }
+
+        public EntityManager EntityManager
+        {
+            get
+            {
+                return entityManager;
+            }
+        }
+
+        protected AttributeTemplateManager attributeTemplateManager;
+        protected EntityManager entityManager;
     }
 }

@@ -1,4 +1,3 @@
-using System;
 using System.Collections.Generic;
 using System.Linq;
 using Microsoft.Xna.Framework;
@@ -10,6 +9,9 @@ using Microsoft.Xna.Framework.Input;
 using Microsoft.Xna.Framework.Media;
 using Microsoft.Xna.Framework.Net;
 using Microsoft.Xna.Framework.Storage;
+
+using ProjectMagma.Framework;
+using ProjectMagma.Framework.Attributes;
 using ProjectMagma.Shared.Serialization.LevelData;
 
 namespace ProjectMagma
@@ -31,9 +33,12 @@ namespace ProjectMagma
 
         LevelData levelData;
 
+        Simulation simulation;
+
         public Game1()
         {
             graphics = new GraphicsDeviceManager(this);
+            simulation = new Simulation();
             Content.RootDirectory = "Content";
         }
 
@@ -62,7 +67,11 @@ namespace ProjectMagma
             lavaPrimitive = Content.Load<Model>("Models/lava_primitive");
             pillarPrimitive = Content.Load<Model>("Models/pillar_primitive");
             playerPrimitive = Content.Load<Model>("Models/player_primitive");
+            
             levelData = Content.Load<LevelData>("Level/TestLevel");
+
+            simulation.Initialize(levelData);
+
 
             Viewport viewport = graphics.GraphicsDevice.Viewport;
 
@@ -161,10 +170,23 @@ namespace ProjectMagma
             GraphicsDevice.Clear(Color.CornflowerBlue);
 
             // TODO: Add your drawing code here
-            Draw(gameTime, islandPrimitive);
+            //Draw(gameTime, islandPrimitive);
+            //world = Matrix.Identity;
+            world = Matrix.Identity;
             Draw(gameTime, lavaPrimitive);
-            Draw(gameTime, pillarPrimitive);
-            Draw(gameTime, playerPrimitive);
+            //Draw(gameTime, pillarPrimitive);
+            //Draw(gameTime, playerPrimitive);
+
+            foreach (Entity e in simulation.EntityManager.Entities.Values)
+            {
+                if (e.Name.StartsWith("pillar"))
+                {
+                    Vector2Attribute attr = e.Attributes["Pillar.Position"] as Vector2Attribute;
+                    Vector3 translate = new Vector3(attr.Vector.X, 0, attr.Vector.Y);
+                    world = Matrix.CreateTranslation(translate);
+                    Draw(gameTime, pillarPrimitive);
+                }
+            }
 
             base.Draw(gameTime);
         }

@@ -18,13 +18,25 @@
 
     <Entity name="pillar1">
       <Attributes>
-        <Attribute template="Pillar.Position" value="-10 10"/>
+        <Attribute template="Pillar.Position" value="-100 -100"/>
       </Attributes>
     </Entity>
 
-    <Entity name="pillar1">
+    <Entity name="pillar2">
       <Attributes>
-        <Attribute template="Pillar.Position" value="10 10"/>
+        <Attribute template="Pillar.Position" value="-100 100"/>
+      </Attributes>
+    </Entity>
+
+    <Entity name="pillar3">
+      <Attributes>
+        <Attribute template="Pillar.Position" value="100 -100"/>
+      </Attributes>
+    </Entity>
+
+    <Entity name="pillar4">
+      <Attributes>
+        <Attribute template="Pillar.Position" value="100 100"/>
       </Attributes>
     </Entity>
   </LevelData>

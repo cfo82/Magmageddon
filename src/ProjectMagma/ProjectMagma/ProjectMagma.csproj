@@ -85,10 +85,11 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Framework\Attributes\Attribute.cs" />
-    <Compile Include="Framework\Attributes\AttributeManager.cs" />
+    <Compile Include="Framework\Attributes\AttributeTemplateManager.cs" />
     <Compile Include="Framework\Attributes\AttributeTemplate.cs" />
     <Compile Include="Framework\Entity.cs" />
-    <Compile Include="Framework\Attributes\Vector3Attribute.cs" />
+    <Compile Include="Framework\Attributes\Vector2Attribute.cs" />
+    <Compile Include="Framework\EntityManager.cs" />
     <Compile Include="Framework\Properties\Property.cs" />
     <Compile Include="Framework\Properties\PropertyTemplate.cs" />
     <Compile Include="Framework\Simulation.cs" />

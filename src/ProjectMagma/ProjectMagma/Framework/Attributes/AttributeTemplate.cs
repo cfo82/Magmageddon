@@ -6,19 +6,15 @@ using System.Reflection;
 
 namespace ProjectMagma.Framework
 {
-    class AttributeTemplate
+    public class AttributeTemplate
     {
-        public AttributeTemplate(string name)
+        public AttributeTemplate(string name, Type attributeType)
         {
-            this.Name = name;
+            this.name = name;
+            this.attributeType = attributeType;
         }
 
-        public AttributeTemplate(Type attributeType)
-        {
-            this.AttributeType = attributeType;
-        }
-
-        public Attribute createAttribute()
+        public Attribute CreateAttribute()
         {
             ConstructorInfo constructor = this.attributeType.GetConstructor(new Type[] { this.GetType() });
             object newAttribute = constructor.Invoke(new object[] { this });
@@ -29,15 +25,7 @@ namespace ProjectMagma.Framework
         {
             get
             {
-                return this.attributeType.FullName;
-            }
-            set
-            {
-                Type type = Type.GetType(value);
-                if (type != null)
-                {
-                    this.attributeType = type;
-                }
+                return this.name;
             }
         }
 
@@ -47,12 +35,9 @@ namespace ProjectMagma.Framework
             {
                 return this.attributeType;
             }
-            set
-            {
-                this.attributeType = value;
-            }
         }
 
+        protected string name;
         protected Type attributeType;        
     }
 }

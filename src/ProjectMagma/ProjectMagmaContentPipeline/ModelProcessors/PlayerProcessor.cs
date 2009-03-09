@@ -8,14 +8,14 @@ using Microsoft.Xna.Framework.Content.Pipeline;
 using Microsoft.Xna.Framework.Content.Pipeline.Graphics;
 using Microsoft.Xna.Framework.Content.Pipeline.Processors;
 
-namespace ProjectMagmaContentPipeline
+namespace ProjectMagmaContentPipeline.ModelProcessors
 {
-    [ContentProcessor(DisplayName = "Island Processor")]
-    class IslandProcessor : MoveProcessor
+    [ContentProcessor(DisplayName = "Magma - Player Processor")]
+    class PlayerProcessor : MoveProcessor
     {
         protected override float CalculateHeightDiff(BoundingBox bb)
         {
-            return 0.0f - bb.max.Y;
+            return 0.0f - bb.min.Y;
         }
     }
 }

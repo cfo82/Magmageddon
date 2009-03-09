@@ -10,6 +10,7 @@ using Microsoft.Xna.Framework.Input;
 using Microsoft.Xna.Framework.Media;
 using Microsoft.Xna.Framework.Net;
 using Microsoft.Xna.Framework.Storage;
+using ProjectMagma.Shared.Serialization.LevelData;
 
 namespace ProjectMagma
 {
@@ -27,6 +28,8 @@ namespace ProjectMagma
         Matrix world;
         Matrix view;
         Matrix projection;
+
+        LevelData levelData;
 
         public Game1()
         {
@@ -59,6 +62,7 @@ namespace ProjectMagma
             lavaPrimitive = Content.Load<Model>("Models/lava_primitive");
             pillarPrimitive = Content.Load<Model>("Models/pillar_primitive");
             playerPrimitive = Content.Load<Model>("Models/player_primitive");
+            levelData = Content.Load<LevelData>("Level/TestLevel");
 
             Viewport viewport = graphics.GraphicsDevice.Viewport;
 

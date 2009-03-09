@@ -11,7 +11,7 @@ using Microsoft.Xna.Framework.Content.Pipeline.Processors;
 using TInput = System.String;
 using TOutput = System.String;
 
-namespace ProjectMagmaContentPipeline
+namespace ProjectMagmaContentPipeline.ModelProcessors
 {
     public abstract class MoveProcessor : ModelProcessor
     {

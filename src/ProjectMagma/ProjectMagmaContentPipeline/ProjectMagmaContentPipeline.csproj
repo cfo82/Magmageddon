@@ -105,12 +105,20 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="IslandProcessor.cs" />
-    <Compile Include="LavaProcessor.cs" />
-    <Compile Include="MoveProcessor.cs" />
-    <Compile Include="PillarProcessor.cs" />
-    <Compile Include="PlayerProcessor.cs" />
+    <Compile Include="Level\LevelProcessor.cs" />
+    <Compile Include="ModelProcessors\IslandProcessor.cs" />
+    <Compile Include="ModelProcessors\LavaProcessor.cs" />
+    <Compile Include="ModelProcessors\MoveProcessor.cs" />
+    <Compile Include="ModelProcessors\PillarProcessor.cs" />
+    <Compile Include="ModelProcessors\PlayerProcessor.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Level\XmlDocumentImporter.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\ProjectMagmaShared\ProjectMagmaShared.csproj">
+      <Project>{68FEE9A0-EA37-4321-B485-3D5B1DED238D}</Project>
+      <Name>ProjectMagmaShared</Name>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <Import Project="$(MSBuildExtensionsPath)\Microsoft\XNA Game Studio\Microsoft.Xna.GameStudio.ContentPipelineExtensions.targets" />

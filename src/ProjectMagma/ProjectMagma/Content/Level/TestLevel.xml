@@ -1,0 +1,31 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<Level>
+  <AttributeTemplates>
+    <AttributeTemplate name="Lava.Size" type="ProjectMagma.Framework.Vector2Attribute"/>
+    <AttributeTemplate name="Pillar.Position" type="ProjectMagma.Framework.Vector2Attribute"/>
+  </AttributeTemplates>
+
+  <PropertyTemplates>
+    
+  </PropertyTemplates>
+
+  <LevelData>
+    <Entity name="lava">
+      <Attributes>
+        <Attribute template="Lava.Size" value="100 100"/>
+      </Attributes>
+    </Entity>
+
+    <Entity name="pillar1">
+      <Attributes>
+        <Attribute template="Pillar.Position" value="-10 10"/>
+      </Attributes>
+    </Entity>
+
+    <Entity name="pillar1">
+      <Attributes>
+        <Attribute template="Pillar.Position" value="10 10"/>
+      </Attributes>
+    </Entity>
+  </LevelData>
+</Level>

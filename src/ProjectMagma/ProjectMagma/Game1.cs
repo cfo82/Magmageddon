@@ -56,6 +56,8 @@ namespace ProjectMagma
 
         Random rand;
 
+        List<Entity> pillars;
+
         public Game1()
         {
             graphics = new GraphicsDeviceManager(this);
@@ -63,6 +65,7 @@ namespace ProjectMagma
             Content.RootDirectory = "Content";
 
             rand = new Random(485394);
+            pillars = new List<Entity>();
         }
 
         /// <summary>
@@ -97,6 +100,10 @@ namespace ProjectMagma
 
             foreach (Entity e in simulation.EntityManager.Entities.Values)
             {
+                if (e.Name.StartsWith("pillar"))
+                {
+                    pillars.Add(e);
+                }
             }         
 
             Viewport viewport = graphics.GraphicsDevice.Viewport;
@@ -187,13 +194,30 @@ namespace ProjectMagma
                 Vector3Attribute vel = e.Attributes["velocity"] as Vector3Attribute;
                 Vector3Attribute acc = e.Attributes["acceleration"] as Vector3Attribute;
 
-                acc.Vector = new Vector3(
+                Vector3 a = new Vector3(
                     (float)rand.NextDouble()-0.5f,
                     0.0f,
                     (float)rand.NextDouble()-0.5f
-                )*2000.0f;
+                )*3.0f;
 
-                vel.Vector = vel.Vector + dt * acc.Vector;
+                foreach(Entity pillar in pillars)
+                {
+                    Vector3 dist = (pillar.Attributes["position"] as Vector3Attribute).Vector - pos.Vector;
+                    Vector3 pillarContribution;
+                    if (dist.Length() > 20.0f)
+                    {
+                        pillarContribution = dist * 0.3f;
+                    } else {
+                        pillarContribution = -dist * 3f;
+                    }
+                    pillarContribution.Y = 0;
+                    a += pillarContribution;
+                }
+
+                float damping = 0.001f;
+
+                acc.Vector = a;
+                vel.Vector = (vel.Vector + dt * acc.Vector) * (1.0f - damping);
                 pos.Vector = pos.Vector + dt * vel.Vector;
 
                 //v.Vector.X += 0.1f;

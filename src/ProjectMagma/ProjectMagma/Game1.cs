@@ -43,6 +43,8 @@ namespace ProjectMagma
 
         Simulation simulation;
 
+        Vector3 playerPosition;
+
         public Game1()
         {
             graphics = new GraphicsDeviceManager(this);
@@ -91,6 +93,8 @@ namespace ProjectMagma
             projection = Matrix.CreatePerspectiveFieldOfView(MathHelper.PiOver4,
                                                              aspectRatio, 10, 10000);
             // TODO: use this.Content to load your game content here
+
+            playerPosition = ((Vector3Attribute)simulation.EntityManager.Entities["player"].Attributes["position"]).Vector;
         }
 
         /// <summary>
@@ -116,9 +120,17 @@ namespace ProjectMagma
             // TODO: Add your update logic here
             float time = (float)gameTime.TotalGameTime.TotalSeconds;
 
+            UpdatePlayer(gameTime);
+
             world = Matrix.CreateRotationY(time * 0.1f);
 
             base.Update(gameTime);
+        }
+
+        private void UpdatePlayer(GameTime gameTime)
+        {
+            if (GamePad.GetState(PlayerIndex.One).Buttons.A == ButtonState.Pressed)
+                playerPosition.X += 1;
         }
 
         protected void Draw(GameTime gameTime, Model model)

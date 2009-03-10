@@ -149,8 +149,14 @@ namespace ProjectMagma
         {
             float dt = gameTime.ElapsedGameTime.Milliseconds / 1000f;
 
-            // y axis jetpack
-            if (GamePad.GetState(PlayerIndex.One).Buttons.A == ButtonState.Pressed)
+            GamePadState gamePadState = GamePad.GetState(PlayerIndex.One);
+            KeyboardState keyboardState = Keyboard.GetState(PlayerIndex.One);
+
+            bool a_pressed =
+                gamePadState.Buttons.A == ButtonState.Pressed ||
+                keyboardState.IsKeyDown(Keys.Space);
+
+            if (a_pressed)
             {
                 jetpackSpeed += jetpackAcceleration * dt;
                 playerPosition += jetpackSpeed * dt;
@@ -182,7 +188,7 @@ namespace ProjectMagma
                     (float)rand.NextDouble()-0.5f,
                     0.0f,
                     (float)rand.NextDouble()-0.5f
-                )*1000.0f;
+                )*2000.0f;
 
                 vel.Vector = vel.Vector + dt * acc.Vector;
                 pos.Vector = pos.Vector + dt * vel.Vector;

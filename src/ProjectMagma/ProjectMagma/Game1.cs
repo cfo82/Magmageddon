@@ -82,6 +82,9 @@ namespace ProjectMagma
 
             simulation.Initialize(Content, levelData);
 
+            foreach (Entity e in simulation.EntityManager.Entities.Values)
+            {
+            }         
 
             Viewport viewport = graphics.GraphicsDevice.Viewport;
 
@@ -125,12 +128,27 @@ namespace ProjectMagma
             world = Matrix.CreateRotationY(time * 0.1f);
 
             base.Update(gameTime);
+            foreach (Entity e in simulation.EntityManager.Entities.Values)
+            {
+                int dt = gameTime.ElapsedGameTime.Milliseconds;
+                UpdateEntity(e, dt);
+            }
         }
 
         private void UpdatePlayer(GameTime gameTime)
         {
             if (GamePad.GetState(PlayerIndex.One).Buttons.A == ButtonState.Pressed)
                 playerPosition.X += 1;
+        }
+
+        protected void UpdateEntity(Entity e, int dt)
+        {
+            if(e.Name.StartsWith("island"))
+            {
+                Vector3Attribute v = e.Attributes["position"] as Vector3Attribute;
+                //v.Vector = v.Vector + new Vector3(0,0,1.0f);
+                v.Vector.X += 0.1f;
+            }
         }
 
         protected void Draw(GameTime gameTime, Model model)

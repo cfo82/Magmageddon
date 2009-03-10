@@ -44,6 +44,10 @@ namespace ProjectMagma
         Simulation simulation;
 
         Vector3 playerPosition;
+        Vector3 jetpackAcceleration;
+        Vector3 jetpackSpeed = new Vector3(0,0,0);
+        Vector3 gravityAcceleration = new Vector3(0, -80f, 0);
+        Entity playerIsland = null;
 
         public Game1()
         {
@@ -98,6 +102,7 @@ namespace ProjectMagma
             // TODO: use this.Content to load your game content here
 
             playerPosition = ((Vector3Attribute)simulation.EntityManager.Entities["player"].Attributes["position"]).Vector;
+            jetpackAcceleration = ((Vector3Attribute)simulation.EntityManager.Entities["player"].Attributes["jetpackAcceleration"]).Vector;
         }
 
         /// <summary>
@@ -127,18 +132,31 @@ namespace ProjectMagma
 
             world = Matrix.CreateRotationY(time * 0.1f);
 
-            base.Update(gameTime);
             foreach (Entity e in simulation.EntityManager.Entities.Values)
             {
                 int dt = gameTime.ElapsedGameTime.Milliseconds;
                 UpdateEntity(e, dt);
             }
+
+            base.Update(gameTime);
         }
 
         private void UpdatePlayer(GameTime gameTime)
         {
+            float dt = gameTime.ElapsedGameTime.Milliseconds / 1000f;
+
             if (GamePad.GetState(PlayerIndex.One).Buttons.A == ButtonState.Pressed)
-                playerPosition.X += 1;
+            {
+                jetpackSpeed += jetpackAcceleration * dt;
+                playerPosition += jetpackSpeed * dt;
+            }
+            else
+            {
+                jetpackSpeed += gravityAcceleration * dt;
+                playerPosition += jetpackSpeed * dt;
+            }
+
+            ((Vector3Attribute)simulation.EntityManager.Entities["player"].Attributes["position"]).Vector = playerPosition;
         }
 
         protected void UpdateEntity(Entity e, int dt)

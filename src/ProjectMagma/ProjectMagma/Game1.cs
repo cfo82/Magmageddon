@@ -51,6 +51,9 @@ namespace ProjectMagma
         float maxGravitySpeed = 100f;
         Entity playerIsland = null;
 
+        int playerXAxisMultiplier = 1;
+        int playerZAxisMultiplier = 2;
+
         Random rand;
 
         public Game1()
@@ -170,8 +173,8 @@ namespace ProjectMagma
             playerPosition += jetpackSpeed * dt;
 
             // moving
-            playerPosition.X += GamePad.GetState(PlayerIndex.One).ThumbSticks.Left.X;
-            playerPosition.Z += GamePad.GetState(PlayerIndex.One).ThumbSticks.Left.Y;
+            playerPosition.X += GamePad.GetState(PlayerIndex.One).ThumbSticks.Left.X * playerXAxisMultiplier;
+            playerPosition.Z -= GamePad.GetState(PlayerIndex.One).ThumbSticks.Left.Y * playerZAxisMultiplier;
 
             ((Vector3Attribute)simulation.EntityManager.Entities["player"].Attributes["position"]).Vector = playerPosition;
         }

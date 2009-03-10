@@ -28,6 +28,11 @@ namespace ProjectMagma.Framework
             {
                 return v;
             }
+
+            set
+            {
+                v = value;
+            }
         }
 
         private Vector3 v;

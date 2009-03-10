@@ -49,11 +49,15 @@ namespace ProjectMagma
         Vector3 gravityAcceleration = new Vector3(0, -80f, 0);
         Entity playerIsland = null;
 
+        Random rand;
+
         public Game1()
         {
             graphics = new GraphicsDeviceManager(this);
             simulation = new Simulation();
             Content.RootDirectory = "Content";
+
+            rand = new Random(485394);
         }
 
         /// <summary>
@@ -135,7 +139,7 @@ namespace ProjectMagma
             foreach (Entity e in simulation.EntityManager.Entities.Values)
             {
                 int dt = gameTime.ElapsedGameTime.Milliseconds;
-                UpdateEntity(e, dt);
+                UpdateEntity(e, ((float)dt)/1000.0f);
             }
 
             base.Update(gameTime);
@@ -159,12 +163,23 @@ namespace ProjectMagma
             ((Vector3Attribute)simulation.EntityManager.Entities["player"].Attributes["position"]).Vector = playerPosition;
         }
 
-        protected void UpdateEntity(Entity e, int dt)
+        protected void UpdateEntity(Entity e, float dt)
         {
             if(e.Name.StartsWith("island"))
             {
-                Vector3Attribute v = e.Attributes["position"] as Vector3Attribute;
-                v.Vector = v.Vector + new Vector3(0,0,1.0f);
+                Vector3Attribute pos = e.Attributes["position"] as Vector3Attribute;
+                Vector3Attribute vel = e.Attributes["velocity"] as Vector3Attribute;
+                Vector3Attribute acc = e.Attributes["acceleration"] as Vector3Attribute;
+
+                acc.Vector = new Vector3(
+                    (float)rand.NextDouble()-0.5f,
+                    0.0f,
+                    (float)rand.NextDouble()-0.5f
+                )*1000.0f;
+
+                vel.Vector = vel.Vector + dt * acc.Vector;
+                pos.Vector = pos.Vector + dt * vel.Vector;
+
                 //v.Vector.X += 0.1f;
             }
         }

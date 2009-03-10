@@ -14,10 +14,10 @@ namespace ProjectMagma.Framework
             this.attributeType = attributeType;
         }
 
-        public Attribute CreateAttribute()
+        public Attribute CreateAttribute(string attributeName)
         {
-            ConstructorInfo constructor = this.attributeType.GetConstructor(new Type[] { this.GetType() });
-            object newAttribute = constructor.Invoke(new object[] { this });
+            ConstructorInfo constructor = this.attributeType.GetConstructor(new Type[] { typeof(string), this.GetType() });
+            object newAttribute = constructor.Invoke(new object[] { attributeName, this });
             return newAttribute as Attribute;
         }
 

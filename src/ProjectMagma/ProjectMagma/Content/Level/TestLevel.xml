@@ -2,7 +2,9 @@
 <Level>
   <AttributeTemplates>
     <AttributeTemplate name="Lava.Size" type="ProjectMagma.Framework.Vector2Attribute"/>
-    <AttributeTemplate name="Pillar.Position" type="ProjectMagma.Framework.Vector2Attribute"/>
+    <AttributeTemplate name="General.Position" type="ProjectMagma.Framework.Vector3Attribute"/>
+    <AttributeTemplate name="General.Scale" type="ProjectMagma.Framework.Vector3Attribute"/>
+    <AttributeTemplate name="General.Mesh" type="ProjectMagma.Framework.MeshAttribute"/>
   </AttributeTemplates>
 
   <PropertyTemplates>
@@ -12,31 +14,67 @@
   <LevelData>
     <Entity name="lava">
       <Attributes>
-        <Attribute template="Lava.Size" value="100 100"/>
+        <Attribute name="position" template="General.Position" value="0 0 0"/>
+        <Attribute name="scale" template="General.Scale" value="200 200 200"/>
+        <Attribute name="mesh" template="General.Mesh" value="Models/lava_primitive"/>
       </Attributes>
     </Entity>
 
     <Entity name="pillar1">
       <Attributes>
-        <Attribute template="Pillar.Position" value="-100 -100"/>
+        <Attribute name="position" template="General.Position" value="-100 0 -100"/>
+        <Attribute name="scale" template="General.Scale" value="200 200 200"/>
+        <Attribute name="mesh" template="General.Mesh" value="Models/pillar_primitive"/>
       </Attributes>
     </Entity>
 
     <Entity name="pillar2">
       <Attributes>
-        <Attribute template="Pillar.Position" value="-100 100"/>
+        <Attribute name="position" template="General.Position" value="-100 0 100"/>
+        <Attribute name="scale" template="General.Scale" value="200 200 200"/>
+        <Attribute name="mesh" template="General.Mesh" value="Models/pillar_primitive"/>
       </Attributes>
     </Entity>
 
     <Entity name="pillar3">
       <Attributes>
-        <Attribute template="Pillar.Position" value="100 -100"/>
+        <Attribute name="position" template="General.Position" value="100 0 -100"/>
+        <Attribute name="scale" template="General.Scale" value="200 200 200"/>
+        <Attribute name="mesh" template="General.Mesh" value="Models/pillar_primitive"/>
       </Attributes>
     </Entity>
 
     <Entity name="pillar4">
       <Attributes>
-        <Attribute template="Pillar.Position" value="100 100"/>
+        <Attribute name="position" template="General.Position" value="100 0 100"/>
+        <Attribute name="scale" template="General.Scale" value="200 200 200"/>
+        <Attribute name="mesh" template="General.Mesh" value="Models/pillar_primitive"/>
+      </Attributes>
+    </Entity>
+
+    <Entity name="island1">
+      <Attributes>
+        <Attribute name="position" template="General.Position" value="200 100 100"/>
+        <Attribute name="velocity" template="General.Position" value="20 0 0"/>
+        <Attribute name="scale" template="General.Scale" value="40 40 40"/>
+        <Attribute name="mesh" template="General.Mesh" value="Models/island_primitive"/>
+      </Attributes>
+    </Entity>
+
+    <Entity name="island2">
+      <Attributes>
+        <Attribute name="position" template="General.Position" value="-300 250 -200"/>
+        <Attribute name="velocity" template="General.Position" value="0 0 20"/>
+        <Attribute name="scale" template="General.Scale" value="40 40 40"/>
+        <Attribute name="mesh" template="General.Mesh" value="Models/island_primitive"/>
+      </Attributes>
+    </Entity>
+
+    <Entity name="player">
+      <Attributes>
+        <Attribute name="position" template="General.Position" value="200 100 100"/>
+        <Attribute name="scale" template="General.Scale" value="10 10 10"/>
+        <Attribute name="mesh" template="General.Mesh" value="Models/player_primitive"/>
       </Attributes>
     </Entity>
   </LevelData>

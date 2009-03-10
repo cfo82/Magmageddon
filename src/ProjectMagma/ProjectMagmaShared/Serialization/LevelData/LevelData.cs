@@ -21,12 +21,14 @@ namespace ProjectMagma.Shared.Serialization.LevelData
     {
         public AttributeData()
         {
+            name = "";
             template = "";
-            values = new float[0];
+            value = "";
         }
 
+        public string name;
         public string template;
-        public float[] values;
+        public string value;
     }
 
     public class EntityData

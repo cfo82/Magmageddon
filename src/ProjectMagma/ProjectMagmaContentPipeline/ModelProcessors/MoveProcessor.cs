@@ -29,11 +29,28 @@ namespace ProjectMagmaContentPipeline.ModelProcessors
 
         public override ModelContent Process(NodeContent input, ContentProcessorContext context)
         {
-
+            // calculate bounds because changes are based on the bounding box
             BoundingBox bb = new BoundingBox();
             CalculateBoundingBox(input, context, bb);
+
+            // first center the models (currently I think they are actually already centered...
+            /*Vector3 diff = Vector3.Zero - ((bb.max - bb.min) / 2.0f);
+            MoveModel(input, context, diff);
+            bb.max += diff;
+            bb.min += diff;*/
+
+            // now that the models are centered scale them
+            float scaleFactor = bb.max.X;
+            if (bb.max.Y > scaleFactor) scaleFactor = bb.max.Y;
+            if (bb.max.Z > scaleFactor) scaleFactor = bb.max.Z;
+            scaleFactor = 1.0f / scaleFactor;
+            ScaleModel(input, context, scaleFactor);
+            bb.max *= scaleFactor;
+            bb.min *= scaleFactor;
+
+            // now let the subclass decide on how to modify the box (aligning bottom/top to zero)
             float heightDiff = CalculateHeightDiff(bb);
-            Move(input, context, heightDiff);
+            MoveModel(input, context, new Vector3(0, heightDiff, 0));
 
             return base.Process(input, context);
         }
@@ -67,10 +84,10 @@ namespace ProjectMagmaContentPipeline.ModelProcessors
             }
         }
 
-        private void Move(
+        private void MoveModel(
             NodeContent input,
             ContentProcessorContext context,
-            float heightDiff
+            Vector3 diff
             )
         {
             MeshContent mesh = input as MeshContent;
@@ -78,19 +95,37 @@ namespace ProjectMagmaContentPipeline.ModelProcessors
             {
                 for (int i = 0; i < mesh.Positions.Count; ++i)
                 {
-                    mesh.Positions[i] = new Vector3(
-                        mesh.Positions[i].X,
-                        mesh.Positions[i].Y + heightDiff,
-                        mesh.Positions[i].Z);
+                    mesh.Positions[i] = mesh.Positions[i] + diff;
                 }
             }
 
             // Go through all childs
             foreach (NodeContent child in input.Children)
             {
-                Move(child, context, heightDiff);
+                MoveModel(child, context, diff);
             }
         }
 
+        private void ScaleModel(
+            NodeContent input,
+            ContentProcessorContext context,
+            float scaleFactor
+            )
+        {
+            MeshContent mesh = input as MeshContent;
+            if (mesh != null)
+            {
+                for (int i = 0; i < mesh.Positions.Count; ++i)
+                {
+                    mesh.Positions[i] = mesh.Positions[i]*scaleFactor;
+                }
+            }
+
+            // Go through all childs
+            foreach (NodeContent child in input.Children)
+            {
+                ScaleModel(child, context, scaleFactor);
+            }
+        }
     }
 }

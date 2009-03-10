@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Reflection;
+using Microsoft.Xna.Framework.Content;
 using ProjectMagma.Framework.Attributes;
 
 using ProjectMagma.Shared.Serialization.LevelData;
@@ -17,7 +18,7 @@ namespace ProjectMagma.Framework
             entityManager = new EntityManager(this);
         }
 
-        public void Initialize(LevelData levelData)
+        public void Initialize(ContentManager content, LevelData levelData)
         {
             foreach (AttributeTemplateData attributeTemplateData in levelData.attributeTemplates)
             {
@@ -25,7 +26,7 @@ namespace ProjectMagma.Framework
             }
             foreach (EntityData entityData in levelData.entities)
             {
-                entityManager.AddEntity(entityData);
+                entityManager.AddEntity(content, entityData);
             }
         }
 

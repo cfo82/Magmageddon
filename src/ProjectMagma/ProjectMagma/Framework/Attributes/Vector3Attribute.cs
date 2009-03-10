@@ -7,9 +7,9 @@ using Microsoft.Xna.Framework.Content;
 
 namespace ProjectMagma.Framework
 {
-    class Vector2Attribute : Attribute
+    class Vector3Attribute : Attribute
     {
-        public Vector2Attribute(string name, AttributeTemplate template)
+        public Vector3Attribute(string name, AttributeTemplate template)
         :   base(name, template)
         {
         }
@@ -19,9 +19,10 @@ namespace ProjectMagma.Framework
             string[] splitArray = value.Split(' ');
             v.X = float.Parse(splitArray[0]);
             v.Y = float.Parse(splitArray[1]);
+            v.Z = float.Parse(splitArray[2]);
         }
 
-        public Vector2 Vector
+        public Vector3 Vector
         {
             get
             {
@@ -29,6 +30,6 @@ namespace ProjectMagma.Framework
             }
         }
 
-        private Vector2 v;
+        private Vector3 v;
     }
 }

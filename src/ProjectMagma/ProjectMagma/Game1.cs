@@ -1,3 +1,6 @@
+using System;
+using System.Diagnostics;
+using System.Threading;
 using System.Collections.Generic;
 using System.Linq;
 using Microsoft.Xna.Framework;
@@ -13,6 +16,11 @@ using Microsoft.Xna.Framework.Storage;
 using ProjectMagma.Framework;
 using ProjectMagma.Framework.Attributes;
 using ProjectMagma.Shared.Serialization.LevelData;
+
+
+// its worth to read this...
+// 
+// http://msdn.microsoft.com/en-us/library/microsoft.xna.net_cf.system.threading.thread.setprocessoraffinity.aspx
 
 namespace ProjectMagma
 {
@@ -56,7 +64,7 @@ namespace ProjectMagma
         }
 
         /// <summary>
-        /// LoadContent will be called once per game and is the place to load
+        /// LoadContent will be called once per game and is theF place to load
         /// all of your content.
         /// </summary>
         protected override void LoadContent()
@@ -70,14 +78,14 @@ namespace ProjectMagma
             
             levelData = Content.Load<LevelData>("Level/TestLevel");
 
-            simulation.Initialize(levelData);
+            simulation.Initialize(Content, levelData);
 
 
             Viewport viewport = graphics.GraphicsDevice.Viewport;
 
             float aspectRatio = (float)viewport.Width / (float)viewport.Height;
 
-            view = Matrix.CreateLookAt(new Vector3(1000, 500, 0),
+            view = Matrix.CreateLookAt(new Vector3(0, 500, 1000),
                                        new Vector3(0, 150, 0), Vector3.Up);
 
             projection = Matrix.CreatePerspectiveFieldOfView(MathHelper.PiOver4,
@@ -172,19 +180,28 @@ namespace ProjectMagma
             // TODO: Add your drawing code here
             //Draw(gameTime, islandPrimitive);
             //world = Matrix.Identity;
-            world = Matrix.Identity;
-            Draw(gameTime, lavaPrimitive);
+            //world = Matrix.Identity;
+            //Draw(gameTime, lavaPrimitive);
             //Draw(gameTime, pillarPrimitive);
             //Draw(gameTime, playerPrimitive);
 
             foreach (Entity e in simulation.EntityManager.Entities.Values)
             {
-                if (e.Name.StartsWith("pillar"))
+                if (!e.Attributes.ContainsKey("mesh") ||
+                    !e.Attributes.ContainsKey("position") ||
+                    !e.Attributes.ContainsKey("scale"))
                 {
-                    Vector2Attribute attr = e.Attributes["Pillar.Position"] as Vector2Attribute;
-                    Vector3 translate = new Vector3(attr.Vector.X, 0, attr.Vector.Y);
-                    world = Matrix.CreateTranslation(translate);
-                    Draw(gameTime, pillarPrimitive);
+                    continue;
+                }
+
+                MeshAttribute mesh = e.Attributes["mesh"] as MeshAttribute;
+                Vector3Attribute position = e.Attributes["position"] as Vector3Attribute;
+                Vector3Attribute scale = e.Attributes["scale"] as Vector3Attribute;
+                if (mesh != null && position != null && scale != null)
+                {
+                    world = Matrix.CreateScale(scale.Vector) * Matrix.CreateTranslation(position.Vector);
+
+                    Draw(gameTime, mesh.Model);
                 }
             }
 

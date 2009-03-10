@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using Microsoft.Xna.Framework.Content;
 using ProjectMagma.Framework.Attributes;
 using ProjectMagma.Shared.Serialization.LevelData;
 
@@ -16,12 +17,12 @@ namespace ProjectMagma.Framework
             this.attributes = new Dictionary<string, Attribute>();
         }
 
-        public void AddAttribute(AttributeData attributeData)
+        public void AddAttribute(ContentManager content, AttributeData attributeData)
         {
             AttributeTemplateManager attributeTemplateManager = entityManager.Simulation.AttributeTemplateManager;
             AttributeTemplate attributeTemplate = attributeTemplateManager.GetAttributeTemplate(attributeData.template);
-            Attribute attribute = attributeTemplate.CreateAttribute();
-            attribute.Initialize(attributeData.values);
+            Attribute attribute = attributeTemplate.CreateAttribute(attributeData.name);
+            attribute.Initialize(content, attributeData.value);
             this.attributes.Add(attribute.Name, attribute);
         }
 

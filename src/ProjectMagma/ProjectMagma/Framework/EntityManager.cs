@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using Microsoft.Xna.Framework.Content;
 using ProjectMagma.Shared.Serialization.LevelData;
 
 namespace ProjectMagma.Framework
@@ -14,12 +15,12 @@ namespace ProjectMagma.Framework
             this.entities = new Dictionary<string, Entity>();
         }
 
-        public void AddEntity(EntityData entityData)
+        public void AddEntity(ContentManager content, EntityData entityData)
         {
             Entity entity = new Entity(this, entityData.name);
             foreach (AttributeData attributeData in entityData.attributes)
             {
-                entity.AddAttribute(attributeData);
+                entity.AddAttribute(content, attributeData);
             }
             this.entities.Add(entity.Name, entity);
         }

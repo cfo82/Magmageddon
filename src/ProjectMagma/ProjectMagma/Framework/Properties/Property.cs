@@ -5,7 +5,7 @@ using System.Text;
 
 namespace ProjectMagma.Framework
 {
-    class Property
+    public class Property
     {
     }
 }

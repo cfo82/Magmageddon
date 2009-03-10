@@ -15,56 +15,63 @@ using Microsoft.Xna.Framework.Content.Pipeline.Serialization.Compiler;
 namespace ProjectMagma.Shared.Serialization.LevelData
 {
     [ContentTypeWriter]
-    class LevelDataWriter : ContentTypeWriter<LevelData>
+    class AttributeTemplateDataWriter : ContentTypeWriter<AttributeTemplateData>
     {
-        private void WriteAttributeTemplateData(ContentWriter output, AttributeTemplateData value)
+        protected override void Write(ContentWriter output, AttributeTemplateData value)
         {
             output.Write(value.name);
             output.Write(value.type);
         }
 
-        private void WriteAttributeData(ContentWriter output, AttributeData value)
+        public override string GetRuntimeReader(TargetPlatform targetPlatform)
         {
-            output.Write(value.template);
-            output.Write((Int32)value.values.Length);
-            foreach (float f in value.values)
-            {
-                output.Write((Single)f);
-            }
+            return typeof(AttributeTemplateDataReader).AssemblyQualifiedName;
         }
+    }
 
-        private void WriteEntityData(ContentWriter output, EntityData value)
+    [ContentTypeWriter]
+    class AttributeDataWriter : ContentTypeWriter<AttributeData>
+    {
+        protected override void Write(ContentWriter output, AttributeData value)
         {
             output.Write(value.name);
-            output.Write((Int32)value.attributes.Count);
-            foreach (AttributeData attr in value.attributes)
-            {
-                WriteAttributeData(output, attr);
-            }
+            output.Write(value.template);
+            output.Write(value.value);
         }
-
-        protected override void Write(ContentWriter output, LevelData value)
-        {
-            output.Write((Int32)value.attributeTemplates.Count);
-            foreach (AttributeTemplateData template in value.attributeTemplates)
-            {
-                WriteAttributeTemplateData(output, template);
-            }
-            output.Write((Int32)value.entities.Count);
-            foreach (EntityData entity in value.entities)
-            {
-                WriteEntityData(output, entity);
-            }
-        }
-
-        /*public override string GetRuntimeType(TargetPlatform targetPlatform)
-        {
-            return "x743.Import.Level, " + X.AssemblyName + ", Version=1.0.0.0, Culture=neutral";
-        }*/
 
         public override string GetRuntimeReader(TargetPlatform targetPlatform)
         {
-            return "ProjectMagma.Shared.Serialization.LevelData.LevelDataReader, ProjectMagmaShared, Version=1.0.0.0, Culture=neutral";
+            return typeof(AttributeDataReader).AssemblyQualifiedName;
+        }
+    }
+
+    [ContentTypeWriter]
+    class EntityDataWriter : ContentTypeWriter<EntityData>
+    {
+        protected override void Write(ContentWriter output, EntityData value)
+        {
+            output.Write(value.name);
+            output.WriteRawObject<List<AttributeData>>(value.attributes);
+        }
+
+        public override string GetRuntimeReader(TargetPlatform targetPlatform)
+        {
+            return typeof(EntityDataReader).AssemblyQualifiedName;
+        }
+    }
+
+    [ContentTypeWriter]
+    class LevelDataWriter : ContentTypeWriter<LevelData>
+    {
+        protected override void Write(ContentWriter output, LevelData value)
+        {
+            output.WriteRawObject<List<AttributeTemplateData>>(value.attributeTemplates);
+            output.WriteRawObject<List<EntityData>>(value.entities);
+        }
+
+        public override string GetRuntimeReader(TargetPlatform targetPlatform)
+        {
+            return typeof(LevelDataReader).AssemblyQualifiedName;
         }
     }
 }

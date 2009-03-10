@@ -15,40 +15,57 @@ using Microsoft.Xna.Framework.Content.Pipeline.Serialization.Compiler;
 
 namespace ProjectMagma.Shared.Serialization.LevelData
 {
+    class AttributeTemplateDataReader : ContentTypeReader<AttributeTemplateData>
+    {
+        protected override AttributeTemplateData Read(ContentReader input, AttributeTemplateData existingInstance)
+        {
+            if (existingInstance == null)
+            {
+                existingInstance = new AttributeTemplateData();
+            }
+
+            existingInstance.name = input.ReadString();
+            existingInstance.type = input.ReadString();
+            
+            return existingInstance;
+        }
+    }
+
+    class AttributeDataReader : ContentTypeReader<AttributeData>
+    {
+        protected override AttributeData Read(ContentReader input, AttributeData existingInstance)
+        {
+            if (existingInstance == null)
+            {
+                existingInstance = new AttributeData();
+            }
+
+            existingInstance.name = input.ReadString();
+            existingInstance.template = input.ReadString();
+            existingInstance.value = input.ReadString();
+
+            return existingInstance;
+        }
+    }
+
+    class EntityDataReader : ContentTypeReader<EntityData>
+    {
+        protected override EntityData Read(ContentReader input, EntityData existingInstance)
+        {
+            if (existingInstance == null)
+            {
+                existingInstance = new EntityData();
+            }
+
+            existingInstance.name = input.ReadString();
+            existingInstance.attributes = input.ReadRawObject<List<AttributeData>>();
+
+            return existingInstance;
+        }
+    }
+
     class LevelDataReader : ContentTypeReader<LevelData>
     {
-        private AttributeTemplateData ReadAttributeTemplateData(ContentReader input)
-        {
-            AttributeTemplateData templateData = new AttributeTemplateData();
-            templateData.name = input.ReadString();
-            templateData.type = input.ReadString();
-            return templateData;
-        }
-
-        private AttributeData ReadAttributeData(ContentReader input)
-        {
-            AttributeData attributeData = new AttributeData();
-            attributeData.template = input.ReadString();
-            attributeData.values = new float[input.ReadInt32()];
-            for (int i = 0; i < attributeData.values.Length; ++i)
-            {
-                attributeData.values[i] = input.ReadSingle();
-            }
-            return attributeData;
-        }
-
-        private EntityData ReadEntityData(ContentReader input)
-        {
-            EntityData entityData = new EntityData();
-            entityData.name = input.ReadString();
-            int attributeCount = input.ReadInt32();
-            for (int i = 0; i < attributeCount; ++i)
-            {
-                entityData.attributes.Add(ReadAttributeData(input));
-            }
-            return entityData;
-        }
-
         protected override LevelData Read(ContentReader input, LevelData existingInstance)
         {
             if (existingInstance == null)
@@ -56,17 +73,8 @@ namespace ProjectMagma.Shared.Serialization.LevelData
                 existingInstance = new LevelData();
             }
 
-            int attributeTemplateCount = input.ReadInt32();
-            for (int i = 0; i < attributeTemplateCount; ++i)
-            {
-                existingInstance.attributeTemplates.Add(ReadAttributeTemplateData(input));
-            }
-
-            int entityCount = input.ReadInt32();
-            for (int i = 0; i < entityCount; ++i)
-            {
-                existingInstance.entities.Add(ReadEntityData(input));
-            }
+            existingInstance.attributeTemplates = input.ReadRawObject<List<AttributeTemplateData>>();
+            existingInstance.entities = input.ReadRawObject<List<EntityData>>();
 
             return existingInstance;
         }

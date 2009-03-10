@@ -19,29 +19,32 @@ namespace ProjectMagmaContentPipeline.Level
 
         private void ProcessAttributeTemplatesNode(XmlElement attributeTemplatesNode, LevelData levelData)
         {
-            foreach (XmlElement attributeTemplateNode in attributeTemplatesNode.ChildNodes)
+            foreach (XmlNode attributeTemplateNode in attributeTemplatesNode.ChildNodes)
             {
-                AttributeTemplateData attributeTemplateData = new AttributeTemplateData();
-                attributeTemplateData.name = attributeTemplateNode.GetAttribute("name");
-                attributeTemplateData.type = attributeTemplateNode.GetAttribute("type");
-                levelData.attributeTemplates.Add(attributeTemplateData);
+                XmlElement attributeTemplateElement = attributeTemplateNode as XmlElement;
+                if (attributeTemplateElement != null)
+                {
+                    AttributeTemplateData attributeTemplateData = new AttributeTemplateData();
+                    attributeTemplateData.name = attributeTemplateElement.GetAttribute("name");
+                    attributeTemplateData.type = attributeTemplateElement.GetAttribute("type");
+                    levelData.attributeTemplates.Add(attributeTemplateData);
+                }
             }
         }
 
         private void ProcessAttributesNode(XmlElement attributesNode, EntityData entityData)
         {
-            foreach (XmlElement attributeNode in attributesNode.ChildNodes)
+            foreach (XmlNode attributeNode in attributesNode.ChildNodes)
             {
-                AttributeData attributeData = new AttributeData();
-                attributeData.template = attributeNode.GetAttribute("template");
-                string value = attributeNode.GetAttribute("value");
-                string[] valueArray = value.Split(' ');
-                attributeData.values = new float[valueArray.Length];
-                for (int i = 0; i < valueArray.Length; ++i)
+                XmlElement attributeElement = attributeNode as XmlElement;
+                if (attributeElement != null)
                 {
-                    attributeData.values[i] = float.Parse(valueArray[i]);
+                    AttributeData attributeData = new AttributeData();
+                    attributeData.name = attributeElement.GetAttribute("name");
+                    attributeData.template = attributeElement.GetAttribute("template");
+                    attributeData.value = attributeElement.GetAttribute("value");
+                    entityData.attributes.Add(attributeData);
                 }
-                entityData.attributes.Add(attributeData);
             }
         }
 
@@ -53,12 +56,16 @@ namespace ProjectMagmaContentPipeline.Level
 
         private void ProcessDataNode(XmlElement dataNode, LevelData levelData)
         {
-            foreach (XmlElement entityNode in dataNode.ChildNodes)
+            foreach (XmlNode entityNode in dataNode.ChildNodes)
             {
-                EntityData entityData = new EntityData();
-                entityData.name = entityNode.GetAttribute("name");
-                ProcessEntityNode(entityNode, entityData);
-                levelData.entities.Add(entityData);
+                XmlElement entityElement = entityNode as XmlElement;
+                if (entityElement != null)
+                {
+                    EntityData entityData = new EntityData();
+                    entityData.name = entityElement.GetAttribute("name");
+                    ProcessEntityNode(entityElement, entityData);
+                    levelData.entities.Add(entityData);
+                }
             }
         }
 

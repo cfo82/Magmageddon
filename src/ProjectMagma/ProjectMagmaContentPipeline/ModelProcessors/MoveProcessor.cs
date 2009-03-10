@@ -34,10 +34,10 @@ namespace ProjectMagmaContentPipeline.ModelProcessors
             CalculateBoundingBox(input, context, bb);
 
             // first center the models (currently I think they are actually already centered...
-            /*Vector3 diff = Vector3.Zero - ((bb.max - bb.min) / 2.0f);
+            Vector3 diff = Vector3.Zero - (bb.min + ((bb.max - bb.min) / 2.0f));
             MoveModel(input, context, diff);
             bb.max += diff;
-            bb.min += diff;*/
+            bb.min += diff;
 
             // now that the models are centered scale them
             float scaleFactor = bb.max.X;

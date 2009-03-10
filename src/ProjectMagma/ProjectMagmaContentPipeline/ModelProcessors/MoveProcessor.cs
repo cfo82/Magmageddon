@@ -33,7 +33,7 @@ namespace ProjectMagmaContentPipeline.ModelProcessors
             BoundingBox bb = new BoundingBox();
             CalculateBoundingBox(input, context, bb);
 
-            // first center the models (currently I think they are actually already centered...
+            // first center the models (I think they are actually already centered...
             Vector3 diff = Vector3.Zero - (bb.min + ((bb.max - bb.min) / 2.0f));
             MoveModel(input, context, diff);
             bb.max += diff;

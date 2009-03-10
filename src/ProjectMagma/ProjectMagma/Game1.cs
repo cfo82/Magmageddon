@@ -47,6 +47,8 @@ namespace ProjectMagma
         Vector3 jetpackAcceleration;
         Vector3 jetpackSpeed = new Vector3(0,0,0);
         Vector3 gravityAcceleration = new Vector3(0, -120f, 0);
+        float maxJetpackSpeed = 100f;
+        float maxGravitySpeed = 100f;
         Entity playerIsland = null;
 
         Random rand;
@@ -156,18 +158,16 @@ namespace ProjectMagma
                 gamePadState.Buttons.A == ButtonState.Pressed ||
                 keyboardState.IsKeyDown(Keys.Space);
 
-            if (a_pressed)
-            {
+            if (a_pressed && jetpackSpeed.Length() < maxJetpackSpeed)
                 jetpackSpeed += jetpackAcceleration * dt;
-                playerPosition += jetpackSpeed * dt;
-            }
 
             // graviation
             if (playerIsland == null)
-            {
                 jetpackSpeed += gravityAcceleration * dt;
-                playerPosition += jetpackSpeed * dt;
-            }
+            else
+                jetpackSpeed = Vector3.Zero;
+
+            playerPosition += jetpackSpeed * dt;
 
             // moving
             playerPosition.X += GamePad.GetState(PlayerIndex.One).ThumbSticks.Left.X;

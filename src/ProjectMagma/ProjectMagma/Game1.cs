@@ -146,8 +146,8 @@ namespace ProjectMagma
             if(e.Name.StartsWith("island"))
             {
                 Vector3Attribute v = e.Attributes["position"] as Vector3Attribute;
-                //v.Vector = v.Vector + new Vector3(0,0,1.0f);
-                v.Vector.X += 0.1f;
+                v.Vector = v.Vector + new Vector3(0,0,1.0f);
+                //v.Vector.X += 0.1f;
             }
         }
 

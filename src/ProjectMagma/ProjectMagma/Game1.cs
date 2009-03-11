@@ -136,8 +136,8 @@ namespace ProjectMagma
                                                              aspectRatio, 10, 10000);
             // TODO: use this.Content to load your game content here
 
-            playerPosition = ((Vector3Attribute)simulation.EntityManager.Entities["player"].Attributes["position"]).Value;
-            jetpackAcceleration = ((Vector3Attribute)simulation.EntityManager.Entities["player"].Attributes["jetpackAcceleration"]).Value;
+            playerPosition = simulation.EntityManager.Entities["player"].GetVector3("position");
+            jetpackAcceleration = simulation.EntityManager.Entities["player"].GetVector3("jetpackAcceleration");
         }
 
         /// <summary>
@@ -230,7 +230,7 @@ namespace ProjectMagma
 
                 foreach(Entity pillar in pillars)
                 {
-                    Vector3 pillarXZ = (pillar.Attributes["position"] as Vector3Attribute).Value;
+                    Vector3 pillarXZ = pillar.GetVector3("position");
                     pillarXZ.Y = 0;
                     Vector3 dist = pillarXZ - islandXZ;
                     Vector3 pillarContribution;
@@ -246,7 +246,7 @@ namespace ProjectMagma
                     {
                         // island collided with this pillar
                         pillarContribution = -dist * pillarRepulsion;// *(pillarIslandCollisionRadius - dist.Length()) * 10.0f;
-                        if ((e.Attributes["collisionCount"] as IntAttribute).Value == 0)
+                        if (e.GetInt("collisionCount") == 0)
                         {
                             // perform elastic collision if its the first time
                             
@@ -258,7 +258,7 @@ namespace ProjectMagma
                             // in this case, the island is stuck. try gradually increasing
                             // the opposing force until the island manages to escape.
                             
-                            pillarContribution *= (e.Attributes["collisionCount"] as IntAttribute).Value;
+                            pillarContribution *= e.GetInt("collisionCount");
                             //Console.WriteLine("contrib " + pillarContribution);
                         }
                         collided = true;

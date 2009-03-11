@@ -50,6 +50,8 @@ namespace ProjectMagma
         int playerXAxisMultiplier = 1;
         int playerZAxisMultiplier = 2;
 
+        List<Entity> islands = new List<Entity>();
+
 
         float islandDamping = 0.001f;
         float islandRandomStrength = 1000.0f;
@@ -101,11 +103,15 @@ namespace ProjectMagma
             simulation.Initialize(Content, levelData);
 
             simulation.AttributeTemplateManager.AddAttributeTemplate("General.CollisionCount", typeof(IntAttribute).FullName);
+            simulation.AttributeTemplateManager.AddAttributeTemplate("General.PlayerResource", typeof(IntAttribute).FullName);
             foreach (Entity e in simulation.EntityManager.Entities.Values)
             {
                 if (e.Name.StartsWith("island"))
                 {
+                    e.AddAttribute(Content, "energy", "General.PlayerResource", "100");
+                    e.AddAttribute(Content, "health", "General.PlayerResource", "100");
                     e.AddAttribute(Content, "collisionCount", "General.CollisionCount", "0");
+                    islands.Add(e);
                 }
             }
 
@@ -362,6 +368,10 @@ namespace ProjectMagma
                     Draw(gameTime, mesh.Model);
                 }
             }
+
+            GraphicsDevice.RenderState.PointSize = 110;
+            GraphicsDevice.DrawUserPrimitives<VertexPositionColor>(PrimitiveType.PointList, new VertexPositionColor[] {
+                         new VertexPositionColor(playerPosition, Color.Red)}, 0, 1);
 
             base.Draw(gameTime);
         }

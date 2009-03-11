@@ -22,7 +22,7 @@ namespace ProjectMagma.Framework
             v.Z = float.Parse(splitArray[2]);
         }
 
-        public Vector3 Vector
+        public Vector3 Value
         {
             get
             {

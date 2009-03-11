@@ -136,8 +136,8 @@ namespace ProjectMagma
                                                              aspectRatio, 10, 10000);
             // TODO: use this.Content to load your game content here
 
-            playerPosition = ((Vector3Attribute)simulation.EntityManager.Entities["player"].Attributes["position"]).Vector;
-            jetpackAcceleration = ((Vector3Attribute)simulation.EntityManager.Entities["player"].Attributes["jetpackAcceleration"]).Vector;
+            playerPosition = ((Vector3Attribute)simulation.EntityManager.Entities["player"].Attributes["position"]).Value;
+            jetpackAcceleration = ((Vector3Attribute)simulation.EntityManager.Entities["player"].Attributes["jetpackAcceleration"]).Value;
         }
 
         /// <summary>
@@ -202,7 +202,7 @@ namespace ProjectMagma
             playerPosition.X += GamePad.GetState(PlayerIndex.One).ThumbSticks.Left.X * playerXAxisMultiplier;
             playerPosition.Z -= GamePad.GetState(PlayerIndex.One).ThumbSticks.Left.Y * playerZAxisMultiplier;
 
-            ((Vector3Attribute)simulation.EntityManager.Entities["player"].Attributes["position"]).Vector = playerPosition;
+            ((Vector3Attribute)simulation.EntityManager.Entities["player"].Attributes["position"]).Value = playerPosition;
         }
 
         protected void UpdateEntity(Entity e, float dt)
@@ -213,7 +213,7 @@ namespace ProjectMagma
                 Vector3Attribute pos = e.Attributes["position"] as Vector3Attribute;
                 Vector3Attribute vel = e.Attributes["velocity"] as Vector3Attribute;
                 Vector3Attribute acc = e.Attributes["acceleration"] as Vector3Attribute;
-                Vector3 v = vel.Vector;
+                Vector3 v = vel.Value;
 
                 // first force contribution: random               
                 Vector3 a = new Vector3(
@@ -222,14 +222,13 @@ namespace ProjectMagma
                     (float)rand.NextDouble()-0.5f
                 ) * islandRandomStrength;
 
-                // second force contribution: collision with pillars
-                Vector3 islandXZ = pos.Vector;
+                Vector3 islandXZ = pos.Value;
                 islandXZ.Y = 0;
                 bool collided = false;
 
                 foreach(Entity pillar in pillars)
                 {
-                    Vector3 pillarXZ = (pillar.Attributes["position"] as Vector3Attribute).Vector;
+                    Vector3 pillarXZ = (pillar.Attributes["position"] as Vector3Attribute).Value;
                     pillarXZ.Y = 0;
                     Vector3 dist = pillarXZ - islandXZ;
                     Vector3 pillarContribution;
@@ -271,18 +270,18 @@ namespace ProjectMagma
                     (e.Attributes["collisionCount"] as IntAttribute).Value++;
 
                 // compute final acceleration
-                acc.Vector = a;
+                acc.Value = a;
 
                 // compute final velocity
-                v = (v + dt * acc.Vector) * (1.0f - islandDamping);
+                v = (v + dt * acc.Value) * (1.0f - islandDamping);
                 float velocityLength = v.Length();
                 if(velocityLength > islandMaxVelocity) {
                     v *= islandMaxVelocity / velocityLength;
                 }
-                vel.Vector = v;
+                vel.Value = v;
 
                 // compute final position
-                pos.Vector = pos.Vector + dt * vel.Vector;
+                pos.Value = pos.Value + dt * vel.Value;
             }
         }
 
@@ -364,7 +363,7 @@ namespace ProjectMagma
                 Vector3Attribute scale = e.Attributes["scale"] as Vector3Attribute;
                 if (mesh != null && position != null && scale != null)
                 {
-                    world = Matrix.CreateScale(scale.Vector) * Matrix.CreateTranslation(position.Vector);
+                    world = Matrix.CreateScale(scale.Value) * Matrix.CreateTranslation(position.Value);
 
                     Draw(gameTime, mesh.Model);
                 }

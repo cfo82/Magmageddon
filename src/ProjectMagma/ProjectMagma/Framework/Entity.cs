@@ -1,7 +1,9 @@
 ﻿using System;
+using System.Diagnostics;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Content;
 using ProjectMagma.Framework.Attributes;
 using ProjectMagma.Shared.Serialization.LevelData;
@@ -29,6 +31,65 @@ namespace ProjectMagma.Framework
             Attribute attribute = attributeTemplate.CreateAttribute(name);
             attribute.Initialize(content, value);
             this.attributes.Add(attribute.Name, attribute);
+        }
+
+        public bool HasAttribute(string attribute)
+        {
+            return Attributes.ContainsKey(attribute);
+        }
+
+        public bool IsInt(string attribute)
+        {
+            Debug.Assert(HasAttribute(attribute));
+            return (Attributes[attribute] as IntAttribute) != null;
+        }
+
+        public bool IsVector2(string attribute)
+        {
+            Debug.Assert(HasAttribute(attribute));
+            return (Attributes[attribute] as Vector2Attribute) != null;
+        }
+
+        public bool IsVector3(string attribute)
+        {
+            Debug.Assert(HasAttribute(attribute));
+            return (Attributes[attribute] as Vector3Attribute) != null;
+        }
+
+        public int GetInt(string attribute)
+        {
+            Debug.Assert(HasAttribute(attribute));
+            Debug.Assert(IsInt(attribute));
+            return (Attributes[attribute] as IntAttribute).Value;
+        }
+
+        public Vector2 GetVector2(string attribute)
+        {
+            Debug.Assert(HasAttribute(attribute));
+            Debug.Assert(IsVector2(attribute));
+            return (Attributes[attribute] as Vector2Attribute).Value;
+        }
+
+        public Vector3 GetVector3(string attribute)
+        {
+            Debug.Assert(HasAttribute(attribute));
+            Debug.Assert(IsVector3(attribute));
+            return (Attributes[attribute] as Vector3Attribute).Value;
+        }
+
+        public void SetInt(string attribute, int value)
+        {
+            (Attributes[attribute] as IntAttribute).Value = value;
+        }
+
+        public void SetVector2(string attribute, Vector2 value)
+        {
+            (Attributes[attribute] as Vector2Attribute).Value = value;
+        }
+
+        public void SetVector3(string attribute, Vector3 value)
+        {
+            (Attributes[attribute] as Vector3Attribute).Value = value;
         }
 
         public string Name

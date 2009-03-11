@@ -21,11 +21,15 @@ namespace ProjectMagma.Framework
             v.Y = float.Parse(splitArray[1]);
         }
 
-        public Vector2 Vector
+        public Vector2 Value
         {
             get
             {
                 return v;
+            }
+            set
+            {
+                v = value;
             }
         }
 

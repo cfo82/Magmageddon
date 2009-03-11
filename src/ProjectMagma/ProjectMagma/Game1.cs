@@ -98,7 +98,7 @@ namespace ProjectMagma
 
             simulation.Initialize(Content, levelData);
 
-            simulation.AttributeTemplateManager.AddAttributeTemplate("General.CollisionCount", typeof(IntAttribute).Name);
+            simulation.AttributeTemplateManager.AddAttributeTemplate("General.CollisionCount", typeof(IntAttribute).FullName);
             foreach (Entity e in simulation.EntityManager.Entities.Values)
             {
                 if (e.Name.StartsWith("island"))

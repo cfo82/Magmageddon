@@ -123,10 +123,10 @@ namespace ProjectMagma
 
             float aspectRatio = (float)viewport.Width / (float)viewport.Height;
 
-            view = Matrix.CreateLookAt(new Vector3(0, 500, 1000),
+            view = Matrix.CreateLookAt(new Vector3(0, 850, 1400),
                                        new Vector3(0, 150, 0), Vector3.Up);
 
-            projection = Matrix.CreatePerspectiveFieldOfView(MathHelper.PiOver4,
+            projection = Matrix.CreatePerspectiveFieldOfView(MathHelper.PiOver4/2.0f,
                                                              aspectRatio, 10, 10000);
             // TODO: use this.Content to load your game content here
 

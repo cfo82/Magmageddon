@@ -49,9 +49,6 @@ namespace ProjectMagma
         int playerXAxisMultiplier = 1;
         int playerZAxisMultiplier = 2;
 
-        List<Entity> islands = new List<Entity>();
-
-
         float islandDamping = 0.001f;
         float islandRandomStrength = 1000.0f;
         float islandMaxVelocity = 200;
@@ -63,8 +60,6 @@ namespace ProjectMagma
 
         Random rand;
 
-        List<Entity> pillars;
-
         public Game1()
         {
             graphics = new GraphicsDeviceManager(this);
@@ -72,7 +67,9 @@ namespace ProjectMagma
             Content.RootDirectory = "Content";
 
             rand = new Random(485394);
-            pillars = new List<Entity>();
+            
+            Services.AddService(typeof(PillarManager), new PillarManager());
+            Services.AddService(typeof(IslandManager), new IslandManager());
         }
 
         /// <summary>
@@ -110,7 +107,7 @@ namespace ProjectMagma
                 {
                     e.AddAttribute(Content, "collisionCount", "General.CollisionCount", "0");
                     e.AddProperty("controller", new IslandControllerProperty());
-                    islands.Add(e);
+                    (Services.GetService(typeof(IslandManager)) as IslandManager).AddIsland(e);
                 }
             }
 
@@ -118,7 +115,7 @@ namespace ProjectMagma
             {
                 if (e.Name.StartsWith("pillar"))
                 {
-                    pillars.Add(e);
+                    (Services.GetService(typeof(PillarManager)) as PillarManager).AddPillar(e);
                 }
             }         
 
@@ -227,7 +224,7 @@ namespace ProjectMagma
                 islandXZ.Y = 0;
                 bool collided = false;
 
-                foreach(Entity pillar in pillars)
+                foreach (Entity pillar in (PillarManager)Services.GetService(typeof(PillarManager)))
                 {
                     Vector3 pillarXZ = pillar.GetVector3("position");
                     pillarXZ.Y = 0;

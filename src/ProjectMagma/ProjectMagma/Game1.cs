@@ -54,6 +54,16 @@ namespace ProjectMagma
         int playerXAxisMultiplier = 1;
         int playerZAxisMultiplier = 2;
 
+
+        float islandDamping = 0.001f;
+        float islandRandomStrength = 1000.0f;
+        float islandMaxVelocity = 200;
+        float pillarElasticity = 0.1f;
+        float pillarAttraction = 0.0005f;
+        float pillarRepulsion = 0.03f;
+        float pillarIslandCollisionRadius = 50.0f;
+
+
         Random rand;
 
         List<Entity> pillars;
@@ -103,7 +113,7 @@ namespace ProjectMagma
             {
                 if (e.Name.StartsWith("island"))
                 {
-                    e.AddAttribute(Content, "collsionCount", "General.CollisionCount", "0");
+                    e.AddAttribute(Content, "collisionCount", "General.CollisionCount", "0");
                 }
             }
 
@@ -199,60 +209,75 @@ namespace ProjectMagma
         {
             if(e.Name.StartsWith("island"))
             {
-                float damping = 0.001f;
-                float pillarElasticity = 0.1f;
-                float pillarAttraction = 0.002f;
-                float pillarRepulsion = 0.01f;
-                float randomStrength = 3000.0f;
-                float pillarIslandCollisionRadius = 50.0f;
-                float maxVelocity = 500;
-
+                // read out attributes
                 Vector3Attribute pos = e.Attributes["position"] as Vector3Attribute;
                 Vector3Attribute vel = e.Attributes["velocity"] as Vector3Attribute;
                 Vector3Attribute acc = e.Attributes["acceleration"] as Vector3Attribute;
+                Vector3 v = vel.Vector;
 
+                // first force contribution: random               
                 Vector3 a = new Vector3(
                     (float)rand.NextDouble()-0.5f,
                     0.0f,
                     (float)rand.NextDouble()-0.5f
-                ) * randomStrength;
+                ) * islandRandomStrength;
 
-                Vector3 v = vel.Vector;
-
+                // second force contribution: collision with pillars
                 Vector3 islandXZ = pos.Vector;
                 islandXZ.Y = 0;
+                bool collided = false;
 
                 foreach(Entity pillar in pillars)
                 {
                     Vector3 pillarXZ = (pillar.Attributes["position"] as Vector3Attribute).Vector;
                     pillarXZ.Y = 0;
-
                     Vector3 dist = pillarXZ - islandXZ;
                     Vector3 pillarContribution;
-                    Console.WriteLine(dist.Length());
+
+                    // collision test
                     if (dist.Length() > pillarIslandCollisionRadius)
                     {
+                        // no collision with this pillar
                         pillarContribution = dist;
                         pillarContribution *= pillarContribution.Length() * pillarAttraction;
-                        (pillar.Attributes["collisionCount"] as IntAttribute).Value = 0;
                     }
                     else
                     {
-                        (pillar.Attributes["collisionCount"] as IntAttribute).Value++;
-                        pillarContribution = -dist * pillarRepulsion * (pillarIslandCollisionRadius - dist.Length()) * 10.0f;
-                        v = -v * (1.0f - pillarElasticity);
+                        // island collided with this pillar
+                        pillarContribution = -dist * pillarRepulsion;// *(pillarIslandCollisionRadius - dist.Length()) * 10.0f;
+                        if ((e.Attributes["collisionCount"] as IntAttribute).Value == 0)
+                        {
+                            // perform elastic collision if its the first time
+                            
+                            v = -v * (1.0f - pillarElasticity);
+                            //Console.WriteLine("switching dir " + (e.Attributes["collisionCount"] as IntAttribute).Value);// + " " + rand.NextDouble());
+                        }
+                        else
+                        {
+                            // in this case, the island is stuck. try gradually increasing
+                            // the opposing force until the island manages to escape.
+                            
+                            pillarContribution *= (e.Attributes["collisionCount"] as IntAttribute).Value;
+                            //Console.WriteLine("contrib " + pillarContribution);
+                        }
+                        collided = true;
                     }
                     a += pillarContribution;
                 }
+
+                if (!collided)
+                    (e.Attributes["collisionCount"] as IntAttribute).Value = 0;
+                else
+                    (e.Attributes["collisionCount"] as IntAttribute).Value++;
 
                 // compute final acceleration
                 acc.Vector = a;
 
                 // compute final velocity
-                v = (v + dt * acc.Vector) * (1.0f - damping);
+                v = (v + dt * acc.Vector) * (1.0f - islandDamping);
                 float velocityLength = v.Length();
-                if(velocityLength > maxVelocity) {
-                    v *= maxVelocity / velocityLength;
+                if(velocityLength > islandMaxVelocity) {
+                    v *= islandMaxVelocity / velocityLength;
                 }
                 vel.Vector = v;
 

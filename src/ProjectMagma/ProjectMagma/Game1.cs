@@ -222,6 +222,8 @@ namespace ProjectMagma
                     (float)rand.NextDouble()-0.5f
                 ) * islandRandomStrength;
 
+
+                // second force contribution: collision with pillars
                 Vector3 islandXZ = pos.Value;
                 islandXZ.Y = 0;
                 bool collided = false;
@@ -233,7 +235,7 @@ namespace ProjectMagma
                     Vector3 dist = pillarXZ - islandXZ;
                     Vector3 pillarContribution;
 
-                    // collision test
+                    // collision detection
                     if (dist.Length() > pillarIslandCollisionRadius)
                     {
                         // no collision with this pillar

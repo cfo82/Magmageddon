@@ -98,6 +98,15 @@ namespace ProjectMagma
 
             simulation.Initialize(Content, levelData);
 
+            simulation.AttributeTemplateManager.AddAttributeTemplate("General.CollisionCount", typeof(IntTemplate).Name);
+            foreach (Entity e in simulation.EntityManager.Entities.Values)
+            {
+                if (e.Name.StartsWith("island"))
+                {
+                    e.AddAttribute(Content, "collsionCount", "General.CollisionCount", "0");
+                }
+            }
+
             foreach (Entity e in simulation.EntityManager.Entities.Values)
             {
                 if (e.Name.StartsWith("pillar"))

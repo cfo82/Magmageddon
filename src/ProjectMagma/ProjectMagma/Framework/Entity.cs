@@ -19,10 +19,15 @@ namespace ProjectMagma.Framework
 
         public void AddAttribute(ContentManager content, AttributeData attributeData)
         {
+            AddAttribute(content, attributeData.name, attributeData.template, attributeData.value);
+        }
+
+        public void AddAttribute(ContentManager content, string name, string template, string value)
+        {
             AttributeTemplateManager attributeTemplateManager = entityManager.Simulation.AttributeTemplateManager;
-            AttributeTemplate attributeTemplate = attributeTemplateManager.GetAttributeTemplate(attributeData.template);
-            Attribute attribute = attributeTemplate.CreateAttribute(attributeData.name);
-            attribute.Initialize(content, attributeData.value);
+            AttributeTemplate attributeTemplate = attributeTemplateManager.GetAttributeTemplate(template);
+            Attribute attribute = attributeTemplate.CreateAttribute(name);
+            attribute.Initialize(content, value);
             this.attributes.Add(attribute.Name, attribute);
         }
 

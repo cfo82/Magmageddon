@@ -87,6 +87,7 @@
     <Compile Include="Framework\Attributes\Attribute.cs" />
     <Compile Include="Framework\Attributes\AttributeTemplateManager.cs" />
     <Compile Include="Framework\Attributes\AttributeTemplate.cs" />
+    <Compile Include="Framework\Attributes\IntTemplate.cs" />
     <Compile Include="Framework\Attributes\Vector3Attribute.cs" />
     <Compile Include="Framework\Attributes\MeshAttribute.cs" />
     <Compile Include="Framework\Entity.cs" />

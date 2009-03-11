@@ -31,10 +31,6 @@ namespace ProjectMagma
     {
         GraphicsDeviceManager graphics;
         SpriteBatch spriteBatch;
-        Model islandPrimitive;
-        Model lavaPrimitive;
-        Model pillarPrimitive;
-        Model playerPrimitive;
         Matrix world;
         Matrix view;
         Matrix projection;
@@ -99,10 +95,6 @@ namespace ProjectMagma
         {
             // Create a new SpriteBatch, which can be used to draw textures.
             spriteBatch = new SpriteBatch(GraphicsDevice);
-            islandPrimitive = Content.Load<Model>("Models/island_primitive");
-            lavaPrimitive = Content.Load<Model>("Models/lava_primitive");
-            pillarPrimitive = Content.Load<Model>("Models/pillar_primitive");
-            playerPrimitive = Content.Load<Model>("Models/player_primitive");
             
             levelData = Content.Load<LevelData>("Level/TestLevel");
 

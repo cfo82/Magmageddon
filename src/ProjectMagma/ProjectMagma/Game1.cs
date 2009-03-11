@@ -98,7 +98,7 @@ namespace ProjectMagma
 
             simulation.Initialize(Content, levelData);
 
-            simulation.AttributeTemplateManager.AddAttributeTemplate("General.CollisionCount", typeof(IntTemplate).Name);
+            simulation.AttributeTemplateManager.AddAttributeTemplate("General.CollisionCount", typeof(IntAttribute).Name);
             foreach (Entity e in simulation.EntityManager.Entities.Values)
             {
                 if (e.Name.StartsWith("island"))
@@ -234,9 +234,11 @@ namespace ProjectMagma
                     {
                         pillarContribution = dist;
                         pillarContribution *= pillarContribution.Length() * pillarAttraction;
+                        (pillar.Attributes["collisionCount"] as IntAttribute).Value = 0;
                     }
                     else
                     {
+                        (pillar.Attributes["collisionCount"] as IntAttribute).Value++;
                         pillarContribution = -dist * pillarRepulsion * (pillarIslandCollisionRadius - dist.Length()) * 10.0f;
                         v = -v * (1.0f - pillarElasticity);
                     }

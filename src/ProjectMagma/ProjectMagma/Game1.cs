@@ -57,6 +57,8 @@ namespace ProjectMagma
         float pillarRepulsion = 0.03f;
         float pillarIslandCollisionRadius = 50.0f;
 
+        PillarManager pillarManager;
+        IslandManager islandManager;
 
         Random rand;
 
@@ -67,9 +69,9 @@ namespace ProjectMagma
             Content.RootDirectory = "Content";
 
             rand = new Random(485394);
-            
-            Services.AddService(typeof(PillarManager), new PillarManager());
-            Services.AddService(typeof(IslandManager), new IslandManager());
+
+            pillarManager = new PillarManager();
+            islandManager = new IslandManager();
         }
 
         /// <summary>
@@ -107,7 +109,7 @@ namespace ProjectMagma
                 {
                     e.AddAttribute(Content, "collisionCount", "General.CollisionCount", "0");
                     e.AddProperty("controller", new IslandControllerProperty());
-                    (Services.GetService(typeof(IslandManager)) as IslandManager).AddIsland(e);
+                    islandManager.AddIsland(e);
                 }
             }
 
@@ -115,7 +117,7 @@ namespace ProjectMagma
             {
                 if (e.Name.StartsWith("pillar"))
                 {
-                    (Services.GetService(typeof(PillarManager)) as PillarManager).AddPillar(e);
+                    pillarManager.AddPillar(e);
                 }
             }         
 
@@ -224,7 +226,7 @@ namespace ProjectMagma
                 islandXZ.Y = 0;
                 bool collided = false;
 
-                foreach (Entity pillar in (PillarManager)Services.GetService(typeof(PillarManager)))
+                foreach (Entity pillar in pillarManager)
                 {
                     Vector3 pillarXZ = pillar.GetVector3("position");
                     pillarXZ.Y = 0;

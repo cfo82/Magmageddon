@@ -17,7 +17,20 @@ namespace ProjectMagma.Framework
             this.entityManager = entityManager;
             this.name = name;
             this.attributes = new Dictionary<string, Attribute>();
+            this.properties = new Dictionary<string, Property>();
         }
+
+        public event UpdateHandler Update;
+
+        public void OnUpdate(GameTime gameTime)
+        {
+            if (Update != null)
+            {
+                Update(this, gameTime);
+            }
+        }
+
+        #region Attribute Handling 
 
         public void AddAttribute(ContentManager content, AttributeData attributeData)
         {
@@ -92,6 +105,36 @@ namespace ProjectMagma.Framework
             (Attributes[attribute] as Vector3Attribute).Value = value;
         }
 
+        #endregion
+
+        #region Property Handling
+
+        public void AddProperty(string name, Property property)
+        {
+            if (properties.ContainsKey(name))
+            {
+                // TODO: duplicate property exception
+                properties.Add(name, null); // throws exception
+            }
+            else
+            {
+                properties.Add(name, property);
+                property.OnAttached(this);
+            }
+        }
+
+        public void RemoveProperty(string name)
+        {
+            if (properties.ContainsKey(name))
+            {
+                Property property = properties[name];
+                property.OnDetached(this);
+                properties.Remove(name);
+            }
+        }
+
+        #endregion
+
         public string Name
         {
             get
@@ -111,5 +154,6 @@ namespace ProjectMagma.Framework
         private EntityManager entityManager;
         private string name;
         private Dictionary<string, Attribute> attributes;
+        private Dictionary<string, Property> properties;
     }
 }

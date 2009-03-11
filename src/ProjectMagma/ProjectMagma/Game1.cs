@@ -44,7 +44,6 @@ namespace ProjectMagma
         Vector3 jetpackSpeed = new Vector3(0,0,0);
         Vector3 gravityAcceleration = new Vector3(0, -120f, 0);
         float maxJetpackSpeed = 100f;
-        float maxGravitySpeed = 100f;
         Entity playerIsland = null;
 
         int playerXAxisMultiplier = 1;
@@ -110,6 +109,7 @@ namespace ProjectMagma
                 if (e.Name.StartsWith("island"))
                 {
                     e.AddAttribute(Content, "collisionCount", "General.CollisionCount", "0");
+                    e.AddProperty("controller", new IslandControllerProperty());
                     islands.Add(e);
                 }
             }
@@ -162,12 +162,12 @@ namespace ProjectMagma
             if (GamePad.GetState(PlayerIndex.One).Buttons.Back == ButtonState.Pressed)
                 this.Exit();
 
-            // TODO: Add your update logic here
-            float time = (float)gameTime.TotalGameTime.TotalSeconds;
+            foreach (Entity e in simulation.EntityManager.Entities.Values)
+            {
+                e.OnUpdate(gameTime);
+            }
 
             UpdatePlayer(gameTime);
-
-            world = Matrix.CreateRotationY(time * 0.1f);
 
             foreach (Entity e in simulation.EntityManager.Entities.Values)
             {
@@ -204,7 +204,7 @@ namespace ProjectMagma
             playerPosition.X += GamePad.GetState(PlayerIndex.One).ThumbSticks.Left.X * playerXAxisMultiplier;
             playerPosition.Z -= GamePad.GetState(PlayerIndex.One).ThumbSticks.Left.Y * playerZAxisMultiplier;
 
-            ((Vector3Attribute)simulation.EntityManager.Entities["player"].Attributes["position"]).Value = playerPosition;
+            simulation.EntityManager.Entities["player"].SetVector3("position", playerPosition);
         }
 
         protected void UpdateEntity(Entity e, float dt)
@@ -212,10 +212,7 @@ namespace ProjectMagma
             if(e.Name.StartsWith("island"))
             {
                 // read out attributes
-                Vector3Attribute pos = e.Attributes["position"] as Vector3Attribute;
-                Vector3Attribute vel = e.Attributes["velocity"] as Vector3Attribute;
-                Vector3Attribute acc = e.Attributes["acceleration"] as Vector3Attribute;
-                Vector3 v = vel.Value;
+                Vector3 v = e.GetVector3("velocity");
 
                 // first force contribution: random               
                 Vector3 a = new Vector3(
@@ -226,7 +223,7 @@ namespace ProjectMagma
 
 
                 // second force contribution: collision with pillars
-                Vector3 islandXZ = pos.Value;
+                Vector3 islandXZ = e.GetVector3("position");
                 islandXZ.Y = 0;
                 bool collided = false;
 
@@ -269,23 +266,27 @@ namespace ProjectMagma
                 }
 
                 if (!collided)
-                    (e.Attributes["collisionCount"] as IntAttribute).Value = 0;
+                {
+                    e.SetInt("collisionCount", 0);
+                }
                 else
-                    (e.Attributes["collisionCount"] as IntAttribute).Value++;
+                {
+                    e.SetInt("collisionCount", e.GetInt("collisionCount") + 1);
+                }
 
                 // compute final acceleration
-                acc.Value = a;
+                e.SetVector3("acceleration", a);
 
                 // compute final velocity
-                v = (v + dt * acc.Value) * (1.0f - islandDamping);
+                v = (v + dt * e.GetVector3("acceleration")) * (1.0f - islandDamping);
                 float velocityLength = v.Length();
                 if(velocityLength > islandMaxVelocity) {
                     v *= islandMaxVelocity / velocityLength;
                 }
-                vel.Value = v;
+                e.SetVector3("velocity", v);
 
                 // compute final position
-                pos.Value = pos.Value + dt * vel.Value;
+                e.SetVector3("position", e.GetVector3("position") + dt * e.GetVector3("velocity"));
             }
         }
 
@@ -355,22 +356,24 @@ namespace ProjectMagma
 
             foreach (Entity e in simulation.EntityManager.Entities.Values)
             {
-                if (!e.Attributes.ContainsKey("mesh") ||
-                    !e.Attributes.ContainsKey("position") ||
-                    !e.Attributes.ContainsKey("scale"))
+                if (!e.HasAttribute("mesh") || (e.Attributes["mesh"] as MeshAttribute) == null ||
+                    !e.HasAttribute("position") || !e.IsVector3("position") ||
+                    (e.HasAttribute("scale") && !e.IsVector3("scale"))
+                    )
                 {
                     continue;
                 }
 
-                MeshAttribute mesh = e.Attributes["mesh"] as MeshAttribute;
-                Vector3Attribute position = e.Attributes["position"] as Vector3Attribute;
-                Vector3Attribute scale = e.Attributes["scale"] as Vector3Attribute;
-                if (mesh != null && position != null && scale != null)
+                Model model = (e.Attributes["mesh"] as MeshAttribute).Model;
+                Vector3 position = e.GetVector3("position");
+                Vector3 scale = new Vector3(1, 1, 1);
+                if (e.HasAttribute("scale"))
                 {
-                    world = Matrix.CreateScale(scale.Value) * Matrix.CreateTranslation(position.Value);
-
-                    Draw(gameTime, mesh.Model);
+                    scale = e.GetVector3("scale");
                 }
+
+                world = Matrix.CreateScale(scale) * Matrix.CreateTranslation(position);
+                Draw(gameTime, model);
             }
 
             GraphicsDevice.RenderState.PointSize = 110;

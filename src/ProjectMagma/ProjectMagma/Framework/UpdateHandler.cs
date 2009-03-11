@@ -2,12 +2,9 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using Microsoft.Xna.Framework;
 
 namespace ProjectMagma.Framework
 {
-    public interface Property
-    {
-        void OnAttached(Entity entity);
-        void OnDetached(Entity entity);
-    }
+    public delegate void UpdateHandler(Entity sender, GameTime gameTime);
 }

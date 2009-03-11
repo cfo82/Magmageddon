@@ -97,6 +97,7 @@
     <Compile Include="Framework\Properties\Property.cs" />
     <Compile Include="Framework\Properties\PropertyTemplate.cs" />
     <Compile Include="Framework\Properties\PropertyClassification.cs" />
+    <Compile Include="Framework\UpdateHandler.cs" />
     <Compile Include="Framework\Simulation.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Program.cs" />

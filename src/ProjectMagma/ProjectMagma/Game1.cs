@@ -190,6 +190,14 @@ namespace ProjectMagma
         {
             if(e.Name.StartsWith("island"))
             {
+                float damping = 0.001f;
+                float pillarElasticity = 0.1f;
+                float pillarAttraction = 0.002f;
+                float pillarRepulsion = 0.01f;
+                float randomStrength = 3000.0f;
+                float pillarIslandCollisionRadius = 50.0f;
+                float maxVelocity = 500;
+
                 Vector3Attribute pos = e.Attributes["position"] as Vector3Attribute;
                 Vector3Attribute vel = e.Attributes["velocity"] as Vector3Attribute;
                 Vector3Attribute acc = e.Attributes["acceleration"] as Vector3Attribute;
@@ -198,29 +206,47 @@ namespace ProjectMagma
                     (float)rand.NextDouble()-0.5f,
                     0.0f,
                     (float)rand.NextDouble()-0.5f
-                )*3.0f;
+                ) * randomStrength;
+
+                Vector3 v = vel.Vector;
+
+                Vector3 islandXZ = pos.Vector;
+                islandXZ.Y = 0;
 
                 foreach(Entity pillar in pillars)
                 {
-                    Vector3 dist = (pillar.Attributes["position"] as Vector3Attribute).Vector - pos.Vector;
+                    Vector3 pillarXZ = (pillar.Attributes["position"] as Vector3Attribute).Vector;
+                    pillarXZ.Y = 0;
+
+                    Vector3 dist = pillarXZ - islandXZ;
                     Vector3 pillarContribution;
-                    if (dist.Length() > 20.0f)
+                    Console.WriteLine(dist.Length());
+                    if (dist.Length() > pillarIslandCollisionRadius)
                     {
-                        pillarContribution = dist * 0.3f;
-                    } else {
-                        pillarContribution = -dist * 3f;
+                        pillarContribution = dist;
+                        pillarContribution *= pillarContribution.Length() * pillarAttraction;
                     }
-                    pillarContribution.Y = 0;
+                    else
+                    {
+                        pillarContribution = -dist * pillarRepulsion * (pillarIslandCollisionRadius - dist.Length()) * 10.0f;
+                        v = -v * (1.0f - pillarElasticity);
+                    }
                     a += pillarContribution;
                 }
 
-                float damping = 0.001f;
-
+                // compute final acceleration
                 acc.Vector = a;
-                vel.Vector = (vel.Vector + dt * acc.Vector) * (1.0f - damping);
-                pos.Vector = pos.Vector + dt * vel.Vector;
 
-                //v.Vector.X += 0.1f;
+                // compute final velocity
+                v = (v + dt * acc.Vector) * (1.0f - damping);
+                float velocityLength = v.Length();
+                if(velocityLength > maxVelocity) {
+                    v *= maxVelocity / velocityLength;
+                }
+                vel.Vector = v;
+
+                // compute final position
+                pos.Vector = pos.Vector + dt * vel.Vector;
             }
         }
 

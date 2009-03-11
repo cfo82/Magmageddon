@@ -27,42 +27,35 @@ namespace ProjectMagma
     /// <summary>
     /// This is the main type for your game
     /// </summary>
-    public class Game1 : Microsoft.Xna.Framework.Game
+    public class Game : Microsoft.Xna.Framework.Game
     {
-        GraphicsDeviceManager graphics;
-        SpriteBatch spriteBatch;
-        Matrix world;
-        Matrix view;
-        Matrix projection;
+        private GraphicsDeviceManager graphics;
+        private SpriteBatch spriteBatch;
+        private Matrix world;
+        private Matrix view;
+        private Matrix projection;
 
-        LevelData levelData;
+        private LevelData levelData;
 
-        Simulation simulation;
+        private Simulation simulation;
 
-        Vector3 playerPosition;
-        Vector3 jetpackAcceleration;
-        Vector3 jetpackSpeed = new Vector3(0,0,0);
-        Vector3 gravityAcceleration = new Vector3(0, -120f, 0);
-        float maxJetpackSpeed = 100f;
-        Entity playerIsland = null;
+        private Vector3 playerPosition;
+        private Vector3 jetpackAcceleration;
+        private Vector3 jetpackSpeed = new Vector3(0, 0, 0);
+        private Vector3 gravityAcceleration = new Vector3(0, -120f, 0);
+        private float maxJetpackSpeed = 100f;
+        private Entity playerIsland = null;
 
-        int playerXAxisMultiplier = 1;
-        int playerZAxisMultiplier = 2;
+        private int playerXAxisMultiplier = 1;
+        private int playerZAxisMultiplier = 2;
 
-        float islandDamping = 0.001f;
-        float islandRandomStrength = 1000.0f;
-        float islandMaxVelocity = 200;
-        float pillarElasticity = 0.1f;
-        float pillarAttraction = 0.0005f;
-        float pillarRepulsion = 0.03f;
-        float pillarIslandCollisionRadius = 50.0f;
+        private PillarManager pillarManager;
+        private IslandManager islandManager;
 
-        PillarManager pillarManager;
-        IslandManager islandManager;
+        private Random rand;
+        private static Game instance;
 
-        Random rand;
-
-        public Game1()
+        private Game()
         {
             graphics = new GraphicsDeviceManager(this);
             simulation = new Simulation();
@@ -72,6 +65,43 @@ namespace ProjectMagma
 
             pillarManager = new PillarManager();
             islandManager = new IslandManager();
+        }
+
+        /// <summary>
+        /// The main entry point for the application.
+        /// </summary>
+        static void Main(string[] args)
+        {
+            // we can use hardware threads 1, 3, 4, 5
+            //  1 is running on core 1 alongside something reserved to xna
+            //  3 same thing on core 2
+            //  4, 5 run on core 3 and are freely available for us
+
+            // I am not sure if we have to do the rendering using the thread that created
+            // the direct3d device. This would be something to clarify in the future. As for
+            // now we should keep to rendering on the main thread and move everything else to
+            // the other cores.
+
+            // another thing to clarify would be on which thread the Main-methode is running (
+            // and if the SetProcessorAffinity works... It could very well be that this thread is
+            // already locked to some hardware thread.
+#if XBOX
+            Thread.CurrentThread.SetProcessorAffinity(new int[] { 1 });
+#endif
+
+            using (Game game = new Game())
+            {
+                Game.instance = game;
+
+                game.Run();
+                
+                Game.instance = null;
+            }
+        }
+
+        public static Game GetInstance()
+        {
+            return Game.instance;
         }
 
         /// <summary>
@@ -168,12 +198,6 @@ namespace ProjectMagma
 
             UpdatePlayer(gameTime);
 
-            foreach (Entity e in simulation.EntityManager.Entities.Values)
-            {
-                int dt = gameTime.ElapsedGameTime.Milliseconds;
-                UpdateEntity(e, ((float)dt)/1000.0f);
-            }
-
             base.Update(gameTime);
         }
 
@@ -204,89 +228,6 @@ namespace ProjectMagma
             playerPosition.Z -= GamePad.GetState(PlayerIndex.One).ThumbSticks.Left.Y * playerZAxisMultiplier;
 
             simulation.EntityManager.Entities["player"].SetVector3("position", playerPosition);
-        }
-
-        protected void UpdateEntity(Entity e, float dt)
-        {
-            if(e.Name.StartsWith("island"))
-            {
-                // read out attributes
-                Vector3 v = e.GetVector3("velocity");
-
-                // first force contribution: random               
-                Vector3 a = new Vector3(
-                    (float)rand.NextDouble()-0.5f,
-                    0.0f,
-                    (float)rand.NextDouble()-0.5f
-                ) * islandRandomStrength;
-
-
-                // second force contribution: collision with pillars
-                Vector3 islandXZ = e.GetVector3("position");
-                islandXZ.Y = 0;
-                bool collided = false;
-
-                foreach (Entity pillar in pillarManager)
-                {
-                    Vector3 pillarXZ = pillar.GetVector3("position");
-                    pillarXZ.Y = 0;
-                    Vector3 dist = pillarXZ - islandXZ;
-                    Vector3 pillarContribution;
-
-                    // collision detection
-                    if (dist.Length() > pillarIslandCollisionRadius)
-                    {
-                        // no collision with this pillar
-                        pillarContribution = dist;
-                        pillarContribution *= pillarContribution.Length() * pillarAttraction;
-                    }
-                    else
-                    {
-                        // island collided with this pillar
-                        pillarContribution = -dist * pillarRepulsion;// *(pillarIslandCollisionRadius - dist.Length()) * 10.0f;
-                        if (e.GetInt("collisionCount") == 0)
-                        {
-                            // perform elastic collision if its the first time
-                            
-                            v = -v * (1.0f - pillarElasticity);
-                            //Console.WriteLine("switching dir " + (e.Attributes["collisionCount"] as IntAttribute).Value);// + " " + rand.NextDouble());
-                        }
-                        else
-                        {
-                            // in this case, the island is stuck. try gradually increasing
-                            // the opposing force until the island manages to escape.
-                            
-                            pillarContribution *= e.GetInt("collisionCount");
-                            //Console.WriteLine("contrib " + pillarContribution);
-                        }
-                        collided = true;
-                    }
-                    a += pillarContribution;
-                }
-
-                if (!collided)
-                {
-                    e.SetInt("collisionCount", 0);
-                }
-                else
-                {
-                    e.SetInt("collisionCount", e.GetInt("collisionCount") + 1);
-                }
-
-                // compute final acceleration
-                e.SetVector3("acceleration", a);
-
-                // compute final velocity
-                v = (v + dt * e.GetVector3("acceleration")) * (1.0f - islandDamping);
-                float velocityLength = v.Length();
-                if(velocityLength > islandMaxVelocity) {
-                    v *= islandMaxVelocity / velocityLength;
-                }
-                e.SetVector3("velocity", v);
-
-                // compute final position
-                e.SetVector3("position", e.GetVector3("position") + dt * e.GetVector3("velocity"));
-            }
         }
 
         protected void Draw(GameTime gameTime, Model model)
@@ -380,6 +321,14 @@ namespace ProjectMagma
                          new VertexPositionColor(playerPosition, Color.Red)}, 0, 1);
 
             base.Draw(gameTime);
+        }
+
+        public PillarManager PillarManager
+        {
+            get
+            {
+                return pillarManager;
+            }
         }
     }
 }

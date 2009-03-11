@@ -104,12 +104,11 @@ namespace ProjectMagma
 
             simulation.AttributeTemplateManager.AddAttributeTemplate("General.CollisionCount", typeof(IntAttribute).FullName);
             simulation.AttributeTemplateManager.AddAttributeTemplate("General.PlayerResource", typeof(IntAttribute).FullName);
+           
             foreach (Entity e in simulation.EntityManager.Entities.Values)
             {
                 if (e.Name.StartsWith("island"))
                 {
-                    e.AddAttribute(Content, "energy", "General.PlayerResource", "100");
-                    e.AddAttribute(Content, "health", "General.PlayerResource", "100");
                     e.AddAttribute(Content, "collisionCount", "General.CollisionCount", "0");
                     islands.Add(e);
                 }
@@ -134,8 +133,13 @@ namespace ProjectMagma
                                                              aspectRatio, 10, 10000);
             // TODO: use this.Content to load your game content here
 
-            playerPosition = simulation.EntityManager.Entities["player"].GetVector3("position");
-            jetpackAcceleration = simulation.EntityManager.Entities["player"].GetVector3("jetpackAcceleration");
+            Entity player = simulation.EntityManager.Entities["player"];
+
+            playerPosition = player.GetVector3("position");
+            jetpackAcceleration = player.GetVector3("jetpackAcceleration");
+
+            player.AddAttribute(Content, "energy", "General.PlayerResource", "100");
+            player.AddAttribute(Content, "health", "General.PlayerResource", "100");            
         }
 
         /// <summary>

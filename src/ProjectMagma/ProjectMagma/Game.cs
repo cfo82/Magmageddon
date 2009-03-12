@@ -239,13 +239,6 @@ namespace ProjectMagma
             {
                 e.OnDraw(gameTime);
             }
-            // TODO: Add your drawing code here
-            //Draw(gameTime, islandPrimitive);
-            //world = Matrix.Identity;
-            //world = Matrix.Identity;
-            //Draw(gameTime, lavaPrimitive);
-            //Draw(gameTime, pillarPrimitive);
-            //Draw(gameTime, playerPrimitive);
 
             base.Draw(gameTime);
         }

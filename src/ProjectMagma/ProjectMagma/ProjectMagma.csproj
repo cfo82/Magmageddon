@@ -97,7 +97,6 @@
     <Compile Include="Framework\Properties\IslandControllerProperty.cs" />
     <Compile Include="Framework\Properties\Property.cs" />
     <Compile Include="Framework\Properties\PropertyTemplate.cs" />
-    <Compile Include="Framework\Properties\PropertyClassification.cs" />
     <Compile Include="Framework\UpdateHandler.cs" />
     <Compile Include="IslandManager.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

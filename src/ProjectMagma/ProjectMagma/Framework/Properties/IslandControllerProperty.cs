@@ -6,7 +6,6 @@ using Microsoft.Xna.Framework;
 
 namespace ProjectMagma.Framework
 {
-    [PropertyClassification("simulation")]
     public class IslandControllerProperty : Property
     {
         public IslandControllerProperty()

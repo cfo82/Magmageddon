@@ -44,7 +44,6 @@ namespace ProjectMagma
         private int playerXAxisMultiplier = 1;
         private int playerZAxisMultiplier = 2;
 
-        protected AttributeTemplateManager attributeTemplateManager;
         protected EntityManager entityManager;
         private PillarManager pillarManager;
         private IslandManager islandManager;
@@ -59,7 +58,6 @@ namespace ProjectMagma
 
             rand = new Random(485394);
 
-            attributeTemplateManager = new AttributeTemplateManager();
             entityManager = new EntityManager();
             pillarManager = new PillarManager();
             islandManager = new IslandManager();
@@ -126,24 +124,16 @@ namespace ProjectMagma
             
             LevelData levelData = Content.Load<LevelData>("Level/TestLevel");
 
-            foreach (AttributeTemplateData attributeTemplateData in levelData.attributeTemplates)
-            {
-                attributeTemplateManager.AddAttributeTemplate(attributeTemplateData);
-            }
             foreach (EntityData entityData in levelData.entities)
             {
                 entityManager.AddEntity(Content, entityData);
             }
-
-            attributeTemplateManager.AddAttributeTemplate("General.CollisionCount", typeof(IntAttribute).FullName);
-            attributeTemplateManager.AddAttributeTemplate("General.PlayerResource", typeof(IntAttribute).FullName);
            
             foreach (Entity e in entityManager)
             {
                 if (e.Name.StartsWith("island"))
                 {
-                    e.AddAttribute(Content, "collisionCount", "General.CollisionCount", "0");
-                    e.AddProperty("controller", new IslandControllerProperty());
+                    e.AddAttribute(Content, "collisionCount", "int", "0");
                     islandManager.AddIsland(e);
                 }
             }
@@ -172,8 +162,8 @@ namespace ProjectMagma
             playerPosition = player.GetVector3("position");
             jetpackAcceleration = player.GetVector3("jetpackAcceleration");
 
-            player.AddAttribute(Content, "energy", "General.PlayerResource", "100");
-            player.AddAttribute(Content, "health", "General.PlayerResource", "100");            
+            player.AddAttribute(Content, "energy", "int", "100");
+            player.AddAttribute(Content, "health", "int", "100");            
         }
 
         /// <summary>
@@ -326,14 +316,6 @@ namespace ProjectMagma
                          new VertexPositionColor(playerPosition, Color.Red)}, 0, 1);
 
             base.Draw(gameTime);
-        }
-
-        public AttributeTemplateManager AttributeTemplateManager
-        {
-            get
-            {
-                return attributeTemplateManager;
-            }
         }
 
         public PillarManager PillarManager

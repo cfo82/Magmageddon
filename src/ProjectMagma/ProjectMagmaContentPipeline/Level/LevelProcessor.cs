@@ -14,21 +14,13 @@ namespace ProjectMagmaContentPipeline.Level
         private XmlElement GetChild(XmlElement parent, String childTag)
         {
             XmlNodeList list = parent.GetElementsByTagName(childTag);
-            return list[0] as XmlElement;
-        }
-
-        private void ProcessAttributeTemplatesNode(XmlElement attributeTemplatesNode, LevelData levelData)
-        {
-            foreach (XmlNode attributeTemplateNode in attributeTemplatesNode.ChildNodes)
+            if (list.Count == 0)
             {
-                XmlElement attributeTemplateElement = attributeTemplateNode as XmlElement;
-                if (attributeTemplateElement != null)
-                {
-                    AttributeTemplateData attributeTemplateData = new AttributeTemplateData();
-                    attributeTemplateData.name = attributeTemplateElement.GetAttribute("name");
-                    attributeTemplateData.type = attributeTemplateElement.GetAttribute("type");
-                    levelData.attributeTemplates.Add(attributeTemplateData);
-                }
+                return null;
+            }
+            else
+            {
+                return list[0] as XmlElement;
             }
         }
 
@@ -48,15 +40,43 @@ namespace ProjectMagmaContentPipeline.Level
             }
         }
 
+        private void ProcessPropertiesNode(XmlElement propertiesNode, EntityData entityData)
+        {
+            foreach (XmlNode propertyNode in propertiesNode.ChildNodes)
+            {
+                XmlElement propertyElement = propertyNode as XmlElement;
+                if (propertyElement != null)
+                {
+                    PropertyData propertyData = new PropertyData();
+                    propertyData.name = propertyElement.GetAttribute("name");
+                    propertyData.type = propertyElement.GetAttribute("type");
+                    entityData.properties.Add(propertyData);
+                }
+            }
+        }
+
         private void ProcessEntityNode(XmlElement entityNode, EntityData entityData)
         {
             XmlElement attributesNode = GetChild(entityNode, "Attributes");
-            ProcessAttributesNode(attributesNode, entityData);
+            if (attributesNode != null)
+            {
+                ProcessAttributesNode(attributesNode, entityData);
+            }
+            XmlElement propertiesNode = GetChild(entityNode, "Properties");
+            if (propertiesNode != null)
+            {
+                ProcessPropertiesNode(propertiesNode, entityData);
+            }
+
         }
 
-        private void ProcessDataNode(XmlElement dataNode, LevelData levelData)
+        public override LevelData Process(XmlDocument input, ContentProcessorContext context)
         {
-            foreach (XmlNode entityNode in dataNode.ChildNodes)
+            LevelData levelData = new LevelData();
+            
+            XmlElement documentRoot = input.DocumentElement;
+
+            foreach (XmlNode entityNode in documentRoot.ChildNodes)
             {
                 XmlElement entityElement = entityNode as XmlElement;
                 if (entityElement != null)
@@ -67,23 +87,6 @@ namespace ProjectMagmaContentPipeline.Level
                     levelData.entities.Add(entityData);
                 }
             }
-        }
-
-        public override LevelData Process(XmlDocument input, ContentProcessorContext context)
-        {
-            LevelData levelData = new LevelData();
-            
-            XmlElement documentRoot = input.DocumentElement;
-
-            // process the node with the attribute templates
-            XmlElement attributeTemplatesNode = GetChild(documentRoot, "AttributeTemplates");
-            ProcessAttributeTemplatesNode(attributeTemplatesNode, levelData);
-
-            // process the property templates...
-            // TODO
-
-            XmlElement dataNode = GetChild(documentRoot, "LevelData");
-            ProcessDataNode(dataNode, levelData);
 
             return levelData;
         }

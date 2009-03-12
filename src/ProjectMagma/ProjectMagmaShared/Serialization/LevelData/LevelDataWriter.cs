@@ -15,21 +15,6 @@ using Microsoft.Xna.Framework.Content.Pipeline.Serialization.Compiler;
 namespace ProjectMagma.Shared.Serialization.LevelData
 {
     [ContentTypeWriter]
-    class AttributeTemplateDataWriter : ContentTypeWriter<AttributeTemplateData>
-    {
-        protected override void Write(ContentWriter output, AttributeTemplateData value)
-        {
-            output.Write(value.name);
-            output.Write(value.type);
-        }
-
-        public override string GetRuntimeReader(TargetPlatform targetPlatform)
-        {
-            return typeof(AttributeTemplateDataReader).AssemblyQualifiedName;
-        }
-    }
-
-    [ContentTypeWriter]
     class AttributeDataWriter : ContentTypeWriter<AttributeData>
     {
         protected override void Write(ContentWriter output, AttributeData value)
@@ -46,12 +31,28 @@ namespace ProjectMagma.Shared.Serialization.LevelData
     }
 
     [ContentTypeWriter]
+    class PropertyDataWriter : ContentTypeWriter<PropertyData>
+    {
+        protected override void Write(ContentWriter output, PropertyData value)
+        {
+            output.Write(value.name);
+            output.Write(value.type);
+        }
+
+        public override string GetRuntimeReader(TargetPlatform targetPlatform)
+        {
+            return typeof(PropertyDataReader).AssemblyQualifiedName;
+        }
+    }
+
+    [ContentTypeWriter]
     class EntityDataWriter : ContentTypeWriter<EntityData>
     {
         protected override void Write(ContentWriter output, EntityData value)
         {
             output.Write(value.name);
             output.WriteRawObject<List<AttributeData>>(value.attributes);
+            output.WriteRawObject<List<PropertyData>>(value.properties);
         }
 
         public override string GetRuntimeReader(TargetPlatform targetPlatform)
@@ -65,7 +66,6 @@ namespace ProjectMagma.Shared.Serialization.LevelData
     {
         protected override void Write(ContentWriter output, LevelData value)
         {
-            output.WriteRawObject<List<AttributeTemplateData>>(value.attributeTemplates);
             output.WriteRawObject<List<EntityData>>(value.entities);
         }
 

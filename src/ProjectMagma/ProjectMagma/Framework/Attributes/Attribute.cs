@@ -8,10 +8,9 @@ namespace ProjectMagma.Framework
 {
     public abstract class Attribute
     {
-        public Attribute(string name, AttributeTemplate template)
+        public Attribute(string name)
         {
             this.name = name;
-            this.template = template;
         }
 
         public abstract void Initialize(ContentManager content, string value);
@@ -25,6 +24,5 @@ namespace ProjectMagma.Framework
         }
 
         private string name;
-        private AttributeTemplate template;
     }
 }

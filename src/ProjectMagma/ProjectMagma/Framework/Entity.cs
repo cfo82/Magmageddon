@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Diagnostics;
 using System.Collections.Generic;
+using System.Reflection;
 using System.Linq;
 using System.Text;
 using Microsoft.Xna.Framework;
@@ -38,9 +39,24 @@ namespace ProjectMagma.Framework
 
         public void AddAttribute(ContentManager content, string name, string template, string value)
         {
-            AttributeTemplateManager attributeTemplateManager = Game.GetInstance().AttributeTemplateManager;
-            AttributeTemplate attributeTemplate = attributeTemplateManager.GetAttributeTemplate(template);
-            Attribute attribute = attributeTemplate.CreateAttribute(name);
+            Attribute attribute = null;
+            if (template == "int")
+            {
+                attribute = new IntAttribute(name);
+            }
+            else if (template == "float2")
+            {
+                attribute = new Vector2Attribute(name);
+            }
+            else if (template == "float3")
+            {
+                attribute = new Vector3Attribute(name);
+            }
+            else if (template == "mesh")
+            {
+                attribute = new MeshAttribute(name);
+            }
+
             attribute.Initialize(content, value);
             this.attributes.Add(attribute.Name, attribute);
         }
@@ -107,6 +123,14 @@ namespace ProjectMagma.Framework
         #endregion
 
         #region Property Handling
+
+        public void AddProperty(PropertyData propertyData)
+        {
+            Type type = Type.GetType(propertyData.type);
+            ConstructorInfo constructorInfo = type.GetConstructor(new Type[0]);
+            Property property = constructorInfo.Invoke(new object[0]) as Property;
+            AddProperty(propertyData.name, property);
+        }
 
         public void AddProperty(string name, Property property)
         {

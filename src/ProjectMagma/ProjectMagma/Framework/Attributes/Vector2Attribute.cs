@@ -9,8 +9,8 @@ namespace ProjectMagma.Framework
 {
     class Vector2Attribute : Attribute
     {
-        public Vector2Attribute(string name, AttributeTemplate template)
-        :   base(name, template)
+        public Vector2Attribute(string name)
+        :   base(name)
         {
         }
             

@@ -9,8 +9,8 @@ namespace ProjectMagma.Framework
 {
     class IntAttribute : Attribute
     {
-        public IntAttribute(string name, AttributeTemplate template)
-        :   base(name, template)
+        public IntAttribute(string name)
+        :   base(name)
         {
         }
             

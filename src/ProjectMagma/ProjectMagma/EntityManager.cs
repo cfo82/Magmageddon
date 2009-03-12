@@ -24,6 +24,10 @@ namespace ProjectMagma
             {
                 entity.AddAttribute(content, attributeData);
             }
+            foreach (PropertyData propertyData in entityData.properties)
+            {
+                entity.AddProperty(propertyData);
+            }
             this.entities.Add(entity.Name, entity);
         }
 

@@ -86,8 +86,6 @@
   <ItemGroup>
     <Compile Include="PillarManager.cs" />
     <Compile Include="Framework\Attributes\Attribute.cs" />
-    <Compile Include="Framework\Attributes\AttributeTemplateManager.cs" />
-    <Compile Include="Framework\Attributes\AttributeTemplate.cs" />
     <Compile Include="Framework\Attributes\IntAttribute.cs" />
     <Compile Include="Framework\Attributes\Vector3Attribute.cs" />
     <Compile Include="Framework\Attributes\MeshAttribute.cs" />
@@ -100,7 +98,6 @@
     <Compile Include="Framework\UpdateHandler.cs" />
     <Compile Include="IslandManager.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Program.cs" />
     <Compile Include="Game.cs" />
   </ItemGroup>
   <ItemGroup>

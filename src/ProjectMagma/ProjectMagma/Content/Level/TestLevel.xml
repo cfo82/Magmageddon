@@ -1,134 +1,142 @@
 ﻿<?xml version="1.0" encoding="utf-8" ?>
 <Level>
-  <AttributeTemplates>
-    <AttributeTemplate name="Lava.Size" type="ProjectMagma.Framework.Vector2Attribute"/>
-    <AttributeTemplate name="General.Position" type="ProjectMagma.Framework.Vector3Attribute"/>
-    <AttributeTemplate name="General.Scale" type="ProjectMagma.Framework.Vector3Attribute"/>
-    <AttributeTemplate name="General.Mesh" type="ProjectMagma.Framework.MeshAttribute"/>
-  </AttributeTemplates>
-
-  <PropertyTemplates>
-    
-  </PropertyTemplates>
-
-  <LevelData>
     <Entity name="lava">
       <Attributes>
-        <Attribute name="position" template="General.Position" value="0 0 0"/>
-        <Attribute name="scale" template="General.Scale" value="200 200 200"/>
-        <Attribute name="mesh" template="General.Mesh" value="Models/lava_primitive"/>
+        <Attribute name="position" template="float3" value="0 0 0"/>
+        <Attribute name="scale" template="float3" value="200 200 200"/>
+        <Attribute name="mesh" template="mesh" value="Models/lava_primitive"/>
       </Attributes>
     </Entity>
 
     <Entity name="pillar1">
       <Attributes>
-        <Attribute name="position" template="General.Position" value="-100 0 -100"/>
-        <Attribute name="scale" template="General.Scale" value="200 200 200"/>
-        <Attribute name="mesh" template="General.Mesh" value="Models/pillar_primitive"/>
+        <Attribute name="position" template="float3" value="-100 0 -100"/>
+        <Attribute name="scale" template="float3" value="200 200 200"/>
+        <Attribute name="mesh" template="mesh" value="Models/pillar_primitive"/>
       </Attributes>
     </Entity>
 
     <Entity name="pillar2">
       <Attributes>
-        <Attribute name="position" template="General.Position" value="-100 0 100"/>
-        <Attribute name="scale" template="General.Scale" value="200 200 200"/>
-        <Attribute name="mesh" template="General.Mesh" value="Models/pillar_primitive"/>
+        <Attribute name="position" template="float3" value="-100 0 100"/>
+        <Attribute name="scale" template="float3" value="200 200 200"/>
+        <Attribute name="mesh" template="mesh" value="Models/pillar_primitive"/>
       </Attributes>
     </Entity>
 
     <Entity name="pillar3">
       <Attributes>
-        <Attribute name="position" template="General.Position" value="100 0 -100"/>
-        <Attribute name="scale" template="General.Scale" value="200 200 200"/>
-        <Attribute name="mesh" template="General.Mesh" value="Models/pillar_primitive"/>
+        <Attribute name="position" template="float3" value="100 0 -100"/>
+        <Attribute name="scale" template="float3" value="200 200 200"/>
+        <Attribute name="mesh" template="mesh" value="Models/pillar_primitive"/>
       </Attributes>
     </Entity>
 
     <Entity name="pillar4">
       <Attributes>
-        <Attribute name="position" template="General.Position" value="100 0 100"/>
-        <Attribute name="scale" template="General.Scale" value="200 200 200"/>
-        <Attribute name="mesh" template="General.Mesh" value="Models/pillar_primitive"/>
+        <Attribute name="position" template="float3" value="100 0 100"/>
+        <Attribute name="scale" template="float3" value="200 200 200"/>
+        <Attribute name="mesh" template="mesh" value="Models/pillar_primitive"/>
       </Attributes>
     </Entity>
     
  <Entity name="island1">
   <Attributes>
-  <Attribute name="position" template="General.Position" value="60 160 -30"/>
-  <Attribute name="velocity" template="General.Position" value="0 0 0"/>
-  <Attribute name="acceleration" template="General.Position" value="0 0 0"/>
-  <Attribute name="scale" template="General.Scale" value="40 40 40"/>
-  <Attribute name="mesh" template="General.Mesh" value="Models/island_primitive"/>
+  <Attribute name="position" template="float3" value="60 160 -30"/>
+  <Attribute name="velocity" template="float3" value="0 0 0"/>
+  <Attribute name="acceleration" template="float3" value="0 0 0"/>
+  <Attribute name="scale" template="float3" value="40 40 40"/>
+  <Attribute name="mesh" template="mesh" value="Models/island_primitive"/>
   </Attributes>
+   <Properties>
+     <Property type="ProjectMagma.Framework.IslandControllerProperty"/>
+   </Properties>
  </Entity>
 
  <Entity name="island2">
   <Attributes>
-  <Attribute name="position" template="General.Position" value="-140 250 -240"/>
-  <Attribute name="velocity" template="General.Position" value="0 0 0"/>
-  <Attribute name="acceleration" template="General.Position" value="0 0 0"/>
-  <Attribute name="scale" template="General.Scale" value="40 40 40"/>
-  <Attribute name="mesh" template="General.Mesh" value="Models/island_primitive"/>
+  <Attribute name="position" template="float3" value="-140 250 -240"/>
+  <Attribute name="velocity" template="float3" value="0 0 0"/>
+  <Attribute name="acceleration" template="float3" value="0 0 0"/>
+  <Attribute name="scale" template="float3" value="40 40 40"/>
+  <Attribute name="mesh" template="mesh" value="Models/island_primitive"/>
   </Attributes>
+   <Properties>
+     <Property type="ProjectMagma.Framework.IslandControllerProperty"/>
+   </Properties>
  </Entity>
 
  <Entity name="island3">
   <Attributes>
-  <Attribute name="position" template="General.Position" value="90 210 280"/>
-  <Attribute name="velocity" template="General.Position" value="0 0 0"/>
-  <Attribute name="acceleration" template="General.Position" value="0 0 0"/>
-  <Attribute name="scale" template="General.Scale" value="40 40 40"/>
-  <Attribute name="mesh" template="General.Mesh" value="Models/island_primitive"/>
+  <Attribute name="position" template="float3" value="90 210 280"/>
+  <Attribute name="velocity" template="float3" value="0 0 0"/>
+  <Attribute name="acceleration" template="float3" value="0 0 0"/>
+  <Attribute name="scale" template="float3" value="40 40 40"/>
+  <Attribute name="mesh" template="mesh" value="Models/island_primitive"/>
   </Attributes>
+   <Properties>
+     <Property type="ProjectMagma.Framework.IslandControllerProperty"/>
+   </Properties>
  </Entity>
  
  <Entity name="island4">
   <Attributes>
-  <Attribute name="position" template="General.Position" value="110 280 -300"/>
-  <Attribute name="velocity" template="General.Position" value="0 0 0"/>
-  <Attribute name="acceleration" template="General.Position" value="0 0 0"/>
-  <Attribute name="scale" template="General.Scale" value="40 40 40"/>
-  <Attribute name="mesh" template="General.Mesh" value="Models/island_primitive"/>
+  <Attribute name="position" template="float3" value="110 280 -300"/>
+  <Attribute name="velocity" template="float3" value="0 0 0"/>
+  <Attribute name="acceleration" template="float3" value="0 0 0"/>
+  <Attribute name="scale" template="float3" value="40 40 40"/>
+  <Attribute name="mesh" template="mesh" value="Models/island_primitive"/>
   </Attributes>
+   <Properties>
+     <Property type="ProjectMagma.Framework.IslandControllerProperty"/>
+   </Properties>
  </Entity>
  
  <Entity name="island5">
   <Attributes>
-  <Attribute name="position" template="General.Position" value="150 20 160"/>
-  <Attribute name="velocity" template="General.Position" value="0 0 0"/>
-  <Attribute name="acceleration" template="General.Position" value="0 0 0"/>
-  <Attribute name="scale" template="General.Scale" value="40 40 40"/>
-  <Attribute name="mesh" template="General.Mesh" value="Models/island_primitive"/>
+  <Attribute name="position" template="float3" value="150 20 160"/>
+  <Attribute name="velocity" template="float3" value="0 0 0"/>
+  <Attribute name="acceleration" template="float3" value="0 0 0"/>
+  <Attribute name="scale" template="float3" value="40 40 40"/>
+  <Attribute name="mesh" template="mesh" value="Models/island_primitive"/>
   </Attributes>
+   <Properties>
+     <Property type="ProjectMagma.Framework.IslandControllerProperty"/>
+   </Properties>
  </Entity>
  
  <Entity name="island6">
   <Attributes>
-  <Attribute name="position" template="General.Position" value="-30 60 190"/>
-  <Attribute name="velocity" template="General.Position" value="0 0 0"/>
-  <Attribute name="acceleration" template="General.Position" value="0 0 0"/>
-  <Attribute name="scale" template="General.Scale" value="40 40 40"/>
-  <Attribute name="mesh" template="General.Mesh" value="Models/island_primitive"/>
+  <Attribute name="position" template="float3" value="-30 60 190"/>
+  <Attribute name="velocity" template="float3" value="0 0 0"/>
+  <Attribute name="acceleration" template="float3" value="0 0 0"/>
+  <Attribute name="scale" template="float3" value="40 40 40"/>
+  <Attribute name="mesh" template="mesh" value="Models/island_primitive"/>
   </Attributes>
+   <Properties>
+     <Property type="ProjectMagma.Framework.IslandControllerProperty"/>
+   </Properties>
  </Entity>
 
  <Entity name="island7">
   <Attributes>
-  <Attribute name="position" template="General.Position" value="-250 100 220"/>
-  <Attribute name="velocity" template="General.Position" value="0 0 0"/>
-  <Attribute name="acceleration" template="General.Position" value="0 0 0"/>
-  <Attribute name="scale" template="General.Scale" value="40 40 40"/>
-  <Attribute name="mesh" template="General.Mesh" value="Models/island_primitive"/>
+  <Attribute name="position" template="float3" value="-250 100 220"/>
+  <Attribute name="velocity" template="float3" value="0 0 0"/>
+  <Attribute name="acceleration" template="float3" value="0 0 0"/>
+  <Attribute name="scale" template="float3" value="40 40 40"/>
+  <Attribute name="mesh" template="mesh" value="Models/island_primitive"/>
   </Attributes>
+   <Properties>
+     <Property type="ProjectMagma.Framework.IslandControllerProperty"/>
+   </Properties>
  </Entity>
 
     <Entity name="player">
       <Attributes>
-        <Attribute name="position" template="General.Position" value="200 100 100"/>
-        <Attribute name="scale" template="General.Scale" value="10 10 10"/>
-        <Attribute name="mesh" template="General.Mesh" value="Models/player_primitive"/>
-        <Attribute name="jetpackAcceleration" template="General.Position" value="0 200 0"/>
+        <Attribute name="position" template="float3" value="200 100 100"/>
+        <Attribute name="scale" template="float3" value="10 10 10"/>
+        <Attribute name="mesh" template="mesh" value="Models/player_primitive"/>
+        <Attribute name="jetpackAcceleration" template="float3" value="0 200 0"/>
       </Attributes>
     </Entity>
-  </LevelData>
 </Level>

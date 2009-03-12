@@ -15,21 +15,6 @@ using Microsoft.Xna.Framework.Content.Pipeline.Serialization.Compiler;
 
 namespace ProjectMagma.Shared.Serialization.LevelData
 {
-    class AttributeTemplateDataReader : ContentTypeReader<AttributeTemplateData>
-    {
-        protected override AttributeTemplateData Read(ContentReader input, AttributeTemplateData existingInstance)
-        {
-            if (existingInstance == null)
-            {
-                existingInstance = new AttributeTemplateData();
-            }
-
-            existingInstance.name = input.ReadString();
-            existingInstance.type = input.ReadString();
-            
-            return existingInstance;
-        }
-    }
 
     class AttributeDataReader : ContentTypeReader<AttributeData>
     {
@@ -48,6 +33,22 @@ namespace ProjectMagma.Shared.Serialization.LevelData
         }
     }
 
+    class PropertyDataReader : ContentTypeReader<PropertyData>
+    {
+        protected override PropertyData Read(ContentReader input, PropertyData existingInstance)
+        {
+            if (existingInstance == null)
+            {
+                existingInstance = new PropertyData();
+            }
+
+            existingInstance.name = input.ReadString();
+            existingInstance.type = input.ReadString();
+
+            return existingInstance;
+        }
+    }
+
     class EntityDataReader : ContentTypeReader<EntityData>
     {
         protected override EntityData Read(ContentReader input, EntityData existingInstance)
@@ -59,6 +60,7 @@ namespace ProjectMagma.Shared.Serialization.LevelData
 
             existingInstance.name = input.ReadString();
             existingInstance.attributes = input.ReadRawObject<List<AttributeData>>();
+            existingInstance.properties = input.ReadRawObject<List<PropertyData>>();
 
             return existingInstance;
         }
@@ -73,7 +75,6 @@ namespace ProjectMagma.Shared.Serialization.LevelData
                 existingInstance = new LevelData();
             }
 
-            existingInstance.attributeTemplates = input.ReadRawObject<List<AttributeTemplateData>>();
             existingInstance.entities = input.ReadRawObject<List<EntityData>>();
 
             return existingInstance;

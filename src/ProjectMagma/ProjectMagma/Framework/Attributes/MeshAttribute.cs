@@ -10,8 +10,8 @@ namespace ProjectMagma.Framework
 {
     class MeshAttribute : Attribute
     {
-        public MeshAttribute(string name, AttributeTemplate template)
-        :   base(name, template)
+        public MeshAttribute(string name)
+        :   base(name)
         {
         }
             

@@ -206,8 +206,15 @@ namespace ProjectMagma
                 gamePadState.Buttons.A == ButtonState.Pressed ||
                 keyboardState.IsKeyDown(Keys.Space);
 
-            if (a_pressed && jetpackSpeed.Length() < maxJetpackSpeed)
+            if (a_pressed)
+            {
                 jetpackSpeed += jetpackAcceleration * dt;
+            }
+            if (jetpackSpeed.Length() > maxJetpackSpeed)
+            {
+                jetpackSpeed.Normalize();
+                jetpackSpeed *= maxJetpackSpeed;
+            }
 
             // graviation
             if (playerIsland == null)

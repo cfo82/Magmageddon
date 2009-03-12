@@ -22,7 +22,7 @@ namespace ProjectMagma
             Entity entity = new Entity(this, entityData.name);
             foreach (AttributeData attributeData in entityData.attributes)
             {
-                entity.AddAttribute(content, attributeData);
+                entity.AddAttribute(attributeData);
             }
             foreach (PropertyData propertyData in entityData.properties)
             {

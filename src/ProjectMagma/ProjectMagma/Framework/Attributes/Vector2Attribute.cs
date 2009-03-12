@@ -7,14 +7,14 @@ using Microsoft.Xna.Framework.Content;
 
 namespace ProjectMagma.Framework
 {
-    class Vector2Attribute : Attribute
+    public class Vector2Attribute : Attribute
     {
         public Vector2Attribute(string name)
         :   base(name)
         {
         }
             
-        public override void Initialize(ContentManager content, string value)
+        public override void Initialize(string value)
         {
             string[] splitArray = value.Split(' ');
             v.X = float.Parse(splitArray[0]);
@@ -29,10 +29,24 @@ namespace ProjectMagma.Framework
             }
             set
             {
-                v = value;
+                if (v != value)
+                {
+                    Vector2 oldValue = v;
+                    v = value;
+                    OnValueChanged(oldValue, v);
+                }
             }
         }
 
+        private void OnValueChanged(Vector2 oldValue, Vector2 newValue)
+        {
+            if (ValueChanged != null)
+            {
+                ValueChanged(this, oldValue, newValue);
+            }
+        }
+
+        public event Vector2ChangeHandler ValueChanged;
         private Vector2 v;
     }
 }

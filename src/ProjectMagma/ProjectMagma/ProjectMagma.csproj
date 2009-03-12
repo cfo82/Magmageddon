@@ -85,7 +85,11 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Framework\Attributes\StringAttribute.cs" />
-    <Compile Include="Framework\DrawHandler.cs" />
+    <Compile Include="Framework\Event\IntChangeHandler.cs" />
+    <Compile Include="Framework\Event\StringChangeHandler.cs" />
+    <Compile Include="Framework\Event\Vector2ChangeHandler.cs" />
+    <Compile Include="Framework\Event\Vector3ChangeHandler.cs" />
+    <Compile Include="Framework\Event\DrawHandler.cs" />
     <Compile Include="Framework\Properties\RenderProperty.cs" />
     <Compile Include="PillarManager.cs" />
     <Compile Include="Framework\Attributes\Attribute.cs" />
@@ -96,7 +100,7 @@
     <Compile Include="EntityManager.cs" />
     <Compile Include="Framework\Properties\IslandControllerProperty.cs" />
     <Compile Include="Framework\Properties\Property.cs" />
-    <Compile Include="Framework\UpdateHandler.cs" />
+    <Compile Include="Framework\Event\UpdateHandler.cs" />
     <Compile Include="IslandManager.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Game.cs" />

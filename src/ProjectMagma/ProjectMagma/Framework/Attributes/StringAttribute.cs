@@ -7,14 +7,14 @@ using Microsoft.Xna.Framework.Content;
 
 namespace ProjectMagma.Framework
 {
-    class StringAttribute : Attribute
+    public class StringAttribute : Attribute
     {
         public StringAttribute(string name)
         :   base(name)
         {
         }
             
-        public override void Initialize(ContentManager content, string value)
+        public override void Initialize(string value)
         {
             this.value = value;
         }
@@ -27,10 +27,24 @@ namespace ProjectMagma.Framework
             }
             set
             {
-                this.value = value;
+                if (this.value != value)
+                {
+                    string oldValue = this.value;
+                    this.value = value;
+                    OnValueChanged(oldValue, this.value);
+                }
             }
         }
 
+        private void OnValueChanged(string oldValue, string newValue)
+        {
+            if (ValueChanged != null)
+            {
+                ValueChanged(this, oldValue, newValue);
+            }
+        }
+
+        public event StringChangeHandler ValueChanged;
         private string value;
     }
 }

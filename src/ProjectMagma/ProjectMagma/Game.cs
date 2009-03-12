@@ -132,7 +132,7 @@ namespace ProjectMagma
             {
                 if (e.Name.StartsWith("island"))
                 {
-                    e.AddAttribute(Content, "collisionCount", "int", "0");
+                    e.AddAttribute("collisionCount", "int", "0");
                     islandManager.AddIsland(e);
                 }
             }
@@ -161,8 +161,8 @@ namespace ProjectMagma
             playerPosition = player.GetVector3("position");
             jetpackAcceleration = player.GetVector3("jetpackAcceleration");
 
-            player.AddAttribute(Content, "energy", "int", "100");
-            player.AddAttribute(Content, "health", "int", "100");            
+            player.AddAttribute("energy", "int", "100");
+            player.AddAttribute("health", "int", "100");            
         }
 
         /// <summary>

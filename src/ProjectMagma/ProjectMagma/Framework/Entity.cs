@@ -41,12 +41,12 @@ namespace ProjectMagma.Framework
 
         #region Attribute Handling 
 
-        public void AddAttribute(ContentManager content, AttributeData attributeData)
+        public void AddAttribute(AttributeData attributeData)
         {
-            AddAttribute(content, attributeData.name, attributeData.template, attributeData.value);
+            AddAttribute(attributeData.name, attributeData.template, attributeData.value);
         }
 
-        public void AddAttribute(ContentManager content, string name, string template, string value)
+        public void AddAttribute(string name, string template, string value)
         {
             Attribute attribute = null;
             if (template == "string")
@@ -66,7 +66,7 @@ namespace ProjectMagma.Framework
                 attribute = new Vector3Attribute(name);
             }
 
-            attribute.Initialize(content, value);
+            attribute.Initialize(value);
             this.attributes.Add(attribute.Name, attribute);
         }
 

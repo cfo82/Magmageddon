@@ -7,14 +7,14 @@ using Microsoft.Xna.Framework.Content;
 
 namespace ProjectMagma.Framework
 {
-    class IntAttribute : Attribute
+    public class IntAttribute : Attribute
     {
         public IntAttribute(string name)
         :   base(name)
         {
         }
             
-        public override void Initialize(ContentManager content, string value)
+        public override void Initialize(string value)
         {
             v = int.Parse(value);
         }
@@ -28,10 +28,24 @@ namespace ProjectMagma.Framework
 
             set
             {
-                v = value;
+                if (v != value)
+                {
+                    int oldValue = v;
+                    v = value;
+                    OnValueChanged(oldValue, v);
+                }
             }
         }
 
+        private void OnValueChanged(int oldValue, int newValue)
+        {
+            if (ValueChanged != null)
+            {
+                ValueChanged(this, oldValue, newValue);
+            }
+        }
+
+        public event IntChangeHandler ValueChanged;
         private int v;
     }
 }

@@ -13,7 +13,7 @@ namespace ProjectMagma.Framework
             this.name = name;
         }
 
-        public abstract void Initialize(ContentManager content, string value);
+        public abstract void Initialize(string value);
 
         public String Name
         {

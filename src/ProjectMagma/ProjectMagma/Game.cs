@@ -36,9 +36,12 @@ namespace ProjectMagma
         private Vector3 playerPosition;
         private Vector3 jetpackAcceleration;
         private Vector3 jetpackSpeed = new Vector3(0, 0, 0);
-        private Vector3 gravityAcceleration = new Vector3(0, -120f, 0);
-        private float maxJetpackSpeed = 100f;
+        private Vector3 gravityAcceleration = new Vector3(0, -900f, 0);
+        private float maxJetpackSpeed = 150f;
+        private float maxGravitySpeed = 450f;
         private Entity playerIsland = null;
+        private Model playerModel;
+        private Entity player;
 
         private int playerXAxisMultiplier = 1;
         private int playerZAxisMultiplier = 2;
@@ -156,10 +159,11 @@ namespace ProjectMagma
                                                              aspectRatio, 10, 10000);
             // TODO: use this.Content to load your game content here
 
-            Entity player = entityManager["player"];
+            player = entityManager["player"];
 
             playerPosition = player.GetVector3("position");
             jetpackAcceleration = player.GetVector3("jetpackAcceleration");
+            playerModel = Content.Load<Model>(player.GetString("mesh"));
 
             player.AddAttribute("energy", "int", "100");
             player.AddAttribute("health", "int", "100");            
@@ -199,6 +203,59 @@ namespace ProjectMagma
         {
             float dt = gameTime.ElapsedGameTime.Milliseconds / 1000f;
 
+            // detect collision with islands
+            playerIsland = null;
+            Boolean playerLava = false;
+
+            // get bounding sphere
+            BoundingBox box = (BoundingBox) playerModel.Tag;
+            Vector3 scale = player.GetVector3("scale");
+            Vector3 diag = (box.Max * scale - box.Min);
+            Vector3 center = box.Min + diag / 2;
+            float radius = diag.Length();
+
+            // translate
+            center += playerPosition;
+
+            BoundingSphere bs = new BoundingSphere(center, radius);
+
+            // get all islands
+            foreach (Entity island in islandManager)
+            {
+                BoundingBox ibox = (BoundingBox)(Content.Load<Model>(island.GetString("mesh")).Tag);
+                Vector3 iscale = island.GetVector3("scale");
+                Vector3 idiag = (ibox.Max * iscale - ibox.Min);
+                Vector3 icenter = ibox.Min + idiag / 2;
+                float iradius = idiag.Length();
+
+                // translate
+                icenter += island.GetVector3("position");
+                
+                BoundingSphere ibs = new BoundingSphere(icenter, iradius);
+
+                if (ibs.Intersects(bs))
+                {
+//                    Console.WriteLine("player at "+center+" collides with "+island.Name+" at "+icenter);
+
+                    playerIsland = island;
+                    jetpackSpeed = Vector3.Zero;
+                    break;
+                }
+            }
+
+            // check collision with lava
+            Entity lava = entityManager["lava"];
+            BoundingBox lbox = (BoundingBox)(Content.Load<Model>(lava.GetString("mesh")).Tag);
+            Vector3 lpos = lava.GetVector3("position");
+            Vector3 lscale = lava.GetVector3("scale");
+            lbox = new BoundingBox(lpos + lbox.Min * lscale, lpos + lbox.Max * lscale);
+
+            if (lbox.Intersects(bs))
+            {
+                jetpackSpeed = Vector3.Zero;
+                playerLava = true;
+            }
+
             GamePadState gamePadState = GamePad.GetState(PlayerIndex.One);
             KeyboardState keyboardState = Keyboard.GetState(PlayerIndex.One);
 
@@ -209,18 +266,17 @@ namespace ProjectMagma
             if (a_pressed)
             {
                 jetpackSpeed += jetpackAcceleration * dt;
-            }
-            if (jetpackSpeed.Length() > maxJetpackSpeed)
-            {
-                jetpackSpeed.Normalize();
-                jetpackSpeed *= maxJetpackSpeed;
+
+                if (jetpackSpeed.Length() > maxJetpackSpeed)
+                {
+                    jetpackSpeed.Normalize();
+                    jetpackSpeed *= maxJetpackSpeed;
+                }
             }
 
             // graviation
-            if (playerIsland == null)
+            if (playerIsland == null && !playerLava && jetpackSpeed.Length() <= maxGravitySpeed)
                 jetpackSpeed += gravityAcceleration * dt;
-            else
-                jetpackSpeed = Vector3.Zero;
 
             playerPosition += jetpackSpeed * dt;
 

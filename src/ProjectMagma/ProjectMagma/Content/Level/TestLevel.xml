@@ -155,10 +155,10 @@
 
     <Entity name="player">
       <Attributes>
-        <Attribute name="position" template="float3" value="200 100 100"/>
+        <Attribute name="position" template="float3" value="-250 100 100"/>
         <Attribute name="scale" template="float3" value="10 10 10"/>
         <Attribute name="mesh" template="string" value="Models/player_primitive"/>
-        <Attribute name="jetpackAcceleration" template="float3" value="0 200 0"/>
+        <Attribute name="jetpackAcceleration" template="float3" value="0 2000 0"/>
       </Attributes>
       <Properties>
         <Property name="render" type="ProjectMagma.Framework.RenderProperty"/>

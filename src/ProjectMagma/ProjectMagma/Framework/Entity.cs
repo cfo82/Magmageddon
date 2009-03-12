@@ -21,12 +21,21 @@ namespace ProjectMagma.Framework
         }
 
         public event UpdateHandler Update;
+        public event DrawHandler Draw;
 
         public void OnUpdate(GameTime gameTime)
         {
             if (Update != null)
             {
                 Update(this, gameTime);
+            }
+        }
+
+        public void OnDraw(GameTime gameTime)
+        {
+            if (Draw != null)
+            {
+                Draw(this, gameTime);
             }
         }
 
@@ -40,7 +49,11 @@ namespace ProjectMagma.Framework
         public void AddAttribute(ContentManager content, string name, string template, string value)
         {
             Attribute attribute = null;
-            if (template == "int")
+            if (template == "string")
+            {
+                attribute = new StringAttribute(name);
+            }
+            else if (template == "int")
             {
                 attribute = new IntAttribute(name);
             }
@@ -52,10 +65,6 @@ namespace ProjectMagma.Framework
             {
                 attribute = new Vector3Attribute(name);
             }
-            else if (template == "mesh")
-            {
-                attribute = new MeshAttribute(name);
-            }
 
             attribute.Initialize(content, value);
             this.attributes.Add(attribute.Name, attribute);
@@ -64,6 +73,12 @@ namespace ProjectMagma.Framework
         public bool HasAttribute(string attribute)
         {
             return Attributes.ContainsKey(attribute);
+        }
+
+        public bool IsString(string attribute)
+        {
+            Debug.Assert(HasAttribute(attribute));
+            return (Attributes[attribute] as StringAttribute) != null;
         }
 
         public bool IsInt(string attribute)
@@ -82,6 +97,13 @@ namespace ProjectMagma.Framework
         {
             Debug.Assert(HasAttribute(attribute));
             return (Attributes[attribute] as Vector3Attribute) != null;
+        }
+
+        public string GetString(string attribute)
+        {
+            Debug.Assert(HasAttribute(attribute));
+            Debug.Assert(IsString(attribute));
+            return (Attributes[attribute] as StringAttribute).Value;
         }
 
         public int GetInt(string attribute)

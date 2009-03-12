@@ -4,40 +4,33 @@ using System.Linq;
 using System.Text;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Content;
-using Microsoft.Xna.Framework.Graphics;
 
 namespace ProjectMagma.Framework
 {
-    class MeshAttribute : Attribute
+    class StringAttribute : Attribute
     {
-        public MeshAttribute(string name)
+        public StringAttribute(string name)
         :   base(name)
         {
         }
             
         public override void Initialize(ContentManager content, string value)
         {
-            this.meshName = value;
-            model = content.Load<Model>(meshName);
+            this.value = value;
         }
 
-        public string MeshName
+        public string Value
         {
             get
             {
-                return this.meshName;
+                return value;
             }
-        }
-
-        public Model Model
-        {
-            get
+            set
             {
-                return this.model;
+                this.value = value;
             }
         }
 
-        private string meshName;
-        private Model model;
+        private string value;
     }
 }

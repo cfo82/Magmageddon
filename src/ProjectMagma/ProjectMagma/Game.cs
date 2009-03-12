@@ -30,7 +30,6 @@ namespace ProjectMagma
     {
         private GraphicsDeviceManager graphics;
         private SpriteBatch spriteBatch;
-        private Matrix world;
         private Matrix view;
         private Matrix projection;
 
@@ -95,9 +94,12 @@ namespace ProjectMagma
             }
         }
 
-        public static Game GetInstance()
+        public static Game Instance
         {
-            return Game.instance;
+            get
+            {
+                return Game.instance;
+            }
         }
 
         /// <summary>
@@ -225,54 +227,6 @@ namespace ProjectMagma
             entityManager["player"].SetVector3("position", playerPosition);
         }
 
-        protected void Draw(GameTime gameTime, Model model)
-        {
-            foreach (ModelMesh mesh in model.Meshes)
-            {
-                foreach (ModelMeshPart part in mesh.MeshParts)
-                {
-                    // Look up the effect, and set effect parameters on it. This sample
-                    // assumes the model will only be using BasicEffect, but a more robust
-                    // implementation would probably want to handle custom effects as well.
-                    BasicEffect effect = (BasicEffect)part.Effect;
-
-                    effect.EnableDefaultLighting();
-
-                    effect.World = world;
-                    effect.View = view;
-                    effect.Projection = projection;
-
-                    // Set the graphics device to use our vertex declaration,
-                    // vertex buffer, and index buffer.
-                    GraphicsDevice device = effect.GraphicsDevice;
-
-                    device.VertexDeclaration = part.VertexDeclaration;
-
-                    device.Vertices[0].SetSource(mesh.VertexBuffer, 0,
-                                                 part.VertexStride);
-
-                    device.Indices = mesh.IndexBuffer;
-
-                    // Begin the effect, and loop over all the effect passes.
-                    effect.Begin();
-
-                    foreach (EffectPass pass in effect.CurrentTechnique.Passes)
-                    {
-                        pass.Begin();
-
-                        // Draw the geometry.
-                        device.DrawIndexedPrimitives(PrimitiveType.TriangleList,
-                                                     part.BaseVertex, 0, part.NumVertices,
-                                                     part.StartIndex, part.PrimitiveCount);
-
-                        pass.End();
-                    }
-
-                    effect.End();
-                }
-            }
-        }
-
         /// <summary>
         /// This is called when the game should draw itself.
         /// </summary>
@@ -281,6 +235,10 @@ namespace ProjectMagma
         {
             GraphicsDevice.Clear(Color.CornflowerBlue);
 
+            foreach (Entity e in entityManager)
+            {
+                e.OnDraw(gameTime);
+            }
             // TODO: Add your drawing code here
             //Draw(gameTime, islandPrimitive);
             //world = Matrix.Identity;
@@ -288,32 +246,6 @@ namespace ProjectMagma
             //Draw(gameTime, lavaPrimitive);
             //Draw(gameTime, pillarPrimitive);
             //Draw(gameTime, playerPrimitive);
-
-            foreach (Entity e in entityManager)
-            {
-                if (!e.HasAttribute("mesh") || (e.Attributes["mesh"] as MeshAttribute) == null ||
-                    !e.HasAttribute("position") || !e.IsVector3("position") ||
-                    (e.HasAttribute("scale") && !e.IsVector3("scale"))
-                    )
-                {
-                    continue;
-                }
-
-                Model model = (e.Attributes["mesh"] as MeshAttribute).Model;
-                Vector3 position = e.GetVector3("position");
-                Vector3 scale = new Vector3(1, 1, 1);
-                if (e.HasAttribute("scale"))
-                {
-                    scale = e.GetVector3("scale");
-                }
-
-                world = Matrix.CreateScale(scale) * Matrix.CreateTranslation(position);
-                Draw(gameTime, model);
-            }
-
-            GraphicsDevice.RenderState.PointSize = 110;
-            GraphicsDevice.DrawUserPrimitives<VertexPositionColor>(PrimitiveType.PointList, new VertexPositionColor[] {
-                         new VertexPositionColor(playerPosition, Color.Red)}, 0, 1);
 
             base.Draw(gameTime);
         }
@@ -323,6 +255,22 @@ namespace ProjectMagma
             get
             {
                 return pillarManager;
+            }
+        }
+
+        public Matrix View
+        {
+            get
+            {
+                return view;
+            }
+        }
+
+        public Matrix Projection
+        {
+            get
+            {
+                return projection;
             }
         }
     }

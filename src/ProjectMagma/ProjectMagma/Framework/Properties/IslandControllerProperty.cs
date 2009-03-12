@@ -23,7 +23,7 @@ namespace ProjectMagma.Framework
             entity.Update -= new UpdateHandler(OnUpdate);
         }
 
-        public void OnUpdate(Entity entity, GameTime gameTime)
+        private void OnUpdate(Entity entity, GameTime gameTime)
         {
             float dt = ((float)gameTime.ElapsedGameTime.Milliseconds)/1000.0f;
 
@@ -44,7 +44,7 @@ namespace ProjectMagma.Framework
             islandXZ.Y = 0;
             bool collided = false;
 
-            foreach (Entity pillar in Game.GetInstance().PillarManager)
+            foreach (Entity pillar in Game.Instance.PillarManager)
             {
                 Vector3 pillarXZ = pillar.GetVector3("position");
                 pillarXZ.Y = 0;

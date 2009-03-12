@@ -81,6 +81,13 @@
     </Compile>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="HUDFont.spritefont">
+      <Name>HUDFont</Name>
+      <Importer>FontDescriptionImporter</Importer>
+      <Processor>FontDescriptionProcessor</Processor>
+    </Compile>
+  </ItemGroup>
+  <ItemGroup>
     <Compile Include="Effects\TestEffect.fx">
       <Name>TestEffect</Name>
       <Importer>EffectImporter</Importer>

@@ -14,7 +14,6 @@ using Microsoft.Xna.Framework.Net;
 using Microsoft.Xna.Framework.Storage;
 
 using ProjectMagma.Framework;
-using ProjectMagma.Framework.Attributes;
 using ProjectMagma.Shared.Serialization.LevelData;
 
 

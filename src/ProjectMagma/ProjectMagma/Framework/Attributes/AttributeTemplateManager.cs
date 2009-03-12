@@ -5,7 +5,7 @@ using System.Text;
 using System.Reflection;
 using ProjectMagma.Shared.Serialization.LevelData;
 
-namespace ProjectMagma.Framework.Attributes
+namespace ProjectMagma.Framework
 {
     public class AttributeTemplateManager
     {

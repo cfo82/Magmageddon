@@ -5,9 +5,10 @@ using System.Linq;
 using System.Text;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Content;
+using ProjectMagma.Framework;
 using ProjectMagma.Shared.Serialization.LevelData;
 
-namespace ProjectMagma.Framework
+namespace ProjectMagma
 {
     public class EntityManager : IEnumerable<Entity>
     {

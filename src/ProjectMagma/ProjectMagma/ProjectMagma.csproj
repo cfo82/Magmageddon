@@ -93,7 +93,7 @@
     <Compile Include="Framework\Attributes\MeshAttribute.cs" />
     <Compile Include="Framework\Entity.cs" />
     <Compile Include="Framework\Attributes\Vector2Attribute.cs" />
-    <Compile Include="Framework\EntityManager.cs" />
+    <Compile Include="EntityManager.cs" />
     <Compile Include="Framework\Properties\IslandControllerProperty.cs" />
     <Compile Include="Framework\Properties\Property.cs" />
     <Compile Include="Framework\Properties\PropertyTemplate.cs" />

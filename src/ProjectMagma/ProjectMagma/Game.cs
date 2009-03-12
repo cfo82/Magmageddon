@@ -33,20 +33,7 @@ namespace ProjectMagma
         private Matrix view;
         private Matrix projection;
 
-        private Vector3 playerPosition;
-        private Vector3 jetpackAcceleration;
-        private Vector3 jetpackSpeed = new Vector3(0, 0, 0);
-        private float maxJetpackSpeed = 150f;
-        private float maxGravitySpeed = 450f;
-        private Vector3 gravityAcceleration = new Vector3(0, -900f, 0);
-        private Entity playerIsland = null;
-        private Model playerModel;
-        private Entity player;
-
-        private int playerXAxisMultiplier = 1;
-        private int playerZAxisMultiplier = 2;
-
-        protected EntityManager entityManager;
+        private EntityManager entityManager;
         private PillarManager pillarManager;
         private IslandManager islandManager;
 
@@ -130,7 +117,8 @@ namespace ProjectMagma
             {
                 entityManager.AddEntity(Content, entityData);
             }
-           
+
+            int gi = 0;
             foreach (Entity e in entityManager)
             {
                 if (e.Name.StartsWith("island"))
@@ -138,15 +126,20 @@ namespace ProjectMagma
                     e.AddAttribute("collisionCount", "int", "0");
                     islandManager.Add(e);
                 }
+                else
+                    if (e.Name.StartsWith("pillar"))
+                    {
+                        pillarManager.Add(e);
+                    }
+                    else
+                        if (e.Name.StartsWith("player"))
+                        {
+                            e.AddAttribute("gamePadIndex", "int", ""+(gi++));
+                            e.AddAttribute("jetpackVelocity", "float3", "0 0 0");
+                            e.AddAttribute("energy", "int", "100");
+                            e.AddAttribute("health", "int", "100");
+                        }
             }
-
-            foreach (Entity e in entityManager)
-            {
-                if (e.Name.StartsWith("pillar"))
-                {
-                    pillarManager.Add(e);
-                }
-            }         
 
             Viewport viewport = graphics.GraphicsDevice.Viewport;
 
@@ -156,17 +149,7 @@ namespace ProjectMagma
                                        new Vector3(0, 150, 0), Vector3.Up);
 
             projection = Matrix.CreatePerspectiveFieldOfView(MathHelper.PiOver4/2.0f,
-                                                             aspectRatio, 10, 10000);
-            // TODO: use this.Content to load your game content here
-
-            player = entityManager["player1"];
-
-            playerPosition = player.GetVector3("position");
-            jetpackAcceleration = player.GetVector3("jetpackAcceleration");
-            playerModel = Content.Load<Model>(player.GetString("mesh"));
-
-            player.AddAttribute("energy", "int", "100");
-            player.AddAttribute("health", "int", "100");            
+                                                             aspectRatio, 10, 10000);       
         }
 
         /// <summary>
@@ -194,101 +177,7 @@ namespace ProjectMagma
                 e.OnUpdate(gameTime);
             }
 
-            UpdatePlayer(gameTime);
-
             base.Update(gameTime);
-        }
-
-        private void UpdatePlayer(GameTime gameTime)
-        {
-            float dt = gameTime.ElapsedGameTime.Milliseconds / 1000f;
-
-            // detect collision with islands
-            playerIsland = null;
-            Boolean playerLava = false;
-
-            // get bounding sphere
-            BoundingBox box = (BoundingBox) playerModel.Tag;
-            Vector3 scale = player.GetVector3("scale");
-            Vector3 diag = (box.Max * scale - box.Min);
-            Vector3 center = box.Min + diag / 2;
-            float radius = diag.Length();
-
-            // translate
-            center += playerPosition;
-
-            BoundingSphere bs = new BoundingSphere(center, radius);
-
-            // get all islands
-            foreach (Entity island in islandManager)
-            {
-                BoundingBox ibox = (BoundingBox)(Content.Load<Model>(island.GetString("mesh")).Tag);
-                Vector3 iscale = island.GetVector3("scale");
-                Vector3 idiag = (ibox.Max * iscale - ibox.Min);
-                Vector3 icenter = ibox.Min + idiag / 2;
-                float iradius = idiag.Length();
-
-                // translate
-                icenter += island.GetVector3("position");
-                
-                BoundingSphere ibs = new BoundingSphere(icenter, iradius);
-
-                if (ibs.Intersects(bs))
-                {
-//                    Console.WriteLine("player at "+center+" collides with "+island.Name+" at "+icenter);
-
-                    playerIsland = island;
-                    jetpackSpeed = Vector3.Zero;
-                    break;
-                }
-            }
-
-            // check collision with lava
-            Entity lava = entityManager["lava"];
-            BoundingBox lbox = (BoundingBox)(Content.Load<Model>(lava.GetString("mesh")).Tag);
-            Vector3 lpos = lava.GetVector3("position");
-            Vector3 lscale = lava.GetVector3("scale");
-            lbox = new BoundingBox(lpos + lbox.Min * lscale, lpos + lbox.Max * lscale);
-
-            if (lbox.Intersects(bs))
-            {
-                jetpackSpeed = Vector3.Zero;
-                playerLava = true;
-            }
-
-            GamePadState gamePadState = GamePad.GetState(PlayerIndex.One);
-            KeyboardState keyboardState = Keyboard.GetState(PlayerIndex.One);
-
-            bool a_pressed =
-                gamePadState.Buttons.A == ButtonState.Pressed ||
-                keyboardState.IsKeyDown(Keys.Space);
-
-            if (a_pressed)
-            {
-                jetpackSpeed += jetpackAcceleration * dt;
-
-                if (jetpackSpeed.Length() > maxJetpackSpeed)
-                {
-                    jetpackSpeed.Normalize();
-                    jetpackSpeed *= maxJetpackSpeed;
-                }
-            }
-
-            // graviation
-            if (playerIsland == null && !playerLava && jetpackSpeed.Length() <= maxGravitySpeed)
-                jetpackSpeed += gravityAcceleration * dt;
-            else
-                if (playerIsland != null)
-                    playerPosition += playerIsland.GetVector3("velocity") * dt;
-
-            playerPosition += jetpackSpeed * dt;
-
-            // moving
-            playerPosition.X += GamePad.GetState(PlayerIndex.One).ThumbSticks.Left.X * playerXAxisMultiplier;
-            playerPosition.Z -= GamePad.GetState(PlayerIndex.One).ThumbSticks.Left.Y * playerZAxisMultiplier;
-
-            //entityManager["player1"].SetVector3("position", playerPosition);
-            player.SetVector3("position", playerPosition);
         }
 
         /// <summary>
@@ -315,6 +204,14 @@ namespace ProjectMagma
             }
         }
 
+        public IslandManager IslandManager
+        {
+            get
+            {
+                return islandManager;
+            }
+        }
+
         public Matrix View
         {
             get
@@ -330,5 +227,14 @@ namespace ProjectMagma
                 return projection;
             }
         }
+
+        public EntityManager EntityManager
+        {
+            get
+            {
+                return entityManager;
+            }
+        }
+
     }
 }

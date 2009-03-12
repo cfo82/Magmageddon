@@ -277,6 +277,9 @@ namespace ProjectMagma
             // graviation
             if (playerIsland == null && !playerLava && jetpackSpeed.Length() <= maxGravitySpeed)
                 jetpackSpeed += gravityAcceleration * dt;
+            else
+                if (playerIsland != null)
+                    playerPosition += playerIsland.GetVector3("velocity") * dt;
 
             playerPosition += jetpackSpeed * dt;
 

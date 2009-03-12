@@ -103,8 +103,7 @@ namespace ProjectMagmaContentPipeline.ModelProcessors
             NodeContent input,
             ContentProcessorContext context,
             float scaleFactor
-            )
-        {
+        ) {
             MeshContent mesh = input as MeshContent;
             if (mesh != null)
             {

@@ -36,9 +36,9 @@ namespace ProjectMagma
         private Vector3 playerPosition;
         private Vector3 jetpackAcceleration;
         private Vector3 jetpackSpeed = new Vector3(0, 0, 0);
-        private Vector3 gravityAcceleration = new Vector3(0, -900f, 0);
         private float maxJetpackSpeed = 150f;
         private float maxGravitySpeed = 450f;
+        private Vector3 gravityAcceleration = new Vector3(0, -900f, 0);
         private Entity playerIsland = null;
         private Model playerModel;
         private Entity player;
@@ -77,7 +77,7 @@ namespace ProjectMagma
             // now we should keep to rendering on the main thread and move everything else to
             // the other cores.
 
-            // another thing to clarify would be on which thread the Main-methode is running (
+            // another thing to clarify would be on which thread the main method is running 
             // and if the SetProcessorAffinity works... It could very well be that this thread is
             // already locked to some hardware thread.
 #if XBOX
@@ -136,7 +136,7 @@ namespace ProjectMagma
                 if (e.Name.StartsWith("island"))
                 {
                     e.AddAttribute("collisionCount", "int", "0");
-                    islandManager.AddIsland(e);
+                    islandManager.Add(e);
                 }
             }
 
@@ -144,7 +144,7 @@ namespace ProjectMagma
             {
                 if (e.Name.StartsWith("pillar"))
                 {
-                    pillarManager.AddPillar(e);
+                    pillarManager.Add(e);
                 }
             }         
 
@@ -159,7 +159,7 @@ namespace ProjectMagma
                                                              aspectRatio, 10, 10000);
             // TODO: use this.Content to load your game content here
 
-            player = entityManager["player"];
+            player = entityManager["player1"];
 
             playerPosition = player.GetVector3("position");
             jetpackAcceleration = player.GetVector3("jetpackAcceleration");
@@ -287,7 +287,8 @@ namespace ProjectMagma
             playerPosition.X += GamePad.GetState(PlayerIndex.One).ThumbSticks.Left.X * playerXAxisMultiplier;
             playerPosition.Z -= GamePad.GetState(PlayerIndex.One).ThumbSticks.Left.Y * playerZAxisMultiplier;
 
-            entityManager["player"].SetVector3("position", playerPosition);
+            //entityManager["player1"].SetVector3("position", playerPosition);
+            player.SetVector3("position", playerPosition);
         }
 
         /// <summary>

@@ -15,7 +15,7 @@ namespace ProjectMagma
             entities = new List<Entity>();
         }
 
-        public void AddIsland(Entity entity)
+        public void Add(Entity entity)
         {
             if (!this.entities.Contains(entity))
             {
@@ -23,7 +23,7 @@ namespace ProjectMagma
             }
         }
 
-        public void RemoveIsland(Entity entity)
+        public void Remove(Entity entity)
         {
             this.entities.Remove(entity);
         }

@@ -60,12 +60,13 @@ namespace ProjectMagmaContentPipeline.ModelProcessors
             {
                 foreach (Vector3 pos in mesh.Positions)
                 {
-                    if (pos.X < box.Min.X) { box.Min.X = pos.X; }
-                    if (pos.Y < box.Min.Y) { box.Min.Y = pos.Y; }
-                    if (pos.Z < box.Min.Z) { box.Min.Z = pos.Z; }
-                    if (pos.X > box.Max.X) { box.Max.X = pos.X; }
-                    if (pos.Y > box.Max.Y) { box.Max.Y = pos.Y; }
-                    if (pos.Z > box.Max.Z) { box.Max.Z = pos.Z; }
+                    Vector3 transformed = Vector3.Transform(pos, mesh.AbsoluteTransform);
+                    if (transformed.X < box.Min.X) { box.Min.X = transformed.X; }
+                    if (transformed.Y < box.Min.Y) { box.Min.Y = transformed.Y; }
+                    if (transformed.Z < box.Min.Z) { box.Min.Z = transformed.Z; }
+                    if (transformed.X > box.Max.X) { box.Max.X = transformed.X; }
+                    if (transformed.Y > box.Max.Y) { box.Max.Y = transformed.Y; }
+                    if (transformed.Z > box.Max.Z) { box.Max.Z = transformed.Z; }
                 }
             }
 
@@ -109,7 +110,16 @@ namespace ProjectMagmaContentPipeline.ModelProcessors
             {
                 for (int i = 0; i < mesh.Positions.Count; ++i)
                 {
-                    mesh.Positions[i] = mesh.Positions[i]*scaleFactor;
+                    Vector3 translation;
+                    Quaternion rotation;
+                    Vector3 scale;
+
+                    mesh.Transform.Decompose(out scale, out rotation, out translation);
+                    translation *= scaleFactor;
+
+                    mesh.Transform = Matrix.CreateScale(scale) * Matrix.CreateFromQuaternion(rotation) * Matrix.CreateTranslation(translation);
+
+                    mesh.Positions[i] = mesh.Positions[i] * scaleFactor;
                 }
             }
 

@@ -43,49 +43,20 @@ namespace ProjectMagma.Framework
 
             Matrix world = Matrix.CreateScale(scale) * Matrix.CreateTranslation(position);
 
+            Matrix[] transforms = new Matrix[model.Bones.Count];
+            model.CopyAbsoluteBoneTransformsTo(transforms);
             foreach (ModelMesh mesh in model.Meshes)
             {
-                foreach (ModelMeshPart part in mesh.MeshParts)
+                foreach (BasicEffect effect in mesh.Effects)
                 {
-                    // Look up the effect, and set effect parameters on it. This sample
-                    // assumes the model will only be using BasicEffect, but a more robust
-                    // implementation would probably want to handle custom effects as well.
-                    BasicEffect effect = (BasicEffect)part.Effect;
-
                     effect.EnableDefaultLighting();
 
-                    effect.World = world;
                     effect.View = Game.Instance.View;
                     effect.Projection = Game.Instance.Projection;
-
-                    // Set the graphics device to use our vertex declaration,
-                    // vertex buffer, and index buffer.
-                    GraphicsDevice device = effect.GraphicsDevice;
-
-                    device.VertexDeclaration = part.VertexDeclaration;
-
-                    device.Vertices[0].SetSource(mesh.VertexBuffer, 0,
-                                                 part.VertexStride);
-
-                    device.Indices = mesh.IndexBuffer;
-
-                    // Begin the effect, and loop over all the effect passes.
-                    effect.Begin();
-
-                    foreach (EffectPass pass in effect.CurrentTechnique.Passes)
-                    {
-                        pass.Begin();
-
-                        // Draw the geometry.
-                        device.DrawIndexedPrimitives(PrimitiveType.TriangleList,
-                                                     part.BaseVertex, 0, part.NumVertices,
-                                                     part.StartIndex, part.PrimitiveCount);
-
-                        pass.End();
-                    }
-
-                    effect.End();
+                    effect.World = transforms[mesh.ParentBone.Index] * world;
                 }
+
+                mesh.Draw();
             }
         }
 

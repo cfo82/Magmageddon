@@ -22,6 +22,7 @@ namespace ProjectMagma.Framework
             entity.AddAttribute("jetpackVelocity", "float3", "0 0 0");
             entity.AddAttribute("energy", "int", "100");
             entity.AddAttribute("health", "int", "100");
+            entity.AddAttribute("fuel", "int", ""+maxFuel);
         }
 
         public void OnDetached(Entity entity)
@@ -33,11 +34,13 @@ namespace ProjectMagma.Framework
         private void OnUpdate(Entity entity, GameTime gameTime)
         {
             float dt = ((float)gameTime.ElapsedGameTime.Milliseconds)/1000.0f;
+
             PlayerIndex playerIndex = (PlayerIndex)entity.GetInt("gamePadIndex");
             Vector3 jetpackAcceleration = entity.GetVector3("jetpackAcceleration");
-
             Vector3 playerPosition = entity.GetVector3("position");
             Vector3 jetpackVelocity = entity.GetVector3("jetpackVelocity");
+            int fuel = entity.GetInt("fuel");
+
             Model playerModel = Game.Instance.Content.Load<Model>(entity.GetString("mesh"));
 
             // get input
@@ -53,8 +56,8 @@ namespace ProjectMagma.Framework
             // get all islands
             foreach (Entity island in Game.Instance.IslandManager)
             {
-                BoundingCylinder ibc = new BoundingCylinder(island.GetVector3("position") + new Vector3(0, 10, 0),
-                    island.GetVector3("position") + new Vector3(0, -10, 0), 30);
+                BoundingCylinder ibc = new BoundingCylinder(island.GetVector3("position") * island.GetVector3("scale") + new Vector3(0, 10, 0),
+                    island.GetVector3("position") * island.GetVector3("scale") + new Vector3(0, -10, 0), 30);
 
                 if (ibc.Intersects(bs))
                 {
@@ -80,14 +83,24 @@ namespace ProjectMagma.Framework
             // jetpack
             if (controllerInput.aPressed)
             {
-                jetpackVelocity += jetpackAcceleration * dt;
-
-                if (jetpackVelocity.Length() > maxJetpackSpeed)
+                if (fuel > 0)
                 {
-                    jetpackVelocity.Normalize();
-                    jetpackVelocity *= maxJetpackSpeed;
+                    fuel -= gameTime.ElapsedGameTime.Milliseconds;
+                    jetpackVelocity += jetpackAcceleration * dt;
+
+                    if (jetpackVelocity.Length() > maxJetpackSpeed)
+                    {
+                        jetpackVelocity.Normalize();
+                        jetpackVelocity *= maxJetpackSpeed;
+                    }
                 }
             }
+            else
+                fuel += gameTime.ElapsedGameTime.Milliseconds * fuelRechargeMultiplicator;
+            if (fuel < 0)
+                fuel = 0;
+            if (fuel > maxFuel)
+                fuel = maxFuel;
 
             // ice spike
             if (controllerInput.xPressed)
@@ -116,6 +129,7 @@ namespace ProjectMagma.Framework
             }
 
             // update entity attributes
+            entity.SetInt("fuel", fuel);
             entity.SetVector3("position", playerPosition);
             entity.SetVector3("jetpackVelocity", jetpackVelocity);
         }
@@ -176,7 +190,8 @@ namespace ProjectMagma.Framework
             }
         }
 
-
+        private int maxFuel = 1500;
+        private int fuelRechargeMultiplicator = 2;
         private float maxJetpackSpeed = 150f;
         private float maxGravitySpeed = 450f;
         private Vector3 gravityAcceleration = new Vector3(0, -900f, 0);

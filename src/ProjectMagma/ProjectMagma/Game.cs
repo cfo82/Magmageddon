@@ -199,6 +199,21 @@ namespace ProjectMagma
                 e.OnDraw(gameTime);
             }
 
+            // draw infos about state
+            SpriteFont font = Content.Load<SpriteFont>("HUDFont");
+            SpriteBatch spritebatch = new SpriteBatch(this.graphics.GraphicsDevice);
+            spritebatch.Begin();
+            int pos = 0;
+            foreach (Entity e in entityManager)
+            {
+                if (e.Name.StartsWith("player"))
+                {
+                    spritebatch.DrawString(font, e.Name + "; health: "+e.GetInt("health")+", energy: "+e.GetInt("energy")+", fuel: "+e.GetInt("fuel"), new Vector2(0, pos), Color.White);
+                    pos += 15;
+                }
+            }
+            spritebatch.End();
+
             base.Draw(gameTime);
         }
 

@@ -48,8 +48,11 @@ namespace ProjectMagma.Framework
             {
                 BoundingSphere ibs = calculateBoundingSphere(Game.Instance.Content.Load<Model>(island.GetString("mesh")),
                     island.GetVector3("position"), island.GetVector3("scale"));
+                BoundingBox ibb = (BoundingBox)Game.Instance.Content.Load<Model>(island.GetString("mesh")).Tag;
+                ibb = new BoundingBox(ibb.Min * island.GetVector3("scale") + island.GetVector3("position"), 
+                    ibb.Max * island.GetVector3("scale") + island.GetVector3("position"));
 
-                if (ibs.Intersects(bs))
+                if (ibs.Intersects(bs) && ibb.Intersects(bs))
                 {
                     playerIsland = island;
                     jetpackVelocity = Vector3.Zero;

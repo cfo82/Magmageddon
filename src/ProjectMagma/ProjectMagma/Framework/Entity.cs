@@ -39,7 +39,7 @@ namespace ProjectMagma.Framework
 
         public void AddAttribute(ContentManager content, string name, string template, string value)
         {
-            AttributeTemplateManager attributeTemplateManager = entityManager.Simulation.AttributeTemplateManager;
+            AttributeTemplateManager attributeTemplateManager = Game.GetInstance().AttributeTemplateManager;
             AttributeTemplate attributeTemplate = attributeTemplateManager.GetAttributeTemplate(template);
             Attribute attribute = attributeTemplate.CreateAttribute(name);
             attribute.Initialize(content, value);

@@ -11,9 +11,8 @@ namespace ProjectMagma.Framework
 {
     public class EntityManager : IEnumerable<Entity>
     {
-        public EntityManager(Simulation simulation)
+        public EntityManager()
         {
-            this.simulation = simulation;
             this.entities = new Dictionary<string, Entity>();
         }
 
@@ -37,14 +36,6 @@ namespace ProjectMagma.Framework
             return entities.Values.GetEnumerator();
         }
 
-        public Simulation Simulation
-        {
-            get
-            {
-                return simulation;
-            }
-        }
-
         public Entity this[string name]
         {
             get
@@ -53,7 +44,6 @@ namespace ProjectMagma.Framework
             }
         }
 
-        Simulation simulation;
         Dictionary<string, Entity> entities;
     }
 }

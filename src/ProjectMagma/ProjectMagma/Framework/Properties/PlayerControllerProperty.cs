@@ -56,25 +56,25 @@ namespace ProjectMagma.Framework
             // get all islands
             foreach (Entity island in Game.Instance.IslandManager)
             {
+                /*
                 BoundingCylinder ibc = new BoundingCylinder(island.GetVector3("position") * island.GetVector3("scale") + new Vector3(0, 10, 0),
                     island.GetVector3("position") * island.GetVector3("scale") + new Vector3(0, -10, 0), 30);
+                 */
+                BoundingCylinder ibc = calculateBoundingCylinder(Game.Instance.Content.Load<Model>(island.GetString("mesh")),
+                    island.GetVector3("position"), island.GetVector3("scale"));
 
                 if (ibc.Intersects(bs))
                 {
-                    playerIsland = island;
                     jetpackVelocity = Vector3.Zero;
+                    if(bs.Center.Y - bs.Radius < ibc.Top.Y)
+                        playerIsland = island;
                     break;
                 }
             }
 
             // check collision with lava
             Entity lava = Game.Instance.EntityManager["lava"];
-            BoundingBox lbox = (BoundingBox)(Game.Instance.Content.Load<Model>(lava.GetString("mesh")).Tag);
-            Vector3 lpos = lava.GetVector3("position");
-            Vector3 lscale = lava.GetVector3("scale");
-            lbox = new BoundingBox(lpos + lbox.Min * lscale, lpos + lbox.Max * lscale);
-
-            if (lbox.Intersects(bs))
+            if(playerPosition.Y < lava.GetVector3("position").Y)
             {
                 jetpackVelocity = Vector3.Zero;
                 playerLava = true;
@@ -96,7 +96,7 @@ namespace ProjectMagma.Framework
                 }
             }
             else
-                fuel += gameTime.ElapsedGameTime.Milliseconds * fuelRechargeMultiplicator;
+                fuel += (int) (gameTime.ElapsedGameTime.Milliseconds * fuelRechargeMultiplicator);
             if (fuel < 0)
                 fuel = 0;
             if (fuel > maxFuel)
@@ -114,9 +114,8 @@ namespace ProjectMagma.Framework
             // gravity
             if (playerIsland == null && !playerLava && jetpackVelocity.Length() <= maxGravitySpeed)
                 jetpackVelocity += gravityAcceleration * dt;
-            else
-                if (playerIsland != null)
-                    playerPosition += playerIsland.GetVector3("velocity") * dt;
+            if (playerIsland != null)
+                playerPosition += playerIsland.GetVector3("velocity") * dt;
 
             playerPosition += jetpackVelocity * dt;
 
@@ -137,32 +136,79 @@ namespace ProjectMagma.Framework
         private BoundingSphere calculateBoundingSphere(Model model, Vector3 position, Vector3 scale)
         {
             // calculate center
-            Vector3 center = scale;
-            foreach (ModelMesh mesh in model.Meshes)
-            {
-                BoundingSphere sp = mesh.BoundingSphere;
-                center *= sp.Center;
-            }
-            center /= model.Meshes.Count;
+            BoundingBox bb = calculateBoundingBox(model, position, scale);
+            Vector3 center = (bb.Min + bb.Max) / 2;
 
             // calculate radius
-            float radius = 0;
-            foreach (ModelMesh mesh in model.Meshes)
-            {
-                Vector3 dist = mesh.BoundingSphere.Center * scale;
-                float r = (dist - center).Length() + mesh.BoundingSphere.Radius * scale.Length();
-                if (r > radius)
-                    radius = r;
-            }
+            float radius = (float)Math.Sqrt(pow2(bb.Max.X - center.X) + pow2(bb.Max.Z - center.Z));
 
             return new BoundingSphere(center + position, radius);
         }
 
+        // calculates y-axis aligned bounding cylinder
+        private BoundingCylinder calculateBoundingCylinder(Model model, Vector3 position, Vector3 scale)
+        {
+            // calculate center
+            BoundingBox bb = calculateBoundingBox(model, position, scale);
+            Vector3 center = (bb.Min + bb.Max) / 2;
+
+            float top = bb.Max.Y;
+            float bottom = bb.Min.Y;
+
+            // calculate radius
+            float radius = (float) Math.Sqrt(pow2(bb.Max.X - center.X) + pow2(bb.Max.Z - center.Z));
+
+            return new BoundingCylinder(new Vector3(center.X, top, center.Z) + position, new Vector3(center.X, bottom, center.Z) + position,
+                radius);
+        }
+
+        private BoundingBox calculateBoundingBox(Model model, Vector3 position, Vector3 scale)
+        {
+            BoundingBox bb = calculateBoundingBox(model, scale);
+            return new BoundingBox(bb.Min + position, bb.Max + position);
+        }
+
+        private BoundingBox calculateBoundingBox(Model model, Vector3 scale)
+        {
+            Vector3 Max = new Vector3(float.MinValue, float.MinValue, float.MinValue);
+            Vector3 Min = new Vector3(float.MaxValue, float.MaxValue, float.MaxValue);
+
+            foreach (ModelMesh mesh in model.Meshes)
+            {
+                foreach (ModelMeshPart part in mesh.MeshParts)
+                {
+                    int stride = part.VertexStride;
+                    int numberv = part.NumVertices;
+                    VertexDeclaration test1 = part.VertexDeclaration;      // not used for now
+                    byte[] data = new byte[stride * numberv];
+
+                    mesh.VertexBuffer.GetData<byte>(data);
+
+                    for (int ndx = 0; ndx < data.Length; ndx += stride)
+                    {
+                        float floatvaluex = BitConverter.ToSingle(data, ndx) * scale.X;
+                        float floatvaluey = BitConverter.ToSingle(data, ndx + 4) * scale.Y;
+                        float floatvaluez = BitConverter.ToSingle(data, ndx + 8) * scale.Z;
+                        if (floatvaluex < Min.X) Min.X = floatvaluex;
+                        if (floatvaluex > Max.X) Max.X = floatvaluex;
+                        if (floatvaluey < Min.Y) Min.Y = floatvaluey;
+                        if (floatvaluey > Max.Y) Max.Y = floatvaluey;
+                        if (floatvaluez < Min.Z) Min.Z = floatvaluez;
+                        if (floatvaluez > Max.Z) Max.Z = floatvaluez;
+                    }
+                }
+            }
+
+            BoundingBox boundingbox = new BoundingBox(Min, Max);  // presto  
+            return boundingbox;
+        }  
+   
+
         private struct BoundingCylinder
         {
-            Vector3 c1;
-            Vector3 c2;
-            float radius;
+            private Vector3 c1;
+            private Vector3 c2;
+            private float radius;
 
             public BoundingCylinder(Vector3 c1, Vector3 c2, float radius)
             {
@@ -184,14 +230,30 @@ namespace ProjectMagma.Framework
                 return false;
             }
 
-            float pow2(float a)
+            public Vector3 Top
             {
-                return a * a;
+                get { return c1; }
             }
+
+            public Vector3 Bottom
+            {
+                get { return c2; }
+            }
+
+            public float Radius
+            {
+                get { return radius; }
+            }
+
         }
 
-        private int maxFuel = 1500;
-        private int fuelRechargeMultiplicator = 2;
+        private static float pow2(float a)
+        {
+            return a * a;
+        }
+
+        private int maxFuel = 20000; //1500;
+        private float fuelRechargeMultiplicator = 0.8f;
         private float maxJetpackSpeed = 150f;
         private float maxGravitySpeed = 450f;
         private Vector3 gravityAcceleration = new Vector3(0, -900f, 0);

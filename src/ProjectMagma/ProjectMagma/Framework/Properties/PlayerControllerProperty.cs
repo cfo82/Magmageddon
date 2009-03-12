@@ -140,7 +140,7 @@ namespace ProjectMagma.Framework
             Vector3 center = (bb.Min + bb.Max) / 2;
 
             // calculate radius
-            float radius = (float)Math.Sqrt(pow2(bb.Max.X - center.X) + pow2(bb.Max.Z - center.Z));
+            float radius = (bb.Max-bb.Min).Length();
 
             return new BoundingSphere(center + position, radius);
         }

@@ -60,7 +60,7 @@
   <Attribute name="position" template="float3" value="60 160 -30"/>
   <Attribute name="velocity" template="float3" value="0 0 0"/>
   <Attribute name="acceleration" template="float3" value="0 0 0"/>
-  <Attribute name="scale" template="float3" value="40 40 40"/>
+  <Attribute name="scale" template="float3" value="70 70 70"/>
   <Attribute name="mesh" template="string" value="Models/island_primitive"/>
   </Attributes>
    <Properties>
@@ -74,7 +74,7 @@
   <Attribute name="position" template="float3" value="-140 250 -240"/>
   <Attribute name="velocity" template="float3" value="0 0 0"/>
   <Attribute name="acceleration" template="float3" value="0 0 0"/>
-  <Attribute name="scale" template="float3" value="40 40 40"/>
+  <Attribute name="scale" template="float3" value="70 70 70"/>
   <Attribute name="mesh" template="string" value="Models/island_primitive"/>
   </Attributes>
    <Properties>

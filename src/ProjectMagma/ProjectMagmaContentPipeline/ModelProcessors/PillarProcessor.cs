@@ -13,9 +13,9 @@ namespace ProjectMagmaContentPipeline.ModelProcessors
     [ContentProcessor(DisplayName = "Magma - Pillar Processor")]
     class PillarProcessor : MoveProcessor
     {
-        protected override float CalculateHeightDiff(BoundingBox bb)
+        protected override float CalculateHeightDiff(ref BoundingBox bb)
         {
-            return 0.0f - bb.min.Y;
+            return 0.0f - bb.Min.Y;
         }
     }
 }

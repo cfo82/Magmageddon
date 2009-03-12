@@ -13,9 +13,9 @@ namespace ProjectMagmaContentPipeline.ModelProcessors
     [ContentProcessor(DisplayName = "Magma - Lava Processor")]
     class LavaProcessor : MoveProcessor
     {
-        protected override float CalculateHeightDiff(BoundingBox bb)
+        protected override float CalculateHeightDiff(ref BoundingBox bb)
         {
-            return 0.0f - bb.max.Y;
+            return 0.0f - bb.Max.Y;
         }
     }
 }

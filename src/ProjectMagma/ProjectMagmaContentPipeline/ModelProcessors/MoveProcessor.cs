@@ -15,52 +15,44 @@ namespace ProjectMagmaContentPipeline.ModelProcessors
 {
     public abstract class MoveProcessor : ModelProcessor
     {
-        protected class BoundingBox
-        {
-            public BoundingBox()
-            {
-                min = new Vector3(Single.MaxValue, Single.MaxValue, Single.MaxValue);
-                max = new Vector3(Single.MinValue, Single.MinValue, Single.MinValue);
-            }
-
-            public Vector3 min;
-            public Vector3 max;
-        }
-
         public override ModelContent Process(NodeContent input, ContentProcessorContext context)
         {
             // calculate bounds because changes are based on the bounding box
-            BoundingBox bb = new BoundingBox();
-            CalculateBoundingBox(input, context, bb);
+            BoundingBox bb = new BoundingBox(
+                new Vector3(Single.MaxValue, Single.MaxValue, Single.MaxValue),
+                new Vector3(Single.MinValue, Single.MinValue, Single.MinValue));
+            CalculateBoundingBox(input, context, ref bb);
 
             // first center the models (I think they are actually already centered...
-            Vector3 diff = Vector3.Zero - (bb.min + ((bb.max - bb.min) / 2.0f));
+            Vector3 diff = Vector3.Zero - (bb.Min + ((bb.Max - bb.Min) / 2.0f));
             MoveModel(input, context, diff);
-            bb.max += diff;
-            bb.min += diff;
+            bb.Max += diff;
+            bb.Min += diff;
 
             // now that the models are centered scale them
-            float scaleFactor = bb.max.X;
-            if (bb.max.Y > scaleFactor) scaleFactor = bb.max.Y;
-            if (bb.max.Z > scaleFactor) scaleFactor = bb.max.Z;
+            float scaleFactor = bb.Max.X;
+            if (bb.Max.Y > scaleFactor) scaleFactor = bb.Max.Y;
+            if (bb.Max.Z > scaleFactor) scaleFactor = bb.Max.Z;
             scaleFactor = 1.0f / scaleFactor;
             ScaleModel(input, context, scaleFactor);
-            bb.max *= scaleFactor;
-            bb.min *= scaleFactor;
+            bb.Max *= scaleFactor;
+            bb.Min *= scaleFactor;
 
             // now let the subclass decide on how to modify the box (aligning bottom/top to zero)
-            float heightDiff = CalculateHeightDiff(bb);
+            float heightDiff = CalculateHeightDiff(ref bb);
             MoveModel(input, context, new Vector3(0, heightDiff, 0));
 
-            return base.Process(input, context);
+            ModelContent modelContent = base.Process(input, context);
+            modelContent.Tag = bb;
+            return modelContent;
         }
 
-        protected abstract float CalculateHeightDiff(BoundingBox bb);
+        protected abstract float CalculateHeightDiff(ref BoundingBox bb);
 
         private void CalculateBoundingBox(
             NodeContent input,
             ContentProcessorContext context,
-            BoundingBox box
+            ref BoundingBox box
             )
         {
             MeshContent mesh = input as MeshContent;
@@ -68,19 +60,19 @@ namespace ProjectMagmaContentPipeline.ModelProcessors
             {
                 foreach (Vector3 pos in mesh.Positions)
                 {
-                    if (pos.X < box.min.X) { box.min.X = pos.X; }
-                    if (pos.Y < box.min.Y) { box.min.Y = pos.Y; }
-                    if (pos.Z < box.min.Z) { box.min.Z = pos.Z; }
-                    if (pos.X > box.max.X) { box.max.X = pos.X; }
-                    if (pos.Y > box.max.Y) { box.max.Y = pos.Y; }
-                    if (pos.Z > box.max.Z) { box.max.Z = pos.Z; }
+                    if (pos.X < box.Min.X) { box.Min.X = pos.X; }
+                    if (pos.Y < box.Min.Y) { box.Min.Y = pos.Y; }
+                    if (pos.Z < box.Min.Z) { box.Min.Z = pos.Z; }
+                    if (pos.X > box.Max.X) { box.Max.X = pos.X; }
+                    if (pos.Y > box.Max.Y) { box.Max.Y = pos.Y; }
+                    if (pos.Z > box.Max.Z) { box.Max.Z = pos.Z; }
                 }
             }
 
             // Go through all childs
             foreach (NodeContent child in input.Children)
             {
-                CalculateBoundingBox(child, context, box);
+                CalculateBoundingBox(child, context, ref box);
             }
         }
 

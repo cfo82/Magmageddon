@@ -47,15 +47,12 @@ namespace ProjectMagma
         private PillarManager pillarManager;
         private IslandManager islandManager;
 
-        private Random rand;
         private static Game instance;
 
         private Game()
         {
             graphics = new GraphicsDeviceManager(this);
             Content.RootDirectory = "Content";
-
-            rand = new Random(485394);
 
             entityManager = new EntityManager();
             pillarManager = new PillarManager();

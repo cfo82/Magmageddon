@@ -65,12 +65,21 @@ namespace ProjectMagma.Framework
                     effect.View = Game.Instance.View;
                     effect.Projection = Game.Instance.Projection;
                     effect.World = transforms[mesh.ParentBone.Index] * world;
-                }
 
-                mesh.Draw();
+                    //effect.Begin();
+                    //foreach(EffectPass effectPass in effect.CurrentTechnique.Passes)
+                    //{
+                    //    effectPass.Begin();
+                        mesh.Draw();
+                    //    effectPass.End();
+                    //}
+                    //effect.End();
+                }
             }
         }
 
         private Model model;
+
+        public static GraphicsDevice device; // HACK
     }
 }

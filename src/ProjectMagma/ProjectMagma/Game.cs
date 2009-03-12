@@ -40,9 +40,13 @@ namespace ProjectMagma
 
         private static Game instance;
 
+        private Effect testEffect;
+
         private Game()
         {
             graphics = new GraphicsDeviceManager(this);
+            RenderProperty.device = graphics.GraphicsDevice;
+            Window.Title = "Project Magma";
             Content.RootDirectory = "Content";
 
             entityManager = new EntityManager();
@@ -116,6 +120,8 @@ namespace ProjectMagma
             spriteBatch = new SpriteBatch(GraphicsDevice);
             
             LevelData levelData = Content.Load<LevelData>("Level/TestLevel");
+
+            //testEffect = Content.Load<Effect>("Effects/TestEffect");
 
             foreach (EntityData entityData in levelData.entities)
             {

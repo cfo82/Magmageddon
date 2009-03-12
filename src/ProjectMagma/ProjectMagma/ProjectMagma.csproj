@@ -84,7 +84,9 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Framework\Attributes\FloatAttribute.cs" />
     <Compile Include="Framework\Attributes\StringAttribute.cs" />
+    <Compile Include="Framework\Event\FloatChangeHandler.cs" />
     <Compile Include="Framework\Event\IntChangeHandler.cs" />
     <Compile Include="Framework\Event\StringChangeHandler.cs" />
     <Compile Include="Framework\Event\Vector2ChangeHandler.cs" />

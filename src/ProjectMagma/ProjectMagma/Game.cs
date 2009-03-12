@@ -138,7 +138,8 @@ namespace ProjectMagma
                             e.AddAttribute("jetpackVelocity", "float3", "0 0 0");
                             e.AddAttribute("energy", "int", "100");
                             e.AddAttribute("health", "int", "100");
-                        }
+                            e.AddAttribute("y_rotation", "float", "0");
+                        }        
             }
 
             Viewport viewport = graphics.GraphicsDevice.Viewport;

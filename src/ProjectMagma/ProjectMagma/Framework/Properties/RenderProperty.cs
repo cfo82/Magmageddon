@@ -33,15 +33,26 @@ namespace ProjectMagma.Framework
         {
             Debug.Assert(entity.HasAttribute("mesh"));
             Debug.Assert(entity.HasAttribute("position"));
+            
+            Matrix world = Matrix.Identity;
 
-            Vector3 position = entity.GetVector3("position");
-            Vector3 scale = new Vector3(1, 1, 1);
+            // scaling
             if (entity.HasAttribute("scale"))
             {
-                scale = entity.GetVector3("scale");
+                Vector3 scale = entity.GetVector3("scale");
+                world *= Matrix.CreateScale(scale);
             }
 
-            Matrix world = Matrix.CreateScale(scale) * Matrix.CreateTranslation(position);
+            // y rotation (if we need other rotations, these are yet to be added)
+            if (entity.HasAttribute("y_rotation"))
+            {
+                float y_rotation = entity.GetFloat("y_rotation");
+                world *= Matrix.CreateRotationY(y_rotation);
+            }
+
+            // translation
+            Vector3 position = entity.GetVector3("position");
+            world *= Matrix.CreateTranslation(position);
 
             Matrix[] transforms = new Matrix[model.Bones.Count];
             model.CopyAbsoluteBoneTransformsTo(transforms);

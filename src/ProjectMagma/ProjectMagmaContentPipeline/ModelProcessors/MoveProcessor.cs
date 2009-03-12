@@ -70,7 +70,7 @@ namespace ProjectMagmaContentPipeline.ModelProcessors
                 }
             }
 
-            // Go through all childs
+            // Go through all children
             foreach (NodeContent child in input.Children)
             {
                 CalculateBoundingBox(child, context, ref box);
@@ -92,7 +92,7 @@ namespace ProjectMagmaContentPipeline.ModelProcessors
                 }
             }
 
-            // Go through all childs
+            // Go through all children
             foreach (NodeContent child in input.Children)
             {
                 MoveModel(child, context, diff);

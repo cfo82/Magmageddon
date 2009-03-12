@@ -28,13 +28,15 @@ namespace ProjectMagma.Framework
         private void OnUpdate(Entity entity, GameTime gameTime)
         {
             float dt = ((float)gameTime.ElapsedGameTime.Milliseconds)/1000.0f;
-
             PlayerIndex playerIndex = (PlayerIndex)entity.GetInt("gamePadIndex");
             Vector3 jetpackAcceleration = entity.GetVector3("jetpackAcceleration");
 
             Vector3 playerPosition = entity.GetVector3("position");
             Vector3 jetpackVelocity = entity.GetVector3("jetpackVelocity");
             Model playerModel = Game.Instance.Content.Load<Model>(entity.GetString("mesh"));
+
+            // get input
+            controllerInput.Update(playerIndex);
 
             // detect collision with islands
             Entity playerIsland = null;
@@ -73,14 +75,7 @@ namespace ProjectMagma.Framework
                 playerLava = true;
             }
 
-            GamePadState gamePadState = GamePad.GetState(playerIndex);
-            KeyboardState keyboardState = Keyboard.GetState(playerIndex);
-
-            bool a_pressed =
-                gamePadState.Buttons.A == ButtonState.Pressed ||
-                keyboardState.IsKeyDown(Keys.Space);
-
-            if (a_pressed)
+            if (controllerInput.aPressed)
             {
                 jetpackVelocity += jetpackAcceleration * dt;
 
@@ -91,7 +86,7 @@ namespace ProjectMagma.Framework
                 }
             }
 
-            // graviation
+            // gravity
             if (playerIsland == null && !playerLava && jetpackVelocity.Length() <= maxGravitySpeed)
                 jetpackVelocity += gravityAcceleration * dt;
             else
@@ -100,9 +95,13 @@ namespace ProjectMagma.Framework
 
             playerPosition += jetpackVelocity * dt;
 
-            // moving
-            playerPosition.X += GamePad.GetState(playerIndex).ThumbSticks.Left.X * playerXAxisMultiplier;
-            playerPosition.Z -= GamePad.GetState(playerIndex).ThumbSticks.Left.Y * playerZAxisMultiplier;
+            // XZ movement
+            playerPosition.X += controllerInput.leftStickX;
+            playerPosition.Z -= controllerInput.leftStickY;
+            if (controllerInput.leftStickPressed)
+            {
+                entity.SetFloat("y_rotation", (float)Math.Atan2(controllerInput.leftStickX, -controllerInput.leftStickY));
+            }
 
             // update entity attributes
             entity.SetVector3("position", playerPosition);
@@ -139,5 +138,77 @@ namespace ProjectMagma.Framework
 
         private int playerXAxisMultiplier = 1;
         private int playerZAxisMultiplier = 2;
+
+        struct ControllerInput
+        {
+            public void Update(PlayerIndex playerIndex)
+            {
+                GamePadState gamePadState = GamePad.GetState(playerIndex);
+                KeyboardState keyboardState = Keyboard.GetState(playerIndex);
+
+                #region joysticks
+
+                leftStickX = gamePadState.ThumbSticks.Left.X;
+                leftStickY = gamePadState.ThumbSticks.Left.Y;
+                leftStickPressed = leftStickX != 0.0f || leftStickY != 0.0f;
+
+                if(!leftStickPressed)
+                {
+                    if(keyboardState.IsKeyDown(Keys.Left))
+                    {
+                        leftStickX = gamepadEmulationValue;
+                        leftStickPressed = true;
+                    } 
+                    else
+                        if(keyboardState.IsKeyDown(Keys.Right))
+                        {
+                            leftStickX = -gamepadEmulationValue;
+                            leftStickPressed = true;
+                        }
+                    
+                    if(keyboardState.IsKeyDown(Keys.Up))
+                    {
+                        leftStickY = -gamepadEmulationValue;
+                        leftStickPressed = true;
+                    } 
+                    else
+                        if(keyboardState.IsKeyDown(Keys.Down))
+                        {
+                            leftStickY = gamepadEmulationValue;
+                            leftStickPressed = true;
+                        }
+                }
+
+                #endregion
+
+                #region action buttons
+
+                aPressed =
+                    gamePadState.Buttons.A == ButtonState.Pressed ||
+                    keyboardState.IsKeyDown(Keys.Space);
+
+                #endregion
+
+            }
+
+            // in order to use the following variables as private with getters/setters, do
+            // we really need 15 lines per variable?!
+            
+            // joysticks
+            public float leftStickX, leftStickY;
+            public bool leftStickPressed;
+            public float rightStickX, rightStickY;
+            public bool rightStickPressed;
+
+            // buttons
+            public bool aPressed, bPressed, xPressed, yPressed;
+            public bool ltPressed, rtPressed;
+            public bool lbPressed, rbPressed;
+            public bool startPressed;
+
+            private static float gamepadEmulationValue = -1f;
+        }
+
+        ControllerInput controllerInput;
     }
 }

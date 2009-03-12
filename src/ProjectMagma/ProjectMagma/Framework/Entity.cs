@@ -57,6 +57,10 @@ namespace ProjectMagma.Framework
             {
                 attribute = new IntAttribute(name);
             }
+            else if (template == "float")
+            {
+                attribute = new FloatAttribute(name);
+            }
             else if (template == "float2")
             {
                 attribute = new Vector2Attribute(name);
@@ -87,6 +91,12 @@ namespace ProjectMagma.Framework
             return (Attributes[attribute] as IntAttribute) != null;
         }
 
+        public bool IsFloat(string attribute)
+        {
+            Debug.Assert(HasAttribute(attribute));
+            return (Attributes[attribute] as FloatAttribute) != null;
+        }
+
         public bool IsVector2(string attribute)
         {
             Debug.Assert(HasAttribute(attribute));
@@ -113,6 +123,13 @@ namespace ProjectMagma.Framework
             return (Attributes[attribute] as IntAttribute).Value;
         }
 
+        public float GetFloat(string attribute)
+        {
+            Debug.Assert(HasAttribute(attribute));
+            Debug.Assert(IsFloat(attribute));
+            return (Attributes[attribute] as FloatAttribute).Value;
+        }
+
         public Vector2 GetVector2(string attribute)
         {
             Debug.Assert(HasAttribute(attribute));
@@ -130,6 +147,11 @@ namespace ProjectMagma.Framework
         public void SetInt(string attribute, int value)
         {
             (Attributes[attribute] as IntAttribute).Value = value;
+        }
+
+        public void SetFloat(string attribute, float value)
+        {
+            (Attributes[attribute] as FloatAttribute).Value = value;
         }
 
         public void SetVector2(string attribute, Vector2 value)

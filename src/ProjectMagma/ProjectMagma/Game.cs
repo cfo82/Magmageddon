@@ -133,7 +133,7 @@ namespace ProjectMagma
             simulation.AttributeTemplateManager.AddAttributeTemplate("General.CollisionCount", typeof(IntAttribute).FullName);
             simulation.AttributeTemplateManager.AddAttributeTemplate("General.PlayerResource", typeof(IntAttribute).FullName);
            
-            foreach (Entity e in simulation.EntityManager.Entities.Values)
+            foreach (Entity e in simulation.EntityManager)
             {
                 if (e.Name.StartsWith("island"))
                 {
@@ -143,7 +143,7 @@ namespace ProjectMagma
                 }
             }
 
-            foreach (Entity e in simulation.EntityManager.Entities.Values)
+            foreach (Entity e in simulation.EntityManager)
             {
                 if (e.Name.StartsWith("pillar"))
                 {
@@ -162,7 +162,7 @@ namespace ProjectMagma
                                                              aspectRatio, 10, 10000);
             // TODO: use this.Content to load your game content here
 
-            Entity player = simulation.EntityManager.Entities["player"];
+            Entity player = simulation.EntityManager["player"];
 
             playerPosition = player.GetVector3("position");
             jetpackAcceleration = player.GetVector3("jetpackAcceleration");
@@ -191,7 +191,7 @@ namespace ProjectMagma
             if (GamePad.GetState(PlayerIndex.One).Buttons.Back == ButtonState.Pressed)
                 this.Exit();
 
-            foreach (Entity e in simulation.EntityManager.Entities.Values)
+            foreach (Entity e in simulation.EntityManager)
             {
                 e.OnUpdate(gameTime);
             }
@@ -227,7 +227,7 @@ namespace ProjectMagma
             playerPosition.X += GamePad.GetState(PlayerIndex.One).ThumbSticks.Left.X * playerXAxisMultiplier;
             playerPosition.Z -= GamePad.GetState(PlayerIndex.One).ThumbSticks.Left.Y * playerZAxisMultiplier;
 
-            simulation.EntityManager.Entities["player"].SetVector3("position", playerPosition);
+            simulation.EntityManager["player"].SetVector3("position", playerPosition);
         }
 
         protected void Draw(GameTime gameTime, Model model)
@@ -294,7 +294,7 @@ namespace ProjectMagma
             //Draw(gameTime, pillarPrimitive);
             //Draw(gameTime, playerPrimitive);
 
-            foreach (Entity e in simulation.EntityManager.Entities.Values)
+            foreach (Entity e in simulation.EntityManager)
             {
                 if (!e.HasAttribute("mesh") || (e.Attributes["mesh"] as MeshAttribute) == null ||
                     !e.HasAttribute("position") || !e.IsVector3("position") ||

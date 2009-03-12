@@ -1,13 +1,15 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Content;
 using ProjectMagma.Shared.Serialization.LevelData;
 
 namespace ProjectMagma.Framework
 {
-    public class EntityManager
+    public class EntityManager : IEnumerable<Entity>
     {
         public EntityManager(Simulation simulation)
         {
@@ -25,6 +27,16 @@ namespace ProjectMagma.Framework
             this.entities.Add(entity.Name, entity);
         }
 
+        public IEnumerator<Entity> GetEnumerator()
+        {
+            return entities.Values.GetEnumerator();
+        }
+
+        IEnumerator IEnumerable.GetEnumerator()
+        {
+            return entities.Values.GetEnumerator();
+        }
+
         public Simulation Simulation
         {
             get
@@ -33,11 +45,11 @@ namespace ProjectMagma.Framework
             }
         }
 
-        public Dictionary<string, Entity> Entities
+        public Entity this[string name]
         {
             get
             {
-                return entities;
+                return entities[name];
             }
         }
 

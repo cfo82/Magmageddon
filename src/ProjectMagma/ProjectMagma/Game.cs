@@ -36,6 +36,7 @@ namespace ProjectMagma
         private EntityManager entityManager;
         private PillarManager pillarManager;
         private IslandManager islandManager;
+        private IceSpikeManager iceSpikeManager;
 
         private static Game instance;
 
@@ -45,8 +46,11 @@ namespace ProjectMagma
             Content.RootDirectory = "Content";
 
             entityManager = new EntityManager();
+
+            // changed by dpk on mar 12, on advice by obi
             pillarManager = new PillarManager();
             islandManager = new IslandManager();
+            iceSpikeManager = new IceSpikeManager();
         }
 
         /// <summary>
@@ -115,7 +119,7 @@ namespace ProjectMagma
 
             foreach (EntityData entityData in levelData.entities)
             {
-                entityManager.AddEntity(Content, entityData);
+                entityManager.Add(Content, entityData);
             }
 
             int gi = 0;

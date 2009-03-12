@@ -17,7 +17,7 @@ namespace ProjectMagma
             this.entities = new Dictionary<string, Entity>();
         }
 
-        public void AddEntity(ContentManager content, EntityData entityData)
+        public void Add(ContentManager content, EntityData entityData)
         {
             Entity entity = new Entity(this, entityData.name);
             foreach (AttributeData attributeData in entityData.attributes)

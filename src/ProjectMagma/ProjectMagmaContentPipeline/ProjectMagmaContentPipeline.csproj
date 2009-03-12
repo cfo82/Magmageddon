@@ -106,6 +106,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Level\LevelProcessor.cs" />
+    <Compile Include="ModelProcessors\IceSpikeProcessor.cs" />
     <Compile Include="ModelProcessors\IslandProcessor.cs" />
     <Compile Include="ModelProcessors\LavaProcessor.cs" />
     <Compile Include="ModelProcessors\MoveProcessor.cs" />

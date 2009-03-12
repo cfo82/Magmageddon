@@ -84,6 +84,7 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="IceSpikeManager.cs" />
     <Compile Include="Framework\Attributes\FloatAttribute.cs" />
     <Compile Include="Framework\Attributes\StringAttribute.cs" />
     <Compile Include="Framework\Event\FloatChangeHandler.cs" />
@@ -92,6 +93,7 @@
     <Compile Include="Framework\Event\Vector2ChangeHandler.cs" />
     <Compile Include="Framework\Event\Vector3ChangeHandler.cs" />
     <Compile Include="Framework\Event\DrawHandler.cs" />
+    <Compile Include="Framework\Properties\IceSpikeControllerProperty.cs" />
     <Compile Include="Framework\Properties\PlayerControllerProperty.cs" />
     <Compile Include="Framework\Properties\RenderProperty.cs" />
     <Compile Include="PillarManager.cs" />
@@ -160,9 +162,6 @@
       <Project>{68FEE9A0-EA37-4321-B485-3D5B1DED238D}</Project>
       <Name>ProjectMagmaShared</Name>
     </ProjectReference>
-  </ItemGroup>
-  <ItemGroup>
-    <Folder Include="Framework\NewFolder1\" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <Import Project="$(MSBuildExtensionsPath)\Microsoft\XNA Game Studio\Microsoft.Xna.GameStudio.targets" />

@@ -53,13 +53,10 @@ namespace ProjectMagma.Framework
             // get all islands
             foreach (Entity island in Game.Instance.IslandManager)
             {
-                BoundingSphere ibs = calculateBoundingSphere(Game.Instance.Content.Load<Model>(island.GetString("mesh")),
-                    island.GetVector3("position"), island.GetVector3("scale"));
-                BoundingBox ibb = (BoundingBox)Game.Instance.Content.Load<Model>(island.GetString("mesh")).Tag;
-                ibb = new BoundingBox(ibb.Min * island.GetVector3("scale") + island.GetVector3("position"), 
-                    ibb.Max * island.GetVector3("scale") + island.GetVector3("position"));
+                BoundingCylinder ibc = new BoundingCylinder(island.GetVector3("position") + new Vector3(0, 10, 0),
+                    island.GetVector3("position") + new Vector3(0, -10, 0), 30);
 
-                if (ibs.Intersects(bs) && ibb.Intersects(bs))
+                if (ibc.Intersects(bs))
                 {
                     playerIsland = island;
                     jetpackVelocity = Vector3.Zero;
@@ -111,8 +108,8 @@ namespace ProjectMagma.Framework
             playerPosition += jetpackVelocity * dt;
 
             // XZ movement
-            playerPosition.X += controllerInput.leftStickX;
-            playerPosition.Z -= controllerInput.leftStickY;
+            playerPosition.X += controllerInput.leftStickX * playerXAxisMultiplier;
+            playerPosition.Z -= controllerInput.leftStickY * playerZAxisMultiplier;
             if (controllerInput.leftStickPressed)
             {
                 entity.SetFloat("y_rotation", (float)Math.Atan2(controllerInput.leftStickX, -controllerInput.leftStickY));
@@ -146,6 +143,39 @@ namespace ProjectMagma.Framework
 
             return new BoundingSphere(center + position, radius);
         }
+
+        private struct BoundingCylinder
+        {
+            Vector3 c1;
+            Vector3 c2;
+            float radius;
+
+            public BoundingCylinder(Vector3 c1, Vector3 c2, float radius)
+            {
+                this.c1 = c1;
+                this.c2 = c2;
+                this.radius = radius;
+            }
+
+            public bool Intersects(BoundingSphere bs)
+            {
+                // check collision on y axis
+                if (bs.Center.Y - bs.Radius < c1.Y && bs.Center.Y + bs.Radius > c2.Y)
+                {
+                    // check collision in xz
+                    if(pow2(bs.Center.X-c1.X) + pow2(bs.Center.Z-c1.Z) < pow2(bs.Radius + radius))
+                        return true; 
+                }
+
+                return false;
+            }
+
+            float pow2(float a)
+            {
+                return a * a;
+            }
+        }
+
 
         private float maxJetpackSpeed = 150f;
         private float maxGravitySpeed = 450f;

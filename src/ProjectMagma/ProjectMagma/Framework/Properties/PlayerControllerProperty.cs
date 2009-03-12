@@ -18,11 +18,16 @@ namespace ProjectMagma.Framework
         public void OnAttached(Entity entity)
         {
             entity.Update += new UpdateHandler(OnUpdate);
+            entity.AddAttribute("y_rotation", "float", "0");
+            entity.AddAttribute("jetpackVelocity", "float3", "0 0 0");
+            entity.AddAttribute("energy", "int", "100");
+            entity.AddAttribute("health", "int", "100");
         }
 
         public void OnDetached(Entity entity)
         {
             entity.Update -= new UpdateHandler(OnUpdate);
+            // TODO: remove attribute!
         }
 
         private void OnUpdate(Entity entity, GameTime gameTime)
@@ -75,6 +80,7 @@ namespace ProjectMagma.Framework
                 playerLava = true;
             }
 
+            // jetpack
             if (controllerInput.aPressed)
             {
                 jetpackVelocity += jetpackAcceleration * dt;
@@ -84,6 +90,15 @@ namespace ProjectMagma.Framework
                     jetpackVelocity.Normalize();
                     jetpackVelocity *= maxJetpackSpeed;
                 }
+            }
+
+            // ice spike
+            if (controllerInput.xPressed)
+            {
+                // HACK!
+                EntityManager temporaryIceSpikeManager; // to satisfy the entity constructor
+                int iceSpikeCount = 0; // this should later be in the corresponding manager
+                Entity iceSpike = new Entity(null, "icespike" + (++iceSpikeCount));
             }
 
             // gravity
@@ -186,6 +201,10 @@ namespace ProjectMagma.Framework
                 aPressed =
                     gamePadState.Buttons.A == ButtonState.Pressed ||
                     keyboardState.IsKeyDown(Keys.Space);
+
+                xPressed =
+                    gamePadState.Buttons.X == ButtonState.Pressed ||
+                    keyboardState.IsKeyDown(Keys.Enter);
 
                 #endregion
 

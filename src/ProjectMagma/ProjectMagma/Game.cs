@@ -127,7 +127,6 @@ namespace ProjectMagma
             {
                 if (e.Name.StartsWith("island"))
                 {
-                    e.AddAttribute("collisionCount", "int", "0");
                     islandManager.Add(e);
                 }
                 else
@@ -138,12 +137,8 @@ namespace ProjectMagma
                     else
                         if (e.Name.StartsWith("player"))
                         {
-                            e.AddAttribute("gamePadIndex", "int", ""+(gi++));
-                            e.AddAttribute("jetpackVelocity", "float3", "0 0 0");
-                            e.AddAttribute("energy", "int", "100");
-                            e.AddAttribute("health", "int", "100");
-                            e.AddAttribute("y_rotation", "float", "0");
-                        }        
+                            e.AddAttribute("gamePadIndex", "int", "" + (gi++));
+                        }
             }
 
             Viewport viewport = graphics.GraphicsDevice.Viewport;

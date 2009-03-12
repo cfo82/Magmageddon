@@ -18,9 +18,9 @@ namespace ProjectMagmaContentPipeline.ModelProcessors
         public override ModelContent Process(NodeContent input, ContentProcessorContext context)
         {
             // calculate bounds because changes are based on the bounding box
-            BoundingBox bb = new BoundingBox(
-                new Vector3(Single.MaxValue, Single.MaxValue, Single.MaxValue),
-                new Vector3(Single.MinValue, Single.MinValue, Single.MinValue));
+            BoundingBox bb = new BoundingBox();
+            bb.Max = new Vector3(Single.MaxValue, Single.MaxValue, Single.MaxValue);
+            bb.Min = new Vector3(Single.MinValue, Single.MinValue, Single.MinValue);
             CalculateBoundingBox(input, context, ref bb);
 
             // first center the models (I think they are actually already centered...

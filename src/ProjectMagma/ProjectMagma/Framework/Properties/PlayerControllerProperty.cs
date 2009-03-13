@@ -142,7 +142,7 @@ namespace ProjectMagma.Framework
             // calculate radius
             float radius = (bb.Max-bb.Min).Length();
 
-            return new BoundingSphere(center + position, radius);
+            return new BoundingSphere(center, radius);
         }
 
         // calculates y-axis aligned bounding cylinder
@@ -156,9 +156,12 @@ namespace ProjectMagma.Framework
             float bottom = bb.Min.Y;
 
             // calculate radius
-            float radius = (float) Math.Sqrt(pow2(bb.Max.X - center.X) + pow2(bb.Max.Z - center.Z));
+            // a valid cylinder here is an extruded circle (not an oval) therefore extents in 
+            // x- and z-direction should be equal.
+            float radius = bb.Max.X - center.X;
 
-            return new BoundingCylinder(new Vector3(center.X, top, center.Z) + position, new Vector3(center.X, bottom, center.Z) + position,
+            return new BoundingCylinder(new Vector3(center.X, top, center.Z),
+                new Vector3(center.X, bottom, center.Z),
                 radius);
         }
 
@@ -170,7 +173,12 @@ namespace ProjectMagma.Framework
 
         private BoundingBox calculateBoundingBox(Model model, Vector3 scale)
         {
-            Vector3 Max = new Vector3(float.MinValue, float.MinValue, float.MinValue);
+            BoundingBox bb = (BoundingBox)model.Tag;
+            bb.Min = new Vector3(bb.Min.X * scale.X, bb.Min.Y * scale.Y, bb.Min.Z * scale.Z);
+            bb.Max = new Vector3(bb.Max.X * scale.X, bb.Max.Y * scale.Y, bb.Max.Z * scale.Z);
+            return bb;
+
+            /*Vector3 Max = new Vector3(float.MinValue, float.MinValue, float.MinValue);
             Vector3 Min = new Vector3(float.MaxValue, float.MaxValue, float.MaxValue);
 
             foreach (ModelMesh mesh in model.Meshes)
@@ -200,7 +208,7 @@ namespace ProjectMagma.Framework
             }
 
             BoundingBox boundingbox = new BoundingBox(Min, Max);  // presto  
-            return boundingbox;
+            return boundingbox;*/
         }  
    
 

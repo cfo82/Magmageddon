@@ -150,6 +150,14 @@ namespace ProjectMagma
                         }
             }
 
+            // preload sounds
+            foreach (Entity entity in Game.Instance.EntityManager)
+            {
+                if (entity.Name.StartsWith("powerup"))
+                    Game.Instance.Content.Load<SoundEffect>("Sounds/" + entity.GetString("pickupSound"));
+            }
+
+
             Viewport viewport = graphics.GraphicsDevice.Viewport;
 
             float aspectRatio = (float)viewport.Width / (float)viewport.Height;

@@ -88,7 +88,12 @@ namespace ProjectMagmaContentPipeline.ModelProcessors
             {
                 for (int i = 0; i < mesh.Positions.Count; ++i)
                 {
-                    mesh.Positions[i] = mesh.Positions[i] + diff;
+                    Matrix inverseTransform = Matrix.Invert(mesh.AbsoluteTransform);
+                    Vector3 position = Vector3.Transform(mesh.Positions[i], mesh.AbsoluteTransform);
+                    position += diff;
+                    position = Vector3.Transform(position, inverseTransform);
+
+                    mesh.Positions[i] = position;
                 }
             }
 
@@ -109,16 +114,12 @@ namespace ProjectMagmaContentPipeline.ModelProcessors
             {
                 for (int i = 0; i < mesh.Positions.Count; ++i)
                 {
-                    Vector3 translation;
-                    Quaternion rotation;
-                    Vector3 scale;
+                    Matrix inverseTransform = Matrix.Invert(mesh.AbsoluteTransform);
+                    Vector3 position = Vector3.Transform(mesh.Positions[i], mesh.AbsoluteTransform);
+                    position *= scaleFactor;
+                    position = Vector3.Transform(position, inverseTransform);
 
-                    mesh.Transform.Decompose(out scale, out rotation, out translation);
-                    translation *= scaleFactor;
-
-                    mesh.Transform = Matrix.CreateScale(scale) * Matrix.CreateFromQuaternion(rotation) * Matrix.CreateTranslation(translation);
-
-                    mesh.Positions[i] = mesh.Positions[i] * scaleFactor;
+                    mesh.Positions[i] = position;
                 }
             }
 

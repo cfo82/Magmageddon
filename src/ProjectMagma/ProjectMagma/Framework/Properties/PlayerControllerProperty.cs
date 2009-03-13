@@ -6,6 +6,7 @@ using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 using Microsoft.Xna.Framework.Media;
+using System.Diagnostics;
 
 namespace ProjectMagma.Framework
 {
@@ -106,15 +107,46 @@ namespace ProjectMagma.Framework
 
                 if (ibc.Intersects(bs))
                 {
-                    if (bs.Center.Y + bs.Radius > ibc.Top.Y)
+                    if (bs.Center.Y - bs.Radius < ibc.Top.Y
+                        && bs.Center.Y + bs.Radius > ibc.Top.Y)
                     {
-                        playerPosition.Y = ibc.Top.Y + bs.Radius;
-                        if(activeIsland == null)
+//                        Console.WriteLine("collision from top");
+
+                        // correct position to exact touching
+                        playerPosition.Y += (bs.Radius - (bs.Center.Y - ibc.Top.Y));
+                        if (activeIsland == null) // add handler
                             ((Vector3Attribute)island.Attributes["position"]).ValueChanged += new Vector3ChangeHandler(islandPositionHandler);
-                        newActiveIsland = island;
+                        newActiveIsland = island; // mark as active
                     }
                     else
-                        playerPosition = originalPosition;
+                    {
+                        // get pseudo center vectors
+                        Vector3 c = bs.Center;
+                        Vector3 cc = ibc.Top;
+                        c.Y = 0; cc.Y = 0;
+
+                        if ((c - cc).Length() > ibc.Radius)
+                        {
+//                            Console.WriteLine("collision on xz");
+
+                            // pushback in xz
+                            Vector3 dir = c - cc;
+                            float push = (bs.Radius + ibc.Radius) - dir.Length();
+
+                            dir.Normalize();
+                            dir *= push;
+
+                            playerPosition += dir;
+                        }
+                        else
+                        {
+//                            Console.WriteLine("collision from bottom");
+
+                            // pushback on y
+                            float ydist = bs.Radius - (ibc.Bottom.Y - bs.Center.Y);
+                            playerPosition.Y -= ydist;
+                        }
+                    }
                     break;
                 }
             }
@@ -129,12 +161,23 @@ namespace ProjectMagma.Framework
                 BoundingCylinder ibc = new BoundingCylinder(island.GetVector3("position") * island.GetVector3("scale") + new Vector3(0, 10, 0),
                     island.GetVector3("position") * island.GetVector3("scale") + new Vector3(0, -10, 0), 30);
                  */
-                BoundingCylinder ibc = calculateBoundingCylinder(Game.Instance.Content.Load<Model>(pillar.GetString("mesh")),
+                BoundingCylinder pbc = calculateBoundingCylinder(Game.Instance.Content.Load<Model>(pillar.GetString("mesh")),
                     pillar.GetVector3("position"), pillar.GetVector3("scale"));
 
-                if (ibc.Intersects(bs))
+                if (pbc.Intersects(bs))
                 {
-                    playerPosition = originalPosition;
+                    // get center vectors
+                    Vector3 c = bs.Center;
+                    Vector3 cc = pbc.Top;
+                    c.Y = 0; cc.Y = 0;
+
+                    // and direction
+                    Vector3 dir = c - cc;
+                    float push = (bs.Radius + pbc.Radius) - dir.Length();
+                    dir.Normalize();
+                    dir *= push;
+
+                    playerPosition += dir;
                     break;
                 }
             }
@@ -155,7 +198,8 @@ namespace ProjectMagma.Framework
         private void islandPositionHandler(Vector3Attribute sender, Vector3 oldValue, Vector3 newValue)
         {
             Vector3 position = player.GetVector3("position");
-            position += newValue - oldValue;
+            Vector3 delta = newValue - oldValue;
+            position += delta;
             player.SetVector3("position", position);
         }
 

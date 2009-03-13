@@ -42,11 +42,11 @@ namespace ProjectMagma
 
         private Effect testEffect;
         private SpriteFont HUDFont;
+        BloomComponent bloom;
 
         private Game()
         {
             graphics = new GraphicsDeviceManager(this);
-            RenderProperty.device = graphics.GraphicsDevice;
             Window.Title = "Project Magma";
             Content.RootDirectory = "Content";
 
@@ -56,6 +56,9 @@ namespace ProjectMagma
             pillarManager = new PillarManager();
             islandManager = new IslandManager();
             iceSpikeManager = new IceSpikeManager();
+
+            bloom = new BloomComponent(this);
+            Components.Add(bloom);
         }
 
         /// <summary>
@@ -217,6 +220,14 @@ namespace ProjectMagma
             spriteBatch.End();
 
             base.Draw(gameTime);
+        }
+
+        public GraphicsDeviceManager Graphics
+        {
+            get
+            {
+                return graphics;
+            }
         }
 
         public PillarManager PillarManager

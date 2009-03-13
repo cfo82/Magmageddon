@@ -84,6 +84,8 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="BloomComponent.cs" />
+    <Compile Include="BloomSettings.cs" />
     <Compile Include="IceSpikeManager.cs" />
     <Compile Include="Framework\Attributes\FloatAttribute.cs" />
     <Compile Include="Framework\Attributes\StringAttribute.cs" />

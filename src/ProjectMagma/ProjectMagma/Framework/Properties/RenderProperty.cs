@@ -66,12 +66,12 @@ namespace ProjectMagma.Framework
                     effect.Projection = Game.Instance.Projection;
                     effect.World = transforms[mesh.ParentBone.Index] * world;
                 }
+
+                Game.Instance.Graphics.GraphicsDevice.RenderState.DepthBufferEnable = true;
                 mesh.Draw();
             }
         }
 
         private Model model;
-
-        public static GraphicsDevice device; // HACK
     }
 }

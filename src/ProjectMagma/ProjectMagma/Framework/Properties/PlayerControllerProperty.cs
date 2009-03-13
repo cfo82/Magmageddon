@@ -43,42 +43,10 @@ namespace ProjectMagma.Framework
 
             Model playerModel = Game.Instance.Content.Load<Model>(entity.GetString("mesh"));
 
+            Vector3 originalPosition = playerPosition;
+
             // get input
             controllerInput.Update(playerIndex);
-
-            // detect collision with islands
-            Entity playerIsland = null;
-            Boolean playerLava = false;
-
-            // get bounding sphere
-            BoundingSphere bs = calculateBoundingSphere(playerModel, playerPosition, entity.GetVector3("scale"));
-
-            // get all islands
-            foreach (Entity island in Game.Instance.IslandManager)
-            {
-                /*
-                BoundingCylinder ibc = new BoundingCylinder(island.GetVector3("position") * island.GetVector3("scale") + new Vector3(0, 10, 0),
-                    island.GetVector3("position") * island.GetVector3("scale") + new Vector3(0, -10, 0), 30);
-                 */
-                BoundingCylinder ibc = calculateBoundingCylinder(Game.Instance.Content.Load<Model>(island.GetString("mesh")),
-                    island.GetVector3("position"), island.GetVector3("scale"));
-
-                if (ibc.Intersects(bs))
-                {
-                    jetpackVelocity = Vector3.Zero;
-                    if(bs.Center.Y - bs.Radius < ibc.Top.Y)
-                        playerIsland = island;
-                    break;
-                }
-            }
-
-            // check collision with lava
-            Entity lava = Game.Instance.EntityManager["lava"];
-            if(playerPosition.Y < lava.GetVector3("position").Y)
-            {
-                jetpackVelocity = Vector3.Zero;
-                playerLava = true;
-            }
 
             // jetpack
             if (controllerInput.aPressed)
@@ -96,7 +64,7 @@ namespace ProjectMagma.Framework
                 }
             }
             else
-                fuel += (int) (gameTime.ElapsedGameTime.Milliseconds * fuelRechargeMultiplicator);
+                fuel += (int)(gameTime.ElapsedGameTime.Milliseconds * fuelRechargeMultiplicator);
             if (fuel < 0)
                 fuel = 0;
             if (fuel > maxFuel)
@@ -111,20 +79,66 @@ namespace ProjectMagma.Framework
             }
 
             // gravity
-            if (playerIsland == null && !playerLava && jetpackVelocity.Length() <= maxGravitySpeed)
+            if (jetpackVelocity.Length() <= maxGravitySpeed)
                 jetpackVelocity += gravityAcceleration * dt;
-            if (playerIsland != null)
-                playerPosition += playerIsland.GetVector3("velocity") * dt;
-
+            
             playerPosition += jetpackVelocity * dt;
 
             // XZ movement
             playerPosition.X += controllerInput.leftStickX * playerXAxisMultiplier;
             playerPosition.Z -= controllerInput.leftStickY * playerZAxisMultiplier;
+
             if (controllerInput.leftStickPressed)
-            {
                 entity.SetFloat("y_rotation", (float)Math.Atan2(controllerInput.leftStickX, -controllerInput.leftStickY));
+
+            // get bounding sphere
+            BoundingSphere bs = calculateBoundingSphere(playerModel, playerPosition, entity.GetVector3("scale"));
+
+            // check collison with islands
+            activeIsland = null;
+            foreach (Entity island in Game.Instance.IslandManager)
+            {
+                 BoundingCylinder ibc = calculateBoundingCylinder(Game.Instance.Content.Load<Model>(island.GetString("mesh")),
+                    island.GetVector3("position"), island.GetVector3("scale"));
+
+                if (ibc.Intersects(bs))
+                {
+                    if (bs.Center.Y + bs.Radius > ibc.Top.Y)
+                    {
+                        playerPosition += island.GetVector3("velocity") * dt;
+                        playerPosition.Y = ibc.Top.Y + bs.Radius;
+                        activeIsland = island;
+                    }
+                    else
+                        playerPosition = originalPosition;
+                    break;
+                }
             }
+
+            // check collison with pillars
+            foreach (Entity pillar in Game.Instance.PillarManager)
+            {
+                /*
+                BoundingCylinder ibc = new BoundingCylinder(island.GetVector3("position") * island.GetVector3("scale") + new Vector3(0, 10, 0),
+                    island.GetVector3("position") * island.GetVector3("scale") + new Vector3(0, -10, 0), 30);
+                 */
+                BoundingCylinder ibc = calculateBoundingCylinder(Game.Instance.Content.Load<Model>(pillar.GetString("mesh")),
+                    pillar.GetVector3("position"), pillar.GetVector3("scale"));
+
+                if (ibc.Intersects(bs))
+                {
+                    playerPosition = originalPosition;
+                    break;
+                }
+            }
+            // check collision with lava
+            Entity lava = Game.Instance.EntityManager["lava"];
+            if(playerPosition.Y < lava.GetVector3("position").Y)
+            {
+                playerPosition.Y = originalPosition.Y;
+            }
+
+
 
             // update entity attributes
             entity.SetInt("fuel", fuel);
@@ -139,7 +153,8 @@ namespace ProjectMagma.Framework
             Vector3 center = (bb.Min + bb.Max) / 2;
 
             // calculate radius
-            float radius = (bb.Max-bb.Min).Length();
+//            float radius = (bb.Max-bb.Min).Length() / 2;
+            float radius = (bb.Max.Y - bb.Min.Y) / 2; // hack for player
 
             return new BoundingSphere(center, radius);
         }
@@ -176,8 +191,8 @@ namespace ProjectMagma.Framework
             bb.Min = new Vector3(bb.Min.X * scale.X, bb.Min.Y * scale.Y, bb.Min.Z * scale.Z);
             bb.Max = new Vector3(bb.Max.X * scale.X, bb.Max.Y * scale.Y, bb.Max.Z * scale.Z);
             return bb;
-
-            /*Vector3 Max = new Vector3(float.MinValue, float.MinValue, float.MinValue);
+            /*
+            Vector3 Max = new Vector3(float.MinValue, float.MinValue, float.MinValue);
             Vector3 Min = new Vector3(float.MaxValue, float.MaxValue, float.MaxValue);
 
             foreach (ModelMesh mesh in model.Meshes)
@@ -259,14 +274,16 @@ namespace ProjectMagma.Framework
             return a * a;
         }
 
-        private int maxFuel = 20000; //1500;
-        private float fuelRechargeMultiplicator = 0.8f;
-        private float maxJetpackSpeed = 150f;
-        private float maxGravitySpeed = 450f;
-        private Vector3 gravityAcceleration = new Vector3(0, -900f, 0);
+        private Entity activeIsland = null;
 
-        private int playerXAxisMultiplier = 1;
-        private int playerZAxisMultiplier = 2;
+        private static readonly int maxFuel = 20000; //1500;
+        private static readonly float fuelRechargeMultiplicator = 0.8f;
+        private static readonly float maxJetpackSpeed = 150f;
+        private static readonly float maxGravitySpeed = 450f;
+        private static readonly Vector3 gravityAcceleration = new Vector3(0, -900f, 0);
+
+        private static readonly int playerXAxisMultiplier = 1;
+        private static readonly int playerZAxisMultiplier = 2;
 
         struct ControllerInput
         {

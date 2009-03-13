@@ -40,14 +40,6 @@ namespace ProjectMagma.Framework
             Entity entity
         )
         {
-            entity.Update -= new UpdateHandler(OnUpdate);
-        }
-
-        private void OnUpdate(
-            Entity entity,
-            GameTime gameTime
-        )
-        {
         }
 
         private void OnIslandPositionChanged(

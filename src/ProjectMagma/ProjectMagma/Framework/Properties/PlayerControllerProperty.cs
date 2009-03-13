@@ -7,6 +7,7 @@ using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 using Microsoft.Xna.Framework.Media;
 using System.Diagnostics;
+using Microsoft.Xna.Framework.Audio;
 
 namespace ProjectMagma.Framework
 {
@@ -202,6 +203,10 @@ namespace ProjectMagma.Framework
 
                         // use the power
                         player.SetInt(powerup.GetString("power"), powerup.GetInt("powerValue"));
+    
+                        // soundeffect
+                        SoundEffect soundEffect = Game.Instance.Content.Load<SoundEffect>("Sounds/"+powerup.GetString("pickupSound"));
+                        soundEffect.Play();
                     }
                 }
             }

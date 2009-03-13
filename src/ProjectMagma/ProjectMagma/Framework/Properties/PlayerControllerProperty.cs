@@ -188,6 +188,23 @@ namespace ProjectMagma.Framework
                 playerPosition.Y = originalPosition.Y;
             }
 
+            // check collision with juicy powerups
+            foreach (Entity powerup in Game.Instance.EntityManager)
+            {
+                if (powerup.Name.StartsWith("powerup"))
+                {
+                    BoundingBox bb = calculateBoundingBox(Game.Instance.Content.Load<Model>(powerup.GetString("mesh")), 
+                        powerup.GetVector3("position"), powerup.GetVector3("scale"));
+
+                    if (bb.Intersects(bs))
+                    {
+                        Game.Instance.EntityManager.RemoveDeferred(powerup);
+
+                        // use the power
+                        player.SetInt(powerup.GetString("power"), powerup.GetInt("powerValue"));
+                    }
+                }
+            }
 
             // update entity attributes
             entity.SetInt("fuel", fuel);

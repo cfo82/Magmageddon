@@ -189,6 +189,8 @@
       <Attribute name="mesh" template="string" value="Models/powerup"/>
       <Attribute name="scale" template="float3" value="8 8 8"/>
       <Attribute name="relative_position" template="float3" value="15 0 15"/>
+      <Attribute name="power" template="string" value="energy"/>
+      <Attribute name="powerValue" template="int" value="100"/>
     </Attributes>
     <Properties>
       <Property name="controller" type="ProjectMagma.Framework.PowerUpController"/>
@@ -203,6 +205,8 @@
       <Attribute name="mesh" template="string" value="Models/powerup"/>
       <Attribute name="scale" template="float3" value="8 8 8"/>
       <Attribute name="relative_position" template="float3" value="-20 0 -5"/>
+      <Attribute name="power" template="string" value="health"/>
+      <Attribute name="powerValue" template="int" value="100"/>
     </Attributes>
     <Properties>
       <Property name="controller" type="ProjectMagma.Framework.PowerUpController"/>

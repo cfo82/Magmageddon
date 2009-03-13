@@ -51,7 +51,7 @@ namespace ProjectMagma
             public IslandIterator(IslandManager manager)
             {
                 this.manager = manager;
-                this.index = 0;
+                this.index = -1;
             }
 
             public void Dispose()
@@ -66,7 +66,7 @@ namespace ProjectMagma
 
             public void Reset()
             {
-                index = 0;
+                index = -1;
             }
 
             public Entity Current

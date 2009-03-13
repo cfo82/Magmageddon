@@ -109,6 +109,31 @@ namespace ProjectMagma.Framework
             return (Attributes[attribute] as Vector3Attribute) != null;
         }
 
+        public bool HasString(string attribute)
+        {
+            return HasAttribute(attribute) && IsString(attribute);
+        }
+
+        public bool HasInt(string attribute)
+        {
+            return HasAttribute(attribute) && IsInt(attribute);
+        }
+
+        public bool HasFloat(string attribute)
+        {
+            return HasAttribute(attribute) && IsFloat(attribute);
+        }
+
+        public bool HasVector2(string attribute)
+        {
+            return HasAttribute(attribute) && IsVector2(attribute);
+        }
+
+        public bool HasVector3(string attribute)
+        {
+            return HasAttribute(attribute) && IsVector3(attribute);
+        }
+
         public string GetString(string attribute)
         {
             Debug.Assert(HasAttribute(attribute));

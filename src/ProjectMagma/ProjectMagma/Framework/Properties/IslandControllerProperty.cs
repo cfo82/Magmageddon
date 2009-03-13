@@ -1,8 +1,10 @@
 ﻿using System;
+using System.Diagnostics;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Graphics;
 
 namespace ProjectMagma.Framework
 {
@@ -42,19 +44,36 @@ namespace ProjectMagma.Framework
 
 
             // second force contribution: collision with pillars
-            Vector3 islandXZ = entity.GetVector3("position");
-            islandXZ.Y = 0;
+            Vector3 islandPosition = entity.GetVector3("position");
             bool collided = false;
 
             foreach (Entity pillar in Game.Instance.PillarManager)
             {
-                Vector3 pillarXZ = pillar.GetVector3("position");
-                pillarXZ.Y = 0;
-                Vector3 dist = pillarXZ - islandXZ;
+                Vector3 pillarPosition = pillar.GetVector3("position");
+                Vector3 dist = pillarPosition - islandPosition;
+                dist.Y = 0;
                 Vector3 pillarContribution;
 
+                BoundingBox pillarBox = (BoundingBox)Game.Instance.Content.Load<Model>("Models/pillar_primitive").Tag;
+                float pillarScale = pillarBox.Max.X;
+                if (pillar.HasVector3("scale"))
+                {
+                    Vector3 scale = pillar.GetVector3("scale");
+                    Debug.Assert(scale.X == scale.Y && scale.Y == scale.Z);
+                    pillarScale *= scale.X;
+                }
+
+                BoundingBox islandBox = (BoundingBox)Game.Instance.Content.Load<Model>("Models/island_primitive").Tag;
+                float islandScale = islandBox.Max.X;
+                if (entity.HasVector3("scale"))
+                {
+                    Vector3 scale = entity.GetVector3("scale");
+                    Debug.Assert(scale.X == scale.Y && scale.Y == scale.Z);
+                    islandScale *= scale.X;
+                }
+
                 // collision detection
-                if (dist.Length() > pillarIslandCollisionRadius)
+                if (dist.Length() > pillarScale + islandScale)
                 {
                     // no collision with this pillar
                     pillarContribution = dist;
@@ -111,7 +130,6 @@ namespace ProjectMagma.Framework
 
         private Random rand;
         private static float islandRandomStrength = 1000.0f;
-        private static float pillarIslandCollisionRadius = 50.0f;
         private static float islandMaxVelocity = 200;
         private static float pillarElasticity = 0.1f;
         private static float pillarAttraction = 0.0005f;

@@ -377,5 +377,102 @@ namespace ProjectMagma
             }
         }
 
+        /**
+           * HELPER functions, refactor!
+           */
+
+        public static BoundingSphere calculateBoundingSphere(Model model, Vector3 position, Quaternion rotation, Vector3 scale)
+        {
+            // calculate center
+            BoundingBox bb = calculateBoundingBox(model, position, rotation, scale);
+            Vector3 center = (bb.Min + bb.Max) / 2;
+
+            // calculate radius
+            //            float radius = (bb.Max-bb.Min).Length() / 2;
+            float radius = (bb.Max.Y - bb.Min.Y) / 2; // hack for player
+
+            return new BoundingSphere(center, radius);
+        }
+
+        // calculates y-axis aligned bounding cylinder
+        public static BoundingCylinder calculateBoundingCylinder(Model model, Vector3 position, Quaternion rotation, Vector3 scale)
+        {
+            // calculate center
+            BoundingBox bb = calculateBoundingBox(model, position, rotation, scale);
+            Vector3 center = (bb.Min + bb.Max) / 2;
+
+            float top = bb.Max.Y;
+            float bottom = bb.Min.Y;
+
+            // calculate radius
+            // a valid cylinder here is an extruded circle (not an oval) therefore extents in 
+            // x- and z-direction should be equal.
+            float radius = bb.Max.X - center.X;
+
+            return new BoundingCylinder(new Vector3(center.X, top, center.Z),
+                new Vector3(center.X, bottom, center.Z),
+                radius);
+        }
+
+        public static BoundingBox calculateBoundingBox(Model model, Vector3 position, Quaternion rotation, Vector3 scale)
+        {
+            Matrix world = Matrix.CreateScale(scale) * Matrix.CreateFromQuaternion(rotation) * Matrix.CreateTranslation(position);
+
+            BoundingBox bb = (BoundingBox)model.Tag;
+            bb.Min = Vector3.Transform(bb.Min, world);
+            bb.Max = Vector3.Transform(bb.Max, world);
+            return bb;
+        }
+
+        public static float pow2(float a)
+        {
+            return a * a;
+        }
+
     }
+
+     public struct BoundingCylinder
+    {
+        private Vector3 c1;
+        private Vector3 c2;
+        private float radius;
+
+        public BoundingCylinder(Vector3 c1, Vector3 c2, float radius)
+        {
+            this.c1 = c1;
+            this.c2 = c2;
+            this.radius = radius;
+        }
+
+        public bool Intersects(BoundingSphere bs)
+        {
+            // check collision on y axis
+            if (bs.Center.Y - bs.Radius < c1.Y && bs.Center.Y + bs.Radius > c2.Y)
+            {
+                // check collision in xz
+                if (Game.pow2(bs.Center.X - c1.X) + Game.pow2(bs.Center.Z - c1.Z) < Game.pow2(bs.Radius + radius))
+                    return true; 
+            }
+
+            return false;
+        }
+
+        public Vector3 Top
+        {
+            get { return c1; }
+        }
+
+        public Vector3 Bottom
+        {
+            get { return c2; }
+        }
+
+        public float Radius
+        {
+            get { return radius; }
+        }
+
+    }
+
+      
 }

@@ -33,7 +33,6 @@ namespace ProjectMagma.Framework
         public void OnDetached(Entity entity)
         {
             entity.Update -= new UpdateHandler(OnUpdate);
-            // TODO: remove attribute!
         }
 
         private Vector3 GetPosition(Entity entity)
@@ -75,8 +74,6 @@ namespace ProjectMagma.Framework
             Vector3 jetpackVelocity = entity.GetVector3("jetpackVelocity");
             
             int fuel = entity.GetInt("fuel");
-            int energy = entity.GetInt("energy");
-            int health = entity.GetInt("health");
 
             Model playerModel = Game.Instance.Content.Load<Model>(entity.GetString("mesh"));
 
@@ -127,16 +124,18 @@ namespace ProjectMagma.Framework
             }
 
             // ice spike
-            if (controllerInput.xPressed && energy > iceSpikeEnergyCost &&
+            if (controllerInput.xPressed && player.GetInt("energy") > iceSpikeEnergyCost &&
                 (gameTime.TotalGameTime.TotalMilliseconds - iceSpikeFiredAt) > iceSpikeCooldown)
             {
-                BoundingBox bb = calculateBoundingBox(playerModel, playerPosition, GetRotation(player), GetScale(player));
+                BoundingBox bb = Game.calculateBoundingBox(playerModel, playerPosition, GetRotation(player), GetScale(player));
 
                 Vector3 pos = new Vector3(playerPosition.X, bb.Max.Y, playerPosition.Z);
                 Vector3 velocity = Vector3.Transform(Vector3.One * iceSpikeSpeed, GetRotation(player));
-                velocity.Y = 0;
+                velocity.Y = iceSpikeUpSpeed;
 
                 Entity iceSpike = new Entity(Game.Instance.EntityManager, "icespike" + (++iceSpikeCount));
+                iceSpike.AddStringAttribute("player", player.Name);
+
                 iceSpike.AddVector3Attribute("velocity", velocity);
                 iceSpike.AddVector3Attribute("position", pos);
 
@@ -149,21 +148,24 @@ namespace ProjectMagma.Framework
                 Game.Instance.EntityManager.AddDeferred(iceSpike);
 
                 // update states
-                energy -= iceSpikeEnergyCost;
-                iceSpikeFiredAt = gameTime.TotalGameTime.TotalMilliseconds;
+                /// 
+                /// TODO: uncomment to get correct energy deduction
+
+//                player.SetInt("energy", player.GetInt("energy") - iceSpikeEnergyCost);
+//                iceSpikeFiredAt = gameTime.TotalGameTime.TotalMilliseconds;
             }
 
 
             /// collision detection code
 
             // get bounding sphere
-            BoundingSphere bs = calculateBoundingSphere(playerModel, playerPosition, GetRotation(entity), GetScale(entity));
+            BoundingSphere bs = Game.calculateBoundingSphere(playerModel, playerPosition, GetRotation(entity), GetScale(entity));
 
             // check collison with islands
             Entity newActiveIsland = null;
             foreach (Entity island in Game.Instance.IslandManager)
             {
-                 BoundingCylinder ibc = calculateBoundingCylinder(Game.Instance.Content.Load<Model>(
+                BoundingCylinder ibc = Game.calculateBoundingCylinder(Game.Instance.Content.Load<Model>(
                      island.GetString("mesh")), GetPosition(island), GetRotation(island), GetScale(island));
 
                 if (ibc.Intersects(bs))
@@ -222,7 +224,7 @@ namespace ProjectMagma.Framework
                 BoundingCylinder ibc = new BoundingCylinder(island.GetVector3("position") * island.GetVector3("scale") + new Vector3(0, 10, 0),
                     island.GetVector3("position") * island.GetVector3("scale") + new Vector3(0, -10, 0), 30);
                  */
-                BoundingCylinder pbc = calculateBoundingCylinder(Game.Instance.Content.Load<Model>(pillar.GetString("mesh")),
+                BoundingCylinder pbc = Game.calculateBoundingCylinder(Game.Instance.Content.Load<Model>(pillar.GetString("mesh")),
                     GetPosition(pillar), GetRotation(pillar), GetScale(pillar));
 
                 if (pbc.Intersects(bs))
@@ -254,7 +256,7 @@ namespace ProjectMagma.Framework
             {
                 if (powerup.Name.StartsWith("powerup"))
                 {
-                    BoundingBox bb = calculateBoundingBox(Game.Instance.Content.Load<Model>(
+                    BoundingBox bb = Game.calculateBoundingBox(Game.Instance.Content.Load<Model>(
                         powerup.GetString("mesh")), 
                         GetPosition(powerup), GetRotation(powerup), GetScale(powerup));
 
@@ -274,21 +276,17 @@ namespace ProjectMagma.Framework
                 }
             }
 
-            if (energy > maxEnergy)
-                energy = maxEnergy;
-            if (health > maxHealth)
-                health = maxHealth;
+            if (player.GetInt("energy") > maxEnergy)
+                player.SetInt("energy", maxEnergy);
+            if (player.GetInt("health") > maxHealth)
+                player.SetInt("health", maxHealth);
 
 
             // update entity attributes
 
             /// TODO: allow update again
-            /*
-             * TODO: update
-            entity.SetInt("fuel", fuel);
-            entity.SetInt("energy", energy);
-            entity.SetInt("health", health);
-             */
+//            entity.SetInt("fuel", fuel);
+
             entity.SetVector3("position", playerPosition);
             entity.SetVector3("jetpackVelocity", jetpackVelocity);
         }
@@ -299,98 +297,6 @@ namespace ProjectMagma.Framework
             Vector3 delta = newValue - oldValue;
             position += delta;
             player.SetVector3("position", position);
-        }
-
-        private BoundingSphere calculateBoundingSphere(Model model, Vector3 position, Quaternion rotation, Vector3 scale)
-        {
-            // calculate center
-            BoundingBox bb = calculateBoundingBox(model, position, rotation, scale);
-            Vector3 center = (bb.Min + bb.Max) / 2;
-
-            // calculate radius
-//            float radius = (bb.Max-bb.Min).Length() / 2;
-            float radius = (bb.Max.Y - bb.Min.Y) / 2; // hack for player
-
-            return new BoundingSphere(center, radius);
-        }
-
-        // calculates y-axis aligned bounding cylinder
-        private BoundingCylinder calculateBoundingCylinder(Model model, Vector3 position, Quaternion rotation, Vector3 scale)
-        {
-            // calculate center
-            BoundingBox bb = calculateBoundingBox(model, position, rotation, scale);
-            Vector3 center = (bb.Min + bb.Max) / 2;
-
-            float top = bb.Max.Y;
-            float bottom = bb.Min.Y;
-
-            // calculate radius
-            // a valid cylinder here is an extruded circle (not an oval) therefore extents in 
-            // x- and z-direction should be equal.
-            float radius = bb.Max.X - center.X;
-
-            return new BoundingCylinder(new Vector3(center.X, top, center.Z),
-                new Vector3(center.X, bottom, center.Z),
-                radius);
-        }
-
-        private BoundingBox calculateBoundingBox(Model model, Vector3 position, Quaternion rotation, Vector3 scale)
-        {
-            Matrix world = Matrix.CreateScale(scale) * Matrix.CreateFromQuaternion(rotation) * Matrix.CreateTranslation(position);
-
-            BoundingBox bb = (BoundingBox)model.Tag;
-            bb.Min = Vector3.Transform(bb.Min, world);
-            bb.Max = Vector3.Transform(bb.Max, world);
-            return bb;
-        }
-   
-
-        private struct BoundingCylinder
-        {
-            private Vector3 c1;
-            private Vector3 c2;
-            private float radius;
-
-            public BoundingCylinder(Vector3 c1, Vector3 c2, float radius)
-            {
-                this.c1 = c1;
-                this.c2 = c2;
-                this.radius = radius;
-            }
-
-            public bool Intersects(BoundingSphere bs)
-            {
-                // check collision on y axis
-                if (bs.Center.Y - bs.Radius < c1.Y && bs.Center.Y + bs.Radius > c2.Y)
-                {
-                    // check collision in xz
-                    if(pow2(bs.Center.X-c1.X) + pow2(bs.Center.Z-c1.Z) < pow2(bs.Radius + radius))
-                        return true; 
-                }
-
-                return false;
-            }
-
-            public Vector3 Top
-            {
-                get { return c1; }
-            }
-
-            public Vector3 Bottom
-            {
-                get { return c2; }
-            }
-
-            public float Radius
-            {
-                get { return radius; }
-            }
-
-        }
-
-        private static float pow2(float a)
-        {
-            return a * a;
         }
 
         private Entity player;
@@ -407,7 +313,8 @@ namespace ProjectMagma.Framework
 
         private int iceSpikeCount = 0;
         private double iceSpikeFiredAt = 0;
-        private static readonly int iceSpikeSpeed = 100;
+        private static readonly int iceSpikeSpeed = 130;
+        private static readonly int iceSpikeUpSpeed = 240;
         private static readonly int iceSpikeEnergyCost = 30;
         private static readonly int iceSpikeCooldown = 1000; // ms
 

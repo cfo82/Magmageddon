@@ -224,6 +224,7 @@ namespace ProjectMagma
                     pos += 20;
                 }
             }
+            spriteBatch.DrawString(HUDFont, (1000f / gameTime.ElapsedGameTime.Milliseconds) + " fps", new Vector2(5, pos), Color.White);
             spriteBatch.End();
 
             base.Draw(gameTime);

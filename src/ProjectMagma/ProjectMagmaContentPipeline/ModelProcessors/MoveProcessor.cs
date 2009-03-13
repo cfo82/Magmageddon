@@ -41,6 +41,8 @@ namespace ProjectMagmaContentPipeline.ModelProcessors
             // now let the subclass decide on how to modify the box (aligning bottom/top to zero)
             float heightDiff = CalculateHeightDiff(ref bb);
             MoveModel(input, context, new Vector3(0, heightDiff, 0));
+            bb.Min.Y += heightDiff;
+            bb.Max.Y += heightDiff;
 
             ModelContent modelContent = base.Process(input, context);
             modelContent.Tag = bb;

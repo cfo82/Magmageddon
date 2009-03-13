@@ -280,7 +280,7 @@ namespace ProjectMagma
             //and do depth comparisons in the shader to determine shadowing
             RenderScene(gameTime);
 
-            DrawHud();
+            DrawHud(gameTime);
             base.Draw(gameTime);
         }
 
@@ -310,7 +310,7 @@ namespace ProjectMagma
             graphics.GraphicsDevice.DepthStencilBuffer = oldStencilBuffer;
         }
 
-        private void DrawHud()
+        private void DrawHud(GameTime gameTime)
         {
             // draw infos about state
             spriteBatch.Begin();

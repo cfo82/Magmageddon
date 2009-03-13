@@ -23,8 +23,8 @@ namespace ProjectMagma.Framework
 
             entity.AddQuaternionAttribute("rotation", Quaternion.Identity);
             entity.AddVector3Attribute("jetpackVelocity", Vector3.Zero);
-            entity.AddIntAttribute("energy", 100);
-            entity.AddIntAttribute("health", 100);
+            entity.AddIntAttribute("energy", maxEnergy);
+            entity.AddIntAttribute("health", maxHealth);
             entity.AddIntAttribute("fuel", maxFuel);
 
             this.player = entity;
@@ -73,7 +73,10 @@ namespace ProjectMagma.Framework
             Vector3 jetpackAcceleration = entity.GetVector3("jetpackAcceleration");
             Vector3 playerPosition = entity.GetVector3("position");
             Vector3 jetpackVelocity = entity.GetVector3("jetpackVelocity");
+            
             int fuel = entity.GetInt("fuel");
+            int energy = entity.GetInt("energy");
+            int health = entity.GetInt("health");
 
             Model playerModel = Game.Instance.Content.Load<Model>(entity.GetString("mesh"));
 
@@ -81,6 +84,8 @@ namespace ProjectMagma.Framework
 
             // get input
             controllerInput.Update(playerIndex);
+
+            /// movements
 
             // jetpack
             if (controllerInput.aPressed)
@@ -104,14 +109,6 @@ namespace ProjectMagma.Framework
             if (fuel > maxFuel)
                 fuel = maxFuel;
 
-            // ice spike
-            if (controllerInput.xPressed)
-            {
-                int iceSpikeCount = 0; // this should later be in the corresponding manager
-                Entity iceSpike = new Entity(Game.Instance.EntityManager, "icespike" + (++iceSpikeCount));
-                Game.Instance.EntityManager.AddDeferred(iceSpike);
-            }
-
             // gravity
             if (jetpackVelocity.Length() <= maxGravitySpeed)
                 jetpackVelocity += gravityAcceleration * dt;
@@ -128,6 +125,36 @@ namespace ProjectMagma.Framework
                 Matrix rotationMatrix = Matrix.CreateRotationY(yRotation);
                 entity.SetQuaternion("rotation", Quaternion.CreateFromRotationMatrix(rotationMatrix));
             }
+
+            // ice spike
+            if (controllerInput.xPressed && energy > iceSpikeEnergyCost &&
+                (gameTime.TotalGameTime.TotalMilliseconds - iceSpikeFiredAt) > iceSpikeCooldown)
+            {
+                BoundingBox bb = calculateBoundingBox(playerModel, playerPosition, GetRotation(player), GetScale(player));
+
+                Vector3 pos = new Vector3(playerPosition.X, bb.Max.Y, playerPosition.Z);
+                Vector3 velocity = Vector3.Transform(Vector3.One * iceSpikeSpeed, GetRotation(player));
+                velocity.Y = 0;
+
+                Entity iceSpike = new Entity(Game.Instance.EntityManager, "icespike" + (++iceSpikeCount));
+                iceSpike.AddVector3Attribute("velocity", velocity);
+                iceSpike.AddVector3Attribute("position", pos);
+
+                iceSpike.AddStringAttribute("mesh", "Models/icespike_primitive");
+                iceSpike.AddVector3Attribute("scale", new Vector3(5, 5, 5));
+
+                iceSpike.AddProperty("render", new RenderProperty());
+                iceSpike.AddProperty("controller", new IceSpikeControllerProperty());
+
+                Game.Instance.EntityManager.AddDeferred(iceSpike);
+
+                // update states
+                energy -= iceSpikeEnergyCost;
+                iceSpikeFiredAt = gameTime.TotalGameTime.TotalMilliseconds;
+            }
+
+
+            /// collision detection code
 
             // get bounding sphere
             BoundingSphere bs = calculateBoundingSphere(playerModel, playerPosition, GetRotation(entity), GetScale(entity));
@@ -146,7 +173,7 @@ namespace ProjectMagma.Framework
                     {
 //                        Console.WriteLine("collision from top");
 
-                        // correct position to exact touching
+                        // correct position to exact touching point
                         playerPosition.Y += (bs.Radius - (bs.Center.Y - ibc.Top.Y));
                         if (activeIsland == null) // add handler
                             ((Vector3Attribute)island.Attributes["position"]).ValueChanged += new Vector3ChangeHandler(islandPositionHandler);
@@ -236,7 +263,9 @@ namespace ProjectMagma.Framework
                         Game.Instance.EntityManager.RemoveDeferred(powerup);
 
                         // use the power
-                        player.SetInt(powerup.GetString("power"), powerup.GetInt("powerValue"));
+                        int oldVal = player.GetInt(powerup.GetString("power"));
+                        oldVal += powerup.GetInt("powerValue");
+                        player.SetInt(powerup.GetString("power"), oldVal);
     
                         // soundeffect
                         SoundEffect soundEffect = Game.Instance.Content.Load<SoundEffect>("Sounds/"+powerup.GetString("pickupSound"));
@@ -245,8 +274,21 @@ namespace ProjectMagma.Framework
                 }
             }
 
+            if (energy > maxEnergy)
+                energy = maxEnergy;
+            if (health > maxHealth)
+                health = maxHealth;
+
+
             // update entity attributes
+
+            /// TODO: allow update again
+            /*
+             * TODO: update
             entity.SetInt("fuel", fuel);
+            entity.SetInt("energy", energy);
+            entity.SetInt("health", health);
+             */
             entity.SetVector3("position", playerPosition);
             entity.SetVector3("jetpackVelocity", jetpackVelocity);
         }
@@ -354,11 +396,20 @@ namespace ProjectMagma.Framework
         private Entity player;
         private Entity activeIsland = null;
 
+        private static readonly int maxHealth = 100;
+        private static readonly int maxEnergy = 100;
+
         private static readonly int maxFuel = 1500;
         private static readonly float fuelRechargeMultiplicator = 0.75f;
         private static readonly float maxJetpackSpeed = 150f;
         private static readonly float maxGravitySpeed = 450f;
         private static readonly Vector3 gravityAcceleration = new Vector3(0, -900f, 0);
+
+        private int iceSpikeCount = 0;
+        private double iceSpikeFiredAt = 0;
+        private static readonly int iceSpikeSpeed = 100;
+        private static readonly int iceSpikeEnergyCost = 30;
+        private static readonly int iceSpikeCooldown = 1000; // ms
 
         private static readonly int playerXAxisMultiplier = 1;
         private static readonly int playerZAxisMultiplier = 2;

@@ -34,10 +34,10 @@ namespace ProjectMagma.Framework
             float dt = ((float)gameTime.ElapsedGameTime.Milliseconds)/1000.0f;
 
             // compute acceleration
-            Vector3 a = new Vector3(straightAcceleration, 0f, 0f);
+//            Vector3 a = new Vector3(straightAcceleration, 0f, 0f);
 
             // integrate
-            v += dt*a;
+//            v += dt*a;
             pos += dt*v;
 
             // store computed values;

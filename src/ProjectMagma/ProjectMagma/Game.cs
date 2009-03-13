@@ -54,7 +54,7 @@ namespace ProjectMagma
         public Vector3 lightTarget = Vector3.Zero;
         public Texture2D lightResolve;
         public Effect shadowEffect;
-        int shadowMapSize = 512;
+        int shadowMapSize = 1024;
         DepthStencilBuffer shadowStencilBuffer;
         RenderTarget2D lightRenderTarget;
         // ENDHACK

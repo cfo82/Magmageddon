@@ -203,15 +203,15 @@ namespace ProjectMagma
 
             // draw infos about state
             spriteBatch.Begin();
-            int pos = 0;
+            int pos = 5;
             foreach (Entity e in entityManager)
             {
                 if (e.Name.StartsWith("player"))
                 {
                     spriteBatch.DrawString(HUDFont, e.Name + "; health: " + e.GetInt("health") + ", energy: " + e.GetInt("energy") + ", fuel: " + e.GetInt("fuel")
                         +"; pos: "+e.GetVector3("position").ToString(),
-                        new Vector2(0, pos), Color.White);
-                    pos += 15;
+                        new Vector2(5, pos), Color.White);
+                    pos += 20;
                 }
             }
             spriteBatch.End();

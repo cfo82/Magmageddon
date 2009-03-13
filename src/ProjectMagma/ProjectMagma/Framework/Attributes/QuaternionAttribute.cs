@@ -16,11 +16,18 @@ namespace ProjectMagma.Framework
             
         public override void Initialize(string value)
         {
-            string[] splitArray = value.Split(' ');
-            v.X = float.Parse(splitArray[0]);
-            v.Y = float.Parse(splitArray[1]);
-            v.Z = float.Parse(splitArray[2]);
-            v.Z = float.Parse(splitArray[2]);
+            if (value.Trim().Length == 0)
+            {
+                v = Quaternion.Identity;
+            }
+            else
+            {
+                string[] splitArray = value.Split(' ');
+                v.X = float.Parse(splitArray[0]);
+                v.Y = float.Parse(splitArray[1]);
+                v.Z = float.Parse(splitArray[2]);
+                v.Z = float.Parse(splitArray[2]);
+            }
         }
 
         public Quaternion Value

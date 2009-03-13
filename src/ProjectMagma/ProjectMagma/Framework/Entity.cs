@@ -46,6 +46,11 @@ namespace ProjectMagma.Framework
             AddAttribute(attributeData.name, attributeData.template, attributeData.value);
         }
 
+        public void AddAttribute(string name, string template)
+        {
+            AddAttribute(name, template, "");
+        }
+
         public void AddAttribute(string name, string template, string value)
         {
             Attribute attribute = null;

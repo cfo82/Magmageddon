@@ -21,7 +21,7 @@ namespace ProjectMagma.Framework
         {
             entity.Update += new UpdateHandler(OnUpdate);
 
-            entity.AddAttribute("y_rotation", "float", "0");
+            entity.AddAttribute("rotation", "quaternion", "");
             entity.AddAttribute("jetpackVelocity", "float3", "0 0 0");
             entity.AddAttribute("energy", "int", "100");
             entity.AddAttribute("health", "int", "100");
@@ -53,15 +53,15 @@ namespace ProjectMagma.Framework
             }
         }
 
-        private float GetRotationY(Entity entity)
+        private Quaternion GetRotation(Entity entity)
         {
-            if (entity.HasFloat("y_rotation"))
+            if (entity.HasQuaternion("rotation"))
             {
-                return entity.GetFloat("y_rotation");
+                return entity.GetQuaternion("rotation");
             }
             else
             {
-                return 0.0f;
+                return Quaternion.Identity;
             }
         }
 
@@ -123,17 +123,21 @@ namespace ProjectMagma.Framework
             playerPosition.Z -= controllerInput.leftStickY * playerZAxisMultiplier;
 
             if (controllerInput.leftStickPressed)
-                entity.SetFloat("y_rotation", (float)Math.Atan2(controllerInput.leftStickX, -controllerInput.leftStickY));
+            {
+                float yRotation = (float)Math.Atan2(controllerInput.leftStickX, -controllerInput.leftStickY);
+                Matrix rotationMatrix = Matrix.CreateRotationY(yRotation);
+                entity.SetQuaternion("rotation", Quaternion.CreateFromRotationMatrix(rotationMatrix));
+            }
 
             // get bounding sphere
-            BoundingSphere bs = calculateBoundingSphere(playerModel, playerPosition, GetRotationY(entity), GetScale(entity));
+            BoundingSphere bs = calculateBoundingSphere(playerModel, playerPosition, GetRotation(entity), GetScale(entity));
 
             // check collison with islands
             Entity newActiveIsland = null;
             foreach (Entity island in Game.Instance.IslandManager)
             {
                  BoundingCylinder ibc = calculateBoundingCylinder(Game.Instance.Content.Load<Model>(
-                     island.GetString("mesh")), GetPosition(island), GetRotationY(island), GetScale(island));
+                     island.GetString("mesh")), GetPosition(island), GetRotation(island), GetScale(island));
 
                 if (ibc.Intersects(bs))
                 {
@@ -192,7 +196,7 @@ namespace ProjectMagma.Framework
                     island.GetVector3("position") * island.GetVector3("scale") + new Vector3(0, -10, 0), 30);
                  */
                 BoundingCylinder pbc = calculateBoundingCylinder(Game.Instance.Content.Load<Model>(pillar.GetString("mesh")),
-                    GetPosition(pillar), GetRotationY(pillar), GetScale(pillar));
+                    GetPosition(pillar), GetRotation(pillar), GetScale(pillar));
 
                 if (pbc.Intersects(bs))
                 {
@@ -225,7 +229,7 @@ namespace ProjectMagma.Framework
                 {
                     BoundingBox bb = calculateBoundingBox(Game.Instance.Content.Load<Model>(
                         powerup.GetString("mesh")), 
-                        GetPosition(powerup), GetRotationY(powerup), GetScale(powerup));
+                        GetPosition(powerup), GetRotation(powerup), GetScale(powerup));
 
                     if (bb.Intersects(bs))
                     {
@@ -255,10 +259,10 @@ namespace ProjectMagma.Framework
             player.SetVector3("position", position);
         }
 
-        private BoundingSphere calculateBoundingSphere(Model model, Vector3 position, float rotationY, Vector3 scale)
+        private BoundingSphere calculateBoundingSphere(Model model, Vector3 position, Quaternion rotation, Vector3 scale)
         {
             // calculate center
-            BoundingBox bb = calculateBoundingBox(model, position, rotationY, scale);
+            BoundingBox bb = calculateBoundingBox(model, position, rotation, scale);
             Vector3 center = (bb.Min + bb.Max) / 2;
 
             // calculate radius
@@ -269,10 +273,10 @@ namespace ProjectMagma.Framework
         }
 
         // calculates y-axis aligned bounding cylinder
-        private BoundingCylinder calculateBoundingCylinder(Model model, Vector3 position, float rotationY, Vector3 scale)
+        private BoundingCylinder calculateBoundingCylinder(Model model, Vector3 position, Quaternion rotation, Vector3 scale)
         {
             // calculate center
-            BoundingBox bb = calculateBoundingBox(model, position, rotationY, scale);
+            BoundingBox bb = calculateBoundingBox(model, position, rotation, scale);
             Vector3 center = (bb.Min + bb.Max) / 2;
 
             float top = bb.Max.Y;
@@ -288,9 +292,9 @@ namespace ProjectMagma.Framework
                 radius);
         }
 
-        private BoundingBox calculateBoundingBox(Model model, Vector3 position, float rotationY, Vector3 scale)
+        private BoundingBox calculateBoundingBox(Model model, Vector3 position, Quaternion rotation, Vector3 scale)
         {
-            Matrix world = Matrix.CreateScale(scale) * Matrix.CreateRotationY(rotationY) * Matrix.CreateTranslation(position);
+            Matrix world = Matrix.CreateScale(scale) * Matrix.CreateFromQuaternion(rotation) * Matrix.CreateTranslation(position);
 
             BoundingBox bb = (BoundingBox)model.Tag;
             bb.Min = Vector3.Transform(bb.Min, world);

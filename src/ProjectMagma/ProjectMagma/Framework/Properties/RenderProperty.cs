@@ -37,17 +37,17 @@ namespace ProjectMagma.Framework
             Matrix world = Matrix.Identity;
 
             // scaling
-            if (entity.HasAttribute("scale"))
+            if (entity.HasVector3("scale"))
             {
                 Vector3 scale = entity.GetVector3("scale");
                 world *= Matrix.CreateScale(scale);
             }
 
             // y rotation (if we need other rotations, these are yet to be added)
-            if (entity.HasAttribute("y_rotation"))
+            if (entity.HasQuaternion("rotation"))
             {
-                float y_rotation = entity.GetFloat("y_rotation");
-                world *= Matrix.CreateRotationY(y_rotation);
+                Quaternion rotation = entity.GetQuaternion("rotation");
+                world *= Matrix.CreateFromQuaternion(rotation);
             }
 
             // translation

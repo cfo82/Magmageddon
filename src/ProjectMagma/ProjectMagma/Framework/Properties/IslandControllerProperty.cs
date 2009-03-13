@@ -59,7 +59,7 @@ namespace ProjectMagma.Framework
                 if (pillar.HasVector3("scale"))
                 {
                     Vector3 scale = pillar.GetVector3("scale");
-                    Debug.Assert(scale.X == scale.Y && scale.Y == scale.Z);
+                    Debug.Assert(scale.X == scale.Z);
                     pillarScale *= scale.X;
                 }
 
@@ -68,7 +68,7 @@ namespace ProjectMagma.Framework
                 if (entity.HasVector3("scale"))
                 {
                     Vector3 scale = entity.GetVector3("scale");
-                    Debug.Assert(scale.X == scale.Y && scale.Y == scale.Z);
+                    Debug.Assert(scale.X == scale.Z);
                     islandScale *= scale.X;
                 }
 

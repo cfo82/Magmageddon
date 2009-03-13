@@ -45,8 +45,8 @@ namespace ProjectMagma.Framework
             entity.SetVector3("velocity", v);
         }
 
-        private Entity target;
+        //private Entity target;
         private float straightAcceleration = 100f;
-        private float maxSpeed = 150f;
+        //private float maxSpeed = 150f;
     }
 }

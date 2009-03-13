@@ -18,11 +18,14 @@ namespace ProjectMagma.Framework
         public void OnAttached(Entity entity)
         {
             entity.Update += new UpdateHandler(OnUpdate);
+
             entity.AddAttribute("y_rotation", "float", "0");
             entity.AddAttribute("jetpackVelocity", "float3", "0 0 0");
             entity.AddAttribute("energy", "int", "100");
             entity.AddAttribute("health", "int", "100");
             entity.AddAttribute("fuel", "int", ""+maxFuel);
+
+            this.player = entity;
         }
 
         public void OnDetached(Entity entity)
@@ -95,7 +98,7 @@ namespace ProjectMagma.Framework
             BoundingSphere bs = calculateBoundingSphere(playerModel, playerPosition, entity.GetVector3("scale"));
 
             // check collison with islands
-            activeIsland = null;
+            Entity newActiveIsland = null;
             foreach (Entity island in Game.Instance.IslandManager)
             {
                  BoundingCylinder ibc = calculateBoundingCylinder(Game.Instance.Content.Load<Model>(island.GetString("mesh")),
@@ -105,15 +108,19 @@ namespace ProjectMagma.Framework
                 {
                     if (bs.Center.Y + bs.Radius > ibc.Top.Y)
                     {
-                        playerPosition += island.GetVector3("velocity") * dt;
                         playerPosition.Y = ibc.Top.Y + bs.Radius;
-                        activeIsland = island;
+                        if(activeIsland == null)
+                            ((Vector3Attribute)island.Attributes["position"]).ValueChanged += new Vector3ChangeHandler(islandPositionHandler);
+                        newActiveIsland = island;
                     }
                     else
                         playerPosition = originalPosition;
                     break;
                 }
             }
+            if(newActiveIsland == null && activeIsland != null)
+                ((Vector3Attribute)activeIsland.Attributes["position"]).ValueChanged -= new Vector3ChangeHandler(islandPositionHandler);
+            activeIsland = newActiveIsland;
 
             // check collison with pillars
             foreach (Entity pillar in Game.Instance.PillarManager)
@@ -139,11 +146,17 @@ namespace ProjectMagma.Framework
             }
 
 
-
             // update entity attributes
             entity.SetInt("fuel", fuel);
             entity.SetVector3("position", playerPosition);
             entity.SetVector3("jetpackVelocity", jetpackVelocity);
+        }
+
+        private void islandPositionHandler(Vector3Attribute sender, Vector3 oldValue, Vector3 newValue)
+        {
+            Vector3 position = player.GetVector3("position");
+            position += newValue - oldValue;
+            player.SetVector3("position", position);
         }
 
         private BoundingSphere calculateBoundingSphere(Model model, Vector3 position, Vector3 scale)
@@ -274,6 +287,7 @@ namespace ProjectMagma.Framework
             return a * a;
         }
 
+        private Entity player;
         private Entity activeIsland = null;
 
         private static readonly int maxFuel = 20000; //1500;

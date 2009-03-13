@@ -11,10 +11,6 @@ EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ProjectMagmaShared", "ProjectMagmaShared\ProjectMagmaShared.csproj", "{68FEE9A0-EA37-4321-B485-3D5B1DED238D}"
 EndProject
 Global
-	GlobalSection(SubversionScc) = preSolution
-		Svn-Managed = True
-		Manager = AnkhSVN - Subversion Support for Visual Studio
-	EndGlobalSection
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Mixed Platforms = Debug|Mixed Platforms
 		Debug|x86 = Debug|x86
@@ -66,8 +62,20 @@ Global
 		{68FEE9A0-EA37-4321-B485-3D5B1DED238D}.Release|x86.Build.0 = Release|x86
 		{68FEE9A0-EA37-4321-B485-3D5B1DED238D}.Release|Xbox 360.ActiveCfg = Release|x86
 		{68FEE9A0-EA37-4321-B485-3D5B1DED238D}.Release|Zune.ActiveCfg = Release|x86
+		{40E4CAF0-0F79-43C3-85F2-3A79D2038879}.Debug|Mixed Platforms.ActiveCfg = Debug|x86
+		{40E4CAF0-0F79-43C3-85F2-3A79D2038879}.Debug|x86.ActiveCfg = Debug|x86
+		{40E4CAF0-0F79-43C3-85F2-3A79D2038879}.Debug|Xbox 360.ActiveCfg = Debug|x86
+		{40E4CAF0-0F79-43C3-85F2-3A79D2038879}.Debug|Zune.ActiveCfg = Debug|x86
+		{40E4CAF0-0F79-43C3-85F2-3A79D2038879}.Release|Mixed Platforms.ActiveCfg = Release|x86
+		{40E4CAF0-0F79-43C3-85F2-3A79D2038879}.Release|x86.ActiveCfg = Release|x86
+		{40E4CAF0-0F79-43C3-85F2-3A79D2038879}.Release|Xbox 360.ActiveCfg = Release|x86
+		{40E4CAF0-0F79-43C3-85F2-3A79D2038879}.Release|Zune.ActiveCfg = Release|x86
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(SubversionScc) = preSolution
+		Svn-Managed = True
+		Manager = AnkhSVN - Subversion Support for Visual Studio
 	EndGlobalSection
 EndGlobal

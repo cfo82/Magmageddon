@@ -17,7 +17,7 @@ namespace ProjectMagma
             this.entities = new Dictionary<string, Entity>();
         }
 
-        public void Add(ContentManager content, EntityData entityData)
+        public void Add(EntityData entityData)
         {
             Entity entity = new Entity(this, entityData.name);
             foreach (AttributeData attributeData in entityData.attributes)
@@ -30,6 +30,12 @@ namespace ProjectMagma
             }
             this.entities.Add(entity.Name, entity);
         }
+
+        public void AddExisting(Entity entity)
+        {
+            this.entities.Add(entity.Name, entity);
+        }
+
 
         public IEnumerator<Entity> GetEnumerator()
         {

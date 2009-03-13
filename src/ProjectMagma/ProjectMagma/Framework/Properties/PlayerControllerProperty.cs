@@ -105,10 +105,9 @@ namespace ProjectMagma.Framework
             // ice spike
             if (controllerInput.xPressed)
             {
-                // HACK!
-                EntityManager temporaryIceSpikeManager; // to satisfy the entity constructor
                 int iceSpikeCount = 0; // this should later be in the corresponding manager
-                Entity iceSpike = new Entity(null, "icespike" + (++iceSpikeCount));
+                Entity iceSpike = new Entity(Game.Instance.EntityManager, "icespike" + (++iceSpikeCount));
+                Game.Instance.EntityManager.AddExisting(iceSpike);
             }
 
             // gravity

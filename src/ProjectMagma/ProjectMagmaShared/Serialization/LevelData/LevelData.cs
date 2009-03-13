@@ -35,10 +35,17 @@ namespace ProjectMagma.Shared.Serialization.LevelData
     {
         public EntityData()
         {
-            name = "";
+            this.name = "";
             attributes = new List<AttributeData>();
             properties = new List<PropertyData>();
         }
+
+        //public EntityData(string name)
+        //{
+        //    this.name = name;
+        //    attributes = new List<AttributeData>();
+        //    properties = new List<PropertyData>();
+        //}
 
         public string name;
         public List<AttributeData> attributes;

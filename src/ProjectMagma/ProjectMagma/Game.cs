@@ -40,7 +40,7 @@ namespace ProjectMagma
 
         private static Game instance;
 
-        private Effect testEffect;
+        public Effect testEffect; // public because it's only a test
         private SpriteFont HUDFont;
         BloomComponent bloom;
 
@@ -51,8 +51,6 @@ namespace ProjectMagma
             Content.RootDirectory = "Content";
 
             entityManager = new EntityManager();
-
-            // changed by dpk on mar 12, on advice by obi
             pillarManager = new PillarManager();
             islandManager = new IslandManager();
             iceSpikeManager = new IceSpikeManager();
@@ -126,11 +124,11 @@ namespace ProjectMagma
 
             LevelData levelData = Content.Load<LevelData>("Level/TestLevel");
 
-            //testEffect = Content.Load<Effect>("Effects/TestEffect");
+            testEffect = Content.Load<Effect>("Effects/TestEffect");
 
             foreach (EntityData entityData in levelData.entities)
             {
-                entityManager.Add(Content, entityData);
+                entityManager.Add(entityData);
             }
 
             int gi = 0;

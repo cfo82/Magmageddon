@@ -65,16 +65,18 @@ namespace ProjectMagma.Framework
             {
                 Effect effect = Game.Instance.shadowEffect;
 
-                
-                //foreach (BasicEffect effect in mesh.Effects)
-                //{
-
-                    //effect.View = Game.Instance.View;
-                    //effect.Projection = Game.Instance.Projection;
-                    //effect.World = transforms[mesh.ParentBone.Index] * world;
                 switch(renderMode)
                 {
                     case RenderMode.RenderToScene:
+                        foreach (BasicEffect effectx in mesh.Effects)
+                        {
+                            effectx.EnableDefaultLighting();
+                            effectx.View = Game.Instance.View;
+                            effectx.Projection = Game.Instance.Projection;
+                            effectx.World = transforms[mesh.ParentBone.Index] * world;
+                        }
+                        mesh.Draw();
+
                         effect.CurrentTechnique = effect.Techniques["Scene"];
                         effect.Parameters["ShadowMap"].SetValue(Game.Instance.lightResolve);
                         effect.Parameters["WorldCameraViewProjection"].SetValue(
@@ -93,13 +95,26 @@ namespace ProjectMagma.Framework
                 effect.Parameters["WorldLightViewProjection"].SetValue(
                     transforms[mesh.ParentBone.Index] * world * Game.Instance.lightView * Game.Instance.lightProjection);
 
+                Game.Instance.Graphics.GraphicsDevice.RenderState.DepthBufferEnable = false;
+
+                Effect backup = mesh.MeshParts[0].Effect;
+                foreach (ModelMeshPart meshPart in mesh.MeshParts)
+                {
+                   meshPart.Effect = effect;
+                }
+                Game.Instance.GraphicsDevice.RenderState.AlphaBlendEnable = false;
+                Game.Instance.GraphicsDevice.RenderState.SourceBlend = Blend.SourceAlpha;
+                Game.Instance.GraphicsDevice.RenderState.DestinationBlend = Blend.DestinationColor;
+
+                mesh.Draw();
+
+                Game.Instance.GraphicsDevice.RenderState.AlphaBlendEnable = false;
                 Game.Instance.Graphics.GraphicsDevice.RenderState.DepthBufferEnable = true;
 
                 foreach (ModelMeshPart meshPart in mesh.MeshParts)
                 {
-                    meshPart.Effect = effect;
+                   meshPart.Effect = backup;
                 }
-                mesh.Draw();
             }
         }
         private Model model;

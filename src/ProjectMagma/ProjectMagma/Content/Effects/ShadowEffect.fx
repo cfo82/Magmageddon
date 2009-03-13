@@ -177,9 +177,9 @@ float4 Scene_PS (SCENE_VS_OUTPUT Input) : COLOR0
         // yes? then lets darken the pixel to black
         // (In normal use, you'd use a lighting equation here to 
         //determine exactly how much to darken the pixel)
-        color = float4(0,0,0,1);
+        color = float4(0,0,0,.3);
     } else {
-		color = float4(1,1,1,1);
+		color = float4(1,1,1,0);
     }
     
     return color;

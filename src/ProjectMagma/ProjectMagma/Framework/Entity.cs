@@ -69,6 +69,10 @@ namespace ProjectMagma.Framework
             {
                 attribute = new Vector3Attribute(name);
             }
+            else if (template == "quaternion")
+            {
+                attribute = new QuaternionAttribute(name);
+            }
 
             attribute.Initialize(value);
             this.attributes.Add(attribute.Name, attribute);
@@ -109,6 +113,12 @@ namespace ProjectMagma.Framework
             return (Attributes[attribute] as Vector3Attribute) != null;
         }
 
+        public bool IsQuaternion(string attribute)
+        {
+            Debug.Assert(HasAttribute(attribute));
+            return (Attributes[attribute] as QuaternionAttribute) != null;
+        }
+
         public bool HasString(string attribute)
         {
             return HasAttribute(attribute) && IsString(attribute);
@@ -134,39 +144,39 @@ namespace ProjectMagma.Framework
             return HasAttribute(attribute) && IsVector3(attribute);
         }
 
+        public bool HasQuaternion(string attribute)
+        {
+            return HasAttribute(attribute) && IsQuaternion(attribute);
+        }
+
         public string GetString(string attribute)
         {
-            Debug.Assert(HasAttribute(attribute));
-            Debug.Assert(IsString(attribute));
-            return (Attributes[attribute] as StringAttribute).Value;
+            return GetStringAttribute(attribute).Value;
         }
 
         public int GetInt(string attribute)
         {
-            Debug.Assert(HasAttribute(attribute));
-            Debug.Assert(IsInt(attribute));
-            return (Attributes[attribute] as IntAttribute).Value;
+            return GetIntAttribute(attribute).Value;
         }
 
         public float GetFloat(string attribute)
         {
-            Debug.Assert(HasAttribute(attribute));
-            Debug.Assert(IsFloat(attribute));
-            return (Attributes[attribute] as FloatAttribute).Value;
+            return GetFloatAttribute(attribute).Value;
         }
 
         public Vector2 GetVector2(string attribute)
         {
-            Debug.Assert(HasAttribute(attribute));
-            Debug.Assert(IsVector2(attribute));
-            return (Attributes[attribute] as Vector2Attribute).Value;
+            return GetVector2Attribute(attribute).Value;
         }
 
         public Vector3 GetVector3(string attribute)
         {
-            Debug.Assert(HasAttribute(attribute));
-            Debug.Assert(IsVector3(attribute));
-            return (Attributes[attribute] as Vector3Attribute).Value;
+            return GetVector3Attribute(attribute).Value;
+        }
+
+        public Quaternion GetQuaternion(string attribute)
+        {
+            return GetQuaternionAttribute(attribute).Value;
         }
 
         public StringAttribute GetStringAttribute(string attribute)
@@ -204,6 +214,13 @@ namespace ProjectMagma.Framework
             return Attributes[attribute] as Vector3Attribute;
         }
 
+        public QuaternionAttribute GetQuaternionAttribute(string attribute)
+        {
+            Debug.Assert(HasAttribute(attribute));
+            Debug.Assert(IsQuaternion(attribute));
+            return Attributes[attribute] as QuaternionAttribute;
+        }
+
         public void SetInt(string attribute, int value)
         {
             (Attributes[attribute] as IntAttribute).Value = value;
@@ -222,6 +239,11 @@ namespace ProjectMagma.Framework
         public void SetVector3(string attribute, Vector3 value)
         {
             (Attributes[attribute] as Vector3Attribute).Value = value;
+        }
+
+        public void SetQuaternion(string attribute, Quaternion value)
+        {
+            (Attributes[attribute] as QuaternionAttribute).Value = value;
         }
 
         #endregion

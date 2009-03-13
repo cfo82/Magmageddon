@@ -191,6 +191,7 @@
       <Attribute name="relative_position" template="float3" value="15 0 15"/>
       <Attribute name="power" template="string" value="energy"/>
       <Attribute name="powerValue" template="int" value="100"/>
+      <Attribute name="pickupSound" template="string" value="excellent"/>
     </Attributes>
     <Properties>
       <Property name="controller" type="ProjectMagma.Framework.PowerUpController"/>
@@ -207,6 +208,7 @@
       <Attribute name="relative_position" template="float3" value="-20 0 -5"/>
       <Attribute name="power" template="string" value="health"/>
       <Attribute name="powerValue" template="int" value="100"/>
+      <Attribute name="pickupSound" template="string" value="excellent"/>
     </Attributes>
     <Properties>
       <Property name="controller" type="ProjectMagma.Framework.PowerUpController"/>

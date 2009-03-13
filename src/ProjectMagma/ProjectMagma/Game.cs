@@ -50,7 +50,7 @@ namespace ProjectMagma
         // HACK: shouldnt be public, maybe extract this to some global rendering stuff class?
         public Matrix lightView;
         public Matrix lightProjection;
-        public Vector3 lightPosition = new Vector3(0, 600, 0); // later: replace by orthographic light, not lookAt
+        public Vector3 lightPosition = new Vector3(0, 10000, 0); // later: replace by orthographic light, not lookAt
         public Vector3 lightTarget = Vector3.Zero;
         public Texture2D lightResolve;
         public Effect shadowEffect;
@@ -197,24 +197,24 @@ namespace ProjectMagma
                 aspectRatio, 1.0f,
                 10000.0f);
 
-            lightProjection = Matrix.CreatePerspectiveFieldOfView(
-            MathHelper.ToRadians(90.0f), 1.0f, 1.0f, 10000.0f);
+            //lightProjection = Matrix.CreatePerspectiveFieldOfView(
+                //MathHelper.ToRadians(10.0f), 1.0f, 1.0f, 10000.0f);
+            lightProjection = Matrix.CreateOrthographic(1500, 1500,
+                0.0f, 10000.0f);
+
 
             // Set the light to look at the center of the scene.
             lightView = Matrix.CreateLookAt(lightPosition,
                                             lightTarget,
-                                            new Vector3(0, 0, 1));
+                                            new Vector3(0, 0, -1));
 
             // later: replace by something like this:
-            //lightView = Matrix.CreateOrthographic(1, 1, -5000.0f, 5000.0f);
             
             lightRenderTarget = new RenderTarget2D(graphics.GraphicsDevice,
                                  shadowMapSize,
                                  shadowMapSize,
                                  1,
                                  SurfaceFormat.Color);
-
-            Matrix.CreateOrthographic(1.0f, 1.0f, 0.0f, 10000.0f);
 
             // Create out depth stencil buffer, using the shadow map size, 
             //and the same format as our regular depth stencil buffer.

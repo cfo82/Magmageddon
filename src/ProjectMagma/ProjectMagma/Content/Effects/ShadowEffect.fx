@@ -41,7 +41,8 @@ float3 LightPosition;
 // The far clip distance of our light's view matrix. 
 //We use this value to normalise our distances 
 //(so that they fit into the 0.0 - 1.0 colour range in HLSL)
-float FarClip = 800;
+float NearClip = 9500;
+float FarClip = 10500;
 
 Texture ShadowMap;
 
@@ -88,9 +89,15 @@ float4 Depth_PS (DEPTH_VS_OUTPUT Input) : COLOR0
     // Get the distance from this pixel to the light, 
     //we divide by the far clip of the light so that it 
     //will fit into the 0.0-1.0 range of pixel shader colours
-    float depth = length(LightPosition - Input.WorldPosition) / FarClip;
     
-    return depth;
+    // general case, spotlight:
+    // float dist = length(LightPosition - Input.WorldPosition);
+    
+    // special case for us: orthographic from above:
+    float dist = LightPosition.y - Input.WorldPosition.y;
+    float depth = (dist - NearClip) / (FarClip - NearClip);
+    
+    return float4(depth,depth,depth,1);
 }
 
 technique DepthMap
@@ -143,7 +150,13 @@ float4 Scene_PS (SCENE_VS_OUTPUT Input) : COLOR0
     float4 depth = tex2D(shadowSampler, projectedTexCoords);
 
     // Calculate our distance to the light again
-    float len = length(LightPosition - Input.WorldPosition) / FarClip;
+    // general case, spotlight:
+    // float len = (length(LightPosition - Input.WorldPosition) - NearClip) / (FarClip - NearClip);
+    
+    // special case for us: orthographic from above:
+    float len = (LightPosition.y - Input.WorldPosition.y - NearClip) / (FarClip - NearClip);
+
+
     
     // This isn't necessary, it just gives the scene a little more definition
     //float4 color = 1.0 - len;
@@ -154,7 +167,7 @@ float4 Scene_PS (SCENE_VS_OUTPUT Input) : COLOR0
     //(which will result in image artifacts)
     //float depthBias = (1.0f / 200.0f);
     //float depthBias = -0.95f;
-    float depthBias = 0.02f;
+    float depthBias = 0.007f;
     //float depthBias = -0.005f;
     
     // Test if the distance from the pixel to the light is bigger 

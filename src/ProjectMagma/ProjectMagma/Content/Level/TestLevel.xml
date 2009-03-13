@@ -1,4 +1,5 @@
 ﻿<?xml version="1.0" encoding="utf-8" ?>
+<!DOCTYPE Level SYSTEM "Levels.dtd">
 <Level>
     <Entity name="lava">
       <Attributes>
@@ -167,17 +168,30 @@
       </Properties>
     </Entity>
 
+    <Entity name="player2">
+      <Attributes>
+        <Attribute name="position" template="float3" value="150 140 -80"/>
+        <Attribute name="scale" template="float3" value="10 10 10"/>
+        <Attribute name="mesh" template="string" value="Models/player_primitive"/>
+        <Attribute name="jetpackAcceleration" template="float3" value="0 2000 0"/>
+        <Attribute name="player_id" template="int" value="2"/>
+      </Attributes>
+      <Properties>
+        <Property name="controller" type="ProjectMagma.Framework.PlayerControllerProperty"/>
+        <Property name="render" type="ProjectMagma.Framework.RenderProperty"/>
+      </Properties>
+    </Entity>
 
-  <Entity name="player2">
+  <Entity name="powerup">
     <Attributes>
-      <Attribute name="position" template="float3" value="150 140 -80"/>
-      <Attribute name="scale" template="float3" value="10 10 10"/>
-      <Attribute name="mesh" template="string" value="Models/player_primitive"/>
-      <Attribute name="jetpackAcceleration" template="float3" value="0 2000 0"/>
-      <Attribute name="player_id" template="int" value="2"/>
+      <Attribute name="position" template="float3" value="0 0 0"/>
+      <Attribute name="island_reference" template="string" value="island7"/>
+      <Attribute name="mesh" template="string" value="Models/powerup"/>
+      <Attribute name="scale" template="float3" value="8 8 8"/>
+      <Attribute name="relative_position" template="float3" value="15 0 15"/>
     </Attributes>
     <Properties>
-      <Property name="controller" type="ProjectMagma.Framework.PlayerControllerProperty"/>
+      <Property name="controller" type="ProjectMagma.Framework.PowerUpController"/>
       <Property name="render" type="ProjectMagma.Framework.RenderProperty"/>
     </Properties>
   </Entity>

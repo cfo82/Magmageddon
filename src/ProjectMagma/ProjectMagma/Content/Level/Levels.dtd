@@ -1,0 +1,19 @@
+﻿<!ELEMENT Level (Entity*)>
+<!ELEMENT Entity (Attributes?, Properties?)>
+<!ELEMENT Attributes (Attribute*)>
+<!ELEMENT Properties (Property*)>
+<!ELEMENT Attribute EMPTY>
+<!ELEMENT Property EMPTY>
+<!ATTLIST Entity
+  name ID #REQUIRED
+>
+<!ATTLIST Attribute
+  name CDATA #REQUIRED
+  template (string|int|float|float2|float3) #REQUIRED
+  value CDATA #REQUIRED
+>
+<!ATTLIST Property
+  name CDATA #REQUIRED
+  type CDATA #REQUIRED
+>
+

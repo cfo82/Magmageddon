@@ -169,6 +169,41 @@ namespace ProjectMagma.Framework
             return (Attributes[attribute] as Vector3Attribute).Value;
         }
 
+        public StringAttribute GetStringAttribute(string attribute)
+        {
+            Debug.Assert(HasAttribute(attribute));
+            Debug.Assert(IsString(attribute));
+            return Attributes[attribute] as StringAttribute;
+        }
+
+        public IntAttribute GetIntAttribute(string attribute)
+        {
+            Debug.Assert(HasAttribute(attribute));
+            Debug.Assert(IsInt(attribute));
+            return Attributes[attribute] as IntAttribute;
+        }
+
+        public FloatAttribute GetFloatAttribute(string attribute)
+        {
+            Debug.Assert(HasAttribute(attribute));
+            Debug.Assert(IsFloat(attribute));
+            return Attributes[attribute] as FloatAttribute;
+        }
+
+        public Vector2Attribute GetVector2Attribute(string attribute)
+        {
+            Debug.Assert(HasAttribute(attribute));
+            Debug.Assert(IsVector2(attribute));
+            return Attributes[attribute] as Vector2Attribute;
+        }
+
+        public Vector3Attribute GetVector3Attribute(string attribute)
+        {
+            Debug.Assert(HasAttribute(attribute));
+            Debug.Assert(IsVector3(attribute));
+            return Attributes[attribute] as Vector3Attribute;
+        }
+
         public void SetInt(string attribute, int value)
         {
             (Attributes[attribute] as IntAttribute).Value = value;

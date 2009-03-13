@@ -31,11 +31,11 @@ namespace ProjectMagma.Framework
             }
         }
 
-        public void OnDraw(GameTime gameTime)
+        public void OnDraw(GameTime gameTime, RenderMode renderMode)
         {
             if (Draw != null)
             {
-                Draw(this, gameTime);
+                Draw(this, gameTime, renderMode);
             }
         }
 

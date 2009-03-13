@@ -30,13 +30,37 @@ namespace ProjectMagma
     {
         private GraphicsDeviceManager graphics;
         private SpriteBatch spriteBatch;
-        private Matrix view;
-        private Matrix projection;
+        
+        // HACK: shouldnt be public, maybe extract this to some global rendering stuff class?
+        public Vector3 cameraPosition = new Vector3(0, 850, 1400);
+        public Vector3 cameraTarget = new Vector3(0, 150, 0);
+        public Matrix cameraView;
+        public Matrix cameraProjection;
+        // ENDHACK
+
 
         private EntityManager entityManager;
         private PillarManager pillarManager;
         private IslandManager islandManager;
         private IceSpikeManager iceSpikeManager;
+
+        #region shadow related stuff
+        // see http://www.ziggyware.com/readarticle.php?article_id=161
+
+        // HACK: shouldnt be public, maybe extract this to some global rendering stuff class?
+        public Matrix lightView;
+        public Matrix lightProjection;
+        public Vector3 lightPosition = new Vector3(0, 600, 0); // later: replace by orthographic light, not lookAt
+        public Vector3 lightTarget = Vector3.Zero;
+        public Texture2D lightResolve;
+        public Effect shadowEffect;
+        int shadowMapSize = 512;
+        DepthStencilBuffer shadowStencilBuffer;
+        RenderTarget2D lightRenderTarget;
+        // ENDHACK
+
+
+        #endregion
 
         private static Game instance;
 
@@ -55,8 +79,8 @@ namespace ProjectMagma
             islandManager = new IslandManager();
             iceSpikeManager = new IceSpikeManager();
 
-            bloom = new BloomComponent(this);
-            Components.Add(bloom);
+            //bloom = new BloomComponent(this);
+            //Components.Add(bloom);
         }
 
         /// <summary>
@@ -125,6 +149,7 @@ namespace ProjectMagma
             LevelData levelData = Content.Load<LevelData>("Level/TestLevel");
 
             testEffect = Content.Load<Effect>("Effects/TestEffect");
+            shadowEffect = Content.Load<Effect>("Effects/ShadowEffect");
 
             foreach (EntityData entityData in levelData.entities)
             {
@@ -162,11 +187,45 @@ namespace ProjectMagma
 
             float aspectRatio = (float)viewport.Width / (float)viewport.Height;
 
-            view = Matrix.CreateLookAt(new Vector3(0, 850, 1400),
-                                       new Vector3(0, 150, 0), Vector3.Up);
+ 
+            cameraView = Matrix.CreateLookAt(cameraPosition,
+                                       cameraTarget, Vector3.Up);
 
-            projection = Matrix.CreatePerspectiveFieldOfView(MathHelper.PiOver4/2.0f,
-                                                             aspectRatio, 10, 10000);       
+
+            cameraProjection = Matrix.CreatePerspectiveFieldOfView(
+                MathHelper.ToRadians(22.5f),
+                aspectRatio, 1.0f,
+                10000.0f);
+
+            lightProjection = Matrix.CreatePerspectiveFieldOfView(
+            MathHelper.ToRadians(90.0f), 1.0f, 1.0f, 10000.0f);
+
+            // Set the light to look at the center of the scene.
+            lightView = Matrix.CreateLookAt(lightPosition,
+                                            lightTarget,
+                                            new Vector3(0, 0, 1));
+
+            // later: replace by something like this:
+            //lightView = Matrix.CreateOrthographic(1, 1, -5000.0f, 5000.0f);
+            
+            lightRenderTarget = new RenderTarget2D(graphics.GraphicsDevice,
+                                 shadowMapSize,
+                                 shadowMapSize,
+                                 1,
+                                 SurfaceFormat.Color);
+
+            Matrix.CreateOrthographic(1.0f, 1.0f, 0.0f, 10000.0f);
+
+            // Create out depth stencil buffer, using the shadow map size, 
+            //and the same format as our regular depth stencil buffer.
+            shadowStencilBuffer = new DepthStencilBuffer(
+                        graphics.GraphicsDevice,
+                        shadowMapSize,
+                        shadowMapSize,
+                        graphics.GraphicsDevice.DepthStencilBuffer.Format);
+
+
+
         }
 
         /// <summary>
@@ -206,11 +265,53 @@ namespace ProjectMagma
         {
             GraphicsDevice.Clear(Color.CornflowerBlue);
 
+            // 1) Set the light's render target
+            graphics.GraphicsDevice.SetRenderTarget(0, lightRenderTarget);
+
+            // 2) Render the scene from the perspective of the light
+            RenderShadow(gameTime);
+
+            // 3) Set our render target back to the screen, and get the 
+            //depth texture created by step 2
+            graphics.GraphicsDevice.SetRenderTarget(0, null);
+            lightResolve = lightRenderTarget.GetTexture();
+
+            // 4) Render the scene from the view of the camera, 
+            //and do depth comparisons in the shader to determine shadowing
+            RenderScene(gameTime);
+
+            DrawHud();
+            base.Draw(gameTime);
+        }
+
+        private void RenderScene(GameTime gameTime)
+        {
             foreach (Entity e in entityManager)
             {
-                e.OnDraw(gameTime);
+                e.OnDraw(gameTime, RenderMode.RenderToScene);
+            }
+        }
+
+        private void RenderShadow(GameTime gameTime)
+        {
+            // backup stencil buffer
+            DepthStencilBuffer oldStencilBuffer
+                = graphics.GraphicsDevice.DepthStencilBuffer;
+
+            graphics.GraphicsDevice.DepthStencilBuffer = shadowStencilBuffer;
+            graphics.GraphicsDevice.Clear(Color.White);
+
+            foreach (Entity e in entityManager)
+            {
+                e.OnDraw(gameTime, RenderMode.RenderToShadowMap);
             }
 
+            // restore stencil buffer
+            graphics.GraphicsDevice.DepthStencilBuffer = oldStencilBuffer;
+        }
+
+        private void DrawHud()
+        {
             // draw infos about state
             spriteBatch.Begin();
             int pos = 5;
@@ -219,15 +320,13 @@ namespace ProjectMagma
                 if (e.Name.StartsWith("player"))
                 {
                     spriteBatch.DrawString(HUDFont, e.Name + "; health: " + e.GetInt("health") + ", energy: " + e.GetInt("energy") + ", fuel: " + e.GetInt("fuel")
-                        +"; pos: "+e.GetVector3("position").ToString(),
+                        + "; pos: " + e.GetVector3("position").ToString(),
                         new Vector2(5, pos), Color.White);
                     pos += 20;
                 }
             }
             spriteBatch.DrawString(HUDFont, (1000f / gameTime.ElapsedGameTime.Milliseconds) + " fps", new Vector2(5, pos), Color.White);
             spriteBatch.End();
-
-            base.Draw(gameTime);
         }
 
         public GraphicsDeviceManager Graphics
@@ -258,7 +357,7 @@ namespace ProjectMagma
         {
             get
             {
-                return view;
+                return cameraView;
             }
         }
 
@@ -266,7 +365,7 @@ namespace ProjectMagma
         {
             get
             {
-                return projection;
+                return cameraProjection;
             }
         }
 

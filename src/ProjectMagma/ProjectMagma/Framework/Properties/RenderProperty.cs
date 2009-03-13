@@ -29,12 +29,14 @@ namespace ProjectMagma.Framework
             entity.Draw -= new DrawHandler(OnDraw);
         }
 
-        private void OnDraw(Entity entity, GameTime gameTime)
+        private void OnDraw(Entity entity, GameTime gameTime, RenderMode renderMode)
         {
             Debug.Assert(entity.HasAttribute("mesh"));
             Debug.Assert(entity.HasAttribute("position"));
-            
+
             Matrix world = Matrix.Identity;
+
+            #region compute world matrix
 
             // scaling
             if (entity.HasVector3("scale"))
@@ -54,24 +56,52 @@ namespace ProjectMagma.Framework
             Vector3 position = entity.GetVector3("position");
             world *= Matrix.CreateTranslation(position);
 
+            #endregion
+
             Matrix[] transforms = new Matrix[model.Bones.Count];
             model.CopyAbsoluteBoneTransformsTo(transforms);
+
             foreach (ModelMesh mesh in model.Meshes)
             {
-                foreach (BasicEffect effect in mesh.Effects)
-                {
-                    effect.EnableDefaultLighting();
+                Effect effect = Game.Instance.shadowEffect;
 
-                    effect.View = Game.Instance.View;
-                    effect.Projection = Game.Instance.Projection;
-                    effect.World = transforms[mesh.ParentBone.Index] * world;
+                
+                //foreach (BasicEffect effect in mesh.Effects)
+                //{
+
+                    //effect.View = Game.Instance.View;
+                    //effect.Projection = Game.Instance.Projection;
+                    //effect.World = transforms[mesh.ParentBone.Index] * world;
+                switch(renderMode)
+                {
+                    case RenderMode.RenderToScene:
+                        effect.CurrentTechnique = effect.Techniques["Scene"];
+                        effect.Parameters["ShadowMap"].SetValue(Game.Instance.lightResolve);
+                        effect.Parameters["WorldCameraViewProjection"].SetValue(
+                            transforms[mesh.ParentBone.Index] * world * Game.Instance.cameraView * Game.Instance.cameraProjection);
+                        break;
+                    case RenderMode.RenderToShadowMap:
+                        effect.CurrentTechnique = effect.Techniques["DepthMap"];
+                        effect.Parameters["LightPosition"].SetValue(Game.Instance.lightPosition);
+                        break;
+                    default:
+                        Debug.Assert(false, "unhandled render mode."); // HACK: maybe do better error handling?
+                        break;
                 }
 
+                effect.Parameters["World"].SetValue(transforms[mesh.ParentBone.Index] * world);
+                effect.Parameters["WorldLightViewProjection"].SetValue(
+                    transforms[mesh.ParentBone.Index] * world * Game.Instance.lightView * Game.Instance.lightProjection);
+
                 Game.Instance.Graphics.GraphicsDevice.RenderState.DepthBufferEnable = true;
+
+                foreach (ModelMeshPart meshPart in mesh.MeshParts)
+                {
+                    meshPart.Effect = effect;
+                }
                 mesh.Draw();
             }
         }
-
         private Model model;
     }
 }

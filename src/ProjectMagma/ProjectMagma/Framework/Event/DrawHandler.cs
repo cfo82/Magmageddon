@@ -6,5 +6,11 @@ using Microsoft.Xna.Framework;
 
 namespace ProjectMagma.Framework
 {
-    public delegate void DrawHandler(Entity sender, GameTime gameTime);
+    public enum RenderMode
+    {
+        RenderToShadowMap,
+        RenderToScene
+    }
+
+    public delegate void DrawHandler(Entity sender, GameTime gameTime, RenderMode renderMode);
 }

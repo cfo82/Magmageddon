@@ -4,7 +4,7 @@
     <Entity name="lava">
       <Attributes>
         <Attribute name="position" template="float3" value="0 0 0"/>
-        <Attribute name="scale" template="float3" value="200 200 200"/>
+        <Attribute name="scale" template="float3" value="400 200 400"/>
         <Attribute name="mesh" template="string" value="Models/lava_primitive"/>
       </Attributes>
       <Properties>
@@ -14,8 +14,8 @@
 
     <Entity name="pillar1">
       <Attributes>
-        <Attribute name="position" template="float3" value="-100 0 -100"/>
-        <Attribute name="scale" template="float3" value="200 200 200"/>
+        <Attribute name="position" template="float3" value="-150 0 -150"/>
+        <Attribute name="scale" template="float3" value="200 300 200"/>
         <Attribute name="mesh" template="string" value="Models/pillar_primitive"/>
       </Attributes>
       <Properties>
@@ -25,8 +25,8 @@
 
     <Entity name="pillar2">
       <Attributes>
-        <Attribute name="position" template="float3" value="-100 0 100"/>
-        <Attribute name="scale" template="float3" value="200 200 200"/>
+        <Attribute name="position" template="float3" value="-150 0 150"/>
+        <Attribute name="scale" template="float3" value="200 300 200"/>
         <Attribute name="mesh" template="string" value="Models/pillar_primitive"/>
       </Attributes>
       <Properties>
@@ -36,8 +36,8 @@
 
     <Entity name="pillar3">
       <Attributes>
-        <Attribute name="position" template="float3" value="100 0 -100"/>
-        <Attribute name="scale" template="float3" value="200 200 200"/>
+        <Attribute name="position" template="float3" value="150 0 -150"/>
+        <Attribute name="scale" template="float3" value="200 300 200"/>
         <Attribute name="mesh" template="string" value="Models/pillar_primitive"/>
       </Attributes>
       <Properties>
@@ -47,8 +47,8 @@
 
     <Entity name="pillar4">
       <Attributes>
-        <Attribute name="position" template="float3" value="100 0 100"/>
-        <Attribute name="scale" template="float3" value="200 200 200"/>
+        <Attribute name="position" template="float3" value="150 0 150"/>
+        <Attribute name="scale" template="float3" value="200 300 200"/>
         <Attribute name="mesh" template="string" value="Models/pillar_primitive"/>
       </Attributes>
       <Properties>

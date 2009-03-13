@@ -195,4 +195,18 @@
       <Property name="render" type="ProjectMagma.Framework.RenderProperty"/>
     </Properties>
   </Entity>
+
+  <Entity name="powerup2">
+    <Attributes>
+      <Attribute name="position" template="float3" value="0 0 0"/>
+      <Attribute name="island_reference" template="string" value="island1"/>
+      <Attribute name="mesh" template="string" value="Models/powerup"/>
+      <Attribute name="scale" template="float3" value="8 8 8"/>
+      <Attribute name="relative_position" template="float3" value="-20 0 -5"/>
+    </Attributes>
+    <Properties>
+      <Property name="controller" type="ProjectMagma.Framework.PowerUpController"/>
+      <Property name="render" type="ProjectMagma.Framework.RenderProperty"/>
+    </Properties>
+  </Entity>
 </Level>

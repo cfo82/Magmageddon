@@ -78,7 +78,7 @@ namespace ProjectMagma.Framework
             {
                 int iceSpikeCount = 0; // this should later be in the corresponding manager
                 Entity iceSpike = new Entity(Game.Instance.EntityManager, "icespike" + (++iceSpikeCount));
-                Game.Instance.EntityManager.AddExisting(iceSpike);
+                Game.Instance.EntityManager.AddDeferred(iceSpike);
             }
 
             // gravity

@@ -21,11 +21,11 @@ namespace ProjectMagma.Framework
         {
             entity.Update += new UpdateHandler(OnUpdate);
 
-            entity.AddAttribute("rotation", "quaternion", "");
-            entity.AddAttribute("jetpackVelocity", "float3", "0 0 0");
-            entity.AddAttribute("energy", "int", "100");
-            entity.AddAttribute("health", "int", "100");
-            entity.AddAttribute("fuel", "int", ""+maxFuel);
+            entity.AddQuaternionAttribute("rotation", Quaternion.Identity);
+            entity.AddVector3Attribute("jetpackVelocity", Vector3.Zero);
+            entity.AddIntAttribute("energy", 100);
+            entity.AddIntAttribute("health", 100);
+            entity.AddIntAttribute("fuel", maxFuel);
 
             this.player = entity;
         }

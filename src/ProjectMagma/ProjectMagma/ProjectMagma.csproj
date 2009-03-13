@@ -86,6 +86,7 @@
   <ItemGroup>
     <Compile Include="BloomComponent.cs" />
     <Compile Include="BloomSettings.cs" />
+    <Compile Include="Framework\Attributes\AttributeTypes.cs" />
     <Compile Include="Framework\Attributes\QuaternionAttribute.cs" />
     <Compile Include="Framework\Event\QuaternionChangeEventHandler.cs" />
     <Compile Include="Framework\Properties\PowerUpController.cs" />

@@ -25,7 +25,7 @@ namespace ProjectMagma.Framework
             Debug.Assert(this.powerupEntity.HasVector3("relative_position"), "must have a relative translation attribute");
             if (!this.powerupEntity.HasAttribute("position"))
             {
-                this.powerupEntity.AddAttribute("position", "float3", "0 0 0"); // position is set later on...
+                this.powerupEntity.AddVector3Attribute("position", Vector3.Zero);
             }
 
             // initialize position on island

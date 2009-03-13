@@ -46,40 +46,72 @@ namespace ProjectMagma.Framework
             AddAttribute(attributeData.name, attributeData.template, attributeData.value);
         }
 
-        public void AddAttribute(string name, string template)
+        public void AddAttribute(string name, AttributeTypes type)
         {
-            AddAttribute(name, template, "");
+            AddAttribute(name, type, "");
         }
 
-        public void AddAttribute(string name, string template, string value)
+        public void AddAttribute(string name, string type, string value)
+        {
+            AddAttribute(name, Attribute.GetTypeFromString(type), value);
+        }
+
+        public void AddAttribute(string name, AttributeTypes type, string value)
         {
             Attribute attribute = null;
-            if (template == "string")
+            switch (type)
             {
-                attribute = new StringAttribute(name);
+                case AttributeTypes.String: attribute = new StringAttribute(name); break;
+                case AttributeTypes.Int: attribute = new IntAttribute(name); break;
+                case AttributeTypes.Float: attribute = new FloatAttribute(name); break;
+                case AttributeTypes.Vector2: attribute = new Vector2Attribute(name); break;
+                case AttributeTypes.Vector3: attribute = new Vector3Attribute(name); break;
+                case AttributeTypes.Quaternion: attribute = new QuaternionAttribute(name); break;
+                default: throw new Exception("AttributeType '" + type + "' does not exist!");
             }
-            else if (template == "int")
-            {
-                attribute = new IntAttribute(name);
-            }
-            else if (template == "float")
-            {
-                attribute = new FloatAttribute(name);
-            }
-            else if (template == "float2")
-            {
-                attribute = new Vector2Attribute(name);
-            }
-            else if (template == "float3")
-            {
-                attribute = new Vector3Attribute(name);
-            }
-            else if (template == "quaternion")
-            {
-                attribute = new QuaternionAttribute(name);
-            }
-
             attribute.Initialize(value);
+            this.attributes.Add(attribute.Name, attribute);
+        }
+
+        public void AddStringAttribute(string name, string value)
+        {
+            StringAttribute attribute = new StringAttribute(name);
+            attribute.Value = value;
+            this.attributes.Add(attribute.Name, attribute);
+        }
+
+        public void AddIntAttribute(string name, int value)
+        {
+            IntAttribute attribute = new IntAttribute(name);
+            attribute.Value = value;
+            this.attributes.Add(attribute.Name, attribute);
+        }
+
+        public void AddFloatAttribute(string name, float value)
+        {
+            FloatAttribute attribute = new FloatAttribute(name);
+            attribute.Value = value;
+            this.attributes.Add(attribute.Name, attribute);
+        }
+
+        public void AddVector2Attribute(string name, Vector2 value)
+        {
+            Vector2Attribute attribute = new Vector2Attribute(name);
+            attribute.Value = value;
+            this.attributes.Add(attribute.Name, attribute);
+        }
+
+        public void AddVector3Attribute(string name, Vector3 value)
+        {
+            Vector3Attribute attribute = new Vector3Attribute(name);
+            attribute.Value = value;
+            this.attributes.Add(attribute.Name, attribute);
+        }
+
+        public void AddQuaternionAttribute(string name, Quaternion value)
+        {
+            QuaternionAttribute attribute = new QuaternionAttribute(name);
+            attribute.Value = value;
             this.attributes.Add(attribute.Name, attribute);
         }
 

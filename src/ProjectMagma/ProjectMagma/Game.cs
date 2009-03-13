@@ -185,6 +185,7 @@ namespace ProjectMagma
             {
                 e.OnUpdate(gameTime);
             }
+            entityManager.ExecuteDeferred();
 
             base.Update(gameTime);
         }

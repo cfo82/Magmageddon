@@ -68,8 +68,8 @@ namespace ProjectMagma.Framework
         {
             float dt = ((float)gameTime.ElapsedGameTime.Milliseconds)/1000.0f;
 
-            PlayerIndex playerIndex = (PlayerIndex)entity.GetInt("gamePadIndex");
-            Vector3 jetpackAcceleration = entity.GetVector3("jetpackAcceleration");
+            PlayerIndex playerIndex = (PlayerIndex)entity.GetInt("game_pad_index");
+            Vector3 jetpackAcceleration = entity.GetVector3("jetpack_acceleration");
             Vector3 playerPosition = entity.GetVector3("position");
             Vector3 jetpackVelocity = entity.GetVector3("jetpackVelocity");
             
@@ -270,7 +270,7 @@ namespace ProjectMagma.Framework
                         player.SetInt(powerup.GetString("power"), oldVal);
     
                         // soundeffect
-                        SoundEffect soundEffect = Game.Instance.Content.Load<SoundEffect>("Sounds/"+powerup.GetString("pickupSound"));
+                        SoundEffect soundEffect = Game.Instance.Content.Load<SoundEffect>("Sounds/"+powerup.GetString("pickup_sound"));
                         soundEffect.Play();
                     }
                 }

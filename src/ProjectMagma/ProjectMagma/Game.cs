@@ -40,9 +40,9 @@ namespace ProjectMagma
 
 
         private EntityManager entityManager;
-        private PillarManager pillarManager;
-        private IslandManager islandManager;
-        private IceSpikeManager iceSpikeManager;
+        private EntityKindManager pillarManager;
+        private EntityKindManager islandManager;
+        private EntityKindManager iceSpikeManager;
 
         #region shadow related stuff
         // see http://www.ziggyware.com/readarticle.php?article_id=161
@@ -75,9 +75,9 @@ namespace ProjectMagma
             Content.RootDirectory = "Content";
 
             entityManager = new EntityManager();
-            pillarManager = new PillarManager();
-            islandManager = new IslandManager();
-            iceSpikeManager = new IceSpikeManager();
+            pillarManager = new EntityKindManager(entityManager, "pillar");
+            islandManager = new EntityKindManager(entityManager, "island");
+            iceSpikeManager = new EntityKindManager(entityManager, "ice_spike");
 
             //bloom = new BloomComponent(this);
             //Components.Add(bloom);
@@ -159,27 +159,17 @@ namespace ProjectMagma
             int gi = 0;
             foreach (Entity e in entityManager)
             {
-                if (e.Name.StartsWith("island"))
+                if (e.HasString("kind") && e.GetString("kind") == "player")
                 {
-                    islandManager.Add(e);
+                    e.AddIntAttribute("game_pad_index", gi++);
                 }
-                else
-                    if (e.Name.StartsWith("pillar"))
-                    {
-                        pillarManager.Add(e);
-                    }
-                    else
-                        if (e.Name.StartsWith("player"))
-                        {
-                            e.AddAttribute("gamePadIndex", "int", "" + (gi++));
-                        }
             }
 
             // preload sounds
             foreach (Entity entity in Game.Instance.EntityManager)
             {
                 if (entity.Name.StartsWith("powerup"))
-                    Game.Instance.Content.Load<SoundEffect>("Sounds/" + entity.GetString("pickupSound"));
+                    Game.Instance.Content.Load<SoundEffect>("Sounds/" + entity.GetString("pickup_sound"));
             }
 
 
@@ -337,7 +327,7 @@ namespace ProjectMagma
             }
         }
 
-        public PillarManager PillarManager
+        public EntityKindManager PillarManager
         {
             get
             {
@@ -345,7 +335,7 @@ namespace ProjectMagma
             }
         }
 
-        public IslandManager IslandManager
+        public EntityKindManager IslandManager
         {
             get
             {

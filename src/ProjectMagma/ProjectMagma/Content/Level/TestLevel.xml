@@ -3,6 +3,7 @@
 <Level>
     <Entity name="lava">
       <Attributes>
+        <Attribute name="kind" template="string" value="lava"/>
         <Attribute name="position" template="float3" value="0 0 0"/>
         <Attribute name="scale" template="float3" value="400 200 400"/>
         <Attribute name="mesh" template="string" value="Models/lava_primitive"/>
@@ -14,6 +15,7 @@
 
     <Entity name="pillar1">
       <Attributes>
+        <Attribute name="kind" template="string" value="pillar"/>
         <Attribute name="position" template="float3" value="-150 0 -150"/>
         <Attribute name="scale" template="float3" value="200 300 200"/>
         <Attribute name="mesh" template="string" value="Models/pillar_primitive"/>
@@ -25,6 +27,7 @@
 
     <Entity name="pillar2">
       <Attributes>
+        <Attribute name="kind" template="string" value="pillar"/>
         <Attribute name="position" template="float3" value="-150 0 150"/>
         <Attribute name="scale" template="float3" value="200 300 200"/>
         <Attribute name="mesh" template="string" value="Models/pillar_primitive"/>
@@ -36,6 +39,7 @@
 
     <Entity name="pillar3">
       <Attributes>
+        <Attribute name="kind" template="string" value="pillar"/>
         <Attribute name="position" template="float3" value="150 0 -150"/>
         <Attribute name="scale" template="float3" value="200 300 200"/>
         <Attribute name="mesh" template="string" value="Models/pillar_primitive"/>
@@ -47,6 +51,7 @@
 
     <Entity name="pillar4">
       <Attributes>
+        <Attribute name="kind" template="string" value="pillar"/>
         <Attribute name="position" template="float3" value="150 0 150"/>
         <Attribute name="scale" template="float3" value="200 300 200"/>
         <Attribute name="mesh" template="string" value="Models/pillar_primitive"/>
@@ -58,7 +63,8 @@
     
  <Entity name="island1">
   <Attributes>
-  <Attribute name="position" template="float3" value="60 160 -30"/>
+    <Attribute name="kind" template="string" value="island"/>
+    <Attribute name="position" template="float3" value="60 160 -30"/>
   <Attribute name="velocity" template="float3" value="0 0 0"/>
   <Attribute name="acceleration" template="float3" value="0 0 0"/>
   <Attribute name="scale" template="float3" value="70 70 70"/>
@@ -72,7 +78,8 @@
 
  <Entity name="island2">
   <Attributes>
-  <Attribute name="position" template="float3" value="-140 250 -240"/>
+    <Attribute name="kind" template="string" value="island"/>
+    <Attribute name="position" template="float3" value="-140 250 -240"/>
   <Attribute name="velocity" template="float3" value="0 0 0"/>
   <Attribute name="acceleration" template="float3" value="0 0 0"/>
   <Attribute name="scale" template="float3" value="70 70 70"/>
@@ -86,7 +93,8 @@
 
  <Entity name="island3">
   <Attributes>
-  <Attribute name="position" template="float3" value="90 210 280"/>
+    <Attribute name="kind" template="string" value="island"/>
+    <Attribute name="position" template="float3" value="90 210 280"/>
   <Attribute name="velocity" template="float3" value="0 0 0"/>
   <Attribute name="acceleration" template="float3" value="0 0 0"/>
   <Attribute name="scale" template="float3" value="40 40 40"/>
@@ -100,7 +108,8 @@
  
  <Entity name="island4">
   <Attributes>
-  <Attribute name="position" template="float3" value="110 280 -300"/>
+    <Attribute name="kind" template="string" value="island"/>
+    <Attribute name="position" template="float3" value="110 280 -300"/>
   <Attribute name="velocity" template="float3" value="0 0 0"/>
   <Attribute name="acceleration" template="float3" value="0 0 0"/>
   <Attribute name="scale" template="float3" value="40 40 40"/>
@@ -114,7 +123,8 @@
  
  <Entity name="island5">
   <Attributes>
-  <Attribute name="position" template="float3" value="150 20 160"/>
+    <Attribute name="kind" template="string" value="island"/>
+    <Attribute name="position" template="float3" value="150 20 160"/>
   <Attribute name="velocity" template="float3" value="0 0 0"/>
   <Attribute name="acceleration" template="float3" value="0 0 0"/>
   <Attribute name="scale" template="float3" value="40 40 40"/>
@@ -128,7 +138,8 @@
  
  <Entity name="island6">
   <Attributes>
-  <Attribute name="position" template="float3" value="-30 60 190"/>
+    <Attribute name="kind" template="string" value="island"/>
+    <Attribute name="position" template="float3" value="-30 60 190"/>
   <Attribute name="velocity" template="float3" value="0 0 0"/>
   <Attribute name="acceleration" template="float3" value="0 0 0"/>
   <Attribute name="scale" template="float3" value="40 40 40"/>
@@ -142,7 +153,8 @@
 
  <Entity name="island7">
   <Attributes>
-  <Attribute name="position" template="float3" value="-250 100 220"/>
+    <Attribute name="kind" template="string" value="island"/>
+    <Attribute name="position" template="float3" value="-250 100 220"/>
   <Attribute name="velocity" template="float3" value="0 0 0"/>
   <Attribute name="acceleration" template="float3" value="0 0 0"/>
   <Attribute name="scale" template="float3" value="40 40 40"/>
@@ -156,10 +168,11 @@
 
     <Entity name="player1">
       <Attributes>
+        <Attribute name="kind" template="string" value="player"/>
         <Attribute name="position" template="float3" value="-150 100 100"/>
         <Attribute name="scale" template="float3" value="10 10 10"/>
         <Attribute name="mesh" template="string" value="Models/player_primitive"/>
-        <Attribute name="jetpackAcceleration" template="float3" value="0 2000 0"/>
+        <Attribute name="jetpack_acceleration" template="float3" value="0 2000 0"/>
         <Attribute name="player_id" template="int" value="1"/>
       </Attributes>
       <Properties>
@@ -170,10 +183,11 @@
 
     <Entity name="player2">
       <Attributes>
+        <Attribute name="kind" template="string" value="player"/>
         <Attribute name="position" template="float3" value="150 140 -80"/>
         <Attribute name="scale" template="float3" value="10 10 10"/>
         <Attribute name="mesh" template="string" value="Models/player_primitive"/>
-        <Attribute name="jetpackAcceleration" template="float3" value="0 2000 0"/>
+        <Attribute name="jetpack_acceleration" template="float3" value="0 2000 0"/>
         <Attribute name="player_id" template="int" value="2"/>
       </Attributes>
       <Properties>
@@ -184,6 +198,7 @@
 
   <Entity name="powerup">
     <Attributes>
+      <Attribute name="kind" template="string" value="powerup"/>
       <Attribute name="position" template="float3" value="0 0 0"/>
       <Attribute name="island_reference" template="string" value="island7"/>
       <Attribute name="mesh" template="string" value="Models/powerup"/>
@@ -191,7 +206,7 @@
       <Attribute name="relative_position" template="float3" value="15 0 15"/>
       <Attribute name="power" template="string" value="energy"/>
       <Attribute name="powerValue" template="int" value="100"/>
-      <Attribute name="pickupSound" template="string" value="excellent"/>
+      <Attribute name="pickup_sound" template="string" value="excellent"/>
     </Attributes>
     <Properties>
       <Property name="controller" type="ProjectMagma.Framework.PowerUpController"/>
@@ -201,6 +216,7 @@
 
   <Entity name="powerup2">
     <Attributes>
+      <Attribute name="kind" template="string" value="powerup"/>
       <Attribute name="position" template="float3" value="0 0 0"/>
       <Attribute name="island_reference" template="string" value="island1"/>
       <Attribute name="mesh" template="string" value="Models/powerup"/>
@@ -208,7 +224,7 @@
       <Attribute name="relative_position" template="float3" value="-20 0 -5"/>
       <Attribute name="power" template="string" value="health"/>
       <Attribute name="powerValue" template="int" value="100"/>
-      <Attribute name="pickupSound" template="string" value="excellent"/>
+      <Attribute name="pickup_sound" template="string" value="excellent"/>
     </Attributes>
     <Properties>
       <Property name="controller" type="ProjectMagma.Framework.PowerUpController"/>

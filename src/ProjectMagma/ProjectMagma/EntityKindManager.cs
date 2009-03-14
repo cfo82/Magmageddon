@@ -8,11 +8,14 @@ using ProjectMagma.Framework;
 
 namespace ProjectMagma
 {
-    public class IslandManager : IEnumerable<Entity>
+    public class EntityKindManager : IEnumerable<Entity>
     {
-        public IslandManager()
+        public EntityKindManager(EntityManager entityManager, string kind)
         {
+            this.kind = kind;
             entities = new List<Entity>();
+            entityManager.EntityAdded += new EntityAddedHandler(OnEntityAdded);
+            entityManager.EntityRemoved += new EntityRemovedHandler(OnEntityRemoved);
         }
 
         public void Add(Entity entity)
@@ -44,11 +47,30 @@ namespace ProjectMagma
             }
         }
 
+        private void OnEntityAdded(EntityManager manager, Entity entity)
+        {
+            if (entity.HasString("kind"))
+            {
+                if (kind == entity.GetString("kind"))
+                {
+                    entities.Add(entity);
+                }
+            }
+        }
+
+        private void OnEntityRemoved(EntityManager manager, Entity entity)
+        {
+            if (entities.Contains(entity))
+            {
+                entities.Remove(entity);
+            }
+        }
+
         #region Implement IEnumerable interface
 
-        private class IslandIterator : IEnumerator<Entity>
+        private class IceSpikeIterator : IEnumerator<Entity>
         {
-            public IslandIterator(IslandManager manager)
+            public IceSpikeIterator(EntityKindManager manager)
             {
                 this.manager = manager;
                 this.index = -1;
@@ -85,22 +107,23 @@ namespace ProjectMagma
                 }
             }
 
-            private IslandManager manager;
+            private EntityKindManager manager;
             private int index = 0;
         };
 
         public IEnumerator<Entity> GetEnumerator()
         {
-            return new IslandIterator(this);
+            return new IceSpikeIterator(this);
         }
 
         IEnumerator IEnumerable.GetEnumerator()
         {
-            return new IslandIterator(this);
+            return new IceSpikeIterator(this);
         }
 
         #endregion
 
+        private string kind;
         private List<Entity> entities;
     }
 }

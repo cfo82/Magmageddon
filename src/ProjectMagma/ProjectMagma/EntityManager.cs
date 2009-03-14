@@ -30,12 +30,31 @@ namespace ProjectMagma
             {
                 entity.AddProperty(propertyData);
             }
-            this.entities.Add(entity.Name, entity);
+            Add(entity);
         }
 
-        public void AddExisting(Entity entity)
+        public void Add(Entity entity)
         {
-            this.entities.Add(entity.Name, entity);
+            if (!this.entities.ContainsKey(entity.Name))
+            {
+                this.entities.Add(entity.Name, entity);
+                FireEntityAdded(entity);
+            }
+            else
+            {
+                throw new Exception("entity with id '" + entity.Name + "' is already registered!");
+            }
+        }
+
+        public void Remove(Entity entity)
+        {
+            if (!this.entities.ContainsKey(entity.Name))
+            {
+                throw new Exception("no entity with id '" + entity.Name + "' is registered!");
+            }
+
+            this.entities.Remove(entity.Name);
+            FireEntityRemoved(entity);
         }
 
         public void AddDeferred(Entity entity)
@@ -52,11 +71,11 @@ namespace ProjectMagma
         {
             foreach (Entity entity in addDeferred)
             {
-                entities.Add(entity.Name, entity);
+                Add(entity);
             }
             foreach (Entity entity in removeDeferred)
             {
-                entities.Remove(entity.Name);
+                Remove(entity);
             }
 
             addDeferred.Clear();
@@ -78,6 +97,25 @@ namespace ProjectMagma
             get
             {
                 return entities[name];
+            }
+        }
+
+        public event EntityAddedHandler EntityAdded;
+        public event EntityRemovedHandler EntityRemoved;
+
+        private void FireEntityAdded(Entity entity)
+        {
+            if (this.EntityAdded != null)
+            {
+                EntityAdded(this, entity);
+            }
+        }
+
+        private void FireEntityRemoved(Entity entity)
+        {
+            if (this.EntityRemoved != null)
+            {
+                EntityRemoved(this, entity);
             }
         }
 

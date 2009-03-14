@@ -332,7 +332,7 @@ namespace ProjectMagma
                 if (e.Name.StartsWith("player"))
                 {
                     spriteBatch.DrawString(HUDFont, e.Name + "; health: " + e.GetInt("health") + ", energy: " + e.GetInt("energy") + ", fuel: " + e.GetInt("fuel")
-                        + "; pos: " + e.GetVector3("position").ToString(),
+                        + ", frozenTime: " + e.GetInt("frozen")+ "ms; pos: " + e.GetVector3("position").ToString(),
                         new Vector2(5, pos), Color.White);
                     pos += 20;
                 }

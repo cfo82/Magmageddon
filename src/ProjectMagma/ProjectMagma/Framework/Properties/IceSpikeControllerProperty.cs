@@ -68,7 +68,10 @@ namespace ProjectMagma.Framework
 
                             // deduct health if player
                             if (e.Name.StartsWith("player"))
+                            {
                                 e.SetInt("health", e.GetInt("health") - iceSpikeDamage);
+                                e.SetInt("frozen", e.GetInt("frozen") + iceSpikeFrozenTime);
+                            }
 
                             return;
                         }
@@ -114,7 +117,8 @@ namespace ProjectMagma.Framework
 
         //private Entity target;
         private static readonly Vector3 gravityAcceleration = new Vector3(0, -500f, 0);
-        private static readonly int iceSpikeDamage = 20;
+        private static readonly int iceSpikeDamage = 2;
+        private static readonly int iceSpikeFrozenTime = 250; // ms
         //private float straightAcceleration = 100f;
         //private float maxSpeed = 150f;
     }

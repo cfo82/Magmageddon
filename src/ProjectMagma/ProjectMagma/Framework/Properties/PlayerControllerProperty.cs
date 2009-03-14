@@ -23,9 +23,12 @@ namespace ProjectMagma.Framework
 
             entity.AddQuaternionAttribute("rotation", Quaternion.Identity);
             entity.AddVector3Attribute("jetpack_velocity", Vector3.Zero);
+
             entity.AddIntAttribute("energy", maxEnergy);
             entity.AddIntAttribute("health", maxHealth);
             entity.AddIntAttribute("fuel", maxFuel);
+
+            entity.AddIntAttribute("frozen", 5000);
 
             this.player = entity;
         }
@@ -128,6 +131,16 @@ namespace ProjectMagma.Framework
                 entity.SetQuaternion("rotation", Quaternion.CreateFromRotationMatrix(rotationMatrix));
             }
 
+            // frozen!?
+            if (player.GetInt("frozen") > 0)
+            {
+                playerPosition = (originalPosition + playerPosition) / 2;
+                player.SetInt("frozen", player.GetInt("frozen") - gameTime.ElapsedGameTime.Milliseconds);
+                if (player.GetInt("frozen") < 0)
+                    player.SetInt("frozen", 0);
+            }
+
+
             // ice spike
             if (controllerInput.xPressed && player.GetInt("energy") > iceSpikeEnergyCost &&
                 (gameTime.TotalGameTime.TotalMilliseconds - iceSpikeFiredAt) > iceSpikeCooldown)
@@ -156,8 +169,8 @@ namespace ProjectMagma.Framework
                 /// 
                 /// TODO: uncomment to get correct energy deduction
 
-//                player.SetInt("energy", player.GetInt("energy") - iceSpikeEnergyCost);
-//                iceSpikeFiredAt = gameTime.TotalGameTime.TotalMilliseconds;
+                player.SetInt("energy", player.GetInt("energy") - iceSpikeEnergyCost);
+                iceSpikeFiredAt = gameTime.TotalGameTime.TotalMilliseconds;
             }
 
 
@@ -281,6 +294,13 @@ namespace ProjectMagma.Framework
                 }
             }
 
+            // recharge energy
+            if ((gameTime.TotalGameTime.TotalMilliseconds - energyRechargedAt) > energyRechargIntervall)
+            {
+                entity.SetInt("energy", entity.GetInt("energy") + 1);
+                energyRechargedAt = (float)gameTime.TotalGameTime.TotalMilliseconds;
+            }
+
             if (player.GetInt("energy") > maxEnergy)
                 player.SetInt("energy", maxEnergy);
             if (player.GetInt("health") > maxHealth)
@@ -311,6 +331,9 @@ namespace ProjectMagma.Framework
         private static readonly int maxEnergy = 100;
         private static readonly int maxFuel = 1500;
 
+        private static float energyRechargedAt = 0;
+        private static readonly int energyRechargIntervall = 250; // ms
+
         private static readonly float fuelRechargeMultiplicator = 0.75f;
         private static readonly float maxJetpackSpeed = 150f;
         private static readonly float maxGravitySpeed = 450f;
@@ -320,8 +343,8 @@ namespace ProjectMagma.Framework
         private double iceSpikeFiredAt = 0;
         private static readonly int iceSpikeSpeed = 130;
         private static readonly int iceSpikeUpSpeed = 240;
-        private static readonly int iceSpikeEnergyCost = 30;
-        private static readonly int iceSpikeCooldown = 1000; // ms
+        private static readonly int iceSpikeEnergyCost = 4;
+        private static readonly int iceSpikeCooldown = 50; // ms
 
         private static readonly int playerXAxisMultiplier = 1;
         private static readonly int playerZAxisMultiplier = 2;

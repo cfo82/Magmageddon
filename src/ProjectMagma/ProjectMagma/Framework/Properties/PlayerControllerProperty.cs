@@ -82,6 +82,11 @@ namespace ProjectMagma.Framework
             // get input
             controllerInput.Update(playerIndex);
 
+            /// TODO: jetpack is a bit jearky right now, as before velocity gets a certain amount
+            /// player always collides with island and the positon correction code from island/player collisin
+            /// gets executed
+
+
             /// movements
 
             // jetpack

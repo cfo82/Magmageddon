@@ -24,11 +24,14 @@ namespace ProjectMagma.Framework
             entity.AddQuaternionAttribute("rotation", Quaternion.Identity);
             entity.AddVector3Attribute("jetpack_velocity", Vector3.Zero);
 
+            entity.AddVector3Attribute("pushback_velocity", Vector3.Zero);
+            entity.AddVector3Attribute("pushback_deacceleration", Vector3.Zero);
+
             entity.AddIntAttribute("energy", maxEnergy);
             entity.AddIntAttribute("health", maxHealth);
             entity.AddIntAttribute("fuel", maxFuel);
 
-            entity.AddIntAttribute("frozen", 5000);
+            entity.AddIntAttribute("frozen", 0);
 
             this.player = entity;
         }
@@ -75,6 +78,7 @@ namespace ProjectMagma.Framework
             Vector3 jetpackAcceleration = entity.GetVector3("jetpack_acceleration");
             Vector3 playerPosition = entity.GetVector3("position");
             Vector3 jetpackVelocity = entity.GetVector3("jetpack_velocity");
+            Vector3 pushbackVelocity = entity.GetVector3("pushback_velocity");
             
             int fuel = entity.GetInt("fuel");
 
@@ -120,10 +124,25 @@ namespace ProjectMagma.Framework
             
             playerPosition += jetpackVelocity * dt;
 
+            // pushback
+            if (pushbackVelocity.Length() > 0)
+            {
+                Vector3 oldVelocity = pushbackVelocity;
+                Vector3 pushbackDeAcceleration = pushbackVelocity;
+                pushbackDeAcceleration.Normalize();
+
+                pushbackVelocity -= pushbackDeAcceleration * pushBackDeAccelerationMultiplier * dt;
+                if (pushbackVelocity.Length() > oldVelocity.Length()) // if length increases we accelerate -> stop
+                    pushbackVelocity = Vector3.Zero;
+
+                playerPosition += pushbackVelocity * dt;
+            }
+
             // XZ movement
             playerPosition.X += controllerInput.leftStickX * playerXAxisMultiplier;
             playerPosition.Z -= controllerInput.leftStickY * playerZAxisMultiplier;
 
+            // rotation
             if (controllerInput.leftStickPressed)
             {
                 float yRotation = (float)Math.Atan2(controllerInput.leftStickX, -controllerInput.leftStickY);
@@ -294,6 +313,44 @@ namespace ProjectMagma.Framework
                 }
             }
 
+            // and check collision with other player
+            foreach (Entity p in Game.Instance.EntityManager)
+            {
+                if (p.Name.StartsWith("player") && p != player)
+                {
+                    BoundingSphere obs = Game.calculateBoundingSphere(Game.Instance.Content.Load<Model>(p.GetString("mesh")),
+                        GetPosition(p), GetRotation(p), GetScale(p));
+
+                    if (obs.Intersects(bs))
+                    {
+                        // and hit?
+                        if (controllerInput.rPressed)
+                        {
+                            // dedcut health
+                            p.SetInt("health", p.GetInt("health") - 20);
+
+                            // push back
+                            Vector3 dir = obs.Center - bs.Center;
+                            dir.Normalize();
+                            dir.Y = 0;
+
+                            p.SetVector3("pushback_velocity", dir * pushBackHitVelocityMultiplier);
+                        }
+                        else
+                        {
+                            // normal feedback
+                            Vector3 push = bs.Center - obs.Center;
+                            push *= (obs.Radius + bs.Radius) - push.Length();
+                            push.Normalize();
+
+                            player.SetVector3("pushback_velocity", push * pushBackPlay2PlayerVelocityMultiplier);
+                            p.SetVector3("pushback_velocity", push * -pushBackPlay2PlayerVelocityMultiplier);
+                        }
+                    }
+                }
+            }
+
+
             // recharge energy
             if ((gameTime.TotalGameTime.TotalMilliseconds - energyRechargedAt) > energyRechargIntervall)
             {
@@ -314,6 +371,7 @@ namespace ProjectMagma.Framework
 
             entity.SetVector3("position", playerPosition);
             entity.SetVector3("jetpack_velocity", jetpackVelocity);
+            entity.SetVector3("pushback_velocity", pushbackVelocity);
         }
 
         private void islandPositionHandler(Vector3Attribute sender, Vector3 oldValue, Vector3 newValue)
@@ -338,6 +396,10 @@ namespace ProjectMagma.Framework
         private static readonly float maxJetpackSpeed = 150f;
         private static readonly float maxGravitySpeed = 450f;
         private static readonly Vector3 gravityAcceleration = new Vector3(0, -900f, 0);
+
+        private static readonly float pushBackPlay2PlayerVelocityMultiplier = 80f;
+        private static readonly float pushBackHitVelocityMultiplier = 180f;
+        private static readonly float pushBackDeAccelerationMultiplier = 300f;
 
         private int iceSpikeCount = 0;
         private double iceSpikeFiredAt = 0;
@@ -401,6 +463,22 @@ namespace ProjectMagma.Framework
                     gamePadState.Buttons.X == ButtonState.Pressed ||
                     keyboardState.IsKeyDown(Keys.Enter);
 
+                bPressed =
+                    gamePadState.Buttons.B == ButtonState.Pressed ||
+                    keyboardState.IsKeyDown(Keys.Back);
+
+                yPressed =
+                    gamePadState.Buttons.Y == ButtonState.Pressed ||
+                    keyboardState.IsKeyDown(Keys.RightShift);
+
+                lPressed =
+                    gamePadState.Buttons.LeftShoulder == ButtonState.Pressed ||
+                    keyboardState.IsKeyDown(Keys.LeftAlt);
+
+                rPressed =
+                    gamePadState.Buttons.RightShoulder == ButtonState.Pressed ||
+                    keyboardState.IsKeyDown(Keys.LeftControl);
+
                 #endregion
 
             }
@@ -414,6 +492,8 @@ namespace ProjectMagma.Framework
 
             // buttons
             public bool aPressed, xPressed;
+            public bool bPressed, yPressed;
+            public bool lPressed, rPressed;
 
             private static float gamepadEmulationValue = -1f;
         }

@@ -36,6 +36,14 @@ namespace ProjectMagma.Framework
             }
         }
 
+        public override string StringValue
+        {
+            get
+            {
+                return value;
+            }
+        }
+
         private void OnValueChanged(string oldValue, string newValue)
         {
             if (ValueChanged != null)

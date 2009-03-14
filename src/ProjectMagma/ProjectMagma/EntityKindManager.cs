@@ -14,8 +14,8 @@ namespace ProjectMagma
         {
             this.kind = kind;
             entities = new List<Entity>();
-            entityManager.EntityAdded += new EntityAddedHandler(OnEntityAdded);
-            entityManager.EntityRemoved += new EntityRemovedHandler(OnEntityRemoved);
+            entityManager.EntityAdded += OnEntityAdded;
+            entityManager.EntityRemoved += OnEntityRemoved;
         }
 
         public void Add(Entity entity)

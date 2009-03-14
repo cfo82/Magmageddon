@@ -1,170 +1,181 @@
 ﻿<?xml version="1.0" encoding="utf-8" ?>
 <!DOCTYPE Level SYSTEM "Levels.dtd">
 <Level>
-    <Entity name="lava">
-      <Attributes>
-        <Attribute name="kind" template="string" value="lava"/>
-        <Attribute name="position" template="float3" value="0 0 0"/>
-        <Attribute name="scale" template="float3" value="400 200 400"/>
-        <Attribute name="mesh" template="string" value="Models/lava_primitive"/>
-      </Attributes>
-      <Properties>
-        <Property name="render" type="ProjectMagma.Framework.RenderProperty"/>
-      </Properties>
-    </Entity>
+  <Entity name="lava">
+    <Attributes>
+      <Attribute name="kind" template="string" value="lava"/>
+      <Attribute name="position" template="float3" value="0 0 0"/>
+      <Attribute name="scale" template="float3" value="400 200 400"/>
+      <Attribute name="mesh" template="string" value="Models/lava_primitive"/>
+    </Attributes>
+    <Properties>
+      <Property name="render" type="ProjectMagma.Framework.RenderProperty"/>
+    </Properties>
+  </Entity>
 
-    <Entity name="pillar1">
-      <Attributes>
-        <Attribute name="kind" template="string" value="pillar"/>
-        <Attribute name="position" template="float3" value="-150 0 -150"/>
-        <Attribute name="scale" template="float3" value="200 300 200"/>
-        <Attribute name="mesh" template="string" value="Models/pillar_primitive"/>
-      </Attributes>
-      <Properties>
-        <Property name="render" type="ProjectMagma.Framework.RenderProperty"/>
-      </Properties>
-    </Entity>
+  <Entity name="pillar1">
+    <Attributes>
+      <Attribute name="kind" template="string" value="pillar"/>
+      <Attribute name="position" template="float3" value="-150 0 -150"/>
+      <Attribute name="scale" template="float3" value="200 300 200"/>
+      <Attribute name="mesh" template="string" value="Models/pillar_primitive"/>
+      <Attribute name="bv_type" template="string" value="cylinder"/>
+    </Attributes>
+    <Properties>
+      <Property name="render" type="ProjectMagma.Framework.RenderProperty"/>
+    </Properties>
+  </Entity>
 
-    <Entity name="pillar2">
-      <Attributes>
-        <Attribute name="kind" template="string" value="pillar"/>
-        <Attribute name="position" template="float3" value="-150 0 150"/>
-        <Attribute name="scale" template="float3" value="200 300 200"/>
-        <Attribute name="mesh" template="string" value="Models/pillar_primitive"/>
-      </Attributes>
-      <Properties>
-        <Property name="render" type="ProjectMagma.Framework.RenderProperty"/>
-      </Properties>
-    </Entity>
+  <Entity name="pillar2">
+    <Attributes>
+      <Attribute name="kind" template="string" value="pillar"/>
+      <Attribute name="position" template="float3" value="-150 0 150"/>
+      <Attribute name="scale" template="float3" value="200 300 200"/>
+      <Attribute name="mesh" template="string" value="Models/pillar_primitive"/>
+      <Attribute name="bv_type" template="string" value="cylinder"/>
+    </Attributes>
+    <Properties>
+      <Property name="render" type="ProjectMagma.Framework.RenderProperty"/>
+    </Properties>
+  </Entity>
 
-    <Entity name="pillar3">
-      <Attributes>
-        <Attribute name="kind" template="string" value="pillar"/>
-        <Attribute name="position" template="float3" value="150 0 -150"/>
-        <Attribute name="scale" template="float3" value="200 300 200"/>
-        <Attribute name="mesh" template="string" value="Models/pillar_primitive"/>
-      </Attributes>
-      <Properties>
-        <Property name="render" type="ProjectMagma.Framework.RenderProperty"/>
-      </Properties>
-    </Entity>
+  <Entity name="pillar3">
+    <Attributes>
+      <Attribute name="kind" template="string" value="pillar"/>
+      <Attribute name="position" template="float3" value="150 0 -150"/>
+      <Attribute name="scale" template="float3" value="200 300 200"/>
+      <Attribute name="mesh" template="string" value="Models/pillar_primitive"/>
+      <Attribute name="bv_type" template="string" value="cylinder"/>
+    </Attributes>
+    <Properties>
+      <Property name="render" type="ProjectMagma.Framework.RenderProperty"/>
+    </Properties>
+  </Entity>
 
-    <Entity name="pillar4">
-      <Attributes>
-        <Attribute name="kind" template="string" value="pillar"/>
-        <Attribute name="position" template="float3" value="150 0 150"/>
-        <Attribute name="scale" template="float3" value="200 300 200"/>
-        <Attribute name="mesh" template="string" value="Models/pillar_primitive"/>
-      </Attributes>
-      <Properties>
-        <Property name="render" type="ProjectMagma.Framework.RenderProperty"/>
-      </Properties>
-    </Entity>
+  <Entity name="pillar4">
+    <Attributes>
+      <Attribute name="kind" template="string" value="pillar"/>
+      <Attribute name="position" template="float3" value="150 0 150"/>
+      <Attribute name="scale" template="float3" value="200 300 200"/>
+      <Attribute name="mesh" template="string" value="Models/pillar_primitive"/>
+      <Attribute name="bv_type" template="string" value="cylinder"/>
+    </Attributes>
+    <Properties>
+      <Property name="render" type="ProjectMagma.Framework.RenderProperty"/>
+    </Properties>
+  </Entity>
     
- <Entity name="island1">
-  <Attributes>
-    <Attribute name="kind" template="string" value="island"/>
-    <Attribute name="position" template="float3" value="60 160 -30"/>
-  <Attribute name="velocity" template="float3" value="0 0 0"/>
-  <Attribute name="acceleration" template="float3" value="0 0 0"/>
-  <Attribute name="scale" template="float3" value="70 70 70"/>
-  <Attribute name="mesh" template="string" value="Models/island_primitive"/>
-  </Attributes>
-   <Properties>
-     <Property name="controller" type="ProjectMagma.Framework.IslandControllerProperty"/>
-     <Property name="render" type="ProjectMagma.Framework.RenderProperty"/>
-   </Properties>
- </Entity>
+  <Entity name="island1">
+    <Attributes>
+      <Attribute name="kind" template="string" value="island"/>
+      <Attribute name="position" template="float3" value="60 160 -30"/>
+      <Attribute name="velocity" template="float3" value="0 0 0"/>
+      <Attribute name="acceleration" template="float3" value="0 0 0"/>
+      <Attribute name="scale" template="float3" value="70 70 70"/>
+      <Attribute name="mesh" template="string" value="Models/island_primitive"/>
+      <Attribute name="bv_type" template="string" value="cylinder"/>
+    </Attributes>
+    <Properties>
+      <Property name="controller" type="ProjectMagma.Framework.IslandControllerProperty"/>
+      <Property name="render" type="ProjectMagma.Framework.RenderProperty"/>
+    </Properties>
+  </Entity>
 
- <Entity name="island2">
-  <Attributes>
-    <Attribute name="kind" template="string" value="island"/>
-    <Attribute name="position" template="float3" value="-140 250 -240"/>
-  <Attribute name="velocity" template="float3" value="0 0 0"/>
-  <Attribute name="acceleration" template="float3" value="0 0 0"/>
-  <Attribute name="scale" template="float3" value="70 70 70"/>
-  <Attribute name="mesh" template="string" value="Models/island_primitive"/>
-  </Attributes>
-   <Properties>
-     <Property name="controller" type="ProjectMagma.Framework.IslandControllerProperty"/>
-     <Property name="render" type="ProjectMagma.Framework.RenderProperty"/>
-   </Properties>
- </Entity>
+  <Entity name="island2">
+    <Attributes>
+      <Attribute name="kind" template="string" value="island"/>
+      <Attribute name="position" template="float3" value="-140 250 -240"/>
+      <Attribute name="velocity" template="float3" value="0 0 0"/>
+      <Attribute name="acceleration" template="float3" value="0 0 0"/>
+      <Attribute name="scale" template="float3" value="70 70 70"/>
+      <Attribute name="mesh" template="string" value="Models/island_primitive"/>
+      <Attribute name="bv_type" template="string" value="cylinder"/>
+    </Attributes>
+    <Properties>
+      <Property name="controller" type="ProjectMagma.Framework.IslandControllerProperty"/>
+      <Property name="render" type="ProjectMagma.Framework.RenderProperty"/>
+    </Properties>
+  </Entity>
 
- <Entity name="island3">
-  <Attributes>
-    <Attribute name="kind" template="string" value="island"/>
-    <Attribute name="position" template="float3" value="90 210 280"/>
-  <Attribute name="velocity" template="float3" value="0 0 0"/>
-  <Attribute name="acceleration" template="float3" value="0 0 0"/>
-  <Attribute name="scale" template="float3" value="40 40 40"/>
-  <Attribute name="mesh" template="string" value="Models/island_primitive"/>
-  </Attributes>
-   <Properties>
-     <Property name="controller" type="ProjectMagma.Framework.IslandControllerProperty"/>
-     <Property name="render" type="ProjectMagma.Framework.RenderProperty"/>
-   </Properties>
- </Entity>
- 
- <Entity name="island4">
-  <Attributes>
-    <Attribute name="kind" template="string" value="island"/>
-    <Attribute name="position" template="float3" value="110 280 -300"/>
-  <Attribute name="velocity" template="float3" value="0 0 0"/>
-  <Attribute name="acceleration" template="float3" value="0 0 0"/>
-  <Attribute name="scale" template="float3" value="40 40 40"/>
-  <Attribute name="mesh" template="string" value="Models/island_primitive"/>
-  </Attributes>
-   <Properties>
-     <Property name="controller" type="ProjectMagma.Framework.IslandControllerProperty"/>
-     <Property name="render" type="ProjectMagma.Framework.RenderProperty"/>
-   </Properties>
- </Entity>
- 
- <Entity name="island5">
-  <Attributes>
-    <Attribute name="kind" template="string" value="island"/>
-    <Attribute name="position" template="float3" value="150 20 160"/>
-  <Attribute name="velocity" template="float3" value="0 0 0"/>
-  <Attribute name="acceleration" template="float3" value="0 0 0"/>
-  <Attribute name="scale" template="float3" value="40 40 40"/>
-  <Attribute name="mesh" template="string" value="Models/island_primitive"/>
-  </Attributes>
-   <Properties>
-     <Property name="controller" type="ProjectMagma.Framework.IslandControllerProperty"/>
-     <Property name="render" type="ProjectMagma.Framework.RenderProperty"/>
-   </Properties>
- </Entity>
- 
- <Entity name="island6">
-  <Attributes>
-    <Attribute name="kind" template="string" value="island"/>
-    <Attribute name="position" template="float3" value="-30 60 190"/>
-  <Attribute name="velocity" template="float3" value="0 0 0"/>
-  <Attribute name="acceleration" template="float3" value="0 0 0"/>
-  <Attribute name="scale" template="float3" value="40 40 40"/>
-  <Attribute name="mesh" template="string" value="Models/island_primitive"/>
-  </Attributes>
-   <Properties>
-     <Property name="controller" type="ProjectMagma.Framework.IslandControllerProperty"/>
-     <Property name="render" type="ProjectMagma.Framework.RenderProperty"/>
-   </Properties>
- </Entity>
+  <Entity name="island3">
+    <Attributes>
+      <Attribute name="kind" template="string" value="island"/>
+      <Attribute name="position" template="float3" value="90 210 280"/>
+    <Attribute name="velocity" template="float3" value="0 0 0"/>
+    <Attribute name="acceleration" template="float3" value="0 0 0"/>
+    <Attribute name="scale" template="float3" value="40 40 40"/>
+    <Attribute name="mesh" template="string" value="Models/island_primitive"/>
+      <Attribute name="bv_type" template="string" value="cylinder"/>
+    </Attributes>
+    <Properties>
+      <Property name="controller" type="ProjectMagma.Framework.IslandControllerProperty"/>
+      <Property name="render" type="ProjectMagma.Framework.RenderProperty"/>
+    </Properties>
+  </Entity>
 
- <Entity name="island7">
-  <Attributes>
-    <Attribute name="kind" template="string" value="island"/>
-    <Attribute name="position" template="float3" value="-250 100 220"/>
-  <Attribute name="velocity" template="float3" value="0 0 0"/>
-  <Attribute name="acceleration" template="float3" value="0 0 0"/>
-  <Attribute name="scale" template="float3" value="40 40 40"/>
-  <Attribute name="mesh" template="string" value="Models/island_primitive"/>
-  </Attributes>
-   <Properties>
-     <Property name="controller" type="ProjectMagma.Framework.IslandControllerProperty"/>
-     <Property name="render" type="ProjectMagma.Framework.RenderProperty"/>
-   </Properties>
- </Entity>
+  <Entity name="island4">
+    <Attributes>
+      <Attribute name="kind" template="string" value="island"/>
+      <Attribute name="position" template="float3" value="110 280 -300"/>
+      <Attribute name="velocity" template="float3" value="0 0 0"/>
+      <Attribute name="acceleration" template="float3" value="0 0 0"/>
+      <Attribute name="scale" template="float3" value="40 40 40"/>
+      <Attribute name="mesh" template="string" value="Models/island_primitive"/>
+      <Attribute name="bv_type" template="string" value="cylinder"/>
+    </Attributes>
+    <Properties>
+      <Property name="controller" type="ProjectMagma.Framework.IslandControllerProperty"/>
+      <Property name="render" type="ProjectMagma.Framework.RenderProperty"/>
+    </Properties>
+  </Entity>
+
+  <Entity name="island5">
+    <Attributes>
+      <Attribute name="kind" template="string" value="island"/>
+      <Attribute name="position" template="float3" value="150 20 160"/>
+      <Attribute name="velocity" template="float3" value="0 0 0"/>
+      <Attribute name="acceleration" template="float3" value="0 0 0"/>
+      <Attribute name="scale" template="float3" value="40 40 40"/>
+      <Attribute name="mesh" template="string" value="Models/island_primitive"/>
+      <Attribute name="bv_type" template="string" value="cylinder"/>
+    </Attributes>
+    <Properties>
+      <Property name="controller" type="ProjectMagma.Framework.IslandControllerProperty"/>
+      <Property name="render" type="ProjectMagma.Framework.RenderProperty"/>
+    </Properties>
+  </Entity>
+
+  <Entity name="island6">
+    <Attributes>
+      <Attribute name="kind" template="string" value="island"/>
+      <Attribute name="position" template="float3" value="-30 60 190"/>
+      <Attribute name="velocity" template="float3" value="0 0 0"/>
+      <Attribute name="acceleration" template="float3" value="0 0 0"/>
+      <Attribute name="scale" template="float3" value="40 40 40"/>
+      <Attribute name="mesh" template="string" value="Models/island_primitive"/>
+      <Attribute name="bv_type" template="string" value="cylinder"/>
+    </Attributes>
+    <Properties>
+      <Property name="controller" type="ProjectMagma.Framework.IslandControllerProperty"/>
+      <Property name="render" type="ProjectMagma.Framework.RenderProperty"/>
+    </Properties>
+  </Entity>
+
+  <Entity name="island7">
+    <Attributes>
+      <Attribute name="kind" template="string" value="island"/>
+      <Attribute name="position" template="float3" value="-250 100 220"/>
+      <Attribute name="velocity" template="float3" value="0 0 0"/>
+      <Attribute name="acceleration" template="float3" value="0 0 0"/>
+      <Attribute name="scale" template="float3" value="40 40 40"/>
+      <Attribute name="mesh" template="string" value="Models/island_primitive"/>
+      <Attribute name="bv_type" template="string" value="cylinder"/>
+    </Attributes>
+    <Properties>
+      <Property name="controller" type="ProjectMagma.Framework.IslandControllerProperty"/>
+      <Property name="render" type="ProjectMagma.Framework.RenderProperty"/>
+    </Properties>
+  </Entity>
 
     <Entity name="player1">
       <Attributes>
@@ -174,6 +185,7 @@
         <Attribute name="mesh" template="string" value="Models/player_primitive"/>
         <Attribute name="jetpack_acceleration" template="float3" value="0 2000 0"/>
         <Attribute name="player_id" template="int" value="1"/>
+        <Attribute name="bv_type" template="string" value="sphere"/>
       </Attributes>
       <Properties>
         <Property name="controller" type="ProjectMagma.Framework.PlayerControllerProperty"/>
@@ -189,6 +201,7 @@
         <Attribute name="mesh" template="string" value="Models/player_primitive"/>
         <Attribute name="jetpack_acceleration" template="float3" value="0 2000 0"/>
         <Attribute name="player_id" template="int" value="2"/>
+        <Attribute name="bv_type" template="string" value="sphere"/>
       </Attributes>
       <Properties>
         <Property name="controller" type="ProjectMagma.Framework.PlayerControllerProperty"/>
@@ -207,6 +220,7 @@
       <Attribute name="power" template="string" value="energy"/>
       <Attribute name="powerValue" template="int" value="100"/>
       <Attribute name="pickup_sound" template="string" value="excellent"/>
+      <Attribute name="bv_type" template="string" value="box"/>
     </Attributes>
     <Properties>
       <Property name="controller" type="ProjectMagma.Framework.PowerUpController"/>
@@ -225,6 +239,7 @@
       <Attribute name="power" template="string" value="health"/>
       <Attribute name="powerValue" template="int" value="100"/>
       <Attribute name="pickup_sound" template="string" value="excellent"/>
+      <Attribute name="bv_type" template="string" value="box"/>
     </Attributes>
     <Properties>
       <Property name="controller" type="ProjectMagma.Framework.PowerUpController"/>

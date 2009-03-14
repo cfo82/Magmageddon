@@ -12,6 +12,7 @@ using Microsoft.Xna.Framework.Input;
 using Microsoft.Xna.Framework.Media;
 using Microsoft.Xna.Framework.Net;
 using Microsoft.Xna.Framework.Storage;
+using xWinFormsLib;
 
 using ProjectMagma.Framework;
 using ProjectMagma.Shared.Serialization.LevelData;
@@ -58,6 +59,9 @@ namespace ProjectMagma
         DepthStencilBuffer shadowStencilBuffer;
         RenderTarget2D lightRenderTarget;
         // ENDHACK
+
+        private FormCollection formCollection;
+        private ManagementForm managementForm;
 
 
         #endregion
@@ -136,12 +140,22 @@ namespace ProjectMagma
             base.Initialize();
         }
 
+        private void CreateManagementForm()
+        {
+
+            //Show the form
+        }
+
         /// <summary>
         /// LoadContent will be called once per game and is theF place to load
         /// all of your content.
         /// </summary>
         protected override void LoadContent()
         {
+            // create the gui system
+            formCollection = new FormCollection(this.Window, Services, ref graphics);
+            managementForm = new ManagementForm(formCollection);
+
             // Create a new SpriteBatch, which can be used to draw textures.
             spriteBatch = new SpriteBatch(GraphicsDevice);
             HUDFont = Content.Load<SpriteFont>("HUDFont");
@@ -215,7 +229,7 @@ namespace ProjectMagma
                         graphics.GraphicsDevice.DepthStencilBuffer.Format);
 
 
-
+            CreateManagementForm();
         }
 
         /// <summary>
@@ -225,6 +239,7 @@ namespace ProjectMagma
         protected override void UnloadContent()
         {
             // TODO: Unload any non ContentManager content here
+            formCollection.Dispose();
         }
 
         /// <summary>
@@ -244,6 +259,8 @@ namespace ProjectMagma
             }
             entityManager.ExecuteDeferred();
 
+            formCollection.Update(gameTime);
+
             base.Update(gameTime);
         }
 
@@ -253,6 +270,8 @@ namespace ProjectMagma
         /// <param name="gameTime">Provides a snapshot of timing values.</param>
         protected override void Draw(GameTime gameTime)
         {
+            formCollection.Render();
+
             GraphicsDevice.Clear(Color.CornflowerBlue);
 
             // 1) Set the light's render target
@@ -271,6 +290,9 @@ namespace ProjectMagma
             RenderScene(gameTime);
 
             DrawHud(gameTime);
+
+            formCollection.Draw();
+
             base.Draw(gameTime);
         }
 

@@ -17,7 +17,7 @@ namespace ProjectMagma.Framework
 
         public void OnAttached(Entity entity)
         {
-            entity.Draw += new DrawHandler(OnDraw);
+            entity.Draw += OnDraw;
 
             // load the model
             string meshName = entity.GetString("mesh");
@@ -26,7 +26,7 @@ namespace ProjectMagma.Framework
 
         public void OnDetached(Entity entity)
         {
-            entity.Draw -= new DrawHandler(OnDraw);
+            entity.Draw -= OnDraw;
         }
 
         private void OnDraw(Entity entity, GameTime gameTime, RenderMode renderMode)

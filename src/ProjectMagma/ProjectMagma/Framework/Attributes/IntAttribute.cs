@@ -16,7 +16,18 @@ namespace ProjectMagma.Framework
             
         public override void Initialize(string value)
         {
-            v = int.Parse(value);
+            if (value.Trim().Length == 0)
+            {
+                v = 0;
+            }
+            else
+            {
+                int val;
+                if (int.TryParse(value, out val))
+                {
+                    this.v = val;
+                }
+            }
         }
 
         public int Value
@@ -34,6 +45,14 @@ namespace ProjectMagma.Framework
                     v = value;
                     OnValueChanged(oldValue, v);
                 }
+            }
+        }
+
+        public override string StringValue
+        {
+            get
+            {
+                return String.Format("{0}", v);
             }
         }
 

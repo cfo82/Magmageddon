@@ -16,9 +16,23 @@ namespace ProjectMagma.Framework
             
         public override void Initialize(string value)
         {
-            string[] splitArray = value.Split(' ');
-            v.X = float.Parse(splitArray[0]);
-            v.Y = float.Parse(splitArray[1]);
+            if (value.Trim().Length == 0)
+            {
+                v = Vector2.Zero;
+            }
+            else
+            {
+                float x, y;
+                string[] splitArray = value.Split(' ');
+                if (splitArray.Length > 0 && float.TryParse(splitArray[0], out x))
+                {
+                    v.X = x;
+                }
+                if (splitArray.Length > 1 && float.TryParse(splitArray[1], out y))
+                {
+                    v.Y = y;
+                }
+            }
         }
 
         public Vector2 Value
@@ -35,6 +49,14 @@ namespace ProjectMagma.Framework
                     v = value;
                     OnValueChanged(oldValue, v);
                 }
+            }
+        }
+
+        public override string StringValue
+        {
+            get
+            {
+                return String.Format("{0} {1}", v.X, v.Y);
             }
         }
 

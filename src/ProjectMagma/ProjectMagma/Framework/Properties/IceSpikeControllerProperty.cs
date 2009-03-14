@@ -17,12 +17,12 @@ namespace ProjectMagma.Framework
 
         public void OnAttached(Entity entity)
         {
-            entity.Update += new UpdateHandler(OnUpdate);
+            entity.Update += OnUpdate;
         }
 
         public void OnDetached(Entity entity)
         {
-            entity.Update -= new UpdateHandler(OnUpdate);
+            entity.Update -= OnUpdate;
         }
 
         private void OnUpdate(Entity entity, GameTime gameTime)

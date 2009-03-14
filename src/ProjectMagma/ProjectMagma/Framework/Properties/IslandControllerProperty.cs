@@ -17,13 +17,13 @@ namespace ProjectMagma.Framework
 
         public void OnAttached(Entity entity)
         {
-            entity.Update += new UpdateHandler(OnUpdate);
+            entity.Update += OnUpdate;
             entity.AddIntAttribute("collisionCount", 0);
         }
 
         public void OnDetached(Entity entity)
         {
-            entity.Update -= new UpdateHandler(OnUpdate);
+            entity.Update -= OnUpdate;
             // TODO: remove attribute!
         }
 

@@ -86,6 +86,7 @@
   <ItemGroup>
     <Compile Include="BloomComponent.cs" />
     <Compile Include="BloomSettings.cs" />
+    <Compile Include="ManagementForm.cs" />
     <Compile Include="EntityRemovedHandler.cs" />
     <Compile Include="EntityAddedHandler.cs" />
     <Compile Include="Framework\Attributes\AttributeTypes.cs" />
@@ -167,6 +168,10 @@
     <ProjectReference Include="..\ProjectMagmaShared\ProjectMagmaShared.csproj">
       <Project>{68FEE9A0-EA37-4321-B485-3D5B1DED238D}</Project>
       <Name>ProjectMagmaShared</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\xWinFormsLib\xWinFormsLib.csproj">
+      <Project>{32868301-A135-4BB5-AA3A-44A5DE60C081}</Project>
+      <Name>xWinFormsLib</Name>
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />

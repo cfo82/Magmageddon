@@ -24,6 +24,8 @@ namespace ProjectMagma.Framework
             }
         }
 
+        public abstract String StringValue { get; }
+
         public static AttributeTypes GetTypeFromString(string type)
         {
             if (type == "string")

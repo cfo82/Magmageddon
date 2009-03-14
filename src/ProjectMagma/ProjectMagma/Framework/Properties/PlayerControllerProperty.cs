@@ -19,10 +19,10 @@ namespace ProjectMagma.Framework
 
         public void OnAttached(Entity entity)
         {
-            entity.Update += new UpdateHandler(OnUpdate);
+            entity.Update += OnUpdate;
 
             entity.AddQuaternionAttribute("rotation", Quaternion.Identity);
-            entity.AddVector3Attribute("jetpackVelocity", Vector3.Zero);
+            entity.AddVector3Attribute("jetpack_velocity", Vector3.Zero);
             entity.AddIntAttribute("energy", maxEnergy);
             entity.AddIntAttribute("health", maxHealth);
             entity.AddIntAttribute("fuel", maxFuel);
@@ -32,7 +32,7 @@ namespace ProjectMagma.Framework
 
         public void OnDetached(Entity entity)
         {
-            entity.Update -= new UpdateHandler(OnUpdate);
+            entity.Update -= OnUpdate;
         }
 
         private Vector3 GetPosition(Entity entity)
@@ -71,7 +71,7 @@ namespace ProjectMagma.Framework
             PlayerIndex playerIndex = (PlayerIndex)entity.GetInt("game_pad_index");
             Vector3 jetpackAcceleration = entity.GetVector3("jetpack_acceleration");
             Vector3 playerPosition = entity.GetVector3("position");
-            Vector3 jetpackVelocity = entity.GetVector3("jetpackVelocity");
+            Vector3 jetpackVelocity = entity.GetVector3("jetpack_velocity");
             
             int fuel = entity.GetInt("fuel");
 
@@ -178,7 +178,7 @@ namespace ProjectMagma.Framework
                         // correct position to exact touching point
                         playerPosition.Y += (bs.Radius - (bs.Center.Y - ibc.Top.Y));
                         if (activeIsland == null) // add handler
-                            ((Vector3Attribute)island.Attributes["position"]).ValueChanged += new Vector3ChangeHandler(islandPositionHandler);
+                            ((Vector3Attribute)island.Attributes["position"]).ValueChanged += islandPositionHandler;
                         newActiveIsland = island; // mark as active
                     }
                     else
@@ -214,7 +214,7 @@ namespace ProjectMagma.Framework
                 }
             }
             if(newActiveIsland == null && activeIsland != null)
-                ((Vector3Attribute)activeIsland.Attributes["position"]).ValueChanged -= new Vector3ChangeHandler(islandPositionHandler);
+                ((Vector3Attribute)activeIsland.Attributes["position"]).ValueChanged -= islandPositionHandler;
             activeIsland = newActiveIsland;
 
             // check collison with pillars
@@ -288,7 +288,7 @@ namespace ProjectMagma.Framework
 //            entity.SetInt("fuel", fuel);
 
             entity.SetVector3("position", playerPosition);
-            entity.SetVector3("jetpackVelocity", jetpackVelocity);
+            entity.SetVector3("jetpack_velocity", jetpackVelocity);
         }
 
         private void islandPositionHandler(Vector3Attribute sender, Vector3 oldValue, Vector3 newValue)

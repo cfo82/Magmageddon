@@ -33,7 +33,7 @@ namespace ProjectMagma.Framework
             this.powerupEntity.SetVector3("position", islandEntity.GetVector3("position"));
 
             // register change handler
-            this.islandEntity.GetVector3Attribute("position").ValueChanged += new Vector3ChangeHandler(OnIslandPositionChanged);
+            this.islandEntity.GetVector3Attribute("position").ValueChanged += OnIslandPositionChanged;
         }
 
         public void OnDetached(

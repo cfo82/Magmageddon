@@ -22,11 +22,24 @@ namespace ProjectMagma.Framework
             }
             else
             {
+                float x, y, z, w;
                 string[] splitArray = value.Split(' ');
-                v.X = float.Parse(splitArray[0]);
-                v.Y = float.Parse(splitArray[1]);
-                v.Z = float.Parse(splitArray[2]);
-                v.Z = float.Parse(splitArray[2]);
+                if (splitArray.Length > 0 && float.TryParse(splitArray[0], out x))
+                {
+                    v.X = x;
+                }
+                if (splitArray.Length > 1 && float.TryParse(splitArray[1], out y))
+                {
+                    v.Y = y;
+                }
+                if (splitArray.Length > 2 && float.TryParse(splitArray[2], out z))
+                {
+                    v.Z = z;
+                }
+                if (splitArray.Length > 3 && float.TryParse(splitArray[3], out w))
+                {
+                    v.W = w;
+                }
             }
         }
 
@@ -45,6 +58,14 @@ namespace ProjectMagma.Framework
                     v = value;
                     OnValueChanged(oldValue, v);
                 }
+            }
+        }
+
+        public override string StringValue
+        {
+            get
+            {
+                return String.Format("{0} {1} {2} {3}", v.X, v.Y, v.Z, v.W);
             }
         }
 

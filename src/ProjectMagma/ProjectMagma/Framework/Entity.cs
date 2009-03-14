@@ -216,6 +216,12 @@ namespace ProjectMagma.Framework
             return GetQuaternionAttribute(attribute).Value;
         }
 
+        public Attribute GetAttribute(string attribute)
+        {
+            Debug.Assert(HasAttribute(attribute));
+            return Attributes[attribute];
+        }
+
         public StringAttribute GetStringAttribute(string attribute)
         {
             Debug.Assert(HasAttribute(attribute));

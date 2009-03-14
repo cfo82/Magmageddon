@@ -131,7 +131,7 @@ namespace ProjectMagma.Framework
                 Vector3 pushbackDeAcceleration = pushbackVelocity;
                 pushbackDeAcceleration.Normalize();
 
-                pushbackVelocity -= pushbackDeAcceleration * pushBackDeAccelerationMultiplier * dt;
+                pushbackVelocity -= pushbackDeAcceleration * pushbackDeAccelerationMultiplier * dt;
                 if (pushbackVelocity.Length() > oldVelocity.Length()) // if length increases we accelerate -> stop
                     pushbackVelocity = Vector3.Zero;
 
@@ -334,7 +334,7 @@ namespace ProjectMagma.Framework
                             dir.Normalize();
                             dir.Y = 0;
 
-                            p.SetVector3("pushback_velocity", dir * pushBackHitVelocityMultiplier);
+                            p.SetVector3("pushback_velocity", dir * pushbackHitVelocityMultiplier);
                         }
                         else
                         {
@@ -343,8 +343,8 @@ namespace ProjectMagma.Framework
                             push *= (obs.Radius + bs.Radius) - push.Length();
                             push.Normalize();
 
-                            player.SetVector3("pushback_velocity", push * pushBackPlay2PlayerVelocityMultiplier);
-                            p.SetVector3("pushback_velocity", push * -pushBackPlay2PlayerVelocityMultiplier);
+                            player.SetVector3("pushback_velocity", push * pushbackPlay2PlayerVelocityMultiplier);
+                            p.SetVector3("pushback_velocity", push * -pushbackPlay2PlayerVelocityMultiplier);
                         }
                     }
                 }
@@ -397,9 +397,9 @@ namespace ProjectMagma.Framework
         private static readonly float maxGravitySpeed = 450f;
         private static readonly Vector3 gravityAcceleration = new Vector3(0, -900f, 0);
 
-        private static readonly float pushBackPlay2PlayerVelocityMultiplier = 80f;
-        private static readonly float pushBackHitVelocityMultiplier = 180f;
-        private static readonly float pushBackDeAccelerationMultiplier = 300f;
+        private static readonly float pushbackPlay2PlayerVelocityMultiplier = 80f;
+        private static readonly float pushbackHitVelocityMultiplier = 180f;
+        private static readonly float pushbackDeAccelerationMultiplier = 300f;
 
         private int iceSpikeCount = 0;
         private double iceSpikeFiredAt = 0;

@@ -378,9 +378,7 @@ namespace ProjectMagma.Framework
 
 
             // update entity attributes
-
-            /// TODO: allow update again
-//            entity.SetInt("fuel", fuel);
+            entity.SetInt("fuel", fuel);
 
             entity.SetVector3("position", playerPosition);
             entity.SetVector3("jetpack_velocity", jetpackVelocity);
@@ -417,8 +415,8 @@ namespace ProjectMagma.Framework
         private static readonly int maxEnergy = 100;
         private static readonly int maxFuel = 1500;
 
-        private static float energyRechargedAt = 0;
-        private static readonly int energyRechargIntervall = 250; // ms
+        private float energyRechargedAt = 0;
+        private readonly int energyRechargIntervall = 250; // ms
 
         private static readonly float fuelRechargeMultiplicator = 0.75f;
         private static readonly float maxJetpackSpeed = 150f;

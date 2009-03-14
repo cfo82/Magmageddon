@@ -24,8 +24,8 @@ namespace ProjectMagma.Framework
             entity.AddQuaternionAttribute("rotation", Quaternion.Identity);
             entity.AddVector3Attribute("jetpack_velocity", Vector3.Zero);
 
-            entity.AddVector3Attribute("pushback_velocity", Vector3.Zero);
-            entity.AddVector3Attribute("pushback_deacceleration", Vector3.Zero);
+            entity.AddVector3Attribute("contact_pushback_velocity", Vector3.Zero);
+            entity.AddVector3Attribute("hit_pushback_velocity", Vector3.Zero);
 
             entity.AddIntAttribute("energy", maxEnergy);
             entity.AddIntAttribute("health", maxHealth);
@@ -33,12 +33,15 @@ namespace ProjectMagma.Framework
 
             entity.AddIntAttribute("frozen", 0);
 
+            Game.Instance.EntityManager.EntityRemoved += new EntityRemovedHandler(entityRemovedHandler);
+
             this.player = entity;
         }
 
         public void OnDetached(Entity entity)
         {
             entity.Update -= OnUpdate;
+            Game.Instance.EntityManager.EntityRemoved -= new EntityRemovedHandler(entityRemovedHandler);
         }
 
         private Vector3 GetPosition(Entity entity)
@@ -78,7 +81,8 @@ namespace ProjectMagma.Framework
             Vector3 jetpackAcceleration = entity.GetVector3("jetpack_acceleration");
             Vector3 playerPosition = entity.GetVector3("position");
             Vector3 jetpackVelocity = entity.GetVector3("jetpack_velocity");
-            Vector3 pushbackVelocity = entity.GetVector3("pushback_velocity");
+            Vector3 contactPushbackVelocity = entity.GetVector3("contact_pushback_velocity");
+            Vector3 hitPushbackVelocity = entity.GetVector3("hit_pushback_velocity");
             
             int fuel = entity.GetInt("fuel");
 
@@ -124,20 +128,6 @@ namespace ProjectMagma.Framework
             
             playerPosition += jetpackVelocity * dt;
 
-            // pushback
-            if (pushbackVelocity.Length() > 0)
-            {
-                Vector3 oldVelocity = pushbackVelocity;
-                Vector3 pushbackDeAcceleration = pushbackVelocity;
-                pushbackDeAcceleration.Normalize();
-
-                pushbackVelocity -= pushbackDeAcceleration * pushbackDeAccelerationMultiplier * dt;
-                if (pushbackVelocity.Length() > oldVelocity.Length()) // if length increases we accelerate -> stop
-                    pushbackVelocity = Vector3.Zero;
-
-                playerPosition += pushbackVelocity * dt;
-            }
-
             // XZ movement
             playerPosition.X += controllerInput.leftStickX * playerXAxisMultiplier;
             playerPosition.Z -= controllerInput.leftStickY * playerZAxisMultiplier;
@@ -170,7 +160,7 @@ namespace ProjectMagma.Framework
                 Vector3 velocity = Vector3.Transform(Vector3.One * iceSpikeSpeed, GetRotation(player));
                 velocity.Y = iceSpikeUpSpeed;
 
-                Entity iceSpike = new Entity(Game.Instance.EntityManager, "icespike" + (++iceSpikeCount));
+                Entity iceSpike = new Entity(Game.Instance.EntityManager, "icespike" + (++iceSpikeCount)+"_"+player.Name);
                 iceSpike.AddStringAttribute("player", player.Name);
 
                 iceSpike.AddVector3Attribute("velocity", velocity);
@@ -185,11 +175,34 @@ namespace ProjectMagma.Framework
                 Game.Instance.EntityManager.AddDeferred(iceSpike);
 
                 // update states
-                /// 
-                /// TODO: uncomment to get correct energy deduction
-
                 player.SetInt("energy", player.GetInt("energy") - iceSpikeEnergyCost);
                 iceSpikeFiredAt = gameTime.TotalGameTime.TotalMilliseconds;
+            }
+
+            // pushback
+            if (contactPushbackVelocity.Length() > 0)
+            {
+                Vector3 oldVelocity = contactPushbackVelocity;
+                Vector3 pushbackDeAcceleration = contactPushbackVelocity;
+                pushbackDeAcceleration.Normalize();
+
+                contactPushbackVelocity -= pushbackDeAcceleration * pushbackDeAccelerationMultiplier * dt;
+                if (contactPushbackVelocity.Length() > oldVelocity.Length()) // if length increases we accelerate -> stop
+                    contactPushbackVelocity = Vector3.Zero;
+
+                playerPosition += contactPushbackVelocity * dt;
+            }
+            if (hitPushbackVelocity.Length() > 0)
+            {
+                Vector3 oldVelocity = hitPushbackVelocity;
+                Vector3 pushbackDeAcceleration = hitPushbackVelocity;
+                pushbackDeAcceleration.Normalize();
+
+                hitPushbackVelocity -= pushbackDeAcceleration * pushbackDeAccelerationMultiplier * dt;
+                if (hitPushbackVelocity.Length() > oldVelocity.Length()) // if length increases we accelerate -> stop
+                    hitPushbackVelocity = Vector3.Zero;
+
+                playerPosition += hitPushbackVelocity * dt;
             }
 
 
@@ -334,7 +347,7 @@ namespace ProjectMagma.Framework
                             dir.Normalize();
                             dir.Y = 0;
 
-                            p.SetVector3("pushback_velocity", dir * pushbackHitVelocityMultiplier);
+                            p.SetVector3("hit_pushback_velocity", dir * pushbackHitVelocityMultiplier);
                         }
                         else
                         {
@@ -343,8 +356,8 @@ namespace ProjectMagma.Framework
                             push *= (obs.Radius + bs.Radius) - push.Length();
                             push.Normalize();
 
-                            player.SetVector3("pushback_velocity", push * pushbackPlay2PlayerVelocityMultiplier);
-                            p.SetVector3("pushback_velocity", push * -pushbackPlay2PlayerVelocityMultiplier);
+                            player.SetVector3("contact_pushback_velocity", push * pushbackContactVelocityMultiplier / 2);
+                            p.SetVector3("contact_pushback_velocity", push * -pushbackContactVelocityMultiplier / 2);
                         }
                     }
                 }
@@ -371,7 +384,8 @@ namespace ProjectMagma.Framework
 
             entity.SetVector3("position", playerPosition);
             entity.SetVector3("jetpack_velocity", jetpackVelocity);
-            entity.SetVector3("pushback_velocity", pushbackVelocity);
+            entity.SetVector3("contact_pushback_velocity", contactPushbackVelocity);
+            entity.SetVector3("hit_pushback_velocity", hitPushbackVelocity);
         }
 
         private void islandPositionHandler(Vector3Attribute sender, Vector3 oldValue, Vector3 newValue)
@@ -380,6 +394,20 @@ namespace ProjectMagma.Framework
             Vector3 delta = newValue - oldValue;
             position += delta;
             player.SetVector3("position", position);
+        }
+
+        private void entityRemovedHandler(EntityManager manager, Entity entity)
+        {
+            if (entity.Name.StartsWith("icespike")
+                && entity.GetString("player").Equals(player.Name))
+                iceSpikeRemovedCount++;
+
+            // reset count to 0 if all spikes gone
+            if (iceSpikeCount == iceSpikeRemovedCount)
+            {
+                iceSpikeCount = 0;
+                iceSpikeRemovedCount = 0;
+            }
         }
 
         private Entity player;
@@ -397,11 +425,12 @@ namespace ProjectMagma.Framework
         private static readonly float maxGravitySpeed = 450f;
         private static readonly Vector3 gravityAcceleration = new Vector3(0, -900f, 0);
 
-        private static readonly float pushbackPlay2PlayerVelocityMultiplier = 80f;
+        private static readonly float pushbackContactVelocityMultiplier = 80f;
         private static readonly float pushbackHitVelocityMultiplier = 180f;
         private static readonly float pushbackDeAccelerationMultiplier = 300f;
 
         private int iceSpikeCount = 0;
+        private int iceSpikeRemovedCount = 0;
         private double iceSpikeFiredAt = 0;
         private static readonly int iceSpikeSpeed = 130;
         private static readonly int iceSpikeUpSpeed = 240;

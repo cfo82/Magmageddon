@@ -80,7 +80,7 @@ namespace xWinFormsLib
             ms = Mouse.GetState();
 
             pgs = gs;
-            gs = GamePad.GetState(PlayerIndex.One);
+//            gs = GamePad.GetState(PlayerIndex.One);
 
             //if (HasBeenPressed)
             //    mouse_event(MOUSEEVENTF_LEFTDOWN | MOUSEEVENTF_LEFTUP, ms.X, ms.Y, 0, 0);

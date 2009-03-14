@@ -302,7 +302,11 @@ namespace ProjectMagma.Framework
         private Entity player;
         private Entity activeIsland = null;
 
-        private static readonly int maxHealth = 100;        private static readonly int maxEnergy = 100;        private static readonly int maxFuel = 1500;        private static readonly float fuelRechargeMultiplicator = 0.75f;
+        private static readonly int maxHealth = 100;
+        private static readonly int maxEnergy = 100;
+        private static readonly int maxFuel = 1500;
+
+        private static readonly float fuelRechargeMultiplicator = 0.75f;
         private static readonly float maxJetpackSpeed = 150f;
         private static readonly float maxGravitySpeed = 450f;
         private static readonly Vector3 gravityAcceleration = new Vector3(0, -900f, 0);

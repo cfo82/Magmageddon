@@ -122,6 +122,7 @@
     <Properties>
       <Property name="controller" type="ProjectMagma.Framework.IslandControllerProperty"/>
       <Property name="render" type="ProjectMagma.Framework.RenderProperty"/>
+      <Property name="render_highlight" type="ProjectMagma.Framework.RenderHighlightProperty"/>
     </Properties>
   </Entity>
 

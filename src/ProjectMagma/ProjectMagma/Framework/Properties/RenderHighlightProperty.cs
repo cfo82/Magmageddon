@@ -38,18 +38,22 @@ namespace ProjectMagma.Framework
 
                 Matrix world = Matrix.Identity;
 
+                float scaleModificator = 1.2f;
+
                 // scaling
+                Vector3 scale = Vector3.Zero;
                 if (entity.HasVector3("scale"))
                 {
-                    Vector3 scale = entity.GetVector3("scale");
-                    scale.X += 1.1f;
-                    scale.Y += 1.1f;
-                    scale.Z += 1.1f;
+                    scale = entity.GetVector3("scale");
+                    scale.X *= scaleModificator;
+                    scale.Y *= scaleModificator;
+                    scale.Z *= scaleModificator;
                     world *= Matrix.CreateScale(scale);
                 }
                 else
                 {
-                    world *= Matrix.CreateScale(new Vector3(1.1f, 1.1f, 1.1f));
+                    scale = new Vector3(scaleModificator, scaleModificator, scaleModificator);
+                    world *= Matrix.CreateScale(scale);
                 }
 
                 // y rotation (if we need other rotations, these are yet to be added)
@@ -61,6 +65,15 @@ namespace ProjectMagma.Framework
 
                 // translation
                 Vector3 position = entity.GetVector3("position");
+                // small hack
+                if (Math.Abs(((BoundingBox)model.Tag).Max.Y) < 0.0001f)
+                {
+                    position += new Vector3(0.0f, (((2.0f * scale.Y) / 2.0f) - ((2.0f * scale.Y / scaleModificator) / 2.0f))/scale.Y, 0.0f);
+                }
+                else
+                {
+                    position -= new Vector3(0.0f, (((2.0f * scale.Y) / 2.0f) - ((2.0f * scale.Y / scaleModificator) / 2.0f))/scale.Y, 0.0f);
+                }
                 world *= Matrix.CreateTranslation(position);
 
                 Matrix[] transforms = new Matrix[model.Bones.Count];
@@ -82,7 +95,7 @@ namespace ProjectMagma.Framework
                         ++i;
                     }
 
-                    Game.Instance.GraphicsDevice.RenderState.DepthBufferEnable = false;
+                    //Game.Instance.GraphicsDevice.RenderState.DepthBufferEnable = false;
                     Game.Instance.GraphicsDevice.RenderState.AlphaBlendEnable = true;
                     Game.Instance.GraphicsDevice.RenderState.StencilFunction = CompareFunction.Always;
                     Game.Instance.GraphicsDevice.RenderState.BlendFactor = new Color(0.5f, 0.5f, 0.5f, 0.5f);
@@ -93,7 +106,7 @@ namespace ProjectMagma.Framework
                     mesh.Draw();
 
                     Game.Instance.GraphicsDevice.RenderState.AlphaBlendEnable = false;
-                    Game.Instance.GraphicsDevice.RenderState.DepthBufferEnable = true;
+                    //Game.Instance.GraphicsDevice.RenderState.DepthBufferEnable = true;
 
                     i = 0;
                     foreach (BasicEffect effectx in mesh.Effects)

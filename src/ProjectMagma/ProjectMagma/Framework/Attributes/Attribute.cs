@@ -72,6 +72,11 @@ namespace ProjectMagma.Framework
             }
         }
 
+        public override string ToString()
+        {
+            return Name + ": " + StringValue;
+        }
+
         private string name;
     }
 }

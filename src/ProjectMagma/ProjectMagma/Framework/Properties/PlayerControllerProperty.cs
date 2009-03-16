@@ -24,15 +24,17 @@ namespace ProjectMagma.Framework
         {
             entity.Update += OnUpdate;
 
+            this.constants = Game.Instance.EntityManager["player_constants"];
+
             entity.AddQuaternionAttribute("rotation", Quaternion.Identity);
             entity.AddVector3Attribute("jetpack_velocity", Vector3.Zero);
 
             entity.AddVector3Attribute("contact_pushback_velocity", Vector3.Zero);
             entity.AddVector3Attribute("hit_pushback_velocity", Vector3.Zero);
 
-            entity.AddIntAttribute("energy", maxEnergy);
-            entity.AddIntAttribute("health", maxHealth);
-            entity.AddIntAttribute("fuel", maxFuel);
+            entity.AddIntAttribute("energy", constants.GetInt("max_energy"));
+            entity.AddIntAttribute("health", constants.GetInt("max_health"));
+            entity.AddIntAttribute("fuel", constants.GetInt("max_fuel"));
 
             entity.AddIntAttribute("frozen", 0);
             entity.AddStringAttribute("collisionPlayer", "");
@@ -118,23 +120,23 @@ namespace ProjectMagma.Framework
                     fuel -= gameTime.ElapsedGameTime.Milliseconds;
                     jetpackVelocity += jetpackAcceleration * dt;
 
-                    if (jetpackVelocity.Length() > maxJetpackSpeed)
+                    if (jetpackVelocity.Length() > constants.GetInt("max_jetpack_speed"))
                     {
                         jetpackVelocity.Normalize();
-                        jetpackVelocity *= maxJetpackSpeed;
+                        jetpackVelocity *= constants.GetInt("max_jetpack_speed");
                     }
                 }
             }
             else
-                fuel += (int)(gameTime.ElapsedGameTime.Milliseconds * fuelRechargeMultiplicator);
+                fuel += (int)(gameTime.ElapsedGameTime.Milliseconds * constants.GetFloat("fuel_recharge_multiplier"));
             if (fuel < 0)
                 fuel = 0;
-            if (fuel > maxFuel)
-                fuel = maxFuel;
+            if (fuel > constants.GetInt("max_fuel"))
+                fuel = constants.GetInt("max_fuel");
 
             // gravity
-            if (jetpackVelocity.Length() <= maxGravitySpeed)
-                jetpackVelocity += gravityAcceleration * dt;
+            if (jetpackVelocity.Length() <= constants.GetFloat("max_gravity_speed"))
+                jetpackVelocity += constants.GetVector3("gravity_acceleration") * dt;
             
             playerPosition += jetpackVelocity * dt;
 
@@ -142,14 +144,14 @@ namespace ProjectMagma.Framework
             if (fuel > 0 && activeIsland == null)
             {
                 // in air
-                playerPosition.X += controllerInput.leftStickX * playerXAxisJetpackMultiplier;
-                playerPosition.Z -= controllerInput.leftStickY * playerZAxisJetpackMultiplier;
+                playerPosition.X += controllerInput.leftStickX * constants.GetFloat("x_axis_jetpack_multiplier");
+                playerPosition.Z -= controllerInput.leftStickY * constants.GetFloat("z_axis_jetpack_multiplier");
             }
             else
             {
                 // on ground
-                playerPosition.X += controllerInput.leftStickX * playerXAxisMultiplier;
-                playerPosition.Z -= controllerInput.leftStickY * playerZAxisMultiplier;
+                playerPosition.X += controllerInput.leftStickX * constants.GetFloat("x_axis_movement_multiplier");
+                playerPosition.Z -= controllerInput.leftStickY * constants.GetFloat("z_axis_movement_multiplier");
             }
 
             // rotation
@@ -171,8 +173,8 @@ namespace ProjectMagma.Framework
 
 
             // ice spike
-            if (controllerInput.xPressed && player.GetInt("energy") > iceSpikeEnergyCost &&
-                (gameTime.TotalGameTime.TotalMilliseconds - iceSpikeFiredAt) > iceSpikeCooldown)
+            if (controllerInput.xPressed && player.GetInt("energy") > constants.GetInt("ice_spike_energy_cost") &&
+                (gameTime.TotalGameTime.TotalMilliseconds - iceSpikeFiredAt) > constants.GetInt("ice_spike_cooldown"))
             {
                 // indicate 
                 SoundEffect soundEffect = Game.Instance.Content.Load<SoundEffect>("Sounds/hit2");
@@ -181,8 +183,8 @@ namespace ProjectMagma.Framework
                 BoundingBox bb = Game.calculateBoundingBox(playerModel, playerPosition, GetRotation(player), GetScale(player));
 
                 Vector3 pos = new Vector3(playerPosition.X, bb.Max.Y, playerPosition.Z);
-                Vector3 velocity = Vector3.Transform(new Vector3(0,0,1), GetRotation(player)) * iceSpikeSpeed;
-                velocity.Y = iceSpikeUpSpeed;
+                Vector3 velocity = Vector3.Transform(new Vector3(0, 0, 1), GetRotation(player)) * constants.GetFloat("ice_spike_speed");
+                velocity.Y = constants.GetFloat("ice_spike_up_speed");
 
                 Entity iceSpike = new Entity(Game.Instance.EntityManager, "icespike" + (++iceSpikeCount)+"_"+player.Name);
                 iceSpike.AddStringAttribute("player", player.Name);
@@ -199,7 +201,7 @@ namespace ProjectMagma.Framework
                 Game.Instance.EntityManager.AddDeferred(iceSpike);
 
                 // update states
-                player.SetInt("energy", player.GetInt("energy") - iceSpikeEnergyCost);
+                player.SetInt("energy", player.GetInt("energy") - constants.GetInt("ice_spike_energy_cost"));
                 iceSpikeFiredAt = gameTime.TotalGameTime.TotalMilliseconds;
             }
 
@@ -210,7 +212,7 @@ namespace ProjectMagma.Framework
                 Vector3 pushbackDeAcceleration = contactPushbackVelocity;
                 pushbackDeAcceleration.Normalize();
 
-                contactPushbackVelocity -= pushbackDeAcceleration * pushbackDeAccelerationMultiplier * dt;
+                contactPushbackVelocity -= pushbackDeAcceleration * constants.GetFloat("pushback_deacceleration_multiplier") * dt;
                 if (contactPushbackVelocity.Length() > oldVelocity.Length()) // if length increases we accelerate -> stop
                     contactPushbackVelocity = Vector3.Zero;
 
@@ -222,7 +224,7 @@ namespace ProjectMagma.Framework
                 Vector3 pushbackDeAcceleration = hitPushbackVelocity;
                 pushbackDeAcceleration.Normalize();
 
-                hitPushbackVelocity -= pushbackDeAcceleration * pushbackDeAccelerationMultiplier * dt;
+                hitPushbackVelocity -= pushbackDeAcceleration * constants.GetFloat("pushback_deacceleration_multiplier") * dt;
                 if (hitPushbackVelocity.Length() > oldVelocity.Length()) // if length increases we accelerate -> stop
                     hitPushbackVelocity = Vector3.Zero;
 
@@ -291,7 +293,7 @@ namespace ProjectMagma.Framework
                 ((Vector3Attribute)activeIsland.Attributes["position"]).ValueChanged -= islandPositionHandler;
             activeIsland = newActiveIsland;
             if(activeIsland != null) // faster recharge standing on island
-                fuel += (int)(gameTime.ElapsedGameTime.Milliseconds * fuelIslandReachargAddMultiplicator);
+                fuel += (int)(gameTime.ElapsedGameTime.Milliseconds * constants.GetFloat("fuel_recharge_multiplier_island"));
 
             // check collison with pillars
             foreach (Entity pillar in Game.Instance.PillarManager)
@@ -329,96 +331,90 @@ namespace ProjectMagma.Framework
             }
 
             // check collision with juicy powerups
-            foreach (Entity powerup in Game.Instance.EntityManager)
+            foreach (Entity powerup in Game.Instance.PowerupManager)
             {
-                if (powerup.Name.StartsWith("powerup"))
+                BoundingBox bb = Game.calculateBoundingBox(Game.Instance.Content.Load<Model>(
+                    powerup.GetString("mesh")), 
+                    GetPosition(powerup), GetRotation(powerup), GetScale(powerup));
+
+                if (bb.Intersects(bs))
                 {
-                    BoundingBox bb = Game.calculateBoundingBox(Game.Instance.Content.Load<Model>(
-                        powerup.GetString("mesh")), 
-                        GetPosition(powerup), GetRotation(powerup), GetScale(powerup));
+                    Game.Instance.EntityManager.RemoveDeferred(powerup);
 
-                    if (bb.Intersects(bs))
-                    {
-                        Game.Instance.EntityManager.RemoveDeferred(powerup);
+                    // use the power
+                    int oldVal = player.GetInt(powerup.GetString("power"));
+                    oldVal += powerup.GetInt("powerValue");
+                    player.SetInt(powerup.GetString("power"), oldVal);
 
-                        // use the power
-                        int oldVal = player.GetInt(powerup.GetString("power"));
-                        oldVal += powerup.GetInt("powerValue");
-                        player.SetInt(powerup.GetString("power"), oldVal);
-    
-                        // soundeffect
-                        SoundEffect soundEffect = Game.Instance.Content.Load<SoundEffect>("Sounds/"+powerup.GetString("pickup_sound"));
-                        soundEffect.Play();
-                    }
+                    // soundeffect
+                    SoundEffect soundEffect = Game.Instance.Content.Load<SoundEffect>("Sounds/"+powerup.GetString("pickup_sound"));
+                    soundEffect.Play();
                 }
             }
 
             // and check collision with other player
-            foreach (Entity p in Game.Instance.EntityManager)
+            foreach (Entity p in Game.Instance.PlayerManager)
             {
-                if (p.Name.StartsWith("player") && p != player)
+                BoundingSphere obs = Game.calculateBoundingSphere(Game.Instance.Content.Load<Model>(p.GetString("mesh")),
+                    GetPosition(p), GetRotation(p), GetScale(p));
+
+                if (obs.Intersects(bs) || player.Name.Equals(p.GetString("collisionPlayer")))
                 {
-                    BoundingSphere obs = Game.calculateBoundingSphere(Game.Instance.Content.Load<Model>(p.GetString("mesh")),
-                        GetPosition(p), GetRotation(p), GetScale(p));
+                    if(obs.Intersects(bs))
+                        p.SetString("collisionPlayer", player.Name); // indicate collision
+                    else
+                        p.SetString("collisionPlayer", ""); // reset collision
 
-                    if (obs.Intersects(bs) || player.Name.Equals(p.GetString("collisionPlayer")))
+                    // and hit?
+                    if (controllerInput.rPressed &&
+                        (gameTime.TotalGameTime.TotalMilliseconds - hitPerformedAt) > constants.GetInt("hit_cooldown"))
                     {
-                        if(obs.Intersects(bs))
-                            p.SetString("collisionPlayer", player.Name); // indicate collision
-                        else
-                            p.SetString("collisionPlayer", ""); // reset collision
+                        // indicate hit!
+                        SoundEffect soundEffect = Game.Instance.Content.Load<SoundEffect>("Sounds/punch2");
+                        soundEffect.Play();
 
-                        // and hit?
-                        if (controllerInput.rPressed &&
-                            (gameTime.TotalGameTime.TotalMilliseconds - hitPerformedAt) > hitCooldown)
-                        {
-                            // indicate hit!
-                            SoundEffect soundEffect = Game.Instance.Content.Load<SoundEffect>("Sounds/punch2");
-                            soundEffect.Play();
+                        // dedcut health
+                        p.SetInt("health", p.GetInt("health") - constants.GetInt("hit_damage"));
 
-                            // dedcut health
-                            p.SetInt("health", p.GetInt("health") - hitDamage);
+                        // push back
+                        Vector3 dir = obs.Center - bs.Center;
+                        dir.Normalize();
+                        dir.Y = 0;
 
-                            // push back
-                            Vector3 dir = obs.Center - bs.Center;
-                            dir.Normalize();
-                            dir.Y = 0;
+                        // set values
+                        p.SetVector3("hit_pushback_velocity", dir * constants.GetFloat("pushback_hit_velocity_multiplier"));
+                        hitPerformedAt = gameTime.TotalGameTime.TotalMilliseconds;
+                    }
+                    else
+                    {
+                        // normal feedback
+                        Vector3 push = bs.Center - obs.Center;
+                        push *= (obs.Radius + bs.Radius) - push.Length();
+                        push.Normalize();
 
-                            // set values
-                            p.SetVector3("hit_pushback_velocity", dir * pushbackHitVelocityMultiplier);
-                            hitPerformedAt = gameTime.TotalGameTime.TotalMilliseconds;
-                        }
-                        else
-                        {
-                            // normal feedback
-                            Vector3 push = bs.Center - obs.Center;
-                            push *= (obs.Radius + bs.Radius) - push.Length();
-                            push.Normalize();
-
-                            player.SetVector3("contact_pushback_velocity", push * pushbackContactVelocityMultiplier / 2);
-                            p.SetVector3("contact_pushback_velocity", push * -pushbackContactVelocityMultiplier / 2);
-                        }
+                        player.SetVector3("contact_pushback_velocity", push * constants.GetFloat("pushback_contact_velocity_multiplier") / 2);
+                        p.SetVector3("contact_pushback_velocity", push * -constants.GetFloat("pushback_contact_velocity_multiplier") / 2);
                     }
                 }
             }
 
 
             // recharge energy
-            if ((gameTime.TotalGameTime.TotalMilliseconds - energyRechargedAt) > energyRechargIntervall)
+            if ((gameTime.TotalGameTime.TotalMilliseconds - energyRechargedAt) > constants.GetInt("energy_recharge_interval"))
             {
                 entity.SetInt("energy", entity.GetInt("energy") + 1);
                 energyRechargedAt = (float)gameTime.TotalGameTime.TotalMilliseconds;
             }
 
-            if (player.GetInt("energy") > maxEnergy)
-                player.SetInt("energy", maxEnergy);
-            if (player.GetInt("health") > maxHealth)
-                player.SetInt("health", maxHealth);
+            if (player.GetInt("energy") > constants.GetInt("max_energy"))
+                player.SetInt("energy", constants.GetInt("max_energy"));
+            if (player.GetInt("health") > constants.GetInt("max_health"))
+                player.SetInt("health", constants.GetInt("max_health"));
 
 
             // update entity attributes
-            if (fuel > maxFuel)
-                fuel = maxFuel;
+            if (fuel > constants.GetInt("max_fuel"))
+                fuel = constants.GetInt("max_fuel");
             entity.SetInt("fuel", fuel);
 
             entity.SetVector3("position", playerPosition);
@@ -437,7 +433,8 @@ namespace ProjectMagma.Framework
 
         private void entityRemovedHandler(EntityManager manager, Entity entity)
         {
-            if (entity.Name.StartsWith("icespike")
+            if (entity.HasAttribute("kind")
+                && entity.GetString("kind") == "icespike"
                 && entity.GetString("player").Equals(player.Name))
                 iceSpikeRemovedCount++;
 
@@ -450,41 +447,16 @@ namespace ProjectMagma.Framework
         }
 
         private Entity player;
+        private Entity constants;
         private Entity activeIsland = null;
 
-        private static readonly int maxHealth = 100;
-        private static readonly int maxEnergy = 100;
-        private static readonly int maxFuel = 1500;
-
         private float energyRechargedAt = 0;
-        private readonly int energyRechargIntervall = 250; // ms
-
-        private static readonly float fuelRechargeMultiplicator = 0.75f;
-        private static readonly float fuelIslandReachargAddMultiplicator = 1.2f;
-        private static readonly float maxJetpackSpeed = 150f;
-        private static readonly float maxGravitySpeed = 450f;
-        private static readonly Vector3 gravityAcceleration = new Vector3(0, -900f, 0);
-
-        private static readonly float pushbackContactVelocityMultiplier = 80f;
-        private static readonly float pushbackHitVelocityMultiplier = 180f;
-        private static readonly float pushbackDeAccelerationMultiplier = 300f;
 
         private int iceSpikeCount = 0;
         private int iceSpikeRemovedCount = 0;
         private double iceSpikeFiredAt = 0;
-        private static readonly int iceSpikeSpeed = 130;
-        private static readonly int iceSpikeUpSpeed = 240;
-        private static readonly int iceSpikeEnergyCost = 4;
-        private static readonly int iceSpikeCooldown = 50; // ms
 
-        private static readonly int hitDamage = 20;
-        private static readonly int hitCooldown = 250; // ms
         private double hitPerformedAt = 0;
-
-        private static readonly float playerXAxisMultiplier = 1.4f;
-        private static readonly float playerZAxisMultiplier = 1.4f;
-        private static readonly float playerXAxisJetpackMultiplier = 2.5f;
-        private static readonly float playerZAxisJetpackMultiplier = 2.5f;
 
         struct ControllerInput
         {

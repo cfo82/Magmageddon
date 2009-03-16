@@ -1,6 +1,50 @@
 ﻿<?xml version="1.0" encoding="utf-8" ?>
 <!DOCTYPE Level SYSTEM "Levels.dtd">
 <Level>
+
+  <!-- constants -->
+
+  <Entity name="player_constants">
+    <Attributes>
+      <Attribute name="kind" template="string" value="constants"/> 
+      
+      <Attribute name="max_health" template="int" value="100"/>
+      <Attribute name="max_energy" template="int" value="100"/>
+      <Attribute name="max_fuel" template="int" value="1500"/>
+
+      <Attribute name="energy_recharge_interval" template="int" value="200"/>
+
+      <Attribute name="fuel_recharge_multiplier" template="float" value="0.75"/>
+      <Attribute name="fuel_recharge_multiplier_island" template="float" value="1.2"/>
+      <Attribute name="max_jetpack_speed" template="float" value="150"/>
+
+      <Attribute name="gravity_acceleration" template="float3" value="0 -900 0"/>
+      <Attribute name="max_gravity_speed" template="float" value="450"/>
+
+      <Attribute name="pushback_contact_velocity_multiplier" template="float" value="80"/>
+      <Attribute name="pushback_hit_velocity_multiplier" template="float" value="180"/>
+      <Attribute name="pushback_deacceleration_multiplier" template="float" value="300"/>
+
+      <Attribute name="ice_spike_speed" template="float" value="130"/>
+      <Attribute name="ice_spike_up_speed" template="float" value="240"/>
+      <Attribute name="ice_spike_energy_cost" template="int" value="4"/>
+      <Attribute name="ice_spike_damage" template="int" value="2"/>
+      <Attribute name="ice_spike_freeze_time" template="int" value="250"/>
+      <Attribute name="ice_spike_cooldown" template="int" value="4"/>
+
+      <Attribute name="hit_damage" template="int" value="20"/>
+      <Attribute name="hit_cooldown" template="int" value="250"/>
+
+      <Attribute name="x_axis_movement_multiplier" template="float" value="1.4"/>
+      <Attribute name="z_axis_movement_multiplier" template="float" value="1.4"/>
+      <Attribute name="x_axis_jetpack_multiplier" template="float" value="2.5"/>
+      <Attribute name="z_axis_jetpack_multiplier" template="float" value="2.5"/>
+    </Attributes>
+  </Entity>
+
+  
+  <!-- game entities -->
+
   <Entity name="lava">
     <Attributes>
       <Attribute name="kind" template="string" value="lava"/>
@@ -247,4 +291,5 @@
       <Property name="render" type="ProjectMagma.Framework.RenderProperty"/>
     </Properties>
   </Entity>
+
 </Level>

@@ -12,6 +12,8 @@ namespace ProjectMagma.Framework
 {
     public class IceSpikeControllerProperty : Property
     {
+        private Entity constants;
+
         public IceSpikeControllerProperty()
         {
         }
@@ -19,6 +21,8 @@ namespace ProjectMagma.Framework
         public void OnAttached(Entity entity)
         {
             entity.Update += OnUpdate;
+
+            this.constants = Game.Instance.EntityManager["player_constants"];
         }
 
         public void OnDetached(Entity entity)
@@ -38,7 +42,7 @@ namespace ProjectMagma.Framework
 //            Vector3 a = new Vector3(straightAcceleration, 0f, 0f);
 
             // integrate
-            v += gravityAcceleration * dt;
+            v += constants.GetVector3("gravity_acceleration") * dt;
             pos += dt*v;
 
             // remove if in lava
@@ -74,8 +78,8 @@ namespace ProjectMagma.Framework
                                 SoundEffect soundEffect = Game.Instance.Content.Load<SoundEffect>("Sounds/sword-clash");
                                 soundEffect.Play();
 
-                                e.SetInt("health", e.GetInt("health") - iceSpikeDamage);
-                                e.SetInt("frozen", e.GetInt("frozen") + iceSpikeFrozenTime);
+                                e.SetInt("health", e.GetInt("health") - constants.GetInt("ice_spike_damage"));
+                                e.SetInt("frozen", e.GetInt("frozen") + constants.GetInt("ice_spike_freeze_time"));
                             }
 
                             return;
@@ -121,10 +125,6 @@ namespace ProjectMagma.Framework
         }
 
         //private Entity target;
-        private static readonly Vector3 gravityAcceleration = new Vector3(0, -500f, 0);
-        private static readonly int iceSpikeDamage = 2;
-        private static readonly int iceSpikeFrozenTime = 250; // ms
-        //private float straightAcceleration = 100f;
-        //private float maxSpeed = 150f;
+
     }
 }

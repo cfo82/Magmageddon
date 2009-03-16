@@ -32,6 +32,7 @@ namespace ProjectMagma
         private GraphicsDeviceManager graphics;
         private SpriteBatch spriteBatch;
         
+        // TODO:
         // HACK: shouldnt be public, maybe extract this to some global rendering stuff class?
         public Vector3 cameraPosition = new Vector3(0, 850, 1400);
         public Vector3 cameraTarget = new Vector3(0, 150, 0);
@@ -43,6 +44,8 @@ namespace ProjectMagma
         private EntityManager entityManager;
         private EntityKindManager pillarManager;
         private EntityKindManager islandManager;
+        private EntityKindManager playerManager;
+        private EntityKindManager powerupManager;
         private EntityKindManager iceSpikeManager;
 
         #region shadow related stuff
@@ -81,6 +84,8 @@ namespace ProjectMagma
             entityManager = new EntityManager();
             pillarManager = new EntityKindManager(entityManager, "pillar");
             islandManager = new EntityKindManager(entityManager, "island");
+            playerManager = new EntityKindManager(entityManager, "player");
+            powerupManager = new EntityKindManager(entityManager, "powerup");
             iceSpikeManager = new EntityKindManager(entityManager, "ice_spike");
 
             bloom = new BloomComponent(this);
@@ -171,19 +176,15 @@ namespace ProjectMagma
             }
 
             int gi = 0;
-            foreach (Entity e in entityManager)
+            foreach (Entity e in playerManager)
             {
-                if (e.HasString("kind") && e.GetString("kind") == "player")
-                {
-                    e.AddIntAttribute("game_pad_index", gi++);
-                }
+                e.AddIntAttribute("game_pad_index", gi++);
             }
 
             // preload sounds
-            foreach (Entity entity in Game.Instance.EntityManager)
+            foreach (Entity e in Game.Instance.powerupManager)
             {
-                if (entity.Name.StartsWith("powerup"))
-                    Game.Instance.Content.Load<SoundEffect>("Sounds/" + entity.GetString("pickup_sound"));
+                Game.Instance.Content.Load<SoundEffect>("Sounds/" + e.GetString("pickup_sound"));
             }
             Game.Instance.Content.Load<SoundEffect>("Sounds/punch2");
             Game.Instance.Content.Load<SoundEffect>("Sounds/hit2");
@@ -338,22 +339,19 @@ namespace ProjectMagma
             // draw infos about state
             spriteBatch.Begin();
             int pos = 5;
-            foreach (Entity e in entityManager)
+            foreach (Entity e in playerManager)
             {
-                if (e.Name.StartsWith("player"))
-                {
-                    Color color = Color.White;
-                    if (e.Name.Equals("player1"))
-                        color = Color.LightGreen;
-                    else
-                        color = Color.Yellow;
-                    if (e.GetInt("health") <= 0)
-                        color = Color.Red;
-                    spriteBatch.DrawString(HUDFont, e.Name + "; health: " + e.GetInt("health") + ", energy: " + e.GetInt("energy") + ", fuel: " + e.GetInt("fuel")
-                        + ", frozenTime: " + e.GetInt("frozen")+ "ms; pos: " + e.GetVector3("position").ToString(),
-                        new Vector2(5, pos), color);
-                    pos += 20;
-                }
+                Color color = Color.White;
+                if (e.Name.Equals("player1"))
+                    color = Color.LightGreen;
+                else
+                    color = Color.Yellow;
+                if (e.GetInt("health") <= 0)
+                    color = Color.Red;
+                spriteBatch.DrawString(HUDFont, e.Name + "; health: " + e.GetInt("health") + ", energy: " + e.GetInt("energy") + ", fuel: " + e.GetInt("fuel")
+                    + ", frozenTime: " + e.GetInt("frozen")+ "ms; pos: " + e.GetVector3("position").ToString(),
+                    new Vector2(5, pos), color);
+                pos += 20;
             }
             spriteBatch.DrawString(HUDFont, (1000f / gameTime.ElapsedGameTime.Milliseconds) + " fps", new Vector2(5, pos), Color.White);
             spriteBatch.End();
@@ -382,6 +380,23 @@ namespace ProjectMagma
                 return islandManager;
             }
         }
+
+        public EntityKindManager PlayerManager
+        {
+            get
+            {
+                return playerManager;
+            }
+        }
+
+        public EntityKindManager PowerupManager
+        {
+            get
+            {
+                return powerupManager;
+            }
+        }
+
 
         public Matrix View
         {

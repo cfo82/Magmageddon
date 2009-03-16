@@ -120,10 +120,10 @@ namespace ProjectMagma.Framework
                     fuel -= gameTime.ElapsedGameTime.Milliseconds;
                     jetpackVelocity += jetpackAcceleration * dt;
 
-                    if (jetpackVelocity.Length() > constants.GetInt("max_jetpack_speed"))
+                    if (jetpackVelocity.Length() > constants.GetFloat("max_jetpack_speed"))
                     {
                         jetpackVelocity.Normalize();
-                        jetpackVelocity *= constants.GetInt("max_jetpack_speed");
+                        jetpackVelocity *= constants.GetFloat("max_jetpack_speed");
                     }
                 }
             }

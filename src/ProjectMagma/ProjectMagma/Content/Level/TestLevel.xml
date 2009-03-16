@@ -30,7 +30,7 @@
       <Attribute name="ice_spike_energy_cost" template="int" value="4"/>
       <Attribute name="ice_spike_damage" template="int" value="2"/>
       <Attribute name="ice_spike_freeze_time" template="int" value="250"/>
-      <Attribute name="ice_spike_cooldown" template="int" value="4"/>
+      <Attribute name="ice_spike_cooldown" template="int" value="50"/>
 
       <Attribute name="hit_damage" template="int" value="20"/>
       <Attribute name="hit_cooldown" template="int" value="250"/>

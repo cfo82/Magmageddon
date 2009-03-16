@@ -139,8 +139,18 @@ namespace ProjectMagma.Framework
             playerPosition += jetpackVelocity * dt;
 
             // XZ movement
-            playerPosition.X += controllerInput.leftStickX * playerXAxisMultiplier;
-            playerPosition.Z -= controllerInput.leftStickY * playerZAxisMultiplier;
+            if (fuel > 0 && activeIsland == null)
+            {
+                // in air
+                playerPosition.X += controllerInput.leftStickX * playerXAxisJetpackMultiplier;
+                playerPosition.Z -= controllerInput.leftStickY * playerZAxisJetpackMultiplier;
+            }
+            else
+            {
+                // on ground
+                playerPosition.X += controllerInput.leftStickX * playerXAxisMultiplier;
+                playerPosition.Z -= controllerInput.leftStickY * playerZAxisMultiplier;
+            }
 
             // rotation
             if (controllerInput.leftStickPressed)
@@ -171,7 +181,7 @@ namespace ProjectMagma.Framework
                 BoundingBox bb = Game.calculateBoundingBox(playerModel, playerPosition, GetRotation(player), GetScale(player));
 
                 Vector3 pos = new Vector3(playerPosition.X, bb.Max.Y, playerPosition.Z);
-                Vector3 velocity = Vector3.Transform(Vector3.One * iceSpikeSpeed, GetRotation(player));
+                Vector3 velocity = Vector3.Transform(Vector3.One, GetRotation(player)) * iceSpikeSpeed;
                 velocity.Y = iceSpikeUpSpeed;
 
                 Entity iceSpike = new Entity(Game.Instance.EntityManager, "icespike" + (++iceSpikeCount)+"_"+player.Name);
@@ -471,8 +481,10 @@ namespace ProjectMagma.Framework
         private static readonly int hitCooldown = 250; // ms
         private double hitPerformedAt = 0;
 
-        private static readonly int playerXAxisMultiplier = 1;
-        private static readonly int playerZAxisMultiplier = 2;
+        private static readonly float playerXAxisMultiplier = 1.4f;
+        private static readonly float playerZAxisMultiplier = 1.4f;
+        private static readonly float playerXAxisJetpackMultiplier = 2.5f;
+        private static readonly float playerZAxisJetpackMultiplier = 2.5f;
 
         struct ControllerInput
         {

@@ -269,6 +269,11 @@ namespace ProjectMagma.Framework
             (Attributes[attribute] as IntAttribute).Value = value;
         }
 
+        public void SetString(string attribute, string value)
+        {
+            (Attributes[attribute] as StringAttribute).Value = value;
+        }
+
         public void SetFloat(string attribute, float value)
         {
             (Attributes[attribute] as FloatAttribute).Value = value;

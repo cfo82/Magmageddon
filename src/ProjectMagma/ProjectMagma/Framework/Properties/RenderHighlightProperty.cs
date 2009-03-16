@@ -68,8 +68,6 @@ namespace ProjectMagma.Framework
 
                 foreach (ModelMesh mesh in model.Meshes)
                 {
-                    Effect effect = Game.Instance.shadowEffect;
-
                     Game.Instance.Graphics.GraphicsDevice.RenderState.DepthBufferEnable = true;
                     Vector3[] diffuseColors = new Vector3[mesh.Effects.Count];
                     int i = 0;
@@ -85,14 +83,6 @@ namespace ProjectMagma.Framework
                     }
                     mesh.Draw();
 
-                    i = 0;
-                    Effect[] effectBackup = new Effect[mesh.MeshParts.Count];
-                    foreach (ModelMeshPart meshPart in mesh.MeshParts)
-                    {
-                        effectBackup[i] = meshPart.Effect;
-                        meshPart.Effect = effect;
-                        ++i;
-                    }
                     Game.Instance.GraphicsDevice.RenderState.AlphaBlendEnable = true;
                     Game.Instance.GraphicsDevice.RenderState.BlendFactor = new Color(0.2f, 0.2f, 0.2f, 0.2f);
                     Game.Instance.GraphicsDevice.RenderState.SourceBlend = Blend.BlendFactor;
@@ -103,12 +93,6 @@ namespace ProjectMagma.Framework
 
                     Game.Instance.GraphicsDevice.RenderState.AlphaBlendEnable = false;
 
-                    i = 0;
-                    foreach (ModelMeshPart meshPart in mesh.MeshParts)
-                    {
-                        meshPart.Effect = effectBackup[i];
-                        ++i;
-                    }
                     i = 0;
                     foreach (BasicEffect effectx in mesh.Effects)
                     {

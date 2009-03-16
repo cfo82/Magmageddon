@@ -9,7 +9,8 @@ namespace ProjectMagma.Framework
     public enum RenderMode
     {
         RenderToShadowMap,
-        RenderToScene
+        RenderToScene,
+        RenderToSceneAlpha
     }
 
     public delegate void DrawHandler(Entity sender, GameTime gameTime, RenderMode renderMode);

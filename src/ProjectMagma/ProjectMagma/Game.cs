@@ -83,8 +83,8 @@ namespace ProjectMagma
             islandManager = new EntityKindManager(entityManager, "island");
             iceSpikeManager = new EntityKindManager(entityManager, "ice_spike");
 
-            //bloom = new BloomComponent(this);
-            //Components.Add(bloom);
+            bloom = new BloomComponent(this);
+            Components.Add(bloom);
         }
 
         /// <summary>
@@ -296,11 +296,11 @@ namespace ProjectMagma
             //and do depth comparisons in the shader to determine shadowing
             RenderScene(gameTime);
 
+            base.Draw(gameTime);
+
             DrawHud(gameTime);
 
             formCollection.Draw();
-
-            base.Draw(gameTime);
         }
 
         private void RenderScene(GameTime gameTime)

@@ -166,7 +166,7 @@ namespace ProjectMagma.Framework
                 (gameTime.TotalGameTime.TotalMilliseconds - iceSpikeFiredAt) > iceSpikeCooldown)
             {
                 // indicate 
-                SoundEffect soundEffect = Game.Instance.Content.Load<SoundEffect>("Sounds/hit");
+                SoundEffect soundEffect = Game.Instance.Content.Load<SoundEffect>("Sounds/hit2");
                 soundEffect.Play();
 
                 BoundingBox bb = Game.calculateBoundingBox(playerModel, playerPosition, GetRotation(player), GetScale(player));

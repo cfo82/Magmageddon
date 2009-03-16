@@ -186,7 +186,7 @@ namespace ProjectMagma
                     Game.Instance.Content.Load<SoundEffect>("Sounds/" + entity.GetString("pickup_sound"));
             }
             Game.Instance.Content.Load<SoundEffect>("Sounds/punch2");
-            Game.Instance.Content.Load<SoundEffect>("Sounds/hit");
+            Game.Instance.Content.Load<SoundEffect>("Sounds/hit2");
             Game.Instance.Content.Load<SoundEffect>("Sounds/sword-clash");
 
             Viewport viewport = graphics.GraphicsDevice.Viewport;

@@ -355,6 +355,9 @@ namespace ProjectMagma.Framework
             // and check collision with other player
             foreach (Entity p in Game.Instance.PlayerManager)
             {
+                if (p == player) // dont collide with self!
+                    continue; 
+
                 BoundingSphere obs = Game.calculateBoundingSphere(Game.Instance.Content.Load<Model>(p.GetString("mesh")),
                     GetPosition(p), GetRotation(p), GetScale(p));
 
@@ -382,7 +385,7 @@ namespace ProjectMagma.Framework
                         dir.Y = 0;
 
                         // set values
-                        p.SetVector3("hit_pushback_velocity", dir * constants.GetFloat("pushback_hit_velocity_multiplier"));
+                        p.SetVector3("hit_pushback_velocity", dir * constants.GetFloat("hit_pushback_velocity_multiplier"));
                         hitPerformedAt = gameTime.TotalGameTime.TotalMilliseconds;
                     }
                     else

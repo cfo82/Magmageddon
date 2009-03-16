@@ -15,6 +15,8 @@ using ProjectMagma.Framework;
 
 namespace ProjectMagma
 {
+    public delegate void EntitySelectionChangeHandler(ManagementForm form, Entity oldSelection, Entity newSelection);
+ 
     public class ManagementForm
     {
         public ManagementForm(FormCollection formCollection)
@@ -75,10 +77,12 @@ namespace ProjectMagma
 
         private void OnEntityListSelectionChanged(object obj, System.EventArgs e)
         {
+            Entity selectedEntity = null;
+
             if (((Listbox)formCollection[formName][entityListName]).SelectedIndex >= 0)
             {
                 string selectedEntityName = ((Listbox)formCollection[formName][entityListName]).SelectedItem;
-                Entity selectedEntity = Game.Instance.EntityManager[selectedEntityName];
+                selectedEntity = Game.Instance.EntityManager[selectedEntityName];
 
                 ((Listbox)formCollection[formName][attributeListName]).Clear();
                 foreach (Attribute attribute in selectedEntity.Attributes.Values)
@@ -90,6 +94,12 @@ namespace ProjectMagma
             {
                 ((Listbox)formCollection[formName][attributeListName]).Clear();
             }
+
+            if (this.EntitySelectionChanged != null)
+            {
+                this.EntitySelectionChanged(this, currentSelectedEntity, selectedEntity);
+            }
+            this.currentSelectedEntity = selectedEntity;
         }
 
         private void OnAttributeListSelectionChanged(object obj, System.EventArgs e)
@@ -124,7 +134,10 @@ namespace ProjectMagma
             }
         }
 
+        public event EntitySelectionChangeHandler EntitySelectionChanged;
+
         private FormCollection formCollection;
+        private Entity currentSelectedEntity;
         private static readonly string formName = "managementForm";
         private static readonly string entityListName = "entityList";
         private static readonly string attributeListName = "attributeList";

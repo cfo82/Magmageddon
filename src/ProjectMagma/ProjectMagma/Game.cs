@@ -474,6 +474,13 @@ namespace ProjectMagma
             return a * a;
         }
 
+        public ManagementForm ManagementForm
+        {
+            get
+            {
+                return managementForm;
+            }
+        }
     }
 
      public struct BoundingCylinder

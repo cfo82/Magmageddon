@@ -54,6 +54,7 @@
     </Attributes>
     <Properties>
       <Property name="render" type="ProjectMagma.Framework.RenderProperty"/>
+      <Property name="render_highlight" type="ProjectMagma.Framework.RenderHighlightProperty"/>
     </Properties>
   </Entity>
 
@@ -67,6 +68,7 @@
     </Attributes>
     <Properties>
       <Property name="render" type="ProjectMagma.Framework.RenderProperty"/>
+      <Property name="render_highlight" type="ProjectMagma.Framework.RenderHighlightProperty"/>
     </Properties>
   </Entity>
 
@@ -80,6 +82,7 @@
     </Attributes>
     <Properties>
       <Property name="render" type="ProjectMagma.Framework.RenderProperty"/>
+      <Property name="render_highlight" type="ProjectMagma.Framework.RenderHighlightProperty"/>
     </Properties>
   </Entity>
 
@@ -93,6 +96,7 @@
     </Attributes>
     <Properties>
       <Property name="render" type="ProjectMagma.Framework.RenderProperty"/>
+      <Property name="render_highlight" type="ProjectMagma.Framework.RenderHighlightProperty"/>
     </Properties>
   </Entity>
 
@@ -106,6 +110,7 @@
     </Attributes>
     <Properties>
       <Property name="render" type="ProjectMagma.Framework.RenderProperty"/>
+      <Property name="render_highlight" type="ProjectMagma.Framework.RenderHighlightProperty"/>
     </Properties>
   </Entity>
     
@@ -139,6 +144,7 @@
     <Properties>
       <Property name="controller" type="ProjectMagma.Framework.IslandControllerProperty"/>
       <Property name="render" type="ProjectMagma.Framework.RenderProperty"/>
+      <Property name="render_highlight" type="ProjectMagma.Framework.RenderHighlightProperty"/>
     </Properties>
   </Entity>
 
@@ -155,6 +161,7 @@
     <Properties>
       <Property name="controller" type="ProjectMagma.Framework.IslandControllerProperty"/>
       <Property name="render" type="ProjectMagma.Framework.RenderProperty"/>
+      <Property name="render_highlight" type="ProjectMagma.Framework.RenderHighlightProperty"/>
     </Properties>
   </Entity>
 
@@ -171,6 +178,7 @@
     <Properties>
       <Property name="controller" type="ProjectMagma.Framework.IslandControllerProperty"/>
       <Property name="render" type="ProjectMagma.Framework.RenderProperty"/>
+      <Property name="render_highlight" type="ProjectMagma.Framework.RenderHighlightProperty"/>
     </Properties>
   </Entity>
 
@@ -187,6 +195,7 @@
     <Properties>
       <Property name="controller" type="ProjectMagma.Framework.IslandControllerProperty"/>
       <Property name="render" type="ProjectMagma.Framework.RenderProperty"/>
+      <Property name="render_highlight" type="ProjectMagma.Framework.RenderHighlightProperty"/>
     </Properties>
   </Entity>
 
@@ -203,6 +212,7 @@
     <Properties>
       <Property name="controller" type="ProjectMagma.Framework.IslandControllerProperty"/>
       <Property name="render" type="ProjectMagma.Framework.RenderProperty"/>
+      <Property name="render_highlight" type="ProjectMagma.Framework.RenderHighlightProperty"/>
     </Properties>
   </Entity>
 
@@ -219,6 +229,7 @@
     <Properties>
       <Property name="controller" type="ProjectMagma.Framework.IslandControllerProperty"/>
       <Property name="render" type="ProjectMagma.Framework.RenderProperty"/>
+      <Property name="render_highlight" type="ProjectMagma.Framework.RenderHighlightProperty"/>
     </Properties>
   </Entity>
 
@@ -252,6 +263,7 @@
       <Properties>
         <Property name="controller" type="ProjectMagma.Framework.PlayerControllerProperty"/>
         <Property name="render" type="ProjectMagma.Framework.RenderProperty"/>
+        <Property name="render_highlight" type="ProjectMagma.Framework.RenderHighlightProperty"/>
       </Properties>
     </Entity>
 
@@ -271,6 +283,7 @@
     <Properties>
       <Property name="controller" type="ProjectMagma.Framework.PowerUpController"/>
       <Property name="render" type="ProjectMagma.Framework.RenderProperty"/>
+      <Property name="render_highlight" type="ProjectMagma.Framework.RenderHighlightProperty"/>
     </Properties>
   </Entity>
 
@@ -290,6 +303,7 @@
     <Properties>
       <Property name="controller" type="ProjectMagma.Framework.PowerUpController"/>
       <Property name="render" type="ProjectMagma.Framework.RenderProperty"/>
+      <Property name="render_highlight" type="ProjectMagma.Framework.RenderHighlightProperty"/>
     </Properties>
   </Entity>
 

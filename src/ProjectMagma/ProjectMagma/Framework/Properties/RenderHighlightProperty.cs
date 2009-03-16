@@ -17,21 +17,32 @@ namespace ProjectMagma.Framework
 
         public void OnAttached(Entity entity)
         {
+            this.entity = entity;
             entity.Draw += OnDraw;
+            enabled = false;
 
             // load the model
             string meshName = entity.GetString("mesh");
             model = Game.Instance.Content.Load<Model>(meshName);
+
+            // attach listener for management form
+            Game.Instance.ManagementForm.EntitySelectionChanged += OnEntitySelectionChanged;
         }
 
         public void OnDetached(Entity entity)
         {
+            Game.Instance.ManagementForm.EntitySelectionChanged -= OnEntitySelectionChanged;
+
+            this.model = null;
             entity.Draw -= OnDraw;
+            this.entity = null;
+            enabled = true;
         }
 
         private void OnDraw(Entity entity, GameTime gameTime, RenderMode renderMode)
         {
-            if (renderMode == RenderMode.RenderToSceneAlpha)
+            if (renderMode == RenderMode.RenderToSceneAlpha &&
+                enabled)
             {
                 Debug.Assert(entity.HasAttribute("mesh"));
                 Debug.Assert(entity.HasAttribute("position"));
@@ -117,6 +128,14 @@ namespace ProjectMagma.Framework
                 }
             }
         }
+
+        private void OnEntitySelectionChanged(ManagementForm managementForm, Entity oldSelection, Entity newSelection)
+        {
+            enabled = this.entity == newSelection;
+        }
+
+        private Entity entity;
         private Model model;
+        private bool enabled;
     }
 }

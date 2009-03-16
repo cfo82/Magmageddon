@@ -74,7 +74,7 @@ namespace ProjectMagma.Framework
                     foreach (BasicEffect effectx in mesh.Effects)
                     {
                         diffuseColors[i] = effectx.DiffuseColor;
-                        effectx.DiffuseColor = new Vector3(1.0f, 0.0f, 0.0f);
+                        effectx.DiffuseColor = new Vector3(1.0f, 1.0f, 0.0f);
                         effectx.EnableDefaultLighting();
                         effectx.View = Game.Instance.View;
                         effectx.Projection = Game.Instance.Projection;

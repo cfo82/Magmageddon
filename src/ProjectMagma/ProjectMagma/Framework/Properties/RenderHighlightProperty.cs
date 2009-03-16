@@ -74,17 +74,18 @@ namespace ProjectMagma.Framework
                     foreach (BasicEffect effectx in mesh.Effects)
                     {
                         diffuseColors[i] = effectx.DiffuseColor;
-                        effectx.DiffuseColor = new Vector3(1.0f, 1.0f, 1.0f);
+                        effectx.DiffuseColor = new Vector3(1.0f, 0.0f, 0.0f);
                         effectx.EnableDefaultLighting();
                         effectx.View = Game.Instance.View;
                         effectx.Projection = Game.Instance.Projection;
                         effectx.World = transforms[mesh.ParentBone.Index] * world;
                         ++i;
                     }
-                    mesh.Draw();
 
+                    Game.Instance.GraphicsDevice.RenderState.DepthBufferEnable = false;
                     Game.Instance.GraphicsDevice.RenderState.AlphaBlendEnable = true;
-                    Game.Instance.GraphicsDevice.RenderState.BlendFactor = new Color(0.2f, 0.2f, 0.2f, 0.2f);
+                    Game.Instance.GraphicsDevice.RenderState.StencilFunction = CompareFunction.Always;
+                    Game.Instance.GraphicsDevice.RenderState.BlendFactor = new Color(0.5f, 0.5f, 0.5f, 0.5f);
                     Game.Instance.GraphicsDevice.RenderState.SourceBlend = Blend.BlendFactor;
                     Game.Instance.GraphicsDevice.RenderState.BlendFunction = BlendFunction.Add;
                     Game.Instance.GraphicsDevice.RenderState.DestinationBlend = Blend.InverseBlendFactor;
@@ -92,6 +93,7 @@ namespace ProjectMagma.Framework
                     mesh.Draw();
 
                     Game.Instance.GraphicsDevice.RenderState.AlphaBlendEnable = false;
+                    Game.Instance.GraphicsDevice.RenderState.DepthBufferEnable = true;
 
                     i = 0;
                     foreach (BasicEffect effectx in mesh.Effects)

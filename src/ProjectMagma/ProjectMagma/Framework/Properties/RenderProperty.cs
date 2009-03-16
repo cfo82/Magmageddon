@@ -89,6 +89,8 @@ namespace ProjectMagma.Framework
                         effect.CurrentTechnique = effect.Techniques["DepthMap"];
                         effect.Parameters["LightPosition"].SetValue(Game.Instance.lightPosition);
                         break;
+                    case RenderMode.RenderToSceneAlpha:
+                        return;
                     default:
                         Debug.Assert(false, "unhandled render mode."); // HACK: maybe do better error handling?
                         break;

@@ -281,6 +281,8 @@ namespace ProjectMagma.Framework
             if(newActiveIsland == null && activeIsland != null)
                 ((Vector3Attribute)activeIsland.Attributes["position"]).ValueChanged -= islandPositionHandler;
             activeIsland = newActiveIsland;
+            if(activeIsland != null) // faster recharge standing on island
+                fuel += (int)(gameTime.ElapsedGameTime.Milliseconds * fuelIslandReachargAddMultiplicator);
 
             // check collison with pillars
             foreach (Entity pillar in Game.Instance.PillarManager)
@@ -438,6 +440,7 @@ namespace ProjectMagma.Framework
         private readonly int energyRechargIntervall = 250; // ms
 
         private static readonly float fuelRechargeMultiplicator = 0.75f;
+        private static readonly float fuelIslandReachargAddMultiplicator = 1.2f;
         private static readonly float maxJetpackSpeed = 150f;
         private static readonly float maxGravitySpeed = 450f;
         private static readonly Vector3 gravityAcceleration = new Vector3(0, -900f, 0);

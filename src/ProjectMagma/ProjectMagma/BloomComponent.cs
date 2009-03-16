@@ -38,7 +38,7 @@ namespace ProjectMagma
             set { settings = value; }
         }
 
-        BloomSettings settings = BloomSettings.PresetSettings[0];
+        BloomSettings settings = BloomSettings.PresetSettings[6];
 
 
         // Optionally displays one of the intermediate buffers used

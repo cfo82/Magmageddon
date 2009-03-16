@@ -26,7 +26,7 @@ namespace ProjectMagma
         private void BuildForm()
         {
             //Create a new form
-            formCollection.Add(new Form(formName, "Game Control", new Vector2(600, 400), new Vector2(10, 10), Form.BorderStyle.Sizable));
+            formCollection.Add(new Form(formName, "Game Control", new Vector2(640, 400), new Vector2(10, 10), Form.BorderStyle.Sizable));
             formCollection[formName].Style = Form.BorderStyle.Sizable;
 
             List<string> entityNames = new List<string>();
@@ -38,18 +38,18 @@ namespace ProjectMagma
             entityNames.CopyTo(entityNameArray, 0);
 
             formCollection[formName].Controls.Add(new Listbox(
-                entityListName, new Vector2(10, 30), 100, 360,
+                entityListName, new Vector2(10, 30), 120, 360,
                 entityNameArray));
             ((Listbox)formCollection[formName][entityListName]).HorizontalScrollbar = true;
 
             formCollection[formName].Controls.Add(new Listbox(
-                attributeListName, new Vector2(120, 30), 100, 360,
+                attributeListName, new Vector2(135, 30), 190, 360,
                 new string[0]));
             ((Listbox)formCollection[formName][attributeListName]).HorizontalScrollbar = true;
 
-            formCollection[formName].Controls.Add(new Label(attributeValueLabelName, new Vector2(230, 30), "Attribute Value: ", Color.TransparentBlack, Color.Black, 100, Label.Align.Left));
-            formCollection[formName].Controls.Add(new Textbox(attributeValueTextName, new Vector2(230, 50), 360));
-            formCollection[formName].Controls.Add(new Button(changeAttributeName, new Vector2(230, 80), "Change Attribute", formCollection[formName].BackColor, Color.Black));
+            formCollection[formName].Controls.Add(new Label(attributeValueLabelName, new Vector2(330, 30), "Attribute Value: ", Color.TransparentBlack, Color.Black, 100, Label.Align.Left));
+            formCollection[formName].Controls.Add(new Textbox(attributeValueTextName, new Vector2(330, 50), 300));
+            formCollection[formName].Controls.Add(new Button(changeAttributeName, new Vector2(330, 80), "Change Attribute", formCollection[formName].BackColor, Color.Black));
 
             formCollection[formName].Show();
             formCollection[formName].Minimize();

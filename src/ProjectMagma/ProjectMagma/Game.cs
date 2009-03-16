@@ -339,6 +339,10 @@ namespace ProjectMagma
                 if (e.Name.StartsWith("player"))
                 {
                     Color color = Color.White;
+                    if (e.Name.Equals("player1"))
+                        color = Color.LightGreen;
+                    else
+                        color = Color.Yellow;
                     if (e.GetInt("health") <= 0)
                         color = Color.Red;
                     spriteBatch.DrawString(HUDFont, e.Name + "; health: " + e.GetInt("health") + ", energy: " + e.GetInt("energy") + ", fuel: " + e.GetInt("fuel")

@@ -185,7 +185,9 @@ namespace ProjectMagma
                 if (entity.Name.StartsWith("powerup"))
                     Game.Instance.Content.Load<SoundEffect>("Sounds/" + entity.GetString("pickup_sound"));
             }
-
+            Game.Instance.Content.Load<SoundEffect>("Sounds/punch2");
+            Game.Instance.Content.Load<SoundEffect>("Sounds/hit");
+            Game.Instance.Content.Load<SoundEffect>("Sounds/sword-clash");
 
             Viewport viewport = graphics.GraphicsDevice.Viewport;
 
@@ -230,6 +232,10 @@ namespace ProjectMagma
 
 
             CreateManagementForm();
+
+            // play that funky musik white boy
+            MediaPlayer.Play(Game.Instance.Content.Load<Song>("Sounds/music"));
+            MediaPlayer.Volume = 0.1f;
         }
 
         /// <summary>
@@ -240,6 +246,7 @@ namespace ProjectMagma
         {
             // TODO: Unload any non ContentManager content here
             formCollection.Dispose();
+            MediaPlayer.Stop();
         }
 
         /// <summary>

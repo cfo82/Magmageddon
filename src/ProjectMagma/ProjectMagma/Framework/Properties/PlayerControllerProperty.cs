@@ -13,6 +13,9 @@ namespace ProjectMagma.Framework
 {
     public class PlayerControllerProperty : Property
     {
+        private SoundEffect jetpackSound;
+        private double jetpackSoundEnd = 0;
+
         public PlayerControllerProperty()
         {
         }
@@ -34,6 +37,7 @@ namespace ProjectMagma.Framework
             entity.AddIntAttribute("frozen", 0);
 
             Game.Instance.EntityManager.EntityRemoved += new EntityRemovedHandler(entityRemovedHandler);
+            jetpackSound = Game.Instance.Content.Load<SoundEffect>("Sounds/jetpack");
 
             this.player = entity;
         }
@@ -105,6 +109,13 @@ namespace ProjectMagma.Framework
             {
                 if (fuel > 0)
                 {
+                    // indicate 
+                    if (gameTime.TotalGameTime.TotalMilliseconds > jetpackSoundEnd)
+                    {
+                        jetpackSound.Play();
+                        jetpackSoundEnd = gameTime.TotalGameTime.TotalMilliseconds + jetpackSound.Duration.TotalMilliseconds;
+                    }
+
                     fuel -= gameTime.ElapsedGameTime.Milliseconds;
                     jetpackVelocity += jetpackAcceleration * dt;
 
@@ -154,6 +165,10 @@ namespace ProjectMagma.Framework
             if (controllerInput.xPressed && player.GetInt("energy") > iceSpikeEnergyCost &&
                 (gameTime.TotalGameTime.TotalMilliseconds - iceSpikeFiredAt) > iceSpikeCooldown)
             {
+                // indicate 
+                SoundEffect soundEffect = Game.Instance.Content.Load<SoundEffect>("Sounds/hit");
+                soundEffect.Play();
+
                 BoundingBox bb = Game.calculateBoundingBox(playerModel, playerPosition, GetRotation(player), GetScale(player));
 
                 Vector3 pos = new Vector3(playerPosition.X, bb.Max.Y, playerPosition.Z);
@@ -339,6 +354,10 @@ namespace ProjectMagma.Framework
                         // and hit?
                         if (controllerInput.rPressed)
                         {
+                            // indicate hit!
+                            SoundEffect soundEffect = Game.Instance.Content.Load<SoundEffect>("Sounds/punch2");
+                            soundEffect.Play();
+
                             // dedcut health
                             p.SetInt("health", p.GetInt("health") - 20);
 

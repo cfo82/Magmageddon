@@ -6,6 +6,7 @@ using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 using Microsoft.Xna.Framework.Media;
+using Microsoft.Xna.Framework.Audio;
 
 namespace ProjectMagma.Framework
 {
@@ -69,6 +70,10 @@ namespace ProjectMagma.Framework
                             // deduct health if player
                             if (e.Name.StartsWith("player"))
                             {
+                                // indicate 
+                                SoundEffect soundEffect = Game.Instance.Content.Load<SoundEffect>("Sounds/sword-clash");
+                                soundEffect.Play();
+
                                 e.SetInt("health", e.GetInt("health") - iceSpikeDamage);
                                 e.SetInt("frozen", e.GetInt("frozen") + iceSpikeFrozenTime);
                             }

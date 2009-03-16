@@ -35,6 +35,7 @@ namespace ProjectMagma.Framework
             entity.AddIntAttribute("fuel", maxFuel);
 
             entity.AddIntAttribute("frozen", 0);
+            entity.AddStringAttribute("collisionPlayer", "");
 
             Game.Instance.EntityManager.EntityRemoved += new EntityRemovedHandler(entityRemovedHandler);
             jetpackSound = Game.Instance.Content.Load<SoundEffect>("Sounds/jetpack");
@@ -314,6 +315,7 @@ namespace ProjectMagma.Framework
             if(playerPosition.Y < lava.GetVector3("position").Y)
             {
                 playerPosition.Y = originalPosition.Y;
+                player.SetInt("health", 0);
             }
 
             // check collision with juicy powerups
@@ -349,24 +351,32 @@ namespace ProjectMagma.Framework
                     BoundingSphere obs = Game.calculateBoundingSphere(Game.Instance.Content.Load<Model>(p.GetString("mesh")),
                         GetPosition(p), GetRotation(p), GetScale(p));
 
-                    if (obs.Intersects(bs))
+                    if (obs.Intersects(bs) || player.Name.Equals(p.GetString("collisionPlayer")))
                     {
+                        if(obs.Intersects(bs))
+                            p.SetString("collisionPlayer", player.Name); // indicate collision
+                        else
+                            p.SetString("collisionPlayer", ""); // reset collision
+
                         // and hit?
-                        if (controllerInput.rPressed)
+                        if (controllerInput.rPressed &&
+                            (gameTime.TotalGameTime.TotalMilliseconds - hitPerformedAt) > hitCooldown)
                         {
                             // indicate hit!
                             SoundEffect soundEffect = Game.Instance.Content.Load<SoundEffect>("Sounds/punch2");
                             soundEffect.Play();
 
                             // dedcut health
-                            p.SetInt("health", p.GetInt("health") - 20);
+                            p.SetInt("health", p.GetInt("health") - hitDamage);
 
                             // push back
                             Vector3 dir = obs.Center - bs.Center;
                             dir.Normalize();
                             dir.Y = 0;
 
+                            // set values
                             p.SetVector3("hit_pushback_velocity", dir * pushbackHitVelocityMultiplier);
+                            hitPerformedAt = gameTime.TotalGameTime.TotalMilliseconds;
                         }
                         else
                         {
@@ -397,6 +407,8 @@ namespace ProjectMagma.Framework
 
 
             // update entity attributes
+            if (fuel > maxFuel)
+                fuel = maxFuel;
             entity.SetInt("fuel", fuel);
 
             entity.SetVector3("position", playerPosition);
@@ -454,6 +466,10 @@ namespace ProjectMagma.Framework
         private static readonly int iceSpikeUpSpeed = 240;
         private static readonly int iceSpikeEnergyCost = 4;
         private static readonly int iceSpikeCooldown = 50; // ms
+
+        private static readonly int hitDamage = 20;
+        private static readonly int hitCooldown = 250; // ms
+        private double hitPerformedAt = 0;
 
         private static readonly int playerXAxisMultiplier = 1;
         private static readonly int playerZAxisMultiplier = 2;

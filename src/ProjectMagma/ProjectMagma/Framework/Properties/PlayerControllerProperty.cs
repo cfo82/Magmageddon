@@ -181,7 +181,7 @@ namespace ProjectMagma.Framework
                 BoundingBox bb = Game.calculateBoundingBox(playerModel, playerPosition, GetRotation(player), GetScale(player));
 
                 Vector3 pos = new Vector3(playerPosition.X, bb.Max.Y, playerPosition.Z);
-                Vector3 velocity = Vector3.Transform(Vector3.One, GetRotation(player)) * iceSpikeSpeed;
+                Vector3 velocity = Vector3.Transform(new Vector3(0,0,1), GetRotation(player)) * iceSpikeSpeed;
                 velocity.Y = iceSpikeUpSpeed;
 
                 Entity iceSpike = new Entity(Game.Instance.EntityManager, "icespike" + (++iceSpikeCount)+"_"+player.Name);

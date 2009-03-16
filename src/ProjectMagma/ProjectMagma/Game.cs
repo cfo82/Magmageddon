@@ -309,6 +309,10 @@ namespace ProjectMagma
             {
                 e.OnDraw(gameTime, RenderMode.RenderToScene);
             }
+            foreach (Entity e in entityManager)
+            {
+                e.OnDraw(gameTime, RenderMode.RenderToSceneAlpha);
+            }
         }
 
         private void RenderShadow(GameTime gameTime)

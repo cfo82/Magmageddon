@@ -190,6 +190,7 @@
       <Properties>
         <Property name="controller" type="ProjectMagma.Framework.PlayerControllerProperty"/>
         <Property name="render" type="ProjectMagma.Framework.RenderProperty"/>
+        <Property name="render_highlight" type="ProjectMagma.Framework.RenderHighlightProperty"/>
       </Properties>
     </Entity>
 

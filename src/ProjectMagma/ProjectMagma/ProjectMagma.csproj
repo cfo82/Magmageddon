@@ -86,6 +86,7 @@
   <ItemGroup>
     <Compile Include="BloomComponent.cs" />
     <Compile Include="BloomSettings.cs" />
+    <Compile Include="Framework\Properties\RenderHighlightProperty.cs" />
     <Compile Include="ManagementForm.cs" />
     <Compile Include="EntityRemovedHandler.cs" />
     <Compile Include="EntityAddedHandler.cs" />

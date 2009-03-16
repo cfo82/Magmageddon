@@ -192,6 +192,16 @@
     </Compile>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Models\player1_primitive.fbx">
+      <Name>player1_primitive</Name>
+      <Importer>FbxImporter</Importer>
+      <Processor>PlayerProcessor</Processor>
+    </Compile>
+    <Compile Include="Models\player2_primitive.fbx">
+      <Name>player2_primitive</Name>
+      <Importer>FbxImporter</Importer>
+      <Processor>PlayerProcessor</Processor>
+    </Compile>
     <None Include="Textures\Controls\arrow.png">
       <Name>arrow</Name>
       <Importer>TextureImporter</Importer>

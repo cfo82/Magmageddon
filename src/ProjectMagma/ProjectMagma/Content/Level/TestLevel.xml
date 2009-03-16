@@ -182,7 +182,7 @@
         <Attribute name="kind" template="string" value="player"/>
         <Attribute name="position" template="float3" value="-250 100 220"/>
         <Attribute name="scale" template="float3" value="10 10 10"/>
-        <Attribute name="mesh" template="string" value="Models/player_primitive"/>
+        <Attribute name="mesh" template="string" value="Models/player1_primitive"/>
         <Attribute name="jetpack_acceleration" template="float3" value="0 2000 0"/>
         <Attribute name="player_id" template="int" value="1"/>
         <Attribute name="bv_type" template="string" value="sphere"/>
@@ -198,7 +198,7 @@
         <Attribute name="kind" template="string" value="player"/>
         <Attribute name="position" template="float3" value="60 160 -30"/>
         <Attribute name="scale" template="float3" value="10 10 10"/>
-        <Attribute name="mesh" template="string" value="Models/player_primitive"/>
+        <Attribute name="mesh" template="string" value="Models/player2_primitive"/>
         <Attribute name="jetpack_acceleration" template="float3" value="0 2000 0"/>
         <Attribute name="player_id" template="int" value="2"/>
         <Attribute name="bv_type" template="string" value="sphere"/>

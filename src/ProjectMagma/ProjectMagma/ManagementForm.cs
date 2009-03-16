@@ -26,7 +26,8 @@ namespace ProjectMagma
         private void BuildForm()
         {
             //Create a new form
-            formCollection.Add(new Form(formName, "Game Control", new Vector2(640, 400), new Vector2(10, 10), Form.BorderStyle.Sizable));
+            formCollection.Add(new Form(formName, "Game Control", new Vector2(640, 300), new Vector2(10, 
+                Game.Instance.Window.ClientBounds.Height-310), Form.BorderStyle.Sizable));
             formCollection[formName].Style = Form.BorderStyle.Sizable;
 
             List<string> entityNames = new List<string>();
@@ -38,12 +39,12 @@ namespace ProjectMagma
             entityNames.CopyTo(entityNameArray, 0);
 
             formCollection[formName].Controls.Add(new Listbox(
-                entityListName, new Vector2(10, 30), 120, 360,
+                entityListName, new Vector2(10, 30), 120, 260,
                 entityNameArray));
             ((Listbox)formCollection[formName][entityListName]).HorizontalScrollbar = true;
 
             formCollection[formName].Controls.Add(new Listbox(
-                attributeListName, new Vector2(135, 30), 190, 360,
+                attributeListName, new Vector2(135, 30), 190, 260,
                 new string[0]));
             ((Listbox)formCollection[formName][attributeListName]).HorizontalScrollbar = true;
 

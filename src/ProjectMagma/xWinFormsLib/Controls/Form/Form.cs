@@ -102,6 +102,7 @@ namespace xWinFormsLib
         public Menu Menu { get { return menu; } set { menu = value; } }
         public bool IsDragged { get { return isDragging; } }
         public bool IsMinimizing { get { return isMinimizing; } }
+        public bool IsMinimized { get { return isMinimized; } }
         
         ContentManager content;
 

@@ -27,6 +27,8 @@ namespace ProjectMagma
 
         private void BuildForm()
         {
+            isMinimized = false;
+
             //Create a new form
             formCollection.Add(new Form(formName, "Game Control", new Vector2(640, 300), new Vector2(10, 
                 Game.Instance.Window.ClientBounds.Height-310), Form.BorderStyle.Sizable));
@@ -60,6 +62,7 @@ namespace ProjectMagma
             // register events
             Game.Instance.EntityManager.EntityAdded += OnEntityAdded;
             Game.Instance.EntityManager.EntityRemoved += OnEntityRemoved;
+            formCollection[formName].OnResized += OnResized;
             ((Listbox)formCollection[formName][entityListName]).OnChangeSelection += OnEntityListSelectionChanged;
             ((Listbox)formCollection[formName][attributeListName]).OnChangeSelection += OnAttributeListSelectionChanged;
             ((Button)formCollection[formName][changeAttributeName]).OnPress += OnChangeAttribute;
@@ -73,6 +76,26 @@ namespace ProjectMagma
         private void OnEntityRemoved(EntityManager manager, Entity entity)
         {
             ((Listbox)formCollection[formName][entityListName]).Remove(entity.Name);
+        }
+
+        private void OnResized(object obj, System.EventArgs e)
+        {
+            if (formCollection[formName].IsMinimized)
+            {
+                isMinimized = true;
+
+                if (this.EntitySelectionChanged != null && currentSelectedEntity != null)
+                {
+                    this.EntitySelectionChanged(this, currentSelectedEntity, null);
+                }
+            }
+            else if (isMinimized)
+            {
+                if (this.EntitySelectionChanged != null && currentSelectedEntity != null)
+                {
+                    this.EntitySelectionChanged(this, null, currentSelectedEntity);
+                }
+            }
         }
 
         private void OnEntityListSelectionChanged(object obj, System.EventArgs e)
@@ -138,6 +161,7 @@ namespace ProjectMagma
 
         private FormCollection formCollection;
         private Entity currentSelectedEntity;
+        private bool isMinimized;
         private static readonly string formName = "managementForm";
         private static readonly string entityListName = "entityList";
         private static readonly string attributeListName = "attributeList";

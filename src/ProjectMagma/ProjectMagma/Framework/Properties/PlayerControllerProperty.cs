@@ -85,7 +85,6 @@ namespace ProjectMagma.Framework
             float dt = ((float)gameTime.ElapsedGameTime.Milliseconds)/1000.0f;
 
             PlayerIndex playerIndex = (PlayerIndex)entity.GetInt("game_pad_index");
-            Vector3 jetpackAcceleration = entity.GetVector3("jetpack_acceleration");
             Vector3 playerPosition = entity.GetVector3("position");
             Vector3 jetpackVelocity = entity.GetVector3("jetpack_velocity");
             Vector3 contactPushbackVelocity = entity.GetVector3("contact_pushback_velocity");
@@ -105,9 +104,6 @@ namespace ProjectMagma.Framework
             // jetpack
             if (controllerInput.aPressed)
             {
-                if (activeIsland != null) // reset jetPackVelocity to zero (could be smaller because of gravity)
-                    jetpackVelocity = Vector3.Zero;
-
                 if (fuel > 0)
                 {
                     // indicate 
@@ -118,7 +114,7 @@ namespace ProjectMagma.Framework
                     }
 
                     fuel -= gameTime.ElapsedGameTime.Milliseconds;
-                    jetpackVelocity += jetpackAcceleration * dt;
+                    jetpackVelocity += constants.GetVector3("jetpack_acceleration") * dt;
 
                     if (jetpackVelocity.Length() > constants.GetFloat("max_jetpack_speed"))
                     {

@@ -10,13 +10,14 @@
       
       <Attribute name="max_health" template="int" value="100"/>
       <Attribute name="max_energy" template="int" value="100"/>
-      <Attribute name="max_fuel" template="int" value="1500"/>
+      <Attribute name="max_fuel" template="int" value="2500"/>
 
       <Attribute name="energy_recharge_interval" template="int" value="200"/>
 
       <Attribute name="fuel_recharge_multiplier" template="float" value="0.75"/>
       <Attribute name="fuel_recharge_multiplier_island" template="float" value="1.2"/>
       <Attribute name="max_jetpack_speed" template="float" value="150"/>
+      <Attribute name="jetpack_acceleration" template="float3" value="0 1300 0"/>
 
       <Attribute name="gravity_acceleration" template="float3" value="0 -900 0"/>
       <Attribute name="max_gravity_speed" template="float" value="450"/>
@@ -239,7 +240,6 @@
         <Attribute name="position" template="float3" value="-250 100 220"/>
         <Attribute name="scale" template="float3" value="10 10 10"/>
         <Attribute name="mesh" template="string" value="Models/player1_primitive"/>
-        <Attribute name="jetpack_acceleration" template="float3" value="0 2000 0"/>
         <Attribute name="player_id" template="int" value="1"/>
         <Attribute name="bv_type" template="string" value="sphere"/>
       </Attributes>
@@ -256,7 +256,6 @@
         <Attribute name="position" template="float3" value="60 160 -30"/>
         <Attribute name="scale" template="float3" value="10 10 10"/>
         <Attribute name="mesh" template="string" value="Models/player2_primitive"/>
-        <Attribute name="jetpack_acceleration" template="float3" value="0 2000 0"/>
         <Attribute name="player_id" template="int" value="2"/>
         <Attribute name="bv_type" template="string" value="sphere"/>
       </Attributes>

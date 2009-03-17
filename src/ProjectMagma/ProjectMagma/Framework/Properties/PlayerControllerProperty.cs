@@ -102,7 +102,7 @@ namespace ProjectMagma.Framework
             /// movements
 
             // jetpack
-            if (controllerInput.aPressed)
+            if (controllerInput.jetpackPressed)
             {
                 if (fuel > 0)
                 {
@@ -151,7 +151,7 @@ namespace ProjectMagma.Framework
             }
 
             // rotation
-            if (controllerInput.leftStickPressed)
+            if (controllerInput.moveStickPressed)
             {
                 float yRotation = (float)Math.Atan2(controllerInput.leftStickX, -controllerInput.leftStickY);
                 Matrix rotationMatrix = Matrix.CreateRotationY(yRotation);
@@ -169,7 +169,7 @@ namespace ProjectMagma.Framework
 
 
             // ice spike
-            if (controllerInput.xPressed && player.GetInt("energy") > constants.GetInt("ice_spike_energy_cost") &&
+            if (controllerInput.firePressed && player.GetInt("energy") > constants.GetInt("ice_spike_energy_cost") &&
                 (gameTime.TotalGameTime.TotalMilliseconds - iceSpikeFiredAt) > constants.GetInt("ice_spike_cooldown"))
             {
                 // indicate 
@@ -365,7 +365,7 @@ namespace ProjectMagma.Framework
                         p.SetString("collisionPlayer", ""); // reset collision
 
                     // and hit?
-                    if (controllerInput.rPressed &&
+                    if (controllerInput.hitPressed &&
                         (gameTime.TotalGameTime.TotalMilliseconds - hitPerformedAt) > constants.GetInt("hit_cooldown"))
                     {
                         // indicate hit!
@@ -468,62 +468,82 @@ namespace ProjectMagma.Framework
 
                 leftStickX = gamePadState.ThumbSticks.Left.X;
                 leftStickY = gamePadState.ThumbSticks.Left.Y;
-                leftStickPressed = leftStickX != 0.0f || leftStickY != 0.0f;
+                moveStickPressed = leftStickX != 0.0f || leftStickY != 0.0f;
 
-                if(!leftStickPressed)
+                if (!moveStickPressed)
                 {
-                    if(keyboardState.IsKeyDown(Keys.Left))
+                    if (playerIndex == PlayerIndex.One)
                     {
-                        leftStickX = gamepadEmulationValue;
-                        leftStickPressed = true;
-                    } 
-                    else
-                        if(keyboardState.IsKeyDown(Keys.Right))
+                        if (keyboardState.IsKeyDown(Keys.Left))
                         {
-                            leftStickX = -gamepadEmulationValue;
-                            leftStickPressed = true;
+                            leftStickX = gamepadEmulationValue;
+                            moveStickPressed = true;
                         }
-                    
-                    if(keyboardState.IsKeyDown(Keys.Up))
+                        else
+                            if (keyboardState.IsKeyDown(Keys.Right))
+                            {
+                                leftStickX = -gamepadEmulationValue;
+                                moveStickPressed = true;
+                            }
+
+                        if (keyboardState.IsKeyDown(Keys.Up))
+                        {
+                            leftStickY = -gamepadEmulationValue;
+                            moveStickPressed = true;
+                        }
+                        else
+                            if (keyboardState.IsKeyDown(Keys.Down))
+                            {
+                                leftStickY = gamepadEmulationValue;
+                                moveStickPressed = true;
+                            }
+                    }
+                    else
                     {
-                        leftStickY = -gamepadEmulationValue;
-                        leftStickPressed = true;
-                    } 
-                    else
-                        if(keyboardState.IsKeyDown(Keys.Down))
+                        if (keyboardState.IsKeyDown(Keys.A))
                         {
-                            leftStickY = gamepadEmulationValue;
-                            leftStickPressed = true;
+                            leftStickX = gamepadEmulationValue;
+                            moveStickPressed = true;
                         }
+                        else
+                            if (keyboardState.IsKeyDown(Keys.D))
+                            {
+                                leftStickX = -gamepadEmulationValue;
+                                moveStickPressed = true;
+                            }
+
+                        if (keyboardState.IsKeyDown(Keys.W))
+                        {
+                            leftStickY = -gamepadEmulationValue;
+                            moveStickPressed = true;
+                        }
+                        else
+                            if (keyboardState.IsKeyDown(Keys.S))
+                            {
+                                leftStickY = gamepadEmulationValue;
+                                moveStickPressed = true;
+                            }
+                    }
                 }
 
                 #endregion
 
                 #region action buttons
 
-                aPressed =
+                jetpackPressed =
                     gamePadState.Buttons.A == ButtonState.Pressed ||
-                    keyboardState.IsKeyDown(Keys.Space);
+                    (keyboardState.IsKeyDown(Keys.Insert) && playerIndex == PlayerIndex.One) ||
+                    (keyboardState.IsKeyDown(Keys.Space) && playerIndex == PlayerIndex.Two);
 
-                xPressed =
+                firePressed =
                     gamePadState.Buttons.X == ButtonState.Pressed ||
-                    keyboardState.IsKeyDown(Keys.Enter);
+                    (keyboardState.IsKeyDown(Keys.RightControl) && playerIndex == PlayerIndex.One) ||
+                    (keyboardState.IsKeyDown(Keys.Q) && playerIndex == PlayerIndex.Two);
 
-                bPressed =
-                    gamePadState.Buttons.B == ButtonState.Pressed ||
-                    keyboardState.IsKeyDown(Keys.Back);
-
-                yPressed =
-                    gamePadState.Buttons.Y == ButtonState.Pressed ||
-                    keyboardState.IsKeyDown(Keys.RightShift);
-
-                lPressed =
-                    gamePadState.Buttons.LeftShoulder == ButtonState.Pressed ||
-                    keyboardState.IsKeyDown(Keys.LeftAlt);
-
-                rPressed =
+                hitPressed =
                     gamePadState.Buttons.RightShoulder == ButtonState.Pressed ||
-                    keyboardState.IsKeyDown(Keys.LeftControl);
+                    (keyboardState.IsKeyDown(Keys.Enter) && playerIndex == PlayerIndex.One) ||
+                    (keyboardState.IsKeyDown(Keys.E) && playerIndex == PlayerIndex.Two);
 
                 #endregion
 
@@ -534,12 +554,10 @@ namespace ProjectMagma.Framework
             
             // joysticks
             public float leftStickX, leftStickY;
-            public bool leftStickPressed;
+            public bool moveStickPressed;
 
             // buttons
-            public bool aPressed, xPressed;
-            public bool bPressed, yPressed;
-            public bool lPressed, rPressed;
+            public bool jetpackPressed, firePressed, hitPressed;
 
             private static float gamepadEmulationValue = -1f;
         }

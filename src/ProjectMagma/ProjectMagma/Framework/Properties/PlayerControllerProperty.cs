@@ -145,9 +145,35 @@ namespace ProjectMagma.Framework
             }
             else
             {
+                /// TODO
+                /// support the player better by helping him navigate on border of island:
+                /// dont just prevent movement, but allow in one axis and adapt other axis accordingly
+                /// so he stays on island
+
                 // on ground
                 playerPosition.X += controllerInput.leftStickX * constants.GetFloat("x_axis_movement_multiplier");
                 playerPosition.Z -= controllerInput.leftStickY * constants.GetFloat("z_axis_movement_multiplier");
+
+                // prevent the player from walking down the island
+                if (activeIsland != null)
+                {
+                    BoundingCylinder ibc = Game.calculateBoundingCylinder(Game.Instance.Content.Load<Model>(
+                         activeIsland.GetString("mesh")), GetPosition(activeIsland), GetRotation(activeIsland), GetScale(activeIsland));
+                    Vector2 pp = new Vector2(playerPosition.X, playerPosition.Z);
+                    Vector2 ic = new Vector2(ibc.Top.X, ibc.Bottom.Z);
+                    Vector2 diff = ic - pp;
+                    if (diff.Length() > ibc.Radius)
+                    {
+                        Vector2 op = new Vector2(originalPosition.X, originalPosition.Z);
+                        if ((op - ic).Length() < diff.Length())
+                        {
+                            playerPosition.X = originalPosition.X;
+                            playerPosition.Z = originalPosition.Z;
+                        }
+                    }
+                }
+
+
             }
 
             // rotation
@@ -285,7 +311,7 @@ namespace ProjectMagma.Framework
                     break;
                 }
             }
-            if(newActiveIsland == null && activeIsland != null)
+            if (newActiveIsland == null && activeIsland != null)
                 ((Vector3Attribute)activeIsland.Attributes["position"]).ValueChanged -= islandPositionHandler;
             activeIsland = newActiveIsland;
             if(activeIsland != null) // faster recharge standing on island

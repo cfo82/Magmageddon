@@ -224,10 +224,8 @@ namespace xWinFormsLib
                 line.Clear();
                 Add(value);
 
-                if (cursorLocation.X > base.Text.Length)
-                {
-                    cursorLocation.X = 0;
-                }
+                if (cursorLocation.X > base.Text.Length) // if larger, put at end
+                    cursorLocation.X = base.Text.Length;
             }
         }
 
@@ -393,7 +391,7 @@ namespace xWinFormsLib
                         }
                         else
                         {
-                            Text = Text.Remove(cursorLocation.X - 1, 1);
+                            base.Text = Text.Remove(cursorLocation.X - 1, 1);
                             cursorLocation.X -= 1;
                         }
                     }

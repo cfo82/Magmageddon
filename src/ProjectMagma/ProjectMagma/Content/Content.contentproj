@@ -207,6 +207,11 @@
       <Importer>FbxImporter</Importer>
       <Processor>IslandProcessor</Processor>
     </Compile>
+    <Compile Include="Models\cave_v002.fbx">
+      <Name>cave_v002</Name>
+      <Importer>FbxImporter</Importer>
+      <Processor>PillarProcessor</Processor>
+    </Compile>
     <None Include="Textures\Controls\arrow.png">
       <Name>arrow</Name>
       <Importer>TextureImporter</Importer>

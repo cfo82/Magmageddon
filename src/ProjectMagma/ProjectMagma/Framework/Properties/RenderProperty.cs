@@ -61,8 +61,8 @@ namespace ProjectMagma.Framework
             Matrix[] transforms = new Matrix[model.Bones.Count];
             model.CopyAbsoluteBoneTransformsTo(transforms);
 
-            Matrix world2 = world;
-            world *= Matrix.CreateTranslation(new Vector3(0, 1, 0));
+            Matrix world_offset = world;
+            world_offset *= Matrix.CreateTranslation(new Vector3(0, 1, 0));
 
             foreach (ModelMesh mesh in model.Meshes)
             {
@@ -77,7 +77,7 @@ namespace ProjectMagma.Framework
                             effectx.EnableDefaultLighting();
                             effectx.View = Game.Instance.View;
                             effectx.Projection = Game.Instance.Projection;
-                            effectx.World = transforms[mesh.ParentBone.Index] * world2;
+                            effectx.World = transforms[mesh.ParentBone.Index] * world;
                         }
                         mesh.Draw();
                         Game.Instance.Graphics.GraphicsDevice.RenderState.DepthBufferEnable = true;
@@ -85,12 +85,14 @@ namespace ProjectMagma.Framework
                         effect.CurrentTechnique = effect.Techniques["Scene"];
                         effect.Parameters["ShadowMap"].SetValue(Game.Instance.lightResolve);
                         effect.Parameters["WorldCameraViewProjection"].SetValue(
-                            transforms[mesh.ParentBone.Index] * world * Game.Instance.cameraView * Game.Instance.cameraProjection);
+                            transforms[mesh.ParentBone.Index] * world_offset * Game.Instance.cameraView * Game.Instance.cameraProjection);
+                        effect.Parameters["World"].SetValue(transforms[mesh.ParentBone.Index] * world_offset);
                         break;
                     case RenderMode.RenderToShadowMap:
                         Game.Instance.Graphics.GraphicsDevice.RenderState.DepthBufferEnable = true;
                         effect.CurrentTechnique = effect.Techniques["DepthMap"];
                         effect.Parameters["LightPosition"].SetValue(Game.Instance.lightPosition);
+                        effect.Parameters["World"].SetValue(transforms[mesh.ParentBone.Index] * world);
                         break;
                     case RenderMode.RenderToSceneAlpha:
                         return;
@@ -99,9 +101,8 @@ namespace ProjectMagma.Framework
                         break;
                 }
 
-                effect.Parameters["World"].SetValue(transforms[mesh.ParentBone.Index] * world);
                 effect.Parameters["WorldLightViewProjection"].SetValue(
-                    transforms[mesh.ParentBone.Index] * world * Game.Instance.lightView * Game.Instance.lightProjection);
+                    transforms[mesh.ParentBone.Index] * world_offset * Game.Instance.lightView * Game.Instance.lightProjection);
 
 
                 Effect backup = mesh.MeshParts[0].Effect;

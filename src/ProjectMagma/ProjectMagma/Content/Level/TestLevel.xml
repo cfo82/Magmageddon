@@ -50,7 +50,7 @@
     <Attributes>
       <Attribute name="kind" template="string" value="lava"/>
       <Attribute name="position" template="float3" value="0 0 0"/>
-      <Attribute name="scale" template="float3" value="400 200 400"/>
+      <Attribute name="scale" template="float3" value="1000 200 1000"/>
       <Attribute name="mesh" template="string" value="Models/lava_primitive"/>
     </Attributes>
     <Properties>
@@ -59,6 +59,20 @@
     </Properties>
   </Entity>
 
+  <Entity name="cave1">
+    <Attributes>
+      <Attribute name="kind" template="string" value="cave"/>
+      <Attribute name="position" template="float3" value="0 0 0"/>
+      <Attribute name="scale" template="float3" value="700 500 700"/>
+      <Attribute name="mesh" template="string" value="Models/cave_v002"/>
+      <Attribute name="bv_type" template="string" value="cylinder"/>
+    </Attributes>
+    <Properties>
+      <Property name="render" type="ProjectMagma.Framework.RenderProperty"/>
+      <Property name="render_highlight" type="ProjectMagma.Framework.RenderHighlightProperty"/>
+    </Properties>
+  </Entity>
+  
   <Entity name="pillar1">
     <Attributes>
       <Attribute name="kind" template="string" value="pillar"/>

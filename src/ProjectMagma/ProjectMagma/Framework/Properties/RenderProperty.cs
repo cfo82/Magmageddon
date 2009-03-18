@@ -61,6 +61,9 @@ namespace ProjectMagma.Framework
             Matrix[] transforms = new Matrix[model.Bones.Count];
             model.CopyAbsoluteBoneTransformsTo(transforms);
 
+            Matrix world2 = world;
+            world *= Matrix.CreateTranslation(new Vector3(0, 1, 0));
+
             foreach (ModelMesh mesh in model.Meshes)
             {
                 Effect effect = Game.Instance.shadowEffect;
@@ -74,10 +77,10 @@ namespace ProjectMagma.Framework
                             effectx.EnableDefaultLighting();
                             effectx.View = Game.Instance.View;
                             effectx.Projection = Game.Instance.Projection;
-                            effectx.World = transforms[mesh.ParentBone.Index] * world;
+                            effectx.World = transforms[mesh.ParentBone.Index] * world2;
                         }
                         mesh.Draw();
-                        Game.Instance.Graphics.GraphicsDevice.RenderState.DepthBufferEnable = false;
+                        Game.Instance.Graphics.GraphicsDevice.RenderState.DepthBufferEnable = true;
 
                         effect.CurrentTechnique = effect.Techniques["Scene"];
                         effect.Parameters["ShadowMap"].SetValue(Game.Instance.lightResolve);

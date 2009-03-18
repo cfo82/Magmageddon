@@ -122,7 +122,7 @@
       <Attribute name="velocity" template="float3" value="0 0 0"/>
       <Attribute name="acceleration" template="float3" value="0 0 0"/>
       <Attribute name="scale" template="float3" value="70 70 70"/>
-      <Attribute name="mesh" template="string" value="Models/island_primitive"/>
+      <Attribute name="mesh" template="string" value="Models/islandproto_v002"/>
       <Attribute name="bv_type" template="string" value="cylinder"/>
     </Attributes>
     <Properties>
@@ -139,7 +139,7 @@
       <Attribute name="velocity" template="float3" value="0 0 0"/>
       <Attribute name="acceleration" template="float3" value="0 0 0"/>
       <Attribute name="scale" template="float3" value="70 70 70"/>
-      <Attribute name="mesh" template="string" value="Models/island_primitive"/>
+      <Attribute name="mesh" template="string" value="Models/islandproto_v002"/>
       <Attribute name="bv_type" template="string" value="cylinder"/>
     </Attributes>
     <Properties>
@@ -156,7 +156,7 @@
     <Attribute name="velocity" template="float3" value="0 0 0"/>
     <Attribute name="acceleration" template="float3" value="0 0 0"/>
     <Attribute name="scale" template="float3" value="40 40 40"/>
-    <Attribute name="mesh" template="string" value="Models/island_primitive"/>
+    <Attribute name="mesh" template="string" value="Models/islandproto_v002"/>
       <Attribute name="bv_type" template="string" value="cylinder"/>
     </Attributes>
     <Properties>
@@ -173,7 +173,7 @@
       <Attribute name="velocity" template="float3" value="0 0 0"/>
       <Attribute name="acceleration" template="float3" value="0 0 0"/>
       <Attribute name="scale" template="float3" value="40 40 40"/>
-      <Attribute name="mesh" template="string" value="Models/island_primitive"/>
+      <Attribute name="mesh" template="string" value="Models/islandproto_v002"/>
       <Attribute name="bv_type" template="string" value="cylinder"/>
     </Attributes>
     <Properties>
@@ -190,7 +190,7 @@
       <Attribute name="velocity" template="float3" value="0 0 0"/>
       <Attribute name="acceleration" template="float3" value="0 0 0"/>
       <Attribute name="scale" template="float3" value="40 40 40"/>
-      <Attribute name="mesh" template="string" value="Models/island_primitive"/>
+      <Attribute name="mesh" template="string" value="Models/islandproto_v002"/>
       <Attribute name="bv_type" template="string" value="cylinder"/>
     </Attributes>
     <Properties>
@@ -207,7 +207,7 @@
       <Attribute name="velocity" template="float3" value="0 0 0"/>
       <Attribute name="acceleration" template="float3" value="0 0 0"/>
       <Attribute name="scale" template="float3" value="40 40 40"/>
-      <Attribute name="mesh" template="string" value="Models/island_primitive"/>
+      <Attribute name="mesh" template="string" value="Models/islandproto_v002"/>
       <Attribute name="bv_type" template="string" value="cylinder"/>
     </Attributes>
     <Properties>
@@ -224,7 +224,7 @@
       <Attribute name="velocity" template="float3" value="0 0 0"/>
       <Attribute name="acceleration" template="float3" value="0 0 0"/>
       <Attribute name="scale" template="float3" value="40 40 40"/>
-      <Attribute name="mesh" template="string" value="Models/island_primitive"/>
+      <Attribute name="mesh" template="string" value="Models/islandproto_v002"/>
       <Attribute name="bv_type" template="string" value="cylinder"/>
     </Attributes>
     <Properties>

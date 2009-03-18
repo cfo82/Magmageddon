@@ -7,6 +7,7 @@ struct VS_INPUT
 {
     float4 Position         : POSITION;
     float2 TexCoords        : TEXCOORD0;
+	float4 Normal			: NORMAL;
 };
 
 struct DEPTH_VS_OUTPUT
@@ -20,12 +21,12 @@ struct SCENE_VS_OUTPUT
     float4 Position         : POSITION;
     float2 TexCoords        : TEXCOORD0;
     float4 WorldPosition    : TEXCOORD1;
-    
+    float4 ShadowProjection : TEXCOORD2; 
+    float4 Normal			: TEXCOORD3;
     // ShadowProjection is similar to Position, except its the position 
     // from the light's view, not the camera. We need both to be able to project
     // our shadow map.
-    float4 ShadowProjection : TEXCOORD2; 
-	float4 Color            : COLOR0;                                         
+	//float4 Color            : COLOR0;                                         
                                          
 };
 
@@ -114,7 +115,7 @@ technique DepthMap
 //=======================
 
 
-SCENE_VS_OUTPUT Scene_VS (VS_INPUT Input,     float4 InColor			: COLOR0)
+SCENE_VS_OUTPUT Scene_VS (VS_INPUT Input)
 {
     SCENE_VS_OUTPUT Output;
     
@@ -124,7 +125,8 @@ SCENE_VS_OUTPUT Scene_VS (VS_INPUT Input,     float4 InColor			: COLOR0)
     Output.WorldPosition /= Output.WorldPosition.w;
     
     Output.TexCoords = Input.TexCoords;
-    Output.Color = InColor;
+    Output.Normal = Input.Normal;
+   // Output.Color = InColor;
     
     // This time we need the position from the light's view as well,
     // to project the depth map
@@ -172,7 +174,9 @@ float4 Scene_PS (SCENE_VS_OUTPUT Input) : COLOR0
     
     // Test if the distance from the pixel to the light is bigger 
     //than the depth we have in the texture
-    if(len - depthBias > depth.r)
+    float3 blah2= LightPosition-Input.WorldPosition;
+    float blah=dot(Input.Normal,normalize(blah2));
+    if(len - depthBias > depth.r && abs(blah)>0.1)
     {
         // yes? then lets darken the pixel to black
         // (In normal use, you'd use a lighting equation here to 

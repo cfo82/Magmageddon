@@ -59,7 +59,7 @@
     </Properties>
   </Entity>
 
-  <Entity name="cave1">
+  <Entity name="cave">
     <Attributes>
       <Attribute name="kind" template="string" value="cave"/>
       <Attribute name="position" template="float3" value="0 0 0"/>

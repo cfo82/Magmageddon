@@ -60,8 +60,9 @@ namespace ProjectMagma.Framework
             {
                 if (e.HasAttribute("position"))
                 {
-                    if (!e.Name.StartsWith("icespike") 
-                        && !e.Name.Equals(entity.GetString("player")))
+                    if (!(e.Name == entity.Name)
+                        && !(e.Name == "cave")
+                        && !(e.Name == entity.GetString("player")))
                     {
                         BoundingCylinder bc = Game.calculateBoundingCylinder(Game.Instance.Content.Load<Model>(e.GetString("mesh")),
                             GetPosition(e), GetRotation(e), GetScale(e));
@@ -88,6 +89,12 @@ namespace ProjectMagma.Framework
                 }
             }
 
+            Entity lava = Game.Instance.EntityManager["lava"];
+            if (entity.GetVector3("position").Y < lava.GetVector3("position").Y)
+            {
+                Game.Instance.EntityManager.RemoveDeferred(entity);
+                return;
+            }
 
             // store computed values;
             entity.SetVector3("position", pos);

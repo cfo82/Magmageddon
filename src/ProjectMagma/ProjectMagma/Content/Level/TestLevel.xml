@@ -280,7 +280,7 @@
       </Properties>
     </Entity>
 
-  <Entity name="powerup">
+  <Entity name="powerup1">
     <Attributes>
       <Attribute name="kind" template="string" value="powerup"/>
       <Attribute name="position" template="float3" value="0 0 0"/>

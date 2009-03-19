@@ -47,12 +47,12 @@
     <Attributes>
       <Attribute name="kind" template="string" value="constants"/>
 
-      <Attribute name="random_strength" template="float" value="1000"/>
-      <Attribute name="max_velocity" template="float" value="200"/>
+      <Attribute name="random_strength" template="float" value="1200"/>
+      <Attribute name="max_velocity" template="float" value="100"/>
       <Attribute name="damping" template="float" value="0.001"/>
 
       <Attribute name="pillar_elasticity" template="float" value="0.1"/>
-      <Attribute name="pillar_attraction" template="float" value="0.0005"/>
+      <Attribute name="pillar_attraction" template="float" value="0.0001"/>
       <Attribute name="pillar_repulsion" template="float" value="0.03"/>
     </Attributes>
   </Entity>
@@ -105,7 +105,7 @@
   <Entity name="pillar1">
     <Attributes>
       <Attribute name="kind" template="string" value="pillar"/>
-      <Attribute name="position" template="float3" value="-110 0 -150"/>
+      <Attribute name="position" template="float3" value="230 0 260"/>
       <Attribute name="scale" template="float3" value="200 150 200"/>
       <Attribute name="mesh" template="string" value="Models/pillar_primitive"/>
       <Attribute name="bv_type" template="string" value="cylinder"/>
@@ -119,7 +119,7 @@
   <Entity name="pillar2">
     <Attributes>
       <Attribute name="kind" template="string" value="pillar"/>
-      <Attribute name="position" template="float3" value="-140 0 130"/>
+      <Attribute name="position" template="float3" value="-250 0 130"/>
       <Attribute name="scale" template="float3" value="200 150 200"/>
       <Attribute name="mesh" template="string" value="Models/pillar_primitive"/>
       <Attribute name="bv_type" template="string" value="cylinder"/>
@@ -148,6 +148,20 @@
     <Attributes>
       <Attribute name="kind" template="string" value="pillar"/>
       <Attribute name="position" template="float3" value="80 0 80"/>
+      <Attribute name="scale" template="float3" value="200 150 200"/>
+      <Attribute name="mesh" template="string" value="Models/pillar_primitive"/>
+      <Attribute name="bv_type" template="string" value="cylinder"/>
+    </Attributes>
+    <Properties>
+      <Property name="render" type="ProjectMagma.Framework.RenderProperty"/>
+      <Property name="render_highlight" type="ProjectMagma.Framework.RenderHighlightProperty"/>
+    </Properties>
+  </Entity>
+
+  <Entity name="pillar5">
+    <Attributes>
+      <Attribute name="kind" template="string" value="pillar"/>
+      <Attribute name="position" template="float3" value="10 0 -300"/>
       <Attribute name="scale" template="float3" value="200 150 200"/>
       <Attribute name="mesh" template="string" value="Models/pillar_primitive"/>
       <Attribute name="bv_type" template="string" value="cylinder"/>

@@ -57,7 +57,7 @@ namespace ProjectMagma.Framework
             // detect collision
             foreach (Entity e in Game.Instance.EntityManager)
             {
-                if (e.HasAttribute("position"))
+                if (e.HasAttribute("mesh"))
                 {
                     if (!(e.Name == iceSpike.Name) // dont collide with self
                         && !(e.Name == "cave") // dont collide with cave 

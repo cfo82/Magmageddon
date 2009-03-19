@@ -43,7 +43,21 @@
     </Attributes>
   </Entity>
 
-  
+  <Entity name="island_constants">
+    <Attributes>
+      <Attribute name="kind" template="string" value="constants"/>
+
+      <Attribute name="random_strength" template="float" value="1000"/>
+      <Attribute name="max_velocity" template="float" value="200"/>
+      <Attribute name="damping" template="float" value="0.001"/>
+
+      <Attribute name="pillar_elasticity" template="float" value="0.1"/>
+      <Attribute name="pillar_attraction" template="float" value="0.0005"/>
+      <Attribute name="pillar_repulsion" template="float" value="0.03"/>
+    </Attributes>
+  </Entity>
+
+
   <!-- game entities -->
 
   <Entity name="lava">

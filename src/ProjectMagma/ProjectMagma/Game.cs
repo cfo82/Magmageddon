@@ -31,15 +31,8 @@ namespace ProjectMagma
     {
         private GraphicsDeviceManager graphics;
         private SpriteBatch spriteBatch;
-        
-        // TODO:
-        // HACK: shouldnt be public, maybe extract this to some global rendering stuff class?
-        public Vector3 cameraPosition = new Vector3(0, 850, 1400);
-        public Vector3 cameraTarget = new Vector3(0, 150, 0);
-        public Matrix cameraView;
-        public Matrix cameraProjection;
-        // ENDHACK
 
+        public Entity currentCamera;
 
         private EntityManager entityManager;
         private EntityKindManager pillarManager;
@@ -194,17 +187,7 @@ namespace ProjectMagma
 
             float aspectRatio = (float)viewport.Width / (float)viewport.Height;
 
- 
-            cameraView = Matrix.CreateLookAt(cameraPosition,
-                                       cameraTarget, Vector3.Up);
-
-
-            cameraProjection = Matrix.CreatePerspectiveFieldOfView(
-                MathHelper.ToRadians(22.5f),
-                aspectRatio, 1.0f,
-                10000.0f);
-
-            //lightProjection = Matrix.CreatePerspectiveFieldOfView(
+             //lightProjection = Matrix.CreatePerspectiveFieldOfView(
                 //MathHelper.ToRadians(10.0f), 1.0f, 1.0f, 10000.0f);
             lightProjection = Matrix.CreateOrthographic(1500, 1500,
                 0.0f, 10000.0f);
@@ -230,7 +213,7 @@ namespace ProjectMagma
                         shadowMapSize,
                         shadowMapSize,
                         graphics.GraphicsDevice.DepthStencilBuffer.Format);
-
+            currentCamera = entityManager["camera1"];
 
             CreateManagementForm();
 
@@ -404,7 +387,7 @@ namespace ProjectMagma
         {
             get
             {
-                return cameraView;
+                return currentCamera.GetMatrix("view");
             }
         }
 
@@ -412,12 +395,12 @@ namespace ProjectMagma
         {
             get
             {
-                return cameraProjection;
+                return currentCamera.GetMatrix("projection");
             }
         }
 
         public EntityManager EntityManager
-        {
+        { 
             get
             {
                 return entityManager;

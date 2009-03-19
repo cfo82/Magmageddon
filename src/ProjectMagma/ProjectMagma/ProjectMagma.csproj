@@ -86,12 +86,16 @@
   <ItemGroup>
     <Compile Include="BloomComponent.cs" />
     <Compile Include="BloomSettings.cs" />
+    <Compile Include="Framework\Attributes\QuaternionAttribute.cs" />
+    <Compile Include="Framework\Event\MatrixChangeEventHandler.cs" />
+    <Compile Include="Framework\Properties\CameraProperty.cs" />
+    <Compile Include="Framework\Properties\ShadowCastProperty.cs" />
     <Compile Include="Framework\Properties\RenderHighlightProperty.cs" />
     <Compile Include="ManagementForm.cs" />
     <Compile Include="EntityRemovedHandler.cs" />
     <Compile Include="EntityAddedHandler.cs" />
     <Compile Include="Framework\Attributes\AttributeTypes.cs" />
-    <Compile Include="Framework\Attributes\QuaternionAttribute.cs" />
+    <Compile Include="Framework\Attributes\MatrixAttribute.cs" />
     <Compile Include="Framework\Event\QuaternionChangeEventHandler.cs" />
     <Compile Include="Framework\Properties\PowerUpController.cs" />
     <Compile Include="EntityKindManager.cs" />

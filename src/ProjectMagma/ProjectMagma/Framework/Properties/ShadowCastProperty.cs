@@ -8,9 +8,9 @@ using Microsoft.Xna.Framework.Graphics;
 
 namespace ProjectMagma.Framework
 {
-    public class RenderProperty : Property
+    public class ShadowCastProperty : Property
     {
-        public RenderProperty()
+        public ShadowCastProperty()
         {
             model = null;
         }
@@ -72,31 +72,21 @@ namespace ProjectMagma.Framework
                 switch(renderMode)
                 {
                     case RenderMode.RenderToScene:
-                        Game.Instance.Graphics.GraphicsDevice.RenderState.DepthBufferEnable = true;
-                        foreach (BasicEffect effectx in mesh.Effects)
-                        {
-                            effectx.EnableDefaultLighting();
-                            effectx.View = Game.Instance.View;
-                            effectx.Projection = Game.Instance.Projection;
-                            effectx.World = transforms[mesh.ParentBone.Index] * world;
-                        }
-                        mesh.Draw();
-                        Game.Instance.Graphics.GraphicsDevice.RenderState.DepthBufferEnable = true;
-
-                        effect.CurrentTechnique = effect.Techniques["Scene"];
-                        effect.Parameters["ShadowMap"].SetValue(Game.Instance.lightResolve);
-                        effect.Parameters["WorldCameraViewProjection"].SetValue(
-                            transforms[mesh.ParentBone.Index] * world_offset * Game.Instance.View * Game.Instance.Projection);
-                        effect.Parameters["World"].SetValue(transforms[mesh.ParentBone.Index] * world_offset);
-                        break;
-                    case RenderMode.RenderToShadowMap:
                         // nothing to do here
-                        //break;
+                        //break;                        
                         return;
+                    case RenderMode.RenderToShadowMap:
+                        Game.Instance.Graphics.GraphicsDevice.RenderState.DepthBufferEnable = true;
+                        effect.CurrentTechnique = effect.Techniques["DepthMap"];
+                        effect.Parameters["LightPosition"].SetValue(Game.Instance.lightPosition);
+                        effect.Parameters["World"].SetValue(transforms[mesh.ParentBone.Index] * world);
+                        break;
                     case RenderMode.RenderToSceneAlpha:
+                        // nothing to do here
                         return;
+                        //break;                
                     default:
-                        Debug.Assert(false, "unhandled render mode in renderproperty."); // HACK: maybe do better error handling?
+                        Debug.Assert(false, "unhandled render mode in shadow cast property."); // HACK: maybe do better error handling?
                         break;
                 }
 

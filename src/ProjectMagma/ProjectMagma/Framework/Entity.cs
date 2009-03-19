@@ -67,6 +67,7 @@ namespace ProjectMagma.Framework
                 case AttributeTypes.Vector2: attribute = new Vector2Attribute(name); break;
                 case AttributeTypes.Vector3: attribute = new Vector3Attribute(name); break;
                 case AttributeTypes.Quaternion: attribute = new QuaternionAttribute(name); break;
+                case AttributeTypes.Matrix: attribute = new MatrixAttribute(name); break;
                 default: throw new Exception("AttributeType '" + type + "' does not exist!");
             }
             attribute.Initialize(value);
@@ -115,6 +116,13 @@ namespace ProjectMagma.Framework
             this.attributes.Add(attribute.Name, attribute);
         }
 
+        public void AddMatrixAttribute(string name, Matrix value)
+        {
+            MatrixAttribute attribute = new MatrixAttribute(name);
+            attribute.Value = value;
+            this.attributes.Add(attribute.Name, attribute);
+        }
+
         public bool HasAttribute(string attribute)
         {
             return Attributes.ContainsKey(attribute);
@@ -154,6 +162,12 @@ namespace ProjectMagma.Framework
         {
             Debug.Assert(HasAttribute(attribute));
             return (Attributes[attribute] as QuaternionAttribute) != null;
+        }
+
+        public bool IsMatrix(string attribute)
+        {
+            Debug.Assert(HasAttribute(attribute));
+            return (Attributes[attribute] as MatrixAttribute) != null;
         }
 
         public bool HasString(string attribute)
@@ -216,6 +230,11 @@ namespace ProjectMagma.Framework
             return GetQuaternionAttribute(attribute).Value;
         }
 
+        public Matrix GetMatrix(string attribute)
+        {
+            return GetMatrixAttribute(attribute).Value;
+        }
+
         public Attribute GetAttribute(string attribute)
         {
             Debug.Assert(HasAttribute(attribute));
@@ -264,6 +283,13 @@ namespace ProjectMagma.Framework
             return Attributes[attribute] as QuaternionAttribute;
         }
 
+        public MatrixAttribute GetMatrixAttribute(string attribute)
+        {
+            Debug.Assert(HasAttribute(attribute));
+            Debug.Assert(IsMatrix(attribute));
+            return Attributes[attribute] as MatrixAttribute;
+        }
+
         public void SetInt(string attribute, int value)
         {
             (Attributes[attribute] as IntAttribute).Value = value;
@@ -292,6 +318,11 @@ namespace ProjectMagma.Framework
         public void SetQuaternion(string attribute, Quaternion value)
         {
             (Attributes[attribute] as QuaternionAttribute).Value = value;
+        }
+
+        public void SetMatrix(string attribute, Matrix value)
+        {
+            (Attributes[attribute] as MatrixAttribute).Value = value;
         }
 
         #endregion

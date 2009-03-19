@@ -60,6 +60,21 @@
 
   <!-- game entities -->
 
+  <Entity name="camera1">
+    <Attributes>
+      <Attribute name="kind" template="string" value="camera"/>
+      <Attribute name="position" template="float3" value="0 700 1800"/>
+      <Attribute name="target" template="float3" value="0 150 0"/>
+      <Attribute name="up" template="float3" value="0 1 0"/>
+      <Attribute name="fov" template="float" value="18.5"/>
+      <Attribute name="near_clip" template="float" value="1"/>
+      <Attribute name="far_clip" template="float" value="10000"/>
+    </Attributes>
+    <Properties>
+      <Property name="camera" type="ProjectMagma.Framework.CameraProperty"/>
+    </Properties>
+  </Entity>
+
   <Entity name="lava">
     <Attributes>
       <Attribute name="kind" template="string" value="lava"/>
@@ -90,8 +105,8 @@
   <Entity name="pillar1">
     <Attributes>
       <Attribute name="kind" template="string" value="pillar"/>
-      <Attribute name="position" template="float3" value="-150 0 -150"/>
-      <Attribute name="scale" template="float3" value="200 300 200"/>
+      <Attribute name="position" template="float3" value="-110 0 -150"/>
+      <Attribute name="scale" template="float3" value="200 150 200"/>
       <Attribute name="mesh" template="string" value="Models/pillar_primitive"/>
       <Attribute name="bv_type" template="string" value="cylinder"/>
     </Attributes>
@@ -104,8 +119,8 @@
   <Entity name="pillar2">
     <Attributes>
       <Attribute name="kind" template="string" value="pillar"/>
-      <Attribute name="position" template="float3" value="-150 0 150"/>
-      <Attribute name="scale" template="float3" value="200 300 200"/>
+      <Attribute name="position" template="float3" value="-140 0 130"/>
+      <Attribute name="scale" template="float3" value="200 150 200"/>
       <Attribute name="mesh" template="string" value="Models/pillar_primitive"/>
       <Attribute name="bv_type" template="string" value="cylinder"/>
     </Attributes>
@@ -118,8 +133,8 @@
   <Entity name="pillar3">
     <Attributes>
       <Attribute name="kind" template="string" value="pillar"/>
-      <Attribute name="position" template="float3" value="150 0 -150"/>
-      <Attribute name="scale" template="float3" value="200 300 200"/>
+      <Attribute name="position" template="float3" value="170 0 -120"/>
+      <Attribute name="scale" template="float3" value="200 150 200"/>
       <Attribute name="mesh" template="string" value="Models/pillar_primitive"/>
       <Attribute name="bv_type" template="string" value="cylinder"/>
     </Attributes>
@@ -132,8 +147,8 @@
   <Entity name="pillar4">
     <Attributes>
       <Attribute name="kind" template="string" value="pillar"/>
-      <Attribute name="position" template="float3" value="150 0 150"/>
-      <Attribute name="scale" template="float3" value="200 300 200"/>
+      <Attribute name="position" template="float3" value="80 0 80"/>
+      <Attribute name="scale" template="float3" value="200 150 200"/>
       <Attribute name="mesh" template="string" value="Models/pillar_primitive"/>
       <Attribute name="bv_type" template="string" value="cylinder"/>
     </Attributes>
@@ -155,6 +170,7 @@
     </Attributes>
     <Properties>
       <Property name="controller" type="ProjectMagma.Framework.IslandControllerProperty"/>
+      <Property name="shadow_cast" type="ProjectMagma.Framework.ShadowCastProperty"/>
       <Property name="render" type="ProjectMagma.Framework.RenderProperty"/>
       <Property name="render_highlight" type="ProjectMagma.Framework.RenderHighlightProperty"/>
     </Properties>
@@ -172,6 +188,7 @@
     </Attributes>
     <Properties>
       <Property name="controller" type="ProjectMagma.Framework.IslandControllerProperty"/>
+      <Property name="shadow_cast" type="ProjectMagma.Framework.ShadowCastProperty"/>
       <Property name="render" type="ProjectMagma.Framework.RenderProperty"/>
       <Property name="render_highlight" type="ProjectMagma.Framework.RenderHighlightProperty"/>
     </Properties>
@@ -189,6 +206,7 @@
     </Attributes>
     <Properties>
       <Property name="controller" type="ProjectMagma.Framework.IslandControllerProperty"/>
+      <Property name="shadow_cast" type="ProjectMagma.Framework.ShadowCastProperty"/>
       <Property name="render" type="ProjectMagma.Framework.RenderProperty"/>
       <Property name="render_highlight" type="ProjectMagma.Framework.RenderHighlightProperty"/>
     </Properties>
@@ -206,6 +224,7 @@
     </Attributes>
     <Properties>
       <Property name="controller" type="ProjectMagma.Framework.IslandControllerProperty"/>
+      <Property name="shadow_cast" type="ProjectMagma.Framework.ShadowCastProperty"/>
       <Property name="render" type="ProjectMagma.Framework.RenderProperty"/>
       <Property name="render_highlight" type="ProjectMagma.Framework.RenderHighlightProperty"/>
     </Properties>
@@ -223,6 +242,7 @@
     </Attributes>
     <Properties>
       <Property name="controller" type="ProjectMagma.Framework.IslandControllerProperty"/>
+      <Property name="shadow_cast" type="ProjectMagma.Framework.ShadowCastProperty"/>
       <Property name="render" type="ProjectMagma.Framework.RenderProperty"/>
       <Property name="render_highlight" type="ProjectMagma.Framework.RenderHighlightProperty"/>
     </Properties>
@@ -240,6 +260,7 @@
     </Attributes>
     <Properties>
       <Property name="controller" type="ProjectMagma.Framework.IslandControllerProperty"/>
+      <Property name="shadow_cast" type="ProjectMagma.Framework.ShadowCastProperty"/>
       <Property name="render" type="ProjectMagma.Framework.RenderProperty"/>
       <Property name="render_highlight" type="ProjectMagma.Framework.RenderHighlightProperty"/>
     </Properties>
@@ -257,6 +278,7 @@
     </Attributes>
     <Properties>
       <Property name="controller" type="ProjectMagma.Framework.IslandControllerProperty"/>
+      <Property name="shadow_cast" type="ProjectMagma.Framework.ShadowCastProperty"/>
       <Property name="render" type="ProjectMagma.Framework.RenderProperty"/>
       <Property name="render_highlight" type="ProjectMagma.Framework.RenderHighlightProperty"/>
     </Properties>
@@ -266,13 +288,14 @@
       <Attributes>
         <Attribute name="kind" template="string" value="player"/>
         <Attribute name="position" template="float3" value="-250 100 220"/>
-        <Attribute name="scale" template="float3" value="10 10 10"/>
+        <Attribute name="scale" template="float3" value="13 13 13"/>
         <Attribute name="mesh" template="string" value="Models/player1_primitive"/>
         <Attribute name="player_id" template="int" value="1"/>
         <Attribute name="bv_type" template="string" value="sphere"/>
       </Attributes>
       <Properties>
         <Property name="controller" type="ProjectMagma.Framework.PlayerControllerProperty"/>
+        <Property name="shadow_cast" type="ProjectMagma.Framework.ShadowCastProperty"/>
         <Property name="render" type="ProjectMagma.Framework.RenderProperty"/>
         <Property name="render_highlight" type="ProjectMagma.Framework.RenderHighlightProperty"/>
       </Properties>
@@ -282,13 +305,14 @@
       <Attributes>
         <Attribute name="kind" template="string" value="player"/>
         <Attribute name="position" template="float3" value="60 160 -30"/>
-        <Attribute name="scale" template="float3" value="10 10 10"/>
+        <Attribute name="scale" template="float3" value="13 13 13"/>
         <Attribute name="mesh" template="string" value="Models/player2_primitive"/>
         <Attribute name="player_id" template="int" value="2"/>
         <Attribute name="bv_type" template="string" value="sphere"/>
       </Attributes>
       <Properties>
         <Property name="controller" type="ProjectMagma.Framework.PlayerControllerProperty"/>
+        <Property name="shadow_cast" type="ProjectMagma.Framework.ShadowCastProperty"/>
         <Property name="render" type="ProjectMagma.Framework.RenderProperty"/>
         <Property name="render_highlight" type="ProjectMagma.Framework.RenderHighlightProperty"/>
       </Properties>
@@ -309,6 +333,7 @@
     </Attributes>
     <Properties>
       <Property name="controller" type="ProjectMagma.Framework.PowerUpController"/>
+      <Property name="shadow_cast" type="ProjectMagma.Framework.ShadowCastProperty"/>
       <Property name="render" type="ProjectMagma.Framework.RenderProperty"/>
       <Property name="render_highlight" type="ProjectMagma.Framework.RenderHighlightProperty"/>
     </Properties>
@@ -329,6 +354,7 @@
     </Attributes>
     <Properties>
       <Property name="controller" type="ProjectMagma.Framework.PowerUpController"/>
+      <Property name="shadow_cast" type="ProjectMagma.Framework.ShadowCastProperty"/>
       <Property name="render" type="ProjectMagma.Framework.RenderProperty"/>
       <Property name="render_highlight" type="ProjectMagma.Framework.RenderHighlightProperty"/>
     </Properties>

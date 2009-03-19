@@ -12,6 +12,7 @@ namespace ProjectMagma.Framework
         Float,
         Vector2,
         Vector3,
-        Quaternion
+        Quaternion,
+        Matrix
     }
 }

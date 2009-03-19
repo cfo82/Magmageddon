@@ -77,6 +77,8 @@ namespace ProjectMagma
 //            graphics.SynchronizeWithVerticalRetrace = false;
 //            graphics.ApplyChanges();
 
+            graphics.PreferredBackBufferWidth = 1280;
+            graphics.PreferredBackBufferHeight = 720;
 
             Window.Title = "Project Magma";
             Content.RootDirectory = "Content";

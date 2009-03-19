@@ -71,6 +71,13 @@ namespace ProjectMagma
         private Game()
         {
             graphics = new GraphicsDeviceManager(this);
+
+            // TODO: remove v-sync in future!?
+//            this.IsFixedTimeStep = false;
+//            graphics.SynchronizeWithVerticalRetrace = false;
+//            graphics.ApplyChanges();
+
+
             Window.Title = "Project Magma";
             Content.RootDirectory = "Content";
 
@@ -245,6 +252,14 @@ namespace ProjectMagma
             // Allows the game to exit
             if (GamePad.GetState(PlayerIndex.One).Buttons.Back == ButtonState.Pressed)
                 this.Exit();
+
+            // fullscreen
+            if(Keyboard.GetState().IsKeyDown(Keys.Enter)
+                && Keyboard.GetState().IsKeyDown(Keys.LeftAlt))
+            {
+                graphics.IsFullScreen = !this.graphics.IsFullScreen;
+                graphics.ApplyChanges();
+            }
 
             foreach (Entity e in entityManager)
             {

@@ -424,28 +424,51 @@ namespace ProjectMagma
             }
         }
 
+
+        public ManagementForm ManagementForm
+        {
+            get
+            {
+                return managementForm;
+            }
+        }
+
+
+
         /**
-           * HELPER functions, refactor!
+         * TODO: move those into collision-manager
+         *  and maybe GetPosition/rotation/scale into some utility class
+         * HELPER functions, refactor!
            */
 
-        public static BoundingSphere calculateBoundingSphere(Model model, Vector3 position, Quaternion rotation, Vector3 scale)
+        public static BoundingSphere calculateBoundingSphere(Entity entity)
         {
+            Model mesh = Game.Instance.Content.Load<Model>(entity.GetString("mesh"));
+            Vector3 position = GetPosition(entity);
+            Vector3 scale = GetScale(entity);
+            Quaternion rotation = GetRotation(entity);
+
             // calculate center
-            BoundingBox bb = calculateBoundingBox(model, position, rotation, scale);
+            BoundingBox bb = calculateBoundingBox(mesh, position, rotation, scale);
             Vector3 center = (bb.Min + bb.Max) / 2;
 
             // calculate radius
             //            float radius = (bb.Max-bb.Min).Length() / 2;
-            float radius = (bb.Max.Y - bb.Min.Y) / 2; // hack for player
+            float radius = (bb.Max.Y - bb.Min.Y) / 2; // HACK: hack for player
 
             return new BoundingSphere(center, radius);
         }
 
         // calculates y-axis aligned bounding cylinder
-        public static BoundingCylinder calculateBoundingCylinder(Model model, Vector3 position, Quaternion rotation, Vector3 scale)
+        public static BoundingCylinder calculateBoundingCylinder(Entity entity)
         {
+            Model mesh = Game.Instance.Content.Load<Model>(entity.GetString("mesh"));
+            Vector3 position = GetPosition(entity);
+            Vector3 scale = GetScale(entity);
+            Quaternion rotation = GetRotation(entity);
+
             // calculate center
-            BoundingBox bb = calculateBoundingBox(model, position, rotation, scale);
+            BoundingBox bb = calculateBoundingBox(mesh, position, rotation, scale);
             Vector3 center = (bb.Min + bb.Max) / 2;
 
             float top = bb.Max.Y;
@@ -459,6 +482,16 @@ namespace ProjectMagma
             return new BoundingCylinder(new Vector3(center.X, top, center.Z),
                 new Vector3(center.X, bottom, center.Z),
                 radius);
+        }
+
+        public static BoundingBox calculateBoundingBox(Entity entity)
+        {
+            Model mesh = Game.Instance.Content.Load<Model>(entity.GetString("mesh"));
+            Vector3 position = GetPosition(entity);
+            Vector3 scale = GetScale(entity);
+            Quaternion rotation = GetRotation(entity);
+
+            return calculateBoundingBox(mesh, position, rotation, scale);
         }
 
         public static BoundingBox calculateBoundingBox(Model model, Vector3 position, Quaternion rotation, Vector3 scale)
@@ -476,11 +509,32 @@ namespace ProjectMagma
             return a * a;
         }
 
-        public ManagementForm ManagementForm
+        public static Vector3 GetPosition(Entity player)
         {
-            get
+            return player.GetVector3("position");
+        }
+
+        public static Vector3 GetScale(Entity player)
+        {
+            if (player.HasVector3("scale"))
             {
-                return managementForm;
+                return player.GetVector3("scale");
+            }
+            else
+            {
+                return Vector3.One;
+            }
+        }
+
+        public static Quaternion GetRotation(Entity player)
+        {
+            if (player.HasQuaternion("rotation"))
+            {
+                return player.GetQuaternion("rotation");
+            }
+            else
+            {
+                return Quaternion.Identity;
             }
         }
     }
@@ -528,5 +582,6 @@ namespace ProjectMagma
 
     }
 
+        
       
 }

@@ -11,7 +11,7 @@ using Microsoft.Xna.Framework.Content;
 
 namespace xWinFormsLib
 {
-    public class RadiuButtonGroup : Control
+    public class RadioButtonGroup : Control
     {
         RadioButton[] radiobutton;
         
@@ -44,7 +44,7 @@ namespace xWinFormsLib
         /// </summary>
         /// <param name="name">Control Name</param>
         /// <param name="checkbox">Checkbox Array</param>
-        public RadiuButtonGroup(string name, RadioButton[] radiobutton)
+        public RadioButtonGroup(string name, RadioButton[] radiobutton)
             : base(name)
         {
             this.radiobutton = radiobutton;            
@@ -52,7 +52,6 @@ namespace xWinFormsLib
 
         public override void Initialize(ContentManager content, GraphicsDevice graphics)
         {
-            // TODO: load your content here
             for (int i = 0; i < radiobutton.Length; i++)
             {
                 radiobutton[i].Font = this.Font;
@@ -79,7 +78,6 @@ namespace xWinFormsLib
 
         public override void Dispose()
         {
-            // TODO: dispose of your content here
             for (int i = 0; i < radiobutton.Length; i++)
                 radiobutton[i].Dispose();
 
@@ -113,14 +111,12 @@ namespace xWinFormsLib
         {
             base.Update(gameTime);
 
-            // TODO: Add your update logic here
             for (int i = 0; i < radiobutton.Length; i++)
                 radiobutton[i].Update(gameTime);
         }
 
         public override void Draw(SpriteBatch spriteBatch)
         {
-            // TODO: Add your drawing code here
             for (int i = 0; i < radiobutton.Length; i++)
                 radiobutton[i].Draw(spriteBatch);
         }

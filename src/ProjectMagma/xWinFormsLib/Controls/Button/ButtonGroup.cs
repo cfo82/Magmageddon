@@ -54,7 +54,6 @@ namespace xWinFormsLib
 
         public override void Initialize(ContentManager content, GraphicsDevice graphics)
         {
-            // TODO: load your content here
             BackColor = new Color(220, 220, 220, 255);
             dim = new Color(200, 200, 200, 255);
             highlight = new Color(255, 255, 255, 255);
@@ -72,8 +71,6 @@ namespace xWinFormsLib
 
         public override void Dispose()
         {
-            // TODO: dispose of your content here
-
             for (int i = 0; i < button.Length; i++)
                 button[i].Dispose();
 
@@ -102,16 +99,12 @@ namespace xWinFormsLib
         {
             base.Update(gameTime);
 
-            // TODO: Add your update logic here
-
             for (int i = 0; i < button.Length; i++)
                 button[i].Update(gameTime);
         }
 
         public override void Draw(SpriteBatch spriteBatch)
         {
-            // TODO: Add your drawing code here
-
             for (int i = 0; i < button.Length; i++)
             {
                 if (i == selectedIndex && button[i].BackColor != highlight)

@@ -112,7 +112,6 @@ namespace xWinFormsLib
 
         public override void Initialize(ContentManager content, GraphicsDevice graphics)
         {
-            // TODO: load your content here
             texture = Texture2D.FromFile(graphics, @"content\textures\controls\textbox.png");
 
             pixel = new Texture2D(graphics, 1, 1, 1, TextureUsage.None, graphics.PresentationParameters.BackBufferFormat);
@@ -205,7 +204,6 @@ namespace xWinFormsLib
 
         public override void Dispose()
         {
-            // TODO: dispose of your content here
             vscrollbar.Dispose();
             if (hscrollbar != null)
                 hscrollbar.Dispose();
@@ -224,7 +222,6 @@ namespace xWinFormsLib
         {
             base.Update(gameTime);
 
-            // TODO: Add your update logic here
             if (vscrollbar != null && vscrollbar.Visible)
                 vscrollbar.Update(gameTime);
             if (horizontalScrollbar && hscrollbar != null && hscrollbar.Visible)
@@ -340,7 +337,6 @@ namespace xWinFormsLib
 
         public override void Draw(SpriteBatch spriteBatch)
         {
-            // TODO: Add your drawing code here
             Render(FormCollection.Graphics.GraphicsDevice);
 
             DrawBackground(spriteBatch);

@@ -45,7 +45,6 @@ namespace xWinFormsLib
 
         public override void Initialize(ContentManager content, GraphicsDevice graphics)
         {
-            // TODO: load your content here
             texture = Texture2D.FromFile(graphics, @"content\textures\controls\potentiometer.png");
             srcRect = new Rectangle(0, 0, texture.Width, texture.Height);
             center = new Vector2(texture.Width / 2, texture.Height / 2);
@@ -60,7 +59,6 @@ namespace xWinFormsLib
 
         public override void Dispose()
         {
-            // TODO: dispose of your content here
             texture.Dispose();
 
             base.Dispose();
@@ -89,7 +87,6 @@ namespace xWinFormsLib
         {
             base.Update(gameTime);
 
-            // TODO: Add your update logic here
             area.X = (int)(Position.X + Owner.Position.X - center.X);
             area.Y = (int)(Position.Y + Owner.Position.Y - center.Y);
 
@@ -131,7 +128,6 @@ namespace xWinFormsLib
 
         public override void Draw(SpriteBatch spriteBatch)
         {
-            // TODO: Add your drawing code here     
             spriteBatch.Draw(texture, Position, srcRect, BackColor, rotation, center, scale, SpriteEffects.None, 0f);
         }
     }

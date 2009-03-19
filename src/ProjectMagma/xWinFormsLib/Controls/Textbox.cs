@@ -85,7 +85,6 @@ namespace xWinFormsLib
 
         public override void Initialize(ContentManager content, GraphicsDevice graphics)
         {
-            // TODO: load your content here
             if (texture == null)
                 texture = Texture2D.FromFile(graphics, @"content\textures\controls\textbox.png");
             if (cursorFont == null)
@@ -197,7 +196,6 @@ namespace xWinFormsLib
 
         public override void Dispose()
         {
-            // TODO: dispose of your content here
             capturedTexture.Dispose();
             renderTarget.Dispose();
 
@@ -664,7 +662,6 @@ namespace xWinFormsLib
         {
             base.Update(gameTime);
 
-            // TODO: Add your update logic here
             CheckFocus();
 
             if (hasFocus && !locked)
@@ -793,7 +790,6 @@ namespace xWinFormsLib
         {
             graphics.SetRenderTarget(0, renderTarget);
 
-            // TODO: Add your code to draw to the render target here.
             RenderText(graphics);
 
             graphics.SetRenderTarget(0, null);
@@ -853,8 +849,6 @@ namespace xWinFormsLib
 
         public override void Draw(SpriteBatch spriteBatch)
         {
-            // TODO: Add your drawing code here
-
             Render(FormCollection.Graphics.GraphicsDevice);
 
             if (!multiline)

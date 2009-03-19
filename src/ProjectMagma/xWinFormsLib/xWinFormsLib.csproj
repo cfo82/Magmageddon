@@ -96,7 +96,7 @@
     <Compile Include="Controls\PictureBox.cs" />
     <Compile Include="Controls\Potentiometer.cs" />
     <Compile Include="Controls\Progressbar.cs" />
-    <Compile Include="Controls\RadioButton\RadiuButtonGroup.cs" />
+    <Compile Include="Controls\RadioButton\RadioButtonGroup.cs" />
     <Compile Include="Controls\RadioButton\RadioButton.cs" />
     <Compile Include="Controls\Scrollbar\VScrollbar.cs" />
     <Compile Include="Controls\Scrollbar\HScrollbar.cs" />

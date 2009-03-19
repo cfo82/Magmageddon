@@ -52,7 +52,6 @@ namespace xWinFormsLib
 
         public override void Initialize(ContentManager content, GraphicsDevice graphics)
         {
-            // TODO: load your content here
             for (int i = 0; i < checkbox.Length; i++)
             {
                 checkbox[i].Font = this.Font;
@@ -79,7 +78,6 @@ namespace xWinFormsLib
 
         public override void Dispose()
         {
-            // TODO: dispose of your content here
             for (int i = 0; i < checkbox.Length; i++)
                 checkbox[i].Dispose();
 
@@ -113,14 +111,12 @@ namespace xWinFormsLib
         {
             base.Update(gameTime);
 
-            // TODO: Add your update logic here
             for (int i = 0; i < checkbox.Length; i++)
                 checkbox[i].Update(gameTime);
         }
 
         public override void Draw(SpriteBatch spriteBatch)
         {
-            // TODO: Add your drawing code here
             for (int i = 0; i < checkbox.Length; i++)
                 checkbox[i].Draw(spriteBatch);
         }

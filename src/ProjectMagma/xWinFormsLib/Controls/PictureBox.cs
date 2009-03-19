@@ -41,8 +41,6 @@ namespace xWinFormsLib
 
         public override void Initialize(ContentManager content, GraphicsDevice graphics)
         {
-            // TODO: load your content here
-
             texture = Texture2D.FromFile(graphics, textureName);
             srcRect = new Rectangle(0, 0, texture.Width, texture.Height);
 
@@ -66,8 +64,6 @@ namespace xWinFormsLib
 
         public override void Dispose()
         {
-            // TODO: dispose of your content here
-
             texture.Dispose();
 
             base.Dispose();
@@ -76,8 +72,6 @@ namespace xWinFormsLib
         public override void Update(GameTime gameTime)
         {
             base.Update(gameTime);
-
-            // TODO: Add your update logic here
 
             UpdateEvents();
         }
@@ -114,7 +108,6 @@ namespace xWinFormsLib
 
         public override void Draw(SpriteBatch spriteBatch)
         {
-            // TODO: Add your drawing code here
             if (border > 0)
                 spriteBatch.Draw(pixel, borderRect, Color.Black);
 

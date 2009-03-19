@@ -96,8 +96,6 @@ namespace xWinFormsLib
 
         public override void Initialize(ContentManager content, GraphicsDevice graphics)
         {
-            // TODO: load your content here
-
             Height = (int)((Size.Y - 2 + 12) / (float)Font.LineSpacing) * Font.LineSpacing;
 
             area.Width = (int)Width;
@@ -128,8 +126,6 @@ namespace xWinFormsLib
 
         public override void Dispose()
         {
-            // TODO: dispose of your content here
-            
             hScrollbar.Dispose();
             vScrollbar.Dispose();
 
@@ -145,7 +141,6 @@ namespace xWinFormsLib
         {
             base.Update(gameTime);
 
-            // TODO: Add your update logic here
             hScrollbar.Update(gameTime);
             vScrollbar.Update(gameTime);
 
@@ -200,7 +195,6 @@ namespace xWinFormsLib
 
         public override void Draw(SpriteBatch spriteBatch)
         {
-            // TODO: Add your drawing code here
             DrawBorder(spriteBatch);
 
             Render(FormCollection.Graphics.GraphicsDevice);

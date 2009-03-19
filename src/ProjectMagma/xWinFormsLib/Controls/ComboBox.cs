@@ -38,7 +38,6 @@ namespace xWinFormsLib
 
         public override void Initialize(ContentManager content, GraphicsDevice graphics)
         {
-            // TODO: load your content here
             textbox = new Textbox("combotext", Position, (int)Width);
             textbox.Font = this.Font;
             textbox.Owner = this.Owner;
@@ -64,7 +63,6 @@ namespace xWinFormsLib
 
         public override void Dispose()
         {
-            // TODO: dispose of your content here
             textbox.Dispose();
             button.Dispose();
             listbox.Dispose();
@@ -111,7 +109,6 @@ namespace xWinFormsLib
         {
             base.Update(gameTime);
 
-            // TODO: Add your update logic here
             textbox.Update(gameTime);
             button.Update(gameTime);
 
@@ -129,7 +126,6 @@ namespace xWinFormsLib
 
         public override void Draw(SpriteBatch spriteBatch)
         {
-            // TODO: Add your drawing code here
             textbox.Draw(spriteBatch);
             button.Draw(spriteBatch);
         }

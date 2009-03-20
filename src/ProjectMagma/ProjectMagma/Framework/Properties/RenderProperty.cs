@@ -31,98 +31,88 @@ namespace ProjectMagma.Framework
 
         private void OnDraw(Entity entity, GameTime gameTime, RenderMode renderMode)
         {
-            Debug.Assert(entity.HasAttribute("mesh"));
-            Debug.Assert(entity.HasAttribute("position"));
-
-            Matrix world = Matrix.Identity;
-
-            #region compute world matrix
-
-            // scaling
-            if (entity.HasVector3("scale"))
+            if (renderMode == RenderMode.RenderToScene)
             {
-                Vector3 scale = entity.GetVector3("scale");
-                world *= Matrix.CreateScale(scale);
-            }
+                Debug.Assert(entity.HasAttribute("mesh"));
+                Debug.Assert(entity.HasAttribute("position"));
 
-            // y rotation (if we need other rotations, these are yet to be added)
-            if (entity.HasQuaternion("rotation"))
-            {
-                Quaternion rotation = entity.GetQuaternion("rotation");
-                world *= Matrix.CreateFromQuaternion(rotation);
-            }
+                Matrix world = Matrix.Identity;
 
-            // translation
-            Vector3 position = entity.GetVector3("position");
-            world *= Matrix.CreateTranslation(position);
+                #region compute world matrix
 
-            #endregion
-
-            Matrix[] transforms = new Matrix[model.Bones.Count];
-            model.CopyAbsoluteBoneTransformsTo(transforms);
-
-            // shadows should be floating a little above the receiving surface
-            Matrix world_offset = world;
-            world_offset *= Matrix.CreateTranslation(new Vector3(0, 3, 0));
-
-            foreach (ModelMesh mesh in model.Meshes)
-            {
-                Effect effect = Game.Instance.shadowEffect;
-
-                switch(renderMode)
+                // scaling
+                if (entity.HasVector3("scale"))
                 {
-                    case RenderMode.RenderToScene:
-                        Game.Instance.Graphics.GraphicsDevice.RenderState.DepthBufferEnable = true;
-                        foreach (BasicEffect effectx in mesh.Effects)
-                        {
-                            effectx.EnableDefaultLighting();
-                            effectx.View = Game.Instance.View;
-                            effectx.Projection = Game.Instance.Projection;
-                            effectx.World = transforms[mesh.ParentBone.Index] * world;
-                        }
-                        mesh.Draw();
-                        Game.Instance.Graphics.GraphicsDevice.RenderState.DepthBufferEnable = true;
-
-                        effect.CurrentTechnique = effect.Techniques["Scene"];
-                        effect.Parameters["ShadowMap"].SetValue(Game.Instance.lightResolve);
-                        effect.Parameters["WorldCameraViewProjection"].SetValue(
-                            transforms[mesh.ParentBone.Index] * world_offset * Game.Instance.View * Game.Instance.Projection);
-                        effect.Parameters["World"].SetValue(transforms[mesh.ParentBone.Index] * world_offset);
-                        break;
-                    case RenderMode.RenderToShadowMap:
-                        // nothing to do here
-                        //break;
-                        return;
-                    case RenderMode.RenderToSceneAlpha:
-                        return;
-                    default:
-                        Debug.Assert(false, "unhandled render mode in renderproperty."); // HACK: maybe do better error handling?
-                        break;
+                    Vector3 scale = entity.GetVector3("scale");
+                    world *= Matrix.CreateScale(scale);
                 }
 
-                effect.Parameters["WorldLightViewProjection"].SetValue(
-                    transforms[mesh.ParentBone.Index] * world_offset * Game.Instance.lightView * Game.Instance.lightProjection);
-
-
-                Effect backup = mesh.MeshParts[0].Effect;
-                foreach (ModelMeshPart meshPart in mesh.MeshParts)
+                // y rotation (if we need other rotations, these are yet to be added)
+                if (entity.HasQuaternion("rotation"))
                 {
-                   meshPart.Effect = effect;
+                    Quaternion rotation = entity.GetQuaternion("rotation");
+                    world *= Matrix.CreateFromQuaternion(rotation);
                 }
-                Game.Instance.GraphicsDevice.RenderState.AlphaBlendEnable = false;
-                Game.Instance.GraphicsDevice.RenderState.SourceBlend = Blend.SourceAlpha;
-                Game.Instance.GraphicsDevice.RenderState.DestinationBlend = Blend.DestinationColor;
 
-                mesh.Draw();
+                // translation
+                Vector3 position = entity.GetVector3("position");
+                world *= Matrix.CreateTranslation(position);
 
-                Game.Instance.GraphicsDevice.RenderState.AlphaBlendEnable = false;
+                #endregion
 
-                foreach (ModelMeshPart meshPart in mesh.MeshParts)
+                Matrix[] transforms = new Matrix[model.Bones.Count];
+                model.CopyAbsoluteBoneTransformsTo(transforms);
+
+                // shadows should be floating a little above the receiving surface
+                Matrix world_offset = world;
+                world_offset *= Matrix.CreateTranslation(new Vector3(0, 3, 0));
+
+                foreach (ModelMesh mesh in model.Meshes)
                 {
-                   meshPart.Effect = backup;
+                    Effect effect = Game.Instance.shadowEffect;
+
+                    Game.Instance.Graphics.GraphicsDevice.RenderState.DepthBufferEnable = true;
+                    foreach (BasicEffect effectx in mesh.Effects)
+                    {
+                        effectx.EnableDefaultLighting();
+                        effectx.View = Game.Instance.View;
+                        effectx.Projection = Game.Instance.Projection;
+                        effectx.World = transforms[mesh.ParentBone.Index] * world;
+                    }
+                    mesh.Draw();
+                    Game.Instance.Graphics.GraphicsDevice.RenderState.DepthBufferEnable = true;
+
+                    effect.CurrentTechnique = effect.Techniques["Scene"];
+                    effect.Parameters["ShadowMap"].SetValue(Game.Instance.lightResolve);
+                    effect.Parameters["WorldCameraViewProjection"].SetValue(
+                        transforms[mesh.ParentBone.Index] * world_offset * Game.Instance.View * Game.Instance.Projection);
+                    effect.Parameters["World"].SetValue(transforms[mesh.ParentBone.Index] * world_offset);
+
+                    effect.Parameters["WorldLightViewProjection"].SetValue(
+                        transforms[mesh.ParentBone.Index] * world_offset * Game.Instance.lightView * Game.Instance.lightProjection);
+
+
+                    Effect backup = mesh.MeshParts[0].Effect;
+                    foreach (ModelMeshPart meshPart in mesh.MeshParts)
+                    {
+                        meshPart.Effect = effect;
+                    }
+                    Game.Instance.GraphicsDevice.RenderState.AlphaBlendEnable = false;
+                    Game.Instance.GraphicsDevice.RenderState.SourceBlend = Blend.SourceAlpha;
+                    Game.Instance.GraphicsDevice.RenderState.DestinationBlend = Blend.DestinationColor;
+
+                    mesh.Draw();
+
+                    Game.Instance.GraphicsDevice.RenderState.AlphaBlendEnable = false;
+
+                    foreach (ModelMeshPart meshPart in mesh.MeshParts)
+                    {
+                        meshPart.Effect = backup;
+                    }
                 }
             }
         }
+
         private Model model;
     }
 }

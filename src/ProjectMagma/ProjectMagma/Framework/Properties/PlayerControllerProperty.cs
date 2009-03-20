@@ -608,6 +608,7 @@ namespace ProjectMagma.Framework
 
                 jetpackPressed =
                     gamePadState.Buttons.A == ButtonState.Pressed ||
+                    gamePadState.Triggers.Left > 0 ||
                     (keyboardState.IsKeyDown(Keys.Space) && playerIndex == PlayerIndex.One) ||
                     (keyboardState.IsKeyDown(Keys.Insert) && playerIndex == PlayerIndex.Two);
 

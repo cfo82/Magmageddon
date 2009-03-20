@@ -25,9 +25,10 @@
       <Attribute name="pushback_contact_velocity_multiplier" template="float" value="80"/>
       <Attribute name="pushback_deacceleration_multiplier" template="float" value="300"/>
 
-      <Attribute name="ice_spike_speed" template="float" value="400"/>
+      <Attribute name="ice_spike_speed" template="float" value="300"/>
       <Attribute name="ice_spike_up_speed" template="float" value="200"/>
-      <Attribute name="ice_spike_energy_cost" template="int" value="4"/>
+      <Attribute name="ice_spike_aim_angle" template="float" value="45"/>
+      <Attribute name="ice_spike_energy_cost" template="int" value="3"/>
       <Attribute name="ice_spike_damage" template="int" value="2"/>
       <Attribute name="ice_spike_freeze_time" template="int" value="250"/>
       <Attribute name="ice_spike_cooldown" template="int" value="50"/>

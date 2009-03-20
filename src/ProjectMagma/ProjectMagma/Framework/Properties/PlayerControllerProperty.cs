@@ -170,15 +170,41 @@ namespace ProjectMagma.Framework
                 soundEffect.Play();
 
                 BoundingBox bb = Game.calculateBoundingBox(player);
-
                 Vector3 pos = new Vector3(playerPosition.X, bb.Max.Y, playerPosition.Z);
-                Vector3 velocity = Vector3.Transform(new Vector3(0, 0, 1), Game.GetRotation(player)) * constants.GetFloat("ice_spike_speed");
-                velocity.Y = constants.GetFloat("ice_spike_up_speed");
+                Vector3 viewVector = Vector3.Transform(new Vector3(0, 0, 1), Game.GetRotation(player));
+
+                // search next player in range
+                float angle = constants.GetFloat("ice_spike_aim_angle");
+                Vector3 aimVector = viewVector;
+                float aimDistance = float.PositiveInfinity;
+                foreach(Entity p in Game.Instance.PlayerManager)
+                {
+                    if(p != player)
+                    {
+                        Vector3 pp = p.GetVector3("position");
+                        Vector3 pdir = pp - playerPosition;
+                        float a = (float) (Math.Acos(Vector3.Dot(pdir, viewVector) / pdir.Length() / viewVector.Length()) / Math.PI * 360);
+                        if(a < angle)
+                        {
+                            float ad = pdir.Length();
+                            if(ad < aimDistance)
+                            {
+                                aimVector = pdir;
+                                aimDistance = ad;
+                            }
+                        }
+                    }
+                }
+
+                float strength = 0.6f+controllerInput.fireStrength;
+                aimVector.Normalize();
+                aimVector *= constants.GetFloat("ice_spike_speed") * strength;
+                aimVector.Y = constants.GetFloat("ice_spike_up_speed");
 
                 Entity iceSpike = new Entity(Game.Instance.EntityManager, "icespike" + (++iceSpikeCount)+"_"+player.Name);
                 iceSpike.AddStringAttribute("player", player.Name);
 
-                iceSpike.AddVector3Attribute("velocity", velocity);
+                iceSpike.AddVector3Attribute("velocity", aimVector);
                 iceSpike.AddVector3Attribute("position", pos);
 
                 iceSpike.AddStringAttribute("mesh", "Models/icespike_primitive");
@@ -519,32 +545,6 @@ namespace ProjectMagma.Framework
                 {
                     if (playerIndex == PlayerIndex.One)
                     {
-                        if (keyboardState.IsKeyDown(Keys.Left))
-                        {
-                            leftStickX = gamepadEmulationValue;
-                            moveStickPressed = true;
-                        }
-                        else
-                            if (keyboardState.IsKeyDown(Keys.Right))
-                            {
-                                leftStickX = -gamepadEmulationValue;
-                                moveStickPressed = true;
-                            }
-
-                        if (keyboardState.IsKeyDown(Keys.Up))
-                        {
-                            leftStickY = -gamepadEmulationValue;
-                            moveStickPressed = true;
-                        }
-                        else
-                            if (keyboardState.IsKeyDown(Keys.Down))
-                            {
-                                leftStickY = gamepadEmulationValue;
-                                moveStickPressed = true;
-                            }
-                    }
-                    else
-                    {
                         if (keyboardState.IsKeyDown(Keys.A))
                         {
                             leftStickX = gamepadEmulationValue;
@@ -569,26 +569,63 @@ namespace ProjectMagma.Framework
                                 moveStickPressed = true;
                             }
                     }
+                    else
+                    {
+                        if (keyboardState.IsKeyDown(Keys.Left))
+                        {
+                            leftStickX = gamepadEmulationValue;
+                            moveStickPressed = true;
+                        }
+                        else
+                            if (keyboardState.IsKeyDown(Keys.Right))
+                            {
+                                leftStickX = -gamepadEmulationValue;
+                                moveStickPressed = true;
+                            }
+
+                        if (keyboardState.IsKeyDown(Keys.Up))
+                        {
+                            leftStickY = -gamepadEmulationValue;
+                            moveStickPressed = true;
+                        }
+                        else
+                            if (keyboardState.IsKeyDown(Keys.Down))
+                            {
+                                leftStickY = gamepadEmulationValue;
+                                moveStickPressed = true;
+                            }
+                    }
                 }
 
                 #endregion
+
+                #region triggers
+                fireStrength = gamePadState.Triggers.Right;
+                #endregion
+
 
                 #region action buttons
 
                 jetpackPressed =
                     gamePadState.Buttons.A == ButtonState.Pressed ||
-                    (keyboardState.IsKeyDown(Keys.Insert) && playerIndex == PlayerIndex.One) ||
-                    (keyboardState.IsKeyDown(Keys.Space) && playerIndex == PlayerIndex.Two);
+                    (keyboardState.IsKeyDown(Keys.Space) && playerIndex == PlayerIndex.One) ||
+                    (keyboardState.IsKeyDown(Keys.Insert) && playerIndex == PlayerIndex.Two);
 
-                firePressed =
-                    gamePadState.Buttons.X == ButtonState.Pressed ||
-                    (keyboardState.IsKeyDown(Keys.RightControl) && playerIndex == PlayerIndex.One) ||
-                    (keyboardState.IsKeyDown(Keys.Q) && playerIndex == PlayerIndex.Two);
+                firePressed = false;
+                if (fireStrength > 0)
+                    firePressed = true;
+                else
+                if((keyboardState.IsKeyDown(Keys.Q) && playerIndex == PlayerIndex.One) ||
+                    (keyboardState.IsKeyDown(Keys.RightControl) && playerIndex == PlayerIndex.Two))
+                {
+                    firePressed = true;
+                    fireStrength = 1;
+                }
 
                 hitPressed =
                     gamePadState.Buttons.RightShoulder == ButtonState.Pressed ||
-                    (keyboardState.IsKeyDown(Keys.Enter) && playerIndex == PlayerIndex.One) ||
-                    (keyboardState.IsKeyDown(Keys.E) && playerIndex == PlayerIndex.Two);
+                    (keyboardState.IsKeyDown(Keys.E) && playerIndex == PlayerIndex.One) ||
+                    (keyboardState.IsKeyDown(Keys.Enter) && playerIndex == PlayerIndex.Two);
 
                 #endregion
 
@@ -600,6 +637,9 @@ namespace ProjectMagma.Framework
             // joysticks
             public float leftStickX, leftStickY;
             public bool moveStickPressed;
+
+            // triggers
+            public float fireStrength;
 
             // buttons
             public bool jetpackPressed, firePressed, hitPressed;

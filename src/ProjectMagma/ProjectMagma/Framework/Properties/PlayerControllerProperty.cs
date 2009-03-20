@@ -121,7 +121,7 @@ namespace ProjectMagma.Framework
                 playerPosition.Z -= controllerInput.leftStickY * dt * constants.GetFloat("z_axis_movement_multiplier");
 
                 // prevent the player from walking down the island
-                if (activeIsland != null)
+                if (activeIsland != null && !controllerInput.jetpackPressed)
                 {
                     // TODO: how to do this in future?
                     BoundingCylinder ibc = Game.calculateBoundingCylinder(activeIsland);

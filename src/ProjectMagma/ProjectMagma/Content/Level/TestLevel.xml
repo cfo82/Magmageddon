@@ -36,10 +36,10 @@
       <Attribute name="hit_cooldown" template="int" value="250"/>
       <Attribute name="hit_pushback_velocity_multiplier" template="float" value="200"/>
 
-      <Attribute name="x_axis_movement_multiplier" template="float" value="1.4"/>
-      <Attribute name="z_axis_movement_multiplier" template="float" value="1.4"/>
-      <Attribute name="x_axis_jetpack_multiplier" template="float" value="2.5"/>
-      <Attribute name="z_axis_jetpack_multiplier" template="float" value="2.5"/>
+      <Attribute name="x_axis_movement_multiplier" template="float" value="140"/>
+      <Attribute name="z_axis_movement_multiplier" template="float" value="140"/>
+      <Attribute name="x_axis_jetpack_multiplier" template="float" value="200"/>
+      <Attribute name="z_axis_jetpack_multiplier" template="float" value="200"/>
     </Attributes>
   </Entity>
 

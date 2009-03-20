@@ -74,8 +74,8 @@ namespace ProjectMagma
 
             // TODO: remove v-sync in future!?
             this.IsFixedTimeStep = false;
-            graphics.SynchronizeWithVerticalRetrace = false;
-            graphics.ApplyChanges();
+//            graphics.SynchronizeWithVerticalRetrace = false;
+//            graphics.ApplyChanges();
 
             graphics.PreferredBackBufferWidth = 1280;
             graphics.PreferredBackBufferHeight = 720;
@@ -244,6 +244,7 @@ namespace ProjectMagma
             MediaPlayer.Stop();
         }
 
+        private GameTime lastUpdateTime;
         /// <summary>
         /// Allows the game to run logic such as updating the world,
         /// checking for collisions, gathering input, and playing audio.
@@ -251,6 +252,10 @@ namespace ProjectMagma
         /// <param name="gameTime">Provides a snapshot of timing values.</param>
         protected override void Update(GameTime gameTime)
         {
+            lastUpdateTime = gameTime;
+
+            Console.WriteLine(lastUpdateTime.ElapsedGameTime.Milliseconds);
+
             // Allows the game to exit
             if (GamePad.GetState(PlayerIndex.One).Buttons.Back == ButtonState.Pressed)
                 this.Exit();
@@ -355,7 +360,8 @@ namespace ProjectMagma
                     new Vector2(5, pos), color);
                 pos += 20;
             }
-            spriteBatch.DrawString(HUDFont, (1000f / gameTime.ElapsedGameTime.Milliseconds) + " fps", new Vector2(5, pos), Color.White);
+            spriteBatch.DrawString(HUDFont, String.Format("{0:00.0} fps", (1000f / gameTime.ElapsedGameTime.Milliseconds))
+                +"; "+ String.Format("{0:00.0} ups", (1000f / lastUpdateTime.ElapsedGameTime.Milliseconds)), new Vector2(5, pos), Color.White);
             spriteBatch.End();
         }
 

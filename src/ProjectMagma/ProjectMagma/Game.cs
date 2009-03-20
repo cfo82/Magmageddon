@@ -73,9 +73,9 @@ namespace ProjectMagma
             graphics = new GraphicsDeviceManager(this);
 
             // TODO: remove v-sync in future!?
-//            this.IsFixedTimeStep = false;
-//            graphics.SynchronizeWithVerticalRetrace = false;
-//            graphics.ApplyChanges();
+            this.IsFixedTimeStep = false;
+            graphics.SynchronizeWithVerticalRetrace = false;
+            graphics.ApplyChanges();
 
             graphics.PreferredBackBufferWidth = 1280;
             graphics.PreferredBackBufferHeight = 720;

@@ -254,8 +254,6 @@ namespace ProjectMagma
         {
             lastUpdateTime = gameTime;
 
-            Console.WriteLine(lastUpdateTime.ElapsedGameTime.Milliseconds);
-
             // Allows the game to exit
             if (GamePad.GetState(PlayerIndex.One).Buttons.Back == ButtonState.Pressed)
                 this.Exit();

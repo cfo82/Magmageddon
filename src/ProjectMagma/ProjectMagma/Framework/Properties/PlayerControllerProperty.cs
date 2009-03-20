@@ -111,14 +111,14 @@ namespace ProjectMagma.Framework
             if (fuel > 0 && activeIsland == null)
             {
                 // in air
-                playerPosition.X += controllerInput.leftStickX * constants.GetFloat("x_axis_jetpack_multiplier");
-                playerPosition.Z -= controllerInput.leftStickY * constants.GetFloat("z_axis_jetpack_multiplier");
+                playerPosition.X += controllerInput.leftStickX * dt * constants.GetFloat("x_axis_jetpack_multiplier");
+                playerPosition.Z -= controllerInput.leftStickY * dt * constants.GetFloat("z_axis_jetpack_multiplier");
             }
             else
             {
                 // on ground
-                playerPosition.X += controllerInput.leftStickX * constants.GetFloat("x_axis_movement_multiplier");
-                playerPosition.Z -= controllerInput.leftStickY * constants.GetFloat("z_axis_movement_multiplier");
+                playerPosition.X += controllerInput.leftStickX * dt * constants.GetFloat("x_axis_movement_multiplier");
+                playerPosition.Z -= controllerInput.leftStickY * dt * constants.GetFloat("z_axis_movement_multiplier");
 
                 // prevent the player from walking down the island
                 if (activeIsland != null)

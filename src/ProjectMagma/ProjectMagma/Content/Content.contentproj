@@ -212,6 +212,11 @@
       <Importer>FbxImporter</Importer>
       <Processor>PillarProcessor</Processor>
     </Compile>
+    <Compile Include="Models\flame_primitive.fbx">
+      <Name>flame_primitive</Name>
+      <Importer>FbxImporter</Importer>
+      <Processor>IceSpikeProcessor</Processor>
+    </Compile>
     <None Include="Textures\Controls\arrow.png">
       <Name>arrow</Name>
       <Importer>TextureImporter</Importer>

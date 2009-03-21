@@ -14,8 +14,25 @@ namespace ProjectMagma.Framework
 {
     public class PlayerControllerProperty : Property
     {
+        private Entity player;
+        private Entity constants;
+        private Entity activeIsland = null;
+
+        private float energyRechargedAt = 0;
+
+        private int iceSpikeCount = 0;
+        private int iceSpikeRemovedCount = 0;
+        private double iceSpikeFiredAt = 0;
+
+        private double hitPerformedAt = 0;
+
+        FlameThrowerState flameThrowerState = FlameThrowerState.InActive;
+        Entity flame = null;
+        private double flameThrowerStateChangedAt = 0;
+        private int flameThrowerWarmupDeducted = 0;
+
         private SoundEffect jetpackSound;
-        private double jetpackSoundEnd = 0;
+        private SoundEffectInstance jetpackSoundInstance;
 
         public PlayerControllerProperty()
         {
@@ -55,6 +72,7 @@ namespace ProjectMagma.Framework
         private void OnUpdate(Entity player, GameTime gameTime)
         {
             float dt = ((float)gameTime.ElapsedGameTime.Milliseconds)/1000.0f;
+            double at = gameTime.TotalGameTime.TotalMilliseconds;
 
             PlayerIndex playerIndex = (PlayerIndex)player.GetInt("game_pad_index");
             Vector3 playerPosition = player.GetVector3("position");
@@ -71,19 +89,16 @@ namespace ProjectMagma.Framework
             // get input
             controllerInput.Update(playerIndex);
 
-            /// movements
+            #region movement
 
             // jetpack
-            if (controllerInput.jetpackPressed)
+            if (controllerInput.jetpackButtonPressed)
             {
                 if (fuel > 0)
                 {
                     // indicate 
-                    if (gameTime.TotalGameTime.TotalMilliseconds > jetpackSoundEnd)
-                    {
-                        jetpackSound.Play();
-                        jetpackSoundEnd = gameTime.TotalGameTime.TotalMilliseconds + jetpackSound.Duration.TotalMilliseconds;
-                    }
+                    if (jetpackSoundInstance == null)
+                        jetpackSoundInstance = jetpackSound.Play(1, 1, 0, true);
 
                     fuel -= gameTime.ElapsedGameTime.Milliseconds;
                     jetpackVelocity += constants.GetVector3("jetpack_acceleration") * dt;
@@ -96,7 +111,15 @@ namespace ProjectMagma.Framework
                 }
             }
             else
+            {
+                if (jetpackSoundInstance != null)
+                {
+                    jetpackSoundInstance.Stop();
+                    jetpackSoundInstance.Dispose();
+                }
+                jetpackSoundInstance = null;
                 fuel += (int)(gameTime.ElapsedGameTime.Milliseconds * constants.GetFloat("fuel_recharge_multiplier"));
+            }
             if (fuel < 0)
                 fuel = 0;
             if (fuel > constants.GetInt("max_fuel"))
@@ -122,7 +145,7 @@ namespace ProjectMagma.Framework
                 playerPosition.Z -= controllerInput.leftStickY * dt * constants.GetFloat("z_axis_movement_multiplier");
 
                 // prevent the player from walking down the island
-                if (activeIsland != null && !controllerInput.jetpackPressed)
+                if (activeIsland != null && !controllerInput.jetpackButtonPressed)
                 {
                     // TODO: how to do this in future?
                     BoundingCylinder ibc = Game.calculateBoundingCylinder(activeIsland);
@@ -140,8 +163,6 @@ namespace ProjectMagma.Framework
                         }
                     }
                 }
-
-
             }
 
             // rotation
@@ -161,10 +182,13 @@ namespace ProjectMagma.Framework
                     player.SetInt("frozen", 0);
             }
 
+            #endregion
+
+            #region actions
 
             // ice spike
-            if (controllerInput.firePressed && player.GetInt("energy") > constants.GetInt("ice_spike_energy_cost") &&
-                (gameTime.TotalGameTime.TotalMilliseconds - iceSpikeFiredAt) > constants.GetInt("ice_spike_cooldown"))
+            if (controllerInput.iceSpikeButtonPressed && player.GetInt("energy") > constants.GetInt("ice_spike_energy_cost") &&
+                (at - iceSpikeFiredAt) > constants.GetInt("ice_spike_cooldown"))
             {
                 // indicate 
                 SoundEffect soundEffect = Game.Instance.Content.Load<SoundEffect>("Sounds/hit2");
@@ -197,7 +221,7 @@ namespace ProjectMagma.Framework
                     }
                 }
 
-                float strength = 0.6f+controllerInput.fireStrength;
+                float strength = 0.6f+controllerInput.iceSpikeStrength;
                 aimVector.Normalize();
                 aimVector *= constants.GetFloat("ice_spike_speed") * strength;
                 aimVector.Y = constants.GetFloat("ice_spike_up_speed");
@@ -218,7 +242,96 @@ namespace ProjectMagma.Framework
 
                 // update states
                 player.SetInt("energy", player.GetInt("energy") - constants.GetInt("ice_spike_energy_cost"));
-                iceSpikeFiredAt = gameTime.TotalGameTime.TotalMilliseconds;
+                iceSpikeFiredAt = at;
+            }
+
+            // flamethrower
+            if (controllerInput.flamethrowerButtonPressed)
+            {
+                if(flameThrowerState == FlameThrowerState.InActive
+                    && player.GetInt("energy") > constants.GetInt("flamethrower_warmup_energy_cost"))
+                {
+                    flameThrowerState = FlameThrowerState.Warmup;
+
+                    BoundingBox bb = Game.calculateBoundingBox(player);
+                    Vector3 pos = new Vector3(bb.Max.X, bb.Max.Y, playerPosition.Z);
+                    Vector3 viewVector = Vector3.Transform(new Vector3(0, 0, 1), Game.GetRotation(player));
+               
+                    flame = new Entity(Game.Instance.EntityManager, "flame" + "_" + player.Name);
+                    flame.AddStringAttribute("player", player.Name);
+
+                    flame.AddVector3Attribute("velocity", viewVector);
+                    flame.AddVector3Attribute("position", pos);
+
+                    flame.AddStringAttribute("mesh", "Models/flame_primitive");
+                    flame.AddVector3Attribute("scale", new Vector3(0, 0, 0));
+                    flame.AddQuaternionAttribute("rotation", Game.GetRotation(player));
+
+                    flame.AddProperty("render", new RenderProperty());
+                    flame.AddProperty("controller", new FlameControllerProperty());
+
+                    Game.Instance.EntityManager.AddDeferred(flame);
+                    flameThrowerStateChangedAt = gameTime.TotalGameTime.TotalMilliseconds;
+                    flameThrowerWarmupDeducted = 0;
+                }
+                else
+                if(flameThrowerState == FlameThrowerState.Warmup)
+                {
+                    int warmupTime = constants.GetInt("flamethrower_warmup_time");
+                    int warmupCost = constants.GetInt("flamethrower_warmup_energy_cost");
+                    if (at < flameThrowerStateChangedAt + warmupTime)
+                    {
+                        flame.SetVector3("scale", new Vector3(26, 26, 26) * ((float)((at - flameThrowerStateChangedAt) / warmupTime)));
+                        if (at >= flameThrowerStateChangedAt + flameThrowerWarmupDeducted * (warmupTime / warmupCost))
+                        {
+                            player.SetInt("energy", player.GetInt("energy") - 1);
+                            flameThrowerWarmupDeducted++;
+                        }
+                    }
+                    else
+                    {
+                        player.SetInt("energy", player.GetInt("energy") - (warmupCost-flameThrowerWarmupDeducted));
+                        flameThrowerState = FlameThrowerState.Active;
+                        flameThrowerStateChangedAt = at;
+                    }
+                }
+                else
+                if(flameThrowerState == FlameThrowerState.Active)
+                {
+                    int energyPerSecond = constants.GetInt("flamethrower_energy_per_second");
+                    if (at >= flameThrowerStateChangedAt + 1000 / energyPerSecond)
+                    {
+                        player.SetInt("energy", player.GetInt("energy") - 1);
+                        flameThrowerStateChangedAt = flameThrowerStateChangedAt + 1000 / energyPerSecond;
+                    }
+                }
+                // else cooldown -> do nothing
+            }
+            else
+            {
+                if(flameThrowerState == FlameThrowerState.Active
+                    || flameThrowerState == FlameThrowerState.Warmup)
+                {
+                    // activate cooldown
+                    if (flameThrowerState == FlameThrowerState.Active)
+                        flameThrowerStateChangedAt = at;
+                    flameThrowerState = FlameThrowerState.Cooldown;
+                }
+            }
+
+            if(flameThrowerState == FlameThrowerState.Cooldown)
+            {
+                // cooldown
+                int cooldownTime = constants.GetInt("flamethrower_cooldown_time");
+                if (at < flameThrowerStateChangedAt + constants.GetInt("flamethrower_cooldown_time"))
+                {
+                    flame.SetVector3("scale", new Vector3(26, 26, 26) * ((float)(1 - (at - flameThrowerStateChangedAt) / cooldownTime)));
+                }
+                else
+                {
+                    flameThrowerState = FlameThrowerState.InActive;
+                    Game.Instance.EntityManager.RemoveDeferred(flame);
+                }
             }
 
             // pushback
@@ -248,7 +361,8 @@ namespace ProjectMagma.Framework
             }
 
             // recharge energy
-            if ((gameTime.TotalGameTime.TotalMilliseconds - energyRechargedAt) > constants.GetInt("energy_recharge_interval"))
+            if ((gameTime.TotalGameTime.TotalMilliseconds - energyRechargedAt) > constants.GetInt("energy_recharge_interval")
+                && flameThrowerState == FlameThrowerState.InActive)
             {
                 player.SetInt("energy", player.GetInt("energy") + 1);
                 energyRechargedAt = (float)gameTime.TotalGameTime.TotalMilliseconds;
@@ -259,6 +373,7 @@ namespace ProjectMagma.Framework
             if (player.GetInt("health") > constants.GetInt("max_health"))
                 player.SetInt("health", constants.GetInt("max_health"));
 
+            #endregion
 
             // update player attributes
             if (fuel > constants.GetInt("max_fuel"))
@@ -269,10 +384,6 @@ namespace ProjectMagma.Framework
             player.SetVector3("jetpack_velocity", jetpackVelocity);
             player.SetVector3("contact_pushback_velocity", contactPushbackVelocity);
             player.SetVector3("hit_pushback_velocity", hitPushbackVelocity);
-
-
-
-
 
 
 
@@ -463,7 +574,7 @@ namespace ProjectMagma.Framework
                 otherPlayer.SetString("collisionPlayer", ""); // reset collision
 
             // and hit?
-            if (controllerInput.hitPressed &&
+            if (controllerInput.hitButtonPressed &&
                 (gameTime.TotalGameTime.TotalMilliseconds - hitPerformedAt) > constants.GetInt("hit_cooldown"))
             {
                 // indicate hit!
@@ -516,18 +627,6 @@ namespace ProjectMagma.Framework
                 iceSpikeRemovedCount = 0;
             }
         }
-
-        private Entity player;
-        private Entity constants;
-        private Entity activeIsland = null;
-
-        private float energyRechargedAt = 0;
-
-        private int iceSpikeCount = 0;
-        private int iceSpikeRemovedCount = 0;
-        private double iceSpikeFiredAt = 0;
-
-        private double hitPerformedAt = 0;
 
         struct ControllerInput
         {
@@ -601,33 +700,37 @@ namespace ProjectMagma.Framework
                 #endregion
 
                 #region triggers
-                fireStrength = gamePadState.Triggers.Right;
+                iceSpikeStrength = gamePadState.Triggers.Right;
                 #endregion
 
 
                 #region action buttons
 
-                jetpackPressed =
-                    gamePadState.Buttons.A == ButtonState.Pressed ||
+                jetpackButtonPressed =
                     gamePadState.Triggers.Left > 0 ||
                     (keyboardState.IsKeyDown(Keys.Space) && playerIndex == PlayerIndex.One) ||
                     (keyboardState.IsKeyDown(Keys.Insert) && playerIndex == PlayerIndex.Two);
 
-                firePressed = false;
-                if (fireStrength > 0)
-                    firePressed = true;
+                iceSpikeButtonPressed = false;
+                if (iceSpikeStrength > 0)
+                    iceSpikeButtonPressed = true;
                 else
                 if((keyboardState.IsKeyDown(Keys.Q) && playerIndex == PlayerIndex.One) ||
                     (keyboardState.IsKeyDown(Keys.RightControl) && playerIndex == PlayerIndex.Two))
                 {
-                    firePressed = true;
-                    fireStrength = 1;
+                    iceSpikeButtonPressed = true;
+                    iceSpikeStrength = 1;
                 }
 
-                hitPressed =
+                hitButtonPressed =
                     gamePadState.Buttons.RightShoulder == ButtonState.Pressed ||
                     (keyboardState.IsKeyDown(Keys.E) && playerIndex == PlayerIndex.One) ||
                     (keyboardState.IsKeyDown(Keys.Enter) && playerIndex == PlayerIndex.Two);
+
+                flamethrowerButtonPressed = 
+                    gamePadState.Buttons.A == ButtonState.Pressed ||
+                    (keyboardState.IsKeyDown(Keys.R) && playerIndex == PlayerIndex.One) ||
+                    (keyboardState.IsKeyDown(Keys.Delete) && playerIndex == PlayerIndex.Two);
 
                 #endregion
 
@@ -641,14 +744,19 @@ namespace ProjectMagma.Framework
             public bool moveStickPressed;
 
             // triggers
-            public float fireStrength;
+            public float iceSpikeStrength;
 
             // buttons
-            public bool jetpackPressed, firePressed, hitPressed;
+            public bool jetpackButtonPressed, flamethrowerButtonPressed, iceSpikeButtonPressed, hitButtonPressed;
 
             private static float gamepadEmulationValue = -1f;
         }
 
         ControllerInput controllerInput;
+    }
+
+    enum FlameThrowerState
+    {
+        InActive, Warmup, Active, Cooldown
     }
 }

@@ -14,6 +14,7 @@
     <XnaCrossPlatformGroupID>1237e529-9444-43ca-95d2-f2845fa8b43f</XnaCrossPlatformGroupID>
     <ApplicationIcon>Game.ico</ApplicationIcon>
     <Thumbnail>GameThumbnail.png</Thumbnail>
+    <IsWebBootstrapper>false</IsWebBootstrapper>
     <PublishUrl>publish\</PublishUrl>
     <Install>true</Install>
     <InstallFrom>Disk</InstallFrom>
@@ -26,7 +27,6 @@
     <MapFileExtensions>true</MapFileExtensions>
     <ApplicationRevision>0</ApplicationRevision>
     <ApplicationVersion>1.0.0.%2a</ApplicationVersion>
-    <IsWebBootstrapper>false</IsWebBootstrapper>
     <UseApplicationTrust>false</UseApplicationTrust>
     <BootstrapperEnabled>true</BootstrapperEnabled>
   </PropertyGroup>
@@ -95,6 +95,7 @@
     <Compile Include="Framework\Attributes\QuaternionAttribute.cs" />
     <Compile Include="Framework\Event\MatrixChangeEventHandler.cs" />
     <Compile Include="Framework\Properties\CameraProperty.cs" />
+    <Compile Include="Framework\Properties\FlameControllerProperty.cs" />
     <Compile Include="Framework\Properties\ShadowCastProperty.cs" />
     <Compile Include="Framework\Properties\RenderHighlightProperty.cs" />
     <Compile Include="ManagementForm.cs" />

@@ -14,18 +14,23 @@ namespace ProjectMagma.Framework
         private Entity player;
         private Entity flame;
 
+        private float scaleFactor = 1;
+        private Vector3 fullScale;
+
         public FlameControllerProperty()
         {
         }
 
         public void OnAttached(Entity flame)
         {
-            this.constants = Game.Instance.EntityManager["island_constants"];
+            this.constants = Game.Instance.EntityManager["player_constants"];
             this.flame = flame;
             this.player = Game.Instance.EntityManager[flame.GetString("player")];
 
-            ((Vector3Attribute)player.Attributes["position"]).ValueChanged += new Vector3ChangeHandler(playerPositionHandler);
-            ((QuaternionAttribute)player.Attributes["rotation"]).ValueChanged += new QuaternionChangeEventHandler(playerRotationHandler);
+            player.GetVector3Attribute("position").ValueChanged += new Vector3ChangeHandler(playerPositionHandler);
+            player.GetQuaternionAttribute("rotation").ValueChanged += new QuaternionChangeEventHandler(playerRotationHandler);
+
+            flame.GetBoolAttribute("active").ValueChanged += new BoolChangeHandler(flameActivationHandler);
 
             flame.Update += OnUpdate;
         }
@@ -39,8 +44,12 @@ namespace ProjectMagma.Framework
         {
             float dt = ((float)gameTime.ElapsedGameTime.Milliseconds)/1000.0f;
 
-
-           
+            if (flame.GetBool("active"))
+            {
+                if (scaleFactor < 1)
+                    scaleFactor += constants.GetFloat("flamethrower_turn_flame_scale_deduction");
+                flame.SetVector3("scale", fullScale * scaleFactor);
+            }
         }
 
         private void playerPositionHandler(Vector3Attribute sender, Vector3 oldValue, Vector3 newValue)
@@ -54,8 +63,18 @@ namespace ProjectMagma.Framework
         private void playerRotationHandler(QuaternionAttribute sender, Quaternion oldValue, Quaternion newValue)
         {
             flame.SetQuaternion("rotation", newValue);
+
+            if (flame.GetBool("active"))
+            {
+                if (scaleFactor > constants.GetFloat("flamethrower_turn_min_scale"))
+                    scaleFactor -= constants.GetFloat("flamethrower_turn_flame_scale_deduction");
+            }
         }
 
+        private void flameActivationHandler(BoolAttribute sender, bool oldValue, bool newValue)
+        {
+            this.fullScale = flame.GetVector3("scale");
+        }
 
     }
 }

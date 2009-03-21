@@ -94,6 +94,7 @@
     <Compile Include="CollisionManager\CollisionTests\ContactSphereSphere.cs" />
     <Compile Include="Framework\Attributes\BoolAttribute.cs" />
     <Compile Include="Framework\Attributes\QuaternionAttribute.cs" />
+    <Compile Include="Framework\Event\BoolChangeHandler.cs" />
     <Compile Include="Framework\Event\MatrixChangeEventHandler.cs" />
     <Compile Include="Framework\Properties\CameraProperty.cs" />
     <Compile Include="Framework\Properties\FlameControllerProperty.cs" />

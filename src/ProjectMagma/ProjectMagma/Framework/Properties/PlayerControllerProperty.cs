@@ -33,6 +33,8 @@ namespace ProjectMagma.Framework
 
         private SoundEffect jetpackSound;
         private SoundEffectInstance jetpackSoundInstance;
+        private SoundEffect flameThrowerSound;
+        private SoundEffectInstance flameThrowerSoundInstance;
 
         public PlayerControllerProperty()
         {
@@ -58,7 +60,9 @@ namespace ProjectMagma.Framework
             player.AddStringAttribute("collisionPlayer", "");
 
             Game.Instance.EntityManager.EntityRemoved += new EntityRemovedHandler(entityRemovedHandler);
+
             jetpackSound = Game.Instance.Content.Load<SoundEffect>("Sounds/jetpack");
+            flameThrowerSound = Game.Instance.Content.Load<SoundEffect>("Sounds/flamethrower");
 
             this.player = player;
         }
@@ -98,7 +102,7 @@ namespace ProjectMagma.Framework
                 {
                     // indicate 
                     if (jetpackSoundInstance == null)
-                        jetpackSoundInstance = jetpackSound.Play(1, 1, 0, true);
+                        jetpackSoundInstance = jetpackSound.Play(0.4f, 1, 0, true);
 
                     fuel -= gameTime.ElapsedGameTime.Milliseconds;
                     jetpackVelocity += constants.GetVector3("jetpack_acceleration") * dt;
@@ -253,12 +257,16 @@ namespace ProjectMagma.Framework
                 {
                     flameThrowerState = FlameThrowerState.Warmup;
 
+                    // indicate 
+                    flameThrowerSoundInstance = flameThrowerSound.Play(1, 1, 0, true);
+
                     BoundingBox bb = Game.calculateBoundingBox(player);
                     Vector3 pos = new Vector3(bb.Max.X, bb.Max.Y, playerPosition.Z);
                     Vector3 viewVector = Vector3.Transform(new Vector3(0, 0, 1), Game.GetRotation(player));
                
                     flame = new Entity(Game.Instance.EntityManager, "flame" + "_" + player.Name);
                     flame.AddStringAttribute("player", player.Name);
+                    flame.AddBoolAttribute("active", false);
 
                     flame.AddVector3Attribute("velocity", viewVector);
                     flame.AddVector3Attribute("position", pos);
@@ -291,6 +299,7 @@ namespace ProjectMagma.Framework
                     else
                     {
                         player.SetInt("energy", player.GetInt("energy") - (warmupCost-flameThrowerWarmupDeducted));
+                        flame.SetBool("active", true);
                         flameThrowerState = FlameThrowerState.Active;
                         flameThrowerStateChangedAt = at;
                     }
@@ -298,18 +307,25 @@ namespace ProjectMagma.Framework
                 else
                 if(flameThrowerState == FlameThrowerState.Active)
                 {
-                    int energyPerSecond = constants.GetInt("flamethrower_energy_per_second");
-                    if (at >= flameThrowerStateChangedAt + 1000 / energyPerSecond)
+                    if (player.GetInt("energy") <= 0)
                     {
-                        player.SetInt("energy", player.GetInt("energy") - 1);
-                        flameThrowerStateChangedAt = flameThrowerStateChangedAt + 1000 / energyPerSecond;
+                        flameThrowerState = FlameThrowerState.InActive;
+                    }
+                    else
+                    {
+                        int energyPerSecond = constants.GetInt("flamethrower_energy_per_second");
+                        if (at >= flameThrowerStateChangedAt + 1000 / energyPerSecond)
+                        {
+                            player.SetInt("energy", player.GetInt("energy") - 1);
+                            flameThrowerStateChangedAt = flameThrowerStateChangedAt + 1000 / energyPerSecond;
+                        }
                     }
                 }
                 // else cooldown -> do nothing
             }
             else
             {
-                if(flameThrowerState == FlameThrowerState.Active
+                if (flameThrowerState == FlameThrowerState.Active
                     || flameThrowerState == FlameThrowerState.Warmup)
                 {
                     // activate cooldown
@@ -322,6 +338,7 @@ namespace ProjectMagma.Framework
             if(flameThrowerState == FlameThrowerState.Cooldown)
             {
                 // cooldown
+                flame.SetBool("active", false);
                 int cooldownTime = constants.GetInt("flamethrower_cooldown_time");
                 if (at < flameThrowerStateChangedAt + constants.GetInt("flamethrower_cooldown_time"))
                 {
@@ -330,6 +347,8 @@ namespace ProjectMagma.Framework
                 else
                 {
                     flameThrowerState = FlameThrowerState.InActive;
+
+                    flameThrowerSoundInstance.Stop();
                     Game.Instance.EntityManager.RemoveDeferred(flame);
                 }
             }

@@ -4,7 +4,8 @@ using System.Linq;
 using System.Text;
 using Microsoft.Xna.Framework.Content.Pipeline;
 using System.Xml;
-using ProjectMagma.Shared.Serialization.LevelData;
+using ProjectMagma.Shared.LevelData;
+using ProjectMagma.Shared.LevelData.Serialization;
 
 namespace ProjectMagmaContentPipeline.Level
 {

@@ -86,6 +86,12 @@
   <ItemGroup>
     <Compile Include="BloomComponent.cs" />
     <Compile Include="BloomSettings.cs" />
+    <Compile Include="CollisionManager\CollisionManager.cs" />
+    <Compile Include="CollisionManager\CollisionTests\Contact.cs" />
+    <Compile Include="CollisionManager\CollisionTests\ContactCylinderCylinder.cs" />
+    <Compile Include="CollisionManager\CollisionTests\ContactSphereCylinder.cs" />
+    <Compile Include="CollisionManager\CollisionTests\ContactTest.cs" />
+    <Compile Include="CollisionManager\CollisionTests\ContactSphereSphere.cs" />
     <Compile Include="Framework\Attributes\QuaternionAttribute.cs" />
     <Compile Include="Framework\Event\MatrixChangeEventHandler.cs" />
     <Compile Include="Framework\Properties\CameraProperty.cs" />

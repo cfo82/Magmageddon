@@ -6,7 +6,8 @@ using System.Linq;
 using System.Text;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Content;
-using ProjectMagma.Shared.Serialization.LevelData;
+using ProjectMagma.Shared.LevelData;
+using ProjectMagma.Shared.LevelData.Serialization;
 
 namespace ProjectMagma.Framework
 {

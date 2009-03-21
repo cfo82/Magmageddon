@@ -15,7 +15,9 @@ using Microsoft.Xna.Framework.Storage;
 using xWinFormsLib;
 
 using ProjectMagma.Framework;
-using ProjectMagma.Shared.Serialization.LevelData;
+using ProjectMagma.Shared.BoundingVolume;
+using ProjectMagma.Shared.LevelData;
+using ProjectMagma.Shared.LevelData.Serialization;
 
 
 // its worth to read this...
@@ -543,48 +545,6 @@ namespace ProjectMagma
         }
     }
 
-     public struct BoundingCylinder
-    {
-        private Vector3 c1;
-        private Vector3 c2;
-        private float radius;
-
-        public BoundingCylinder(Vector3 c1, Vector3 c2, float radius)
-        {
-            this.c1 = c1;
-            this.c2 = c2;
-            this.radius = radius;
-        }
-
-        public bool Intersects(BoundingSphere bs)
-        {
-            // check collision on y axis
-            if (bs.Center.Y - bs.Radius < c1.Y && bs.Center.Y + bs.Radius > c2.Y)
-            {
-                // check collision in xz
-                if (Game.pow2(bs.Center.X - c1.X) + Game.pow2(bs.Center.Z - c1.Z) < Game.pow2(bs.Radius + radius))
-                    return true; 
-            }
-
-            return false;
-        }
-
-        public Vector3 Top
-        {
-            get { return c1; }
-        }
-
-        public Vector3 Bottom
-        {
-            get { return c2; }
-        }
-
-        public float Radius
-        {
-            get { return radius; }
-        }
-
-    }
 
         
       

@@ -8,6 +8,7 @@ using Microsoft.Xna.Framework.Input;
 using Microsoft.Xna.Framework.Media;
 using System.Diagnostics;
 using Microsoft.Xna.Framework.Audio;
+using ProjectMagma.Shared.BoundingVolume;
 
 namespace ProjectMagma.Framework
 {

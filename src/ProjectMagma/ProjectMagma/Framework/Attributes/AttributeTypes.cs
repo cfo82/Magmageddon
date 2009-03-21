@@ -8,6 +8,7 @@ namespace ProjectMagma.Framework
     public enum AttributeTypes
     {
         String,
+        Bool,
         Int,
         Float,
         Vector2,

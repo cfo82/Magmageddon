@@ -89,6 +89,13 @@ namespace ProjectMagma.Framework
             this.attributes.Add(attribute.Name, attribute);
         }
 
+        public void AddBoolAttribute(string name, bool value)
+        {
+            BoolAttribute attribute = new BoolAttribute(name);
+            attribute.Value = value;
+            this.attributes.Add(attribute.Name, attribute);
+        }
+
         public void AddFloatAttribute(string name, float value)
         {
             FloatAttribute attribute = new FloatAttribute(name);
@@ -133,6 +140,12 @@ namespace ProjectMagma.Framework
         {
             Debug.Assert(HasAttribute(attribute));
             return (Attributes[attribute] as StringAttribute) != null;
+        }
+
+        public bool IsBool(string attribute)
+        {
+            Debug.Assert(HasAttribute(attribute));
+            return Attributes[attribute] is BoolAttribute;
         }
 
         public bool IsInt(string attribute)
@@ -181,6 +194,11 @@ namespace ProjectMagma.Framework
             return HasAttribute(attribute) && IsInt(attribute);
         }
 
+        public bool HasBool(string attribute)
+        {
+            return HasAttribute(attribute) && IsBool(attribute);
+        }
+
         public bool HasFloat(string attribute)
         {
             return HasAttribute(attribute) && IsFloat(attribute);
@@ -204,6 +222,11 @@ namespace ProjectMagma.Framework
         public string GetString(string attribute)
         {
             return GetStringAttribute(attribute).Value;
+        }
+
+        public string GetBool(string attribute)
+        {
+            return GetBoolAttribute(attribute).Value;
         }
 
         public int GetInt(string attribute)
@@ -256,6 +279,13 @@ namespace ProjectMagma.Framework
             return Attributes[attribute] as IntAttribute;
         }
 
+        public BoolAttribute GetBoolAttribute(string attribute)
+        {
+            Debug.Assert(HasAttribute(attribute));
+            Debug.Assert(IsBool(attribute));
+            return Attributes[attribute] as BoolAttribute;
+        }
+
         public FloatAttribute GetFloatAttribute(string attribute)
         {
             Debug.Assert(HasAttribute(attribute));
@@ -294,6 +324,11 @@ namespace ProjectMagma.Framework
         public void SetInt(string attribute, int value)
         {
             (Attributes[attribute] as IntAttribute).Value = value;
+        }
+
+        public void SetBool(string attribute, bool value)
+        {
+            (Attributes[attribute] as BoolAttribute).Value = value;
         }
 
         public void SetString(string attribute, string value)

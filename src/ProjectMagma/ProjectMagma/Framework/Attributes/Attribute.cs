@@ -32,6 +32,10 @@ namespace ProjectMagma.Framework
             {
                 return AttributeTypes.String;
             }
+            else if (type == "bool")
+            {
+                return AttributeTypes.Bool;
+            }
             else if (type == "int")
             {
                 return AttributeTypes.Int;
@@ -64,6 +68,7 @@ namespace ProjectMagma.Framework
             {
                 case AttributeTypes.String: return "string";
                 case AttributeTypes.Int: return "int";
+                case AttributeTypes.Bool: return "bool";
                 case AttributeTypes.Float: return "float";
                 case AttributeTypes.Vector2: return "float2";
                 case AttributeTypes.Vector3: return "float3";

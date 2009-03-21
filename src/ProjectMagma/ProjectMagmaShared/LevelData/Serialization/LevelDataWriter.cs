@@ -12,7 +12,7 @@ using Microsoft.Xna.Framework.Content.Pipeline.Graphics;
 using Microsoft.Xna.Framework.Content.Pipeline.Processors;
 using Microsoft.Xna.Framework.Content.Pipeline.Serialization.Compiler;
 
-namespace ProjectMagma.Shared.Serialization.LevelData
+namespace ProjectMagma.Shared.LevelData.Serialization
 {
     [ContentTypeWriter]
     class AttributeDataWriter : ContentTypeWriter<AttributeData>

@@ -6,7 +6,7 @@
     <Platform Condition=" '$(Platform)' == '' ">x86</Platform>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>ProjectMagmaShared</RootNamespace>
+    <RootNamespace>ProjectMagma.Shared</RootNamespace>
     <AssemblyName>ProjectMagmaShared</AssemblyName>
     <TargetFrameworkVersion>v3.5</TargetFrameworkVersion>
     <XnaFrameworkVersion>v3.0</XnaFrameworkVersion>
@@ -88,9 +88,21 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Serialization\LevelData\LevelData.cs" />
-    <Compile Include="Serialization\LevelData\LevelDataReader.cs" />
-    <Compile Include="Serialization\LevelData\LevelDataWriter.cs" />
+    <Compile Include="BoundingVolume\AlignedBox3Tree.cs" />
+    <Compile Include="BoundingVolume\AlignedBox3TreeNode.cs" />
+    <Compile Include="BoundingVolume\Axis.cs" />
+    <Compile Include="BoundingVolume\BoundingCylinder.cs" />
+    <Compile Include="BoundingVolume\Serialization\AlignedBox3TreeReader.cs" />
+    <Compile Include="BoundingVolume\Serialization\AlignedBox3TreeNodeReader.cs" />
+    <Compile Include="BoundingVolume\Serialization\AlignedBox3TreeWriter.cs" />
+    <Compile Include="BoundingVolume\Serialization\AlignedBox3TreeNodeWriter.cs" />
+    <Compile Include="BoundingVolume\Triangle3.cs" />
+    <Compile Include="LevelData\AttributeData.cs" />
+    <Compile Include="LevelData\EntityData.cs" />
+    <Compile Include="LevelData\LevelData.cs" />
+    <Compile Include="LevelData\PropertyData.cs" />
+    <Compile Include="LevelData\Serialization\LevelDataReader.cs" />
+    <Compile Include="LevelData\Serialization\LevelDataWriter.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>

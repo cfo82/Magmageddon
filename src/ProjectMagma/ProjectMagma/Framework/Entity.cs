@@ -224,7 +224,7 @@ namespace ProjectMagma.Framework
             return GetStringAttribute(attribute).Value;
         }
 
-        public string GetBool(string attribute)
+        public bool GetBool(string attribute)
         {
             return GetBoolAttribute(attribute).Value;
         }

@@ -34,9 +34,7 @@ namespace ProjectMagma.Collision.CollisionTests
                 float collisionLengthSquared = (radius2 + radius1) * (radius2 + radius1);
                 if (diff.LengthSquared() < collisionLengthSquared)
                 {
-                    Contact c = new Contact();
-                    c.entityA = entity1;
-                    c.entityB = entity2;
+                    Contact c = new Contact(entity1, entity2);
                     c.normal = diff;
                     c.normal.Normalize();
                     c.position = center1 + c.normal * radius1;
@@ -55,9 +53,7 @@ namespace ProjectMagma.Collision.CollisionTests
                     Vector3 toProjected = projected - top2;
                     if (toProjected.LengthSquared() < radius2 * radius2)
                     {
-                        Contact c = new Contact();
-                        c.entityA = entity1;
-                        c.entityB = entity2;
+                        Contact c = new Contact(entity1, entity2);
                         c.normal = -Vector3.UnitY;
                         c.position = projected;
                         return c;
@@ -69,9 +65,7 @@ namespace ProjectMagma.Collision.CollisionTests
                         Vector3 normal = nearestPoint - center1;
                         if (normal.LengthSquared() < radius1 * radius1)
                         {
-                            Contact c = new Contact();
-                            c.entityA = entity1;
-                            c.entityB = entity2;
+                            Contact c = new Contact(entity1, entity2);
                             c.normal = normal;
                             c.normal.Normalize();
                             c.position = nearestPoint;
@@ -91,9 +85,7 @@ namespace ProjectMagma.Collision.CollisionTests
                     Vector3 toProjected = projected - bottom2;
                     if (toProjected.LengthSquared() < radius2 * radius2)
                     {
-                        Contact c = new Contact();
-                        c.entityA = entity1;
-                        c.entityB = entity2;
+                        Contact c = new Contact(entity1, entity2);
                         c.normal = Vector3.UnitY;
                         c.position = projected;
                         return c;
@@ -105,9 +97,7 @@ namespace ProjectMagma.Collision.CollisionTests
                         Vector3 normal = nearestPoint - center1;
                         if (normal.LengthSquared() < radius1 * radius1)
                         {
-                            Contact c = new Contact();
-                            c.entityA = entity1;
-                            c.entityB = entity2;
+                            Contact c = new Contact(entity1, entity2);
                             c.normal = normal;
                             c.normal.Normalize();
                             c.position = nearestPoint;

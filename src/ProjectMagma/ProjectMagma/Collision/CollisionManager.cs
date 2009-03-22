@@ -78,7 +78,7 @@ namespace ProjectMagma.Collision
                     {
                         //Console.WriteLine("Collision {0,4}: between {1} and {2}!", collisionCount, entity1.entity.Name, entity2.entity.Name);
                         entity1.collisionProperty.FireContact(gameTime, c);
-                        entity2.collisionProperty.FireContact(gameTime, c);
+                        entity2.collisionProperty.FireContact(gameTime, c.Reverse());
                         //++collisionCount;
                     }
                 }

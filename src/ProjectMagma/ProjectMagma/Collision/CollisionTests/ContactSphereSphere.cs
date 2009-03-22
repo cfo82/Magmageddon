@@ -25,9 +25,7 @@ namespace ProjectMagma.Collision.CollisionTests
             Vector3 diff = center2 - center1;
             if (diff.LengthSquared() < (radius1 + radius2) * (radius1 + radius2))
             {
-                Contact c = new Contact();
-                c.entityA = entity1;
-                c.entityB = entity2;
+                Contact c = new Contact(entity1, entity2);
                 c.normal = diff;
                 c.normal.Normalize();
                 c.position = center1 + c.normal * radius1;

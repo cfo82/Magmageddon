@@ -93,13 +93,10 @@ namespace ProjectMagma.Framework
             else
             if(flameThrowerState == FlameThrowerState.Active)
             {
-
-                int energyPerSecond = constants.GetInt("flamethrower_energy_per_second");
-                if (at >= flameThrowerStateChangedAt + 1000 / energyPerSecond)
-                {
-                    player.SetInt("energy", player.GetInt("energy") - 1);
-                    flameThrowerStateChangedAt = flameThrowerStateChangedAt + 1000 / energyPerSecond;
-                }
+                int energy = player.GetInt("energy") ;
+                flameThrowerStateChangedAt = applyPerSecond(at, flameThrowerStateChangedAt, constants.GetInt("flamethrower_energy_per_second"),
+                    ref energy);
+                player.SetInt("energy", energy);
             }
             // else cooldown -> do nothing
 
@@ -205,6 +202,7 @@ namespace ProjectMagma.Framework
                 islandsHitAt[island.Name] = at;
             else
             {
+                Console.WriteLine("island " + island.Name + " health: " + island.GetInt("health"));
                 int health = island.GetInt("health");
                 islandsHitAt[island.Name] = applyPerSecond(at, islandsHitAt[island.Name], 
                     constants.GetInt("flamethrower_island_damage_per_second"), ref health);
@@ -214,11 +212,17 @@ namespace ProjectMagma.Framework
 
         private double applyPerSecond(double current, double last, int perSecond, ref int value)
         {
-            if (current >= last + 1000f / perSecond)
+            float interval = 1000f / perSecond;
+            return applyInterval(current, last, interval, ref value);
+        }
+
+        private double applyInterval(double current, double last, float interval, ref int value)
+        {
+            if (current >= last + interval)
             {
-                int times = ((int)(current - last) / perSecond);
-                value += times;
-                return last + times * perSecond;
+                int times = (int)((current - last) / interval);
+                value -= times;
+                return last + times * interval;
             }
             else
                 return last;

@@ -38,18 +38,22 @@ namespace ProjectMagmaContentPipeline.ModelProcessors
             bb.Max *= scaleFactor;
             bb.Min *= scaleFactor;
 
-            // now let the subclass decide on how to modify the box (aligning bottom/top to zero)
-            float heightDiff = CalculateHeightDiff(ref bb);
-            MoveModel(input, context, new Vector3(0, heightDiff, 0));
-            bb.Min.Y += heightDiff;
-            bb.Max.Y += heightDiff;
+            // now let the subclass decide on how to modify the position
+            Vector3 scaledOrigDiff = diff * scaleFactor;
+            Vector3 diffCorrector = CalculateDiff(ref scaledOrigDiff, ref bb);
+            MoveModel(input, context, diffCorrector);
+            bb.Min += diffCorrector;
+            bb.Max += diffCorrector;
 
             ModelContent modelContent = base.Process(input, context);
             modelContent.Tag = bb;
             return modelContent;
         }
 
-        protected abstract float CalculateHeightDiff(ref BoundingBox bb);
+        protected virtual Vector3 CalculateDiff(ref Vector3 origDiff, ref BoundingBox bb)
+        {
+            return Vector3.Zero;
+        }
 
         private void CalculateBoundingBox(
             NodeContent input,

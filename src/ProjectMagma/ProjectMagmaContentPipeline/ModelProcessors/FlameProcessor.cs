@@ -10,12 +10,14 @@ using Microsoft.Xna.Framework.Content.Pipeline.Processors;
 
 namespace ProjectMagmaContentPipeline.ModelProcessors
 {
-    [ContentProcessor(DisplayName = "Magma - Pillar Processor")]
-    class PillarProcessor : MoveProcessor
+    [ContentProcessor(DisplayName = "Magma - Flame Processor")]
+    class FlameProcessor : MoveProcessor
     {
+
         protected override Vector3 CalculateDiff(ref Vector3 origDiff, ref BoundingBox bb)
         {
-            return new Vector3(0, 0.0f - bb.Min.Y, 0);
+            return -origDiff;
         }
+        
     }
 }

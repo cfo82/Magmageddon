@@ -13,9 +13,5 @@ namespace ProjectMagmaContentPipeline.ModelProcessors
     [ContentProcessor(DisplayName = "Magma - Ice Spike Processor")]
     class IceSpikeProcessor : MoveProcessor
     {
-        protected override float CalculateHeightDiff(ref BoundingBox bb)
-        {
-            return 0.0f;
-        }
     }
 }

@@ -13,9 +13,9 @@ namespace ProjectMagmaContentPipeline.ModelProcessors
     [ContentProcessor(DisplayName = "Magma - Player Processor")]
     class PlayerProcessor : MoveProcessor
     {
-        protected override float CalculateHeightDiff(ref BoundingBox bb)
+        protected override Vector3 CalculateDiff(ref Vector3 origDiff, ref BoundingBox bb)
         {
-            return 0.0f - bb.Min.Y;
+            return new Vector3(0, 0.0f - bb.Min.Y, 0);
         }
     }
 }

@@ -92,6 +92,8 @@ namespace ProjectMagma.Framework
                         flameThrowerSoundInstance.Stop();
                     jetpackActive = false;
 
+                    Game.Instance.Content.Load<SoundEffect>("Sounds/death").Play();
+
                     player.RemoveProperty("render");
                     return;
                 }

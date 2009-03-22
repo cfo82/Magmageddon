@@ -365,16 +365,6 @@ namespace ProjectMagma.Framework
 
         #region Property Handling
 
-        public override string ToString()
-        {
-            StringBuilder str = new StringBuilder();
-            str.Append(Name).Append(": {");
-            foreach (Attribute attr in Attributes.Values)
-                str.Append(attr.ToString()).Append(";\n ");
-            str.Append("}");
-            return str.ToString();
-        }
-
         public void AddProperty(PropertyData propertyData)
         {
             Type type = Type.GetType(propertyData.type);
@@ -407,7 +397,22 @@ namespace ProjectMagma.Framework
             }
         }
 
+        public Property GetProperty(string name)
+        {
+            return properties[name];
+        }
+
         #endregion
+
+        public override string ToString()
+        {
+            StringBuilder str = new StringBuilder();
+            str.Append(Name).Append(": {");
+            foreach (Attribute attr in Attributes.Values)
+                str.Append(attr.ToString()).Append(";\n ");
+            str.Append("}");
+            return str.ToString();
+        }
 
         public string Name
         {

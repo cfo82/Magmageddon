@@ -21,6 +21,8 @@ namespace ProjectMagma.Framework
         private readonly Random rand = new Random(DateTime.Now.Millisecond);
         private double respawnStartedAt = 0;
 
+        private bool jetpackActive = false;
+
         private double energyRechargedAt = 0;
 
         private int iceSpikeCount = 0;
@@ -29,10 +31,7 @@ namespace ProjectMagma.Framework
 
         private double hitPerformedAt = 0;
 
-        FlameThrowerState flameThrowerState = FlameThrowerState.InActive;
         Entity flame = null;
-        private double flameThrowerStateChangedAt = 0;
-        private int flameThrowerWarmupDeducted = 0;
 
         private SoundEffect jetpackSound;
         private SoundEffectInstance jetpackSoundInstance;
@@ -86,6 +85,13 @@ namespace ProjectMagma.Framework
                 if (respawnStartedAt == 0)
                 {
                     respawnStartedAt = at;
+
+                    if (jetpackSoundInstance != null)
+                        jetpackSoundInstance.Stop();
+                    if (flameThrowerSoundInstance != null)
+                        flameThrowerSoundInstance.Stop();
+                    jetpackActive = false;
+
                     player.RemoveProperty("render");
                     return;
                 }
@@ -103,7 +109,7 @@ namespace ProjectMagma.Framework
                         Entity island = Game.Instance.IslandManager[islandNo];
                         BoundingBox bb = Game.calculateBoundingBox(island);
                         Vector3 pos = island.GetVector3("position");
-                        pos.Y = bb.Max.Y + 20;
+                        pos.Y = bb.Max.Y + 10;
                         player.SetVector3("position", pos);
 
                         // reset
@@ -122,7 +128,6 @@ namespace ProjectMagma.Framework
 
                         respawnStartedAt = 0;
                     }
-
             }
 
             PlayerIndex playerIndex = (PlayerIndex)player.GetInt("game_pad_index");
@@ -143,32 +148,30 @@ namespace ProjectMagma.Framework
             #region movement
 
             // jetpack
-            if (controllerInput.jetpackButtonPressed)
+            if (controllerInput.jetpackButtonPressed && fuel > 0 && flame == null)
             {
-                if (fuel > 0)
+                if (!jetpackActive)
                 {
-                    // indicate 
-                    if (jetpackSoundInstance == null)
-                        jetpackSoundInstance = jetpackSound.Play(0.4f, 1, 0, true);
+                    jetpackSoundInstance = jetpackSound.Play(0.4f, 1, 0, true);
+                    jetpackActive = true;
+                }
+                
+                fuel -= gameTime.ElapsedGameTime.Milliseconds;
+                jetpackVelocity += constants.GetVector3("jetpack_acceleration") * dt;
 
-                    fuel -= gameTime.ElapsedGameTime.Milliseconds;
-                    jetpackVelocity += constants.GetVector3("jetpack_acceleration") * dt;
-
-                    if (jetpackVelocity.Length() > constants.GetFloat("max_jetpack_speed"))
-                    {
-                        jetpackVelocity.Normalize();
-                        jetpackVelocity *= constants.GetFloat("max_jetpack_speed");
-                    }
+                if (jetpackVelocity.Length() > constants.GetFloat("max_jetpack_speed"))
+                {
+                    jetpackVelocity.Normalize();
+                    jetpackVelocity *= constants.GetFloat("max_jetpack_speed");
                 }
             }
             else
             {
-                if (jetpackSoundInstance != null)
+                if (jetpackActive)
                 {
                     jetpackSoundInstance.Stop();
-                    jetpackSoundInstance.Dispose();
+                    jetpackActive = false;
                 }
-                jetpackSoundInstance = null;
                 fuel += (int)(gameTime.ElapsedGameTime.Milliseconds * constants.GetFloat("fuel_recharge_multiplier"));
             }
             if (fuel < 0)
@@ -297,108 +300,45 @@ namespace ProjectMagma.Framework
             }
 
             // flamethrower
-            if (controllerInput.flamethrowerButtonPressed)
+            if (controllerInput.flamethrowerButtonPressed 
+                && activeIsland != null) // only allowed on ground
             {
-                if(flameThrowerState == FlameThrowerState.InActive
-                    && player.GetInt("energy") > constants.GetInt("flamethrower_warmup_energy_cost"))
+                if (flame == null)
                 {
-                    flameThrowerState = FlameThrowerState.Warmup;
-
-                    // indicate 
-                    flameThrowerSoundInstance = flameThrowerSound.Play(1, 1, 0, true);
-
-                    BoundingBox bb = Game.calculateBoundingBox(player);
-                    Vector3 pos = new Vector3(bb.Max.X, bb.Max.Y, playerPosition.Z);
-                    Vector3 viewVector = Vector3.Transform(new Vector3(0, 0, 1), Game.GetRotation(player));
-               
-                    flame = new Entity(Game.Instance.EntityManager, "flame" + "_" + player.Name);
-                    flame.AddStringAttribute("player", player.Name);
-                    flame.AddBoolAttribute("active", false);
-
-                    flame.AddVector3Attribute("velocity", viewVector);
-                    flame.AddVector3Attribute("position", pos);
-
-                    flame.AddStringAttribute("mesh", "Models/flame_primitive");
-                    flame.AddVector3Attribute("scale", new Vector3(0, 0, 0));
-                    flame.AddQuaternionAttribute("rotation", Game.GetRotation(player));
-
-                    flame.AddProperty("render", new RenderProperty());
-                    flame.AddProperty("controller", new FlameControllerProperty());
-
-                    Game.Instance.EntityManager.AddDeferred(flame);
-                    flameThrowerStateChangedAt = gameTime.TotalGameTime.TotalMilliseconds;
-                    flameThrowerWarmupDeducted = 0;
-                }
-                else
-                if(flameThrowerState == FlameThrowerState.Warmup)
-                {
-                    int warmupTime = constants.GetInt("flamethrower_warmup_time");
-                    int warmupCost = constants.GetInt("flamethrower_warmup_energy_cost");
-                    if (at < flameThrowerStateChangedAt + warmupTime)
+                    if (player.GetInt("energy") > constants.GetInt("flamethrower_warmup_energy_cost"))
                     {
-                        flame.SetVector3("scale", new Vector3(26, 26, 26) * ((float)((at - flameThrowerStateChangedAt) / warmupTime)));
-                        if (at >= flameThrowerStateChangedAt + flameThrowerWarmupDeducted * (warmupTime / warmupCost))
-                        {
-                            player.SetInt("energy", player.GetInt("energy") - 1);
-                            flameThrowerWarmupDeducted++;
-                        }
-                    }
-                    else
-                    {
-                        player.SetInt("energy", player.GetInt("energy") - (warmupCost-flameThrowerWarmupDeducted));
-                        flame.SetBool("active", true);
-                        flameThrowerState = FlameThrowerState.Active;
-                        flameThrowerStateChangedAt = at;
+                        // indicate 
+                        flameThrowerSoundInstance = flameThrowerSound.Play(1, 1, 0, true);
+
+                        BoundingBox bb = Game.calculateBoundingBox(player);
+                        Vector3 pos = new Vector3(bb.Max.X, bb.Max.Y, playerPosition.Z);
+                        Vector3 viewVector = Vector3.Transform(new Vector3(0, 0, 1), Game.GetRotation(player));
+
+                        flame = new Entity(Game.Instance.EntityManager, "flame" + "_" + player.Name);
+                        flame.AddStringAttribute("player", player.Name);
+                        flame.AddBoolAttribute("active", false);
+
+                        flame.AddVector3Attribute("velocity", viewVector);
+                        flame.AddVector3Attribute("position", pos);
+
+                        flame.AddStringAttribute("mesh", "Models/flame_primitive");
+                        flame.AddVector3Attribute("scale", new Vector3(0, 0, 0));
+                        flame.AddVector3Attribute("full_scale", new Vector3(26, 26, 26));
+                        flame.AddQuaternionAttribute("rotation", Game.GetRotation(player));
+
+                        flame.AddProperty("render", new RenderProperty());
+                        flame.AddProperty("controller", new FlamethrowerControllerProperty());
+
+                        Game.Instance.EntityManager.AddDeferred(flame);
                     }
                 }
                 else
-                if(flameThrowerState == FlameThrowerState.Active)
-                {
                     if (player.GetInt("energy") <= 0)
-                    {
-                        flameThrowerState = FlameThrowerState.InActive;
-                    }
-                    else
-                    {
-                        int energyPerSecond = constants.GetInt("flamethrower_energy_per_second");
-                        if (at >= flameThrowerStateChangedAt + 1000 / energyPerSecond)
-                        {
-                            player.SetInt("energy", player.GetInt("energy") - 1);
-                            flameThrowerStateChangedAt = flameThrowerStateChangedAt + 1000 / energyPerSecond;
-                        }
-                    }
-                }
-                // else cooldown -> do nothing
+                        flame.SetBool("fueled", false);
             }
             else
-            {
-                if (flameThrowerState == FlameThrowerState.Active
-                    || flameThrowerState == FlameThrowerState.Warmup)
-                {
-                    // activate cooldown
-                    if (flameThrowerState == FlameThrowerState.Active)
-                        flameThrowerStateChangedAt = at;
-                    flameThrowerState = FlameThrowerState.Cooldown;
-                }
-            }
-
-            if(flameThrowerState == FlameThrowerState.Cooldown)
-            {
-                // cooldown
-                flame.SetBool("active", false);
-                int cooldownTime = constants.GetInt("flamethrower_cooldown_time");
-                if (at < flameThrowerStateChangedAt + constants.GetInt("flamethrower_cooldown_time"))
-                {
-                    flame.SetVector3("scale", new Vector3(26, 26, 26) * ((float)(1 - (at - flameThrowerStateChangedAt) / cooldownTime)));
-                }
-                else
-                {
-                    flameThrowerState = FlameThrowerState.InActive;
-
-                    flameThrowerSoundInstance.Stop();
-                    Game.Instance.EntityManager.RemoveDeferred(flame);
-                }
-            }
+            if (flame != null)
+                flame.SetBool("fueled", false);
 
             // pushback
             if (contactPushbackVelocity.Length() > 0)
@@ -428,7 +368,7 @@ namespace ProjectMagma.Framework
 
             // recharge energy
             if ((gameTime.TotalGameTime.TotalMilliseconds - energyRechargedAt) > constants.GetInt("energy_recharge_interval")
-                && flameThrowerState == FlameThrowerState.InActive)
+                && flame == null)
             {
                 player.SetInt("energy", player.GetInt("energy") + 1);
                 energyRechargedAt = (float)gameTime.TotalGameTime.TotalMilliseconds;
@@ -681,6 +621,13 @@ namespace ProjectMagma.Framework
 
         private void entityRemovedHandler(EntityManager manager, Entity entity)
         {
+            if (entity.Name.Equals("flame" + "_" + player.Name))
+            {
+                flameThrowerSoundInstance.Stop();
+                flame = null;
+                return;
+            }
+
             if (entity.HasAttribute("kind")
                 && entity.GetString("kind") == "icespike"
                 && entity.GetString("player").Equals(player.Name))
@@ -821,8 +768,5 @@ namespace ProjectMagma.Framework
         ControllerInput controllerInput;
     }
 
-    enum FlameThrowerState
-    {
-        InActive, Warmup, Active, Cooldown
-    }
+
 }

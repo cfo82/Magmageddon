@@ -97,7 +97,7 @@
     <Compile Include="Framework\Event\BoolChangeHandler.cs" />
     <Compile Include="Framework\Event\MatrixChangeEventHandler.cs" />
     <Compile Include="Framework\Properties\CameraProperty.cs" />
-    <Compile Include="Framework\Properties\FlameControllerProperty.cs" />
+    <Compile Include="Framework\Properties\FlamethrowerControllerProperty.cs" />
     <Compile Include="Framework\Properties\ShadowCastProperty.cs" />
     <Compile Include="Framework\Properties\RenderHighlightProperty.cs" />
     <Compile Include="ManagementForm.cs" />

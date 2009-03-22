@@ -18,7 +18,10 @@ namespace ProjectMagma.Framework
         private Entity constants;
         private Entity activeIsland = null;
 
-        private float energyRechargedAt = 0;
+        private readonly Random rand = new Random(DateTime.Now.Millisecond);
+        private double respawnStartedAt = 0;
+
+        private double energyRechargedAt = 0;
 
         private int iceSpikeCount = 0;
         private int iceSpikeRemovedCount = 0;
@@ -77,6 +80,50 @@ namespace ProjectMagma.Framework
         {
             float dt = ((float)gameTime.ElapsedGameTime.Milliseconds)/1000.0f;
             double at = gameTime.TotalGameTime.TotalMilliseconds;
+
+            if (player.GetInt("health") <= 0)
+            {
+                if (respawnStartedAt == 0)
+                {
+                    respawnStartedAt = at;
+                    player.RemoveProperty("render");
+                    return;
+                }
+                else
+                    if (respawnStartedAt + constants.GetInt("respawn_time") >= at)
+                    {
+                        // do nothing
+                        return;
+                    }
+                    else
+                    {
+                        // reposition
+                        player.AddProperty("render", new RenderProperty());
+                        int islandNo = rand.Next(Game.Instance.IslandManager.Count-1);
+                        Entity island = Game.Instance.IslandManager[islandNo];
+                        BoundingBox bb = Game.calculateBoundingBox(island);
+                        Vector3 pos = island.GetVector3("position");
+                        pos.Y = bb.Max.Y + 20;
+                        player.SetVector3("position", pos);
+
+                        // reset
+                        player.SetQuaternion("rotation", Quaternion.Identity);
+                        player.SetVector3("jetpack_velocity", Vector3.Zero);
+
+                        player.SetVector3("contact_pushback_velocity", Vector3.Zero);
+                        player.SetVector3("hit_pushback_velocity", Vector3.Zero);
+
+                        player.SetInt("energy", constants.GetInt("max_energy"));
+                        player.SetInt("health", constants.GetInt("max_health"));
+                        player.SetInt("fuel", constants.GetInt("max_fuel"));
+
+                        player.SetInt("frozen", 0);
+                        player.SetString("collisionPlayer", "");
+
+                        respawnStartedAt = 0;
+                    }
+
+            }
 
             PlayerIndex playerIndex = (PlayerIndex)player.GetInt("game_pad_index");
             Vector3 playerPosition = player.GetVector3("position");

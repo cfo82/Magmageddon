@@ -6,8 +6,8 @@
 
   <Entity name="player_constants">
     <Attributes>
-      <Attribute name="kind" template="string" value="constants"/> 
-      
+      <Attribute name="respawn_time" template="int" value="1000"/>
+
       <Attribute name="max_health" template="int" value="100"/>
       <Attribute name="max_energy" template="int" value="100"/>
       <Attribute name="max_fuel" template="int" value="2500"/>
@@ -53,8 +53,6 @@
 
   <Entity name="island_constants">
     <Attributes>
-      <Attribute name="kind" template="string" value="constants"/>
-
       <Attribute name="random_strength" template="float" value="1200"/>
       <Attribute name="max_velocity" template="float" value="100"/>
       <Attribute name="damping" template="float" value="0.001"/>

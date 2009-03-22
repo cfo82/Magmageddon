@@ -210,12 +210,12 @@
     <Compile Include="Models\cave_v002.fbx">
       <Name>cave_v002</Name>
       <Importer>FbxImporter</Importer>
-      <Processor>PillarProcessor</Processor>
+      <Processor>CaveProcessor</Processor>
     </Compile>
     <Compile Include="Models\flame_primitive.fbx">
       <Name>flame_primitive</Name>
       <Importer>FbxImporter</Importer>
-      <Processor>IceSpikeProcessor</Processor>
+      <Processor>FlameProcessor</Processor>
     </Compile>
     <None Include="Textures\Controls\arrow.png">
       <Name>arrow</Name>
@@ -529,6 +529,11 @@
       <Processor>TextureProcessor</Processor>
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
+    <Compile Include="Textures\flame.tga">
+      <Name>flame</Name>
+      <Importer>TextureImporter</Importer>
+      <Processor>TextureProcessor</Processor>
+    </Compile>
     <None Include="Textures\xna_logo.png">
       <Name>xna_logo</Name>
       <Importer>TextureImporter</Importer>
@@ -592,13 +597,6 @@
     </Compile>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Sounds\music.mp3">
-      <Name>music</Name>
-      <Importer>Mp3Importer</Importer>
-      <Processor>SongProcessor</Processor>
-    </Compile>
-  </ItemGroup>
-  <ItemGroup>
     <Compile Include="Sounds\flamethrower.wav">
       <Name>flamethrower</Name>
       <Importer>WavImporter</Importer>
@@ -610,6 +608,13 @@
       <Name>death</Name>
       <Importer>WavImporter</Importer>
       <Processor>SoundEffectProcessor</Processor>
+    </Compile>
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="Sounds\music.mp3">
+      <Name>music</Name>
+      <Importer>Mp3Importer</Importer>
+      <Processor>SongProcessor</Processor>
     </Compile>
   </ItemGroup>
   <Import Project="$(MSBuildExtensionsPath)\Microsoft\XNA Game Studio\v3.0\Microsoft.Xna.GameStudio.ContentPipeline.targets" />

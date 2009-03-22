@@ -1,4 +1,5 @@
 ﻿using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Graphics;
 using ProjectMagma.Framework;
 using ProjectMagma.Shared.BoundingVolume;
 using ProjectMagma.Collision.CollisionTests;
@@ -22,12 +23,12 @@ namespace ProjectMagma.Collision
                 string bv_type = entity.GetString("bv_type");
                 if (bv_type == "cylinder")
                 {
-                    BoundingCylinder bvCylinder = Game.CalculateBoundingCylinder(entity);
+                    BoundingCylinder bvCylinder = CalculateBoundingCylinder(entity);
                     Game.Instance.CollisionManager.AddCollisionEntity(entity, this, bvCylinder);
                 }
                 else if (bv_type == "sphere")
                 {
-                    BoundingSphere bvSphere = Game.CalculateBoundingSphere(entity);
+                    BoundingSphere bvSphere = CalculateBoundingSphere(entity);
                     Game.Instance.CollisionManager.AddCollisionEntity(entity, this, bvSphere);
                 }
             }
@@ -48,6 +49,54 @@ namespace ProjectMagma.Collision
             }
         }
 
+        private BoundingSphere CalculateBoundingSphere(Entity entity)
+        {
+            Model mesh = Game.Instance.Content.Load<Model>(entity.GetString("mesh"));
+
+            // calculate center
+            BoundingBox bb = CalculateBoundingBox(mesh);
+            Vector3 center = (bb.Min + bb.Max) / 2;
+
+            // calculate radius
+            //            float radius = (bb.Max-bb.Min).Length() / 2;
+            float radius = (bb.Max.Y - bb.Min.Y) / 2; // HACK: hack for player
+
+            return new BoundingSphere(center, radius);
+        }
+
+        // calculates y-axis aligned bounding cylinder
+        private BoundingCylinder CalculateBoundingCylinder(Entity entity)
+        {
+            Model mesh = Game.Instance.Content.Load<Model>(entity.GetString("mesh"));
+
+            // calculate center
+            BoundingBox bb = CalculateBoundingBox(mesh);
+            Vector3 center = (bb.Min + bb.Max) / 2;
+
+            float top = bb.Max.Y;
+            float bottom = bb.Min.Y;
+
+            // calculate radius
+            // a valid cylinder here is an extruded circle (not an oval) therefore extents in 
+            // x- and z-direction should be equal.
+            float radius = bb.Max.X - center.X;
+
+            return new BoundingCylinder(new Vector3(center.X, top, center.Z),
+                new Vector3(center.X, bottom, center.Z),
+                radius);
+        }
+
+        private BoundingBox CalculateBoundingBox(Entity entity)
+        {
+            Model mesh = Game.Instance.Content.Load<Model>(entity.GetString("mesh"));
+            return CalculateBoundingBox(mesh);
+        }
+
+        private BoundingBox CalculateBoundingBox(Model model)
+        {
+            return (BoundingBox)model.Tag;
+        }
+        
         public event ContactHandler OnContact;
     }
 }

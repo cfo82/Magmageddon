@@ -224,8 +224,8 @@ namespace ProjectMagma
             CreateManagementForm();
 
             // play that funky musik white boy
-            MediaPlayer.Play(Game.Instance.Content.Load<Song>("Sounds/music"));
-            MediaPlayer.Volume = 0.3f;
+            /*MediaPlayer.Play(Game.Instance.Content.Load<Song>("Sounds/music"));
+            MediaPlayer.Volume = 0.3f;*/
 
             MediaPlayer.IsMuted = true;
         }

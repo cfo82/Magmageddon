@@ -8,43 +8,52 @@ namespace ProjectMagma.Collision.CollisionTests
     public class ContactSphereCylinder
     {
         public static Contact Test(
-            Entity entity1, object boundingVolume1,
-            Entity entity2, object boundingVolume2
+            Entity entity1, object boundingVolume1, Matrix worldTransform1, Vector3 translation1, Quaternion rotation1, Vector3 scale1,
+            Entity entity2, object boundingVolume2, Matrix worldTransform2, Vector3 translation2, Quaternion rotation2, Vector3 scale2
             )
         {
             BoundingSphere sphere1 = (BoundingSphere)boundingVolume1;
             BoundingCylinder cylinder2 = (BoundingCylinder)boundingVolume2;
 
+            Debug.Assert(scale1.X == scale1.Y && scale1.Y == scale1.Z);
+            Debug.Assert(scale2.X == scale2.Y && scale2.Y == scale2.Z);
+
+            Vector3 center1 = Vector3.Transform(sphere1.Center, worldTransform1);
+            float radius1 = scale1.X * sphere1.Radius;
+            Vector3 top2 = Vector3.Transform(cylinder2.Top, worldTransform2);
+            Vector3 bottom2 = Vector3.Transform(cylinder2.Bottom, worldTransform2);
+            float radius2 = scale2.X * cylinder2.Radius;
+
             // sphere is on same level as the cylinder
-            if (sphere1.Center.Y < cylinder2.Top.Y &&
-                sphere1.Center.Y > cylinder2.Bottom.Y)
+            if (center1.Y < top2.Y &&
+                center1.Y > bottom2.Y)
             {
                 // distance between the two
-                Vector3 diff = cylinder2.Top - sphere1.Center;
+                Vector3 diff = top2 - center1;
                 diff.Y = 0; // we are only interested in horizontal distance
-                float collisionLengthSquared = (cylinder2.Radius + sphere1.Radius) * (cylinder2.Radius + sphere1.Radius);
-                if (collisionLengthSquared < diff.LengthSquared())
+                float collisionLengthSquared = (radius2 + radius1) * (radius2 + radius1);
+                if (diff.LengthSquared() < collisionLengthSquared)
                 {
                     Contact c = new Contact();
                     c.entityA = entity1;
                     c.entityB = entity2;
                     c.normal = diff;
                     c.normal.Normalize();
-                    c.position = sphere1.Center + c.normal * sphere1.Radius;
+                    c.position = center1 + c.normal * radius1;
                     return c;
                 }
             }
             // above cylinder...
-            else if (sphere1.Center.Y > cylinder2.Top.Y)
+            else if (center1.Y > top2.Y)
             {
-                if (sphere1.Center.Y - sphere1.Radius < cylinder2.Top.Y)
+                if (center1.Y - radius1 < top2.Y)
                 {
                     // project to top cylinder 'plane'
-                    Vector3 projected = sphere1.Center;
-                    projected.Y = cylinder2.Top.Y;
+                    Vector3 projected = center1;
+                    projected.Y = top2.Y;
 
-                    Vector3 toProjected = projected - cylinder2.Top;
-                    if (toProjected.LengthSquared() < cylinder2.Radius * cylinder2.Radius)
+                    Vector3 toProjected = projected - top2;
+                    if (toProjected.LengthSquared() < radius2 * radius2)
                     {
                         Contact c = new Contact();
                         c.entityA = entity1;
@@ -56,9 +65,9 @@ namespace ProjectMagma.Collision.CollisionTests
                     else
                     {
                         toProjected.Normalize();
-                        Vector3 nearestPoint = cylinder2.Top + toProjected * cylinder2.Radius;
-                        Vector3 normal = nearestPoint - sphere1.Center;
-                        if (normal.LengthSquared() < sphere1.Radius * sphere1.Radius)
+                        Vector3 nearestPoint = top2 + toProjected * radius2;
+                        Vector3 normal = nearestPoint - center1;
+                        if (normal.LengthSquared() < radius1 * radius1)
                         {
                             Contact c = new Contact();
                             c.entityA = entity1;
@@ -71,16 +80,16 @@ namespace ProjectMagma.Collision.CollisionTests
                 }
             }
             // below cylinder
-            else if (sphere1.Center.Y < cylinder2.Bottom.Y)
+            else if (center1.Y < bottom2.Y)
             {
-                if (sphere1.Center.Y + sphere1.Radius < cylinder2.Bottom.Y)
+                if (center1.Y + radius1 < bottom2.Y)
                 {
                     // project to bottom cylinder 'plane'
-                    Vector3 projected = sphere1.Center;
-                    projected.Y = cylinder2.Bottom.Y;
+                    Vector3 projected = center1;
+                    projected.Y = bottom2.Y;
 
-                    Vector3 toProjected = projected - cylinder2.Bottom;
-                    if (toProjected.LengthSquared() < cylinder2.Radius * cylinder2.Radius)
+                    Vector3 toProjected = projected - bottom2;
+                    if (toProjected.LengthSquared() < radius2 * radius2)
                     {
                         Contact c = new Contact();
                         c.entityA = entity1;
@@ -92,9 +101,9 @@ namespace ProjectMagma.Collision.CollisionTests
                     else
                     {
                         toProjected.Normalize();
-                        Vector3 nearestPoint = cylinder2.Bottom + toProjected * cylinder2.Radius;
-                        Vector3 normal = nearestPoint - sphere1.Center;
-                        if (normal.LengthSquared() < sphere1.Radius * sphere1.Radius)
+                        Vector3 nearestPoint = bottom2 + toProjected * radius2;
+                        Vector3 normal = nearestPoint - center1;
+                        if (normal.LengthSquared() < radius1 * radius1)
                         {
                             Contact c = new Contact();
                             c.entityA = entity1;

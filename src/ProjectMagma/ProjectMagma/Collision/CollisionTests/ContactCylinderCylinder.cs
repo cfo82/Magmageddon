@@ -1,4 +1,5 @@
-﻿using Microsoft.Xna.Framework;
+﻿using System.Diagnostics;
+using Microsoft.Xna.Framework;
 using ProjectMagma.Framework;
 using ProjectMagma.Shared.BoundingVolume;
 
@@ -7,22 +8,32 @@ namespace ProjectMagma.Collision.CollisionTests
     public class ContactCylinderCylinder
     {
         public static Contact Test(
-            Entity entity1, object boundingVolume1,
-            Entity entity2, object boundingVolume2
+            Entity entity1, object boundingVolume1, Matrix worldTransform1, Vector3 translation1, Quaternion rotation1, Vector3 scale1,
+            Entity entity2, object boundingVolume2, Matrix worldTransform2, Vector3 translation2, Quaternion rotation2, Vector3 scale2
             )
         {
             BoundingCylinder cylinder1 = (BoundingCylinder)boundingVolume1;
             BoundingCylinder cylinder2 = (BoundingCylinder)boundingVolume2;
 
-            float minTop = cylinder1.Top.Y < cylinder2.Top.Y ? cylinder1.Top.Y : cylinder2.Top.Y;
-            float maxBottom = cylinder1.Bottom.Y > cylinder2.Bottom.Y ? cylinder1.Bottom.Y : cylinder2.Bottom.Y;
+            Debug.Assert(scale1.X == scale1.Y && scale1.Y == scale1.Z);
+            Debug.Assert(scale2.X == scale2.Y && scale2.Y == scale2.Z);
+
+            Vector3 top1 = Vector3.Transform(cylinder1.Top, worldTransform1);
+            Vector3 bottom1 = Vector3.Transform(cylinder1.Bottom, worldTransform1);
+            Vector3 top2 = Vector3.Transform(cylinder2.Top, worldTransform2);
+            Vector3 bottom2 = Vector3.Transform(cylinder2.Bottom, worldTransform2);
+            float radius1 = scale1.X * cylinder1.Radius;
+            float radius2 = scale2.X * cylinder2.Radius;
+
+            float minTop = top1.Y < top2.Y ? top1.Y : top2.Y;
+            float maxBottom = bottom1.Y > bottom2.Y ? bottom1.Y : bottom2.Y;
             float overlap = minTop - maxBottom;
             if (overlap >= 0)
             {
-                Vector3 projected1 = new Vector3(cylinder1.Top.X, 0, cylinder1.Top.Z);
-                Vector3 projected2 = new Vector3(cylinder2.Top.X, 0, cylinder2.Top.Z);
+                Vector3 projected1 = new Vector3(top1.X, 0, top1.Z);
+                Vector3 projected2 = new Vector3(top2.X, 0, top2.Z);
                 Vector3 normal = projected2 - projected1;
-                float radiusSum = cylinder1.Radius + cylinder2.Radius;
+                float radiusSum = radius1 + radius2;
                 if (normal.LengthSquared() < radiusSum * radiusSum)
                 {
                     // collision
@@ -31,7 +42,7 @@ namespace ProjectMagma.Collision.CollisionTests
                     c.entityB = entity2;
                     c.normal = normal;
                     c.normal.Normalize();
-                    c.position = projected1 + c.normal * cylinder1.Radius + Vector3.UnitY * (minTop - overlap / 2.0f);
+                    c.position = projected1 + c.normal * radius1 + Vector3.UnitY * (minTop - overlap / 2.0f);
                     return c;
                 }
             }

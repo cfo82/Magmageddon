@@ -1,12 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using Microsoft.Xna.Framework;
+﻿using Microsoft.Xna.Framework;
 using ProjectMagma.Framework;
-using ProjectMagma.Shared.BoundingVolume;
 
-namespace ProjectMagma.CollisionManager.CollisionTests
+namespace ProjectMagma.Collision.CollisionTests
 {
     public class ContactSphereSphere
     {

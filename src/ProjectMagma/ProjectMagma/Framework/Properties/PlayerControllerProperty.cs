@@ -61,7 +61,7 @@ namespace ProjectMagma.Framework
             player.AddIntAttribute("frozen", 0);
             player.AddStringAttribute("collisionPlayer", "");
 
-            Game.Instance.EntityManager.EntityRemoved += new EntityRemovedHandler(entityRemovedHandler);
+            Game.Instance.EntityManager.EntityRemoved += new EntityRemovedHandler(EntityRemovedHandler);
 
             jetpackSound = Game.Instance.Content.Load<SoundEffect>("Sounds/jetpack");
             flameThrowerSound = Game.Instance.Content.Load<SoundEffect>("Sounds/flamethrower");
@@ -72,7 +72,7 @@ namespace ProjectMagma.Framework
         public void OnDetached(Entity player)
         {
             player.Update -= OnUpdate;
-            Game.Instance.EntityManager.EntityRemoved -= new EntityRemovedHandler(entityRemovedHandler);
+            Game.Instance.EntityManager.EntityRemoved -= new EntityRemovedHandler(EntityRemovedHandler);
         }
 
         private void OnUpdate(Entity player, GameTime gameTime)
@@ -109,7 +109,7 @@ namespace ProjectMagma.Framework
                         player.AddProperty("render", new RenderProperty());
                         int islandNo = rand.Next(Game.Instance.IslandManager.Count-1);
                         Entity island = Game.Instance.IslandManager[islandNo];
-                        BoundingBox bb = Game.calculateBoundingBox(island);
+                        BoundingBox bb = Game.CalculateBoundingBox(island);
                         Vector3 pos = island.GetVector3("position");
                         pos.Y = bb.Max.Y + 10;
                         player.SetVector3("position", pos);
@@ -204,7 +204,7 @@ namespace ProjectMagma.Framework
                 if (activeIsland != null && !controllerInput.jetpackButtonPressed)
                 {
                     // TODO: how to do this in future?
-                    BoundingCylinder ibc = Game.calculateBoundingCylinder(activeIsland);
+                    BoundingCylinder ibc = Game.CalculateBoundingCylinder(activeIsland);
 
                     Vector2 pp = new Vector2(playerPosition.X, playerPosition.Z);
                     Vector2 ic = new Vector2(ibc.Top.X, ibc.Bottom.Z);
@@ -250,7 +250,7 @@ namespace ProjectMagma.Framework
                 SoundEffect soundEffect = Game.Instance.Content.Load<SoundEffect>("Sounds/hit2");
                 soundEffect.Play();
 
-                BoundingBox bb = Game.calculateBoundingBox(player);
+                BoundingBox bb = Game.CalculateBoundingBox(player);
                 Vector3 pos = new Vector3(playerPosition.X, bb.Max.Y, playerPosition.Z);
                 Vector3 viewVector = Vector3.Transform(new Vector3(0, 0, 1), Game.GetRotation(player));
 
@@ -312,7 +312,7 @@ namespace ProjectMagma.Framework
                         // indicate 
                         flameThrowerSoundInstance = flameThrowerSound.Play(1, 1, 0, true);
 
-                        BoundingBox bb = Game.calculateBoundingBox(player);
+                        BoundingBox bb = Game.CalculateBoundingBox(player);
                         Vector3 pos = new Vector3(bb.Max.X, bb.Max.Y, playerPosition.Z);
                         Vector3 viewVector = Vector3.Transform(new Vector3(0, 0, 1), Game.GetRotation(player));
 
@@ -399,12 +399,12 @@ namespace ProjectMagma.Framework
             /// collision detection code
 
             // get bounding sphere
-            BoundingSphere bs = Game.calculateBoundingSphere(player);
+            BoundingSphere bs = Game.CalculateBoundingSphere(player);
 
             // check collison with islands
             foreach (Entity island in Game.Instance.IslandManager)
             {
-                BoundingCylinder ibc = Game.calculateBoundingCylinder(island);
+                BoundingCylinder ibc = Game.CalculateBoundingCylinder(island);
                 if (ibc.Intersects(bs))
                     playerIslandCollisionHandler(gameTime, player, island);
                 else
@@ -415,11 +415,11 @@ namespace ProjectMagma.Framework
             // check collison with pillars
             foreach (Entity pillar in Game.Instance.PillarManager)
             {
-                BoundingCylinder pbc = Game.calculateBoundingCylinder(pillar);
+                BoundingCylinder pbc = Game.CalculateBoundingCylinder(pillar);
 
                 if (pbc.Intersects(bs))
                 {
-                    playerPillarCollisionHandler(gameTime, player, pillar);
+                    PlayerPillarCollisionHandler(gameTime, player, pillar);
                     break;
                 }
             }
@@ -427,38 +427,38 @@ namespace ProjectMagma.Framework
             // check collision with juicy powerups
             foreach (Entity powerup in Game.Instance.PowerupManager)
             {
-                BoundingBox bb = Game.calculateBoundingBox(powerup);
+                BoundingBox bb = Game.CalculateBoundingBox(powerup);
 
                 if (bb.Intersects(bs))
                 {
-                    playerPowerupCollisionHandler(gameTime, player, powerup);
+                    PlayerPowerupCollisionHandler(gameTime, player, powerup);
                 }
             }
 
             // and check collision with other player
             foreach (Entity p in Game.Instance.PlayerManager)
             {
-                BoundingSphere obs = Game.calculateBoundingSphere(p);
+                BoundingSphere obs = Game.CalculateBoundingSphere(p);
 
                 if (obs.Intersects(bs) 
                     || player.Name.Equals(p.GetString("collisionPlayer") /* hack before collision manager */))
                 {
-                    playerPlayerCollisionHandler(gameTime, player, p);
+                    PlayerPlayerCollisionHandler(gameTime, player, p);
                 }
             }
 
             // check collision with lava
             Entity lava = Game.Instance.EntityManager["lava"];
             if (playerPosition.Y < lava.GetVector3("position").Y)
-                playerLavaCollisionHandler(gameTime, player, lava);
+                PlayerLavaCollisionHandler(gameTime, player, lava);
         }
 
         private void playerIslandCollisionHandler(GameTime gameTime, Entity player, Entity island)
         {
             Vector3 playerPosition = player.GetVector3("position");
 
-            BoundingSphere bs = Game.calculateBoundingSphere(player);
-            BoundingCylinder ibc = Game.calculateBoundingCylinder(island);
+            BoundingSphere bs = Game.CalculateBoundingSphere(player);
+            BoundingCylinder ibc = Game.CalculateBoundingCylinder(island);
 
             if (bs.Center.Y - bs.Radius < ibc.Top.Y && bs.Center.Y + bs.Radius > ibc.Top.Y)
             {
@@ -466,7 +466,7 @@ namespace ProjectMagma.Framework
 
                 // remove handler from old active island
                 if(activeIsland != null && activeIsland != island)
-                    ((Vector3Attribute)activeIsland.Attributes["position"]).ValueChanged -= islandPositionHandler;
+                    ((Vector3Attribute)activeIsland.Attributes["position"]).ValueChanged -= IslandPositionHandler;
 
                 // faster recharge standing on island
                 player.SetInt("fuel", player.GetInt("fuel") + (int)(gameTime.ElapsedGameTime.Milliseconds * 
@@ -476,7 +476,7 @@ namespace ProjectMagma.Framework
                 playerPosition.Y += (bs.Radius - (bs.Center.Y - ibc.Top.Y));
                 // add handler if active island changed
                 if (activeIsland == null)
-                    ((Vector3Attribute)island.Attributes["position"]).ValueChanged += islandPositionHandler;
+                    ((Vector3Attribute)island.Attributes["position"]).ValueChanged += IslandPositionHandler;
 
                 activeIsland = island; // mark as active
             }
@@ -516,16 +516,16 @@ namespace ProjectMagma.Framework
         private void playerIslandMissingCollisionHandler(GameTime gameTime, Entity player, Entity island)
         {
             // remove handler 
-            ((Vector3Attribute)island.Attributes["position"]).ValueChanged -= islandPositionHandler;
+            ((Vector3Attribute)island.Attributes["position"]).ValueChanged -= IslandPositionHandler;
             activeIsland = null;
         }
 
-        private void playerPillarCollisionHandler(GameTime gameTime, Entity player, Entity pillar)
+        private void PlayerPillarCollisionHandler(GameTime gameTime, Entity player, Entity pillar)
         {
             Vector3 playerPosition = player.GetVector3("position");
 
-            BoundingSphere bs = Game.calculateBoundingSphere(player);
-            BoundingCylinder pbc = Game.calculateBoundingCylinder(pillar);
+            BoundingSphere bs = Game.CalculateBoundingSphere(player);
+            BoundingCylinder pbc = Game.CalculateBoundingCylinder(pillar);
 
             // get center vectors
             Vector3 c = bs.Center;
@@ -543,7 +543,7 @@ namespace ProjectMagma.Framework
             player.SetVector3("position", playerPosition);
         }
 
-        private void playerLavaCollisionHandler(GameTime gameTime, Entity player, Entity lava)
+        private void PlayerLavaCollisionHandler(GameTime gameTime, Entity player, Entity lava)
         {
             player.SetInt("health", 0); // death
 
@@ -552,7 +552,7 @@ namespace ProjectMagma.Framework
             player.SetVector3("position", playerPosition);
         }
 
-        private void playerPowerupCollisionHandler(GameTime gameTime, Entity player, Entity powerup)
+        private void PlayerPowerupCollisionHandler(GameTime gameTime, Entity player, Entity powerup)
         {
             Game.Instance.EntityManager.RemoveDeferred(powerup);
 
@@ -566,15 +566,15 @@ namespace ProjectMagma.Framework
             soundEffect.Play();
         }
 
-        private void playerPlayerCollisionHandler(GameTime gameTime, Entity player, Entity otherPlayer)
+        private void PlayerPlayerCollisionHandler(GameTime gameTime, Entity player, Entity otherPlayer)
         {
             if (otherPlayer == player) // dont collide with self!
                 return;
 
             Vector3 playerPosition = player.GetVector3("position");
 
-            BoundingSphere bs = Game.calculateBoundingSphere(player);
-            BoundingSphere obs = Game.calculateBoundingSphere(otherPlayer);
+            BoundingSphere bs = Game.CalculateBoundingSphere(player);
+            BoundingSphere obs = Game.CalculateBoundingSphere(otherPlayer);
 
             if (obs.Intersects(bs))
                 otherPlayer.SetString("collisionPlayer", player.Name); // indicate collision
@@ -613,7 +613,7 @@ namespace ProjectMagma.Framework
             }
         }
 
-        private void islandPositionHandler(Vector3Attribute sender, Vector3 oldValue, Vector3 newValue)
+        private void IslandPositionHandler(Vector3Attribute sender, Vector3 oldValue, Vector3 newValue)
         {
             Vector3 position = player.GetVector3("position");
             Vector3 delta = newValue - oldValue;
@@ -621,7 +621,7 @@ namespace ProjectMagma.Framework
             player.SetVector3("position", position);
         }
 
-        private void entityRemovedHandler(EntityManager manager, Entity entity)
+        private void EntityRemovedHandler(EntityManager manager, Entity entity)
         {
             if (entity.Name.Equals("flame" + "_" + player.Name))
             {

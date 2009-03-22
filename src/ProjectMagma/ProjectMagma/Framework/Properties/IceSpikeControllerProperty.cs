@@ -53,7 +53,7 @@ namespace ProjectMagma.Framework
                 return;
             }
 
-            BoundingSphere bs = Game.calculateBoundingSphere(iceSpike);
+            BoundingSphere bs = Game.CalculateBoundingSphere(iceSpike);
 
             // detect collision
             foreach (Entity e in Game.Instance.EntityManager)
@@ -64,7 +64,7 @@ namespace ProjectMagma.Framework
                         && !(e.Name == "cave") // dont collide with cave 
                         && !(e.Name == iceSpike.GetString("player"))) // dont collide with shooter
                     {
-                        BoundingCylinder bc = Game.calculateBoundingCylinder(e);
+                        BoundingCylinder bc = Game.CalculateBoundingCylinder(e);
 
                         if (bc.Intersects(bs))
                         {

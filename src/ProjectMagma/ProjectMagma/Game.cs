@@ -1,24 +1,15 @@
 using System;
-using System.Diagnostics;
-using System.Threading;
-using System.Collections.Generic;
-using System.Linq;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Audio;
-using Microsoft.Xna.Framework.Content;
-using Microsoft.Xna.Framework.GamerServices;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 using Microsoft.Xna.Framework.Media;
-using Microsoft.Xna.Framework.Net;
-using Microsoft.Xna.Framework.Storage;
 using xWinFormsLib;
 
 using ProjectMagma.Framework;
 using ProjectMagma.Shared.BoundingVolume;
 using ProjectMagma.Shared.LevelData;
-using ProjectMagma.Shared.LevelData.Serialization;
-
+using ProjectMagma.Collision;
 
 // its worth to read this...
 // 
@@ -42,6 +33,7 @@ namespace ProjectMagma
         private EntityKindManager playerManager;
         private EntityKindManager powerupManager;
         private EntityKindManager iceSpikeManager;
+        private CollisionManager collisionManager;
 
         #region shadow related stuff
         // see http://www.ziggyware.com/readarticle.php?article_id=161
@@ -91,6 +83,7 @@ namespace ProjectMagma
             playerManager = new EntityKindManager(entityManager, "player");
             powerupManager = new EntityKindManager(entityManager, "powerup");
             iceSpikeManager = new EntityKindManager(entityManager, "ice_spike");
+            collisionManager = new CollisionManager();
 
             bloom = new BloomComponent(this);
             Components.Add(bloom);
@@ -270,14 +263,20 @@ namespace ProjectMagma
                 graphics.ApplyChanges();
             }
 
+            // update all entities
             foreach (Entity e in entityManager)
             {
                 e.OnUpdate(gameTime);
             }
+            // perform collision detection
+            collisionManager.Update(gameTime);
+            // execute deferred add/remove orders on the entityManager
             entityManager.ExecuteDeferred();
 
+            // update the user interface
             formCollection.Update(gameTime);
 
+            // update all GameComponents registered
             base.Update(gameTime);
         }
 
@@ -432,6 +431,13 @@ namespace ProjectMagma
             }
         }
 
+        public CollisionManager CollisionManager
+        {
+            get
+            {
+                return collisionManager;
+            }
+        }
 
         public ManagementForm ManagementForm
         {
@@ -449,7 +455,7 @@ namespace ProjectMagma
          * HELPER functions, refactor!
            */
 
-        public static BoundingSphere calculateBoundingSphere(Entity entity)
+        public static BoundingSphere CalculateBoundingSphere(Entity entity)
         {
             Model mesh = Game.Instance.Content.Load<Model>(entity.GetString("mesh"));
             Vector3 position = GetPosition(entity);
@@ -457,7 +463,7 @@ namespace ProjectMagma
             Quaternion rotation = GetRotation(entity);
 
             // calculate center
-            BoundingBox bb = calculateBoundingBox(mesh, position, rotation, scale);
+            BoundingBox bb = CalculateBoundingBox(mesh, position, rotation, scale);
             Vector3 center = (bb.Min + bb.Max) / 2;
 
             // calculate radius
@@ -468,7 +474,7 @@ namespace ProjectMagma
         }
 
         // calculates y-axis aligned bounding cylinder
-        public static BoundingCylinder calculateBoundingCylinder(Entity entity)
+        public static BoundingCylinder CalculateBoundingCylinder(Entity entity)
         {
             Model mesh = Game.Instance.Content.Load<Model>(entity.GetString("mesh"));
             Vector3 position = GetPosition(entity);
@@ -476,7 +482,7 @@ namespace ProjectMagma
             Quaternion rotation = GetRotation(entity);
 
             // calculate center
-            BoundingBox bb = calculateBoundingBox(mesh, position, rotation, scale);
+            BoundingBox bb = CalculateBoundingBox(mesh, position, rotation, scale);
             Vector3 center = (bb.Min + bb.Max) / 2;
 
             float top = bb.Max.Y;
@@ -492,17 +498,17 @@ namespace ProjectMagma
                 radius);
         }
 
-        public static BoundingBox calculateBoundingBox(Entity entity)
+        public static BoundingBox CalculateBoundingBox(Entity entity)
         {
             Model mesh = Game.Instance.Content.Load<Model>(entity.GetString("mesh"));
             Vector3 position = GetPosition(entity);
             Vector3 scale = GetScale(entity);
             Quaternion rotation = GetRotation(entity);
 
-            return calculateBoundingBox(mesh, position, rotation, scale);
+            return CalculateBoundingBox(mesh, position, rotation, scale);
         }
 
-        public static BoundingBox calculateBoundingBox(Model model, Vector3 position, Quaternion rotation, Vector3 scale)
+        public static BoundingBox CalculateBoundingBox(Model model, Vector3 position, Quaternion rotation, Vector3 scale)
         {
             Matrix world = Matrix.CreateScale(scale) * Matrix.CreateFromQuaternion(rotation) * Matrix.CreateTranslation(position);
 
@@ -512,7 +518,7 @@ namespace ProjectMagma
             return bb;
         }
 
-        public static float pow2(float a)
+        public static float Pow2(float a)
         {
             return a * a;
         }
@@ -546,8 +552,4 @@ namespace ProjectMagma
             }
         }
     }
-
-
-        
-      
 }

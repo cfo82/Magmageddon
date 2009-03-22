@@ -128,14 +128,14 @@ namespace ProjectMagma.Framework
 
 
             // collision detection
-            BoundingSphere bs = Game.calculateBoundingSphere(flame);
+            BoundingSphere bs = Game.CalculateBoundingSphere(flame);
 
             // detect collision
             foreach (Entity p in Game.Instance.PlayerManager)
             {
                 if (p.Name != player.Name) // dont collide with user
                 {
-                    BoundingSphere pbs = Game.calculateBoundingSphere(p);
+                    BoundingSphere pbs = Game.CalculateBoundingSphere(p);
 
                     if (pbs.Intersects(bs))
                     {
@@ -148,7 +148,7 @@ namespace ProjectMagma.Framework
             // detect collision
             foreach (Entity i in Game.Instance.IslandManager)
             {
-                BoundingCylinder pbc = Game.calculateBoundingCylinder(i);
+                BoundingCylinder pbc = Game.CalculateBoundingCylinder(i);
 
                 if (pbc.Intersects(bs))
                 {

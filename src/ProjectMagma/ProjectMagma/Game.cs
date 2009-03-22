@@ -227,7 +227,7 @@ namespace ProjectMagma
             MediaPlayer.Play(Game.Instance.Content.Load<Song>("Sounds/music"));
             MediaPlayer.Volume = 0.3f;
 
-//            Game.Instance.Content.Load<SoundEffect>("Sounds/gong1").Play();
+            MediaPlayer.IsMuted = true;
         }
 
         /// <summary>

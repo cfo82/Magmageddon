@@ -5,6 +5,7 @@ using System.Linq;
 using System.Text;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
+using ProjectMagma.Shared.BoundingVolume;
 
 namespace ProjectMagma.Framework
 {
@@ -16,11 +17,13 @@ namespace ProjectMagma.Framework
 
         private float scaleFactor = 1;
         private double at;
-        private Vector3 fullScale;
 
         FlameThrowerState flameThrowerState = FlameThrowerState.InActive;
         private double flameThrowerStateChangedAt = 0;
         private int flameThrowerWarmupDeducted = 0;
+
+        private Dictionary<string, double> playersHitAt;
+        private Dictionary<string, double> islandsHitAt;
 
         enum FlameThrowerState
         {
@@ -43,6 +46,9 @@ namespace ProjectMagma.Framework
 
             flame.AddBoolAttribute("fueled", true);
             flame.GetBoolAttribute("fueled").ValueChanged += new BoolChangeHandler(flameFuelChangeHandler);
+
+            playersHitAt = new Dictionary<string, double>(Game.Instance.PlayerManager.Count);
+            islandsHitAt = new Dictionary<string, double>(Game.Instance.IslandManager.Count);
 
             flame.Update += OnUpdate;
         }
@@ -87,6 +93,7 @@ namespace ProjectMagma.Framework
             else
             if(flameThrowerState == FlameThrowerState.Active)
             {
+
                 int energyPerSecond = constants.GetInt("flamethrower_energy_per_second");
                 if (at >= flameThrowerStateChangedAt + 1000 / energyPerSecond)
                 {
@@ -124,7 +131,6 @@ namespace ProjectMagma.Framework
 
 
             // collision detection
-
             BoundingSphere bs = Game.calculateBoundingSphere(flame);
 
             // detect collision
@@ -142,7 +148,17 @@ namespace ProjectMagma.Framework
                 }
             }
 
+            // detect collision
+            foreach (Entity i in Game.Instance.IslandManager)
+            {
+                BoundingCylinder pbc = Game.calculateBoundingCylinder(i);
 
+                if (pbc.Intersects(bs))
+                {
+                    islandCollisionHandler(gameTime, flame, i);
+                    return;
+                }
+            }
         }
 
         private void playerPositionHandler(Vector3Attribute sender, Vector3 oldValue, Vector3 newValue)
@@ -171,7 +187,41 @@ namespace ProjectMagma.Framework
 
         private void playerCollisionHandler(GameTime gameTime, Entity flame, Entity player)
         {
-            player.SetInt("health", player.GetInt("health") - 1);
+            if (!playersHitAt.ContainsKey(player.Name))
+                playersHitAt[player.Name] = at;
+            else
+            {
+                int health = player.GetInt("health");
+                playersHitAt[player.Name] = applyPerSecond(at, playersHitAt[player.Name],
+                    constants.GetInt("flamethrower_player_damage_per_second"), ref health);
+                player.SetInt("health", health);
+            }
+            player.SetInt("frozen", 0);
+        }
+
+        private void islandCollisionHandler(GameTime gameTime, Entity flame, Entity island)
+        {
+            if (!islandsHitAt.ContainsKey(island.Name))
+                islandsHitAt[island.Name] = at;
+            else
+            {
+                int health = island.GetInt("health");
+                islandsHitAt[island.Name] = applyPerSecond(at, islandsHitAt[island.Name], 
+                    constants.GetInt("flamethrower_island_damage_per_second"), ref health);
+                island.SetInt("health", health);
+            }
+        }
+
+        private double applyPerSecond(double current, double last, int perSecond, ref int value)
+        {
+            if (current >= last + 1000f / perSecond)
+            {
+                int times = ((int)(current - last) / perSecond);
+                value += times;
+                return last + times * perSecond;
+            }
+            else
+                return last;
         }
 
     }

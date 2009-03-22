@@ -18,6 +18,10 @@ namespace ProjectMagma.Framework
         public void OnAttached(Entity entity)
         {
             entity.AddIntAttribute("collisionCount", 0);
+
+            // TODO: make this an attribute or add a constant for specifing health/size multiplier
+            entity.AddIntAttribute("health", (int)entity.GetVector3("scale").Length() * 5);
+
             this.constants = Game.Instance.EntityManager["island_constants"];
 
             entity.Update += OnUpdate;
@@ -31,6 +35,12 @@ namespace ProjectMagma.Framework
 
         private void OnUpdate(Entity island, GameTime gameTime)
         {
+            if (island.GetInt("health") <= 0)
+            {
+                Game.Instance.EntityManager.RemoveDeferred(island);
+                return;
+            }
+
             float dt = ((float)gameTime.ElapsedGameTime.Milliseconds)/1000.0f;
 
             // control this island

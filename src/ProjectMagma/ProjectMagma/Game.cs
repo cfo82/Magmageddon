@@ -190,6 +190,7 @@ namespace ProjectMagma
             {
                 Game.Instance.Content.Load<SoundEffect>("Sounds/" + e.GetString("pickup_sound"));
             }
+            Game.Instance.Content.Load<SoundEffect>("Sounds/gong1");
             Game.Instance.Content.Load<SoundEffect>("Sounds/punch2");
             Game.Instance.Content.Load<SoundEffect>("Sounds/hit2");
             Game.Instance.Content.Load<SoundEffect>("Sounds/sword-clash");
@@ -230,10 +231,10 @@ namespace ProjectMagma
             CreateManagementForm();
 
             // play that funky musik white boy
-            /*
             MediaPlayer.Play(Game.Instance.Content.Load<Song>("Sounds/music"));
-            MediaPlayer.Volume = 0.1f;
-             */
+            MediaPlayer.Volume = 0.3f;
+
+//            Game.Instance.Content.Load<SoundEffect>("Sounds/gong1").Play();
         }
 
         /// <summary>

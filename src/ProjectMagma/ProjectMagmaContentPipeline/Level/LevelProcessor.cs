@@ -6,13 +6,14 @@ using Microsoft.Xna.Framework.Content.Pipeline;
 using System.Xml;
 using ProjectMagma.Shared.LevelData;
 using ProjectMagma.Shared.LevelData.Serialization;
+using System.IO;
 
 namespace ProjectMagmaContentPipeline.Level
 {
     [ContentProcessor(DisplayName = "Magma - Level Processor")]
     class LevelProcessor : ContentProcessor<XmlDocument, LevelData>
     {
-        private XmlElement GetChild(XmlElement parent, String childTag)
+        private static XmlElement GetChild(XmlElement parent, String childTag)
         {
             XmlNodeList list = parent.GetElementsByTagName(childTag);
             if (list.Count == 0)
@@ -25,7 +26,7 @@ namespace ProjectMagmaContentPipeline.Level
             }
         }
 
-        private void ProcessAttributesNode(XmlElement attributesNode, EntityData entityData)
+        private void ProcessAttributesNode(XmlElement attributesNode, EntityData entityData, ContentProcessorContext context)
         {
             foreach (XmlNode attributeNode in attributesNode.ChildNodes)
             {
@@ -41,7 +42,7 @@ namespace ProjectMagmaContentPipeline.Level
             }
         }
 
-        private void ProcessPropertiesNode(XmlElement propertiesNode, EntityData entityData)
+        private void ProcessPropertiesNode(XmlElement propertiesNode, EntityData entityData, ContentProcessorContext context)
         {
             foreach (XmlNode propertyNode in propertiesNode.ChildNodes)
             {
@@ -56,7 +57,7 @@ namespace ProjectMagmaContentPipeline.Level
             }
         }
 
-        private void ProcessEntityNode(XmlElement entityElement, EntityData entityData)
+        private void ProcessEntityNode(XmlElement entityElement, EntityData entityData, ContentProcessorContext context)
         {
             entityData.isAbstract = entityElement.HasAttribute("abstract") && (entityElement.GetAttribute("abstract") == "true");
             entityData.name = entityElement.GetAttribute("name");
@@ -65,17 +66,17 @@ namespace ProjectMagmaContentPipeline.Level
             XmlElement attributesElement = GetChild(entityElement, "Attributes");
             if (attributesElement != null)
             {
-                ProcessAttributesNode(attributesElement, entityData);
+                ProcessAttributesNode(attributesElement, entityData, context);
             }
             XmlElement propertiesElement = GetChild(entityElement, "Properties");
             if (propertiesElement != null)
             {
-                ProcessPropertiesNode(propertiesElement, entityData);
+                ProcessPropertiesNode(propertiesElement, entityData, context);
             }
 
         }
 
-        private void ProcessIncludesElement(XmlElement includesElement, LevelData levelData)
+        private void ProcessIncludesElement(XmlElement includesElement, LevelData levelData, ContentProcessorContext context)
         {
             foreach (XmlNode includeNode in includesElement.ChildNodes)
             {
@@ -84,10 +85,13 @@ namespace ProjectMagmaContentPipeline.Level
                 {
                     string includefile = includeElement.GetAttribute("name");
 
+                    // add dependency
+                    context.AddDependency(Path.GetFullPath(includefile));
+
                     // open document
                     XmlDocument document = new XmlDocument();
                     document.Load(includefile);
-                    LevelData includedData = ProcessLevelData(document);
+                    LevelData includedData = ProcessLevelData(document, context);
 
                     foreach (EntityData entityData in includedData.entities.Values)
                     {
@@ -97,7 +101,7 @@ namespace ProjectMagmaContentPipeline.Level
             }
         }
 
-        private LevelData ProcessLevelData(XmlDocument input)
+        private LevelData ProcessLevelData(XmlDocument input, ContentProcessorContext context)
         {
             LevelData levelData = new LevelData();
             
@@ -106,7 +110,7 @@ namespace ProjectMagmaContentPipeline.Level
             XmlElement includesElement = GetChild(documentRoot, "Includes");
             if (includesElement != null)
             {
-                ProcessIncludesElement(includesElement, levelData);
+                ProcessIncludesElement(includesElement, levelData, context);
             }
 
             foreach (XmlNode entityNode in documentRoot.ChildNodes)
@@ -115,7 +119,7 @@ namespace ProjectMagmaContentPipeline.Level
                 if (entityElement != null)
                 {
                     EntityData entityData = new EntityData();
-                    ProcessEntityNode(entityElement, entityData);
+                    ProcessEntityNode(entityElement, entityData, context);
                     levelData.entities.Add(entityData.name, entityData);
                 }
             }
@@ -125,7 +129,7 @@ namespace ProjectMagmaContentPipeline.Level
 
         public override LevelData Process(XmlDocument input, ContentProcessorContext context)
         {
-            return ProcessLevelData(input);
+            return ProcessLevelData(input, context);
         }
 
     }

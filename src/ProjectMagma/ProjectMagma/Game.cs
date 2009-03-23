@@ -269,6 +269,7 @@ namespace ProjectMagma
             }
             // perform collision detection
             collisionManager.Update(gameTime);
+
             // execute deferred add/remove orders on the entityManager
             entityManager.ExecuteDeferred();
 
@@ -304,11 +305,12 @@ namespace ProjectMagma
             //and do depth comparisons in the shader to determine shadowing
             RenderScene(gameTime);
 
-            hud.Draw(gameTime);
-
-            formCollection.Draw();
-
+            // will apply effect such as bloom
             base.Draw(gameTime);
+
+            // draw stuff which should net be filtered
+            hud.Draw(gameTime);
+            formCollection.Draw();
         }
 
         private void RenderScene(GameTime gameTime)

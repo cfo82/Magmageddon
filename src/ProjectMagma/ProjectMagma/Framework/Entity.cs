@@ -397,6 +397,11 @@ namespace ProjectMagma.Framework
             }
         }
 
+        public bool HasProperty(string name)
+        {
+            return properties.ContainsKey(name);
+        }
+
         public Property GetProperty(string name)
         {
             return properties[name];

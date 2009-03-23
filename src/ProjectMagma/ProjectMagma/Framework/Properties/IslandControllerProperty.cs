@@ -37,6 +37,10 @@ namespace ProjectMagma.Framework
         public void OnDetached(Entity entity)
         {
             entity.Update -= OnUpdate;
+            if (entity.HasProperty("collision"))
+            {
+                ((CollisionProperty)entity.GetProperty("collision")).OnContact -= new ContactHandler(PlayerCollisionHandler);
+            }
             // TODO: remove attribute!
         }
 

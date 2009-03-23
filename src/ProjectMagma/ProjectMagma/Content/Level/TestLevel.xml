@@ -62,6 +62,8 @@
       <Attribute name="pillar_elasticity" template="float" value="0.1"/>
       <Attribute name="pillar_attraction" template="float" value="0.0001"/>
       <Attribute name="pillar_repulsion" template="float" value="0.03"/>
+      <Attribute name="sinking_speed" template="float" value="20.0"/>
+      <Attribute name="rising_speed" template="float" value="30.0"/>
     </Attributes>
   </Entity>
 
@@ -119,9 +121,9 @@
       <Attribute name="bv_type" template="string" value="cylinder"/>
     </Attributes>
     <Properties>
+      <Property name="collision" type="ProjectMagma.Collision.CollisionProperty"/>
       <Property name="render" type="ProjectMagma.Framework.RenderProperty"/>
       <Property name="render_highlight" type="ProjectMagma.Framework.RenderHighlightProperty"/>
-      <Property name="collision" type="ProjectMagma.Collision.CollisionProperty"/>
     </Properties>
   </Entity>
 
@@ -134,9 +136,9 @@
       <Attribute name="bv_type" template="string" value="cylinder"/>
     </Attributes>
     <Properties>
+      <Property name="collision" type="ProjectMagma.Collision.CollisionProperty"/>
       <Property name="render" type="ProjectMagma.Framework.RenderProperty"/>
       <Property name="render_highlight" type="ProjectMagma.Framework.RenderHighlightProperty"/>
-      <Property name="collision" type="ProjectMagma.Collision.CollisionProperty"/>
     </Properties>
   </Entity>
 
@@ -149,9 +151,9 @@
       <Attribute name="bv_type" template="string" value="cylinder"/>
     </Attributes>
     <Properties>
+      <Property name="collision" type="ProjectMagma.Collision.CollisionProperty"/>
       <Property name="render" type="ProjectMagma.Framework.RenderProperty"/>
       <Property name="render_highlight" type="ProjectMagma.Framework.RenderHighlightProperty"/>
-      <Property name="collision" type="ProjectMagma.Collision.CollisionProperty"/>
     </Properties>
   </Entity>
 
@@ -164,9 +166,9 @@
       <Attribute name="bv_type" template="string" value="cylinder"/>
     </Attributes>
     <Properties>
+      <Property name="collision" type="ProjectMagma.Collision.CollisionProperty"/>
       <Property name="render" type="ProjectMagma.Framework.RenderProperty"/>
       <Property name="render_highlight" type="ProjectMagma.Framework.RenderHighlightProperty"/>
-      <Property name="collision" type="ProjectMagma.Collision.CollisionProperty"/>
     </Properties>
   </Entity>
 
@@ -179,9 +181,9 @@
       <Attribute name="bv_type" template="string" value="cylinder"/>
     </Attributes>
     <Properties>
+      <Property name="collision" type="ProjectMagma.Collision.CollisionProperty"/>
       <Property name="render" type="ProjectMagma.Framework.RenderProperty"/>
       <Property name="render_highlight" type="ProjectMagma.Framework.RenderHighlightProperty"/>
-      <Property name="collision" type="ProjectMagma.Collision.CollisionProperty"/>
     </Properties>
   </Entity>
     
@@ -196,11 +198,11 @@
       <Attribute name="bv_type" template="string" value="cylinder"/>
     </Attributes>
     <Properties>
+      <Property name="collision" type="ProjectMagma.Collision.CollisionProperty"/>
       <Property name="controller" type="ProjectMagma.Framework.IslandControllerProperty"/>
       <Property name="shadow_cast" type="ProjectMagma.Framework.ShadowCastProperty"/>
       <Property name="render" type="ProjectMagma.Framework.RenderProperty"/>
       <Property name="render_highlight" type="ProjectMagma.Framework.RenderHighlightProperty"/>
-      <Property name="collision" type="ProjectMagma.Collision.CollisionProperty"/>
     </Properties>
   </Entity>
 
@@ -215,11 +217,11 @@
       <Attribute name="bv_type" template="string" value="cylinder"/>
     </Attributes>
     <Properties>
+      <Property name="collision" type="ProjectMagma.Collision.CollisionProperty"/>
       <Property name="controller" type="ProjectMagma.Framework.IslandControllerProperty"/>
       <Property name="shadow_cast" type="ProjectMagma.Framework.ShadowCastProperty"/>
       <Property name="render" type="ProjectMagma.Framework.RenderProperty"/>
       <Property name="render_highlight" type="ProjectMagma.Framework.RenderHighlightProperty"/>
-      <Property name="collision" type="ProjectMagma.Collision.CollisionProperty"/>
     </Properties>
   </Entity>
 
@@ -234,11 +236,11 @@
       <Attribute name="bv_type" template="string" value="cylinder"/>
     </Attributes>
     <Properties>
+      <Property name="collision" type="ProjectMagma.Collision.CollisionProperty"/>
       <Property name="controller" type="ProjectMagma.Framework.IslandControllerProperty"/>
       <Property name="shadow_cast" type="ProjectMagma.Framework.ShadowCastProperty"/>
       <Property name="render" type="ProjectMagma.Framework.RenderProperty"/>
       <Property name="render_highlight" type="ProjectMagma.Framework.RenderHighlightProperty"/>
-      <Property name="collision" type="ProjectMagma.Collision.CollisionProperty"/>
     </Properties>
   </Entity>
 
@@ -253,11 +255,11 @@
       <Attribute name="bv_type" template="string" value="cylinder"/>
     </Attributes>
     <Properties>
+      <Property name="collision" type="ProjectMagma.Collision.CollisionProperty"/>
       <Property name="controller" type="ProjectMagma.Framework.IslandControllerProperty"/>
       <Property name="shadow_cast" type="ProjectMagma.Framework.ShadowCastProperty"/>
       <Property name="render" type="ProjectMagma.Framework.RenderProperty"/>
       <Property name="render_highlight" type="ProjectMagma.Framework.RenderHighlightProperty"/>
-      <Property name="collision" type="ProjectMagma.Collision.CollisionProperty"/>
     </Properties>
   </Entity>
 
@@ -272,11 +274,11 @@
       <Attribute name="bv_type" template="string" value="cylinder"/>
     </Attributes>
     <Properties>
+      <Property name="collision" type="ProjectMagma.Collision.CollisionProperty"/>
       <Property name="controller" type="ProjectMagma.Framework.IslandControllerProperty"/>
       <Property name="shadow_cast" type="ProjectMagma.Framework.ShadowCastProperty"/>
       <Property name="render" type="ProjectMagma.Framework.RenderProperty"/>
       <Property name="render_highlight" type="ProjectMagma.Framework.RenderHighlightProperty"/>
-      <Property name="collision" type="ProjectMagma.Collision.CollisionProperty"/>
     </Properties>
   </Entity>
 
@@ -291,11 +293,11 @@
       <Attribute name="bv_type" template="string" value="cylinder"/>
     </Attributes>
     <Properties>
+      <Property name="collision" type="ProjectMagma.Collision.CollisionProperty"/>
       <Property name="controller" type="ProjectMagma.Framework.IslandControllerProperty"/>
       <Property name="shadow_cast" type="ProjectMagma.Framework.ShadowCastProperty"/>
       <Property name="render" type="ProjectMagma.Framework.RenderProperty"/>
       <Property name="render_highlight" type="ProjectMagma.Framework.RenderHighlightProperty"/>
-      <Property name="collision" type="ProjectMagma.Collision.CollisionProperty"/>
     </Properties>
   </Entity>
 
@@ -310,11 +312,11 @@
       <Attribute name="bv_type" template="string" value="cylinder"/>
     </Attributes>
     <Properties>
+      <Property name="collision" type="ProjectMagma.Collision.CollisionProperty"/>
       <Property name="controller" type="ProjectMagma.Framework.IslandControllerProperty"/>
       <Property name="shadow_cast" type="ProjectMagma.Framework.ShadowCastProperty"/>
       <Property name="render" type="ProjectMagma.Framework.RenderProperty"/>
       <Property name="render_highlight" type="ProjectMagma.Framework.RenderHighlightProperty"/>
-      <Property name="collision" type="ProjectMagma.Collision.CollisionProperty"/>
     </Properties>
   </Entity>
 
@@ -368,11 +370,11 @@
       <Attribute name="bv_type" template="string" value="box"/>
     </Attributes>
     <Properties>
+      <Property name="collision" type="ProjectMagma.Collision.CollisionProperty"/>
       <Property name="controller" type="ProjectMagma.Framework.PowerUpController"/>
       <Property name="shadow_cast" type="ProjectMagma.Framework.ShadowCastProperty"/>
       <Property name="render" type="ProjectMagma.Framework.RenderProperty"/>
       <Property name="render_highlight" type="ProjectMagma.Framework.RenderHighlightProperty"/>
-      <Property name="collision" type="ProjectMagma.Collision.CollisionProperty"/>
     </Properties>
   </Entity>
 
@@ -390,11 +392,11 @@
       <Attribute name="bv_type" template="string" value="box"/>
     </Attributes>
     <Properties>
+      <Property name="collision" type="ProjectMagma.Collision.CollisionProperty"/>
       <Property name="controller" type="ProjectMagma.Framework.PowerUpController"/>
       <Property name="shadow_cast" type="ProjectMagma.Framework.ShadowCastProperty"/>
       <Property name="render" type="ProjectMagma.Framework.RenderProperty"/>
       <Property name="render_highlight" type="ProjectMagma.Framework.RenderHighlightProperty"/>
-      <Property name="collision" type="ProjectMagma.Collision.CollisionProperty"/>
     </Properties>
   </Entity>
 

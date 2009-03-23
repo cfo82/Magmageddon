@@ -39,7 +39,7 @@ namespace ProjectMagma.Framework
             entity.Update -= OnUpdate;
             if (entity.HasProperty("collision"))
             {
-                ((CollisionProperty)entity.GetProperty("collision")).OnContact -= new ContactHandler(PlayerCollisionHandler);
+                ((CollisionProperty)entity.GetProperty("collision")).OnContact -= new ContactHandler(CollisionHandler);
             }
             // TODO: remove attribute!
         }
@@ -154,13 +154,13 @@ namespace ProjectMagma.Framework
             Vector3 position = island.GetVector3("position");
             if (playerOnIsland)
             {
-                position += dt * (-Vector3.UnitY);
+                position += dt * constants.GetFloat("sinking_speed") * (-Vector3.UnitY);
             }
             else
             {
                 if (position.Y < originalPosition.Y)
                 {
-                    position += dt * Vector3.UnitY;
+                    position += dt * constants.GetFloat("rising_speed") * Vector3.UnitY;
                 }
             }
 

@@ -9,6 +9,8 @@ using Microsoft.Xna.Framework.Media;
 using System.Diagnostics;
 using Microsoft.Xna.Framework.Audio;
 using ProjectMagma.Shared.BoundingVolume;
+using ProjectMagma.Collision;
+using ProjectMagma.Collision.CollisionTests;
 
 namespace ProjectMagma.Framework
 {
@@ -49,7 +51,7 @@ namespace ProjectMagma.Framework
             this.constants = Game.Instance.EntityManager["player_constants"];
 
             player.AddQuaternionAttribute("rotation", Quaternion.Identity);
-            player.AddVector3Attribute("jetpack_velocity", Vector3.Zero);
+            player.AddVector3Attribute("velocity", Vector3.Zero);
 
             player.AddVector3Attribute("contact_pushback_velocity", Vector3.Zero);
             player.AddVector3Attribute("hit_pushback_velocity", Vector3.Zero);
@@ -62,6 +64,7 @@ namespace ProjectMagma.Framework
             player.AddStringAttribute("collisionPlayer", "");
 
             Game.Instance.EntityManager.EntityRemoved += new EntityRemovedHandler(EntityRemovedHandler);
+            ((CollisionProperty)player.GetProperty("collision")).OnContact += new ContactHandler(PlayerCollisionHandler);
 
             jetpackSound = Game.Instance.Content.Load<SoundEffect>("Sounds/jetpack");
             flameThrowerSound = Game.Instance.Content.Load<SoundEffect>("Sounds/flamethrower");
@@ -95,6 +98,7 @@ namespace ProjectMagma.Framework
                     Game.Instance.Content.Load<SoundEffect>("Sounds/death").Play();
 
                     player.RemoveProperty("render");
+                    player.RemoveProperty("shadow_cast");
                     return;
                 }
                 else
@@ -107,7 +111,9 @@ namespace ProjectMagma.Framework
                     {
                         // reposition
                         player.AddProperty("render", new RenderProperty());
-                        int islandNo = rand.Next(Game.Instance.IslandManager.Count-1);
+                        player.AddProperty("shadow_cast", new ShadowCastProperty());
+
+                        int islandNo = rand.Next(Game.Instance.IslandManager.Count - 1);
                         Entity island = Game.Instance.IslandManager[islandNo];
                         BoundingBox bb = Game.CalculateBoundingBox(island);
                         Vector3 pos = island.GetVector3("position");
@@ -116,7 +122,7 @@ namespace ProjectMagma.Framework
 
                         // reset
                         player.SetQuaternion("rotation", Quaternion.Identity);
-                        player.SetVector3("jetpack_velocity", Vector3.Zero);
+                        player.SetVector3("velocity", Vector3.Zero);
 
                         player.SetVector3("contact_pushback_velocity", Vector3.Zero);
                         player.SetVector3("hit_pushback_velocity", Vector3.Zero);
@@ -134,7 +140,7 @@ namespace ProjectMagma.Framework
 
             PlayerIndex playerIndex = (PlayerIndex)player.GetInt("game_pad_index");
             Vector3 playerPosition = player.GetVector3("position");
-            Vector3 jetpackVelocity = player.GetVector3("jetpack_velocity");
+            Vector3 playerVelocity = player.GetVector3("velocity");
             Vector3 contactPushbackVelocity = player.GetVector3("contact_pushback_velocity");
             Vector3 hitPushbackVelocity = player.GetVector3("hit_pushback_velocity");
             
@@ -159,12 +165,12 @@ namespace ProjectMagma.Framework
                 }
                 
                 fuel -= gameTime.ElapsedGameTime.Milliseconds;
-                jetpackVelocity += constants.GetVector3("jetpack_acceleration") * dt;
+                playerVelocity += constants.GetVector3("jetpack_acceleration") * dt;
 
-                if (jetpackVelocity.Length() > constants.GetFloat("max_jetpack_speed"))
+                if (playerVelocity.Length() > constants.GetFloat("max_jetpack_speed"))
                 {
-                    jetpackVelocity.Normalize();
-                    jetpackVelocity *= constants.GetFloat("max_jetpack_speed");
+                    playerVelocity.Normalize();
+                    playerVelocity *= constants.GetFloat("max_jetpack_speed");
                 }
             }
             else
@@ -182,10 +188,10 @@ namespace ProjectMagma.Framework
                 fuel = constants.GetInt("max_fuel");
 
             // gravity
-            if (jetpackVelocity.Length() <= constants.GetFloat("max_gravity_speed"))
-                jetpackVelocity += constants.GetVector3("gravity_acceleration") * dt;
+            if (playerVelocity.Length() <= constants.GetFloat("max_gravity_speed"))
+                playerVelocity += constants.GetVector3("gravity_acceleration") * dt;
             
-            playerPosition += jetpackVelocity * dt;
+            playerPosition += playerVelocity * dt;
 
             // XZ movement
             if (fuel > 0 && activeIsland == null)
@@ -389,40 +395,15 @@ namespace ProjectMagma.Framework
             player.SetInt("fuel", fuel);
 
             player.SetVector3("position", playerPosition);
-            player.SetVector3("jetpack_velocity", jetpackVelocity);
+            player.SetVector3("velocity", playerVelocity);
             player.SetVector3("contact_pushback_velocity", contactPushbackVelocity);
             player.SetVector3("hit_pushback_velocity", hitPushbackVelocity);
-
-
 
             /// TODO: move this to collision manager
             /// collision detection code
 
             // get bounding sphere
             BoundingSphere bs = Game.CalculateBoundingSphere(player);
-
-            // check collison with islands
-            foreach (Entity island in Game.Instance.IslandManager)
-            {
-                BoundingCylinder ibc = Game.CalculateBoundingCylinder(island);
-                if (ibc.Intersects(bs))
-                    playerIslandCollisionHandler(gameTime, player, island);
-                else
-                    if (island == activeIsland)
-                        playerIslandMissingCollisionHandler(gameTime, player, island);
-            }
-
-            // check collison with pillars
-            foreach (Entity pillar in Game.Instance.PillarManager)
-            {
-                BoundingCylinder pbc = Game.CalculateBoundingCylinder(pillar);
-
-                if (pbc.Intersects(bs))
-                {
-                    PlayerPillarCollisionHandler(gameTime, player, pillar);
-                    break;
-                }
-            }
 
             // check collision with juicy powerups
             foreach (Entity powerup in Game.Instance.PowerupManager)
@@ -435,32 +416,30 @@ namespace ProjectMagma.Framework
                 }
             }
 
-            // and check collision with other player
-            foreach (Entity p in Game.Instance.PlayerManager)
-            {
-                BoundingSphere obs = Game.CalculateBoundingSphere(p);
-
-                if (obs.Intersects(bs) 
-                    || player.Name.Equals(p.GetString("collisionPlayer") /* hack before collision manager */))
-                {
-                    PlayerPlayerCollisionHandler(gameTime, player, p);
-                }
-            }
-
             // check collision with lava
             Entity lava = Game.Instance.EntityManager["lava"];
             if (playerPosition.Y < lava.GetVector3("position").Y)
                 PlayerLavaCollisionHandler(gameTime, player, lava);
         }
 
-        private void playerIslandCollisionHandler(GameTime gameTime, Entity player, Entity island)
+        private void PlayerCollisionHandler(GameTime gameTime, Contact c)
+        {
+            String kind = c.entityB.GetString("kind");
+            if (kind == "island")
+                PlayerIslandCollisionHandler(gameTime, c.entityA, c.entityB, c);
+            else
+                if (kind == "pillar")
+                    PlayerPillarCollisionHandler(gameTime, c.entityA, c.entityB, c);
+                else
+                    if (kind == "player")
+                        PlayerPlayerCollisionHandler(gameTime, c.entityA, c.entityB, c);
+        }
+
+        private void PlayerIslandCollisionHandler(GameTime gameTime, Entity player, Entity island, Contact c)
         {
             Vector3 playerPosition = player.GetVector3("position");
 
-            BoundingSphere bs = Game.CalculateBoundingSphere(player);
-            BoundingCylinder ibc = Game.CalculateBoundingCylinder(island);
-
-            if (bs.Center.Y - bs.Radius < ibc.Top.Y && bs.Center.Y + bs.Radius > ibc.Top.Y)
+            if (c.position.Y < playerPosition.Y)
             {
                 // standing on island
 
@@ -473,54 +452,33 @@ namespace ProjectMagma.Framework
                     constants.GetFloat("fuel_recharge_multiplier_island")));
 
                 // correct position to exact touching point
-                playerPosition.Y += (bs.Radius - (bs.Center.Y - ibc.Top.Y));
+                playerPosition.Y = c.position.Y;
                 // add handler if active island changed
-                if (activeIsland == null)
+                if (activeIsland != island)
                     ((Vector3Attribute)island.Attributes["position"]).ValueChanged += IslandPositionHandler;
 
                 activeIsland = island; // mark as active
             }
             else
             {
-                // get pseudo center vectors
-                Vector3 c = bs.Center;
-                Vector3 cc = ibc.Top;
-                c.Y = 0; cc.Y = 0;
-
-                if ((c - cc).Length() > ibc.Radius)
+                if (Game.GetPosition(island).Y > c.position.Y)
                 {
-                    //                            Console.WriteLine("collision on xz");
-
                     // pushback in xz
-                    Vector3 dir = c - cc;
-                    float push = (bs.Radius + ibc.Radius) - dir.Length();
-
-                    dir.Normalize();
-                    dir *= push;
-
+                    Vector3 dir = c.normal;
+                    dir.Y = 0;
                     playerPosition += dir;
                 }
                 else
                 {
-                    //                            Console.WriteLine("collision from bottom");
-
                     // pushback on y
-                    float ydist = bs.Radius - (ibc.Bottom.Y - bs.Center.Y);
-                    playerPosition.Y -= ydist;
+                    playerPosition.Y -= c.normal.Y;
                 }
             }
 
             player.SetVector3("position", playerPosition);
         }
 
-        private void playerIslandMissingCollisionHandler(GameTime gameTime, Entity player, Entity island)
-        {
-            // remove handler 
-            ((Vector3Attribute)island.Attributes["position"]).ValueChanged -= IslandPositionHandler;
-            activeIsland = null;
-        }
-
-        private void PlayerPillarCollisionHandler(GameTime gameTime, Entity player, Entity pillar)
+        private void PlayerPillarCollisionHandler(GameTime gameTime, Entity player, Entity pillar, Contact co)
         {
             Vector3 playerPosition = player.GetVector3("position");
 
@@ -566,11 +524,8 @@ namespace ProjectMagma.Framework
             soundEffect.Play();
         }
 
-        private void PlayerPlayerCollisionHandler(GameTime gameTime, Entity player, Entity otherPlayer)
+        private void PlayerPlayerCollisionHandler(GameTime gameTime, Entity player, Entity otherPlayer, Contact c)
         {
-            if (otherPlayer == player) // dont collide with self!
-                return;
-
             Vector3 playerPosition = player.GetVector3("position");
 
             BoundingSphere bs = Game.CalculateBoundingSphere(player);

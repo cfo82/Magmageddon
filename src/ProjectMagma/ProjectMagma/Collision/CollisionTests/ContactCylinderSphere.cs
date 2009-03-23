@@ -10,10 +10,15 @@ namespace ProjectMagma.Collision.CollisionTests
             Entity entity2, object boundingVolume2, Matrix worldTransform2, Vector3 translation2, Quaternion rotation2, Vector3 scale2
             )
         {
-            return ContactSphereCylinder.Test(
+            Contact c = ContactSphereCylinder.Test(
                 entity2, boundingVolume2, worldTransform2, translation2, rotation2, scale2,
                 entity1, boundingVolume1, worldTransform1, translation1, rotation1, scale1
-                ).Reverse();
+                );
+            if (c != null)
+            {
+                c = c.Reverse();
+            }
+            return c;
         }
     }
 }

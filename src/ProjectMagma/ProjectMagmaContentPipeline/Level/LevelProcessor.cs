@@ -56,26 +56,58 @@ namespace ProjectMagmaContentPipeline.Level
             }
         }
 
-        private void ProcessEntityNode(XmlElement entityNode, EntityData entityData)
+        private void ProcessEntityNode(XmlElement entityElement, EntityData entityData)
         {
-            XmlElement attributesNode = GetChild(entityNode, "Attributes");
-            if (attributesNode != null)
+            entityData.isAbstract = entityElement.HasAttribute("abstract") && (entityElement.GetAttribute("abstract") == "true");
+            entityData.name = entityElement.GetAttribute("name");
+            entityData.parent = entityElement.HasAttribute("extends") ? entityElement.GetAttribute("extends") : "";
+
+            XmlElement attributesElement = GetChild(entityElement, "Attributes");
+            if (attributesElement != null)
             {
-                ProcessAttributesNode(attributesNode, entityData);
+                ProcessAttributesNode(attributesElement, entityData);
             }
-            XmlElement propertiesNode = GetChild(entityNode, "Properties");
-            if (propertiesNode != null)
+            XmlElement propertiesElement = GetChild(entityElement, "Properties");
+            if (propertiesElement != null)
             {
-                ProcessPropertiesNode(propertiesNode, entityData);
+                ProcessPropertiesNode(propertiesElement, entityData);
             }
 
         }
 
-        public override LevelData Process(XmlDocument input, ContentProcessorContext context)
+        private void ProcessIncludesElement(XmlElement includesElement, LevelData levelData)
+        {
+            foreach (XmlNode includeNode in includesElement.ChildNodes)
+            {
+                XmlElement includeElement = includeNode as XmlElement;
+                if (includeElement != null)
+                {
+                    string includefile = includeElement.GetAttribute("name");
+
+                    // open document
+                    XmlDocument document = new XmlDocument();
+                    document.Load(includefile);
+                    LevelData includedData = ProcessLevelData(document);
+
+                    foreach (EntityData entityData in includedData.entities.Values)
+                    {
+                        levelData.entities.Add(entityData.name, entityData);
+                    }
+                }
+            }
+        }
+
+        private LevelData ProcessLevelData(XmlDocument input)
         {
             LevelData levelData = new LevelData();
             
             XmlElement documentRoot = input.DocumentElement;
+
+            XmlElement includesElement = GetChild(documentRoot, "Includes");
+            if (includesElement != null)
+            {
+                ProcessIncludesElement(includesElement, levelData);
+            }
 
             foreach (XmlNode entityNode in documentRoot.ChildNodes)
             {
@@ -83,13 +115,17 @@ namespace ProjectMagmaContentPipeline.Level
                 if (entityElement != null)
                 {
                     EntityData entityData = new EntityData();
-                    entityData.name = entityElement.GetAttribute("name");
                     ProcessEntityNode(entityElement, entityData);
-                    levelData.entities.Add(entityData);
+                    levelData.entities.Add(entityData.name, entityData);
                 }
             }
 
             return levelData;
+        }
+
+        public override LevelData Process(XmlDocument input, ContentProcessorContext context)
+        {
+            return ProcessLevelData(input);
         }
 
     }

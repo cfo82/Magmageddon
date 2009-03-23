@@ -2,73 +2,12 @@
 <!DOCTYPE Level SYSTEM "Levels.dtd">
 <Level>
 
-  <!-- constants -->
+  <Includes>
+    <Include name="Level\Constants.xml"/>
+    <Include name="Level\Templates.xml"/>
+  </Includes>
 
-  <Entity name="player_constants">
-    <Attributes>
-      <Attribute name="respawn_time" template="int" value="1000"/>
-
-      <Attribute name="max_health" template="int" value="100"/>
-      <Attribute name="max_energy" template="int" value="100"/>
-      <Attribute name="max_fuel" template="int" value="2500"/>
-
-      <Attribute name="energy_recharge_interval" template="int" value="200"/>
-
-      <Attribute name="fuel_recharge_multiplier" template="float" value="0.75"/>
-      <Attribute name="fuel_recharge_multiplier_island" template="float" value="1.2"/>
-      <Attribute name="max_jetpack_speed" template="float" value="150"/>
-      <Attribute name="jetpack_acceleration" template="float3" value="0 1300 0"/>
-
-      <Attribute name="gravity_acceleration" template="float3" value="0 -900 0"/>
-      <Attribute name="max_gravity_speed" template="float" value="450"/>
-
-      <Attribute name="pushback_contact_velocity_multiplier" template="float" value="80"/>
-      <Attribute name="pushback_deacceleration_multiplier" template="float" value="300"/>
-
-      <Attribute name="ice_spike_speed" template="float" value="300"/>
-      <Attribute name="ice_spike_up_speed" template="float" value="200"/>
-      <Attribute name="ice_spike_aim_angle" template="float" value="45"/>
-      <Attribute name="ice_spike_energy_cost" template="int" value="2"/>
-      <Attribute name="ice_spike_damage" template="int" value="1"/>
-      <Attribute name="ice_spike_freeze_time" template="int" value="200"/>
-      <Attribute name="ice_spike_cooldown" template="int" value="50"/>
-
-      <Attribute name="flamethrower_warmup_time" template="int" value="600"/>
-      <Attribute name="flamethrower_warmup_energy_cost" template="int" value="20"/>
-      <Attribute name="flamethrower_energy_per_second" template="int" value="5"/>
-      <Attribute name="flamethrower_cooldown_time" template="int" value="400"/>
-      <Attribute name="flamethrower_turn_flame_increase" template="float" value="1"/>
-      <Attribute name="flamethrower_turn_scale" template="float" value="0.6"/>
-      <Attribute name="flamethrower_player_damage_per_second" template="int" value="8"/>
-      <Attribute name="flamethrower_island_damage_per_second" template="int" value="50"/>
-
-      <Attribute name="hit_damage" template="int" value="20"/>
-      <Attribute name="hit_cooldown" template="int" value="250"/>
-      <Attribute name="hit_pushback_velocity_multiplier" template="float" value="200"/>
-
-      <Attribute name="x_axis_movement_multiplier" template="float" value="140"/>
-      <Attribute name="z_axis_movement_multiplier" template="float" value="140"/>
-      <Attribute name="x_axis_jetpack_multiplier" template="float" value="200"/>
-      <Attribute name="z_axis_jetpack_multiplier" template="float" value="200"/>
-    </Attributes>
-  </Entity>
-
-  <Entity name="island_constants">
-    <Attributes>
-      <Attribute name="random_strength" template="float" value="1200"/>
-      <Attribute name="max_velocity" template="float" value="100"/>
-      <Attribute name="damping" template="float" value="0.001"/>
-
-      <Attribute name="pillar_elasticity" template="float" value="0.1"/>
-      <Attribute name="pillar_attraction" template="float" value="0.0001"/>
-      <Attribute name="pillar_repulsion" template="float" value="0.03"/>
-      <Attribute name="sinking_speed" template="float" value="20.0"/>
-      <Attribute name="rising_speed" template="float" value="30.0"/>
-    </Attributes>
-  </Entity>
-
-
-  <!-- game entities -->
+  <!-- "unique" game entities -->
 
   <Entity name="camera1">
     <Attributes>
@@ -112,292 +51,116 @@
     </Properties>
   </Entity>
   
-  <Entity name="pillar1">
+  <!-- masses of game elements... -->
+  
+  <Entity name="pillar1" extends="pillar_base">
     <Attributes>
-      <Attribute name="kind" template="string" value="pillar"/>
       <Attribute name="position" template="float3" value="230 0 260"/>
-      <Attribute name="scale" template="float3" value="200 200 200"/>
-      <Attribute name="mesh" template="string" value="Models/pillar_primitive"/>
-      <Attribute name="bv_type" template="string" value="cylinder"/>
     </Attributes>
-    <Properties>
-      <Property name="collision" type="ProjectMagma.Collision.CollisionProperty"/>
-      <Property name="render" type="ProjectMagma.Framework.RenderProperty"/>
-      <Property name="render_highlight" type="ProjectMagma.Framework.RenderHighlightProperty"/>
-    </Properties>
   </Entity>
 
-  <Entity name="pillar2">
+  <Entity name="pillar2" extends="pillar_base">
     <Attributes>
-      <Attribute name="kind" template="string" value="pillar"/>
       <Attribute name="position" template="float3" value="-250 0 130"/>
-      <Attribute name="scale" template="float3" value="200 200 200"/>
-      <Attribute name="mesh" template="string" value="Models/pillar_primitive"/>
-      <Attribute name="bv_type" template="string" value="cylinder"/>
     </Attributes>
-    <Properties>
-      <Property name="collision" type="ProjectMagma.Collision.CollisionProperty"/>
-      <Property name="render" type="ProjectMagma.Framework.RenderProperty"/>
-      <Property name="render_highlight" type="ProjectMagma.Framework.RenderHighlightProperty"/>
-    </Properties>
   </Entity>
 
-  <Entity name="pillar3">
+  <Entity name="pillar3" extends="pillar_base">
     <Attributes>
-      <Attribute name="kind" template="string" value="pillar"/>
       <Attribute name="position" template="float3" value="170 0 -120"/>
-      <Attribute name="scale" template="float3" value="200 200 200"/>
-      <Attribute name="mesh" template="string" value="Models/pillar_primitive"/>
-      <Attribute name="bv_type" template="string" value="cylinder"/>
     </Attributes>
-    <Properties>
-      <Property name="collision" type="ProjectMagma.Collision.CollisionProperty"/>
-      <Property name="render" type="ProjectMagma.Framework.RenderProperty"/>
-      <Property name="render_highlight" type="ProjectMagma.Framework.RenderHighlightProperty"/>
-    </Properties>
   </Entity>
 
-  <Entity name="pillar4">
+  <Entity name="pillar4" extends="pillar_base">
     <Attributes>
-      <Attribute name="kind" template="string" value="pillar"/>
       <Attribute name="position" template="float3" value="80 0 80"/>
-      <Attribute name="scale" template="float3" value="200 200 200"/>
-      <Attribute name="mesh" template="string" value="Models/pillar_primitive"/>
-      <Attribute name="bv_type" template="string" value="cylinder"/>
     </Attributes>
-    <Properties>
-      <Property name="collision" type="ProjectMagma.Collision.CollisionProperty"/>
-      <Property name="render" type="ProjectMagma.Framework.RenderProperty"/>
-      <Property name="render_highlight" type="ProjectMagma.Framework.RenderHighlightProperty"/>
-    </Properties>
   </Entity>
 
-  <Entity name="pillar5">
+  <Entity name="pillar5" extends="pillar_base">
     <Attributes>
-      <Attribute name="kind" template="string" value="pillar"/>
       <Attribute name="position" template="float3" value="10 0 -300"/>
-      <Attribute name="scale" template="float3" value="200 200 200"/>
-      <Attribute name="mesh" template="string" value="Models/pillar_primitive"/>
-      <Attribute name="bv_type" template="string" value="cylinder"/>
     </Attributes>
-    <Properties>
-      <Property name="collision" type="ProjectMagma.Collision.CollisionProperty"/>
-      <Property name="render" type="ProjectMagma.Framework.RenderProperty"/>
-      <Property name="render_highlight" type="ProjectMagma.Framework.RenderHighlightProperty"/>
-    </Properties>
   </Entity>
     
-  <Entity name="island1">
+  <Entity name="island1" extends="island_base">
     <Attributes>
-      <Attribute name="kind" template="string" value="island"/>
       <Attribute name="position" template="float3" value="60 160 -30"/>
-      <Attribute name="velocity" template="float3" value="0 0 0"/>
-      <Attribute name="acceleration" template="float3" value="0 0 0"/>
       <Attribute name="scale" template="float3" value="70 70 70"/>
-      <Attribute name="mesh" template="string" value="Models/islandproto_v002"/>
-      <Attribute name="bv_type" template="string" value="cylinder"/>
     </Attributes>
-    <Properties>
-      <Property name="collision" type="ProjectMagma.Collision.CollisionProperty"/>
-      <Property name="controller" type="ProjectMagma.Framework.IslandControllerProperty"/>
-      <Property name="shadow_cast" type="ProjectMagma.Framework.ShadowCastProperty"/>
-      <Property name="render" type="ProjectMagma.Framework.RenderProperty"/>
-      <Property name="render_highlight" type="ProjectMagma.Framework.RenderHighlightProperty"/>
-    </Properties>
   </Entity>
 
-  <Entity name="island2">
+  <Entity name="island2" extends="island_base">
     <Attributes>
-      <Attribute name="kind" template="string" value="island"/>
       <Attribute name="position" template="float3" value="-140 250 -240"/>
-      <Attribute name="velocity" template="float3" value="0 0 0"/>
-      <Attribute name="acceleration" template="float3" value="0 0 0"/>
       <Attribute name="scale" template="float3" value="70 70 70"/>
-      <Attribute name="mesh" template="string" value="Models/islandproto_v002"/>
-      <Attribute name="bv_type" template="string" value="cylinder"/>
     </Attributes>
-    <Properties>
-      <Property name="collision" type="ProjectMagma.Collision.CollisionProperty"/>
-      <Property name="controller" type="ProjectMagma.Framework.IslandControllerProperty"/>
-      <Property name="shadow_cast" type="ProjectMagma.Framework.ShadowCastProperty"/>
-      <Property name="render" type="ProjectMagma.Framework.RenderProperty"/>
-      <Property name="render_highlight" type="ProjectMagma.Framework.RenderHighlightProperty"/>
-    </Properties>
   </Entity>
 
-  <Entity name="island3">
+  <Entity name="island3" extends="island_base">
     <Attributes>
-      <Attribute name="kind" template="string" value="island"/>
       <Attribute name="position" template="float3" value="90 210 280"/>
-    <Attribute name="velocity" template="float3" value="0 0 0"/>
-    <Attribute name="acceleration" template="float3" value="0 0 0"/>
-    <Attribute name="scale" template="float3" value="40 40 40"/>
-    <Attribute name="mesh" template="string" value="Models/islandproto_v002"/>
-      <Attribute name="bv_type" template="string" value="cylinder"/>
+      <Attribute name="scale" template="float3" value="40 40 40"/>
     </Attributes>
-    <Properties>
-      <Property name="collision" type="ProjectMagma.Collision.CollisionProperty"/>
-      <Property name="controller" type="ProjectMagma.Framework.IslandControllerProperty"/>
-      <Property name="shadow_cast" type="ProjectMagma.Framework.ShadowCastProperty"/>
-      <Property name="render" type="ProjectMagma.Framework.RenderProperty"/>
-      <Property name="render_highlight" type="ProjectMagma.Framework.RenderHighlightProperty"/>
-    </Properties>
   </Entity>
 
-  <Entity name="island4">
+  <Entity name="island4" extends="island_base">
     <Attributes>
-      <Attribute name="kind" template="string" value="island"/>
       <Attribute name="position" template="float3" value="110 280 -300"/>
-      <Attribute name="velocity" template="float3" value="0 0 0"/>
-      <Attribute name="acceleration" template="float3" value="0 0 0"/>
       <Attribute name="scale" template="float3" value="40 40 40"/>
-      <Attribute name="mesh" template="string" value="Models/islandproto_v002"/>
-      <Attribute name="bv_type" template="string" value="cylinder"/>
     </Attributes>
-    <Properties>
-      <Property name="collision" type="ProjectMagma.Collision.CollisionProperty"/>
-      <Property name="controller" type="ProjectMagma.Framework.IslandControllerProperty"/>
-      <Property name="shadow_cast" type="ProjectMagma.Framework.ShadowCastProperty"/>
-      <Property name="render" type="ProjectMagma.Framework.RenderProperty"/>
-      <Property name="render_highlight" type="ProjectMagma.Framework.RenderHighlightProperty"/>
-    </Properties>
   </Entity>
 
-  <Entity name="island5">
+  <Entity name="island5" extends="island_base">
     <Attributes>
-      <Attribute name="kind" template="string" value="island"/>
       <Attribute name="position" template="float3" value="150 20 160"/>
-      <Attribute name="velocity" template="float3" value="0 0 0"/>
-      <Attribute name="acceleration" template="float3" value="0 0 0"/>
       <Attribute name="scale" template="float3" value="40 40 40"/>
-      <Attribute name="mesh" template="string" value="Models/islandproto_v002"/>
-      <Attribute name="bv_type" template="string" value="cylinder"/>
     </Attributes>
-    <Properties>
-      <Property name="collision" type="ProjectMagma.Collision.CollisionProperty"/>
-      <Property name="controller" type="ProjectMagma.Framework.IslandControllerProperty"/>
-      <Property name="shadow_cast" type="ProjectMagma.Framework.ShadowCastProperty"/>
-      <Property name="render" type="ProjectMagma.Framework.RenderProperty"/>
-      <Property name="render_highlight" type="ProjectMagma.Framework.RenderHighlightProperty"/>
-    </Properties>
   </Entity>
 
-  <Entity name="island6">
+  <Entity name="island6" extends="island_base">
     <Attributes>
-      <Attribute name="kind" template="string" value="island"/>
       <Attribute name="position" template="float3" value="-30 60 190"/>
-      <Attribute name="velocity" template="float3" value="0 0 0"/>
-      <Attribute name="acceleration" template="float3" value="0 0 0"/>
       <Attribute name="scale" template="float3" value="40 40 40"/>
-      <Attribute name="mesh" template="string" value="Models/islandproto_v002"/>
-      <Attribute name="bv_type" template="string" value="cylinder"/>
     </Attributes>
-    <Properties>
-      <Property name="collision" type="ProjectMagma.Collision.CollisionProperty"/>
-      <Property name="controller" type="ProjectMagma.Framework.IslandControllerProperty"/>
-      <Property name="shadow_cast" type="ProjectMagma.Framework.ShadowCastProperty"/>
-      <Property name="render" type="ProjectMagma.Framework.RenderProperty"/>
-      <Property name="render_highlight" type="ProjectMagma.Framework.RenderHighlightProperty"/>
-    </Properties>
   </Entity>
 
-  <Entity name="island7">
+  <Entity name="island7" extends="island_base">
     <Attributes>
-      <Attribute name="kind" template="string" value="island"/>
       <Attribute name="position" template="float3" value="-250 100 220"/>
-      <Attribute name="velocity" template="float3" value="0 0 0"/>
-      <Attribute name="acceleration" template="float3" value="0 0 0"/>
       <Attribute name="scale" template="float3" value="40 40 40"/>
-      <Attribute name="mesh" template="string" value="Models/islandproto_v002"/>
-      <Attribute name="bv_type" template="string" value="cylinder"/>
     </Attributes>
-    <Properties>
-      <Property name="collision" type="ProjectMagma.Collision.CollisionProperty"/>
-      <Property name="controller" type="ProjectMagma.Framework.IslandControllerProperty"/>
-      <Property name="shadow_cast" type="ProjectMagma.Framework.ShadowCastProperty"/>
-      <Property name="render" type="ProjectMagma.Framework.RenderProperty"/>
-      <Property name="render_highlight" type="ProjectMagma.Framework.RenderHighlightProperty"/>
-    </Properties>
   </Entity>
 
-    <Entity name="player1">
-      <Attributes>
-        <Attribute name="kind" template="string" value="player"/>
-        <Attribute name="position" template="float3" value="-250 100 220"/>
-        <Attribute name="scale" template="float3" value="13 13 13"/>
-        <Attribute name="mesh" template="string" value="Models/player1_primitive"/>
-        <Attribute name="player_id" template="int" value="1"/>
-        <Attribute name="bv_type" template="string" value="sphere"/>
-      </Attributes>
-      <Properties>
-        <Property name="shadow_cast" type="ProjectMagma.Framework.ShadowCastProperty"/>
-        <Property name="render" type="ProjectMagma.Framework.RenderProperty"/>
-        <Property name="render_highlight" type="ProjectMagma.Framework.RenderHighlightProperty"/>
-        <Property name="collision" type="ProjectMagma.Collision.CollisionProperty"/>
-        <Property name="controller" type="ProjectMagma.Framework.PlayerControllerProperty"/>
-      </Properties>
-    </Entity>
-
-    <Entity name="player2">
-      <Attributes>
-        <Attribute name="kind" template="string" value="player"/>
-        <Attribute name="position" template="float3" value="60 160 -30"/>
-        <Attribute name="scale" template="float3" value="13 13 13"/>
-        <Attribute name="mesh" template="string" value="Models/player2_primitive"/>
-        <Attribute name="player_id" template="int" value="2"/>
-        <Attribute name="bv_type" template="string" value="sphere"/>
-      </Attributes>
-      <Properties>
-        <Property name="shadow_cast" type="ProjectMagma.Framework.ShadowCastProperty"/>
-        <Property name="render" type="ProjectMagma.Framework.RenderProperty"/>
-        <Property name="render_highlight" type="ProjectMagma.Framework.RenderHighlightProperty"/>
-        <Property name="collision" type="ProjectMagma.Collision.CollisionProperty"/>
-        <Property name="controller" type="ProjectMagma.Framework.PlayerControllerProperty"/>
-      </Properties>
-    </Entity>
-
-  <Entity name="powerup1">
+  <Entity name="player1" extends="player_base">
     <Attributes>
-      <Attribute name="kind" template="string" value="powerup"/>
-      <Attribute name="position" template="float3" value="0 0 0"/>
+      <Attribute name="position" template="float3" value="-250 100 220"/>
+      <Attribute name="mesh" template="string" value="Models/player1_primitive"/>
+      <Attribute name="player_id" template="int" value="1"/>
+    </Attributes>
+  </Entity>
+
+  <Entity name="player2" extends="player_base">
+    <Attributes>
+      <Attribute name="position" template="float3" value="60 160 -30"/>
+      <Attribute name="mesh" template="string" value="Models/player2_primitive"/>
+      <Attribute name="player_id" template="int" value="2"/>
+    </Attributes>
+  </Entity>
+  
+  <Entity name="powerup1" extends="powerup_base">
+    <Attributes>
       <Attribute name="island_reference" template="string" value="island4"/>
-      <Attribute name="mesh" template="string" value="Models/powerup"/>
-      <Attribute name="scale" template="float3" value="8 8 8"/>
       <Attribute name="relative_position" template="float3" value="15 0 15"/>
       <Attribute name="power" template="string" value="energy"/>
-      <Attribute name="powerValue" template="int" value="100"/>
-      <Attribute name="pickup_sound" template="string" value="excellent"/>
-      <Attribute name="bv_type" template="string" value="box"/>
     </Attributes>
-    <Properties>
-      <Property name="collision" type="ProjectMagma.Collision.CollisionProperty"/>
-      <Property name="controller" type="ProjectMagma.Framework.PowerUpController"/>
-      <Property name="shadow_cast" type="ProjectMagma.Framework.ShadowCastProperty"/>
-      <Property name="render" type="ProjectMagma.Framework.RenderProperty"/>
-      <Property name="render_highlight" type="ProjectMagma.Framework.RenderHighlightProperty"/>
-    </Properties>
   </Entity>
 
-  <Entity name="powerup2">
+  <Entity name="powerup2" extends="powerup_base">
     <Attributes>
-      <Attribute name="kind" template="string" value="powerup"/>
-      <Attribute name="position" template="float3" value="0 0 0"/>
       <Attribute name="island_reference" template="string" value="island2"/>
-      <Attribute name="mesh" template="string" value="Models/powerup"/>
-      <Attribute name="scale" template="float3" value="8 8 8"/>
       <Attribute name="relative_position" template="float3" value="-20 0 -5"/>
       <Attribute name="power" template="string" value="health"/>
-      <Attribute name="powerValue" template="int" value="100"/>
-      <Attribute name="pickup_sound" template="string" value="excellent"/>
-      <Attribute name="bv_type" template="string" value="box"/>
     </Attributes>
-    <Properties>
-      <Property name="collision" type="ProjectMagma.Collision.CollisionProperty"/>
-      <Property name="controller" type="ProjectMagma.Framework.PowerUpController"/>
-      <Property name="shadow_cast" type="ProjectMagma.Framework.ShadowCastProperty"/>
-      <Property name="render" type="ProjectMagma.Framework.RenderProperty"/>
-      <Property name="render_highlight" type="ProjectMagma.Framework.RenderHighlightProperty"/>
-    </Properties>
   </Entity>
-
 </Level>

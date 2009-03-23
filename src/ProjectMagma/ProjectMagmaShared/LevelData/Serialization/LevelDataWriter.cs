@@ -50,7 +50,9 @@ namespace ProjectMagma.Shared.LevelData.Serialization
     {
         protected override void Write(ContentWriter output, EntityData value)
         {
+            output.Write(value.isAbstract);
             output.Write(value.name);
+            output.Write(value.parent);
             output.WriteRawObject<List<AttributeData>>(value.attributes);
             output.WriteRawObject<List<PropertyData>>(value.properties);
         }
@@ -66,7 +68,7 @@ namespace ProjectMagma.Shared.LevelData.Serialization
     {
         protected override void Write(ContentWriter output, LevelData value)
         {
-            output.WriteRawObject<List<EntityData>>(value.entities);
+            output.WriteRawObject<Dictionary<string, EntityData>>(value.entities);
         }
 
         public override string GetRuntimeReader(TargetPlatform targetPlatform)

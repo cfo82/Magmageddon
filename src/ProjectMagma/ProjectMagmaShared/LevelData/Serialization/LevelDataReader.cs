@@ -58,7 +58,9 @@ namespace ProjectMagma.Shared.LevelData.Serialization
                 existingInstance = new EntityData();
             }
 
+            existingInstance.isAbstract = input.ReadBoolean();
             existingInstance.name = input.ReadString();
+            existingInstance.parent = input.ReadString();
             existingInstance.attributes = input.ReadRawObject<List<AttributeData>>();
             existingInstance.properties = input.ReadRawObject<List<PropertyData>>();
 
@@ -75,7 +77,7 @@ namespace ProjectMagma.Shared.LevelData.Serialization
                 existingInstance = new LevelData();
             }
 
-            existingInstance.entities = input.ReadRawObject<List<EntityData>>();
+            existingInstance.entities = input.ReadRawObject<Dictionary<string, EntityData>>();
 
             return existingInstance;
         }

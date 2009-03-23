@@ -9,9 +9,9 @@ namespace ProjectMagma.Shared.LevelData
     {
         public LevelData()
         {
-            entities = new List<EntityData>();
+            entities = new Dictionary<string, EntityData>();
         }
 
-        public List<EntityData> entities;
+        public Dictionary<string, EntityData> entities;
     }
 }

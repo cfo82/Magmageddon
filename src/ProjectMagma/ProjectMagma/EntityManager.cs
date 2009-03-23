@@ -20,18 +20,29 @@ namespace ProjectMagma
             this.removeDeferred = new List<Entity>();
         }
 
-        public void Add(EntityData entityData)
+        public void Load(LevelData levelData)
         {
-            Entity entity = new Entity(this, entityData.name);
-            foreach (AttributeData attributeData in entityData.attributes)
+            foreach (EntityData entityData in levelData.entities.Values)
             {
-                entity.AddAttribute(attributeData);
+                if (entityData.isAbstract)
+                {
+                    continue;
+                }
+
+                List<AttributeData> attributes = entityData.CollectAttributes(levelData);
+                List<PropertyData> properties = entityData.CollectProperties(levelData);
+
+                Entity entity = new Entity(this, entityData.name);
+                foreach (AttributeData attributeData in attributes)
+                {
+                    entity.AddAttribute(attributeData);
+                }
+                foreach (PropertyData propertyData in properties)
+                {
+                    entity.AddProperty(propertyData);
+                }
+                Add(entity);
             }
-            foreach (PropertyData propertyData in entityData.properties)
-            {
-                entity.AddProperty(propertyData);
-            }
-            Add(entity);
         }
 
         public void Add(Entity entity)

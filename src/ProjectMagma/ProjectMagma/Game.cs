@@ -167,10 +167,7 @@ namespace ProjectMagma
             testEffect = Content.Load<Effect>("Effects/TestEffect");
             shadowEffect = Content.Load<Effect>("Effects/ShadowEffect");
 
-            foreach (EntityData entityData in levelData.entities)
-            {
-                entityManager.Add(entityData);
-            }
+            entityManager.Load(levelData);
 
             int gi = 0;
             foreach (Entity e in playerManager)

@@ -41,6 +41,8 @@ namespace ProjectMagma.Framework
         private SoundEffect flameThrowerSound;
         private SoundEffectInstance flameThrowerSoundInstance;
 
+        Vector3 originalPosition;
+
         public PlayerControllerProperty()
         {
         }
@@ -164,7 +166,7 @@ namespace ProjectMagma.Framework
 
             Model playerModel = Game.Instance.Content.Load<Model>(player.GetString("mesh"));
 
-            Vector3 originalPosition = playerPosition;
+            originalPosition = playerPosition;
 
             // get input
             controllerInput.Update(playerIndex);
@@ -453,6 +455,7 @@ namespace ProjectMagma.Framework
 
         private void PlayerIslandCollisionHandler(GameTime gameTime, Entity player, Entity island, Contact c)
         {
+            float dt = ((float)gameTime.ElapsedGameTime.Milliseconds) / 1000.0f;
             Vector3 playerPosition = player.GetVector3("position");
 
             if (c.normal.Y < 0)
@@ -483,10 +486,22 @@ namespace ProjectMagma.Framework
                 if (c.normal.Y == 0)
                 {
                     // xz
-                    player.SetVector3("contact_pushback_velocity", c.normal * 20);
+
+                // calculate theoretical velocity
+                Vector3 velocity = (originalPosition - playerPosition) / dt;
+
+                    /*
+                    velocity.Y = 0;
+                    player.SetVector3("contact_pushback_velocity", -velocity);
+                     */
                 }
                 else
-                    player.SetVector3("velocity", new Vector3(0, -10, 0));
+                {
+                   /*
+                    Vector3 velocity = player.GetVector3("velocity");
+                    player.SetVector3("velocity", -velocity);
+                    */
+                }
 //                Vector3 velocity = player.GetVector3("velocity");
                 //if(
 //                player.SetVector3("pushback_velocity", velocity - c.normal * velocity.Length());

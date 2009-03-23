@@ -22,8 +22,8 @@
       <Attribute name="gravity_acceleration" template="float3" value="0 -900 0"/>
       <Attribute name="max_gravity_speed" template="float" value="450"/>
 
-      <Attribute name="pushback_contact_velocity_multiplier" template="float" value="80"/>
-      <Attribute name="pushback_deacceleration_multiplier" template="float" value="300"/>
+      <Attribute name="pushback_contact_velocity_multiplier" template="float" value="480"/>
+      <Attribute name="pushback_deacceleration_multiplier" template="float" value="8000"/>
 
       <Attribute name="ice_spike_speed" template="float" value="300"/>
       <Attribute name="ice_spike_up_speed" template="float" value="200"/>

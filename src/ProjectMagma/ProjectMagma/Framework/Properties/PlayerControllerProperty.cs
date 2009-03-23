@@ -61,6 +61,9 @@ namespace ProjectMagma.Framework
             player.AddIntAttribute("health", constants.GetInt("max_health"));
             player.AddIntAttribute("fuel", constants.GetInt("max_fuel"));
 
+            player.AddIntAttribute("kills", 0);
+            player.AddIntAttribute("deaths", 0);
+
             player.AddIntAttribute("frozen", 0);
             player.AddStringAttribute("collisionPlayer", "");
 
@@ -98,6 +101,7 @@ namespace ProjectMagma.Framework
                     jetpackActive = false;
 
                     Game.Instance.Content.Load<SoundEffect>("Sounds/death").Play();
+                    player.SetInt("deaths", player.GetInt("deaths") + 1);
 
                     player.RemoveProperty("render");
                     player.RemoveProperty("shadow_cast");

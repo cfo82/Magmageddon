@@ -25,7 +25,8 @@ namespace ProjectMagma
         private GraphicsDeviceManager graphics;
         private SpriteBatch spriteBatch;
 
-        public Entity currentCamera;
+        private HUD hud;
+        private Entity currentCamera;
 
         private EntityManager entityManager;
         private EntityKindManager pillarManager;
@@ -59,12 +60,12 @@ namespace ProjectMagma
         private static Game instance;
 
         public Effect testEffect; // public because it's only a test
-        private SpriteFont HUDFont;
         BloomComponent bloom;
 
         private Game()
         {
             graphics = new GraphicsDeviceManager(this);
+            hud = HUD.Instance;
 
             // TODO: remove v-sync in future!?
             this.IsFixedTimeStep = false;
@@ -160,8 +161,8 @@ namespace ProjectMagma
 
             // Create a new SpriteBatch, which can be used to draw textures.
             spriteBatch = new SpriteBatch(GraphicsDevice);
-            HUDFont = Content.Load<SpriteFont>("HUDFont");
 
+            // load default level
             LevelData levelData = Content.Load<LevelData>("Level/TestLevel");
 
             testEffect = Content.Load<Effect>("Effects/TestEffect");
@@ -169,11 +170,15 @@ namespace ProjectMagma
 
             entityManager.Load(levelData);
 
+            // set gamepad assignments
             int gi = 0;
             foreach (Entity e in playerManager)
             {
                 e.AddIntAttribute("game_pad_index", gi++);
             }
+
+            // load hud
+            hud.LoadContent();
 
             // preload sounds
             foreach (Entity e in Game.Instance.powerupManager)
@@ -238,7 +243,6 @@ namespace ProjectMagma
             MediaPlayer.Stop();
         }
 
-        private GameTime lastUpdateTime;
         /// <summary>
         /// Allows the game to run logic such as updating the world,
         /// checking for collisions, gathering input, and playing audio.
@@ -246,8 +250,6 @@ namespace ProjectMagma
         /// <param name="gameTime">Provides a snapshot of timing values.</param>
         protected override void Update(GameTime gameTime)
         {
-            lastUpdateTime = gameTime;
-
             // Allows the game to exit
             if (GamePad.GetState(PlayerIndex.One).Buttons.Back == ButtonState.Pressed)
                 this.Exit();
@@ -302,11 +304,11 @@ namespace ProjectMagma
             //and do depth comparisons in the shader to determine shadowing
             RenderScene(gameTime);
 
-            base.Draw(gameTime);
-
-            DrawHud(gameTime);
+            hud.Draw(gameTime);
 
             formCollection.Draw();
+
+            base.Draw(gameTime);
         }
 
         private void RenderScene(GameTime gameTime)
@@ -337,30 +339,6 @@ namespace ProjectMagma
 
             // restore stencil buffer
             graphics.GraphicsDevice.DepthStencilBuffer = oldStencilBuffer;
-        }
-
-        private void DrawHud(GameTime gameTime)
-        {
-            // draw infos about state
-            spriteBatch.Begin();
-            int pos = 5;
-            foreach (Entity e in playerManager)
-            {
-                Color color = Color.White;
-                if (e.Name.Equals("player1"))
-                    color = Color.LightGreen;
-                else
-                    color = Color.Yellow;
-                if (e.GetInt("health") <= 0)
-                    color = Color.Red;
-                spriteBatch.DrawString(HUDFont, e.Name + "; health: " + e.GetInt("health") + ", energy: " + e.GetInt("energy") + ", fuel: " + e.GetInt("fuel")
-                    + ", frozenTime: " + e.GetInt("frozen")+ "ms, deaths: " + e.GetInt("deaths"),
-                    new Vector2(5, pos), color);
-                pos += 20;
-            }
-            spriteBatch.DrawString(HUDFont, String.Format("{0:00.0} fps", (1000f / gameTime.ElapsedGameTime.Milliseconds))
-                +"; "+ String.Format("{0:00.0} ups", (1000f / lastUpdateTime.ElapsedGameTime.Milliseconds)), new Vector2(5, pos), Color.White);
-            spriteBatch.End();
         }
 
         public GraphicsDeviceManager Graphics
@@ -547,6 +525,24 @@ namespace ProjectMagma
             {
                 return Quaternion.Identity;
             }
+        }
+
+        public static double ApplyPerSecond(double current, double last, int perSecond, ref int value)
+        {
+            float interval = 1000f / perSecond;
+            return ApplyInterval(current, last, interval, ref value);
+        }
+
+        public static double ApplyInterval(double current, double last, float interval, ref int value)
+        {
+            if (current >= last + interval)
+            {
+                int times = (int)((current - last) / interval);
+                value -= times;
+                return last + times * interval;
+            }
+            else
+                return last;
         }
     }
 }

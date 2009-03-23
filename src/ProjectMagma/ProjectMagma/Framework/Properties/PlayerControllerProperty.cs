@@ -36,6 +36,8 @@ namespace ProjectMagma.Framework
 
         Entity flame = null;
 
+        private double lavaContactAt = 0;
+
         private SoundEffect jetpackSound;
         private SoundEffectInstance jetpackSoundInstance;
         private SoundEffect flameThrowerSound;
@@ -438,6 +440,8 @@ namespace ProjectMagma.Framework
             Entity lava = Game.Instance.EntityManager["lava"];
             if (playerPosition.Y < lava.GetVector3("position").Y)
                 PlayerLavaCollisionHandler(gameTime, player, lava);
+            else // hack hack: need better way to reset perSecond counters
+                lavaContactAt = at;
         }
 
         private void PlayerCollisionHandler(GameTime gameTime, Contact c)
@@ -515,34 +519,17 @@ namespace ProjectMagma.Framework
 
         private void PlayerPillarCollisionHandler(GameTime gameTime, Entity player, Entity pillar, Contact co)
         {
-            Vector3 playerPosition = player.GetVector3("position");
-
-            BoundingSphere bs = Game.CalculateBoundingSphere(player);
-            BoundingCylinder pbc = Game.CalculateBoundingCylinder(pillar);
-
-            // get center vectors
-            Vector3 c = bs.Center;
-            Vector3 cc = pbc.Top;
-            c.Y = 0; cc.Y = 0;
-
-            // and direction
-            Vector3 dir = c - cc;
-            float push = (bs.Radius + pbc.Radius) - dir.Length();
-            dir.Normalize();
-            dir *= push;
-
-            playerPosition += dir;
-
-            player.SetVector3("position", playerPosition);
+            Vector3 newPos = originalPosition;
+            newPos.Y = player.GetVector3("position").Y;
+            player.SetVector3("position", newPos);
         }
 
         private void PlayerLavaCollisionHandler(GameTime gameTime, Entity player, Entity lava)
         {
-            player.SetInt("health", 0); // death
-
-            Vector3 playerPosition = player.GetVector3("position");
-            playerPosition.Y = lava.GetVector3("position").Y;
-            player.SetVector3("position", playerPosition);
+            int health = player.GetInt("health");
+            lavaContactAt = Game.ApplyPerSecond(gameTime.TotalGameTime.TotalMilliseconds, lavaContactAt, constants.GetInt("lava_damage_per_second"),
+                ref health);
+            player.SetInt("health", health);
         }
 
         private void PlayerPowerupCollisionHandler(GameTime gameTime, Entity player, Entity powerup)
@@ -563,6 +550,7 @@ namespace ProjectMagma.Framework
         {
             Vector3 playerPosition = player.GetVector3("position");
 
+            /*
             BoundingSphere bs = Game.CalculateBoundingSphere(player);
             BoundingSphere obs = Game.CalculateBoundingSphere(otherPlayer);
 
@@ -570,6 +558,7 @@ namespace ProjectMagma.Framework
                 otherPlayer.SetString("collisionPlayer", player.Name); // indicate collision
             else
                 otherPlayer.SetString("collisionPlayer", ""); // reset collision
+             */ 
 
             // and hit?
             if (controllerInput.hitButtonPressed &&
@@ -582,24 +571,14 @@ namespace ProjectMagma.Framework
                 // dedcut health
                 otherPlayer.SetInt("health", otherPlayer.GetInt("health") - constants.GetInt("hit_damage"));
 
-                // push back
-                Vector3 dir = obs.Center - bs.Center;
-                dir.Normalize();
-                dir.Y = 0;
-
                 // set values
-                otherPlayer.SetVector3("hit_pushback_velocity", dir * constants.GetFloat("hit_pushback_velocity_multiplier"));
+                otherPlayer.SetVector3("hit_pushback_velocity", c.normal * constants.GetFloat("hit_pushback_velocity_multiplier"));
                 hitPerformedAt = gameTime.TotalGameTime.TotalMilliseconds;
             }
             else
             {
                 // normal feedback
-                Vector3 push = bs.Center - obs.Center;
-                push *= (obs.Radius + bs.Radius) - push.Length();
-                push.Normalize();
-
-                player.SetVector3("contact_pushback_velocity", push * constants.GetFloat("pushback_contact_velocity_multiplier") / 2);
-                otherPlayer.SetVector3("contact_pushback_velocity", push * -constants.GetFloat("pushback_contact_velocity_multiplier") / 2);
+                player.SetVector3("contact_pushback_velocity", -c.normal * constants.GetFloat("pushback_contact_velocity_multiplier") / 2);
             }
         }
 

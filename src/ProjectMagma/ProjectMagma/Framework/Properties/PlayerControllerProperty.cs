@@ -202,6 +202,12 @@ namespace ProjectMagma.Framework
                 }
                 fuel += (int)(gameTime.ElapsedGameTime.Milliseconds * constants.GetFloat("fuel_recharge_multiplier"));
             }
+
+            // faster recharge standing on island
+            if (activeIsland != null)
+                player.SetInt("fuel", player.GetInt("fuel") + (int)(gameTime.ElapsedGameTime.Milliseconds *
+                    constants.GetFloat("fuel_recharge_multiplier_island")));
+
             if (fuel < 0)
                 fuel = 0;
             if (fuel > constants.GetInt("max_fuel"))
@@ -470,10 +476,6 @@ namespace ProjectMagma.Framework
                 if(activeIsland != null && activeIsland != island)
                     ((Vector3Attribute)activeIsland.Attributes["position"]).ValueChanged -= IslandPositionHandler;
 
-                // faster recharge standing on island
-                player.SetInt("fuel", player.GetInt("fuel") + (int)(gameTime.ElapsedGameTime.Milliseconds * 
-                    constants.GetFloat("fuel_recharge_multiplier_island")));
-
                 // correct position to exact touching point
                 playerPosition.Y = c.position.Y;
                 // add handler if active island changed
@@ -568,7 +570,7 @@ namespace ProjectMagma.Framework
                 SoundEffect soundEffect = Game.Instance.Content.Load<SoundEffect>("Sounds/punch2");
                 soundEffect.Play();
 
-                // dedcut health
+                // deduct health
                 otherPlayer.SetInt("health", otherPlayer.GetInt("health") - constants.GetInt("hit_damage"));
 
                 // set values

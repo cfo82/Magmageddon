@@ -25,8 +25,8 @@ namespace ProjectMagma.Collision.CollisionTests
             float radius2 = scale2.X * cylinder2.Radius;
 
             // sphere is on same level as the cylinder
-            if (center1.Y < top2.Y &&
-                center1.Y > bottom2.Y)
+            if (center1.Y <= top2.Y &&
+                center1.Y >= bottom2.Y)
             {
                 // distance between the two
                 Vector3 diff = top2 - center1;

@@ -152,14 +152,17 @@ namespace ProjectMagma.Framework
 
             // implement sinking/rising islands...
             Vector3 position = island.GetVector3("position");
-            if (playerOnIsland)
+            if (playersOnIsland > 0)
             {
-                position += dt * constants.GetFloat("sinking_speed") * (-Vector3.UnitY);
+                position += dt * constants.GetFloat("sinking_speed") * playersOnIsland * (-Vector3.UnitY);
+                playerLeftAt = 0;
             }
             else
             {
-                if (position.Y < originalPosition.Y)
+                if (position.Y < originalPosition.Y && gameTime.TotalGameTime.TotalMilliseconds > playerLeftAt + constants.GetInt("rising_delay"))
                 {
+                    if (playerLeftAt == 0)
+                        playerLeftAt = gameTime.TotalGameTime.TotalMilliseconds;
                     position += dt * constants.GetFloat("rising_speed") * Vector3.UnitY;
                 }
             }
@@ -169,7 +172,8 @@ namespace ProjectMagma.Framework
                 position.Y = originalPosition.Y;
             }
             island.SetVector3("position", position);
-            playerOnIsland = false;
+
+            playersOnIsland = 0;
         }
 
         private void CollisionHandler(GameTime gameTime, Contact contact)
@@ -180,13 +184,14 @@ namespace ProjectMagma.Framework
                 contact.normal.Y > 0 // player is above island
             )
             {
-                playerOnIsland = true;
+                playersOnIsland++;
             }
         }
 
         private Entity constants;
         private Random rand;
-        private bool playerOnIsland;
+        private int playersOnIsland;
+        private double playerLeftAt;
         private Vector3 originalPosition;
     }
 }

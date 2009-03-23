@@ -19,6 +19,7 @@ namespace ProjectMagma.Framework
         private Entity player;
         private Entity constants;
         private Entity activeIsland = null;
+        private bool islandCollision = false;
 
         private readonly Random rand = new Random(DateTime.Now.Millisecond);
         private double respawnStartedAt = 0;
@@ -83,6 +84,7 @@ namespace ProjectMagma.Framework
             float dt = ((float)gameTime.ElapsedGameTime.Milliseconds)/1000.0f;
             double at = gameTime.TotalGameTime.TotalMilliseconds;
 
+            #region death
             if (player.GetInt("health") <= 0)
             {
                 if (respawnStartedAt == 0)
@@ -137,6 +139,16 @@ namespace ProjectMagma.Framework
                         respawnStartedAt = 0;
                     }
             }
+            #endregion
+
+            // island leave check
+            if (islandCollision == false && activeIsland != null)
+            {
+                ((Vector3Attribute)activeIsland.Attributes["position"]).ValueChanged -= IslandPositionHandler;
+                activeIsland = null;
+            }
+            else
+                islandCollision = false;
 
             PlayerIndex playerIndex = (PlayerIndex)player.GetInt("game_pad_index");
             Vector3 playerPosition = player.GetVector3("position");
@@ -439,7 +451,7 @@ namespace ProjectMagma.Framework
         {
             Vector3 playerPosition = player.GetVector3("position");
 
-            if (c.position.Y < playerPosition.Y)
+            if (c.normal.Y < 0)
             {
                 // standing on island
 
@@ -457,23 +469,27 @@ namespace ProjectMagma.Framework
                 if (activeIsland != island)
                     ((Vector3Attribute)island.Attributes["position"]).ValueChanged += IslandPositionHandler;
 
+                player.SetVector3("velocity", Vector3.Zero);
+                islandCollision = true;
                 activeIsland = island; // mark as active
             }
             else
             {
-                if (Game.GetPosition(island).Y > c.position.Y)
+                // hack hack hack
+                if (c.normal.Y == 0)
                 {
-                    // pushback in xz
-                    Vector3 dir = c.normal;
-                    dir.Y = 0;
-                    playerPosition += dir;
+                    // xz
+                    player.SetVector3("contact_pushback_velocity", c.normal * 20);
                 }
                 else
-                {
-                    // pushback on y
-                    playerPosition.Y -= c.normal.Y;
-                }
+                    player.SetVector3("velocity", new Vector3(0, -10, 0));
+//                Vector3 velocity = player.GetVector3("velocity");
+                //if(
+//                player.SetVector3("pushback_velocity", velocity - c.normal * velocity.Length());
             }
+                /*
+                player.SetVector3("velocity", Vector3.Reflect(player.GetVector3("velocity"), -c.normal));
+                 */
 
             player.SetVector3("position", playerPosition);
         }

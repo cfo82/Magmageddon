@@ -62,12 +62,11 @@ namespace ProjectMagma.Collision.CollisionTests
                     {
                         toProjected.Normalize();
                         Vector3 nearestPoint = top2 + toProjected * radius2;
-                        Vector3 normal = nearestPoint - center1;
-                        if (normal.LengthSquared() < radius1 * radius1)
+                        Vector3 diff = nearestPoint - center1;
+                        if (diff.LengthSquared() < radius1 * radius1)
                         {
                             Contact c = new Contact(entity1, entity2);
-                            c.normal = normal;
-                            c.normal.Normalize();
+                            c.normal = -Vector3.UnitY;
                             c.position = nearestPoint;
                         }
                     }
@@ -94,12 +93,11 @@ namespace ProjectMagma.Collision.CollisionTests
                     {
                         toProjected.Normalize();
                         Vector3 nearestPoint = bottom2 + toProjected * radius2;
-                        Vector3 normal = nearestPoint - center1;
-                        if (normal.LengthSquared() < radius1 * radius1)
+                        Vector3 diff = nearestPoint - center1;
+                        if (diff.LengthSquared() < radius1 * radius1)
                         {
                             Contact c = new Contact(entity1, entity2);
-                            c.normal = normal;
-                            c.normal.Normalize();
+                            c.normal = Vector3.UnitY;
                             c.position = nearestPoint;
                         }
                     }

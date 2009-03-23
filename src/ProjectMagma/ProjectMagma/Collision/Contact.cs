@@ -1,7 +1,7 @@
 ﻿using Microsoft.Xna.Framework;
 using ProjectMagma.Framework;
 
-namespace ProjectMagma.Collision.CollisionTests
+namespace ProjectMagma.Collision
 {
     public class Contact
     {

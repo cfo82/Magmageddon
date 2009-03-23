@@ -5,6 +5,7 @@ using System.Linq;
 using System.Text;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
+using ProjectMagma.Collision;
 
 namespace ProjectMagma.Framework
 {
@@ -17,6 +18,8 @@ namespace ProjectMagma.Framework
 
         public void OnAttached(Entity entity)
         {
+            Debug.Assert(entity.HasVector3("position"));
+
             entity.AddIntAttribute("collisionCount", 0);
 
             // TODO: make this an attribute or add a constant for specifing health/size multiplier
@@ -25,6 +28,10 @@ namespace ProjectMagma.Framework
             this.constants = Game.Instance.EntityManager["island_constants"];
 
             entity.Update += OnUpdate;
+
+            ((CollisionProperty)entity.GetProperty("collision")).OnContact += new ContactHandler(CollisionHandler);
+
+            originalPosition = entity.GetVector3("position");
         }
 
         public void OnDetached(Entity entity)
@@ -138,9 +145,44 @@ namespace ProjectMagma.Framework
 
             // compute final position
             island.SetVector3("position", island.GetVector3("position") + dt * island.GetVector3("velocity"));
+
+            // implement sinking/rising islands...
+            Vector3 position = island.GetVector3("position");
+            if (playerOnIsland)
+            {
+                position += dt * (-Vector3.UnitY);
+            }
+            else
+            {
+                if (position.Y < originalPosition.Y)
+                {
+                    position += dt * Vector3.UnitY;
+                }
+            }
+
+            if (position.Y > originalPosition.Y)
+            {
+                position.Y = originalPosition.Y;
+            }
+            island.SetVector3("position", position);
+            playerOnIsland = false;
+        }
+
+        private void CollisionHandler(GameTime gameTime, Contact contact)
+        {
+            Entity player = contact.entityB;
+            if (player.HasString("kind") && // other entity has a kind-attribute
+                player.GetString("kind") == "player" && // other entity is a player
+                contact.normal.Y > 0 // player is above island
+            )
+            {
+                playerOnIsland = true;
+            }
         }
 
         private Entity constants;
         private Random rand;
+        private bool playerOnIsland;
+        private Vector3 originalPosition;
     }
 }

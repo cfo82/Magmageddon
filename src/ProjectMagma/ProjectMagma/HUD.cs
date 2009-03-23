@@ -49,6 +49,8 @@ namespace ProjectMagma
                 int no = player.GetInt("number");
 
                 float bgX, textX, healthX, energyX, fuelX;
+                
+                float healthbarWidth = healthBar.Width * player.GetInt("health") / playerConstants.GetInt("max_health");
                 SpriteEffects effects;
                 if (no == 1)
                 {
@@ -61,20 +63,20 @@ namespace ProjectMagma
                 }
                 else
                 {
+
+
                     effects = SpriteEffects.FlipHorizontally;
                     bgX = screenWidth / 2;
                     textX = screenWidth - 14 - font.MeasureString(player.Name).X;
-                    healthX = screenWidth - 14 - healthBar.Width;
+                    healthX = screenWidth - 14 - healthBar.Width + (healthBar.Width - (int)healthbarWidth);
                     energyX = screenWidth - 14 - energyBar.Width;
                     fuelX = screenWidth - 14 - fuelBar.Width;
                 }
 
                 spriteBatch.Draw(background, new Vector2(bgX, 0), null, Color.White, 0f, Vector2.Zero, 1, effects, 1);
-
                 spriteBatch.DrawString(font, player.Name, new Vector2(textX, 5), Color.Black);
 
-                spriteBatch.Draw(healthBar, new Vector2(healthX+healthBar.Width, 55+healthBar.Height), new Rectangle(0, 0, healthBar.Width * player.GetInt("health")
-                    / playerConstants.GetInt("max_health"), healthBar.Height), Color.White, (float)Math.PI, Vector2.Zero, 1, effects, 0);
+                spriteBatch.Draw(healthBar, new Vector2(healthX, 55), new Rectangle(0, 0, (int)healthbarWidth, healthBar.Height), Color.White, 0f, Vector2.Zero, 1, effects, 0);
                 spriteBatch.Draw(energyBar, new Vector2(energyX, 86), new Rectangle(0, 0, energyBar.Width * player.GetInt("energy")
                     / playerConstants.GetInt("max_energy"), energyBar.Height), Color.White, 0f, Vector2.Zero, 1, effects, 0);
                 spriteBatch.Draw(fuelBar, new Vector2(fuelX, 117), new Rectangle(0, 0, fuelBar.Width * player.GetInt("fuel")

@@ -50,7 +50,10 @@ namespace ProjectMagma
 
                 float bgX, textX, healthX, energyX, fuelX;
                 
-                float healthbarWidth = healthBar.Width * player.GetInt("health") / playerConstants.GetInt("max_health");
+                int healthBarWidth = healthBar.Width * player.GetInt("health") / playerConstants.GetInt("max_health");
+                int energyBarWidth = energyBar.Width * player.GetInt("energy") / playerConstants.GetInt("max_energy");
+                int fuelBarWidth = fuelBar.Width * player.GetInt("fuel") / playerConstants.GetInt("max_fuel");
+
                 SpriteEffects effects;
                 if (no == 1)
                 {
@@ -63,27 +66,23 @@ namespace ProjectMagma
                 }
                 else
                 {
-
-
                     effects = SpriteEffects.FlipHorizontally;
                     bgX = screenWidth / 2;
                     textX = screenWidth - 14 - font.MeasureString(player.Name).X;
-                    healthX = screenWidth - 14 - healthBar.Width + (healthBar.Width - (int)healthbarWidth);
-                    energyX = screenWidth - 14 - energyBar.Width;
-                    fuelX = screenWidth - 14 - fuelBar.Width;
+                    healthX = screenWidth - 14 - healthBar.Width + (healthBar.Width - healthBarWidth);
+                    energyX = screenWidth - 14 - energyBar.Width + (energyBar.Width - energyBarWidth); ;
+                    fuelX = screenWidth - 14 - fuelBar.Width + (fuelBar.Width - fuelBarWidth); ;
                 }
 
                 spriteBatch.Draw(background, new Vector2(bgX, 0), null, Color.White, 0f, Vector2.Zero, 1, effects, 1);
                 spriteBatch.DrawString(font, player.Name, new Vector2(textX, 5), Color.Black);
 
-                spriteBatch.Draw(healthBar, new Vector2(healthX, 55), new Rectangle(0, 0, (int)healthbarWidth, healthBar.Height), Color.White, 0f, Vector2.Zero, 1, effects, 0);
-                spriteBatch.Draw(energyBar, new Vector2(energyX, 86), new Rectangle(0, 0, energyBar.Width * player.GetInt("energy")
-                    / playerConstants.GetInt("max_energy"), energyBar.Height), Color.White, 0f, Vector2.Zero, 1, effects, 0);
-                spriteBatch.Draw(fuelBar, new Vector2(fuelX, 117), new Rectangle(0, 0, fuelBar.Width * player.GetInt("fuel")
-                    / playerConstants.GetInt("max_fuel"), fuelBar.Height), Color.White, 0f, Vector2.Zero, 1, effects, 0);
-                
-
-
+                spriteBatch.Draw(healthBar, new Vector2(healthX, 55), new Rectangle(0, 0, healthBarWidth, healthBar.Height), 
+                    Color.White, 0f, Vector2.Zero, 1, effects, 0);
+                spriteBatch.Draw(energyBar, new Vector2(energyX, 86), new Rectangle(0, 0, energyBarWidth, energyBar.Height), 
+                    Color.White, 0f, Vector2.Zero, 1, effects, 0);
+                spriteBatch.Draw(fuelBar, new Vector2(fuelX, 117), new Rectangle(0, 0, fuelBarWidth, fuelBar.Height), 
+                    Color.White, 0f, Vector2.Zero, 1, effects, 0);
             }
             spriteBatch.DrawString(font, String.Format("{0:00.0} fps", (1000f / gameTime.ElapsedGameTime.Milliseconds)), 
                 new Vector2(screenWidth / 2-20, 5), Color.Black);

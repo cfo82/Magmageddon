@@ -5,10 +5,10 @@ namespace ProjectMagma.Collision
 {
     public class Contact
     {
-        public Entity entityA;
-        public Entity entityB;
-        public Vector3 position;
-        public Vector3 normal;
+        Entity entityA;
+        Entity entityB;
+        Vector3 position;
+        Vector3 normal;
 
         public Contact(Entity entityA, Entity entityB)
         {
@@ -24,9 +24,32 @@ namespace ProjectMagma.Collision
             this.normal = normal;
         }
 
-        public Contact Reverse()
+        public void Reverse()
         {
-            return new Contact(entityB, entityA, position, -normal);
+            Entity temp = entityB;
+            entityB = entityA;
+            entityA = temp;
+            normal = -normal;
+        }
+
+        public Vector3 Normal
+        {
+            get { return normal; }
+        }
+
+        public Vector3 Position
+        {
+            get { return position; }
+        }
+
+        public Entity EntityB
+        {
+            get { return entityB; }
+        }
+
+        public Entity EntityA
+        {
+            get { return entityA; }
         }
     }
 }

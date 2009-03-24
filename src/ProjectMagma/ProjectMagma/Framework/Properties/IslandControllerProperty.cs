@@ -179,10 +179,10 @@ namespace ProjectMagma.Framework
 
         private void CollisionHandler(GameTime gameTime, Contact contact)
         {
-            Entity player = contact.entityB;
+            Entity player = contact.EntityB;
             if (player.HasString("kind") && // other entity has a kind-attribute
                 player.GetString("kind") == "player" && // other entity is a player
-                contact.normal.Y > 0 // player is above island
+                contact.Normal.Y > 0 // player is above island
             )
             {
                 playersOnIsland++;

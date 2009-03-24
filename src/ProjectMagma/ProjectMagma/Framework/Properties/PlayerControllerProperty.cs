@@ -462,17 +462,17 @@ namespace ProjectMagma.Framework
 
         private void PlayerCollisionHandler(GameTime gameTime, Contact c)
         {
-            if (c.entityB.HasAttribute("kind"))
+            if (c.EntityB.HasAttribute("kind"))
             {
-                String kind = c.entityB.GetString("kind");
+                String kind = c.EntityB.GetString("kind");
                 if (kind == "island")
-                    PlayerIslandCollisionHandler(gameTime, c.entityA, c.entityB, c);
+                    PlayerIslandCollisionHandler(gameTime, c.EntityA, c.EntityB, c);
                 else
                     if (kind == "pillar")
-                        PlayerPillarCollisionHandler(gameTime, c.entityA, c.entityB, c);
+                        PlayerPillarCollisionHandler(gameTime, c.EntityA, c.EntityB, c);
                     else
                         if (kind == "player")
-                            PlayerPlayerCollisionHandler(gameTime, c.entityA, c.entityB, c);
+                            PlayerPlayerCollisionHandler(gameTime, c.EntityA, c.EntityB, c);
             }
         }
 
@@ -481,7 +481,7 @@ namespace ProjectMagma.Framework
             float dt = ((float)gameTime.ElapsedGameTime.Milliseconds) / 1000.0f;
             Vector3 playerPosition = player.GetVector3("position");
 
-            if (c.normal.Y < 0)
+            if (c.Normal.Y < 0)
             {
                 // standing on island
 
@@ -490,7 +490,7 @@ namespace ProjectMagma.Framework
                     ((Vector3Attribute)activeIsland.Attributes["position"]).ValueChanged -= IslandPositionHandler;
 
                 // correct position to exact touching point
-                playerPosition.Y = c.position.Y;
+                playerPosition.Y = c.Position.Y;
                 // add handler if active island changed
                 if (activeIsland != island)
                     ((Vector3Attribute)island.Attributes["position"]).ValueChanged += IslandPositionHandler;
@@ -502,7 +502,7 @@ namespace ProjectMagma.Framework
             else
             {
                 // hack hack hack
-                if (c.normal.Y == 0)
+                if (c.Normal.Y == 0)
                 {
                     // xz
 
@@ -587,13 +587,13 @@ namespace ProjectMagma.Framework
                 otherPlayer.SetInt("health", otherPlayer.GetInt("health") - constants.GetInt("hit_damage"));
 
                 // set values
-                otherPlayer.SetVector3("hit_pushback_velocity", c.normal * constants.GetFloat("hit_pushback_velocity_multiplier"));
+                otherPlayer.SetVector3("hit_pushback_velocity", c.Normal * constants.GetFloat("hit_pushback_velocity_multiplier"));
                 hitPerformedAt = gameTime.TotalGameTime.TotalMilliseconds;
             }
             else
             {
                 // normal feedback
-                player.SetVector3("contact_pushback_velocity", -c.normal * constants.GetFloat("pushback_contact_velocity_multiplier") / 2);
+                player.SetVector3("contact_pushback_velocity", -c.Normal * constants.GetFloat("pushback_contact_velocity_multiplier") / 2);
             }
         }
 

@@ -155,7 +155,7 @@ namespace ProjectMagma.Framework
 
         private void FlamethrowerCollisionHandler(GameTime gameTime, Contact c)
         {
-            Entity other = c.entityB;
+            Entity other = c.EntityB;
 
             if (other.HasAttribute("health"))
             {

@@ -37,10 +37,9 @@ namespace ProjectMagma.Collision.CollisionTests
                 if (normal.LengthSquared() < radiusSum * radiusSum)
                 {
                     // collision
-                    Contact c = new Contact(entity1, entity2);
-                    c.normal = normal;
-                    c.normal.Normalize();
-                    c.position = projected1 + c.normal * radius1 + Vector3.UnitY * (minTop - overlap / 2.0f);
+                    normal.Normalize();
+                    Vector3 position = projected1 + normal * radius1 + Vector3.UnitY * (minTop - overlap / 2.0f);
+                    Contact c = new Contact(entity1, entity2, position, normal);
                     return c;
                 }
             }

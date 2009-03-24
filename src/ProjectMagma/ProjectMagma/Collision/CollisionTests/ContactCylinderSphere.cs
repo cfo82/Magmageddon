@@ -15,9 +15,7 @@ namespace ProjectMagma.Collision.CollisionTests
                 entity1, boundingVolume1, worldTransform1, translation1, rotation1, scale1
                 );
             if (c != null)
-            {
-                c = c.Reverse();
-            }
+                c.Reverse();
             return c;
         }
     }

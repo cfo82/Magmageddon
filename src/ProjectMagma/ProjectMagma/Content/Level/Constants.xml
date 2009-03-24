@@ -15,8 +15,8 @@
       <Attribute name="lava_damage_per_second" template="int" value="200"/>
       <Attribute name="energy_recharge_interval" template="int" value="200"/>
 
-      <Attribute name="fuel_recharge_multiplier" template="float" value="0.75"/>
-      <Attribute name="fuel_recharge_multiplier_island" template="float" value="1.2"/>
+      <Attribute name="fuel_recharge_multiplier" template="float" value="1.2"/>
+      <Attribute name="fuel_recharge_multiplier_island" template="float" value="4"/>
       <Attribute name="max_jetpack_speed" template="float" value="150"/>
       <Attribute name="jetpack_acceleration" template="float3" value="0 1300 0"/>
 

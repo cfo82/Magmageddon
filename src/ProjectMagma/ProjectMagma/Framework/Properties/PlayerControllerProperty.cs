@@ -200,13 +200,20 @@ namespace ProjectMagma.Framework
                     jetpackSoundInstance.Stop();
                     jetpackActive = false;
                 }
-                fuel += (int)(gameTime.ElapsedGameTime.Milliseconds * constants.GetFloat("fuel_recharge_multiplier"));
+                if (!controllerInput.jetpackButtonPressed)
+                {
+                    if (activeIsland == null)
+                    {
+                        fuel += (int)(gameTime.ElapsedGameTime.Milliseconds * constants.GetFloat("fuel_recharge_multiplier"));
+                    }
+                    else
+                    {
+                        // faster recharge standing on island
+                        fuel += (int)(gameTime.ElapsedGameTime.Milliseconds * constants.GetFloat("fuel_recharge_multiplier_island"));
+                    }
+                }
             }
 
-            // faster recharge standing on island
-            if (activeIsland != null)
-                player.SetInt("fuel", player.GetInt("fuel") + (int)(gameTime.ElapsedGameTime.Milliseconds *
-                    constants.GetFloat("fuel_recharge_multiplier_island")));
 
             if (fuel < 0)
                 fuel = 0;

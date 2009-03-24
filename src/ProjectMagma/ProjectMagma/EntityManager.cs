@@ -75,7 +75,10 @@ namespace ProjectMagma
 
         public void RemoveDeferred(Entity entity)
         {
-            removeDeferred.Add(entity);
+            if (!removeDeferred.Contains(entity))
+            {
+                removeDeferred.Add(entity);
+            }
         }
 
         public void ExecuteDeferred()

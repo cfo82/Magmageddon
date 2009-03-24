@@ -214,12 +214,6 @@ namespace ProjectMagma.Framework
                 }
             }
 
-
-            if (fuel < 0)
-                fuel = 0;
-            if (fuel > constants.GetInt("max_fuel"))
-                fuel = constants.GetInt("max_fuel");
-
             // gravity
             if (playerVelocity.Length() <= constants.GetFloat("max_gravity_speed"))
                 playerVelocity += constants.GetVector3("gravity_acceleration") * dt;
@@ -418,22 +412,17 @@ namespace ProjectMagma.Framework
                 energyRechargedAt = (float)gameTime.TotalGameTime.TotalMilliseconds;
             }
 
-            if (player.GetInt("energy") > constants.GetInt("max_energy"))
-                player.SetInt("energy", constants.GetInt("max_energy"));
-            if (player.GetInt("health") > constants.GetInt("max_health"))
-                player.SetInt("health", constants.GetInt("max_health"));
-
             #endregion
 
             // update player attributes
-            if (fuel > constants.GetInt("max_fuel"))
-                fuel = constants.GetInt("max_fuel");
             player.SetInt("fuel", fuel);
 
             player.SetVector3("position", playerPosition);
             player.SetVector3("velocity", playerVelocity);
             player.SetVector3("contact_pushback_velocity", contactPushbackVelocity);
             player.SetVector3("hit_pushback_velocity", hitPushbackVelocity);
+
+            CheckPlayerAttributeRanges(player);
 
             /// TODO: move this to collision manager
             /// collision detection code
@@ -460,6 +449,30 @@ namespace ProjectMagma.Framework
                 lavaContactAt = at;
         }
 
+        private void CheckPlayerAttributeRanges(Entity player)
+        {
+            int health = player.GetInt("health");
+            if(health < 0)
+                player.SetInt("health", 0);
+            else
+                if (health > constants.GetInt("max_health"))
+                    player.SetInt("health", constants.GetInt("max_health"));
+
+            int energy = player.GetInt("energy");
+            if (energy < 0)
+                player.SetInt("energy", 0);
+            else
+                if (energy > constants.GetInt("max_energy"))
+                    player.SetInt("energy", constants.GetInt("max_energy"));
+
+            int fuel = player.GetInt("fuel");
+            if (fuel < 0)
+                player.SetInt("fuel", 0);
+            else
+            if (fuel > constants.GetInt("max_fuel"))
+                player.SetInt("fuel", constants.GetInt("max_fuel"));
+        }
+
         private void PlayerCollisionHandler(GameTime gameTime, Contact c)
         {
             if (c.EntityB.HasAttribute("kind"))
@@ -473,6 +486,7 @@ namespace ProjectMagma.Framework
                     else
                         if (kind == "player")
                             PlayerPlayerCollisionHandler(gameTime, c.EntityA, c.EntityB, c);
+                CheckPlayerAttributeRanges(player);
             }
         }
 

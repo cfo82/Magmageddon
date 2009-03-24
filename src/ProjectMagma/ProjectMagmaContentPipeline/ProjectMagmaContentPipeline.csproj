@@ -14,7 +14,7 @@
     <DebugSymbols>true</DebugSymbols>
     <DebugType>full</DebugType>
     <Optimize>false</Optimize>
-    <OutputPath>bin\x86\Debug</OutputPath>
+    <OutputPath>c:\temp\build\pmcp\bin\x86\Debug\</OutputPath>
     <DefineConstants>DEBUG;TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
@@ -24,7 +24,7 @@
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|x86' ">
     <DebugType>pdbonly</DebugType>
     <Optimize>true</Optimize>
-    <OutputPath>bin\x86\Release</OutputPath>
+    <OutputPath>c:\temp\build\pmcp\bin\x86\Debug\</OutputPath>
     <DefineConstants>TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
@@ -35,7 +35,7 @@
     <DebugSymbols>true</DebugSymbols>
     <DebugType>full</DebugType>
     <Optimize>false</Optimize>
-    <OutputPath>bin\Xbox 360\Debug</OutputPath>
+    <OutputPath>c:\temp\build\pmcp\bin\xbox\Debug\</OutputPath>
     <DefineConstants>DEBUG;TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
@@ -46,7 +46,7 @@
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|Xbox 360' ">
     <DebugType>pdbonly</DebugType>
     <Optimize>true</Optimize>
-    <OutputPath>bin\Xbox 360\Release</OutputPath>
+    <OutputPath>c:\temp\build\pmcp\bin\x86\Debug\</OutputPath>
     <DefineConstants>TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
@@ -58,7 +58,7 @@
     <DebugSymbols>true</DebugSymbols>
     <DebugType>full</DebugType>
     <Optimize>false</Optimize>
-    <OutputPath>bin\Zune\Debug</OutputPath>
+    <OutputPath>c:\temp\build\pmcp\bin\x86\Debug\</OutputPath>
     <DefineConstants>DEBUG;TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
@@ -69,7 +69,7 @@
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|Zune' ">
     <DebugType>pdbonly</DebugType>
     <Optimize>true</Optimize>
-    <OutputPath>bin\Zune\Release</OutputPath>
+    <OutputPath>c:\temp\build\pmcp\bin\x86\Debug\</OutputPath>
     <DefineConstants>TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
@@ -105,7 +105,12 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="BoundingVolume\Serialization\AlignedBox3TreeNodeReader.cs" />
+    <Compile Include="BoundingVolume\Serialization\AlignedBox3TreeNodeWriter.cs" />
+    <Compile Include="BoundingVolume\Serialization\AlignedBox3TreeReader.cs" />
+    <Compile Include="BoundingVolume\Serialization\AlignedBox3TreeWriter.cs" />
     <Compile Include="Level\LevelProcessor.cs" />
+    <Compile Include="Level\Serialization\LevelDataWriter.cs" />
     <Compile Include="ModelProcessors\CaveProcessor.cs" />
     <Compile Include="ModelProcessors\FlameProcessor.cs" />
     <Compile Include="ModelProcessors\PowerUpProcessor.cs" />

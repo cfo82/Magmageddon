@@ -26,13 +26,16 @@ namespace ProjectMagma.Framework
             model = Game.Instance.Content.Load<Model>(meshName);
 
             // attach listener for management form
+#if !XBOX
             Game.Instance.ManagementForm.EntitySelectionChanged += OnEntitySelectionChanged;
+#endif
         }
 
         public void OnDetached(Entity entity)
         {
+#if !XBOX
             Game.Instance.ManagementForm.EntitySelectionChanged -= OnEntitySelectionChanged;
-
+#endif
             this.model = null;
             entity.Draw -= OnDraw;
             this.entity = null;
@@ -129,10 +132,12 @@ namespace ProjectMagma.Framework
             }
         }
 
+#if !XBOX
         private void OnEntitySelectionChanged(ManagementForm managementForm, Entity oldSelection, Entity newSelection)
         {
             enabled = this.entity == newSelection;
         }
+#endif
 
         private Entity entity;
         private Model model;

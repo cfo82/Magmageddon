@@ -28,9 +28,9 @@ namespace ProjectMagma.Framework
                 for (int i = 0; i < 16; ++i)
                 {
                     float temp = 0.0f;
-                    if (splitArray.Length > i && float.TryParse(splitArray[i], out temp))
+                    if (splitArray.Length > i)
                     {
-                        values[i] = temp;
+                        values[i] = float.Parse(splitArray[i]);
                     }
                 }
 

@@ -24,13 +24,13 @@ namespace ProjectMagma.Framework
             {
                 float x, y;
                 string[] splitArray = value.Split(' ');
-                if (splitArray.Length > 0 && float.TryParse(splitArray[0], out x))
+                if (splitArray.Length > 0)
                 {
-                    v.X = x;
+                    v.X = float.Parse(splitArray[0]);
                 }
-                if (splitArray.Length > 1 && float.TryParse(splitArray[1], out y))
+                if (splitArray.Length > 1)
                 {
-                    v.Y = y;
+                    v.Y = float.Parse(splitArray[0]);
                 }
             }
         }

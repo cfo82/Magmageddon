@@ -1,6 +1,6 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 10.00
-# Visual Studio 2008
+# Visual C# Express 2008
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ProjectMagma", "ProjectMagma\ProjectMagma.csproj", "{37D28D35-F31F-4A83-9DB4-94D3E8461A77}"
 	ProjectSection(ProjectDependencies) = postProject
 		{41D8590B-0AD9-4E4A-B1ED-9E6E571364A2} = {41D8590B-0AD9-4E4A-B1ED-9E6E571364A2}
@@ -12,11 +12,11 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ProjectMagmaShared", "Proje
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "xWinFormsLib", "xWinFormsLib\xWinFormsLib.csproj", "{32868301-A135-4BB5-AA3A-44A5DE60C081}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "_XBOX360_ProjectMagma", "ProjectMagma\_XBOX360_ProjectMagma.csproj", "{95D2678F-34F2-4C0E-A7F1-CD56FB987A8C}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "_XBOX360_ProjectMagmaShared", "ProjectMagmaShared\_XBOX360_ProjectMagmaShared.csproj", "{9D08F9E6-E783-43F1-B9B8-C448B482A73D}"
+EndProject
 Global
-	GlobalSection(SubversionScc) = preSolution
-		Svn-Managed = True
-		Manager = AnkhSVN - Subversion Support for Visual Studio
-	EndGlobalSection
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Mixed Platforms = Debug|Mixed Platforms
 		Debug|x86 = Debug|x86
@@ -80,6 +80,22 @@ Global
 		{32868301-A135-4BB5-AA3A-44A5DE60C081}.Release|x86.Build.0 = Release|x86
 		{32868301-A135-4BB5-AA3A-44A5DE60C081}.Release|Xbox 360.ActiveCfg = Release|x86
 		{32868301-A135-4BB5-AA3A-44A5DE60C081}.Release|Zune.ActiveCfg = Release|x86
+		{95D2678F-34F2-4C0E-A7F1-CD56FB987A8C}.Debug|Mixed Platforms.ActiveCfg = Debug|Xbox 360
+		{95D2678F-34F2-4C0E-A7F1-CD56FB987A8C}.Debug|Mixed Platforms.Build.0 = Debug|Xbox 360
+		{95D2678F-34F2-4C0E-A7F1-CD56FB987A8C}.Debug|Mixed Platforms.Deploy.0 = Debug|Xbox 360
+		{95D2678F-34F2-4C0E-A7F1-CD56FB987A8C}.Debug|x86.ActiveCfg = Debug|Xbox 360
+		{95D2678F-34F2-4C0E-A7F1-CD56FB987A8C}.Debug|Xbox 360.ActiveCfg = Debug|Xbox 360
+		{95D2678F-34F2-4C0E-A7F1-CD56FB987A8C}.Debug|Xbox 360.Build.0 = Debug|Xbox 360
+		{95D2678F-34F2-4C0E-A7F1-CD56FB987A8C}.Debug|Xbox 360.Deploy.0 = Debug|Xbox 360
+		{95D2678F-34F2-4C0E-A7F1-CD56FB987A8C}.Debug|Zune.ActiveCfg = Debug|Xbox 360
+		{95D2678F-34F2-4C0E-A7F1-CD56FB987A8C}.Release|Mixed Platforms.ActiveCfg = Release|Xbox 360
+		{95D2678F-34F2-4C0E-A7F1-CD56FB987A8C}.Release|Mixed Platforms.Build.0 = Release|Xbox 360
+		{95D2678F-34F2-4C0E-A7F1-CD56FB987A8C}.Release|Mixed Platforms.Deploy.0 = Release|Xbox 360
+		{95D2678F-34F2-4C0E-A7F1-CD56FB987A8C}.Release|x86.ActiveCfg = Release|Xbox 360
+		{95D2678F-34F2-4C0E-A7F1-CD56FB987A8C}.Release|Xbox 360.ActiveCfg = Release|Xbox 360
+		{95D2678F-34F2-4C0E-A7F1-CD56FB987A8C}.Release|Xbox 360.Build.0 = Release|Xbox 360
+		{95D2678F-34F2-4C0E-A7F1-CD56FB987A8C}.Release|Xbox 360.Deploy.0 = Release|Xbox 360
+		{95D2678F-34F2-4C0E-A7F1-CD56FB987A8C}.Release|Zune.ActiveCfg = Release|Xbox 360
 		{40E4CAF0-0F79-43C3-85F2-3A79D2038879}.Debug|Mixed Platforms.ActiveCfg = Debug|x86
 		{40E4CAF0-0F79-43C3-85F2-3A79D2038879}.Debug|x86.ActiveCfg = Debug|x86
 		{40E4CAF0-0F79-43C3-85F2-3A79D2038879}.Debug|Xbox 360.ActiveCfg = Debug|x86
@@ -88,8 +104,24 @@ Global
 		{40E4CAF0-0F79-43C3-85F2-3A79D2038879}.Release|x86.ActiveCfg = Release|x86
 		{40E4CAF0-0F79-43C3-85F2-3A79D2038879}.Release|Xbox 360.ActiveCfg = Release|x86
 		{40E4CAF0-0F79-43C3-85F2-3A79D2038879}.Release|Zune.ActiveCfg = Release|x86
+		{9D08F9E6-E783-43F1-B9B8-C448B482A73D}.Debug|Mixed Platforms.ActiveCfg = Debug|Xbox 360
+		{9D08F9E6-E783-43F1-B9B8-C448B482A73D}.Debug|Mixed Platforms.Build.0 = Debug|Xbox 360
+		{9D08F9E6-E783-43F1-B9B8-C448B482A73D}.Debug|x86.ActiveCfg = Debug|Xbox 360
+		{9D08F9E6-E783-43F1-B9B8-C448B482A73D}.Debug|Xbox 360.ActiveCfg = Debug|Xbox 360
+		{9D08F9E6-E783-43F1-B9B8-C448B482A73D}.Debug|Xbox 360.Build.0 = Debug|Xbox 360
+		{9D08F9E6-E783-43F1-B9B8-C448B482A73D}.Debug|Zune.ActiveCfg = Debug|Xbox 360
+		{9D08F9E6-E783-43F1-B9B8-C448B482A73D}.Release|Mixed Platforms.ActiveCfg = Release|Xbox 360
+		{9D08F9E6-E783-43F1-B9B8-C448B482A73D}.Release|Mixed Platforms.Build.0 = Release|Xbox 360
+		{9D08F9E6-E783-43F1-B9B8-C448B482A73D}.Release|x86.ActiveCfg = Release|Xbox 360
+		{9D08F9E6-E783-43F1-B9B8-C448B482A73D}.Release|Xbox 360.ActiveCfg = Release|Xbox 360
+		{9D08F9E6-E783-43F1-B9B8-C448B482A73D}.Release|Xbox 360.Build.0 = Release|Xbox 360
+		{9D08F9E6-E783-43F1-B9B8-C448B482A73D}.Release|Zune.ActiveCfg = Release|Xbox 360
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(SubversionScc) = preSolution
+		Svn-Managed = True
+		Manager = AnkhSVN - Subversion Support for Visual Studio
 	EndGlobalSection
 EndGlobal

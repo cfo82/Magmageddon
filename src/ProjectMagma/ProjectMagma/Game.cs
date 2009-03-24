@@ -4,12 +4,15 @@ using Microsoft.Xna.Framework.Audio;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 using Microsoft.Xna.Framework.Media;
+#if !XBOX
 using xWinFormsLib;
+#endif
 
 using ProjectMagma.Framework;
 using ProjectMagma.Shared.BoundingVolume;
 using ProjectMagma.Shared.LevelData;
 using ProjectMagma.Collision;
+using System.Threading;
 
 // its worth to read this...
 // 
@@ -51,9 +54,10 @@ namespace ProjectMagma
         RenderTarget2D lightRenderTarget;
         // ENDHACK
 
+#if !XBOX
         private FormCollection formCollection;
         private ManagementForm managementForm;
-
+#endif
 
         #endregion
 
@@ -104,14 +108,10 @@ namespace ProjectMagma
             // the direct3d device. This would be something to clarify in the future. As for
             // now we should keep to rendering on the main thread and move everything else to
             // the other cores.
-
-            // another thing to clarify would be on which thread the main method is running 
-            // and if the SetProcessorAffinity works... It could very well be that this thread is
-            // already locked to some hardware thread.
 #if XBOX
-            Thread.CurrentThread.SetProcessorAffinity(new int[] { 1 });
+            Thread.CurrentThread.SetProcessorAffinity(new int[] { 4 });
 #endif
-
+   
             using (Game game = new Game())
             {
                 Game.instance = game;
@@ -155,9 +155,11 @@ namespace ProjectMagma
         /// </summary>
         protected override void LoadContent()
         {
+#if !XBOX
             // create the gui system
             formCollection = new FormCollection(this.Window, Services, ref graphics);
             managementForm = new ManagementForm(formCollection);
+#endif
 
             // Create a new SpriteBatch, which can be used to draw textures.
             spriteBatch = new SpriteBatch(GraphicsDevice);
@@ -239,7 +241,9 @@ namespace ProjectMagma
         protected override void UnloadContent()
         {
             // TODO: Unload any non ContentManager content here
+#if !XBOX
             formCollection.Dispose();
+#endif
             MediaPlayer.Stop();
         }
 
@@ -273,8 +277,10 @@ namespace ProjectMagma
             // execute deferred add/remove orders on the entityManager
             entityManager.ExecuteDeferred();
 
+#if !XBOX
             // update the user interface
             formCollection.Update(gameTime);
+#endif
 
             // update all GameComponents registered
             base.Update(gameTime);
@@ -286,7 +292,9 @@ namespace ProjectMagma
         /// <param name="gameTime">Provides a snapshot of timing values.</param>
         protected override void Draw(GameTime gameTime)
         {
+#if !XBOX
             formCollection.Render();
+#endif
 
             GraphicsDevice.Clear(Color.CornflowerBlue);
 
@@ -310,7 +318,10 @@ namespace ProjectMagma
 
             // draw stuff which should net be filtered
             hud.Draw(gameTime);
+
+#if !XBOX
             formCollection.Draw();
+#endif
         }
 
         private void RenderScene(GameTime gameTime)
@@ -416,6 +427,7 @@ namespace ProjectMagma
             }
         }
 
+#if !XBOX
         public ManagementForm ManagementForm
         {
             get
@@ -423,7 +435,7 @@ namespace ProjectMagma
                 return managementForm;
             }
         }
-
+#endif
 
 
         /**

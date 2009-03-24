@@ -22,11 +22,7 @@ namespace ProjectMagma.Framework
             }
             else
             {
-                int val;
-                if (int.TryParse(value, out val))
-                {
-                    this.v = val;
-                }
+                    this.v = int.Parse(value);
             }
         }
 

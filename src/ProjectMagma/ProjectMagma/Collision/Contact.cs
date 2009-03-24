@@ -5,10 +5,10 @@ namespace ProjectMagma.Collision
 {
     public class Contact
     {
-        Entity entityA;
-        Entity entityB;
-        Vector3 position;
-        Vector3 normal;
+        private Entity entityA;
+        private Entity entityB;
+        private Vector3 position;
+        private Vector3 normal;
 
         public Contact(Entity entityA, Entity entityB)
         {

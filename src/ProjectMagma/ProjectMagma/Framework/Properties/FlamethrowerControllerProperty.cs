@@ -6,6 +6,7 @@ using System.Text;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using ProjectMagma.Shared.BoundingVolume;
+using ProjectMagma.Collision;
 
 namespace ProjectMagma.Framework
 {
@@ -22,8 +23,7 @@ namespace ProjectMagma.Framework
         private double flameThrowerStateChangedAt = 0;
         private int flameThrowerWarmupDeducted = 0;
 
-        private Dictionary<string, double> playersHitAt;
-        private Dictionary<string, double> islandsHitAt;
+        private Dictionary<string, double> entityHitAt;
 
         enum FlameThrowerState
         {
@@ -47,8 +47,9 @@ namespace ProjectMagma.Framework
             flame.AddBoolAttribute("fueled", true);
             flame.GetBoolAttribute("fueled").ValueChanged += new BoolChangeHandler(flameFuelChangeHandler);
 
-            playersHitAt = new Dictionary<string, double>(Game.Instance.PlayerManager.Count);
-            islandsHitAt = new Dictionary<string, double>(Game.Instance.IslandManager.Count);
+            entityHitAt = new Dictionary<string, double>(Game.Instance.EntityManager.Count<Entity>());
+
+            ((CollisionProperty)flame.GetProperty("collision")).OnContact += new ContactHandler(FlamethrowerCollisionHandler);
 
             flame.Update += OnUpdate;
         }
@@ -56,6 +57,7 @@ namespace ProjectMagma.Framework
         public void OnDetached(Entity flame)
         {
             flame.Update -= OnUpdate;
+            ((CollisionProperty)flame.GetProperty("collision")).OnContact -= new ContactHandler(FlamethrowerCollisionHandler);
         }
 
         private void OnUpdate(Entity flame, GameTime gameTime)
@@ -125,37 +127,6 @@ namespace ProjectMagma.Framework
                 else
                     scaleFactor = 1;
             }
-
-
-            // collision detection
-            BoundingSphere bs = Game.CalculateBoundingSphere(flame);
-
-            // detect collision
-            foreach (Entity p in Game.Instance.PlayerManager)
-            {
-                if (p.Name != player.Name) // dont collide with user
-                {
-                    BoundingSphere pbs = Game.CalculateBoundingSphere(p);
-
-                    if (pbs.Intersects(bs))
-                    {
-                        playerCollisionHandler(gameTime, flame, p);
-                        return;
-                    }
-                }
-            }
-
-            // detect collision
-            foreach (Entity i in Game.Instance.IslandManager)
-            {
-                BoundingCylinder pbc = Game.CalculateBoundingCylinder(i);
-
-                if (pbc.Intersects(bs))
-                {
-                    islandCollisionHandler(gameTime, flame, i);
-                    return;
-                }
-            }
         }
 
         private void playerPositionHandler(Vector3Attribute sender, Vector3 oldValue, Vector3 newValue)
@@ -182,31 +153,24 @@ namespace ProjectMagma.Framework
             flameThrowerState = FlameThrowerState.Cooldown;
         }
 
-        private void playerCollisionHandler(GameTime gameTime, Entity flame, Entity player)
+        private void FlamethrowerCollisionHandler(GameTime gameTime, Contact c)
         {
-            if (!playersHitAt.ContainsKey(player.Name))
-                playersHitAt[player.Name] = at;
-            else
-            {
-                int health = player.GetInt("health");
-                playersHitAt[player.Name] = Game.ApplyPerSecond(at, playersHitAt[player.Name],
-                    constants.GetInt("flamethrower_player_damage_per_second"), ref health);
-                player.SetInt("health", health);
-            }
-            player.SetInt("frozen", 0);
-        }
+            Entity other = c.entityB;
 
-        private void islandCollisionHandler(GameTime gameTime, Entity flame, Entity island)
-        {
-            if (!islandsHitAt.ContainsKey(island.Name))
-                islandsHitAt[island.Name] = at;
-            else
+            if (other.HasAttribute("health"))
             {
-                Console.WriteLine("island " + island.Name + " health: " + island.GetInt("health"));
-                int health = island.GetInt("health");
-                islandsHitAt[island.Name] = Game.ApplyPerSecond(at, islandsHitAt[island.Name], 
-                    constants.GetInt("flamethrower_island_damage_per_second"), ref health);
-                island.SetInt("health", health);
+                if (!entityHitAt.ContainsKey(other.Name))
+                    entityHitAt[other.Name] = at;
+                else
+                {
+                    int health = other.GetInt("health");
+                    entityHitAt[other.Name] = Game.ApplyPerSecond(at, entityHitAt[other.Name],
+                        constants.GetInt("flamethrower_damage_per_second"), ref health);
+                    player.SetInt("health", health);
+                }
+
+                if (other.GetString("kind") == "player")
+                    player.SetInt("frozen", 0);
             }
         }
 

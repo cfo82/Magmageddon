@@ -40,8 +40,7 @@
       <Attribute name="flamethrower_cooldown_time" template="int" value="400"/>
       <Attribute name="flamethrower_turn_flame_increase" template="float" value="1"/>
       <Attribute name="flamethrower_turn_scale" template="float" value="0.6"/>
-      <Attribute name="flamethrower_player_damage_per_second" template="int" value="8"/>
-      <Attribute name="flamethrower_island_damage_per_second" template="int" value="50"/>
+      <Attribute name="flamethrower_damage_per_second" template="int" value="10"/>
 
       <Attribute name="hit_damage" template="int" value="20"/>
       <Attribute name="hit_cooldown" template="int" value="250"/>
@@ -67,6 +66,8 @@
       <Attribute name="sinking_speed" template="float" value="18.0"/>
       <Attribute name="rising_speed" template="float" value="40.0"/>
       <Attribute name="rising_delay" template="int" value="100"/>
+
+      <Attribute name="scale_health_multiplier" template="float" value="1.8"/>
     </Attributes>
   </Entity>
 

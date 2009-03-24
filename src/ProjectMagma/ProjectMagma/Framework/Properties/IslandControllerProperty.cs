@@ -20,12 +20,13 @@ namespace ProjectMagma.Framework
         {
             Debug.Assert(entity.HasVector3("position"));
 
+            this.constants = Game.Instance.EntityManager["island_constants"];
+
             entity.AddIntAttribute("collisionCount", 0);
 
-            // TODO: make this an attribute or add a constant for specifing health/size multiplier
-            entity.AddIntAttribute("health", (int)entity.GetVector3("scale").Length() * 2);
-
-            this.constants = Game.Instance.EntityManager["island_constants"];
+            if (!entity.HasAttribute("max_health"))
+                entity.AddIntAttribute("max_health", (int) (Game.GetScale(entity).Length() * constants.GetFloat("scale_health_multiplier")));
+            entity.AddIntAttribute("health", entity.GetInt("max_health"));
 
             entity.Update += OnUpdate;
 

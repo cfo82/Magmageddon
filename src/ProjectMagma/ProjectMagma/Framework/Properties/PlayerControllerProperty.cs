@@ -367,7 +367,10 @@ namespace ProjectMagma.Framework
                         flame.AddVector3Attribute("full_scale", new Vector3(26, 26, 26));
                         flame.AddQuaternionAttribute("rotation", Game.GetRotation(player));
 
+                        flame.AddStringAttribute("bv_type", "sphere");
+
                         flame.AddProperty("render", new RenderProperty());
+                        flame.AddProperty("collision", new CollisionProperty());
                         flame.AddProperty("controller", new FlamethrowerControllerProperty());
 
                         Game.Instance.EntityManager.AddDeferred(flame);
@@ -459,15 +462,18 @@ namespace ProjectMagma.Framework
 
         private void PlayerCollisionHandler(GameTime gameTime, Contact c)
         {
-            String kind = c.entityB.GetString("kind");
-            if (kind == "island")
-                PlayerIslandCollisionHandler(gameTime, c.entityA, c.entityB, c);
-            else
-                if (kind == "pillar")
-                    PlayerPillarCollisionHandler(gameTime, c.entityA, c.entityB, c);
+            if (c.entityB.HasAttribute("kind"))
+            {
+                String kind = c.entityB.GetString("kind");
+                if (kind == "island")
+                    PlayerIslandCollisionHandler(gameTime, c.entityA, c.entityB, c);
                 else
-                    if (kind == "player")
-                        PlayerPlayerCollisionHandler(gameTime, c.entityA, c.entityB, c);
+                    if (kind == "pillar")
+                        PlayerPillarCollisionHandler(gameTime, c.entityA, c.entityB, c);
+                    else
+                        if (kind == "player")
+                            PlayerPlayerCollisionHandler(gameTime, c.entityA, c.entityB, c);
+            }
         }
 
         private void PlayerIslandCollisionHandler(GameTime gameTime, Entity player, Entity island, Contact c)

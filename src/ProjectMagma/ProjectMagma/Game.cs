@@ -39,6 +39,9 @@ namespace ProjectMagma
         private EntityKindManager iceSpikeManager;
         private CollisionManager collisionManager;
 
+        private GameTime currentGameTime;
+        private double lastUpdateAt = 0;
+
         #region shadow related stuff
         // see http://www.ziggyware.com/readarticle.php?article_id=161
 
@@ -275,6 +278,8 @@ namespace ProjectMagma
         /// <param name="gameTime">Provides a snapshot of timing values.</param>
         protected override void Update(GameTime gameTime)
         {
+            currentGameTime = gameTime;
+
             // Allows the game to exit
             if (GamePad.GetState(PlayerIndex.One).Buttons.Back == ButtonState.Pressed)
                 this.Exit();
@@ -305,6 +310,9 @@ namespace ProjectMagma
 
             // update all GameComponents registered
             base.Update(gameTime);
+
+            // set lastupdate time
+            lastUpdateAt = gameTime.TotalGameTime.TotalMilliseconds;
         }
 
         /// <summary>
@@ -448,6 +456,16 @@ namespace ProjectMagma
             }
         }
 
+        public double LastUpdateAt
+        {
+            get { return lastUpdateAt; }
+        }
+
+        public GameTime CurrentUpdateTime
+        {
+            get { return currentGameTime; }
+        }
+
 #if !XBOX
         public ManagementForm ManagementForm
         {
@@ -570,10 +588,22 @@ namespace ProjectMagma
 
         public static double ApplyInterval(double current, double last, float interval, ref int value)
         {
-            if (current >= last + interval)
+            double nextUpdateTime = last + interval;
+            // if we didnt adapt on last update, then there was no call to this method at that time
+            // so we reset our time to current
+            if (Game.Instance.LastUpdateAt >= nextUpdateTime)
+                return current;
+
+            // do we have to update yet?
+            if (current >= nextUpdateTime)
             {
+                // calculate how many updates would have happened in between
                 int times = (int)((current - last) / interval);
+                
+                // adapt value
                 value -= times;
+                
+                // return new time
                 return last + times * interval;
             }
             else

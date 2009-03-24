@@ -333,7 +333,6 @@ namespace ProjectMagma.Framework
                 iceSpike.AddStringAttribute("player", player.Name);
                 iceSpike.AddStringAttribute("target_player", targetPlayerName);
                 iceSpike.AddIntAttribute("creation_time", (int) at);
-                //iceSpike.AddFl
 
                 iceSpike.AddVector3Attribute("velocity", aimVector);
                 iceSpike.AddVector3Attribute("position", pos);
@@ -341,7 +340,10 @@ namespace ProjectMagma.Framework
                 iceSpike.AddStringAttribute("mesh", "Models/icespike_primitive");
                 iceSpike.AddVector3Attribute("scale", new Vector3(5, 5, 5));
 
+                iceSpike.AddStringAttribute("bv_type", "sphere");
+
                 iceSpike.AddProperty("render", new RenderProperty());
+                iceSpike.AddProperty("collision", new CollisionProperty());
                 iceSpike.AddProperty("controller", new IceSpikeControllerProperty());
 
                 Game.Instance.EntityManager.AddDeferred(iceSpike);
@@ -462,8 +464,6 @@ namespace ProjectMagma.Framework
             Entity lava = Game.Instance.EntityManager["lava"];
             if (playerPosition.Y < lava.GetVector3("position").Y)
                 PlayerLavaCollisionHandler(gameTime, player, lava);
-            else // hack hack: need better way to reset perSecond counters
-                lavaContactAt = at;
         }
 
         private void CheckPlayerAttributeRanges(Entity player)

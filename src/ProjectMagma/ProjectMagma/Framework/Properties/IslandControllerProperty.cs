@@ -5,7 +5,10 @@ using System.Linq;
 using System.Text;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
+using ProjectMagma.Shared.BoundingVolume;
 using ProjectMagma.Collision;
+using ProjectMagma.Collision.CollisionTests;
+
 
 namespace ProjectMagma.Framework
 {
@@ -41,7 +44,7 @@ namespace ProjectMagma.Framework
             if (entity.HasProperty("collision"))
             {
                 ((CollisionProperty)entity.GetProperty("collision")).OnContact -= new ContactHandler(CollisionHandler);
-            }
+             }
             // TODO: remove attribute!
         }
 
@@ -96,7 +99,7 @@ namespace ProjectMagma.Framework
                     islandScale *= scale.X;
                 }
 
-                // collision detection
+                // collision detection with pillars
                 if (dist.Length() > pillarScale + islandScale)
                 {
                     // no collision with this pillar
@@ -127,6 +130,26 @@ namespace ProjectMagma.Framework
                 a += pillarContribution;
             }
 
+            //BoundingCylinder this_bc = Game.CalculateBoundingCylinder(island);
+            //foreach (Entity e in Game.Instance.EntityManager)
+            //{
+            //    if (e.HasAttribute("mesh"))
+            //    {
+            //        if ((!(e.Name == island.Name))
+            //            && (e.GetString("kind") == "island") )
+            //            // only collide with other islands for now
+            //        {
+            //            BoundingCylinder other_bc = Game.CalculateBoundingCylinder(e);
+
+            //            //if (this_bc.Intersects(other_bc))
+            //            //{
+            //            //    Vector3 dist = e.GetVector3("position") - island.GetVector3("position");
+            //            //    v = -Vector3.Normalize(dist) * v.Length();
+            //            //}
+            //        }
+            //    }
+            //}
+
             if (!collided)
             {
                 island.SetInt("collisionCount", 0);
@@ -142,14 +165,15 @@ namespace ProjectMagma.Framework
             // compute final velocity
             v = (v + dt * island.GetVector3("acceleration")) * (1.0f - constants.GetFloat("damping"));
             float velocityLength = v.Length();
+            Vector3 v_applied = v;
             if (velocityLength > constants.GetFloat("max_velocity"))
             {
-                v *= constants.GetFloat("max_velocity") / velocityLength;
+                v_applied *= constants.GetFloat("max_velocity") / velocityLength;
             }
             island.SetVector3("velocity", v);
 
             // compute final position
-            island.SetVector3("position", island.GetVector3("position") + dt * island.GetVector3("velocity"));
+            island.SetVector3("position", island.GetVector3("position") + dt * v_applied);
 
             // implement sinking/rising islands...
             Vector3 position = island.GetVector3("position");
@@ -186,6 +210,8 @@ namespace ProjectMagma.Framework
             )
             {
                 playersOnIsland++;
+            } else {
+                //Console.WriteLine("Collision of "+contact.entityA.Name+" and "+contact.entityB.Name);
             }
         }
 

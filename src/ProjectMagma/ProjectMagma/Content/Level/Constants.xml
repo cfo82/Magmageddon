@@ -26,13 +26,17 @@
       <Attribute name="pushback_contact_velocity_multiplier" template="float" value="80"/>
       <Attribute name="pushback_deacceleration_multiplier" template="float" value="300"/>
 
-      <Attribute name="ice_spike_speed" template="float" value="300"/>
-      <Attribute name="ice_spike_up_speed" template="float" value="200"/>
-      <Attribute name="ice_spike_aim_angle" template="float" value="45"/>
+      <Attribute name="ice_spike_mass" template="float" value="0.2"/>
+      <Attribute name="ice_spike_speed" template="float" value="200"/>
+      <!--Attribute name="ice_spike_up_speed" template="float" value="200"/-->
+      <Attribute name="ice_spike_aim_angle" template="float" value="180"/>
       <Attribute name="ice_spike_energy_cost" template="int" value="2"/>
       <Attribute name="ice_spike_damage" template="int" value="1"/>
       <Attribute name="ice_spike_freeze_time" template="int" value="200"/>
-      <Attribute name="ice_spike_cooldown" template="int" value="50"/>
+      <Attribute name="ice_spike_cooldown" template="int" value="500"/>
+      <Attribute name="ice_spike_acceleration" template="float" value="1000"/>
+      <Attribute name="ice_spike_lifetime" template="int" value="1000"/>
+
 
       <Attribute name="flamethrower_warmup_time" template="int" value="600"/>
       <Attribute name="flamethrower_warmup_energy_cost" template="int" value="20"/>
@@ -63,6 +67,7 @@
       <Attribute name="pillar_attraction" template="float" value="0.0001"/>
       <Attribute name="pillar_repulsion" template="float" value="0.03"/>
 
+      <!--<Attribute name="sinking_speed" template="float" value="18.0"/>-->
       <Attribute name="sinking_speed" template="float" value="18.0"/>
       <Attribute name="rising_speed" template="float" value="40.0"/>
       <Attribute name="rising_delay" template="int" value="100"/>

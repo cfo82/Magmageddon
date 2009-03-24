@@ -32,6 +32,19 @@ namespace ProjectMagma.Shared.BoundingVolume
             return false;
         }
 
+        public bool Intersects(BoundingCylinder bc)
+        {
+            //// check collision on y axis
+            //if (Top < bc.Y && bs.Center.Y + bs.Radius > c2.Y)
+            //{
+            //    // check collision in xz
+            //    if (Pow2(bs.Center.X - c1.X) + Pow2(bs.Center.Z - c1.Z) < Pow2(bs.Radius + radius))
+            //        return true;
+            //}
+
+            return false;
+        }
+
         private float Pow2(float x)
         {
             return x * x;

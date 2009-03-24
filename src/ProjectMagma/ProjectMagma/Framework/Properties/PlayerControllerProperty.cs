@@ -287,10 +287,12 @@ namespace ProjectMagma.Framework
                 Vector3 pos = new Vector3(playerPosition.X, bb.Max.Y, playerPosition.Z);
                 Vector3 viewVector = Vector3.Transform(new Vector3(0, 0, 1), Game.GetRotation(player));
 
-                // search next player in range
+                #region search next player in range
+
                 float angle = constants.GetFloat("ice_spike_aim_angle");
-                Vector3 aimVector = viewVector;
                 float aimDistance = float.PositiveInfinity;
+                Entity targetPlayer = null;
+                Vector3 distVector = Vector3.Zero;
                 foreach(Entity p in Game.Instance.PlayerManager)
                 {
                     if(p != player)
@@ -303,20 +305,35 @@ namespace ProjectMagma.Framework
                             float ad = pdir.Length();
                             if(ad < aimDistance)
                             {
-                                aimVector = pdir;
+                                targetPlayer = p;
+                                distVector = pdir;
                                 aimDistance = ad;
                             }
                         }
                     }
                 }
+                String targetPlayerName = targetPlayer!=null ? targetPlayer.Name : "";
+                Console.WriteLine("targetPlayer: " + targetPlayerName);
+
+                #endregion
 
                 float strength = 0.6f+controllerInput.iceSpikeStrength;
-                aimVector.Normalize();
+                //aimVector.Normalize();
+                //aimVector *= constants.GetFloat("ice_spike_speed") * strength;
+                //aimVector.Y = constants.GetFloat("ice_spike_up_speed");
+                Vector3 aimVector = viewVector;
+                if(targetPlayer != null)
+                {
+                    aimVector.Y = Vector3.Normalize(distVector).Y;
+                    //aimVector = Vector3.Normalize(distVector);
+                }
                 aimVector *= constants.GetFloat("ice_spike_speed") * strength;
-                aimVector.Y = constants.GetFloat("ice_spike_up_speed");
 
                 Entity iceSpike = new Entity(Game.Instance.EntityManager, "icespike" + (++iceSpikeCount)+"_"+player.Name);
                 iceSpike.AddStringAttribute("player", player.Name);
+                iceSpike.AddStringAttribute("target_player", targetPlayerName);
+                iceSpike.AddIntAttribute("creation_time", (int) at);
+                //iceSpike.AddFl
 
                 iceSpike.AddVector3Attribute("velocity", aimVector);
                 iceSpike.AddVector3Attribute("position", pos);
@@ -474,7 +491,7 @@ namespace ProjectMagma.Framework
         }
 
         private void PlayerCollisionHandler(GameTime gameTime, Contact c)
-        {
+         {
             if (c.EntityB.HasAttribute("kind"))
             {
                 String kind = c.EntityB.GetString("kind");
@@ -752,7 +769,7 @@ namespace ProjectMagma.Framework
             // in order to use the following variables as private with getters/setters, do
             // we really need 15 lines per variable?!
             
-            // joysticks
+            // joystick
             public float leftStickX, leftStickY;
             public bool moveStickPressed;
 

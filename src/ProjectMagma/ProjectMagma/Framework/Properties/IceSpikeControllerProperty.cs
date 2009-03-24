@@ -33,18 +33,54 @@ namespace ProjectMagma.Framework
 
         private void OnUpdate(Entity iceSpike, GameTime gameTime)
         {
+            int iat = (int) gameTime.TotalGameTime.TotalMilliseconds;
 
             // fetch required values
             Vector3 pos = iceSpike.GetVector3("position");
             Vector3 v = iceSpike.GetVector3("velocity");
+            float m = constants.GetFloat("ice_spike_mass");
             float dt = ((float)gameTime.ElapsedGameTime.Milliseconds)/1000.0f;
 
-            // compute acceleration
-//            Vector3 a = new Vector3(straightAcceleration, 0f, 0f);
+            // accumulate forces
+            Vector3 a = 0.02f * constants.GetVector3("gravity_acceleration");
+
+            string targetPlayerName = iceSpike.GetString("target_player");
+            if (targetPlayerName != "")
+            {
+                // incorporate homing effect towards targeted player
+                Entity targetPlayer = Game.Instance.PlayerManager[0];
+                foreach (Entity e in Game.Instance.PlayerManager)
+                {
+                    if (e.Name == targetPlayerName)
+                    {
+                        targetPlayer = e;
+                        break;
+                    }
+                }
+                Vector3 targetPlayerPos = targetPlayer.GetVector3("position");
+                Vector3 diff = targetPlayerPos - pos;
+                diff.Normalize();
+                a += diff * constants.GetFloat("ice_spike_acceleration");
+            }
+            else
+            {
+                // incorporate uniform acceleration
+                Vector3 a_uniform = v;
+                a_uniform.Normalize();
+                a += a_uniform * 1000;
+            }
+
 
             // integrate
-            v += constants.GetVector3("gravity_acceleration") * dt;
-            pos += dt*v;
+            v += a * dt;
+            pos += v * dt;
+
+            // check lifetime
+            if(iceSpike.GetInt("creation_time") + constants.GetInt("ice_spike_lifetime") < iat)
+            {
+                Game.Instance.EntityManager.RemoveDeferred(iceSpike);
+                return;
+            }
 
             // remove if in lava
             if (pos.Y < Game.Instance.EntityManager["lava"].GetVector3("position").Y)

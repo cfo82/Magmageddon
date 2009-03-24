@@ -8,6 +8,7 @@ using Microsoft.Xna.Framework.Input;
 using Microsoft.Xna.Framework.Media;
 using Microsoft.Xna.Framework.Audio;
 using ProjectMagma.Shared.BoundingVolume;
+using ProjectMagma.Collision;
 
 namespace ProjectMagma.Framework
 {
@@ -21,13 +22,17 @@ namespace ProjectMagma.Framework
 
         public void OnAttached(Entity entity)
         {
-            entity.Update += OnUpdate;
-
             this.constants = Game.Instance.EntityManager["player_constants"];
+
+            ((CollisionProperty)entity.GetProperty("collision")).OnContact += new ContactHandler(IceSpikeCollisionHandler);
+
+            entity.Update += OnUpdate;
         }
 
         public void OnDetached(Entity entity)
         {
+            ((CollisionProperty)entity.GetProperty("collision")).OnContact -= new ContactHandler(IceSpikeCollisionHandler);
+
             entity.Update -= OnUpdate;
         }
 
@@ -89,49 +94,26 @@ namespace ProjectMagma.Framework
                 return;
             }
 
-            BoundingSphere bs = Game.CalculateBoundingSphere(iceSpike);
-
-            // detect collision
-            foreach (Entity e in Game.Instance.EntityManager)
-            {
-                if (e.HasAttribute("mesh"))
-                {
-                    if (!(e.Name == iceSpike.Name) // dont collide with self
-                        && !(e.Name == "cave") // dont collide with cave 
-                        && !(e.Name == iceSpike.GetString("player"))) // dont collide with shooter
-                    {
-                        BoundingCylinder bc = Game.CalculateBoundingCylinder(e);
-
-                        if (bc.Intersects(bs))
-                        {
-                            iceSpikeCollisionHandler(gameTime, iceSpike, e);
-                            if (e.HasAttribute("kind") && e.GetString("kind") == "player")
-                                iceSpikePlayerCollisionHandler(gameTime, iceSpike, e);
-                            return;
-                        }
-                    }
-                }
-            }
-
-            Entity lava = Game.Instance.EntityManager["lava"];
-            if (iceSpike.GetVector3("position").Y < lava.GetVector3("position").Y)
-            {
-                Game.Instance.EntityManager.RemoveDeferred(iceSpike);
-                return;
-            }
-
             // store computed values;
             iceSpike.SetVector3("position", pos);
             iceSpike.SetVector3("velocity", v);
         }
 
-        private void iceSpikeCollisionHandler(GameTime gameTime, Entity iceSpike, Entity other)
+        private void IceSpikeCollisionHandler(GameTime gameTime, Contact c)
         {
             // remove spike
-            Game.Instance.EntityManager.RemoveDeferred(iceSpike);
+            Entity iceSpike = c.EntityA;
+            Entity other = c.EntityB;
+            if (!(other.Name == iceSpike.Name) // dont collide with self
+                && !(other.Name == iceSpike.GetString("player"))) // dont collide with shooter
+            {
+                if (other.HasAttribute("kind") && other.GetString("kind") == "player")
+                    IceSpikePlayerCollisionHandler(gameTime, iceSpike, other);
+                Game.Instance.EntityManager.RemoveDeferred(iceSpike);
+            }
         }
 
-        private void iceSpikePlayerCollisionHandler(GameTime gameTime, Entity iceSpike, Entity player)
+        private void IceSpikePlayerCollisionHandler(GameTime gameTime, Entity iceSpike, Entity player)
         {
             // indicate hit
             SoundEffect soundEffect = Game.Instance.Content.Load<SoundEffect>("Sounds/sword-clash");

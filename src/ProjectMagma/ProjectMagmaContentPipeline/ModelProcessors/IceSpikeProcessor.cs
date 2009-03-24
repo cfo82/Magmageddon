@@ -8,10 +8,10 @@ using Microsoft.Xna.Framework.Content.Pipeline;
 using Microsoft.Xna.Framework.Content.Pipeline.Graphics;
 using Microsoft.Xna.Framework.Content.Pipeline.Processors;
 
-namespace ProjectMagmaContentPipeline.ModelProcessors
+namespace ProjectMagma.ContentPipeline.ModelProcessors
 {
     [ContentProcessor(DisplayName = "Magma - Ice Spike Processor")]
-    class IceSpikeProcessor : MoveProcessor
+    public class IceSpikeProcessor : MoveProcessor
     {
     }
 }

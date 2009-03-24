@@ -8,10 +8,10 @@ using ProjectMagma.Shared.LevelData;
 using ProjectMagma.Shared.LevelData.Serialization;
 using System.IO;
 
-namespace ProjectMagmaContentPipeline.Level
+namespace ProjectMagma.ContentPipeline.Level
 {
     [ContentProcessor(DisplayName = "Magma - Level Processor")]
-    class LevelProcessor : ContentProcessor<XmlDocument, LevelData>
+    public class LevelProcessor : ContentProcessor<XmlDocument, LevelData>
     {
         private static XmlElement GetChild(XmlElement parent, String childTag)
         {

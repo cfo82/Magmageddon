@@ -8,10 +8,10 @@ using Microsoft.Xna.Framework.Content.Pipeline;
 using Microsoft.Xna.Framework.Content.Pipeline.Graphics;
 using Microsoft.Xna.Framework.Content.Pipeline.Processors;
 
-namespace ProjectMagmaContentPipeline.ModelProcessors
+namespace ProjectMagma.ContentPipeline.ModelProcessors
 {
     [ContentProcessor(DisplayName = "Magma - Pillar Processor")]
-    class PillarProcessor : MoveProcessor
+    public class PillarProcessor : MoveProcessor
     {
         protected override Vector3 CalculateDiff(ref Vector3 origDiff, ref BoundingBox bb)
         {

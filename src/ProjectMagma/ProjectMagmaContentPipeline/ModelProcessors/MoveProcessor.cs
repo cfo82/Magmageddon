@@ -7,11 +7,7 @@ using Microsoft.Xna.Framework.Content.Pipeline;
 using Microsoft.Xna.Framework.Content.Pipeline.Graphics;
 using Microsoft.Xna.Framework.Content.Pipeline.Processors;
 
-// TODO: replace these with the processor input and output types.
-using TInput = System.String;
-using TOutput = System.String;
-
-namespace ProjectMagmaContentPipeline.ModelProcessors
+namespace ProjectMagma.ContentPipeline.ModelProcessors
 {
     public abstract class MoveProcessor : ModelProcessor
     {

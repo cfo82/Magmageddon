@@ -6,7 +6,7 @@ using Microsoft.Xna.Framework.Content.Pipeline;
 using System.Xml;
 using System.IO;
 
-namespace ProjectMagmaContentPipeline.Xml.Importer
+namespace ProjectMagma.ContentPipeline.Xml.Importer
 {
     [ContentImporter(".xml", DisplayName="Magma - Level Importer")]
     public class LevelImporter : ContentImporter<XmlDocument>

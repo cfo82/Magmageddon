@@ -1,21 +1,10 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using Microsoft.Xna.Framework;
-using Microsoft.Xna.Framework.Audio;
-using Microsoft.Xna.Framework.Graphics;
-using Microsoft.Xna.Framework.Input;
-using Microsoft.Xna.Framework.Storage;
 using Microsoft.Xna.Framework.Content;
-using Microsoft.Xna.Framework.Content.Pipeline;
-using Microsoft.Xna.Framework.Content.Pipeline.Graphics;
-using Microsoft.Xna.Framework.Content.Pipeline.Processors;
-using Microsoft.Xna.Framework.Content.Pipeline.Serialization.Compiler;
 
 namespace ProjectMagma.Shared.BoundingVolume.Serialization
 {
-    class AlignedBox3TreeReader : ContentTypeReader<AlignedBox3Tree>
+    public class AlignedBox3TreeReader : ContentTypeReader<AlignedBox3Tree>
     {
         protected override AlignedBox3Tree Read(ContentReader input, AlignedBox3Tree existingInstance)
         {

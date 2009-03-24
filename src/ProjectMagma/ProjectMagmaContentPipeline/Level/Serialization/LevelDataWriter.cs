@@ -14,10 +14,10 @@ using Microsoft.Xna.Framework.Content.Pipeline.Serialization.Compiler;
 using ProjectMagma.Shared.LevelData.Serialization;
 using ProjectMagma.Shared.LevelData;
 
-namespace ProjectMagmaContentPipeline.Level.Serialization
+namespace ProjectMagma.ContentPipeline.Level.Serialization
 {
     [ContentTypeWriter]
-    class AttributeDataWriter : ContentTypeWriter<AttributeData>
+    public class AttributeDataWriter : ContentTypeWriter<AttributeData>
     {
         protected override void Write(ContentWriter output, AttributeData value)
         {
@@ -33,7 +33,7 @@ namespace ProjectMagmaContentPipeline.Level.Serialization
     }
 
     [ContentTypeWriter]
-    class PropertyDataWriter : ContentTypeWriter<PropertyData>
+    public class PropertyDataWriter : ContentTypeWriter<PropertyData>
     {
         protected override void Write(ContentWriter output, PropertyData value)
         {
@@ -48,7 +48,7 @@ namespace ProjectMagmaContentPipeline.Level.Serialization
     }
 
     [ContentTypeWriter]
-    class EntityDataWriter : ContentTypeWriter<EntityData>
+    public class EntityDataWriter : ContentTypeWriter<EntityData>
     {
         protected override void Write(ContentWriter output, EntityData value)
         {
@@ -66,7 +66,7 @@ namespace ProjectMagmaContentPipeline.Level.Serialization
     }
 
     [ContentTypeWriter]
-    class LevelDataWriter : ContentTypeWriter<LevelData>
+    public class LevelDataWriter : ContentTypeWriter<LevelData>
     {
         protected override void Write(ContentWriter output, LevelData value)
         {

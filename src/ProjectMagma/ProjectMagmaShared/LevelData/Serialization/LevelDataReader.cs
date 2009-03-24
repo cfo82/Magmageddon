@@ -3,7 +3,6 @@ using Microsoft.Xna.Framework.Content;
 
 namespace ProjectMagma.Shared.LevelData.Serialization
 {
-
     public class AttributeDataReader : ContentTypeReader<AttributeData>
     {
         protected override AttributeData Read(ContentReader input, AttributeData existingInstance)

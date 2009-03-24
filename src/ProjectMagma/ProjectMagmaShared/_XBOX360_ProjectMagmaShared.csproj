@@ -58,6 +58,8 @@
     <Compile Include="BoundingVolume\AlignedBox3TreeNode.cs" />
     <Compile Include="BoundingVolume\Axis.cs" />
     <Compile Include="BoundingVolume\BoundingCylinder.cs" />
+    <Compile Include="BoundingVolume\Serialization\AlignedBox3TreeNodeReader.cs" />
+    <Compile Include="BoundingVolume\Serialization\AlignedBox3TreeReader.cs" />
     <Compile Include="BoundingVolume\Triangle3.cs" />
     <Compile Include="LevelData\AttributeData.cs" />
     <Compile Include="LevelData\EntityData.cs" />

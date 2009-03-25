@@ -40,6 +40,7 @@ namespace ProjectMagma.Framework
             Entity entity
         )
         {
+            this.islandEntity.GetVector3Attribute("position").ValueChanged -= OnIslandPositionChanged;
         }
 
         private void OnIslandPositionChanged(

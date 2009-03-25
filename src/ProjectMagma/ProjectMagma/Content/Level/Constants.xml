@@ -29,8 +29,8 @@
       <Attribute name="ice_spike_mass" template="float" value="0.2"/>
       <Attribute name="ice_spike_speed" template="float" value="200"/>
       <Attribute name="ice_spike_aim_angle" template="float" value="180"/>
-      <Attribute name="ice_spike_energy_cost" template="int" value="20"/>
-      <Attribute name="ice_spike_damage" template="int" value="15"/>
+      <Attribute name="ice_spike_energy_cost" template="int" value="14"/>
+      <Attribute name="ice_spike_damage" template="int" value="10"/>
       <Attribute name="ice_spike_freeze_time" template="int" value="2500"/>
       <Attribute name="ice_spike_cooldown" template="int" value="500"/>
       <Attribute name="ice_spike_acceleration" template="float" value="1000"/>

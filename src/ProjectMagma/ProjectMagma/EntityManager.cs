@@ -46,6 +46,11 @@ namespace ProjectMagma
 
         public void Add(Entity entity)
         {
+            if (entity.Name.Length == 0)
+            {
+                throw new Exception("entity without name added...");
+            }
+
             if (!this.entities.ContainsKey(entity.Name))
             {
                 this.entities.Add(entity.Name, entity);

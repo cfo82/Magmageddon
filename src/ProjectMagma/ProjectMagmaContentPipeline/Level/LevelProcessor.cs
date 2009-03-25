@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Diagnostics;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -62,6 +63,10 @@ namespace ProjectMagma.ContentPipeline.Level
             entityData.isAbstract = entityElement.HasAttribute("abstract") && (entityElement.GetAttribute("abstract") == "true");
             entityData.name = entityElement.GetAttribute("name");
             entityData.parent = entityElement.HasAttribute("extends") ? entityElement.GetAttribute("extends") : "";
+            if (entityData.name == "")
+            {
+                throw new Exception("each entity must have a valid name!");
+            }
 
             XmlElement attributesElement = GetChild(entityElement, "Attributes");
             if (attributesElement != null)
@@ -116,7 +121,7 @@ namespace ProjectMagma.ContentPipeline.Level
             foreach (XmlNode entityNode in documentRoot.ChildNodes)
             {
                 XmlElement entityElement = entityNode as XmlElement;
-                if (entityElement != null)
+                if (entityElement != null && entityElement.Name == "Entity")
                 {
                     EntityData entityData = new EntityData();
                     ProcessEntityNode(entityElement, entityData, context);

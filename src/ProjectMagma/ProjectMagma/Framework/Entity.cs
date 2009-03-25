@@ -24,14 +24,14 @@ namespace ProjectMagma.Framework
 
         public void Destroy()
         {
-            // currently no recycling necessary for attributes
-            attributes.Clear(); 
-
             foreach (Property property in properties.Values)
             {
                 property.OnDetached(this);
             }
             properties.Clear();
+
+            // currently no recycling necessary for attributes
+            attributes.Clear();
         }
 
         public void OnUpdate(GameTime gameTime)

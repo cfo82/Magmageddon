@@ -513,9 +513,11 @@ namespace ProjectMagma.Framework
             float dt = ((float)gameTime.ElapsedGameTime.Milliseconds) / 1000.0f;
             Vector3 playerPosition = player.GetVector3("position");
 
-            if (c.Normal.Y < 0)
+            if (c.Normal.Y < 0
+                || (c.Normal.Y > 0 && player.GetVector3("velocity").Y < 0 && activeIsland == null))
             {
                 // standing on island
+                Console.WriteLine("from top at "+gameTime.TotalGameTime.TotalMilliseconds);
 
                 // remove handler from old active island
                 if(activeIsland != null && activeIsland != island)

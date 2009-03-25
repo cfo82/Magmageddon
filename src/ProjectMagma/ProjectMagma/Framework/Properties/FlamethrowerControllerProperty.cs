@@ -58,6 +58,9 @@ namespace ProjectMagma.Framework
         {
             flame.Update -= OnUpdate;
             ((CollisionProperty)flame.GetProperty("collision")).OnContact -= new ContactHandler(FlamethrowerCollisionHandler);
+            flame.GetBoolAttribute("fueled").ValueChanged -= new BoolChangeHandler(flameFuelChangeHandler);
+            player.GetQuaternionAttribute("rotation").ValueChanged -= new QuaternionChangeEventHandler(playerRotationHandler);
+            player.GetVector3Attribute("position").ValueChanged -= new Vector3ChangeHandler(playerPositionHandler);
         }
 
         private void OnUpdate(Entity flame, GameTime gameTime)

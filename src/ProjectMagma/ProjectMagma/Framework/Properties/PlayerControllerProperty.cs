@@ -84,6 +84,7 @@ namespace ProjectMagma.Framework
         {
             player.Update -= OnUpdate;
             Game.Instance.EntityManager.EntityRemoved -= new EntityRemovedHandler(EntityRemovedHandler);
+            ((CollisionProperty)player.GetProperty("collision")).OnContact -= new ContactHandler(PlayerCollisionHandler);
         }
 
         private void OnUpdate(Entity player, GameTime gameTime)

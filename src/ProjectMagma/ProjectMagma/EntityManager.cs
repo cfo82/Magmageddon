@@ -31,7 +31,7 @@ namespace ProjectMagma
                 List<AttributeData> attributes = entityData.CollectAttributes(levelData);
                 List<PropertyData> properties = entityData.CollectProperties(levelData);
 
-                Entity entity = new Entity(this, entityData.name);
+                Entity entity = new Entity(entityData.name);
                 foreach (AttributeData attributeData in attributes)
                 {
                     entity.AddAttribute(attributeData);
@@ -66,6 +66,7 @@ namespace ProjectMagma
 
             this.entities.Remove(entity.Name);
             FireEntityRemoved(entity);
+            entity.Destroy();
         }
 
         public void AddDeferred(Entity entity)

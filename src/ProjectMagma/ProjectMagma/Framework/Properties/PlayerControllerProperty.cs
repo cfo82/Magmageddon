@@ -329,7 +329,7 @@ namespace ProjectMagma.Framework
                 }
                 aimVector *= constants.GetFloat("ice_spike_speed") * strength;
 
-                Entity iceSpike = new Entity(Game.Instance.EntityManager, "icespike" + (++iceSpikeCount)+"_"+player.Name);
+                Entity iceSpike = new Entity("icespike" + (++iceSpikeCount)+"_"+player.Name);
                 iceSpike.AddStringAttribute("player", player.Name);
                 iceSpike.AddStringAttribute("target_player", targetPlayerName);
                 iceSpike.AddIntAttribute("creation_time", (int) at);
@@ -368,7 +368,7 @@ namespace ProjectMagma.Framework
                         Vector3 pos = new Vector3(bb.Max.X, bb.Max.Y, playerPosition.Z);
                         Vector3 viewVector = Vector3.Transform(new Vector3(0, 0, 1), Game.GetRotation(player));
 
-                        flame = new Entity(Game.Instance.EntityManager, "flame" + "_" + player.Name);
+                        flame = new Entity("flame" + "_" + player.Name);
                         flame.AddStringAttribute("player", player.Name);
                         flame.AddBoolAttribute("active", false);
 

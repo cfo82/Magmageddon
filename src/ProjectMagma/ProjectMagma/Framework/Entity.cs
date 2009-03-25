@@ -12,16 +12,27 @@ namespace ProjectMagma.Framework
 {
     public class Entity
     {
-        public Entity(EntityManager entityManager, string name)
+        public event UpdateHandler Update;
+        public event DrawHandler Draw;
+
+        public Entity(string name)
         {
-            this.entityManager = entityManager;
             this.name = name;
             this.attributes = new Dictionary<string, Attribute>();
             this.properties = new Dictionary<string, Property>();
         }
 
-        public event UpdateHandler Update;
-        public event DrawHandler Draw;
+        public void Destroy()
+        {
+            // currently no recycling necessary for attributes
+            attributes.Clear(); 
+
+            foreach (Property property in properties.Values)
+            {
+                property.OnDetached(this);
+            }
+            properties.Clear();
+        }
 
         public void OnUpdate(GameTime gameTime)
         {
@@ -434,7 +445,6 @@ namespace ProjectMagma.Framework
             }
         }
 
-        private EntityManager entityManager;
         private string name;
         private Dictionary<string, Attribute> attributes;
         private Dictionary<string, Property> properties;

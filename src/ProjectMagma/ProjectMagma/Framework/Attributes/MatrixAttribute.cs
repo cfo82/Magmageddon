@@ -27,7 +27,6 @@ namespace ProjectMagma.Framework
                 float[] values = new float[] { 1, 0, 0, 0,  0, 1, 0, 0,  0, 0, 1, 0,  0, 0, 0, 1 };
                 for (int i = 0; i < 16; ++i)
                 {
-                    float temp = 0.0f;
                     if (splitArray.Length > i)
                     {
                         values[i] = float.Parse(splitArray[i]);

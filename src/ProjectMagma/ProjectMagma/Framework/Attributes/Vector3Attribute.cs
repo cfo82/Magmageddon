@@ -22,7 +22,6 @@ namespace ProjectMagma.Framework
             }
             else
             {
-                float x, y, z;
                 string[] splitArray = value.Split(' ');
                 if (splitArray.Length > 0)
                 {

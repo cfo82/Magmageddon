@@ -314,7 +314,7 @@ namespace ProjectMagma.Framework
                     }
                 }
                 String targetPlayerName = targetPlayer!=null ? targetPlayer.Name : "";
-                Console.WriteLine("targetPlayer: " + targetPlayerName);
+                //Console.WriteLine("targetPlayer: " + targetPlayerName);
 
                 #endregion
 
@@ -517,7 +517,7 @@ namespace ProjectMagma.Framework
                 || (c.Normal.Y > 0 && player.GetVector3("velocity").Y < 0 && activeIsland == null))
             {
                 // standing on island
-                Console.WriteLine("from top at "+gameTime.TotalGameTime.TotalMilliseconds);
+                //Console.WriteLine("from top at "+gameTime.TotalGameTime.TotalMilliseconds);
 
                 // remove handler from old active island
                 if(activeIsland != null && activeIsland != island)

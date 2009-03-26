@@ -43,11 +43,10 @@ namespace ProjectMagma.Framework
             // fetch required values
             Vector3 pos = iceSpike.GetVector3("position");
             Vector3 v = iceSpike.GetVector3("velocity");
-            float m = constants.GetFloat("ice_spike_mass");
             float dt = ((float)gameTime.ElapsedGameTime.Milliseconds)/1000.0f;
 
             // accumulate forces
-            Vector3 a = 0.02f * constants.GetVector3("gravity_acceleration");
+            Vector3 a = constants.GetVector3("ice_spike_gravity_acceleration");
 
             string targetPlayerName = iceSpike.GetString("target_player");
             if (targetPlayerName != "")
@@ -65,14 +64,14 @@ namespace ProjectMagma.Framework
                 Vector3 targetPlayerPos = targetPlayer.GetVector3("position");
                 Vector3 diff = targetPlayerPos - pos;
                 diff.Normalize();
-                a += diff * constants.GetFloat("ice_spike_acceleration");
+                a += diff * constants.GetFloat("ice_spike_homing_acceleration");
             }
             else
             {
                 // incorporate uniform acceleration
                 Vector3 a_uniform = v;
                 a_uniform.Normalize();
-                a += a_uniform * 1000;
+                a += a_uniform * constants.GetFloat("ice_spike_uniform_acceleration");
             }
 
 

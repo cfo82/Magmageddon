@@ -43,7 +43,7 @@ namespace ProjectMagma.Framework
         private SoundEffect flameThrowerSound;
         private SoundEffectInstance flameThrowerSoundInstance;
 
-        Vector3 originalPosition;
+        Vector3 previousPosition;
 
         public PlayerControllerProperty()
         {
@@ -58,7 +58,8 @@ namespace ProjectMagma.Framework
             player.AddQuaternionAttribute("rotation", Quaternion.Identity);
             player.AddVector3Attribute("velocity", Vector3.Zero);
 
-            player.AddVector3Attribute("contact_pushback_velocity", Vector3.Zero);
+            player.AddVector3Attribute("object_pushback_velocity", Vector3.Zero);
+            player.AddVector3Attribute("player_pushback_velocity", Vector3.Zero);
             player.AddVector3Attribute("hit_pushback_velocity", Vector3.Zero);
 
             player.AddIntAttribute("energy", constants.GetInt("max_energy"));
@@ -135,7 +136,8 @@ namespace ProjectMagma.Framework
                         player.SetQuaternion("rotation", Quaternion.Identity);
                         player.SetVector3("velocity", Vector3.Zero);
 
-                        player.SetVector3("contact_pushback_velocity", Vector3.Zero);
+                        player.SetVector3("object_pushback_velocity", Vector3.Zero);
+                        player.SetVector3("player_pushback_velocity", Vector3.Zero);
                         player.SetVector3("hit_pushback_velocity", Vector3.Zero);
 
                         player.SetInt("energy", constants.GetInt("max_energy"));
@@ -162,14 +164,15 @@ namespace ProjectMagma.Framework
             PlayerIndex playerIndex = (PlayerIndex)player.GetInt("game_pad_index");
             Vector3 playerPosition = player.GetVector3("position");
             Vector3 playerVelocity = player.GetVector3("velocity");
-            Vector3 contactPushbackVelocity = player.GetVector3("contact_pushback_velocity");
+            Vector3 objectPushbackVelocity = player.GetVector3("object_pushback_velocity");
+            Vector3 playerPushbackVelocity = player.GetVector3("player_pushback_velocity");
             Vector3 hitPushbackVelocity = player.GetVector3("hit_pushback_velocity");
-            
+
             int fuel = player.GetInt("fuel");
 
             Model playerModel = Game.Instance.Content.Load<Model>(player.GetString("mesh"));
 
-            originalPosition = playerPosition;
+            previousPosition = playerPosition;
 
             // get input
             controllerInput.Update(playerIndex);
@@ -245,11 +248,11 @@ namespace ProjectMagma.Framework
                     Vector2 diff = ic - pp;
                     if (diff.Length() > ibc.Radius)
                     {
-                        Vector2 op = new Vector2(originalPosition.X, originalPosition.Z);
+                        Vector2 op = new Vector2(previousPosition.X, previousPosition.Z);
                         if ((op - ic).Length() < diff.Length())
                         {
-                            playerPosition.X = originalPosition.X;
-                            playerPosition.Z = originalPosition.Z;
+                            playerPosition.X = previousPosition.X;
+                            playerPosition.Z = previousPosition.Z;
                         }
                     }
                 }
@@ -266,7 +269,7 @@ namespace ProjectMagma.Framework
             // frozen!?
             if (player.GetInt("frozen") > 0)
             {
-                playerPosition = (originalPosition + playerPosition) / 2;
+                playerPosition = (previousPosition + playerPosition) / 2;
                 player.SetInt("frozen", player.GetInt("frozen") - gameTime.ElapsedGameTime.Milliseconds);
                 if (player.GetInt("frozen") < 0)
                     player.SetInt("frozen", 0);
@@ -399,30 +402,9 @@ namespace ProjectMagma.Framework
                 flame.SetBool("fueled", false);
 
             // pushback
-            if (contactPushbackVelocity.Length() > 0)
-            {
-                Vector3 oldVelocity = contactPushbackVelocity;
-                Vector3 pushbackDeAcceleration = contactPushbackVelocity;
-                pushbackDeAcceleration.Normalize();
-
-                contactPushbackVelocity -= pushbackDeAcceleration * constants.GetFloat("pushback_deacceleration_multiplier") * dt;
-                if (contactPushbackVelocity.Length() > oldVelocity.Length()) // if length increases we accelerate -> stop
-                    contactPushbackVelocity = Vector3.Zero;
-
-                playerPosition += contactPushbackVelocity * dt;
-            }
-            if (hitPushbackVelocity.Length() > 0)
-            {
-                Vector3 oldVelocity = hitPushbackVelocity;
-                Vector3 pushbackDeAcceleration = hitPushbackVelocity;
-                pushbackDeAcceleration.Normalize();
-
-                hitPushbackVelocity -= pushbackDeAcceleration * constants.GetFloat("pushback_deacceleration_multiplier") * dt;
-                if (hitPushbackVelocity.Length() > oldVelocity.Length()) // if length increases we accelerate -> stop
-                    hitPushbackVelocity = Vector3.Zero;
-
-                playerPosition += hitPushbackVelocity * dt;
-            }
+            ApplyPushback(ref playerPosition, ref objectPushbackVelocity, constants.GetFloat("object_contact_deacceleration_multiplier"));
+            ApplyPushback(ref playerPosition, ref playerPushbackVelocity, constants.GetFloat("player_pushback_deacceleration_multiplier"));
+            ApplyPushback(ref playerPosition, ref hitPushbackVelocity, constants.GetFloat("player_pushback_deacceleration_multiplier"));
 
             // recharge energy
             if ((gameTime.TotalGameTime.TotalMilliseconds - energyRechargedAt) > constants.GetInt("energy_recharge_interval")
@@ -439,7 +421,8 @@ namespace ProjectMagma.Framework
 
             player.SetVector3("position", playerPosition);
             player.SetVector3("velocity", playerVelocity);
-            player.SetVector3("contact_pushback_velocity", contactPushbackVelocity);
+            player.SetVector3("object_pushback_velocity", objectPushbackVelocity);
+            player.SetVector3("player_pushback_velocity", playerPushbackVelocity);
             player.SetVector3("hit_pushback_velocity", hitPushbackVelocity);
 
             CheckPlayerAttributeRanges(player);
@@ -513,8 +496,7 @@ namespace ProjectMagma.Framework
             float dt = ((float)gameTime.ElapsedGameTime.Milliseconds) / 1000.0f;
             Vector3 playerPosition = player.GetVector3("position");
 
-            if (c.Normal.Y < 0
-                || (c.Normal.Y > 0 && player.GetVector3("velocity").Y < 0 && activeIsland == null))
+            if (c.Normal.Y < 0 && c.Normal.X == 0 && c.Normal.Z == 0)
             {
                 // standing on island
                 //Console.WriteLine("from top at "+gameTime.TotalGameTime.TotalMilliseconds);
@@ -541,7 +523,7 @@ namespace ProjectMagma.Framework
                     // xz
 
                 // calculate theoretical velocity
-                Vector3 velocity = (originalPosition - playerPosition) / dt;
+                Vector3 velocity = (previousPosition - playerPosition) / dt;
 
                     /*
                     velocity.Y = 0;
@@ -568,9 +550,50 @@ namespace ProjectMagma.Framework
 
         private void PlayerPillarCollisionHandler(GameTime gameTime, Entity player, Entity pillar, Contact co)
         {
-            Vector3 newPos = originalPosition;
-            newPos.Y = player.GetVector3("position").Y;
-            player.SetVector3("position", newPos);
+            if (co.Normal.Y < 0)
+            {
+                // top
+                player.SetVector3("velocity", Vector3.Zero);
+
+                Vector3 pos = player.GetVector3("position");
+                pos.Y = previousPosition.Y;
+                player.SetVector3("position", pos);
+            }
+            else
+            {
+                /*
+                float angle = (float)Math.Atan(co.Normal.Z / co.Normal.X);
+                Vector3 velocity = (previousPosition - pos) / gameTime.ElapsedGameTime.Milliseconds * 1000;
+
+                //                Console.Write("velocity : " + velocity);
+                //                Console.Write("; dir: " + co.Normal);
+
+                velocity.Y = 0;
+
+                Matrix rotation = Matrix.CreateRotationY(-angle);
+                Vector3.Transform(ref velocity, ref rotation, out velocity);
+                velocity.X = -velocity.X;
+                rotation = Matrix.CreateRotationY(angle);
+                Vector3.Transform(ref velocity, ref rotation, out velocity);
+
+                velocity.Normalize();
+                velocity *= constants.GetFloat("object_contact_pushback_multiplier");
+                 */
+                Vector3 pos = player.GetVector3("position");
+
+                // project pos onto plane
+                float D = Vector3.Dot(co.Normal, co.Position);
+                Vector3 posOnPlane = pos - Vector3.Dot(co.Normal, pos)*co.Normal + co.Normal*D;
+
+
+                // calculate new velocity
+                Vector3 velocity = (co.Position - posOnPlane) / gameTime.ElapsedGameTime.Milliseconds * 1000;
+                velocity.Y = 0;
+
+                //                Console.WriteLine("; pushback : " + velocity);
+
+                player.SetVector3("object_pushback_velocity", velocity);
+            }
         }
 
         private void PlayerLavaCollisionHandler(GameTime gameTime, Entity player, Entity lava)
@@ -597,18 +620,6 @@ namespace ProjectMagma.Framework
 
         private void PlayerPlayerCollisionHandler(GameTime gameTime, Entity player, Entity otherPlayer, Contact c)
         {
-            Vector3 playerPosition = player.GetVector3("position");
-
-            /*
-            BoundingSphere bs = Game.CalculateBoundingSphere(player);
-            BoundingSphere obs = Game.CalculateBoundingSphere(otherPlayer);
-
-            if (obs.Intersects(bs))
-                otherPlayer.SetString("collisionPlayer", player.Name); // indicate collision
-            else
-                otherPlayer.SetString("collisionPlayer", ""); // reset collision
-             */ 
-
             // and hit?
             if (controllerInput.hitButtonPressed &&
                 (gameTime.TotalGameTime.TotalMilliseconds - hitPerformedAt) > constants.GetInt("hit_cooldown"))
@@ -627,7 +638,7 @@ namespace ProjectMagma.Framework
             else
             {
                 // normal feedback
-                player.SetVector3("contact_pushback_velocity", -c.Normal * constants.GetFloat("pushback_contact_velocity_multiplier") / 2);
+                player.SetVector3("player_pushback_velocity", -c.Normal * constants.GetFloat("player_pushback_velocity_multiplier") / 2);
             }
         }
 
@@ -658,6 +669,25 @@ namespace ProjectMagma.Framework
             {
                 iceSpikeCount = 0;
                 iceSpikeRemovedCount = 0;
+            }
+        }
+
+        private static void ApplyPushback(ref Vector3 playerPosition, ref Vector3 pushbackVelocity, float deacceleration)
+        {
+            if (pushbackVelocity.Length() > 0)
+            {
+                float dt = Game.Instance.CurrentUpdateTime.ElapsedGameTime.Milliseconds / 1000.0f;
+
+                Vector3 oldVelocity = pushbackVelocity;
+                Vector3 pushbackDeAcceleration = pushbackVelocity;
+                pushbackDeAcceleration.Normalize();
+
+                pushbackVelocity -= pushbackDeAcceleration * deacceleration * dt;
+
+                if (pushbackVelocity.Length() > oldVelocity.Length()) // if length increases we accelerate -> stop
+                    pushbackVelocity = Vector3.Zero;
+
+                playerPosition += pushbackVelocity * dt;
             }
         }
 

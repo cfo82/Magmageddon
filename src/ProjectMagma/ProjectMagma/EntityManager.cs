@@ -120,6 +120,14 @@ namespace ProjectMagma
             }
         }
 
+        public int Count
+        {
+            get
+            {
+                return entities.Count;
+            }
+        }
+
         public event EntityAddedHandler EntityAdded;
         public event EntityRemovedHandler EntityRemoved;
 

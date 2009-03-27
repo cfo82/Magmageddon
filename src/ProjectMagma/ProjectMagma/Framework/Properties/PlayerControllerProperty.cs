@@ -582,17 +582,21 @@ namespace ProjectMagma.Framework
                 Vector3 pos = player.GetVector3("position");
 
                 // project pos onto plane
-                float D = Vector3.Dot(co.Normal, co.Position);
+                float D = -Vector3.Dot(co.Normal, co.Position);
                 Vector3 posOnPlane = pos - Vector3.Dot(co.Normal, pos)*co.Normal + co.Normal*D;
 
 
                 // calculate new velocity
-                Vector3 velocity = (co.Position - posOnPlane) / gameTime.ElapsedGameTime.Milliseconds * 1000;
+//                Vector3 velocity = (co.Position - posOnPlane) * 1000 / gameTime.ElapsedGameTime.Milliseconds;
+//                Vector3 velocity = Vector3.Normalize(co.Position - posOnPlane) * (pos-previousPosition).Length()                    
+//                    * 1000 / gameTime.ElapsedGameTime.Milliseconds;
+                Vector3 velocity = Vector3.Normalize(co.Position - posOnPlane) * constants.GetFloat("object_contact_pushback_multiplier"); ;
                 velocity.Y = 0;
 
                 //                Console.WriteLine("; pushback : " + velocity);
 
-                player.SetVector3("object_pushback_velocity", velocity);
+                player.SetVector3("object_pushback_velocity", 
+                    /*player.GetVector3("object_pushback_velocity") / gameTime.ElapsedGameTime.Milliseconds +*/ velocity);
             }
         }
 

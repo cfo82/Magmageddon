@@ -36,8 +36,6 @@ namespace ProjectMagma.Framework
 
         Entity flame = null;
 
-        private double lavaContactAt = 0;
-
         private SoundEffect jetpackSound;
         private SoundEffectInstance jetpackSoundInstance;
         private SoundEffect flameThrowerSound;
@@ -407,12 +405,16 @@ namespace ProjectMagma.Framework
             ApplyPushback(ref playerPosition, ref hitPushbackVelocity, constants.GetFloat("player_pushback_deacceleration_multiplier"));
 
             // recharge energy
+            /*
             if ((gameTime.TotalGameTime.TotalMilliseconds - energyRechargedAt) > constants.GetInt("energy_recharge_interval")
                 && flame == null)
             {
                 player.SetInt("energy", player.GetInt("energy") + 1);
                 energyRechargedAt = (float)gameTime.TotalGameTime.TotalMilliseconds;
-            }
+            }*/
+            if (flame == null)
+                Game.Instance.ApplyIntervalAddition(player, "energy_recharge", constants.GetInt("energy_recharge_interval"),
+                    player.GetIntAttribute("energy"));
 
             #endregion
 
@@ -602,10 +604,8 @@ namespace ProjectMagma.Framework
 
         private void PlayerLavaCollisionHandler(GameTime gameTime, Entity player, Entity lava)
         {
-            int health = player.GetInt("health");
-            lavaContactAt = Game.ApplyPerSecond(gameTime.TotalGameTime.TotalMilliseconds, lavaContactAt, constants.GetInt("lava_damage_per_second"),
-                ref health);
-            player.SetInt("health", health);
+            Game.Instance.ApplyPerSecondSubstraction(player, "lava_damage", constants.GetInt("lava_damage_per_second"),
+                player.GetIntAttribute("health"));
         }
 
         private void PlayerPowerupCollisionHandler(GameTime gameTime, Entity player, Entity powerup)

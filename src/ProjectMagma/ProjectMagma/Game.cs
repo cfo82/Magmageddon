@@ -13,6 +13,7 @@ using ProjectMagma.Shared.BoundingVolume;
 using ProjectMagma.Shared.LevelData;
 using ProjectMagma.Collision;
 using System.Threading;
+using System.Collections.Generic;
 
 // its worth to read this...
 // 
@@ -92,6 +93,8 @@ namespace ProjectMagma
             powerupManager = new EntityKindManager(entityManager, "powerup");
             iceSpikeManager = new EntityKindManager(entityManager, "ice_spike");
             collisionManager = new CollisionManager();
+
+            appliedAt = new Dictionary<String, double>(entityManager.Count);
 
             bloom = new BloomComponent(this);
             Components.Add(bloom);
@@ -580,19 +583,80 @@ namespace ProjectMagma
             }
         }
 
-        public static double ApplyPerSecond(double current, double last, int perSecond, ref int value)
+
+        private readonly Dictionary<string, double> appliedAt;
+
+        public void ApplyPerSecondAddition(Entity source, String identifier, int perSecond, ref int value)
         {
             float interval = 1000f / perSecond;
-            return ApplyInterval(current, last, interval, ref value);
+            ApplyIntervalAddition(source, identifier, interval, ref value);
         }
 
-        public static double ApplyInterval(double current, double last, float interval, ref int value)
+        public void ApplyPerSecondAddition(Entity source, String identifier, int perSecond, IntAttribute attr)
         {
+            float interval = 1000f / perSecond;
+            ApplyIntervalAddition(source, identifier, interval, attr);
+        }
+
+        public void ApplyPerSecondSubstractrion(Entity source, String identifier, int perSecond, ref int value)
+        {
+            float interval = 1000f / perSecond;
+            ApplyIntervalSubstraction(source, identifier, interval, ref value);
+        }
+
+        public void ApplyPerSecondSubstraction(Entity source, String identifier, int perSecond, IntAttribute attr)
+        {
+            float interval = 1000f / perSecond;
+            ApplyIntervalSubstraction(source, identifier, interval, attr);
+        }
+
+
+        public void ApplyIntervalAddition(Entity source, String identifier, float interval, IntAttribute attr)
+        {
+            int val = attr.Value;
+            ApplyIntervalAddition(source, identifier, interval, ref val);
+            attr.Value = val;
+        }
+
+        public void ApplyIntervalAddition(Entity source, String identifier, float interval, ref int value)
+        {
+            ApplyInterval(source, identifier, interval, ref value, Game.plusInstance);
+        }
+
+        public void ApplyIntervalSubstraction(Entity source, String identifier, float interval, IntAttribute attr)
+        {
+            int val = attr.Value;
+            ApplyIntervalSubstraction(source, identifier, interval, ref val);
+            attr.Value = val;
+        }
+
+        public void ApplyIntervalSubstraction(Entity source, String identifier, float interval, ref int value)
+        {
+            ApplyInterval(source, identifier, interval, ref value, Game.minusInstance);
+        }
+
+
+        private void ApplyInterval(Entity source, String identifier, float interval, ref int value, Operator op)
+        {
+            String fullIdentifier = source.Name + "_" + identifier;
+            double current = currentGameTime.TotalGameTime.TotalMilliseconds;
+
+            // if appliedAt doesn't contain string this is first time we called this functin
+            if (!appliedAt.ContainsKey(fullIdentifier))
+            {
+                appliedAt.Add(fullIdentifier, current);
+                return;
+            }
+
+            double last = appliedAt[fullIdentifier];
             double nextUpdateTime = last + interval;
             // if we didnt adapt on last update, then there was no call to this method at that time
             // so we reset our time to current
-            if (Game.Instance.LastUpdateAt >= nextUpdateTime)
-                return current;
+            if (lastUpdateAt >= nextUpdateTime)
+            {
+                appliedAt[fullIdentifier] = current;
+                return;
+            }
 
             // do we have to update yet?
             if (current >= nextUpdateTime)
@@ -601,13 +665,26 @@ namespace ProjectMagma
                 int times = (int)((current - last) / interval);
                 
                 // adapt value
-                value -= times;
+                value = op(value, times);
                 
-                // return new time
-                return last + times * interval;
+                // update time
+                appliedAt[fullIdentifier] = last + times * interval;
             }
-            else
-                return last;
         }
+
+        private static int OpPlus(int val1, int val2)
+        {
+            return val1 + val2;
+        }
+
+        private static int OpMinus(int val1, int val2)
+        {
+            return val1 - val2;
+        }
+
+        private static readonly Operator plusInstance = new Operator(OpPlus);
+        private static readonly Operator minusInstance = new Operator(OpMinus);
+
+        private delegate int Operator(int val1, int val2);
     }
 }

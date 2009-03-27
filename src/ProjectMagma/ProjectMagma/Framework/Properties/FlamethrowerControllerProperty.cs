@@ -23,8 +23,6 @@ namespace ProjectMagma.Framework
         private double flameThrowerStateChangedAt = 0;
         private int flameThrowerWarmupDeducted = 0;
 
-        private Dictionary<string, double> entityHitAt;
-
         enum FlameThrowerState
         {
             InActive, Warmup, Active, Cooldown
@@ -46,8 +44,6 @@ namespace ProjectMagma.Framework
 
             flame.AddBoolAttribute("fueled", true);
             flame.GetBoolAttribute("fueled").ValueChanged += new BoolChangeHandler(flameFuelChangeHandler);
-
-            entityHitAt = new Dictionary<string, double>(Game.Instance.EntityManager.Count<Entity>());
 
             ((CollisionProperty)flame.GetProperty("collision")).OnContact += new ContactHandler(FlamethrowerCollisionHandler);
 
@@ -98,10 +94,8 @@ namespace ProjectMagma.Framework
             else
             if(flameThrowerState == FlameThrowerState.Active)
             {
-                int energy = player.GetInt("energy") ;
-                flameThrowerStateChangedAt = Game.ApplyPerSecond(at, flameThrowerStateChangedAt, constants.GetInt("flamethrower_energy_per_second"),
-                    ref energy);
-                player.SetInt("energy", energy);
+                Game.Instance.ApplyPerSecondSubstraction(flame, "energy_deducation", constants.GetInt("flamethrower_energy_per_second"),
+                    player.GetIntAttribute("energy"));
             }
             // else cooldown -> do nothing
 
@@ -162,16 +156,8 @@ namespace ProjectMagma.Framework
 
             if (other.HasAttribute("health"))
             {
-                if (!entityHitAt.ContainsKey(other.Name))
-                    entityHitAt[other.Name] = at;
-                else
-                {
-                    int health = other.GetInt("health");
-                    entityHitAt[other.Name] = Game.ApplyPerSecond(at, entityHitAt[other.Name],
-                        constants.GetInt("flamethrower_damage_per_second"), ref health);
-                    player.SetInt("health", health);
-                }
-
+                Game.Instance.ApplyPerSecondSubstraction(flame, other.Name+"_flamethrower_damage", constants.GetInt("flamethrower_damage_per_second"),
+                    other.GetIntAttribute("health"));
                 if (other.GetString("kind") == "player")
                     player.SetInt("frozen", 0);
             }

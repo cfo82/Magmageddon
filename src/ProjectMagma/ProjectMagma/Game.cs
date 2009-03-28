@@ -620,7 +620,9 @@ namespace ProjectMagma
 
         public void ApplyIntervalAddition(Entity source, String identifier, float interval, ref int value)
         {
-            ApplyInterval(source, identifier, interval, ref value, Game.plusInstance);
+            int val = value;
+            ExecuteAtInterval(source, identifier, interval, delegate(int diff) { val -= diff; });
+            value = val;
         }
 
         public void ApplyIntervalSubstraction(Entity source, String identifier, float interval, IntAttribute attr)
@@ -632,11 +634,12 @@ namespace ProjectMagma
 
         public void ApplyIntervalSubstraction(Entity source, String identifier, float interval, ref int value)
         {
-            ApplyInterval(source, identifier, interval, ref value, Game.minusInstance);
+            int val = value;
+            ExecuteAtInterval(source, identifier, interval, delegate(int diff) { val -= diff; });
+            value = val;
         }
 
-
-        private void ApplyInterval(Entity source, String identifier, float interval, ref int value, Operator op)
+        public void ExecuteAtInterval(Entity source, String identifier, float interval, IntervalExecutionAction action)
         {
             String fullIdentifier = source.Name + "_" + identifier;
             double current = currentGameTime.TotalGameTime.TotalMilliseconds;
@@ -664,27 +667,15 @@ namespace ProjectMagma
                 // calculate how many updates would have happened in between
                 int times = (int)((current - last) / interval);
                 
-                // adapt value
-                value = op(value, times);
+                // execute action
+                action(times);
                 
                 // update time
                 appliedAt[fullIdentifier] = last + times * interval;
             }
         }
 
-        private static int OpPlus(int val1, int val2)
-        {
-            return val1 + val2;
-        }
-
-        private static int OpMinus(int val1, int val2)
-        {
-            return val1 - val2;
-        }
-
-        private static readonly Operator plusInstance = new Operator(OpPlus);
-        private static readonly Operator minusInstance = new Operator(OpMinus);
-
-        private delegate int Operator(int val1, int val2);
     }
+
+    public delegate void IntervalExecutionAction(int times);
 }

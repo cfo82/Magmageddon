@@ -130,26 +130,6 @@ namespace ProjectMagma.Framework
                 a += pillarContribution;
             }
 
-            //BoundingCylinder this_bc = Game.CalculateBoundingCylinder(island);
-            //foreach (Entity e in Game.Instance.EntityManager)
-            //{
-            //    if (e.HasAttribute("mesh"))
-            //    {
-            //        if ((!(e.Name == island.Name))
-            //            && (e.GetString("kind") == "island") )
-            //            // only collide with other islands for now
-            //        {
-            //            BoundingCylinder other_bc = Game.CalculateBoundingCylinder(e);
-
-            //            //if (this_bc.Intersects(other_bc))
-            //            //{
-            //            //    Vector3 dist = e.GetVector3("position") - island.GetVector3("position");
-            //            //    v = -Vector3.Normalize(dist) * v.Length();
-            //            //}
-            //        }
-            //    }
-            //}
-
             if (!collided)
             {
                 island.SetInt("collisionCount", 0);
@@ -203,16 +183,20 @@ namespace ProjectMagma.Framework
 
         private void CollisionHandler(GameTime gameTime, Contact contact)
         {
-            Entity player = contact.EntityB;
-            if (player.HasString("kind") && // other entity has a kind-attribute
-                player.GetString("kind") == "player" && // other entity is a player
+            Entity entity = contact.EntityB;
+            if (entity.HasString("kind") && // other entity has a kind-attribute
+                entity.GetString("kind") == "player" && // other entity is a player
                 contact.Normal.Y > 0 // player is above island
             )
             {
                 playersOnIsland++;
-            } else {
-                //Console.WriteLine("Collision of "+contact.entityA.Name+" and "+contact.entityB.Name);
-            }
+            } 
+            else 
+                if (entity.HasString("kind") && entity.GetString("kind") == "pillar")
+                {
+                    // todo: code here
+
+                }
         }
 
         private Entity constants;

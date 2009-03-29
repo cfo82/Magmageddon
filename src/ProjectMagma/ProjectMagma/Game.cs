@@ -621,7 +621,7 @@ namespace ProjectMagma
         public void ApplyIntervalAddition(Entity source, String identifier, float interval, ref int value)
         {
             int val = value;
-            ExecuteAtInterval(source, identifier, interval, delegate(int diff) { val -= diff; });
+            ExecuteAtInterval(source, identifier, interval, delegate(int diff) { val += diff; });
             value = val;
         }
 

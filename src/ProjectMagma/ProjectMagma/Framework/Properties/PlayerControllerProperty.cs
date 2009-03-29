@@ -8,7 +8,6 @@ using Microsoft.Xna.Framework.Input;
 using Microsoft.Xna.Framework.Media;
 using System.Diagnostics;
 using Microsoft.Xna.Framework.Audio;
-using ProjectMagma.Shared.BoundingVolume;
 using ProjectMagma.Collision;
 using ProjectMagma.Collision.CollisionTests;
 
@@ -21,12 +20,12 @@ namespace ProjectMagma.Framework
         private Entity activeIsland = null;
         private bool islandCollision = false;
 
+        bool movedByStick = false;
+
         private readonly Random rand = new Random(DateTime.Now.Millisecond);
         private double respawnStartedAt = 0;
 
         private bool jetpackActive = false;
-
-        private double energyRechargedAt = 0;
 
         private int iceSpikeCount = 0;
         private int iceSpikeRemovedCount = 0;
@@ -125,9 +124,8 @@ namespace ProjectMagma.Framework
 
                         int islandNo = rand.Next(Game.Instance.IslandManager.Count - 1);
                         Entity island = Game.Instance.IslandManager[islandNo];
-                        BoundingBox bb = Game.CalculateBoundingBox(island);
                         Vector3 pos = island.GetVector3("position");
-                        pos.Y = bb.Max.Y + 10;
+                        pos.Y = pos.Y + 30; // todo: change this to point defined in mesh
                         player.SetVector3("position", pos);
 
                         // reset
@@ -153,11 +151,17 @@ namespace ProjectMagma.Framework
             // island leave check
             if (islandCollision == false && activeIsland != null)
             {
-                ((Vector3Attribute)activeIsland.Attributes["position"]).ValueChanged -= IslandPositionHandler;
-                activeIsland = null;
+                if (movedByStick && !jetpackActive)
+                {
+                    // reset movement, so we cannot fall from island just by walking
+                    player.SetVector3("position", previousPosition);
+                }
+                else
+                {
+                    ((Vector3Attribute)activeIsland.Attributes["position"]).ValueChanged -= IslandPositionHandler;
+                    activeIsland = null;
+                }
             }
-            else
-                islandCollision = false;
 
             PlayerIndex playerIndex = (PlayerIndex)player.GetInt("game_pad_index");
             Vector3 playerPosition = player.GetVector3("position");
@@ -168,9 +172,10 @@ namespace ProjectMagma.Framework
 
             int fuel = player.GetInt("fuel");
 
-            Model playerModel = Game.Instance.Content.Load<Model>(player.GetString("mesh"));
-
+            // reset some stuff
             previousPosition = playerPosition;
+            islandCollision = false;
+            movedByStick = false;
 
             // get input
             controllerInput.Update(playerIndex);
@@ -220,45 +225,29 @@ namespace ProjectMagma.Framework
             if (playerVelocity.Length() <= constants.GetFloat("max_gravity_speed"))
                 playerVelocity += constants.GetVector3("gravity_acceleration") * dt;
             
+            // apply current velocity
             playerPosition += playerVelocity * dt;
 
-            // XZ movement
-            if (fuel > 0 && activeIsland == null)
-            {
-                // in air
-                playerPosition.X += controllerInput.leftStickX * dt * constants.GetFloat("x_axis_jetpack_multiplier");
-                playerPosition.Z -= controllerInput.leftStickY * dt * constants.GetFloat("z_axis_jetpack_multiplier");
-            }
-            else
-            {
-                // on ground
-                playerPosition.X += controllerInput.leftStickX * dt * constants.GetFloat("x_axis_movement_multiplier");
-                playerPosition.Z -= controllerInput.leftStickY * dt * constants.GetFloat("z_axis_movement_multiplier");
 
-                // prevent the player from walking down the island
-                if (activeIsland != null && !controllerInput.jetpackButtonPressed)
+            if (controllerInput.moveStickMoved)
+            {
+                movedByStick = true;
+
+                // XZ movement
+                if (fuel > 0 && activeIsland == null)
                 {
-                    // TODO: how to do this in future?
-                    Cylinder3 ibc = Game.CalculateBoundingCylinder(activeIsland);
-
-                    Vector2 pp = new Vector2(playerPosition.X, playerPosition.Z);
-                    Vector2 ic = new Vector2(ibc.Top.X, ibc.Bottom.Z);
-                    Vector2 diff = ic - pp;
-                    if (diff.Length() > ibc.Radius)
-                    {
-                        Vector2 op = new Vector2(previousPosition.X, previousPosition.Z);
-                        if ((op - ic).Length() < diff.Length())
-                        {
-                            playerPosition.X = previousPosition.X;
-                            playerPosition.Z = previousPosition.Z;
-                        }
-                    }
+                    // in air
+                    playerPosition.X += controllerInput.leftStickX * dt * constants.GetFloat("x_axis_jetpack_multiplier");
+                    playerPosition.Z -= controllerInput.leftStickY * dt * constants.GetFloat("z_axis_jetpack_multiplier");
                 }
-            }
+                else
+                {
+                    // on ground
+                    playerPosition.X += controllerInput.leftStickX * dt * constants.GetFloat("x_axis_movement_multiplier");
+                    playerPosition.Z -= controllerInput.leftStickY * dt * constants.GetFloat("z_axis_movement_multiplier");
+                }
 
-            // rotation
-            if (controllerInput.moveStickPressed)
-            {
+                // rotation
                 float yRotation = (float)Math.Atan2(controllerInput.leftStickX, -controllerInput.leftStickY);
                 Matrix rotationMatrix = Matrix.CreateRotationY(yRotation);
                 player.SetQuaternion("rotation", Quaternion.CreateFromRotationMatrix(rotationMatrix));
@@ -285,8 +274,8 @@ namespace ProjectMagma.Framework
                 SoundEffect soundEffect = Game.Instance.Content.Load<SoundEffect>("Sounds/hit2");
                 soundEffect.Play();
 
-                BoundingBox bb = Game.CalculateBoundingBox(player);
-                Vector3 pos = new Vector3(playerPosition.X, bb.Max.Y, playerPosition.Z);
+                // todo: specify point in model
+                Vector3 pos = new Vector3(playerPosition.X+5, playerPosition.Y+10, playerPosition.Z+5);
                 Vector3 viewVector = Vector3.Transform(new Vector3(0, 0, 1), Game.GetRotation(player));
 
                 #region search next player in range
@@ -366,8 +355,7 @@ namespace ProjectMagma.Framework
                         // indicate 
                         flameThrowerSoundInstance = flameThrowerSound.Play(1, 1, 0, true);
 
-                        BoundingBox bb = Game.CalculateBoundingBox(player);
-                        Vector3 pos = new Vector3(bb.Max.X, bb.Max.Y, playerPosition.Z);
+                        Vector3 pos = new Vector3(playerPosition.X+10, playerPosition.Y+10, playerPosition.Z);
                         Vector3 viewVector = Vector3.Transform(new Vector3(0, 0, 1), Game.GetRotation(player));
 
                         flame = new Entity("flame" + "_" + player.Name);
@@ -493,12 +481,12 @@ namespace ProjectMagma.Framework
             }
         }
 
-        private void PlayerIslandCollisionHandler(GameTime gameTime, Entity player, Entity island, Contact c)
+        private void PlayerIslandCollisionHandler(GameTime gameTime, Entity player, Entity island, Contact co)
         {
             float dt = ((float)gameTime.ElapsedGameTime.Milliseconds) / 1000.0f;
             Vector3 playerPosition = player.GetVector3("position");
 
-            if (c.Normal.Y < 0 && c.Normal.X == 0 && c.Normal.Z == 0)
+            if (co.Normal.Y < 0 && co.Normal.X == 0 && co.Normal.Z == 0)
             {
                 // standing on island
                 //Console.WriteLine("from top at "+gameTime.TotalGameTime.TotalMilliseconds);
@@ -508,7 +496,7 @@ namespace ProjectMagma.Framework
                     ((Vector3Attribute)activeIsland.Attributes["position"]).ValueChanged -= IslandPositionHandler;
 
                 // correct position to exact touching point
-                playerPosition.Y = c.Position.Y;
+                playerPosition.Y = co.Position.Y;
                 // add handler if active island changed
                 if (activeIsland != island)
                     ((Vector3Attribute)island.Attributes["position"]).ValueChanged += IslandPositionHandler;
@@ -520,7 +508,7 @@ namespace ProjectMagma.Framework
             else
             {
                 // hack hack hack
-                if (c.Normal.Y == 0)
+                if (co.Normal.Y == 0)
                 {
                     // xz
 
@@ -534,19 +522,26 @@ namespace ProjectMagma.Framework
                 }
                 else
                 {
-                   /*
-                    Vector3 velocity = player.GetVector3("velocity");
-                    player.SetVector3("velocity", -velocity);
-                    */
-                }
-//                Vector3 velocity = player.GetVector3("velocity");
-                //if(
-//                player.SetVector3("pushback_velocity", velocity - c.normal * velocity.Length());
-            }
-                /*
-                player.SetVector3("velocity", Vector3.Reflect(player.GetVector3("velocity"), -c.normal));
-                 */
+                    Vector3 pos = player.GetVector3("position");
 
+                    // project pos onto plane
+                    float D = -Vector3.Dot(co.Normal, co.Position);
+                    Vector3 posOnPlane = pos - Math.Abs(Vector3.Dot(co.Normal, pos) - D) * co.Normal;
+
+
+                    // calculate new velocity
+                    //                Vector3 velocity = (co.Position - posOnPlane) * 1000 / gameTime.ElapsedGameTime.Milliseconds;
+                    Vector3 velocity = Vector3.Normalize(co.Position - posOnPlane) * Math.Abs(pos.Y - previousPosition.Y)
+                                        * 1000 / gameTime.ElapsedGameTime.Milliseconds;
+                    //Vector3 velocity = Vector3.Normalize(co.Position - posOnPlane) * constants.GetFloat("object_contact_pushback_multiplier"); ;
+
+                                   Console.WriteLine(player.Name+" bottom pushback normal "+co.Normal+" : " + velocity);
+
+                    player.SetVector3("velocity", Vector3.Zero);
+                    //player.SetVector3("object_pushback_velocity",
+                     //   /*player.GetVector3("object_pushback_velocity") / gameTime.ElapsedGameTime.Milliseconds +*/ velocity);
+                }
+            }
             player.SetVector3("position", playerPosition);
         }
 
@@ -651,6 +646,7 @@ namespace ProjectMagma.Framework
             Vector3 position = player.GetVector3("position");
             Vector3 delta = newValue - oldValue;
             position += delta;
+            previousPosition += delta;
             player.SetVector3("position", position);
         }
 
@@ -706,34 +702,34 @@ namespace ProjectMagma.Framework
 
                 leftStickX = gamePadState.ThumbSticks.Left.X;
                 leftStickY = gamePadState.ThumbSticks.Left.Y;
-                moveStickPressed = leftStickX != 0.0f || leftStickY != 0.0f;
+                moveStickMoved = leftStickX != 0.0f || leftStickY != 0.0f;
 
-                if (!moveStickPressed)
+                if (!moveStickMoved)
                 {
                     if (playerIndex == PlayerIndex.One)
                     {
                         if (keyboardState.IsKeyDown(Keys.A))
                         {
                             leftStickX = gamepadEmulationValue;
-                            moveStickPressed = true;
+                            moveStickMoved = true;
                         }
                         else
                             if (keyboardState.IsKeyDown(Keys.D))
                             {
                                 leftStickX = -gamepadEmulationValue;
-                                moveStickPressed = true;
+                                moveStickMoved = true;
                             }
 
                         if (keyboardState.IsKeyDown(Keys.W))
                         {
                             leftStickY = -gamepadEmulationValue;
-                            moveStickPressed = true;
+                            moveStickMoved = true;
                         }
                         else
                             if (keyboardState.IsKeyDown(Keys.S))
                             {
                                 leftStickY = gamepadEmulationValue;
-                                moveStickPressed = true;
+                                moveStickMoved = true;
                             }
                     }
                     else
@@ -741,25 +737,25 @@ namespace ProjectMagma.Framework
                         if (keyboardState.IsKeyDown(Keys.Left))
                         {
                             leftStickX = gamepadEmulationValue;
-                            moveStickPressed = true;
+                            moveStickMoved = true;
                         }
                         else
                             if (keyboardState.IsKeyDown(Keys.Right))
                             {
                                 leftStickX = -gamepadEmulationValue;
-                                moveStickPressed = true;
+                                moveStickMoved = true;
                             }
 
                         if (keyboardState.IsKeyDown(Keys.Up))
                         {
                             leftStickY = -gamepadEmulationValue;
-                            moveStickPressed = true;
+                            moveStickMoved = true;
                         }
                         else
                             if (keyboardState.IsKeyDown(Keys.Down))
                             {
                                 leftStickY = gamepadEmulationValue;
-                                moveStickPressed = true;
+                                moveStickMoved = true;
                             }
                     }
                 }
@@ -808,7 +804,7 @@ namespace ProjectMagma.Framework
             
             // joystick
             public float leftStickX, leftStickY;
-            public bool moveStickPressed;
+            public bool moveStickMoved;
 
             // triggers
             public float iceSpikeStrength;

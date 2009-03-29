@@ -14,7 +14,7 @@ namespace ProjectMagma.Collision
             collisionEntities = new List<CollisionEntity>();
         }
 
-        public void AddCollisionEntity(Entity entity, CollisionProperty property, BoundingCylinder cylinder)
+        public void AddCollisionEntity(Entity entity, CollisionProperty property, Cylinder3 cylinder)
         {
             AddCollisionEntity(new CollisionEntity(entity, property, cylinder));
         }
@@ -123,9 +123,10 @@ namespace ProjectMagma.Collision
             }
         }
 
-        private readonly ContactTest[][] contactTests = new ContactTest[2][] {
-            new ContactTest[2] { ContactSphereSphere.Test, ContactSphereCylinder.Test },
-            new ContactTest[2] { ContactCylinderSphere.Test, ContactCylinderCylinder.Test } 
+        private readonly ContactTest[][] contactTests = new ContactTest[3][] {
+            new ContactTest[3] { ContactCylinderCylinder.Test, ContactCylinderMesh.Test, ContactCylinderSphere.Test },
+            new ContactTest[3] { ContactMeshCylinder.Test, ContactMeshMesh.Test, ContactMeshSphere.Test },
+            new ContactTest[3] { ContactSphereCylinder.Test, ContactSphereMesh.Test, ContactSphereSphere.Test } 
         };
         private List<CollisionEntity> collisionEntities;
     }

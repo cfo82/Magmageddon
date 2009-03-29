@@ -8,8 +8,9 @@ namespace ProjectMagma.Collision
         {
             switch (type)
             {
-                case BoundingVolumeType.Sphere: return 0;
-                case BoundingVolumeType.Cylinder: return 1;
+                case BoundingVolumeType.Cylinder: return 0;
+                case BoundingVolumeType.Mesh: return 1;
+                case BoundingVolumeType.Sphere: return 2;
                 default: throw new Exception("invalid type '" + type + "'");
             }
         }
@@ -18,8 +19,9 @@ namespace ProjectMagma.Collision
         {
             switch (number)
             {
-                case 0: return BoundingVolumeType.Sphere;
-                case 1: return BoundingVolumeType.Cylinder;
+                case 0: return BoundingVolumeType.Cylinder;
+                case 1: return BoundingVolumeType.Mesh;
+                case 2: return BoundingVolumeType.Sphere;
                 default: throw new Exception("invalid type constant '" + number + "'");
             }
         }

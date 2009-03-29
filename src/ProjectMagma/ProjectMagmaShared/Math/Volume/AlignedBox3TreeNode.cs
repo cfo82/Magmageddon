@@ -1,11 +1,8 @@
 ﻿using System;
 using System.Diagnostics;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using Microsoft.Xna.Framework;
 
-namespace ProjectMagma.Shared.BoundingVolume
+namespace ProjectMagma.Shared.Math.Volume
 {
     /// <summary>
     /// this node is part of the collision tree of a triangle mesh. both position and index data will be stored inside the tree.
@@ -61,8 +58,8 @@ namespace ProjectMagma.Shared.BoundingVolume
             int[] diff = new int[3] { halfNumTriangles - numLeft[0], halfNumTriangles - numLeft[1], halfNumTriangles - numLeft[2] };
             int min = 0; // 0 == x-axis, 1 == y-axis, 2 == z-axis
             Axis minAxis = Axis.AxisX;
-            if (Math.Abs(diff[1]) < Math.Abs(diff[min])) { min = 1; minAxis = Axis.AxisY; }
-            if (Math.Abs(diff[1]) < Math.Abs(diff[min])) { min = 1; minAxis = Axis.AxisZ; }
+            if (System.Math.Abs(diff[1]) < System.Math.Abs(diff[min])) { min = 1; minAxis = Axis.AxisY; }
+            if (System.Math.Abs(diff[1]) < System.Math.Abs(diff[min])) { min = 1; minAxis = Axis.AxisZ; }
             int splitCount = Split(positions, minAxis);
             if (splitCount == 0 || splitCount == numTriangles)
             {

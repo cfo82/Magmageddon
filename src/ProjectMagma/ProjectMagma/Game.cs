@@ -505,7 +505,7 @@ namespace ProjectMagma
         }
 
         // calculates y-axis aligned bounding cylinder
-        public static BoundingCylinder CalculateBoundingCylinder(Entity entity)
+        public static Cylinder3 CalculateBoundingCylinder(Entity entity)
         {
             Model mesh = Game.Instance.Content.Load<Model>(entity.GetString("mesh"));
             Vector3 position = GetPosition(entity);
@@ -524,7 +524,7 @@ namespace ProjectMagma
             // x- and z-direction should be equal.
             float radius = bb.Max.X - center.X;
 
-            return new BoundingCylinder(new Vector3(center.X, top, center.Z),
+            return new Cylinder3(new Vector3(center.X, top, center.Z),
                 new Vector3(center.X, bottom, center.Z),
                 radius);
         }

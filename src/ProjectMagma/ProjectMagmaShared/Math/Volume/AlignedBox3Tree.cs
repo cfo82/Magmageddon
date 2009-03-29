@@ -1,11 +1,8 @@
 ﻿using System;
 using System.Diagnostics;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using Microsoft.Xna.Framework;
 
-namespace ProjectMagma.Shared.BoundingVolume
+namespace ProjectMagma.Shared.Math.Volume
 {
     public class AlignedBox3Tree
     {

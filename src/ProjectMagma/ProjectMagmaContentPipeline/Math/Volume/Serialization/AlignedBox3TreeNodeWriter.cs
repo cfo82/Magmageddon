@@ -1,10 +1,10 @@
 ﻿using System;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Content.Pipeline.Serialization.Compiler;
-using ProjectMagma.Shared.BoundingVolume;
-using ProjectMagma.Shared.BoundingVolume.Serialization;
+using ProjectMagma.Shared.Math.Volume;
+using ProjectMagma.Shared.Math.Volume.Serialization;
 
-namespace ProjectMagma.ContentPipeline.BoundingVolume.Serialization
+namespace ProjectMagma.ContentPipeline.Math.Volume.Serialization
 {
     [ContentTypeWriter]
     public class AlignedBox3TreeNodeWriter : ContentTypeWriter<AlignedBox3TreeNode>

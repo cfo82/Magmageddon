@@ -86,6 +86,11 @@
   <ItemGroup>
     <Compile Include="BloomComponent.cs" />
     <Compile Include="BloomSettings.cs" />
+    <Compile Include="Collision\CollisionTests\ContactSphereMesh.cs" />
+    <Compile Include="Collision\CollisionTests\ContactMeshSphere.cs" />
+    <Compile Include="Collision\CollisionTests\ContactCylinderMesh.cs" />
+    <Compile Include="Collision\CollisionTests\ContactMeshCylinder.cs" />
+    <Compile Include="Collision\CollisionTests\ContactMeshMesh.cs" />
     <Compile Include="HUD.cs" />
     <Compile Include="Collision\CollisionManager.cs" />
     <Compile Include="Collision\Contact.cs" />

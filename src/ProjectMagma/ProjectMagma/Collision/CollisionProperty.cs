@@ -23,7 +23,7 @@ namespace ProjectMagma.Collision
                 string bv_type = entity.GetString("bv_type");
                 if (bv_type == "cylinder")
                 {
-                    BoundingCylinder bvCylinder = CalculateBoundingCylinder(entity);
+                    Cylinder3 bvCylinder = CalculateBoundingCylinder(entity);
                     Game.Instance.CollisionManager.AddCollisionEntity(entity, this, bvCylinder);
                 }
                 else if (bv_type == "sphere")
@@ -65,7 +65,7 @@ namespace ProjectMagma.Collision
         }
 
         // calculates y-axis aligned bounding cylinder
-        private BoundingCylinder CalculateBoundingCylinder(Entity entity)
+        private Cylinder3 CalculateBoundingCylinder(Entity entity)
         {
             Model mesh = Game.Instance.Content.Load<Model>(entity.GetString("mesh"));
 
@@ -81,7 +81,7 @@ namespace ProjectMagma.Collision
             // x- and z-direction should be equal.
             float radius = bb.Max.X - center.X;
 
-            return new BoundingCylinder(new Vector3(center.X, top, center.Z),
+            return new Cylinder3(new Vector3(center.X, top, center.Z),
                 new Vector3(center.X, bottom, center.Z),
                 radius);
         }

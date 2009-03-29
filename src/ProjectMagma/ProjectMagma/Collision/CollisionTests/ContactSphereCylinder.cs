@@ -13,7 +13,7 @@ namespace ProjectMagma.Collision.CollisionTests
             )
         {
             BoundingSphere sphere1 = (BoundingSphere)boundingVolume1;
-            BoundingCylinder cylinder2 = (BoundingCylinder)boundingVolume2;
+            Cylinder3 cylinder2 = (Cylinder3)boundingVolume2;
 
             Debug.Assert(scale1.X == scale1.Y && scale1.Y == scale1.Z);
             Debug.Assert(scale2.X == scale2.Y && scale2.Y == scale2.Z);

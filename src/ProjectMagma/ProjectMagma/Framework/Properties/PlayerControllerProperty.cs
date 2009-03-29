@@ -239,7 +239,7 @@ namespace ProjectMagma.Framework
                 if (activeIsland != null && !controllerInput.jetpackButtonPressed)
                 {
                     // TODO: how to do this in future?
-                    BoundingCylinder ibc = Game.CalculateBoundingCylinder(activeIsland);
+                    Cylinder3 ibc = Game.CalculateBoundingCylinder(activeIsland);
 
                     Vector2 pp = new Vector2(playerPosition.X, playerPosition.Z);
                     Vector2 ic = new Vector2(ibc.Top.X, ibc.Bottom.Z);

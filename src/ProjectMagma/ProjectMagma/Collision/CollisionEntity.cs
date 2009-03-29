@@ -14,7 +14,7 @@ namespace ProjectMagma.Collision
             this.volume = sphere;
         }
 
-        public CollisionEntity(Entity entity, CollisionProperty property, BoundingCylinder cylinder)
+        public CollisionEntity(Entity entity, CollisionProperty property, Cylinder3 cylinder)
         {
             this.entity = entity;
             this.collisionProperty = property;

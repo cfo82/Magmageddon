@@ -2,7 +2,7 @@
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Content;
 
-namespace ProjectMagma.Shared.BoundingVolume.Serialization
+namespace ProjectMagma.Shared.Math.Volume.Serialization
 {
     public class AlignedBox3TreeNodeReader : ContentTypeReader<AlignedBox3TreeNode>
     {

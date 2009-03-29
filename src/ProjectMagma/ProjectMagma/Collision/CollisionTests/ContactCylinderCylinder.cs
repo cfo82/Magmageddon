@@ -12,8 +12,8 @@ namespace ProjectMagma.Collision.CollisionTests
             Entity entity2, object boundingVolume2, Matrix worldTransform2, Vector3 translation2, Quaternion rotation2, Vector3 scale2
             )
         {
-            BoundingCylinder cylinder1 = (BoundingCylinder)boundingVolume1;
-            BoundingCylinder cylinder2 = (BoundingCylinder)boundingVolume2;
+            Cylinder3 cylinder1 = (Cylinder3)boundingVolume1;
+            Cylinder3 cylinder2 = (Cylinder3)boundingVolume2;
 
             Debug.Assert(scale1.X == scale1.Y && scale1.Y == scale1.Z);
             Debug.Assert(scale2.X == scale2.Y && scale2.Y == scale2.Z);

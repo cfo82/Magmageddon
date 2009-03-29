@@ -82,18 +82,20 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="BoundingVolume\AlignedBox3Tree.cs" />
-    <Compile Include="BoundingVolume\AlignedBox3TreeNode.cs" />
-    <Compile Include="BoundingVolume\Axis.cs" />
-    <Compile Include="BoundingVolume\BoundingCylinder.cs" />
-    <Compile Include="BoundingVolume\Serialization\AlignedBox3TreeNodeReader.cs" />
-    <Compile Include="BoundingVolume\Serialization\AlignedBox3TreeReader.cs" />
-    <Compile Include="BoundingVolume\Triangle3.cs" />
+    <Compile Include="Math\Volume\AlignedBox3Tree.cs" />
+    <Compile Include="Math\Volume\AlignedBox3TreeNode.cs" />
+    <Compile Include="Math\Volume\Axis.cs" />
+    <Compile Include="Math\Volume\Cylinder3.cs" />
+    <Compile Include="Math\Volume\Box3.cs" />
+    <Compile Include="Math\Volume\Serialization\AlignedBox3TreeNodeReader.cs" />
+    <Compile Include="Math\Volume\Serialization\AlignedBox3TreeReader.cs" />
+    <Compile Include="Math\Volume\Triangle3.cs" />
     <Compile Include="LevelData\AttributeData.cs" />
     <Compile Include="LevelData\EntityData.cs" />
     <Compile Include="LevelData\LevelData.cs" />
     <Compile Include="LevelData\PropertyData.cs" />
     <Compile Include="LevelData\Serialization\LevelDataReader.cs" />
+    <Compile Include="Math\Intersection\TriangleTriangle.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>

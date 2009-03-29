@@ -31,6 +31,8 @@ namespace ProjectMagma
 
         private HUD hud;
         private Entity currentCamera;
+        private float effectsVolume = 0;
+        private float musicVolume = 0;
 
         private EntityManager entityManager;
         private EntityKindManager pillarManager;
@@ -256,7 +258,7 @@ namespace ProjectMagma
 
             // play that funky musik white boy
             /*MediaPlayer.Play(Game.Instance.Content.Load<Song>("Sounds/music"));
-            MediaPlayer.Volume = 0.3f;*/
+            MediaPlayer.Volume = musicVolume;*/
 
             MediaPlayer.IsMuted = true;
         }
@@ -467,6 +469,16 @@ namespace ProjectMagma
         public GameTime CurrentUpdateTime
         {
             get { return currentGameTime; }
+        }
+
+        public float EffectsVolume
+        {
+            get { return effectsVolume; }
+        }
+
+        public float MusicVolume
+        {
+            get { return musicVolume; }
         }
 
 #if !XBOX

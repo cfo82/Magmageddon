@@ -116,7 +116,7 @@ namespace ProjectMagma.Framework
         {
             // indicate hit
             SoundEffect soundEffect = Game.Instance.Content.Load<SoundEffect>("Sounds/sword-clash");
-            soundEffect.Play();
+            soundEffect.Play(Game.Instance.EffectsVolume);
 
             // buja
             player.SetInt("health", player.GetInt("health") - constants.GetInt("ice_spike_damage"));

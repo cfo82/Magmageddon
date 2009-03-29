@@ -103,7 +103,7 @@ namespace ProjectMagma.Framework
                         flameThrowerSoundInstance.Stop();
                     jetpackActive = false;
 
-                    Game.Instance.Content.Load<SoundEffect>("Sounds/death").Play();
+                    Game.Instance.Content.Load<SoundEffect>("Sounds/death").Play(Game.Instance.EffectsVolume);
                     player.SetInt("deaths", player.GetInt("deaths") + 1);
 
                     player.RemoveProperty("render");
@@ -187,7 +187,7 @@ namespace ProjectMagma.Framework
             {
                 if (!jetpackActive)
                 {
-                    jetpackSoundInstance = jetpackSound.Play(0.4f, 1, 0, true);
+                    jetpackSoundInstance = jetpackSound.Play(0.4f * Game.Instance.EffectsVolume, 1, 0, true);
                     jetpackActive = true;
                 }
                 
@@ -272,7 +272,7 @@ namespace ProjectMagma.Framework
             {
                 // indicate 
                 SoundEffect soundEffect = Game.Instance.Content.Load<SoundEffect>("Sounds/hit2");
-                soundEffect.Play();
+                soundEffect.Play(Game.Instance.EffectsVolume);
 
                 // todo: specify point in model
                 Vector3 pos = new Vector3(playerPosition.X+5, playerPosition.Y+10, playerPosition.Z+5);
@@ -353,7 +353,7 @@ namespace ProjectMagma.Framework
                     if (player.GetInt("energy") > constants.GetInt("flamethrower_warmup_energy_cost"))
                     {
                         // indicate 
-                        flameThrowerSoundInstance = flameThrowerSound.Play(1, 1, 0, true);
+                        flameThrowerSoundInstance = flameThrowerSound.Play(Game.Instance.EffectsVolume, 1, 0, true);
 
                         Vector3 pos = new Vector3(playerPosition.X+10, playerPosition.Y+10, playerPosition.Z);
                         Vector3 viewVector = Vector3.Transform(new Vector3(0, 0, 1), Game.GetRotation(player));
@@ -587,7 +587,7 @@ namespace ProjectMagma.Framework
 //                Vector3 velocity = (co.Position - posOnPlane) * 1000 / gameTime.ElapsedGameTime.Milliseconds;
 //                Vector3 velocity = Vector3.Normalize(co.Position - posOnPlane) * (pos-previousPosition).Length()                    
 //                    * 1000 / gameTime.ElapsedGameTime.Milliseconds;
-                Vector3 velocity = Vector3.Normalize(co.Position - posOnPlane) * constants.GetFloat("object_contact_pushback_multiplier"); ;
+                Vector3 velocity = Vector3.Normalize((co.Position - posOnPlane) + co.Normal) * constants.GetFloat("object_contact_pushback_multiplier"); ;
                 velocity.Y = 0;
 
                 //                Console.WriteLine("; pushback : " + velocity);
@@ -614,7 +614,7 @@ namespace ProjectMagma.Framework
 
             // soundeffect
             SoundEffect soundEffect = Game.Instance.Content.Load<SoundEffect>("Sounds/" + powerup.GetString("pickup_sound"));
-            soundEffect.Play();
+            soundEffect.Play(Game.Instance.EffectsVolume);
         }
 
         private void PlayerPlayerCollisionHandler(GameTime gameTime, Entity player, Entity otherPlayer, Contact c)
@@ -625,7 +625,7 @@ namespace ProjectMagma.Framework
             {
                 // indicate hit!
                 SoundEffect soundEffect = Game.Instance.Content.Load<SoundEffect>("Sounds/punch2");
-                soundEffect.Play();
+                soundEffect.Play(Game.Instance.EffectsVolume);
 
                 // deduct health
                 otherPlayer.SetInt("health", otherPlayer.GetInt("health") - constants.GetInt("hit_damage"));

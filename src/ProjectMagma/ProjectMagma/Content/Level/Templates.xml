@@ -25,7 +25,7 @@
       <Attribute name="velocity" template="float3" value="0 0 0"/>
       <Attribute name="acceleration" template="float3" value="0 0 0"/>
       <Attribute name="mesh" template="string" value="Models/islandproto_v002"/>
-      <Attribute name="bv_type" template="string" value="cylinder"/>
+      <Attribute name="bv_type" template="string" value="alignedbox3tree"/>
     </Attributes>
     <Properties>
       <Property name="collision" type="ProjectMagma.Collision.CollisionProperty"/>

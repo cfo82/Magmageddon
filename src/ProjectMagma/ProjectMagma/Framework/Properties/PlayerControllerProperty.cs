@@ -20,7 +20,8 @@ namespace ProjectMagma.Framework
         private Entity activeIsland = null;
         private bool islandCollision = false;
 
-        bool movedByStick = false;
+        private bool collisionOccured = false;
+        private bool movedByStick = false;
 
         private readonly Random rand = new Random(DateTime.Now.Millisecond);
         private double respawnStartedAt = 0;
@@ -55,7 +56,7 @@ namespace ProjectMagma.Framework
             player.AddQuaternionAttribute("rotation", Quaternion.Identity);
             player.AddVector3Attribute("velocity", Vector3.Zero);
 
-            player.AddVector3Attribute("object_pushback_velocity", Vector3.Zero);
+            player.AddVector3Attribute("collision_pushback_velocity", Vector3.Zero);
             player.AddVector3Attribute("player_pushback_velocity", Vector3.Zero);
             player.AddVector3Attribute("hit_pushback_velocity", Vector3.Zero);
 
@@ -132,7 +133,7 @@ namespace ProjectMagma.Framework
                         player.SetQuaternion("rotation", Quaternion.Identity);
                         player.SetVector3("velocity", Vector3.Zero);
 
-                        player.SetVector3("object_pushback_velocity", Vector3.Zero);
+                        player.SetVector3("collision_pushback_velocity", Vector3.Zero);
                         player.SetVector3("player_pushback_velocity", Vector3.Zero);
                         player.SetVector3("hit_pushback_velocity", Vector3.Zero);
 
@@ -163,10 +164,20 @@ namespace ProjectMagma.Framework
                 }
             }
 
+            // reset collision
+            if (collisionOccured)
+            {
+                collisionOccured = false;
+            }
+            else
+            {
+                player.SetVector3("collision_pushback_velocity", Vector3.Zero);
+            }
+
             PlayerIndex playerIndex = (PlayerIndex)player.GetInt("game_pad_index");
             Vector3 playerPosition = player.GetVector3("position");
             Vector3 playerVelocity = player.GetVector3("velocity");
-            Vector3 objectPushbackVelocity = player.GetVector3("object_pushback_velocity");
+            Vector3 collisionPushbackVelocity = player.GetVector3("collision_pushback_velocity");
             Vector3 playerPushbackVelocity = player.GetVector3("player_pushback_velocity");
             Vector3 hitPushbackVelocity = player.GetVector3("hit_pushback_velocity");
 
@@ -388,7 +399,7 @@ namespace ProjectMagma.Framework
                 flame.SetBool("fueled", false);
 
             // pushback
-            ApplyPushback(ref playerPosition, ref objectPushbackVelocity, constants.GetFloat("object_contact_deacceleration_multiplier"));
+            ApplyPushback(ref playerPosition, ref collisionPushbackVelocity, 0f);
             ApplyPushback(ref playerPosition, ref playerPushbackVelocity, constants.GetFloat("player_pushback_deacceleration_multiplier"));
             ApplyPushback(ref playerPosition, ref hitPushbackVelocity, constants.GetFloat("player_pushback_deacceleration_multiplier"));
 
@@ -411,7 +422,7 @@ namespace ProjectMagma.Framework
 
             player.SetVector3("position", playerPosition);
             player.SetVector3("velocity", playerVelocity);
-            player.SetVector3("object_pushback_velocity", objectPushbackVelocity);
+            player.SetVector3("collision_pushback_velocity", collisionPushbackVelocity);
             player.SetVector3("player_pushback_velocity", playerPushbackVelocity);
             player.SetVector3("hit_pushback_velocity", hitPushbackVelocity);
 
@@ -468,6 +479,7 @@ namespace ProjectMagma.Framework
          {
             if (c.EntityB.HasAttribute("kind"))
             {
+                collisionOccured = true;
                 String kind = c.EntityB.GetString("kind");
                 if (kind == "island")
                     PlayerIslandCollisionHandler(gameTime, c.EntityA, c.EntityB, c);
@@ -511,35 +523,15 @@ namespace ProjectMagma.Framework
                 if (co.Normal.Y == 0)
                 {
                     // xz
-
-                // calculate theoretical velocity
-                Vector3 velocity = (previousPosition - playerPosition) / dt;
-
-                    /*
-                    velocity.Y = 0;
-                    player.SetVector3("contact_pushback_velocity", -velocity);
-                     */
+                    Vector3 pos = player.GetVector3("position");
+                    Vector3 velocity = -co.Normal * (pos - previousPosition).Length() * 1000 / gameTime.ElapsedGameTime.Milliseconds 
+                        / 2;
+                    player.SetVector3("collision_pushback_velocity", velocity);
                 }
                 else
                 {
-                    Vector3 pos = player.GetVector3("position");
-
-                    // project pos onto plane
-                    float D = -Vector3.Dot(co.Normal, co.Position);
-                    Vector3 posOnPlane = pos - Math.Abs(Vector3.Dot(co.Normal, pos) - D) * co.Normal;
-
-
-                    // calculate new velocity
-                    //                Vector3 velocity = (co.Position - posOnPlane) * 1000 / gameTime.ElapsedGameTime.Milliseconds;
-                    Vector3 velocity = Vector3.Normalize(co.Position - posOnPlane) * Math.Abs(pos.Y - previousPosition.Y)
-                                        * 1000 / gameTime.ElapsedGameTime.Milliseconds;
-                    //Vector3 velocity = Vector3.Normalize(co.Position - posOnPlane) * constants.GetFloat("object_contact_pushback_multiplier"); ;
-
-                                   Console.WriteLine(player.Name+" bottom pushback normal "+co.Normal+" : " + velocity);
-
+                    // bottom
                     player.SetVector3("velocity", Vector3.Zero);
-                    //player.SetVector3("object_pushback_velocity",
-                     //   /*player.GetVector3("object_pushback_velocity") / gameTime.ElapsedGameTime.Milliseconds +*/ velocity);
                 }
             }
             player.SetVector3("position", playerPosition);
@@ -558,42 +550,9 @@ namespace ProjectMagma.Framework
             }
             else
             {
-                /*
-                float angle = (float)Math.Atan(co.Normal.Z / co.Normal.X);
-                Vector3 velocity = (previousPosition - pos) / gameTime.ElapsedGameTime.Milliseconds * 1000;
-
-                //                Console.Write("velocity : " + velocity);
-                //                Console.Write("; dir: " + co.Normal);
-
-                velocity.Y = 0;
-
-                Matrix rotation = Matrix.CreateRotationY(-angle);
-                Vector3.Transform(ref velocity, ref rotation, out velocity);
-                velocity.X = -velocity.X;
-                rotation = Matrix.CreateRotationY(angle);
-                Vector3.Transform(ref velocity, ref rotation, out velocity);
-
-                velocity.Normalize();
-                velocity *= constants.GetFloat("object_contact_pushback_multiplier");
-                 */
                 Vector3 pos = player.GetVector3("position");
-
-                // project pos onto plane
-                float D = -Vector3.Dot(co.Normal, co.Position);
-                Vector3 posOnPlane = pos - Vector3.Dot(co.Normal, pos)*co.Normal + co.Normal*D;
-
-
-                // calculate new velocity
-//                Vector3 velocity = (co.Position - posOnPlane) * 1000 / gameTime.ElapsedGameTime.Milliseconds;
-//                Vector3 velocity = Vector3.Normalize(co.Position - posOnPlane) * (pos-previousPosition).Length()                    
-//                    * 1000 / gameTime.ElapsedGameTime.Milliseconds;
-                Vector3 velocity = Vector3.Normalize((co.Position - posOnPlane) + co.Normal) * constants.GetFloat("object_contact_pushback_multiplier"); ;
-                velocity.Y = 0;
-
-                //                Console.WriteLine("; pushback : " + velocity);
-
-                player.SetVector3("object_pushback_velocity", 
-                    /*player.GetVector3("object_pushback_velocity") / gameTime.ElapsedGameTime.Milliseconds +*/ velocity);
+                Vector3 velocity = -co.Normal * (pos-previousPosition).Length() * 1000 / gameTime.ElapsedGameTime.Milliseconds;
+                player.SetVector3("collision_pushback_velocity", velocity);
             }
         }
 

@@ -1,0 +1,19 @@
+Requirements HUD
+================
+
+functional
+----------
+
+- 4 Players 
+- Each player:
+	- name of player
+	- 3 Bars indicating fuel, health and energy
+	- icons or numerical counters indicating number of deaths
+	- icons or numerical counters indicating number of kills
+	- ? indication of state (burning, slowed, normal)
+
+technical
+---------
+
+Graphics shall be picture-perfect for a horizontal resulation of 1280 pixels.
+HUD elements shall be provided either as individual PNGs, PSDs or one PSDs with multiple layers.

@@ -25,6 +25,8 @@ namespace ProjectMagma.Framework
                 entity.AddIntAttribute("max_health", (int) (Game.GetScale(entity).Length() * constants.GetFloat("scale_health_multiplier")));
             entity.AddIntAttribute("health", entity.GetInt("max_health"));
 
+            entity.AddVector3Attribute("repulsion_velocity", Vector3.Zero);
+
             entity.Update += OnUpdate;
 
             ((CollisionProperty)entity.GetProperty("collision")).OnContact += new ContactHandler(CollisionHandler);
@@ -170,6 +172,12 @@ namespace ProjectMagma.Framework
             {
                 position.Y = originalPosition.Y;
             }
+
+            // apply pushback from players
+            Vector3 repulsionVelocity = island.GetVector3("repulsion_velocity");
+            Game.ApplyPushback(ref position, ref repulsionVelocity, constants.GetFloat("repulsion_deacceleration"));
+            island.SetVector3("repulsion_velocity", repulsionVelocity);
+            
             island.SetVector3("position", position);
 
             playersOnIsland = 0;

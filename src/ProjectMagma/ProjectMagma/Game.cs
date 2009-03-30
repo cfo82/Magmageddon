@@ -488,6 +488,13 @@ namespace ProjectMagma
             }
         }
 #endif
+
+
+        /**
+         * TODO:
+         * move stuff below into utility class
+         **/
+
         public static Vector3 GetPosition(Entity player)
         {
             return player.GetVector3("position");
@@ -514,6 +521,26 @@ namespace ProjectMagma
             else
             {
                 return Quaternion.Identity;
+            }
+        }
+
+        public static void ApplyPushback(ref Vector3 playerPosition, ref Vector3 pushbackVelocity, float deacceleration)
+        {
+            if (pushbackVelocity.Length() > 0)
+            {
+                float dt = Game.Instance.CurrentUpdateTime.ElapsedGameTime.Milliseconds / 1000.0f;
+
+                Vector3 oldVelocity = pushbackVelocity;
+
+                // apply de-acceleration
+                pushbackVelocity -= Vector3.Normalize(pushbackVelocity) * deacceleration * dt;
+
+                // if length increases we accelerate in opposite direction -> stop
+                if (pushbackVelocity.Length() > oldVelocity.Length())
+                    pushbackVelocity = Vector3.Zero;
+
+                // apply velocity
+                playerPosition += pushbackVelocity * dt;
             }
         }
 

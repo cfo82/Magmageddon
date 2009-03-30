@@ -32,6 +32,9 @@ namespace ProjectMagma.Framework
 
         private double hitPerformedAt = 0;
 
+        private double islandRepulsionStarteAt = 0;
+        private double islandRepulsionStoppedAt = 0;
+
         Entity flame = null;
         Entity arrow;
 
@@ -98,6 +101,9 @@ namespace ProjectMagma.Framework
         public void OnDetached(Entity player)
         {
             player.Update -= OnUpdate;
+            Game.Instance.EntityManager.Remove(arrow);
+            if(flame != null)
+                Game.Instance.EntityManager.Remove(flame);
             Game.Instance.EntityManager.EntityRemoved -= new EntityRemovedHandler(EntityRemovedHandler);
             ((CollisionProperty)player.GetProperty("collision")).OnContact -= new ContactHandler(PlayerCollisionHandler);
         }
@@ -234,18 +240,6 @@ namespace ProjectMagma.Framework
                     jetpackSoundInstance.Stop();
                     jetpackActive = false;
                 }
-                if (!controllerInput.jetpackButtonPressed)
-                {
-                    if (activeIsland == null)
-                    {
-                        fuel += (int)(gameTime.ElapsedGameTime.Milliseconds * constants.GetFloat("fuel_recharge_multiplier"));
-                    }
-                    else
-                    {
-                        // faster recharge standing on island
-                        fuel += (int)(gameTime.ElapsedGameTime.Milliseconds * constants.GetFloat("fuel_recharge_multiplier_island"));
-                    }
-                }
             }
 
             // gravity
@@ -264,13 +258,13 @@ namespace ProjectMagma.Framework
                 {
                     // in air
                     playerPosition.X += controllerInput.leftStickX * dt * constants.GetFloat("x_axis_jetpack_multiplier");
-                    playerPosition.Z -= controllerInput.leftStickY * dt * constants.GetFloat("z_axis_jetpack_multiplier");
+                    playerPosition.Z += controllerInput.leftStickY * dt * constants.GetFloat("z_axis_jetpack_multiplier");
                 }
                 else
                 {
                     // on ground
                     playerPosition.X += controllerInput.leftStickX * dt * constants.GetFloat("x_axis_movement_multiplier");
-                    playerPosition.Z -= controllerInput.leftStickY * dt * constants.GetFloat("z_axis_movement_multiplier");
+                    playerPosition.Z += controllerInput.leftStickY * dt * constants.GetFloat("z_axis_movement_multiplier");
                 }
 
                 // rotation
@@ -280,9 +274,9 @@ namespace ProjectMagma.Framework
             }
 
             // pushback
-            ApplyPushback(ref playerPosition, ref collisionPushbackVelocity, 0f);
-            ApplyPushback(ref playerPosition, ref playerPushbackVelocity, constants.GetFloat("player_pushback_deacceleration_multiplier"));
-            ApplyPushback(ref playerPosition, ref hitPushbackVelocity, constants.GetFloat("player_pushback_deacceleration_multiplier"));
+            Game.ApplyPushback(ref playerPosition, ref collisionPushbackVelocity, 0f);
+            Game.ApplyPushback(ref playerPosition, ref playerPushbackVelocity, constants.GetFloat("player_pushback_deacceleration"));
+            Game.ApplyPushback(ref playerPosition, ref hitPushbackVelocity, constants.GetFloat("player_pushback_deacceleration"));
 
             // frozen!?
             if (player.GetInt("frozen") > 0)
@@ -423,6 +417,42 @@ namespace ProjectMagma.Framework
                 Game.Instance.ApplyIntervalAddition(player, "energy_recharge", constants.GetInt("energy_recharge_interval"),
                     player.GetIntAttribute("energy"));
 
+            // island repulsion
+            if (controllerInput.rightStickMoved
+                && activeIsland != null
+                && fuel > 0)
+            {
+                if (at > islandRepulsionStoppedAt + constants.GetFloat("island_repulsion_interval_time"))
+                {
+                    if (islandRepulsionStarteAt == 0
+                        && player.GetInt("fuel") > constants.GetInt("island_repulsion_min_fuel"))
+                        islandRepulsionStarteAt = at;
+                    if (at < islandRepulsionStarteAt + constants.GetFloat("island_repulsion_max_time"))
+                    {
+                        // TODO: constant
+                        float velocityMultiplier = constants.GetFloat("island_repulsion_velocity_multiplier");
+                        Vector3 velocity = new Vector3(controllerInput.rightStickX * velocityMultiplier, 0, controllerInput.rightStickY * velocityMultiplier);
+                        activeIsland.SetVector3("repulsion_velocity", activeIsland.GetVector3("repulsion_velocity") + velocity);
+
+                        fuel -= (int) (gameTime.ElapsedGameTime.Milliseconds * velocity.Length() * 
+                            constants.GetFloat("island_repulsion_fuel_cost_multiplier"));
+                    }
+                    else
+                    {
+                        islandRepulsionStarteAt = 0;
+                        islandRepulsionStoppedAt = at;
+                    }
+                }
+            }
+            else
+            {
+                if(islandRepulsionStarteAt > 0)
+                {
+                    islandRepulsionStarteAt = 0;
+                    islandRepulsionStoppedAt = at;
+                }
+            }
+
             // island attraction
             if (!arrow.HasProperty("render"))
             {
@@ -436,6 +466,29 @@ namespace ProjectMagma.Framework
             }
 
             #endregion
+
+            // recharge
+            if (!controllerInput.jetpackButtonPressed)
+            {
+                if (activeIsland == null)
+                {
+                    fuel += (int)(gameTime.ElapsedGameTime.Milliseconds * constants.GetFloat("fuel_recharge_multiplier"));
+                }
+                else
+                {
+                    // faster recharge standing on island, but only if jetpack was not used for repulsion
+                    if (at > islandRepulsionStoppedAt + constants.GetFloat("island_repulsion_recharge_delay"))
+                    {
+                        fuel += (int)(gameTime.ElapsedGameTime.Milliseconds * constants.GetFloat("fuel_recharge_multiplier_island"));
+                    }
+                    else
+                    {
+                        double diff = at - islandRepulsionStoppedAt;
+                        fuel += (int)(gameTime.ElapsedGameTime.Milliseconds * constants.GetFloat("fuel_recharge_multiplier_island")
+                            * diff / constants.GetFloat("island_repulsion_recharge_delay"));
+                    }
+                }
+            }
 
             // update player attributes
             player.SetInt("fuel", fuel);
@@ -649,25 +702,6 @@ namespace ProjectMagma.Framework
             }
         }
 
-        private static void ApplyPushback(ref Vector3 playerPosition, ref Vector3 pushbackVelocity, float deacceleration)
-        {
-            if (pushbackVelocity.Length() > 0)
-            {
-                float dt = Game.Instance.CurrentUpdateTime.ElapsedGameTime.Milliseconds / 1000.0f;
-
-                Vector3 oldVelocity = pushbackVelocity;
-                Vector3 pushbackDeAcceleration = pushbackVelocity;
-                pushbackDeAcceleration.Normalize();
-
-                pushbackVelocity -= pushbackDeAcceleration * deacceleration * dt;
-
-                if (pushbackVelocity.Length() > oldVelocity.Length()) // if length increases we accelerate -> stop
-                    pushbackVelocity = Vector3.Zero;
-
-                playerPosition += pushbackVelocity * dt;
-            }
-        }
-
         struct ControllerInput
         {
             public void Update(PlayerIndex playerIndex)
@@ -678,8 +712,11 @@ namespace ProjectMagma.Framework
                 #region joysticks
 
                 leftStickX = gamePadState.ThumbSticks.Left.X;
-                leftStickY = gamePadState.ThumbSticks.Left.Y;
+                leftStickY = -gamePadState.ThumbSticks.Left.Y;
                 moveStickMoved = leftStickX != 0.0f || leftStickY != 0.0f;
+                rightStickX = gamePadState.ThumbSticks.Right.X;
+                rightStickY = -gamePadState.ThumbSticks.Right.Y;
+                rightStickMoved = rightStickX != 0.0f || rightStickY != 0.0f;
 
                 if (!moveStickMoved)
                 {
@@ -782,6 +819,8 @@ namespace ProjectMagma.Framework
             // joystick
             public float leftStickX, leftStickY;
             public bool moveStickMoved;
+            public float rightStickX, rightStickY;
+            public bool rightStickMoved;
 
             // triggers
             public float iceSpikeStrength;

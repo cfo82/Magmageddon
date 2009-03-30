@@ -81,31 +81,31 @@ namespace ProjectMagma.Framework
                 dist.Y = 0;
                 Vector3 pillarContribution;
 
-                BoundingBox pillarBox = (BoundingBox)Game.Instance.Content.Load<Model>("Models/pillar_primitive").Tag;
+                /*BoundingBox pillarBox = (BoundingBox)Game.Instance.Content.Load<Model>("Models/pillar_primitive").Tag;
                 float pillarScale = pillarBox.Max.X;
                 if (pillar.HasVector3("scale"))
                 {
                     Vector3 scale = pillar.GetVector3("scale");
                     Debug.Assert(scale.X == scale.Z);
                     pillarScale *= scale.X;
-                }
+                }*/
 
-                BoundingBox islandBox = (BoundingBox)Game.Instance.Content.Load<Model>("Models/island_primitive").Tag;
+                /*BoundingBox islandBox = (BoundingBox)Game.Instance.Content.Load<Model>("Models/island_primitive").Tag;
                 float islandScale = islandBox.Max.X;
                 if (island.HasVector3("scale"))
                 {
                     Vector3 scale = island.GetVector3("scale");
                     Debug.Assert(scale.X == scale.Z);
                     islandScale *= scale.X;
-                }
+                }*/
 
                 // collision detection with pillars
-                if (dist.Length() > pillarScale + islandScale)
-                {
+                /*if (dist.Length() > pillarScale + islandScale)
+                {*/
                     // no collision with this pillar
                     pillarContribution = dist;
                     pillarContribution *= pillarContribution.Length() * constants.GetFloat("pillar_attraction");
-                }
+                /*}
                 else
                 {
                     // island collided with this pillar
@@ -126,7 +126,7 @@ namespace ProjectMagma.Framework
                         //Console.WriteLine("contrib " + pillarContribution);
                     }
                     collided = true;
-                }
+                }*/
                 a += pillarContribution;
             }
 

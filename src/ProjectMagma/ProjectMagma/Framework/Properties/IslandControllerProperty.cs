@@ -1,13 +1,7 @@
 ﻿using System;
 using System.Diagnostics;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using Microsoft.Xna.Framework;
-using Microsoft.Xna.Framework.Graphics;
-using ProjectMagma.Shared.BoundingVolume;
 using ProjectMagma.Collision;
-using ProjectMagma.Collision.CollisionTests;
 
 
 namespace ProjectMagma.Framework

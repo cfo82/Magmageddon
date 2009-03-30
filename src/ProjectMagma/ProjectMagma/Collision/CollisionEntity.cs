@@ -1,4 +1,4 @@
-﻿using ProjectMagma.Shared.BoundingVolume;
+﻿using ProjectMagma.Shared.Math.Volume;
 using ProjectMagma.Framework;
 using Microsoft.Xna.Framework;
 

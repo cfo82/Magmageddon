@@ -96,6 +96,8 @@
     <Compile Include="LevelData\PropertyData.cs" />
     <Compile Include="LevelData\Serialization\LevelDataReader.cs" />
     <Compile Include="Math\Intersection\TriangleTriangle.cs" />
+    <Compile Include="Math\Volume\Volume.cs" />
+    <Compile Include="Math\Volume\VolumeCollection.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>

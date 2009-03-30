@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using Microsoft.Xna.Framework;
 using ProjectMagma.Framework;
-using ProjectMagma.Shared.BoundingVolume;
+using ProjectMagma.Shared.Math.Volume;
 using ProjectMagma.Collision.CollisionTests;
 
 namespace ProjectMagma.Collision

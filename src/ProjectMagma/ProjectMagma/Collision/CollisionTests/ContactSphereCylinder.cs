@@ -1,7 +1,7 @@
 ﻿using System.Diagnostics;
 using Microsoft.Xna.Framework;
 using ProjectMagma.Framework;
-using ProjectMagma.Shared.BoundingVolume;
+using ProjectMagma.Shared.Math.Volume;
 
 namespace ProjectMagma.Collision.CollisionTests
 {

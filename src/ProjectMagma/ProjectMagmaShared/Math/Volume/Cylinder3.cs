@@ -1,8 +1,8 @@
 ﻿using Microsoft.Xna.Framework;
 
-namespace ProjectMagma.Shared.BoundingVolume
+namespace ProjectMagma.Shared.Math.Volume
 {
-    public class Cylinder3
+    public class Cylinder3 : Volume
     {
         public Cylinder3()
         {

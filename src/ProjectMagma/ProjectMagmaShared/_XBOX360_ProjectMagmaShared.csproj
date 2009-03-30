@@ -68,6 +68,8 @@
     <Compile Include="Math\Volume\Serialization\AlignedBox3TreeNodeReader.cs" />
     <Compile Include="Math\Volume\Serialization\AlignedBox3TreeReader.cs" />
     <Compile Include="Math\Volume\Triangle3.cs" />
+    <Compile Include="Math\Volume\Volume.cs" />
+    <Compile Include="Math\Volume\VolumeCollection.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>

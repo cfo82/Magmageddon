@@ -9,10 +9,8 @@ using xWinFormsLib;
 #endif
 
 using ProjectMagma.Framework;
-using ProjectMagma.Shared.BoundingVolume;
 using ProjectMagma.Shared.LevelData;
 using ProjectMagma.Collision;
-using System.Threading;
 using System.Collections.Generic;
 
 // its worth to read this...

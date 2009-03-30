@@ -23,12 +23,12 @@ namespace ProjectMagma.Collision
                 string bv_type = entity.GetString("bv_type");
                 if (bv_type == "cylinder")
                 {
-                    Cylinder3 bvCylinder = CalculateBoundingCylinder(entity);
+                    Cylinder3 bvCylinder = GetBoundingCylinder(entity);
                     Game.Instance.CollisionManager.AddCollisionEntity(entity, this, bvCylinder);
                 }
                 else if (bv_type == "sphere")
                 {
-                    BoundingSphere bvSphere = CalculateBoundingSphere(entity);
+                    Sphere3 bvSphere = GetBoundingSphere(entity);
                     Game.Instance.CollisionManager.AddCollisionEntity(entity, this, bvSphere);
                 }
             }
@@ -49,52 +49,26 @@ namespace ProjectMagma.Collision
             }
         }
 
-        private BoundingSphere CalculateBoundingSphere(Entity entity)
+        private Sphere3 GetBoundingSphere(Entity entity)
         {
-            Model mesh = Game.Instance.Content.Load<Model>(entity.GetString("mesh"));
-
-            // calculate center
-            BoundingBox bb = CalculateBoundingBox(mesh);
-            Vector3 center = (bb.Min + bb.Max) / 2;
-
-            // calculate radius
-            //            float radius = (bb.Max-bb.Min).Length() / 2;
-            float radius = (bb.Max.Y - bb.Min.Y) / 2; // HACK: hack for player
-
-            return new BoundingSphere(center, radius);
+            Model model = Game.Instance.Content.Load<Model>(entity.GetString("mesh"));
+            VolumeCollection collection = (VolumeCollection)model.Tag;
+            return (Sphere3)collection.GetVolume(VolumeType.Sphere3);
         }
 
         // calculates y-axis aligned bounding cylinder
-        private Cylinder3 CalculateBoundingCylinder(Entity entity)
+        private Cylinder3 GetBoundingCylinder(Entity entity)
         {
-            Model mesh = Game.Instance.Content.Load<Model>(entity.GetString("mesh"));
-
-            // calculate center
-            BoundingBox bb = CalculateBoundingBox(mesh);
-            Vector3 center = (bb.Min + bb.Max) / 2;
-
-            float top = bb.Max.Y;
-            float bottom = bb.Min.Y;
-
-            // calculate radius
-            // a valid cylinder here is an extruded circle (not an oval) therefore extents in 
-            // x- and z-direction should be equal.
-            float radius = bb.Max.X - center.X;
-
-            return new Cylinder3(new Vector3(center.X, top, center.Z),
-                new Vector3(center.X, bottom, center.Z),
-                radius);
+            Model model = Game.Instance.Content.Load<Model>(entity.GetString("mesh"));
+            VolumeCollection collection = (VolumeCollection)model.Tag;
+            return (Cylinder3)collection.GetVolume(VolumeType.Cylinder3);
         }
 
-        private BoundingBox CalculateBoundingBox(Entity entity)
+        private AlignedBox3 GetBoundingBox(Entity entity)
         {
-            Model mesh = Game.Instance.Content.Load<Model>(entity.GetString("mesh"));
-            return CalculateBoundingBox(mesh);
-        }
-
-        private BoundingBox CalculateBoundingBox(Model model)
-        {
-            return (BoundingBox)model.Tag;
+            Model model = Game.Instance.Content.Load<Model>(entity.GetString("mesh"));
+            VolumeCollection collection = (VolumeCollection)model.Tag;
+            return (AlignedBox3)collection.GetVolume(VolumeType.AlignedBox3);
         }
         
         public event ContactHandler OnContact;

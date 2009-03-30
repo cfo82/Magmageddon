@@ -100,7 +100,6 @@
     <Compile Include="Collision\CollisionTests\ContactTest.cs" />
     <Compile Include="Collision\CollisionTests\ContactSphereSphere.cs" />
     <Compile Include="Collision\CollisionEntity.cs" />
-    <Compile Include="Collision\BoundingVolumeType.cs" />
     <Compile Include="Collision\BoundingVolumeTypeUtil.cs" />
     <Compile Include="Framework\Attributes\BoolAttribute.cs" />
     <Compile Include="Framework\Attributes\QuaternionAttribute.cs" />

@@ -1,27 +1,28 @@
 ﻿using System;
+using ProjectMagma.Shared.Math.Volume;
 
 namespace ProjectMagma.Collision
 {
     public class BoundingVolumeTypeUtil
     {
-        public static int ToNumber(BoundingVolumeType type)
+        public static int ToNumber(VolumeType type)
         {
             switch (type)
             {
-                case BoundingVolumeType.Cylinder: return 0;
-                case BoundingVolumeType.Mesh: return 1;
-                case BoundingVolumeType.Sphere: return 2;
+                case VolumeType.Cylinder3: return 0;
+                case VolumeType.AlignedBox3Tree: return 1;
+                case VolumeType.Sphere3: return 2;
                 default: throw new Exception("invalid type '" + type + "'");
             }
         }
 
-        public static BoundingVolumeType ToType(int number)
+        public static VolumeType ToType(int number)
         {
             switch (number)
             {
-                case 0: return BoundingVolumeType.Cylinder;
-                case 1: return BoundingVolumeType.Mesh;
-                case 2: return BoundingVolumeType.Sphere;
+                case 0: return VolumeType.Cylinder3;
+                case 1: return VolumeType.AlignedBox3Tree;
+                case 2: return VolumeType.Sphere3;
                 default: throw new Exception("invalid type constant '" + number + "'");
             }
         }

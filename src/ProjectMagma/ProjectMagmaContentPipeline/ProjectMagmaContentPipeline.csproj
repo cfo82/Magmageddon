@@ -109,6 +109,11 @@
     <Compile Include="Math\Volume\Serialization\AlignedBox3TreeWriter.cs" />
     <Compile Include="Level\LevelProcessor.cs" />
     <Compile Include="Level\Serialization\LevelDataWriter.cs" />
+    <Compile Include="Math\Volume\Serialization\AlignedBox3Writer.cs" />
+    <Compile Include="Math\Volume\Serialization\Sphere3Writer.cs" />
+    <Compile Include="Math\Volume\Serialization\Cylinder3Writer.cs" />
+    <Compile Include="Math\Volume\Serialization\VolumeWriter.cs" />
+    <Compile Include="Math\Volume\Serialization\VolumeCollectionWriter.cs" />
     <Compile Include="ModelProcessors\CaveProcessor.cs" />
     <Compile Include="ModelProcessors\FlameProcessor.cs" />
     <Compile Include="ModelProcessors\PowerUpProcessor.cs" />

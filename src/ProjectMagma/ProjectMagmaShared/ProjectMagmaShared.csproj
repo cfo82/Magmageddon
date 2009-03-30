@@ -82,9 +82,17 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Math\Volume\AlignedBox3.cs" />
     <Compile Include="Math\Volume\AlignedBox3Tree.cs" />
     <Compile Include="Math\Volume\AlignedBox3TreeNode.cs" />
     <Compile Include="Math\Volume\Axis.cs" />
+    <Compile Include="Math\Volume\Serialization\AlignedBox3Reader.cs" />
+    <Compile Include="Math\Volume\Serialization\Sphere3Reader.cs" />
+    <Compile Include="Math\Volume\Serialization\Cylinder3Reader.cs" />
+    <Compile Include="Math\Volume\Serialization\VolumeReader.cs" />
+    <Compile Include="Math\Volume\Serialization\VolumeCollectionReader.cs" />
+    <Compile Include="Math\Volume\Sphere3.cs" />
+    <Compile Include="Math\Volume\VolumeType.cs" />
     <Compile Include="Math\Volume\Cylinder3.cs" />
     <Compile Include="Math\Volume\Box3.cs" />
     <Compile Include="Math\Volume\Serialization\AlignedBox3TreeNodeReader.cs" />

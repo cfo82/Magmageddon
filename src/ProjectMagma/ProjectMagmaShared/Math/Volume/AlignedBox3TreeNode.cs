@@ -223,7 +223,7 @@ namespace ProjectMagma.Shared.Math.Volume
             }
         }
 
-        public BoundingBox BoundingBox
+        public AlignedBox3 BoundingBox
         {
             get
             {
@@ -262,7 +262,7 @@ namespace ProjectMagma.Shared.Math.Volume
         private int numTriangles;
         private int baseIndex;
         private UInt16[] indices;
-        private BoundingBox boundingBox;
+        private AlignedBox3 boundingBox;
         private AlignedBox3TreeNode left;
         private AlignedBox3TreeNode right;
     }

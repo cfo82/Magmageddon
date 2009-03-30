@@ -14,7 +14,7 @@ namespace ProjectMagma.ContentPipeline.Math.Volume.Serialization
             output.Write(value.NumTriangles);
             output.Write(value.BaseIndex);
             output.WriteSharedResource<UInt16[]>(value.Indices);
-            output.WriteObject<BoundingBox>(value.BoundingBox);
+            output.WriteObject<AlignedBox3>(value.BoundingBox);
             output.WriteObject<AlignedBox3TreeNode>(value.Left);
             output.WriteObject<AlignedBox3TreeNode>(value.Right);
         }

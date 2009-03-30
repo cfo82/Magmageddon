@@ -7,5 +7,7 @@ namespace ProjectMagma.Shared.Math.Volume
 {
     public interface Volume
     {
+        VolumeType Type
+        { get; }
     }
 }

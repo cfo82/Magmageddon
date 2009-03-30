@@ -6,11 +6,11 @@ namespace ProjectMagma.Collision
 {
     public class CollisionEntity
     {
-        public CollisionEntity(Entity entity, CollisionProperty property, BoundingSphere sphere)
+        public CollisionEntity(Entity entity, CollisionProperty property, Sphere3 sphere)
         {
             this.entity = entity;
             this.collisionProperty = property;
-            this.volumeType = BoundingVolumeType.Sphere;
+            this.volumeType = VolumeType.Sphere3;
             this.volume = sphere;
         }
 
@@ -18,13 +18,13 @@ namespace ProjectMagma.Collision
         {
             this.entity = entity;
             this.collisionProperty = property;
-            this.volumeType = BoundingVolumeType.Cylinder;
+            this.volumeType = VolumeType.Cylinder3;
             this.volume = cylinder;
         }
 
         public Entity entity;
         public CollisionProperty collisionProperty;
-        public BoundingVolumeType volumeType;
+        public VolumeType volumeType;
         public object volume;
     }
 }

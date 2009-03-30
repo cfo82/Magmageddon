@@ -7,6 +7,7 @@ using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Content.Pipeline;
 using Microsoft.Xna.Framework.Content.Pipeline.Graphics;
 using Microsoft.Xna.Framework.Content.Pipeline.Processors;
+using ProjectMagma.Shared.Math.Volume;
 
 namespace ProjectMagma.ContentPipeline.ModelProcessors
 {
@@ -14,7 +15,7 @@ namespace ProjectMagma.ContentPipeline.ModelProcessors
     public class FlameProcessor : MoveProcessor
     {
 
-        protected override Vector3 CalculateDiff(ref Vector3 origDiff, ref BoundingBox bb)
+        protected override Vector3 CalculateDiff(ref Vector3 origDiff, ref AlignedBox3 bb)
         {
             return -origDiff;
         }

@@ -19,7 +19,7 @@ namespace ProjectMagma.Collision
             AddCollisionEntity(new CollisionEntity(entity, property, cylinder));
         }
 
-        public void AddCollisionEntity(Entity entity, CollisionProperty property, BoundingSphere sphere)
+        public void AddCollisionEntity(Entity entity, CollisionProperty property, Sphere3 sphere)
         {
             AddCollisionEntity(new CollisionEntity(entity, property, sphere));
         }

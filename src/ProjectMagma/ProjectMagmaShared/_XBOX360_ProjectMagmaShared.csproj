@@ -60,16 +60,24 @@
     <Compile Include="LevelData\PropertyData.cs" />
     <Compile Include="LevelData\Serialization\LevelDataReader.cs" />
     <Compile Include="Math\Intersection\TriangleTriangle.cs" />
+    <Compile Include="Math\Volume\AlignedBox3.cs" />
     <Compile Include="Math\Volume\AlignedBox3Tree.cs" />
     <Compile Include="Math\Volume\AlignedBox3TreeNode.cs" />
     <Compile Include="Math\Volume\Axis.cs" />
     <Compile Include="Math\Volume\Box3.cs" />
     <Compile Include="Math\Volume\Cylinder3.cs" />
+    <Compile Include="Math\Volume\Serialization\AlignedBox3Reader.cs" />
     <Compile Include="Math\Volume\Serialization\AlignedBox3TreeNodeReader.cs" />
     <Compile Include="Math\Volume\Serialization\AlignedBox3TreeReader.cs" />
+    <Compile Include="Math\Volume\Serialization\Cylinder3Reader.cs" />
+    <Compile Include="Math\Volume\Serialization\Sphere3Reader.cs" />
+    <Compile Include="Math\Volume\Serialization\VolumeCollectionReader.cs" />
+    <Compile Include="Math\Volume\Serialization\VolumeReader.cs" />
+    <Compile Include="Math\Volume\Sphere3.cs" />
     <Compile Include="Math\Volume\Triangle3.cs" />
     <Compile Include="Math\Volume\Volume.cs" />
     <Compile Include="Math\Volume\VolumeCollection.cs" />
+    <Compile Include="Math\Volume\VolumeType.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>

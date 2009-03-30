@@ -6,6 +6,7 @@ using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Content.Pipeline;
 using Microsoft.Xna.Framework.Content.Pipeline.Graphics;
 using Microsoft.Xna.Framework.Content.Pipeline.Processors;
+using ProjectMagma.Shared.Math.Volume;
 
 namespace ProjectMagma.ContentPipeline.ModelProcessors
 {
@@ -14,10 +15,7 @@ namespace ProjectMagma.ContentPipeline.ModelProcessors
         public override ModelContent Process(NodeContent input, ContentProcessorContext context)
         {
             // calculate bounds because changes are based on the bounding box
-            BoundingBox bb = new BoundingBox();
-            bb.Min = new Vector3(Single.MaxValue, Single.MaxValue, Single.MaxValue);
-            bb.Max = new Vector3(Single.MinValue, Single.MinValue, Single.MinValue);
-            CalculateBoundingBox(input, context, ref bb);
+            AlignedBox3 bb = CalculateAlignedBox3(input, context);
 
             // first center the models (I think they are actually already centered...
             Vector3 diff = Vector3.Zero - (bb.Min + ((bb.Max - bb.Min) / 2.0f));
@@ -41,20 +39,39 @@ namespace ProjectMagma.ContentPipeline.ModelProcessors
             bb.Min += diffCorrector;
             bb.Max += diffCorrector;
 
+            // let the base class process the model
             ModelContent modelContent = base.Process(input, context);
-            modelContent.Tag = bb;
+
+            // add bounding volumes to the model
+            VolumeCollection collection = new VolumeCollection();
+            collection.AddVolume(CalculateAlignedBox3(input, context));
+            collection.AddVolume(CalculateCylinder3(input, context));
+            collection.AddVolume(CalculateSphere3(input, context));
+            modelContent.Tag = collection;
             return modelContent;
         }
 
-        protected virtual Vector3 CalculateDiff(ref Vector3 origDiff, ref BoundingBox bb)
+        protected virtual Vector3 CalculateDiff(ref Vector3 origDiff, ref AlignedBox3 bb)
         {
             return Vector3.Zero;
         }
 
-        private void CalculateBoundingBox(
+        private AlignedBox3 CalculateAlignedBox3(
+            NodeContent input,
+            ContentProcessorContext context
+        )
+        {
+            AlignedBox3 alignedBox = new AlignedBox3();
+            alignedBox.Min = new Vector3(Single.MaxValue, Single.MaxValue, Single.MaxValue);
+            alignedBox.Max = new Vector3(Single.MinValue, Single.MinValue, Single.MinValue);
+            CalculateAlignedBox3(input, context, ref alignedBox);
+            return alignedBox;
+        }
+
+        private void CalculateAlignedBox3(
             NodeContent input,
             ContentProcessorContext context,
-            ref BoundingBox box
+            ref AlignedBox3 box
             )
         {
             MeshContent mesh = input as MeshContent;
@@ -75,8 +92,47 @@ namespace ProjectMagma.ContentPipeline.ModelProcessors
             // Go through all children
             foreach (NodeContent child in input.Children)
             {
-                CalculateBoundingBox(child, context, ref box);
+                CalculateAlignedBox3(child, context, ref box);
             }
+        }
+
+        // calculates y-axis aligned bounding cylinder
+        private Cylinder3 CalculateCylinder3(
+            NodeContent input,
+            ContentProcessorContext context
+        )
+        {
+            // calculate center
+            AlignedBox3 bb = CalculateAlignedBox3(input, context);
+            Vector3 center = (bb.Min + bb.Max) / 2;
+
+            float top = bb.Max.Y;
+            float bottom = bb.Min.Y;
+
+            // calculate radius
+            // a valid cylinder here is an extruded circle (not an oval) therefore extents in 
+            // x- and z-direction should be equal.
+            float radius = bb.Max.X - center.X;
+
+            return new Cylinder3(new Vector3(center.X, top, center.Z),
+                new Vector3(center.X, bottom, center.Z),
+                radius);
+        }
+
+        private Sphere3 CalculateSphere3(
+            NodeContent input,
+            ContentProcessorContext context
+        )
+        {
+            // calculate center
+            AlignedBox3 bb = CalculateAlignedBox3(input, context);
+            Vector3 center = (bb.Min + bb.Max) / 2;
+
+            // calculate radius
+            //            float radius = (bb.Max-bb.Min).Length() / 2;
+            float radius = (bb.Max.Y - bb.Min.Y) / 2; // HACK: hack for player
+
+            return new Sphere3(center, radius);
         }
 
         private void MoveModel(

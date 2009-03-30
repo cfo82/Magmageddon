@@ -1,6 +1,7 @@
 ﻿using System.Diagnostics;
 using Microsoft.Xna.Framework;
 using ProjectMagma.Framework;
+using ProjectMagma.Shared.Math.Volume;
 
 namespace ProjectMagma.Collision.CollisionTests
 {
@@ -11,8 +12,8 @@ namespace ProjectMagma.Collision.CollisionTests
             Entity entity2, object boundingVolume2, Matrix worldTransform2, Vector3 translation2, Quaternion rotation2, Vector3 scale2
             )
         {
-            BoundingSphere sphere1 = (BoundingSphere)boundingVolume1;
-            BoundingSphere sphere2 = (BoundingSphere)boundingVolume2;
+            Sphere3 sphere1 = (Sphere3)boundingVolume1;
+            Sphere3 sphere2 = (Sphere3)boundingVolume2;
 
             Debug.Assert(scale1.X == scale1.Y && scale1.Y == scale1.Z);
             Debug.Assert(scale2.X == scale2.Y && scale2.Y == scale2.Z);

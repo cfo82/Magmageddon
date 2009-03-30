@@ -16,7 +16,7 @@ namespace ProjectMagma.Shared.Math.Volume.Serialization
             existingInstance.NumTriangles = input.ReadInt32();
             existingInstance.BaseIndex = input.ReadInt32();
             input.ReadSharedResource<UInt16[]>(delegate(UInt16[] value) { existingInstance.Indices = value; });
-            existingInstance.BoundingBox = input.ReadObject<BoundingBox>();
+            existingInstance.BoundingBox = input.ReadObject<AlignedBox3>();
             existingInstance.Left = input.ReadObject<AlignedBox3TreeNode>();
             existingInstance.Right = input.ReadObject<AlignedBox3TreeNode>();
 

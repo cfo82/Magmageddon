@@ -57,7 +57,7 @@ namespace ProjectMagma.Shared.Math.Volume
             }
         }
 
-        public BoundingBox BoundingBox
+        public AlignedBox3 BoundingBox
         {
             get
             {

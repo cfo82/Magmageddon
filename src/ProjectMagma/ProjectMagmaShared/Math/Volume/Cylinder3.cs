@@ -18,16 +18,24 @@ namespace ProjectMagma.Shared.Math.Volume
         public Vector3 Top
         {
             get { return c1; }
+            set { c1 = value; }
         }
 
         public Vector3 Bottom
         {
             get { return c2; }
+            set { c2 = value; }
         }
 
         public float Radius
         {
             get { return radius; }
+            set { radius = value; }
+        }
+
+        public VolumeType Type
+        {
+            get { return VolumeType.Cylinder3; }
         }
 
         private Vector3 c1;

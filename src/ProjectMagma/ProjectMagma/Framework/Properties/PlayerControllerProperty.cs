@@ -428,23 +428,6 @@ namespace ProjectMagma.Framework
 
             CheckPlayerAttributeRanges(player);
 
-            /// TODO: move this to collision manager
-            /// collision detection code
-
-            // get bounding sphere
-            /*BoundingSphere bs = Game.CalculateBoundingSphere(player);
-
-            // check collision with juicy powerups
-            foreach (Entity powerup in Game.Instance.PowerupManager)
-            {
-                BoundingBox bb = Game.CalculateBoundingBox(powerup);
-
-                if (bb.Intersects(bs))
-                {
-                    PlayerPowerupCollisionHandler(gameTime, player, powerup);
-                }
-            }*/
-
             // check collision with lava
             Entity lava = Game.Instance.EntityManager["lava"];
             if (playerPosition.Y < lava.GetVector3("position").Y)
@@ -479,7 +462,6 @@ namespace ProjectMagma.Framework
          {
             if (c.EntityB.HasAttribute("kind"))
             {
-                collisionOccured = true;
                 String kind = c.EntityB.GetString("kind");
                 switch (kind)
                 {
@@ -497,6 +479,7 @@ namespace ProjectMagma.Framework
                         break;
                 }
                 CheckPlayerAttributeRanges(player);
+                collisionOccured = true;
             }
         }
 
@@ -584,8 +567,7 @@ namespace ProjectMagma.Framework
             int oldVal = player.GetInt(powerup.GetString("power"));
             oldVal += powerup.GetInt("powerValue");
             player.SetInt(powerup.GetString("power"), oldVal);
-            CheckPlayerAttributeRanges(player);
-
+            
             // soundeffect
             SoundEffect soundEffect = Game.Instance.Content.Load<SoundEffect>("Sounds/" + powerup.GetString("pickup_sound"));
             soundEffect.Play(Game.Instance.EffectsVolume);

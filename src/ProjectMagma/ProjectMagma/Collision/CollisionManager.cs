@@ -62,7 +62,7 @@ namespace ProjectMagma.Collision
             }
         }
 
-        static int collisionCount = 0;
+        //static int collisionCount = 0;
 
         public void Update(GameTime gameTime)
         {
@@ -83,14 +83,14 @@ namespace ProjectMagma.Collision
                         );
                     if (contacts.Count > 0)
                     {
-                        Console.WriteLine("Collision {0,4}: between {1} and {2}!", collisionCount, entity1.entity.Name, entity2.entity.Name);
+                        //Console.WriteLine("Collision {0,4}: between {1} and {2}!", collisionCount, entity1.entity.Name, entity2.entity.Name);
                         entity1.collisionProperty.FireContact(gameTime, contacts);
                         foreach (Contact c in contacts)
                         {
                             c.Reverse();
                         }
                         entity2.collisionProperty.FireContact(gameTime, contacts);
-                        ++collisionCount;
+                        //++collisionCount;
                     }
                 }
             }

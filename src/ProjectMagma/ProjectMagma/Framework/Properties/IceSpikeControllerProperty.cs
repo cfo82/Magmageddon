@@ -1,4 +1,5 @@
-﻿using Microsoft.Xna.Framework;
+﻿using System.Collections.Generic;
+using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Audio;
 using ProjectMagma.Collision;
 
@@ -16,14 +17,14 @@ namespace ProjectMagma.Framework
         {
             this.constants = Game.Instance.EntityManager["player_constants"];
 
-            ((CollisionProperty)entity.GetProperty("collision")).OnContact += new ContactHandler(IceSpikeCollisionHandler);
+            ((CollisionProperty)entity.GetProperty("collision")).OnContact += IceSpikeCollisionHandler;
 
             entity.Update += OnUpdate;
         }
 
         public void OnDetached(Entity entity)
         {
-            ((CollisionProperty)entity.GetProperty("collision")).OnContact -= new ContactHandler(IceSpikeCollisionHandler);
+            ((CollisionProperty)entity.GetProperty("collision")).OnContact -= IceSpikeCollisionHandler;
 
             entity.Update -= OnUpdate;
         }
@@ -90,8 +91,10 @@ namespace ProjectMagma.Framework
             iceSpike.SetVector3("velocity", v);
         }
 
-        private void IceSpikeCollisionHandler(GameTime gameTime, Contact c)
+        private void IceSpikeCollisionHandler(GameTime gameTime, List<Contact> contacts)
         {
+            Contact c = contacts[0];
+
             // remove spike
             Entity iceSpike = c.EntityA;
             Entity other = c.EntityB;

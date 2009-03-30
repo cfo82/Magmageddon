@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Diagnostics;
+using System.Collections.Generic;
 using Microsoft.Xna.Framework;
 using ProjectMagma.Collision;
 
@@ -29,7 +30,7 @@ namespace ProjectMagma.Framework
 
             entity.Update += OnUpdate;
 
-            ((CollisionProperty)entity.GetProperty("collision")).OnContact += new ContactHandler(CollisionHandler);
+            ((CollisionProperty)entity.GetProperty("collision")).OnContact += CollisionHandler;
 
             originalPosition = entity.GetVector3("position");
         }
@@ -39,7 +40,7 @@ namespace ProjectMagma.Framework
             entity.Update -= OnUpdate;
             if (entity.HasProperty("collision"))
             {
-                ((CollisionProperty)entity.GetProperty("collision")).OnContact -= new ContactHandler(CollisionHandler);
+                ((CollisionProperty)entity.GetProperty("collision")).OnContact -= CollisionHandler;
              }
             // TODO: remove attribute!
         }
@@ -183,8 +184,9 @@ namespace ProjectMagma.Framework
             playersOnIsland = 0;
         }
 
-        private void CollisionHandler(GameTime gameTime, Contact contact)
+        private void CollisionHandler(GameTime gameTime, List<Contact> contacts)
         {
+            Contact contact = contacts[0];
             Entity entity = contact.EntityB;
             if (entity.HasString("kind") && // other entity has a kind-attribute
                 entity.GetString("kind") == "player" && // other entity is a player

@@ -75,8 +75,8 @@ namespace ProjectMagma.Framework
             player.AddIntAttribute("frozen", 0);
             player.AddStringAttribute("collisionPlayer", "");
 
-            Game.Instance.EntityManager.EntityRemoved += new EntityRemovedHandler(EntityRemovedHandler);
-            ((CollisionProperty)player.GetProperty("collision")).OnContact += new ContactHandler(PlayerCollisionHandler);
+            Game.Instance.EntityManager.EntityRemoved += EntityRemovedHandler;
+            ((CollisionProperty)player.GetProperty("collision")).OnContact += PlayerCollisionHandler;
 
             jetpackSound = Game.Instance.Content.Load<SoundEffect>("Sounds/jetpack");
             flameThrowerSound = Game.Instance.Content.Load<SoundEffect>("Sounds/flamethrower");
@@ -104,8 +104,8 @@ namespace ProjectMagma.Framework
             Game.Instance.EntityManager.Remove(arrow);
             if(flame != null)
                 Game.Instance.EntityManager.Remove(flame);
-            Game.Instance.EntityManager.EntityRemoved -= new EntityRemovedHandler(EntityRemovedHandler);
-            ((CollisionProperty)player.GetProperty("collision")).OnContact -= new ContactHandler(PlayerCollisionHandler);
+            Game.Instance.EntityManager.EntityRemoved -= EntityRemovedHandler;
+            ((CollisionProperty)player.GetProperty("collision")).OnContact -= PlayerCollisionHandler;
         }
 
         private void OnUpdate(Entity player, GameTime gameTime)
@@ -532,8 +532,9 @@ namespace ProjectMagma.Framework
                 player.SetInt("fuel", constants.GetInt("max_fuel"));
         }
 
-        private void PlayerCollisionHandler(GameTime gameTime, Contact c)
-         {
+        private void PlayerCollisionHandler(GameTime gameTime, List<Contact> contacts)
+        {
+            Contact c = contacts[0];
             if (c.EntityB.HasAttribute("kind"))
             {
                 String kind = c.EntityB.GetString("kind");

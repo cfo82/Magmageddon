@@ -1,4 +1,5 @@
-﻿using Microsoft.Xna.Framework;
+﻿using System.Collections.Generic;
+using Microsoft.Xna.Framework;
 using ProjectMagma.Collision;
 
 namespace ProjectMagma.Framework
@@ -32,13 +33,13 @@ namespace ProjectMagma.Framework
             this.flame = flame;
             this.player = Game.Instance.EntityManager[flame.GetString("player")];
 
-            player.GetVector3Attribute("position").ValueChanged += new Vector3ChangeHandler(playerPositionHandler);
-            player.GetQuaternionAttribute("rotation").ValueChanged += new QuaternionChangeEventHandler(playerRotationHandler);
+            player.GetVector3Attribute("position").ValueChanged += playerPositionHandler;
+            player.GetQuaternionAttribute("rotation").ValueChanged += playerRotationHandler;
 
             flame.AddBoolAttribute("fueled", true);
-            flame.GetBoolAttribute("fueled").ValueChanged += new BoolChangeHandler(flameFuelChangeHandler);
+            flame.GetBoolAttribute("fueled").ValueChanged += flameFuelChangeHandler;
 
-            ((CollisionProperty)flame.GetProperty("collision")).OnContact += new ContactHandler(FlamethrowerCollisionHandler);
+            ((CollisionProperty)flame.GetProperty("collision")).OnContact += FlamethrowerCollisionHandler;
 
             flame.Update += OnUpdate;
         }
@@ -46,10 +47,10 @@ namespace ProjectMagma.Framework
         public void OnDetached(Entity flame)
         {
             flame.Update -= OnUpdate;
-            ((CollisionProperty)flame.GetProperty("collision")).OnContact -= new ContactHandler(FlamethrowerCollisionHandler);
-            flame.GetBoolAttribute("fueled").ValueChanged -= new BoolChangeHandler(flameFuelChangeHandler);
-            player.GetQuaternionAttribute("rotation").ValueChanged -= new QuaternionChangeEventHandler(playerRotationHandler);
-            player.GetVector3Attribute("position").ValueChanged -= new Vector3ChangeHandler(playerPositionHandler);
+            ((CollisionProperty)flame.GetProperty("collision")).OnContact -= FlamethrowerCollisionHandler;
+            flame.GetBoolAttribute("fueled").ValueChanged -= flameFuelChangeHandler;
+            player.GetQuaternionAttribute("rotation").ValueChanged -= playerRotationHandler;
+            player.GetVector3Attribute("position").ValueChanged -= playerPositionHandler;
         }
 
         private void OnUpdate(Entity flame, GameTime gameTime)
@@ -143,8 +144,9 @@ namespace ProjectMagma.Framework
             flameThrowerState = FlameThrowerState.Cooldown;
         }
 
-        private void FlamethrowerCollisionHandler(GameTime gameTime, Contact c)
+        private void FlamethrowerCollisionHandler(GameTime gameTime, List<Contact> contacts)
         {
+            Contact c = contacts[0];
             Entity other = c.EntityB;
 
             if (other.HasAttribute("health"))

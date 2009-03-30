@@ -1,4 +1,5 @@
-﻿using Microsoft.Xna.Framework;
+﻿using System.Collections.Generic;
+using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using ProjectMagma.Framework;
 using ProjectMagma.Shared.Math.Volume;
@@ -6,7 +7,7 @@ using ProjectMagma.Collision.CollisionTests;
 
 namespace ProjectMagma.Collision
 {
-    public delegate void ContactHandler(GameTime gameTime, Contact c);
+    public delegate void ContactHandler(GameTime gameTime, List<Contact> contacts);
 
     public class CollisionProperty : Property
     {
@@ -26,6 +27,11 @@ namespace ProjectMagma.Collision
                     Cylinder3 bvCylinder = GetBoundingCylinder(entity);
                     Game.Instance.CollisionManager.AddCollisionEntity(entity, this, bvCylinder);
                 }
+                else if (bv_type == "alignedbox3tree")
+                {
+                    AlignedBox3Tree bvTree = GetAlignedBox3Tree(entity);
+                    Game.Instance.CollisionManager.AddCollisionEntity(entity, this, bvTree);
+                }
                 else if (bv_type == "sphere")
                 {
                     Sphere3 bvSphere = GetBoundingSphere(entity);
@@ -41,11 +47,11 @@ namespace ProjectMagma.Collision
             Game.Instance.CollisionManager.RemoveCollisionEntity(this);
         }
 
-        public void FireContact(GameTime gameTime, Contact c)
+        public void FireContact(GameTime gameTime, List<Contact> contacts)
         {
             if (OnContact != null)
             {
-                OnContact(gameTime, c);
+                OnContact(gameTime, contacts);
             }
         }
 
@@ -62,6 +68,13 @@ namespace ProjectMagma.Collision
             Model model = Game.Instance.Content.Load<Model>(entity.GetString("mesh"));
             VolumeCollection collection = (VolumeCollection)model.Tag;
             return (Cylinder3)collection.GetVolume(VolumeType.Cylinder3);
+        }
+
+        private AlignedBox3Tree GetAlignedBox3Tree(Entity entity)
+        {
+            Model model = Game.Instance.Content.Load<Model>(entity.GetString("mesh"));
+            VolumeCollection collection = (VolumeCollection)model.Tag;
+            return (AlignedBox3Tree)collection.GetVolume(VolumeType.AlignedBox3Tree);
         }
 
         private AlignedBox3 GetBoundingBox(Entity entity)

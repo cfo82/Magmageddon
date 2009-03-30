@@ -1,4 +1,5 @@
 ﻿using System.Diagnostics;
+using System.Collections.Generic;
 using Microsoft.Xna.Framework;
 using ProjectMagma.Framework;
 using ProjectMagma.Shared.Math.Volume;
@@ -7,9 +8,10 @@ namespace ProjectMagma.Collision.CollisionTests
 {
     public class ContactSphereSphere
     {
-        public static Contact Test(
+        public static void Test(
             Entity entity1, object boundingVolume1, Matrix worldTransform1, Vector3 translation1, Quaternion rotation1, Vector3 scale1,
-            Entity entity2, object boundingVolume2, Matrix worldTransform2, Vector3 translation2, Quaternion rotation2, Vector3 scale2
+            Entity entity2, object boundingVolume2, Matrix worldTransform2, Vector3 translation2, Quaternion rotation2, Vector3 scale2,
+            List<Contact> contacts
             )
         {
             Sphere3 sphere1 = (Sphere3)boundingVolume1;
@@ -27,11 +29,8 @@ namespace ProjectMagma.Collision.CollisionTests
             if (diff.LengthSquared() < (radius1 + radius2) * (radius1 + radius2))
             {
                 diff.Normalize();
-                Contact c = new Contact(entity1, entity2, center1 + diff * radius1, diff);
-                return c;
+                contacts.Add(new Contact(entity1, entity2, center1 + diff * radius1, diff));
             }
-
-            return null;
         }
     }
 }

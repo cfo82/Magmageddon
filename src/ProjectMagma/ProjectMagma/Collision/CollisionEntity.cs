@@ -14,6 +14,14 @@ namespace ProjectMagma.Collision
             this.volume = sphere;
         }
 
+        public CollisionEntity(Entity entity, CollisionProperty property, AlignedBox3Tree tree)
+        {
+            this.entity = entity;
+            this.collisionProperty = property;
+            this.volumeType = VolumeType.AlignedBox3Tree;
+            this.volume = tree;
+        }
+
         public CollisionEntity(Entity entity, CollisionProperty property, Cylinder3 cylinder)
         {
             this.entity = entity;

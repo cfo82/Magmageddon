@@ -19,6 +19,11 @@ namespace ProjectMagma.Collision
             AddCollisionEntity(new CollisionEntity(entity, property, cylinder));
         }
 
+        public void AddCollisionEntity(Entity entity, CollisionProperty property, AlignedBox3Tree tree)
+        {
+            AddCollisionEntity(new CollisionEntity(entity, property, tree));
+        }
+
         public void AddCollisionEntity(Entity entity, CollisionProperty property, Sphere3 sphere)
         {
             AddCollisionEntity(new CollisionEntity(entity, property, sphere));
@@ -65,21 +70,26 @@ namespace ProjectMagma.Collision
             {
                 for (int j = i + 1; j < collisionEntities.Count; ++j)
                 {
+                    List<Contact> contacts = new List<Contact>();
                     CollisionEntity entity1 = collisionEntities[i];
                     CollisionEntity entity2 = collisionEntities[j];
                     Matrix worldTransform1 = CalculateWorldTransform(entity1);
                     Matrix worldTransform2 = CalculateWorldTransform(entity2);
                     ContactTest test = contactTests[BoundingVolumeTypeUtil.ToNumber(entity1.volumeType), BoundingVolumeTypeUtil.ToNumber(entity2.volumeType)];
-                    Contact c = test(
+                    test(
                         entity1.entity, entity1.volume, worldTransform1, GetPosition(entity1.entity), GetRotation(entity1.entity), GetScale(entity1.entity),
-                        entity2.entity, entity2.volume, worldTransform2, GetPosition(entity2.entity), GetRotation(entity2.entity), GetScale(entity2.entity)
+                        entity2.entity, entity2.volume, worldTransform2, GetPosition(entity2.entity), GetRotation(entity2.entity), GetScale(entity2.entity),
+                        contacts
                         );
-                    if (c != null)
+                    if (contacts.Count > 0)
                     {
                         //Console.WriteLine("Collision {0,4}: between {1} and {2}!", collisionCount, entity1.entity.Name, entity2.entity.Name);
-                        entity1.collisionProperty.FireContact(gameTime, c);
-                        c.Reverse();
-                        entity2.collisionProperty.FireContact(gameTime, c);
+                        entity1.collisionProperty.FireContact(gameTime, contacts);
+                        foreach (Contact c in contacts)
+                        {
+                            c.Reverse();
+                        }
+                        entity2.collisionProperty.FireContact(gameTime, contacts);
                         //++collisionCount;
                     }
                 }

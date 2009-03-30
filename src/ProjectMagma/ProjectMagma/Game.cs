@@ -490,82 +490,6 @@ namespace ProjectMagma
             }
         }
 #endif
-
-
-        /**
-         * TODO: move those into collision-manager
-         *  and maybe GetPosition/rotation/scale into some utility class
-         * HELPER functions, refactor!
-           */
-
-        public static BoundingSphere CalculateBoundingSphere(Entity entity)
-        {
-            Model mesh = Game.Instance.Content.Load<Model>(entity.GetString("mesh"));
-            Vector3 position = GetPosition(entity);
-            Vector3 scale = GetScale(entity);
-            Quaternion rotation = GetRotation(entity);
-
-            // calculate center
-            BoundingBox bb = CalculateBoundingBox(mesh, position, rotation, scale);
-            Vector3 center = (bb.Min + bb.Max) / 2;
-
-            // calculate radius
-            //            float radius = (bb.Max-bb.Min).Length() / 2;
-            float radius = (bb.Max.Y - bb.Min.Y) / 2; // HACK: hack for player
-
-            return new BoundingSphere(center, radius);
-        }
-
-        // calculates y-axis aligned bounding cylinder
-        public static Cylinder3 CalculateBoundingCylinder(Entity entity)
-        {
-            Model mesh = Game.Instance.Content.Load<Model>(entity.GetString("mesh"));
-            Vector3 position = GetPosition(entity);
-            Vector3 scale = GetScale(entity);
-            Quaternion rotation = GetRotation(entity);
-
-            // calculate center
-            BoundingBox bb = CalculateBoundingBox(mesh, position, rotation, scale);
-            Vector3 center = (bb.Min + bb.Max) / 2;
-
-            float top = bb.Max.Y;
-            float bottom = bb.Min.Y;
-
-            // calculate radius
-            // a valid cylinder here is an extruded circle (not an oval) therefore extents in 
-            // x- and z-direction should be equal.
-            float radius = bb.Max.X - center.X;
-
-            return new Cylinder3(new Vector3(center.X, top, center.Z),
-                new Vector3(center.X, bottom, center.Z),
-                radius);
-        }
-
-        public static BoundingBox CalculateBoundingBox(Entity entity)
-        {
-            Model mesh = Game.Instance.Content.Load<Model>(entity.GetString("mesh"));
-            Vector3 position = GetPosition(entity);
-            Vector3 scale = GetScale(entity);
-            Quaternion rotation = GetRotation(entity);
-
-            return CalculateBoundingBox(mesh, position, rotation, scale);
-        }
-
-        public static BoundingBox CalculateBoundingBox(Model model, Vector3 position, Quaternion rotation, Vector3 scale)
-        {
-            Matrix world = Matrix.CreateScale(scale) * Matrix.CreateFromQuaternion(rotation) * Matrix.CreateTranslation(position);
-
-            BoundingBox bb = (BoundingBox)model.Tag;
-            bb.Min = Vector3.Transform(bb.Min, world);
-            bb.Max = Vector3.Transform(bb.Max, world);
-            return bb;
-        }
-
-        public static float Pow2(float a)
-        {
-            return a * a;
-        }
-
         public static Vector3 GetPosition(Entity player)
         {
             return player.GetVector3("position");
@@ -594,7 +518,6 @@ namespace ProjectMagma
                 return Quaternion.Identity;
             }
         }
-
 
         private readonly Dictionary<string, double> appliedAt;
 
@@ -686,7 +609,6 @@ namespace ProjectMagma
                 appliedAt[fullIdentifier] = last + times * interval;
             }
         }
-
     }
 
     public delegate void IntervalExecutionAction(int times);

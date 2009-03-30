@@ -432,7 +432,7 @@ namespace ProjectMagma.Framework
             /// collision detection code
 
             // get bounding sphere
-            BoundingSphere bs = Game.CalculateBoundingSphere(player);
+            /*BoundingSphere bs = Game.CalculateBoundingSphere(player);
 
             // check collision with juicy powerups
             foreach (Entity powerup in Game.Instance.PowerupManager)
@@ -443,7 +443,7 @@ namespace ProjectMagma.Framework
                 {
                     PlayerPowerupCollisionHandler(gameTime, player, powerup);
                 }
-            }
+            }*/
 
             // check collision with lava
             Entity lava = Game.Instance.EntityManager["lava"];

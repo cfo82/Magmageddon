@@ -80,14 +80,14 @@ namespace ProjectMagma.Framework
                 // translation
                 Vector3 position = entity.GetVector3("position");
                 // small hack
-                if (Math.Abs(((BoundingBox)model.Tag).Max.Y) < 0.0001f)
+                /*if (Math.Abs(((BoundingBox)model.Tag).Max.Y) < 0.0001f)
                 {
                     position += new Vector3(0.0f, (((2.0f * scale.Y) / 2.0f) - ((2.0f * scale.Y / scaleModificator) / 2.0f))/scale.Y, 0.0f);
                 }
                 else
                 {
                     position -= new Vector3(0.0f, (((2.0f * scale.Y) / 2.0f) - ((2.0f * scale.Y / scaleModificator) / 2.0f))/scale.Y, 0.0f);
-                }
+                }*/
                 world *= Matrix.CreateTranslation(position);
 
                 Matrix[] transforms = new Matrix[model.Bones.Count];

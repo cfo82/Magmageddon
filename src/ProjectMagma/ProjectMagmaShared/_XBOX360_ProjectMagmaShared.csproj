@@ -59,7 +59,8 @@
     <Compile Include="LevelData\LevelData.cs" />
     <Compile Include="LevelData\PropertyData.cs" />
     <Compile Include="LevelData\Serialization\LevelDataReader.cs" />
-    <Compile Include="Math\Intersection\TriangleTriangle.cs" />
+    <Compile Include="Math\Distance\Vector3Triangle3.cs" />
+    <Compile Include="Math\Intersection\Triangle3Triangle3.cs" />
     <Compile Include="Math\Volume\AlignedBox3.cs" />
     <Compile Include="Math\Volume\AlignedBox3Tree.cs" />
     <Compile Include="Math\Volume\AlignedBox3TreeNode.cs" />

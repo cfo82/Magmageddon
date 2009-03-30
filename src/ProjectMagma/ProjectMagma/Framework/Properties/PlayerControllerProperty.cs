@@ -564,12 +564,20 @@ namespace ProjectMagma.Framework
 
         private void PlayerPowerupCollisionHandler(GameTime gameTime, Entity player, Entity powerup)
         {
-            Game.Instance.EntityManager.RemoveDeferred(powerup);
+            // remove 
+            powerup.RemoveProperty("collision");
+            powerup.RemoveProperty("render");
+            powerup.RemoveProperty("shadow_cast");
+
+            // set respawn
+            powerup.SetFloat("respawn_at", (float) (gameTime.TotalGameTime.TotalMilliseconds + rand.NextDouble()
+                * 10000 + 5000));
 
             // use the power
             int oldVal = player.GetInt(powerup.GetString("power"));
             oldVal += powerup.GetInt("powerValue");
             player.SetInt(powerup.GetString("power"), oldVal);
+            CheckPlayerAttributeRanges(player);
 
             // soundeffect
             SoundEffect soundEffect = Game.Instance.Content.Load<SoundEffect>("Sounds/" + powerup.GetString("pickup_sound"));
@@ -588,6 +596,7 @@ namespace ProjectMagma.Framework
 
                 // deduct health
                 otherPlayer.SetInt("health", otherPlayer.GetInt("health") - constants.GetInt("hit_damage"));
+                CheckPlayerAttributeRanges(otherPlayer);
 
                 // set values
                 otherPlayer.SetVector3("hit_pushback_velocity", c.Normal * constants.GetFloat("hit_pushback_velocity_multiplier"));

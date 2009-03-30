@@ -481,14 +481,21 @@ namespace ProjectMagma.Framework
             {
                 collisionOccured = true;
                 String kind = c.EntityB.GetString("kind");
-                if (kind == "island")
-                    PlayerIslandCollisionHandler(gameTime, c.EntityA, c.EntityB, c);
-                else
-                    if (kind == "pillar")
+                switch (kind)
+                {
+                    case "island":
+                        PlayerIslandCollisionHandler(gameTime, c.EntityA, c.EntityB, c);
+                        break;
+                    case "pillar":
                         PlayerPillarCollisionHandler(gameTime, c.EntityA, c.EntityB, c);
-                    else
-                        if (kind == "player")
-                            PlayerPlayerCollisionHandler(gameTime, c.EntityA, c.EntityB, c);
+                        break;
+                    case "player":
+                        PlayerPlayerCollisionHandler(gameTime, c.EntityA, c.EntityB, c);
+                        break;
+                    case "powerup":
+                        PlayerPowerupCollisionHandler(gameTime, c.EntityA, c.EntityB);
+                        break;
+                }
                 CheckPlayerAttributeRanges(player);
             }
         }

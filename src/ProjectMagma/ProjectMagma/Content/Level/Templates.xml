@@ -65,7 +65,7 @@
       <Attribute name="power" template="string" value="energy"/>
       <Attribute name="powerValue" template="int" value="100"/>
       <Attribute name="pickup_sound" template="string" value="excellent"/>
-      <Attribute name="bv_type" template="string" value="box"/>
+      <Attribute name="bv_type" template="string" value="sphere"/>
     </Attributes>
     <Properties>
       <Property name="collision" type="ProjectMagma.Collision.CollisionProperty"/>

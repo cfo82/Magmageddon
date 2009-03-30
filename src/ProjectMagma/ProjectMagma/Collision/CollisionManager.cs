@@ -69,7 +69,7 @@ namespace ProjectMagma.Collision
                     CollisionEntity entity2 = collisionEntities[j];
                     Matrix worldTransform1 = CalculateWorldTransform(entity1);
                     Matrix worldTransform2 = CalculateWorldTransform(entity2);
-                    ContactTest test = contactTests[BoundingVolumeTypeUtil.ToNumber(entity1.volumeType)][BoundingVolumeTypeUtil.ToNumber(entity2.volumeType)];
+                    ContactTest test = contactTests[BoundingVolumeTypeUtil.ToNumber(entity1.volumeType), BoundingVolumeTypeUtil.ToNumber(entity2.volumeType)];
                     Contact c = test(
                         entity1.entity, entity1.volume, worldTransform1, GetPosition(entity1.entity), GetRotation(entity1.entity), GetScale(entity1.entity),
                         entity2.entity, entity2.volume, worldTransform2, GetPosition(entity2.entity), GetRotation(entity2.entity), GetScale(entity2.entity)
@@ -123,10 +123,10 @@ namespace ProjectMagma.Collision
             }
         }
 
-        private readonly ContactTest[][] contactTests = new ContactTest[3][] {
-            new ContactTest[3] { ContactCylinderCylinder.Test, ContactCylinderMesh.Test, ContactCylinderSphere.Test },
-            new ContactTest[3] { ContactMeshCylinder.Test, ContactMeshMesh.Test, ContactMeshSphere.Test },
-            new ContactTest[3] { ContactSphereCylinder.Test, ContactSphereMesh.Test, ContactSphereSphere.Test } 
+        private readonly ContactTest[,] contactTests = new ContactTest[3, 3] {
+            { ContactCylinderCylinder.Test, ContactCylinderMesh.Test, ContactCylinderSphere.Test },
+            { ContactMeshCylinder.Test, ContactMeshMesh.Test, ContactMeshSphere.Test },
+            { ContactSphereCylinder.Test, ContactSphereMesh.Test, ContactSphereSphere.Test } 
         };
         private List<CollisionEntity> collisionEntities;
     }

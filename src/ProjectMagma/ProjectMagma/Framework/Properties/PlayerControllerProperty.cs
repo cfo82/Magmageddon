@@ -17,11 +17,9 @@ namespace ProjectMagma.Framework
     {
         private Entity player;
         private Entity constants;
+
         private Entity activeIsland = null;
         private bool islandCollision = false;
-
-        private bool collisionOccured = false;
-        private bool movedByStick = false;
 
         private readonly Random rand = new Random(DateTime.Now.Millisecond);
         private double respawnStartedAt = 0;
@@ -35,12 +33,16 @@ namespace ProjectMagma.Framework
         private double hitPerformedAt = 0;
 
         Entity flame = null;
+        Entity arrow;
 
         private SoundEffect jetpackSound;
         private SoundEffectInstance jetpackSoundInstance;
         private SoundEffect flameThrowerSound;
         private SoundEffectInstance flameThrowerSoundInstance;
 
+        // values which get reset on each update
+        private bool collisionOccured = false;
+        private bool movedByStick = false;
         Vector3 previousPosition;
 
         public PlayerControllerProperty()
@@ -76,6 +78,20 @@ namespace ProjectMagma.Framework
             jetpackSound = Game.Instance.Content.Load<SoundEffect>("Sounds/jetpack");
             flameThrowerSound = Game.Instance.Content.Load<SoundEffect>("Sounds/flamethrower");
 
+            arrow = new Entity("arrow" + "_" + player.Name);
+            arrow.AddStringAttribute("player", player.Name);
+
+            arrow.AddVector3Attribute("position", Vector3.Zero);
+            arrow.AddStringAttribute("island", "");
+
+            arrow.AddStringAttribute("mesh", "Models/arrow");
+            arrow.AddVector3Attribute("scale", new Vector3(12, 12, 12));
+
+            arrow.AddProperty("arrow_controller_property", new ArrowController()); 
+
+            Game.Instance.EntityManager.AddDeferred(arrow);
+
+            this.previousPosition = player.GetVector3("position");
             this.player = player;
         }
 
@@ -123,6 +139,7 @@ namespace ProjectMagma.Framework
                         player.AddProperty("render", new RenderProperty());
                         player.AddProperty("shadow_cast", new ShadowCastProperty());
 
+                        // random island selection
                         int islandNo = rand.Next(Game.Instance.IslandManager.Count - 1);
                         Entity island = Game.Instance.IslandManager[islandNo];
                         Vector3 pos = island.GetVector3("position");
@@ -149,6 +166,7 @@ namespace ProjectMagma.Framework
             }
             #endregion
 
+            #region collision reaction
             // island leave check
             if (islandCollision == false && activeIsland != null)
             {
@@ -164,15 +182,12 @@ namespace ProjectMagma.Framework
                 }
             }
 
-            // reset collision
-            if (collisionOccured)
-            {
-                collisionOccured = false;
-            }
-            else
+            // reset collision response
+            if (!collisionOccured)
             {
                 player.SetVector3("collision_pushback_velocity", Vector3.Zero);
             }
+            #endregion
 
             PlayerIndex playerIndex = (PlayerIndex)player.GetInt("game_pad_index");
             Vector3 playerPosition = player.GetVector3("position");
@@ -185,6 +200,7 @@ namespace ProjectMagma.Framework
 
             // reset some stuff
             previousPosition = playerPosition;
+            collisionOccured = false;
             islandCollision = false;
             movedByStick = false;
 
@@ -239,7 +255,6 @@ namespace ProjectMagma.Framework
             // apply current velocity
             playerPosition += playerVelocity * dt;
 
-
             if (controllerInput.moveStickMoved)
             {
                 movedByStick = true;
@@ -263,6 +278,11 @@ namespace ProjectMagma.Framework
                 Matrix rotationMatrix = Matrix.CreateRotationY(yRotation);
                 player.SetQuaternion("rotation", Quaternion.CreateFromRotationMatrix(rotationMatrix));
             }
+
+            // pushback
+            ApplyPushback(ref playerPosition, ref collisionPushbackVelocity, 0f);
+            ApplyPushback(ref playerPosition, ref playerPushbackVelocity, constants.GetFloat("player_pushback_deacceleration_multiplier"));
+            ApplyPushback(ref playerPosition, ref hitPushbackVelocity, constants.GetFloat("player_pushback_deacceleration_multiplier"));
 
             // frozen!?
             if (player.GetInt("frozen") > 0)
@@ -395,25 +415,25 @@ namespace ProjectMagma.Framework
                         flame.SetBool("fueled", false);
             }
             else
-            if (flame != null)
-                flame.SetBool("fueled", false);
-
-            // pushback
-            ApplyPushback(ref playerPosition, ref collisionPushbackVelocity, 0f);
-            ApplyPushback(ref playerPosition, ref playerPushbackVelocity, constants.GetFloat("player_pushback_deacceleration_multiplier"));
-            ApplyPushback(ref playerPosition, ref hitPushbackVelocity, constants.GetFloat("player_pushback_deacceleration_multiplier"));
+                if (flame != null)
+                    flame.SetBool("fueled", false);
 
             // recharge energy
-            /*
-            if ((gameTime.TotalGameTime.TotalMilliseconds - energyRechargedAt) > constants.GetInt("energy_recharge_interval")
-                && flame == null)
-            {
-                player.SetInt("energy", player.GetInt("energy") + 1);
-                energyRechargedAt = (float)gameTime.TotalGameTime.TotalMilliseconds;
-            }*/
             if (flame == null)
                 Game.Instance.ApplyIntervalAddition(player, "energy_recharge", constants.GetInt("energy_recharge_interval"),
                     player.GetIntAttribute("energy"));
+
+            // island attraction
+            if (!arrow.HasProperty("render"))
+            {
+                int islandNo = rand.Next(Game.Instance.IslandManager.Count - 1);
+                Entity island = Game.Instance.IslandManager[islandNo];
+
+                arrow.SetString("island", island.Name);
+
+                arrow.AddProperty("render", new RenderProperty());
+                arrow.AddProperty("shadow_cast", new ShadowCastProperty());
+            }
 
             #endregion
 

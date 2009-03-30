@@ -1,4 +1,5 @@
 using System;
+using System.Diagnostics;
 using System.Collections.Generic;
 using System.Linq;
 using Microsoft.Xna.Framework;
@@ -45,6 +46,7 @@ namespace ProjectMagma.ContentPipeline.ModelProcessors
             // add bounding volumes to the model
             VolumeCollection collection = new VolumeCollection();
             collection.AddVolume(CalculateAlignedBox3(input, context));
+            collection.AddVolume(CalculateAlignedBox3Tree(input, context));
             collection.AddVolume(CalculateCylinder3(input, context));
             collection.AddVolume(CalculateSphere3(input, context));
             modelContent.Tag = collection;
@@ -93,6 +95,90 @@ namespace ProjectMagma.ContentPipeline.ModelProcessors
             foreach (NodeContent child in input.Children)
             {
                 CalculateAlignedBox3(child, context, ref box);
+            }
+        }
+
+        private AlignedBox3Tree CalculateAlignedBox3Tree(
+            NodeContent input,
+            ContentProcessorContext context
+        )
+        {
+            // collect positions and indices
+            List<Vector3> positionList = new List<Vector3>();
+            List<UInt16> indexList = new List<UInt16>();
+            CalculateAlignedBox3Tree(input, context, positionList, indexList);
+            if (indexList.Count % 3 != 0)
+                { throw new Exception("invalid number of indices!"); }
+
+            Vector3[] positions = new Vector3[positionList.Count];
+            for (int i = 0; i < positionList.Count; ++i)
+                { positions[i] = positionList[i]; }
+            UInt16[] indices = new UInt16[indexList.Count];
+            for (int i = 0; i < indexList.Count; ++i)
+                { indices[i] = indexList[i]; }
+            
+            return new AlignedBox3Tree(positions, indices);
+        }
+
+        private void CalculateAlignedBox3Tree(
+            NodeContent input,
+            ContentProcessorContext context,
+            List<Vector3> positions,
+            List<UInt16> indices
+            )
+        {
+            MeshContent mesh = input as MeshContent;
+            if (mesh != null)
+            {
+                int basePosition = positions.Count;
+                int baseIndex = indices.Count;
+
+                // I think I may need to document this part a bit (hope it works as it is!). The internal XNA representation
+                // of a model (using this MeshContent, etc.) is as follows:
+                //   - a model is built of hierarchical nodes (transformations, meshes, etc.)
+                //   - a MeshContent (which is of interest here) stores his transformation relative to the parent. to get the
+                //     absolute transformation (regarding to the model space) use mesh.AbsoluteTransform
+                //   - a mesh has a set of position vectors
+                //   - each mesh consists of one or several GeometryContent instances. these represent single batches of 
+                //     renderable geometry. they will later index into the 'global' MeshContent position array
+                //   - GeometryContent as an array of vertices. Vertices may consist of several channels (this is like it's commonly
+                //     done. The GeometryData index-array is a triangle list indexing into the Vertex data.
+                //   - The vertex data maintains instead of a position channel a position index channel. this position index channel
+                //     then indexes into the MeshContent position array. 
+                // => to get correct position indices we need to first copy the position data into the list. then we have to 
+                //    to iterate over all GeometryContent instances, iterate over the respective indices and use each index to 
+                //    address a vertex-component-position index which in turn can then be used for the index array.
+
+                foreach (Vector3 pos in mesh.Positions)
+                {
+                    Vector3 transformed = Vector3.Transform(pos, mesh.AbsoluteTransform);
+                    positions.Add(transformed);
+                }
+
+                foreach (GeometryContent geometry in mesh.Geometry)
+                {
+                    if (geometry.Indices.Count % 3 != 0)
+                        { throw new Exception(string.Format("invalid number ({0}) of indices!", geometry.Vertices.PositionIndices.Count)); }
+
+                    //geometry.Vertices.pos
+                    for (int i = 0; i < geometry.Indices.Count; ++i)
+                    {
+                        int vertexIndex = geometry.Indices[i];
+                        if (vertexIndex >= geometry.Vertices.VertexCount)
+                            { throw new Exception(string.Format("invalid vertexIndex {0}!", vertexIndex)); }
+
+                        UInt16 index = (UInt16)(geometry.Vertices.PositionIndices[vertexIndex] + basePosition);
+                        if (index >= positions.Count)
+                            { throw new Exception(string.Format("invalid index {0}!", index)); }
+                        indices.Add(index);
+                    }
+                }
+            }
+
+            // Go through all children
+            foreach (NodeContent child in input.Children)
+            {
+                CalculateAlignedBox3Tree(child, context, positions, indices);
             }
         }
 

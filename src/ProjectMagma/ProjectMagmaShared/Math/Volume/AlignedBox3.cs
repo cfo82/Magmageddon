@@ -13,6 +13,12 @@ namespace ProjectMagma.Shared.Math.Volume
             Min = Max = Vector3.Zero;
         }
 
+        public AlignedBox3(Vector3 min, Vector3 max)
+        {
+            this.Min = min;
+            this.Max = max;
+        }
+
         public VolumeType Type
         {
             get { return VolumeType.AlignedBox3; }

@@ -4,7 +4,7 @@ using Microsoft.Xna.Framework;
 
 namespace ProjectMagma.Shared.Math.Volume
 {
-    public class AlignedBox3Tree
+    public class AlignedBox3Tree : Volume
     {
         public AlignedBox3Tree()
         {
@@ -63,6 +63,11 @@ namespace ProjectMagma.Shared.Math.Volume
             {
                 return root.BoundingBox;
             }
+        }
+
+        public VolumeType Type
+        {
+            get { return VolumeType.AlignedBox3Tree; }
         }
 
         private Vector3[] positions;

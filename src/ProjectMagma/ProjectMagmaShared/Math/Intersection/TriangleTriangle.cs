@@ -39,28 +39,30 @@ namespace ProjectMagma.Shared.Math
         private static float EPSILON = 0.000001f;
 
         private static void Sub(out Vector3 dest, ref Vector3 v1, ref Vector3 v2)
-        { dest = new Vector3(); dest.X = v1.X - v2.X; dest.Y = v1.Y - v2.Y; dest.Z = v1.Z - v2.Z; }
+        { dest = new Vector3(v1.X - v2.X, v1.Y - v2.Y, v1.Z - v2.Z); }
 
         private static void Add(out Vector3 dest, ref Vector3 v1, ref Vector3 v2)
-        { dest = new Vector3(); dest.X = v1.X + v2.X; dest.Y = v1.Y + v2.Y; dest.Z = v1.Z + v2.Z; }
+        { dest = new Vector3(v1.X + v2.X, v1.Y + v2.Y, v1.Z + v2.Z); }
 
         private static void Mult(out Vector3 dest, ref Vector3 v, float factor)
-        { dest = new Vector3(); dest.X = factor * v.X; dest.Y = factor * v.Y; dest.Z = factor * v.Z; }
+        { dest = new Vector3(factor * v.X, factor * v.Y, factor * v.Z); }
 
         private static void Cross(out Vector3 dest, ref Vector3 v1, ref Vector3 v2)
         {
-            dest = new Vector3(); dest.X = v1.Y * v2.Z - v1.Z * v2.Y;
-            dest.Y = v1.Z * v2.X - v1.X * v2.Z;
-            dest.Z = v1.X * v2.Y - v1.Y * v2.X;
+            dest = new Vector3(
+                v1.Y * v2.Z - v1.Z * v2.Y,
+                v1.Z * v2.X - v1.X * v2.Z,
+                v1.X * v2.Y - v1.Y * v2.X
+                );
         }
 
         private static float Dot(ref Vector3 v1, ref Vector3 v2)
         {
-            return (v1.X * v2.X + v1.Y * v2.Y + v1.Z * v2.Z);
+            return v1.X * v2.X + v1.Y * v2.Y + v1.Z * v2.Z;
         }
 
         private static void Set(out Vector3 dest, ref Vector3 src)
-        { dest = new Vector3(); dest.X = src.X; dest.Y = src.Y; dest.Z = src.Z; }
+        { dest = new Vector3(src.X, src.Y, src.Z); }
 
         private static void Sort(ref float a, ref float b)
         {

@@ -94,8 +94,7 @@ namespace ProjectMagma.Shared.Math.Volume
                     if (max.Y < positions[indices[baseIndex + i]].Y) { max.Y = positions[indices[baseIndex + i]].Y; }
                     if (max.Z < positions[indices[baseIndex + i]].Z) { max.Z = positions[indices[baseIndex + i]].Z; }
                 }
-                boundingBox.Min = min;
-                boundingBox.Max = max;
+                boundingBox = new AlignedBox3(min, max);
             }
         }
 

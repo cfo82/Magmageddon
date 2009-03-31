@@ -574,7 +574,7 @@ namespace ProjectMagma.Framework
         {
             float dt = ((float)gameTime.ElapsedGameTime.Milliseconds) / 1000.0f;
 
-            if (Vector3.Dot(Vector3.UnitY, co.Normal) > 0)
+            if (Vector3.Dot(Vector3.UnitY, -co.Normal) > 0)
             {
                 // standing on island
                 //Console.WriteLine("from top at "+gameTime.TotalGameTime.TotalMilliseconds);

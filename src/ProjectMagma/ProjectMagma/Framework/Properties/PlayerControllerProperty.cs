@@ -534,7 +534,19 @@ namespace ProjectMagma.Framework
 
         private void PlayerCollisionHandler(GameTime gameTime, List<Contact> contacts)
         {
+            // average contacts
+            Vector3 position = Vector3.One;
+            Vector3 normal = Vector3.One;
+            foreach(Contact co in contacts)
+            {
+                position += co.Position;
+                normal += co.Normal;
+            }
+            position /= contacts.Count;
+            normal /= contacts.Count;
+//            Contact c = new Contact(contacts[0].EntityA, contacts[0].EntityB, position, normal);
             Contact c = contacts[0];
+
             if (c.EntityB.HasAttribute("kind"))
             {
                 String kind = c.EntityB.GetString("kind");
@@ -561,7 +573,6 @@ namespace ProjectMagma.Framework
         private void PlayerIslandCollisionHandler(GameTime gameTime, Entity player, Entity island, Contact co)
         {
             float dt = ((float)gameTime.ElapsedGameTime.Milliseconds) / 1000.0f;
-            Vector3 playerPosition = player.GetVector3("position");
 
             if (Vector3.Dot(Vector3.UnitY, co.Normal) > 0)
             {
@@ -572,11 +583,18 @@ namespace ProjectMagma.Framework
                 if(activeIsland != null && activeIsland != island)
                     ((Vector3Attribute)activeIsland.Attributes["position"]).ValueChanged -= IslandPositionHandler;
 
-                // correct position to exact touching point
-                playerPosition.Y = co.Position.Y;
                 // add handler if active island changed
                 if (activeIsland != island)
                     ((Vector3Attribute)island.Attributes["position"]).ValueChanged += IslandPositionHandler;
+
+                Vector3 pos = player.GetVector3("position");
+                /*
+                pos.Y = co.Position.Y;
+                player.SetVector3("position", pos);
+                 */
+
+                Vector3 velocity = new Vector3(0, -(pos.Y - co.Position.Y), 0) * 1000 / gameTime.ElapsedGameTime.Milliseconds;
+                player.SetVector3("collision_pushback_velocity", velocity);
 
                 player.SetVector3("velocity", Vector3.Zero);
                 islandCollision = true;
@@ -584,22 +602,11 @@ namespace ProjectMagma.Framework
             }
             else
             {
-                // hack hack hack
-                if (co.Normal.Y == 0)
-                {
-                    // xz
-                    Vector3 pos = player.GetVector3("position");
-                    Vector3 velocity = -co.Normal * (pos - previousPosition).Length() * 1000 / gameTime.ElapsedGameTime.Milliseconds 
-                        / 2;
-                    player.SetVector3("collision_pushback_velocity", velocity);
-                }
-                else
-                {
-                    // bottom
-                    player.SetVector3("velocity", Vector3.Zero);
-                }
+                Vector3 pos = player.GetVector3("position");
+                Vector3 velocity = -co.Normal * (pos - previousPosition).Length() * 1000 / gameTime.ElapsedGameTime.Milliseconds 
+                    / 2;
+                player.SetVector3("collision_pushback_velocity", velocity);
             }
-            player.SetVector3("position", playerPosition);
         }
 
         private void PlayerPillarCollisionHandler(GameTime gameTime, Entity player, Entity pillar, Contact co)
@@ -652,7 +659,7 @@ namespace ProjectMagma.Framework
         {
             // and hit?
             if (controllerInput.hitButtonPressed &&
-                (gameTime.TotalGameTime.TotalMilliseconds - hitPerformedAt) > constants.GetInt("hit_cooldown"))
+                gameTime.TotalGameTime.TotalMilliseconds > hitPerformedAt + constants.GetInt("hit_cooldown"))
             {
                 // indicate hit!
                 SoundEffect soundEffect = Game.Instance.Content.Load<SoundEffect>("Sounds/punch2");

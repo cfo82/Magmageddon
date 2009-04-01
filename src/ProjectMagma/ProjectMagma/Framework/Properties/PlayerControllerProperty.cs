@@ -32,6 +32,7 @@ namespace ProjectMagma.Framework
 
         private double hitPerformedAt = 0;
 
+        private double islandLeftAt = 0;
         private double islandRepulsionStarteAt = 0;
         private double islandRepulsionStoppedAt = 0;
 
@@ -183,8 +184,19 @@ namespace ProjectMagma.Framework
                 }
                 else
                 {
-                    ((Vector3Attribute)activeIsland.Attributes["position"]).ValueChanged -= IslandPositionHandler;
-                    activeIsland = null;
+                    // only "leave" island after certain amount of time
+                    if (islandLeftAt != 0 
+                        && at > islandLeftAt + constants.GetFloat("island_leave_timeout"))
+                    {
+                        ((Vector3Attribute)activeIsland.Attributes["position"]).ValueChanged -= IslandPositionHandler;
+                        activeIsland = null;
+                        islandLeftAt = 0;
+                    }
+                    else
+                    {
+                        if(islandLeftAt == 0)
+                            islandLeftAt = at;
+                    }
                 }
             }
 
@@ -292,8 +304,8 @@ namespace ProjectMagma.Framework
             #region actions
 
             // ice spike
-            if (controllerInput.iceSpikeButtonPressed && player.GetInt("energy") > constants.GetInt("ice_spike_energy_cost") &&
-                (at - iceSpikeFiredAt) > constants.GetInt("ice_spike_cooldown"))
+            if (controllerInput.iceSpikeButtonPressed && player.GetInt("energy") > constants.GetInt("ice_spike_energy_cost") 
+                && (at - iceSpikeFiredAt) > constants.GetInt("ice_spike_cooldown"))
             {
                 // indicate 
                 SoundEffect soundEffect = Game.Instance.Content.Load<SoundEffect>("Sounds/hit2");
@@ -345,7 +357,7 @@ namespace ProjectMagma.Framework
                 iceSpike.AddStringAttribute("target_player", targetPlayerName);
                 iceSpike.AddIntAttribute("creation_time", (int) at);
 
-                iceSpike.AddVector3Attribute("velocity", Vector3.Zero);
+                iceSpike.AddVector3Attribute("velocity", aimVector);
                 iceSpike.AddVector3Attribute("position", pos);
 
                 iceSpike.AddStringAttribute("mesh", "Models/icespike_primitive");
@@ -564,6 +576,17 @@ namespace ProjectMagma.Framework
             // on top?
             if (Vector3.Dot(Vector3.UnitY, co.Normal) < 0)
             {
+                // remove handler from old active island
+                if (activeIsland != null && activeIsland != island)
+                    ((Vector3Attribute)activeIsland.Attributes["position"]).ValueChanged -= IslandPositionHandler;
+
+                // add handler if active island changed
+                if (activeIsland != island)
+                    ((Vector3Attribute)island.Attributes["position"]).ValueChanged += IslandPositionHandler;
+
+                // stop falling
+                player.SetVector3("velocity", Vector3.Zero);
+
                 // determine contact to use (the one with highest y value)
                 co = contacts[0];
                 for (int i = 1; i < contacts.Count; i++)
@@ -573,27 +596,12 @@ namespace ProjectMagma.Framework
                         co = c;
                 }
 
-                // remove handler from old active island
-                if(activeIsland != null && activeIsland != island)
-                    ((Vector3Attribute)activeIsland.Attributes["position"]).ValueChanged -= IslandPositionHandler;
-
-                // add handler if active island changed
-                if (activeIsland != island)
-                    ((Vector3Attribute)island.Attributes["position"]).ValueChanged += IslandPositionHandler;
-
+                // set position to contact point
                 Vector3 pos = player.GetVector3("position");
-                /*
                 pos.Y = co.Position.Y;
                 player.SetVector3("position", pos);
 
-                Vector3 velocity = -co.Normal * 1000 / gameTime.ElapsedGameTime.Milliseconds;
-                player.SetVector3("collision_pushback_velocity", velocity);
-                player.SetVector3("velocity", Vector3.Zero);
-                 */
-
-                pos.Y = co.Position.Y;
-                player.SetVector3("position", pos);
-
+                // and set state values
                 islandCollision = true;
                 activeIsland = island; // mark as active
             }

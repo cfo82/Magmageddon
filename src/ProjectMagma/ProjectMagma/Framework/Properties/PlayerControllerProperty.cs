@@ -333,24 +333,19 @@ namespace ProjectMagma.Framework
 
                 #endregion
 
-                float strength = 0.6f+controllerInput.iceSpikeStrength;
-                //aimVector.Normalize();
-                //aimVector *= constants.GetFloat("ice_spike_speed") * strength;
-                //aimVector.Y = constants.GetFloat("ice_spike_up_speed");
                 Vector3 aimVector = viewVector;
                 if(targetPlayer != null)
                 {
-                    aimVector.Y = Vector3.Normalize(distVector).Y;
-                    //aimVector = Vector3.Normalize(distVector);
+                    aimVector = Vector3.Normalize(distVector);
                 }
-                aimVector *= constants.GetFloat("ice_spike_speed") * strength;
+                aimVector *= constants.GetFloat("ice_spike_speed");
 
                 Entity iceSpike = new Entity("icespike" + (++iceSpikeCount)+"_"+player.Name);
                 iceSpike.AddStringAttribute("player", player.Name);
                 iceSpike.AddStringAttribute("target_player", targetPlayerName);
                 iceSpike.AddIntAttribute("creation_time", (int) at);
 
-                iceSpike.AddVector3Attribute("velocity", aimVector);
+                iceSpike.AddVector3Attribute("velocity", Vector3.Zero);
                 iceSpike.AddVector3Attribute("position", pos);
 
                 iceSpike.AddStringAttribute("mesh", "Models/icespike_primitive");
@@ -534,17 +529,6 @@ namespace ProjectMagma.Framework
 
         private void PlayerCollisionHandler(GameTime gameTime, List<Contact> contacts)
         {
-            // average contacts
-            Vector3 position = Vector3.One;
-            Vector3 normal = Vector3.One;
-            foreach(Contact co in contacts)
-            {
-                position += co.Position;
-                normal += co.Normal;
-            }
-            position /= contacts.Count;
-            normal /= contacts.Count;
-//            Contact c = new Contact(contacts[0].EntityA, contacts[0].EntityB, position, normal);
             Contact c = contacts[0];
 
             if (c.EntityB.HasAttribute("kind"))
@@ -553,7 +537,7 @@ namespace ProjectMagma.Framework
                 switch (kind)
                 {
                     case "island":
-                        PlayerIslandCollisionHandler(gameTime, c.EntityA, c.EntityB, c);
+                        PlayerIslandCollisionHandler(gameTime, c.EntityA, c.EntityB, contacts);
                         break;
                     case "pillar":
                         PlayerPillarCollisionHandler(gameTime, c.EntityA, c.EntityB, c);
@@ -570,14 +554,24 @@ namespace ProjectMagma.Framework
             }
         }
 
-        private void PlayerIslandCollisionHandler(GameTime gameTime, Entity player, Entity island, Contact co)
+        private void PlayerIslandCollisionHandler(GameTime gameTime, Entity player, Entity island, List<Contact> contacts)
         {
             float dt = ((float)gameTime.ElapsedGameTime.Milliseconds) / 1000.0f;
 
-            if (Vector3.Dot(Vector3.UnitY, -co.Normal) > 0)
+            // use first contact
+            Contact co = contacts[0];
+
+            // on top?
+            if (Vector3.Dot(Vector3.UnitY, co.Normal) < 0)
             {
-                // standing on island
-                //Console.WriteLine("from top at "+gameTime.TotalGameTime.TotalMilliseconds);
+                // determine contact to use (the one with highest y value)
+                co = contacts[0];
+                for (int i = 1; i < contacts.Count; i++)
+                {
+                    Contact c = contacts[i];
+                    if (c.Position.Y > co.Position.Y)
+                        co = c;
+                }
 
                 // remove handler from old active island
                 if(activeIsland != null && activeIsland != island)
@@ -591,12 +585,15 @@ namespace ProjectMagma.Framework
                 /*
                 pos.Y = co.Position.Y;
                 player.SetVector3("position", pos);
+
+                Vector3 velocity = -co.Normal * 1000 / gameTime.ElapsedGameTime.Milliseconds;
+                player.SetVector3("collision_pushback_velocity", velocity);
+                player.SetVector3("velocity", Vector3.Zero);
                  */
 
-                Vector3 velocity = new Vector3(0, -(pos.Y - co.Position.Y), 0) * 1000 / gameTime.ElapsedGameTime.Milliseconds;
-                player.SetVector3("collision_pushback_velocity", velocity);
+                pos.Y = co.Position.Y;
+                player.SetVector3("position", pos);
 
-                player.SetVector3("velocity", Vector3.Zero);
                 islandCollision = true;
                 activeIsland = island; // mark as active
             }
@@ -785,11 +782,6 @@ namespace ProjectMagma.Framework
 
                 #endregion
 
-                #region triggers
-                iceSpikeStrength = gamePadState.Triggers.Right;
-                #endregion
-
-
                 #region action buttons
 
                 jetpackButtonPressed =
@@ -797,15 +789,11 @@ namespace ProjectMagma.Framework
                     (keyboardState.IsKeyDown(Keys.Space) && playerIndex == PlayerIndex.One) ||
                     (keyboardState.IsKeyDown(Keys.Insert) && playerIndex == PlayerIndex.Two);
 
-                iceSpikeButtonPressed = false;
-                if (iceSpikeStrength > 0)
-                    iceSpikeButtonPressed = true;
-                else
+                iceSpikeButtonPressed = gamePadState.Buttons.X == ButtonState.Pressed;
                 if((keyboardState.IsKeyDown(Keys.Q) && playerIndex == PlayerIndex.One) ||
                     (keyboardState.IsKeyDown(Keys.RightControl) && playerIndex == PlayerIndex.Two))
                 {
                     iceSpikeButtonPressed = true;
-                    iceSpikeStrength = 1;
                 }
 
                 hitButtonPressed =
@@ -814,7 +802,7 @@ namespace ProjectMagma.Framework
                     (keyboardState.IsKeyDown(Keys.Enter) && playerIndex == PlayerIndex.Two);
 
                 flamethrowerButtonPressed = 
-                    gamePadState.Buttons.A == ButtonState.Pressed ||
+                    gamePadState.Triggers.Right > 0 ||
                     (keyboardState.IsKeyDown(Keys.R) && playerIndex == PlayerIndex.One) ||
                     (keyboardState.IsKeyDown(Keys.Delete) && playerIndex == PlayerIndex.Two);
 
@@ -830,9 +818,6 @@ namespace ProjectMagma.Framework
             public bool moveStickMoved;
             public float rightStickX, rightStickY;
             public bool rightStickMoved;
-
-            // triggers
-            public float iceSpikeStrength;
 
             // buttons
             public bool jetpackButtonPressed, flamethrowerButtonPressed, iceSpikeButtonPressed, hitButtonPressed;

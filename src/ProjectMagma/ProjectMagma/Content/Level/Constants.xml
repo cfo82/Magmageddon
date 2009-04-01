@@ -49,6 +49,7 @@
       <Attribute name="player_pushback_velocity_multiplier" template="float" value="80"/>
       <Attribute name="player_pushback_deacceleration" template="float" value="300"/>
 
+      <Attribute name="island_leave_timeout" template="float" value="50"/>
       <Attribute name="island_repulsion_velocity_multiplier" template="float" value="150"/>
       <Attribute name="island_repulsion_fuel_cost_multiplier" template="float" value="0.3"/>
       <Attribute name="island_repulsion_max_time" template="float" value="500"/>

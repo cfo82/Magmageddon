@@ -280,7 +280,7 @@ namespace ProjectMagma.Framework
                 }
 
                 // rotation
-                float yRotation = (float)Math.Atan2(controllerInput.leftStickX, -controllerInput.leftStickY);
+                float yRotation = (float)Math.Atan2(controllerInput.leftStickX, controllerInput.leftStickY);
                 Matrix rotationMatrix = Matrix.CreateRotationY(yRotation);
                 player.SetQuaternion("rotation", Quaternion.CreateFromRotationMatrix(rotationMatrix));
             }
@@ -794,6 +794,7 @@ namespace ProjectMagma.Framework
 
                 jetpackButtonPressed =
                     gamePadState.Buttons.A == ButtonState.Pressed ||
+                    gamePadState.Triggers.Left > 0 ||
                     (keyboardState.IsKeyDown(Keys.Space) && playerIndex == PlayerIndex.One) ||
                     (keyboardState.IsKeyDown(Keys.Insert) && playerIndex == PlayerIndex.Two);
 

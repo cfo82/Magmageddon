@@ -61,19 +61,19 @@
 
   <Entity name="pillar2" extends="pillar_base">
     <Attributes>
-      <Attribute name="position" template="float3" value="-250 0 130"/>
+      <Attribute name="position" template="float3" value="-300 0 150"/>
     </Attributes>
   </Entity>
 
   <Entity name="pillar3" extends="pillar_base">
     <Attributes>
-      <Attribute name="position" template="float3" value="170 0 -120"/>
+      <Attribute name="position" template="float3" value="200 0 -120"/>
     </Attributes>
   </Entity>
 
   <Entity name="pillar4" extends="pillar_base">
     <Attributes>
-      <Attribute name="position" template="float3" value="80 0 80"/>
+      <Attribute name="position" template="float3" value="-100 0 0"/>
     </Attributes>
   </Entity>
 
@@ -82,7 +82,7 @@
       <Attribute name="position" template="float3" value="10 0 -300"/>
     </Attributes>
   </Entity>
-    
+
   <Entity name="island1" extends="island_base">
     <Attributes>
       <Attribute name="position" template="float3" value="60 160 -30"/>
@@ -132,6 +132,41 @@
     </Attributes>
   </Entity>
 
+  <Entity name="island8" extends="island_base">
+    <Attributes>
+      <Attribute name="position" template="float3" value="-150 100 220"/>
+      <Attribute name="scale" template="float3" value="60 60 60"/>
+    </Attributes>
+  </Entity>
+
+  <Entity name="island9" extends="island_base">
+    <Attributes>
+      <Attribute name="position" template="float3" value="-350 180 320"/>
+      <Attribute name="scale" template="float3" value="50 50 50"/>
+    </Attributes>
+  </Entity>
+  
+  <Entity name="island10" extends="island_base">
+    <Attributes>
+      <Attribute name="position" template="float3" value="-150 80 120"/>
+      <Attribute name="scale" template="float3" value="55 55 55"/>
+    </Attributes>
+  </Entity>
+
+  <Entity name="island11" extends="island_base">
+    <Attributes>
+      <Attribute name="position" template="float3" value="50 100 120"/>
+      <Attribute name="scale" template="float3" value="55 55 55"/>
+    </Attributes>
+  </Entity>
+
+  <Entity name="island12" extends="island_base">
+    <Attributes>
+      <Attribute name="position" template="float3" value="350 150 120"/>
+      <Attribute name="scale" template="float3" value="55 55 55"/>
+    </Attributes>
+  </Entity>
+  
   <Entity name="player1" extends="player_base">
     <Attributes>
       <Attribute name="number" template="int" value="1"/>

@@ -9,10 +9,10 @@ using ProjectMagma.Collision;
 
 namespace ProjectMagma.Framework
 {
-    public class ArrowController : Property
+    public class ArrowControllerProperty : Property
     {
 
-        public ArrowController()
+        public ArrowControllerProperty()
         {
         }
 

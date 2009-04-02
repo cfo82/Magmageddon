@@ -91,7 +91,7 @@ namespace ProjectMagma.Framework
             arrow.AddStringAttribute("mesh", "Models/arrow");
             arrow.AddVector3Attribute("scale", new Vector3(12, 12, 12));
 
-            arrow.AddProperty("arrow_controller_property", new ArrowController()); 
+            arrow.AddProperty("arrow_controller_property", new ArrowControllerProperty()); 
 
             Game.Instance.EntityManager.AddDeferred(arrow);
 
@@ -180,7 +180,10 @@ namespace ProjectMagma.Framework
                 if (movedByStick && !jetpackActive)
                 {
                     // reset movement, so we cannot fall from island just by walking
-                    player.SetVector3("position", previousPosition);
+                    Vector3 pos = previousPosition;
+                    pos.Y = player.GetVector3("position").Y;
+                    player.SetVector3("position", pos);
+//                    Console.WriteLine("position reset");
                 }
                 else
                 {
@@ -188,6 +191,7 @@ namespace ProjectMagma.Framework
                     if (islandLeftAt != 0 
                         && at > islandLeftAt + constants.GetFloat("island_leave_timeout"))
                     {
+//                        Console.WriteLine("island left");
                         ((Vector3Attribute)activeIsland.Attributes["position"]).ValueChanged -= IslandPositionHandler;
                         activeIsland = null;
                         islandLeftAt = 0;
@@ -260,6 +264,10 @@ namespace ProjectMagma.Framework
             
             // apply current velocity
             playerPosition += playerVelocity * dt;
+
+//            Console.WriteLine();
+//            Console.WriteLine("at: " + (int)gameTime.TotalGameTime.TotalMilliseconds);
+//            Console.WriteLine("velocity: " + playerVelocity + " led to change from " + previousPosition + " to " + playerPosition);
 
             if (controllerInput.moveStickMoved)
             {
@@ -436,7 +444,6 @@ namespace ProjectMagma.Framework
                         islandRepulsionStarteAt = at;
                     if (at < islandRepulsionStarteAt + constants.GetFloat("island_repulsion_max_time"))
                     {
-                        // TODO: constant
                         float velocityMultiplier = constants.GetFloat("island_repulsion_velocity_multiplier");
                         Vector3 velocity = new Vector3(-controllerInput.rightStickX * velocityMultiplier, 0, 
                             -controllerInput.rightStickY * velocityMultiplier);
@@ -576,13 +583,23 @@ namespace ProjectMagma.Framework
             // on top?
             if (Vector3.Dot(Vector3.UnitY, co.Normal) < 0)
             {
-                // remove handler from old active island
-                if (activeIsland != null && activeIsland != island)
-                    ((Vector3Attribute)activeIsland.Attributes["position"]).ValueChanged -= IslandPositionHandler;
+//                Console.WriteLine("on island " + island.Name); 
 
                 // add handler if active island changed
                 if (activeIsland != island)
+                {
+  //                  Console.WriteLine((int)gameTime.TotalGameTime.TotalMilliseconds + island.Name + " activated");
                     ((Vector3Attribute)island.Attributes["position"]).ValueChanged += IslandPositionHandler;
+
+                    // remove old handler if there was other island active before
+                    if (activeIsland != null)
+                    {
+//                        Console.WriteLine("island changed from " + activeIsland.Name);
+                        ((Vector3Attribute)activeIsland.Attributes["position"]).ValueChanged -= IslandPositionHandler;
+                    }
+
+                    activeIsland = island;
+                }
 
                 // stop falling
                 player.SetVector3("velocity", Vector3.Zero);
@@ -600,6 +617,8 @@ namespace ProjectMagma.Framework
                 Vector3 pos = player.GetVector3("position");
                 pos.Y = co.Position.Y;
                 player.SetVector3("position", pos);
+
+//                Console.WriteLine("player positioned at: " + pos);
 
                 // and set state values
                 islandCollision = true;

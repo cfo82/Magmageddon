@@ -140,10 +140,6 @@ namespace ProjectMagma.Framework
             }
         }
 
-        private Entity constants;
         private Random rand;
-        private int playersOnIsland;
-        private double playerLeftAt;
-        private Vector3 originalPosition;
     }
 }

@@ -530,6 +530,8 @@ namespace ProjectMagma
             {
                 float dt = Game.Instance.CurrentUpdateTime.ElapsedGameTime.Milliseconds / 1000.0f;
 
+                Console.WriteLine("pushback applied");
+
                 Vector3 oldVelocity = pushbackVelocity;
 
                 // apply de-acceleration

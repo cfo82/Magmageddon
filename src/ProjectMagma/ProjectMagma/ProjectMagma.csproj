@@ -92,6 +92,9 @@
     <Compile Include="Collision\CollisionTests\ContactMeshCylinder.cs" />
     <Compile Include="Collision\CollisionTests\ContactMeshMesh.cs" />
     <Compile Include="Framework\Properties\ArrowController.cs" />
+    <Compile Include="Framework\Properties\DeathProperty.cs" />
+    <Compile Include="Framework\Properties\IslandCircualarMovementControllerProperty.cs" />
+    <Compile Include="Framework\Properties\IslandControllerPropertyBase.cs" />
     <Compile Include="HUD.cs" />
     <Compile Include="Collision\CollisionManager.cs" />
     <Compile Include="Collision\Contact.cs" />
@@ -136,7 +139,7 @@
     <Compile Include="Framework\Entity.cs" />
     <Compile Include="Framework\Attributes\Vector2Attribute.cs" />
     <Compile Include="EntityManager.cs" />
-    <Compile Include="Framework\Properties\IslandControllerProperty.cs" />
+    <Compile Include="Framework\Properties\IslandPhysicalMovementControllerProperty.cs" />
     <Compile Include="Framework\Properties\Property.cs" />
     <Compile Include="Framework\Event\UpdateHandler.cs" />
     <Compile Include="ManagementForm.cs">

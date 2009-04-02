@@ -161,10 +161,11 @@ namespace ProjectMagma.Framework
             }
             else
             {
-                if (position.Y < originalPosition.Y && gameTime.TotalGameTime.TotalMilliseconds > playerLeftAt + constants.GetInt("rising_delay"))
+                if (playerLeftAt == 0)
+                    playerLeftAt = gameTime.TotalGameTime.TotalMilliseconds;
+                if (position.Y < originalPosition.Y && 
+                    gameTime.TotalGameTime.TotalMilliseconds > playerLeftAt + constants.GetInt("rising_delay"))
                 {
-                    if (playerLeftAt == 0)
-                        playerLeftAt = gameTime.TotalGameTime.TotalMilliseconds;
                     position += dt * constants.GetFloat("rising_speed") * Vector3.UnitY;
                 }
             }

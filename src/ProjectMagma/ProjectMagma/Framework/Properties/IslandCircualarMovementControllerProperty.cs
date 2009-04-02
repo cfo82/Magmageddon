@@ -45,7 +45,7 @@ namespace ProjectMagma.Framework
             Vector3 radiusV = islandPos - pillarPos;
  
             // rotate
-            float delta = dt;
+            float delta = dt * constants.GetFloat("angle_speed");
             Matrix rotation = Matrix.CreateRotationY(delta);
             radiusV = Vector3.Transform(radiusV, rotation);
 

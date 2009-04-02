@@ -74,7 +74,8 @@
       <Attribute name="pillar_attraction" template="float" value="0.0001"/>
       <Attribute name="pillar_repulsion" template="float" value="0.03"/>
 
-      <!--<Attribute name="sinking_speed" template="float" value="18.0"/>-->
+      <Attribute name="angle_speed" template="float" value="0.8"/>
+
       <Attribute name="sinking_speed" template="float" value="18.0"/>
       <Attribute name="rising_speed" template="float" value="40.0"/>
       <Attribute name="rising_delay" template="int" value="100"/>

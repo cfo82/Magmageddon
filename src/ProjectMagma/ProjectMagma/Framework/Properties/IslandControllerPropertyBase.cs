@@ -81,18 +81,27 @@ namespace ProjectMagma.Framework
         private void CollisionHandler(GameTime gameTime, List<Contact> contacts)
         {
             Contact contact = contacts[0];
+            Entity island = contact.EntityA;
             Entity entity = contact.EntityB;
-            if (entity.HasString("kind") && // other entity has a kind-attribute
-                entity.GetString("kind") == "player" && // other entity is a player
-                contact.Normal.Y > 0 // player is above island
-            )
+            if(entity.HasString("kind"))
             {
-                // collision with player
-                playersOnIsland++;
-            }
-            else
-            {
-                CollisionHandler(gameTime, entity, contact);
+                if (entity.GetString("kind") == "player")
+                {
+                    // collision with player
+                    if(Vector3.Dot(Vector3.UnitY, contact.Normal) > 0) // on top
+                        playersOnIsland++;
+                }
+                else
+                {
+                    Vector3 repulsionVelocity = island.GetVector3("repulsion_velocity");
+                    if (repulsionVelocity.Length() > 0)
+                    {
+                        // go other direction
+                        island.SetVector3("repulsion_velocity", -repulsionVelocity);
+                    }
+
+                    CollisionHandler(gameTime, entity, contact);
+                }
             }
         }
 

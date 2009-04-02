@@ -27,7 +27,11 @@ namespace ProjectMagma
         private GraphicsDeviceManager graphics;
         private SpriteBatch spriteBatch;
 
+        // game paused?
+        private bool paused = false;
+
         private HUD hud;
+        private Menu menu;
         private Entity currentCamera;
         private float effectsVolume = 0;
         private float musicVolume = 0;
@@ -74,6 +78,7 @@ namespace ProjectMagma
         {
             graphics = new GraphicsDeviceManager(this);
             hud = HUD.Instance;
+            menu = Menu.Instance;
 
             // TODO: remove v-sync in future!?
             this.IsFixedTimeStep = false;
@@ -206,8 +211,9 @@ namespace ProjectMagma
                 e.AddIntAttribute("game_pad_index", gi++);
             }
 
-            // load hud
+            // load hud and menu
             hud.LoadContent();
+            menu.LoadContent();
 
             // preload sounds
             foreach (Entity e in Game.Instance.powerupManager)
@@ -281,11 +287,14 @@ namespace ProjectMagma
         /// <param name="gameTime">Provides a snapshot of timing values.</param>
         protected override void Update(GameTime gameTime)
         {
-            currentGameTime = gameTime;
+            // don't do anything if not active app
+            if (!IsActive)
+            {
+                base.Update(gameTime);
+                return;
+            }
 
-            // Allows the game to exit
-            if (GamePad.GetState(PlayerIndex.One).Buttons.Back == ButtonState.Pressed)
-                this.Exit();
+            currentGameTime = gameTime;
 
             // fullscreen
             if(Keyboard.GetState().IsKeyDown(Keys.Enter)
@@ -295,21 +304,28 @@ namespace ProjectMagma
                 graphics.ApplyChanges();
             }
 
-            // update all entities
-            foreach (Entity e in entityManager)
+            if (!paused)
             {
-                e.OnUpdate(gameTime);
-            }
-            // perform collision detection
-            collisionManager.Update(gameTime);
+                // update all entities
+                foreach (Entity e in entityManager)
+                {
+                    e.OnUpdate(gameTime);
+                }
 
-            // execute deferred add/remove orders on the entityManager
-            entityManager.ExecuteDeferred();
+                // perform collision detection
+                collisionManager.Update(gameTime);
+
+                // execute deferred add/remove orders on the entityManager
+                entityManager.ExecuteDeferred();
+            }
 
 #if !XBOX
             // update the user interface
             formCollection.Update(gameTime);
 #endif
+
+            // update menu
+            menu.Update(gameTime);
 
             // update all GameComponents registered
             base.Update(gameTime);
@@ -350,6 +366,7 @@ namespace ProjectMagma
 
             // draw stuff which should net be filtered
             hud.Draw(gameTime);
+            menu.Draw(gameTime);
 
 #if !XBOX
             formCollection.Draw();
@@ -477,6 +494,11 @@ namespace ProjectMagma
         public float MusicVolume
         {
             get { return musicVolume; }
+        }
+
+        public bool Paused
+        {
+            get { return paused; }
         }
 
 #if !XBOX

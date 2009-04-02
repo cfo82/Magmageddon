@@ -145,6 +145,7 @@
     <Compile Include="ManagementForm.cs">
       <SubType>Code</SubType>
     </Compile>
+    <Compile Include="Menu.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Game.cs" />
   </ItemGroup>

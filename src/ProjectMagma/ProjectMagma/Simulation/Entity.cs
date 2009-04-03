@@ -5,7 +5,6 @@ using System.Text;
 using Microsoft.Xna.Framework;
 
 using ProjectMagma.Simulation.Attributes;
-using ProjectMagma.Shared.LevelData;
 
 namespace ProjectMagma.Simulation
 {
@@ -50,11 +49,6 @@ namespace ProjectMagma.Simulation
         }
 
         #region Attribute Handling 
-
-        public void AddAttribute(AttributeData attributeData)
-        {
-            AddAttribute(attributeData.name, attributeData.template, attributeData.value);
-        }
 
         public void AddAttribute(string name, AttributeTypes type)
         {
@@ -374,12 +368,12 @@ namespace ProjectMagma.Simulation
 
         #region Property Handling
 
-        public void AddProperty(PropertyData propertyData)
+        public void AddProperty(string name, string typeName)
         {
-            System.Type type = System.Type.GetType(propertyData.type);
+            System.Type type = System.Type.GetType(typeName);
             ConstructorInfo constructorInfo = type.GetConstructor(new System.Type[0]);
             Property property = constructorInfo.Invoke(new object[0]) as Property;
-            AddProperty(propertyData.name, property);
+            AddProperty(name, property);
         }
 
         public void AddProperty(string name, Property property)

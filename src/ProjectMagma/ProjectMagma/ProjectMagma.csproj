@@ -134,21 +134,21 @@
     <Compile Include="Simulation\Event\UpdateHandler.cs" />
     <Compile Include="Simulation\Attributes\Events\Vector2ChangeHandler.cs" />
     <Compile Include="Simulation\Attributes\Events\Vector3ChangeHandler.cs" />
-    <Compile Include="Simulation\Properties\ArrowController.cs" />
-    <Compile Include="Simulation\Properties\CameraProperty.cs" />
-    <Compile Include="Simulation\Properties\DeathProperty.cs" />
-    <Compile Include="Simulation\Properties\FlamethrowerControllerProperty.cs" />
-    <Compile Include="Simulation\Properties\IceSpikeControllerProperty.cs" />
-    <Compile Include="Simulation\Properties\IslandCircualarMovementControllerProperty.cs" />
-    <Compile Include="Simulation\Properties\IslandControllerProperty.cs" />
-    <Compile Include="Simulation\Properties\IslandControllerPropertyBase.cs" />
-    <Compile Include="Simulation\Properties\IslandPhysicalMovementControllerProperty.cs" />
-    <Compile Include="Simulation\Properties\PlayerControllerProperty.cs" />
-    <Compile Include="Simulation\Properties\PowerUpController.cs" />
-    <Compile Include="Simulation\Properties\Property.cs" />
-    <Compile Include="Simulation\Properties\RenderHighlightProperty.cs" />
-    <Compile Include="Simulation\Properties\RenderProperty.cs" />
-    <Compile Include="Simulation\Properties\ShadowCastProperty.cs" />
+    <Compile Include="Simulation\Properties\Environment\ArrowController.cs" />
+    <Compile Include="Simulation\Properties\Environment\CameraProperty.cs" />
+    <Compile Include="Simulation\Properties\Player\DeathProperty.cs" />
+    <Compile Include="Simulation\Properties\Player\FlamethrowerControllerProperty.cs" />
+    <Compile Include="Simulation\Properties\Player\IceSpikeControllerProperty.cs" />
+    <Compile Include="Simulation\Properties\Island\IslandCircualarMovementControllerProperty.cs" />
+    <Compile Include="Simulation\Properties\Island\IslandControllerProperty.cs" />
+    <Compile Include="Simulation\Properties\Island\IslandControllerPropertyBase.cs" />
+    <Compile Include="Simulation\Properties\Island\IslandPhysicalMovementControllerProperty.cs" />
+    <Compile Include="Simulation\Properties\Player\PlayerControllerProperty.cs" />
+    <Compile Include="Simulation\Properties\Environment\PowerUpController.cs" />
+    <Compile Include="Simulation\Properties\Base\Property.cs" />
+    <Compile Include="Simulation\Properties\Rendering\RenderHighlightProperty.cs" />
+    <Compile Include="Simulation\Properties\Rendering\RenderProperty.cs" />
+    <Compile Include="Simulation\Properties\Rendering\ShadowCastProperty.cs" />
     <Compile Include="Simulation\Simulation.cs" />
   </ItemGroup>
   <ItemGroup>

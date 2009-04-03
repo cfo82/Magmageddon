@@ -34,11 +34,11 @@ namespace ProjectMagma.Simulation
                 Entity entity = new Entity(entityData.name);
                 foreach (AttributeData attributeData in attributes)
                 {
-                    entity.AddAttribute(attributeData);
+                    entity.AddAttribute(attributeData.name, attributeData.template, attributeData.value);
                 }
                 foreach (PropertyData propertyData in properties)
                 {
-                    entity.AddProperty(propertyData);
+                    entity.AddProperty(propertyData.name, propertyData.type);
                 }
                 Add(entity);
             }

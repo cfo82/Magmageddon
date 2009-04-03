@@ -3,8 +3,12 @@ using System.Diagnostics;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
+
+using ProjectMagma.Simulation.Attributes;
+using ProjectMagma.Renderer;
 
 namespace ProjectMagma.Simulation
 {
@@ -12,21 +16,81 @@ namespace ProjectMagma.Simulation
     {
         public ShadowCastProperty()
         {
-            model = null;
         }
 
         public void OnAttached(Entity entity)
         {
             entity.Draw += OnDraw;
 
+            Vector3 scale = Vector3.One;
+            Quaternion rotation = Quaternion.Identity;
+            Vector3 position = Vector3.Zero;
+
+            if (entity.HasVector3("scale"))
+            {
+                scale = entity.GetVector3("scale");
+                entity.GetVector3Attribute("scale").ValueChanged += ScaleChanged;
+            }
+            if (entity.HasQuaternion("rotation"))
+            {
+                rotation = entity.GetQuaternion("rotation");
+                entity.GetQuaternionAttribute("rotation").ValueChanged += RotationChanged;
+            }
+            if (entity.HasVector3("position"))
+            {
+                position = entity.GetVector3("position");
+                entity.GetVector3Attribute("position").ValueChanged += PositionChanged;
+            }
+
             // load the model
             string meshName = entity.GetString("mesh");
             model = Game.Instance.Content.Load<Model>(meshName);
+
+            renderable = new ShadowRenderable(scale, rotation, position, model);
         }
 
         public void OnDetached(Entity entity)
         {
+            if (entity.HasVector3("position"))
+            {
+                entity.GetVector3Attribute("position").ValueChanged -= PositionChanged;
+            }
+            if (entity.HasQuaternion("rotation"))
+            {
+                entity.GetQuaternionAttribute("rotation").ValueChanged -= RotationChanged;
+            }
+            if (entity.HasVector3("scale"))
+            {
+                entity.GetVector3Attribute("scale").ValueChanged -= ScaleChanged;
+            }
             entity.Draw -= OnDraw;
+        }
+
+        private void ScaleChanged(
+            Vector3Attribute sender,
+            Vector3 oldValue,
+            Vector3 newValue
+        )
+        {
+            renderable.Scale = newValue;
+        }
+
+        private void RotationChanged(
+            QuaternionAttribute sender,
+            Quaternion oldValue,
+            Quaternion newValue
+        )
+        {
+            renderable.Rotation = newValue;
+        }
+
+        private void PositionChanged(
+            Vector3Attribute sender,
+            Vector3 oldValue,
+            Vector3 newValue
+        )
+        {
+            renderable.Position = newValue;
         }
 
         private void OnDraw(Entity entity, GameTime gameTime, RenderMode renderMode)
@@ -71,7 +135,7 @@ namespace ProjectMagma.Simulation
                 {
                     Effect effect = Game.Instance.shadowEffect;
 
-                    Game.Instance.Graphics.GraphicsDevice.RenderState.DepthBufferEnable = true;
+                    Game.Instance.GraphicsDevice.RenderState.DepthBufferEnable = true;
                     effect.CurrentTechnique = effect.Techniques["DepthMap"];
                     effect.Parameters["LightPosition"].SetValue(Game.Instance.lightPosition);
                     effect.Parameters["World"].SetValue(transforms[mesh.ParentBone.Index] * world);
@@ -101,6 +165,7 @@ namespace ProjectMagma.Simulation
             }
         }
 
+        private ShadowRenderable renderable;
         private Model model;
     }
 }

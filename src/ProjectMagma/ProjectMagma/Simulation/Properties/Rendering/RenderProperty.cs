@@ -71,7 +71,7 @@ namespace ProjectMagma.Simulation
                 {
                     Effect effect = Game.Instance.shadowEffect;
 
-                    Game.Instance.Graphics.GraphicsDevice.RenderState.DepthBufferEnable = true;
+                    Game.Instance.GraphicsDevice.RenderState.DepthBufferEnable = true;
                     foreach (BasicEffect effectx in mesh.Effects)
                     {
                         effectx.EnableDefaultLighting();
@@ -80,7 +80,7 @@ namespace ProjectMagma.Simulation
                         effectx.World = transforms[mesh.ParentBone.Index] * world;
                     }
                     mesh.Draw();
-                    Game.Instance.Graphics.GraphicsDevice.RenderState.DepthBufferEnable = true;
+                    Game.Instance.GraphicsDevice.RenderState.DepthBufferEnable = true;
 
                     effect.CurrentTechnique = effect.Techniques["Scene"];
                     effect.Parameters["ShadowMap"].SetValue(Game.Instance.lightResolve);

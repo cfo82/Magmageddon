@@ -86,7 +86,7 @@ namespace ProjectMagma
         {
             if (active)
             {
-                int screenWidth = Game.Instance.Graphics.GraphicsDevice.Viewport.Width;
+                int screenWidth = Game.Instance.GraphicsDevice.Viewport.Width;
                 float screenscale = (float)screenWidth / 1280f;
                 Matrix spriteScale = Matrix.CreateScale(screenscale, screenscale, 1);
 

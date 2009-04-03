@@ -57,7 +57,7 @@ namespace ProjectMagma.Simulation
             Debug.Assert(entity.HasAttribute("far_clip"));
 
             // get aspect ratio
-            Viewport viewport = Game.Instance.Graphics.GraphicsDevice.Viewport;
+            Viewport viewport = Game.Instance.GraphicsDevice.Viewport;
             float aspectRatio = (float)viewport.Width / (float)viewport.Height;
 
             // compute matrix

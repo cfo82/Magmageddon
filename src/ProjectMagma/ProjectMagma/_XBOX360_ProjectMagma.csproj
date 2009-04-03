@@ -61,6 +61,12 @@
     <Compile Include="HUD.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Game.cs" />
+    <Compile Include="Renderer\Renderables\DefaultRenderable.cs" />
+    <Compile Include="Renderer\Renderables\HighlightRenderable.cs" />
+    <Compile Include="Renderer\Renderables\Renderable.cs" />
+    <Compile Include="Renderer\Renderables\ShadowRenderable.cs" />
+    <Compile Include="Renderer\Renderer.cs" />
+    <Compile Include="Renderer\RenderMode.cs" />
     <Compile Include="Simulation\Attributes\Base\Attribute.cs" />
     <Compile Include="Simulation\Attributes\Base\AttributeTypes.cs" />
     <Compile Include="Simulation\Attributes\Concrete\BoolAttribute.cs" />

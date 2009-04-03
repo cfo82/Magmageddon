@@ -86,7 +86,7 @@ namespace ProjectMagma.Simulation
 
                 foreach (ModelMesh mesh in model.Meshes)
                 {
-                    Game.Instance.Graphics.GraphicsDevice.RenderState.DepthBufferEnable = true;
+                    Game.Instance.GraphicsDevice.RenderState.DepthBufferEnable = true;
                     Vector3[] diffuseColors = new Vector3[mesh.Effects.Count];
                     int i = 0;
                     foreach (BasicEffect effectx in mesh.Effects)

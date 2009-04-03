@@ -86,6 +86,12 @@
   <ItemGroup>
     <Compile Include="BloomComponent.cs" />
     <Compile Include="BloomSettings.cs" />
+    <Compile Include="Renderer\Renderables\HighlightRenderable.cs" />
+    <Compile Include="Renderer\Renderables\DefaultRenderable.cs" />
+    <Compile Include="Renderer\Renderables\Renderable.cs" />
+    <Compile Include="Renderer\Renderer.cs" />
+    <Compile Include="Renderer\RenderMode.cs" />
+    <Compile Include="Renderer\Renderables\ShadowRenderable.cs" />
     <Compile Include="Simulation\Collision\CollisionTests\ContactSphereMesh.cs" />
     <Compile Include="Simulation\Collision\CollisionTests\ContactMeshSphere.cs" />
     <Compile Include="Simulation\Collision\CollisionTests\ContactCylinderMesh.cs" />
@@ -207,9 +213,6 @@
       <Project>{32868301-A135-4BB5-AA3A-44A5DE60C081}</Project>
       <Name>xWinFormsLib</Name>
     </ProjectReference>
-  </ItemGroup>
-  <ItemGroup>
-    <Folder Include="Renderer\" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <Import Project="$(MSBuildExtensionsPath)\Microsoft\XNA Game Studio\Microsoft.Xna.GameStudio.targets" />

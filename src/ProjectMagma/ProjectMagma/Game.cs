@@ -44,6 +44,7 @@ namespace ProjectMagma
         private double lastUpdateAt = 0;
 
         private Simulation.Simulation simulation;
+        private Renderer.Renderer renderer;
 
         #region shadow related stuff
         // see http://www.ziggyware.com/readarticle.php?article_id=161
@@ -172,6 +173,8 @@ namespace ProjectMagma
             simulation = new ProjectMagma.Simulation.Simulation();
             simulation.Load(Content);
 
+            renderer = new Renderer.Renderer();
+
             #if !XBOX
             managementForm.BuildForm();
             #endif
@@ -290,14 +293,14 @@ namespace ProjectMagma
             GraphicsDevice.Clear(Color.CornflowerBlue);
 
             // 1) Set the light's render target
-            graphics.GraphicsDevice.SetRenderTarget(0, lightRenderTarget);
+            GraphicsDevice.SetRenderTarget(0, lightRenderTarget);
 
             // 2) Render the scene from the perspective of the light
             RenderShadow(gameTime);
 
             // 3) Set our render target back to the screen, and get the 
             //depth texture created by step 2
-            graphics.GraphicsDevice.SetRenderTarget(0, null);
+            GraphicsDevice.SetRenderTarget(0, null);
             lightResolve = lightRenderTarget.GetTexture();
 
             // 4) Render the scene from the view of the camera, 
@@ -332,10 +335,10 @@ namespace ProjectMagma
         {
             // backup stencil buffer
             DepthStencilBuffer oldStencilBuffer
-                = graphics.GraphicsDevice.DepthStencilBuffer;
+                = GraphicsDevice.DepthStencilBuffer;
 
-            graphics.GraphicsDevice.DepthStencilBuffer = shadowStencilBuffer;
-            graphics.GraphicsDevice.Clear(Color.White);
+            GraphicsDevice.DepthStencilBuffer = shadowStencilBuffer;
+            GraphicsDevice.Clear(Color.White);
 
             foreach (Entity e in simulation.EntityManager)
             {
@@ -343,15 +346,7 @@ namespace ProjectMagma
             }
 
             // restore stencil buffer
-            graphics.GraphicsDevice.DepthStencilBuffer = oldStencilBuffer;
-        }
-
-        public GraphicsDeviceManager Graphics
-        {
-            get
-            {
-                return graphics;
-            }
+            GraphicsDevice.DepthStencilBuffer = oldStencilBuffer;
         }
 
 

@@ -30,6 +30,8 @@ namespace ProjectMagma
         // game paused?
         private bool paused = false;
 
+        private List<LevelInfo> levels;
+
         private HUD hud;
         private Menu menu;
         private Entity currentCamera;
@@ -175,8 +177,12 @@ namespace ProjectMagma
             // Create a new SpriteBatch, which can be used to draw textures.
             spriteBatch = new SpriteBatch(GraphicsDevice);
 
+            // load level infos
+            levels = Content.Load<List<LevelInfo>>("Level/LevelInfo");
+
             // load default level
             LevelData levelData = Content.Load<LevelData>("Level/TestLevel");
+            //            LevelData levelData = Content.Load<LevelData>(levels[0].FileName);
 
             testEffect = Content.Load<Effect>("Effects/TestEffect");
             shadowEffect = Content.Load<Effect>("Effects/ShadowEffect");

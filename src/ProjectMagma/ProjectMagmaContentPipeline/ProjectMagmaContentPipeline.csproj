@@ -105,6 +105,8 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Level\LevelInfoProcessor.cs" />
+    <Compile Include="Level\Serialization\LevelInfoWriter.cs" />
     <Compile Include="Math\Volume\Serialization\AlignedBox3TreeNodeWriter.cs" />
     <Compile Include="Math\Volume\Serialization\AlignedBox3TreeWriter.cs" />
     <Compile Include="Level\LevelProcessor.cs" />

@@ -79,15 +79,6 @@ namespace ProjectMagma.Simulation
 
                 // translation
                 Vector3 position = entity.GetVector3("position");
-                // small hack
-                /*if (Math.Abs(((BoundingBox)model.Tag).Max.Y) < 0.0001f)
-                {
-                    position += new Vector3(0.0f, (((2.0f * scale.Y) / 2.0f) - ((2.0f * scale.Y / scaleModificator) / 2.0f))/scale.Y, 0.0f);
-                }
-                else
-                {
-                    position -= new Vector3(0.0f, (((2.0f * scale.Y) / 2.0f) - ((2.0f * scale.Y / scaleModificator) / 2.0f))/scale.Y, 0.0f);
-                }*/
                 world *= Matrix.CreateTranslation(position);
 
                 Matrix[] transforms = new Matrix[model.Bones.Count];
@@ -120,7 +111,6 @@ namespace ProjectMagma.Simulation
                     mesh.Draw();
 
                     Game.Instance.GraphicsDevice.RenderState.AlphaBlendEnable = false;
-                    //Game.Instance.GraphicsDevice.RenderState.DepthBufferEnable = true;
 
                     i = 0;
                     foreach (BasicEffect effectx in mesh.Effects)

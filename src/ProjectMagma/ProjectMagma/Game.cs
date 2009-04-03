@@ -175,26 +175,6 @@ namespace ProjectMagma
             #if !XBOX
             managementForm.BuildForm();
             #endif
-            //Random islandRand = new Random(3432);
-            //for(int i=0; i<10; ++i)
-            //{
-            //    Entity e = new Entity(entityManager, "dyn_island" + i);
-            //    e.AddAttribute("kind", "string", "island");
-            //    e.AddAttribute("velocity", "float3", "0 0 0");
-            //    e.AddAttribute("acceleration", "float3", "0 0 0");
-            //    e.AddAttribute("scale", "float3", "40 40 40");
-            //    e.AddAttribute("mesh", "string", "Models/islandproto_v002");
-            //    e.AddAttribute("bv_type", "string", "cylinder");
-            //    e.AddAttribute("position", "float3",
-            //        (int) (islandRand.NextDouble()*800-400) + " 100 " +
-            //        (int) (islandRand.NextDouble()*800-400) );
-            //    e.AddProperty("controller", new IslandControllerProperty());
-            //    e.AddProperty("shadow_cast", new ShadowCastProperty());
-            //    e.AddProperty("render", new RenderProperty());
-            //    e.AddProperty("render_highlight", new RenderHighlightProperty());
-                
-            //    entityManager.AddDeferred(e);
-            //}
 
             // set gamepad assignments
 

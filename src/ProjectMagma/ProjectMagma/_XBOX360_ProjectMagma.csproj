@@ -104,9 +104,13 @@
     <Compile Include="Simulation\Event\Vector3ChangeHandler.cs" />
     <Compile Include="Simulation\Properties\ArrowController.cs" />
     <Compile Include="Simulation\Properties\CameraProperty.cs" />
+    <Compile Include="Simulation\Properties\DeathProperty.cs" />
     <Compile Include="Simulation\Properties\FlamethrowerControllerProperty.cs" />
     <Compile Include="Simulation\Properties\IceSpikeControllerProperty.cs" />
+    <Compile Include="Simulation\Properties\IslandCircualarMovementControllerProperty.cs" />
     <Compile Include="Simulation\Properties\IslandControllerProperty.cs" />
+    <Compile Include="Simulation\Properties\IslandControllerPropertyBase.cs" />
+    <Compile Include="Simulation\Properties\IslandPhysicalMovementControllerProperty.cs" />
     <Compile Include="Simulation\Properties\PlayerControllerProperty.cs" />
     <Compile Include="Simulation\Properties\PowerUpController.cs" />
     <Compile Include="Simulation\Properties\Property.cs" />
@@ -191,11 +195,6 @@
       <Project>{9D08F9E6-E783-43F1-B9B8-C448B482A73D}</Project>
       <Name>_XBOX360_ProjectMagmaShared</Name>
     </ProjectReference>
-  </ItemGroup>
-  <ItemGroup>
-    <Folder Include="Framework\Attributes\" />
-    <Folder Include="Framework\Event\" />
-    <Folder Include="Framework\Properties\" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <Import Project="$(MSBuildExtensionsPath)\Microsoft\XNA Game Studio\Microsoft.Xna.GameStudio.targets" />

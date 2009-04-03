@@ -1,11 +1,9 @@
 ﻿using System.Collections.Generic;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
-using ProjectMagma.Simulation;
 using ProjectMagma.Shared.Math.Volume;
-using ProjectMagma.Collision.CollisionTests;
 
-namespace ProjectMagma.Collision
+namespace ProjectMagma.Simulation.Collision
 {
     public delegate void ContactHandler(GameTime gameTime, List<Contact> contacts);
 

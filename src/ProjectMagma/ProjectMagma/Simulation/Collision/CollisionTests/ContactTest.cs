@@ -1,8 +1,7 @@
 ﻿using System.Collections.Generic;
 using Microsoft.Xna.Framework;
-using ProjectMagma.Simulation;
 
-namespace ProjectMagma.Collision.CollisionTests
+namespace ProjectMagma.Simulation.Collision.CollisionTests
 {
     public delegate void ContactTest(
         Entity entity1, object BoundingVolume1, Matrix worldTransform1, Vector3 translation1, Quaternion rotation1, Vector3 scale1,

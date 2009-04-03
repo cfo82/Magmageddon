@@ -1,8 +1,6 @@
 ﻿using ProjectMagma.Shared.Math.Volume;
-using ProjectMagma.Simulation;
-using Microsoft.Xna.Framework;
 
-namespace ProjectMagma.Collision
+namespace ProjectMagma.Simulation.Collision
 {
     public class CollisionEntity
     {

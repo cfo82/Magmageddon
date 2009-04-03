@@ -1,11 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using Microsoft.Xna.Framework;
-using ProjectMagma.Simulation;
 using ProjectMagma.Shared.Math.Volume;
-using ProjectMagma.Collision.CollisionTests;
+using ProjectMagma.Simulation.Collision.CollisionTests;
 
-namespace ProjectMagma.Collision
+namespace ProjectMagma.Simulation.Collision
 {
     public class CollisionManager
     {

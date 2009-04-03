@@ -1,7 +1,6 @@
 ﻿using Microsoft.Xna.Framework;
-using ProjectMagma.Simulation;
 
-namespace ProjectMagma.Collision
+namespace ProjectMagma.Simulation.Collision
 {
     public class Contact
     {

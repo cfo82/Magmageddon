@@ -1,7 +1,7 @@
 ﻿using System;
 using ProjectMagma.Shared.Math.Volume;
 
-namespace ProjectMagma.Collision
+namespace ProjectMagma.Simulation.Collision
 {
     public class BoundingVolumeTypeUtil
     {

@@ -1,8 +1,7 @@
 ﻿using System.Collections.Generic;
 using Microsoft.Xna.Framework;
-using ProjectMagma.Simulation;
 
-namespace ProjectMagma.Collision.CollisionTests
+namespace ProjectMagma.Simulation.Collision.CollisionTests
 {
     class ContactSphereMesh
     {

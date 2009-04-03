@@ -1,10 +1,9 @@
 ﻿using System.Diagnostics;
 using System.Collections.Generic;
 using Microsoft.Xna.Framework;
-using ProjectMagma.Simulation;
 using ProjectMagma.Shared.Math.Volume;
 
-namespace ProjectMagma.Collision.CollisionTests
+namespace ProjectMagma.Simulation.Collision.CollisionTests
 {
     public class ContactSphereSphere
     {

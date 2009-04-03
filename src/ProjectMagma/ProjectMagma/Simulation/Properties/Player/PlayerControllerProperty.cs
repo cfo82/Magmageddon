@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Input;
 using Microsoft.Xna.Framework.Audio;
-using ProjectMagma.Collision;
+using ProjectMagma.Simulation.Collision;
 using ProjectMagma.Simulation.Attributes;
 
 namespace ProjectMagma.Simulation

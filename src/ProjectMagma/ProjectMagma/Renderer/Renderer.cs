@@ -126,6 +126,11 @@ namespace ProjectMagma.Renderer
             renderables.Remove(renderable);
         }
 
+        public GraphicsDevice Device
+        {
+            get { return device; }
+        }
+
         public Texture2D LightResolve
         {
             get { return lightResolve; }

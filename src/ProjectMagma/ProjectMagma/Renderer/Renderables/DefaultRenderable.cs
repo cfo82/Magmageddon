@@ -43,7 +43,7 @@ namespace ProjectMagma.Renderer
             {
                 Effect effect = renderer.ShadowEffect;
 
-                Game.Instance.GraphicsDevice.RenderState.DepthBufferEnable = true;
+                renderer.Device.RenderState.DepthBufferEnable = true;
                 foreach (BasicEffect effectx in mesh.Effects)
                 {
                     effectx.EnableDefaultLighting();
@@ -52,7 +52,7 @@ namespace ProjectMagma.Renderer
                     effectx.World = transforms[mesh.ParentBone.Index] * world;
                 }
                 mesh.Draw();
-                Game.Instance.GraphicsDevice.RenderState.DepthBufferEnable = true;
+                renderer.Device.RenderState.DepthBufferEnable = true;
 
                 effect.CurrentTechnique = effect.Techniques["Scene"];
                 effect.Parameters["ShadowMap"].SetValue(renderer.LightResolve);
@@ -69,13 +69,13 @@ namespace ProjectMagma.Renderer
                 {
                     meshPart.Effect = effect;
                 }
-                Game.Instance.GraphicsDevice.RenderState.AlphaBlendEnable = false;
-                Game.Instance.GraphicsDevice.RenderState.SourceBlend = Blend.SourceAlpha;
-                Game.Instance.GraphicsDevice.RenderState.DestinationBlend = Blend.DestinationColor;
+                renderer.Device.RenderState.AlphaBlendEnable = false;
+                renderer.Device.RenderState.SourceBlend = Blend.SourceAlpha;
+                renderer.Device.RenderState.DestinationBlend = Blend.DestinationColor;
 
                 mesh.Draw();
 
-                Game.Instance.GraphicsDevice.RenderState.AlphaBlendEnable = false;
+                renderer.Device.RenderState.AlphaBlendEnable = false;
 
                 foreach (ModelMeshPart meshPart in mesh.MeshParts)
                 {

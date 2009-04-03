@@ -45,7 +45,7 @@ namespace ProjectMagma.Renderer
 
             foreach (ModelMesh mesh in model.Meshes)
             {
-                Game.Instance.GraphicsDevice.RenderState.DepthBufferEnable = true;
+                renderer.Device.RenderState.DepthBufferEnable = true;
                 Vector3[] diffuseColors = new Vector3[mesh.Effects.Count];
                 int i = 0;
                 foreach (BasicEffect effectx in mesh.Effects)
@@ -59,17 +59,17 @@ namespace ProjectMagma.Renderer
                     ++i;
                 }
 
-                //Game.Instance.GraphicsDevice.RenderState.DepthBufferEnable = false;
-                Game.Instance.GraphicsDevice.RenderState.AlphaBlendEnable = true;
-                Game.Instance.GraphicsDevice.RenderState.StencilFunction = CompareFunction.Always;
-                Game.Instance.GraphicsDevice.RenderState.BlendFactor = new Color(0.5f, 0.5f, 0.5f, 0.5f);
-                Game.Instance.GraphicsDevice.RenderState.SourceBlend = Blend.BlendFactor;
-                Game.Instance.GraphicsDevice.RenderState.BlendFunction = BlendFunction.Add;
-                Game.Instance.GraphicsDevice.RenderState.DestinationBlend = Blend.InverseBlendFactor;
+                //renderer.Device.RenderState.DepthBufferEnable = false;
+                renderer.Device.RenderState.AlphaBlendEnable = true;
+                renderer.Device.RenderState.StencilFunction = CompareFunction.Always;
+                renderer.Device.RenderState.BlendFactor = new Color(0.5f, 0.5f, 0.5f, 0.5f);
+                renderer.Device.RenderState.SourceBlend = Blend.BlendFactor;
+                renderer.Device.RenderState.BlendFunction = BlendFunction.Add;
+                renderer.Device.RenderState.DestinationBlend = Blend.InverseBlendFactor;
 
                 mesh.Draw();
 
-                Game.Instance.GraphicsDevice.RenderState.AlphaBlendEnable = false;
+                renderer.Device.RenderState.AlphaBlendEnable = false;
 
                 i = 0;
                 foreach (BasicEffect effectx in mesh.Effects)

@@ -1,15 +1,10 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using Microsoft.Xna.Framework;
-using Microsoft.Xna.Framework.Content;
+﻿using Microsoft.Xna.Framework;
 
 namespace ProjectMagma.Framework
 {
-    public class Vector3Attribute : Attribute
+    public class QuaternionAttribute : Attribute
     {
-        public Vector3Attribute(string name)
+        public QuaternionAttribute(string name)
         :   base(name)
         {
         }
@@ -18,7 +13,7 @@ namespace ProjectMagma.Framework
         {
             if (value.Trim().Length == 0)
             {
-                v = Vector3.Zero;
+                v = Quaternion.Identity;
             }
             else
             {
@@ -35,10 +30,14 @@ namespace ProjectMagma.Framework
                 {
                     v.Z = float.Parse(splitArray[2]);
                 }
+                if (splitArray.Length > 3)
+                {
+                    v.W = float.Parse(splitArray[3]);
+                }
             }
         }
 
-        public Vector3 Value
+        public Quaternion Value
         {
             get
             {
@@ -49,7 +48,7 @@ namespace ProjectMagma.Framework
             {
                 if (v != value)
                 {
-                    Vector3 oldValue = v;
+                    Quaternion oldValue = v;
                     v = value;
                     OnValueChanged(oldValue, v);
                 }
@@ -60,11 +59,11 @@ namespace ProjectMagma.Framework
         {
             get
             {
-                return String.Format("{0} {1} {2}", v.X, v.Y, v.Z);
+                return string.Format("{0} {1} {2} {3}", v.X, v.Y, v.Z, v.W);
             }
         }
 
-        private void OnValueChanged(Vector3 oldValue, Vector3 newValue)
+        private void OnValueChanged(Quaternion oldValue, Quaternion newValue)
         {
             if (ValueChanged != null)
             {
@@ -72,7 +71,7 @@ namespace ProjectMagma.Framework
             }
         }
 
-        public event Vector3ChangeHandler ValueChanged;
-        private Vector3 v;
+        public event QuaternionChangeEventHandler ValueChanged;
+        private Quaternion v;
     }
 }

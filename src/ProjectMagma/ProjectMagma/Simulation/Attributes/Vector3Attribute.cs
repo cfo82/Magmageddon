@@ -1,15 +1,10 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using Microsoft.Xna.Framework;
-using Microsoft.Xna.Framework.Content;
+﻿using Microsoft.Xna.Framework;
 
 namespace ProjectMagma.Framework
 {
-    public class Vector2Attribute : Attribute
+    public class Vector3Attribute : Attribute
     {
-        public Vector2Attribute(string name)
+        public Vector3Attribute(string name)
         :   base(name)
         {
         }
@@ -18,7 +13,7 @@ namespace ProjectMagma.Framework
         {
             if (value.Trim().Length == 0)
             {
-                v = Vector2.Zero;
+                v = Vector3.Zero;
             }
             else
             {
@@ -29,22 +24,27 @@ namespace ProjectMagma.Framework
                 }
                 if (splitArray.Length > 1)
                 {
-                    v.Y = float.Parse(splitArray[0]);
+                    v.Y = float.Parse(splitArray[1]);
+                }
+                if (splitArray.Length > 2)
+                {
+                    v.Z = float.Parse(splitArray[2]);
                 }
             }
         }
 
-        public Vector2 Value
+        public Vector3 Value
         {
             get
             {
                 return v;
             }
+
             set
             {
                 if (v != value)
                 {
-                    Vector2 oldValue = v;
+                    Vector3 oldValue = v;
                     v = value;
                     OnValueChanged(oldValue, v);
                 }
@@ -55,11 +55,11 @@ namespace ProjectMagma.Framework
         {
             get
             {
-                return String.Format("{0} {1}", v.X, v.Y);
+                return string.Format("{0} {1} {2}", v.X, v.Y, v.Z);
             }
         }
 
-        private void OnValueChanged(Vector2 oldValue, Vector2 newValue)
+        private void OnValueChanged(Vector3 oldValue, Vector3 newValue)
         {
             if (ValueChanged != null)
             {
@@ -67,7 +67,7 @@ namespace ProjectMagma.Framework
             }
         }
 
-        public event Vector2ChangeHandler ValueChanged;
-        private Vector2 v;
+        public event Vector3ChangeHandler ValueChanged;
+        private Vector3 v;
     }
 }

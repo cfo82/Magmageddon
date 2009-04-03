@@ -1,10 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using Microsoft.Xna.Framework;
-using Microsoft.Xna.Framework.Content;
-
+﻿
 namespace ProjectMagma.Framework
 {
     public class IntAttribute : Attribute
@@ -48,7 +42,7 @@ namespace ProjectMagma.Framework
         {
             get
             {
-                return String.Format("{0}", v);
+                return string.Format("{0}", v);
             }
         }
 

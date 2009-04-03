@@ -1,10 +1,4 @@
-﻿using System;
-using System.Diagnostics;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using Microsoft.Xna.Framework.Content;
-
+﻿
 namespace ProjectMagma.Framework
 {
     public abstract class Attribute
@@ -16,7 +10,7 @@ namespace ProjectMagma.Framework
 
         public abstract void Initialize(string value);
 
-        public String Name
+        public string Name
         {
             get
             {
@@ -24,7 +18,7 @@ namespace ProjectMagma.Framework
             }
         }
 
-        public abstract String StringValue { get; }
+        public abstract string StringValue { get; }
 
         public static AttributeTypes GetTypeFromString(string type)
         {
@@ -35,8 +29,8 @@ namespace ProjectMagma.Framework
                     return (AttributeTypes)stringTypeMappings[i, 1];
                 }
             }
-            
-            throw new Exception("invalid type-string ('" + type + "'). cannot convert it!");
+
+            throw new System.Exception("invalid type-string ('" + type + "'). cannot convert it!");
         }
 
         public static string GetTypeString(AttributeTypes type)
@@ -49,7 +43,7 @@ namespace ProjectMagma.Framework
                 }
             }
 
-            throw new Exception(string.Format("{0} is not a valid type!", type));
+            throw new System.Exception(string.Format("{0} is not a valid type!", type));
         }
 
         public override string ToString()

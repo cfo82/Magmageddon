@@ -1,25 +1,26 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using Microsoft.Xna.Framework;
-using Microsoft.Xna.Framework.Content;
-
+﻿
 namespace ProjectMagma.Framework
 {
-    public class BoolAttribute : Attribute
+    public class FloatAttribute : Attribute
     {
-        public BoolAttribute(string name) :   base(name)
+        public FloatAttribute(string name)
+        :   base(name)
         {
         }
             
         public override void Initialize(string value)
         {
-            v = "true".Equals(value);
-
+            if (value.Trim().Length == 0)
+            {
+                v = 0.0f;
+            }
+            else
+            {
+                v = float.Parse(value);
+            }
         }
 
-        public bool Value
+        public float Value
         {
             get
             {
@@ -30,7 +31,7 @@ namespace ProjectMagma.Framework
             {
                 if (v != value)
                 {
-                    bool oldValue = v;
+                    float oldValue = v;
                     v = value;
                     OnValueChanged(oldValue, v);
                 }
@@ -41,11 +42,11 @@ namespace ProjectMagma.Framework
         {
             get
             {
-                return String.Format("{0}", v);
+                return string.Format("{0}", v);
             }
         }
 
-        private void OnValueChanged(bool oldValue, bool newValue)
+        private void OnValueChanged(float oldValue, float newValue)
         {
             if (ValueChanged != null)
             {
@@ -53,7 +54,7 @@ namespace ProjectMagma.Framework
             }
         }
 
-        public event BoolChangeHandler ValueChanged;
-        private bool v;
+        public event FloatChangeHandler ValueChanged;
+        private float v;
     }
 }

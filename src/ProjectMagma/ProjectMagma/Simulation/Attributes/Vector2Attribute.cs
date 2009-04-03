@@ -1,15 +1,10 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using Microsoft.Xna.Framework;
-using Microsoft.Xna.Framework.Content;
+﻿using Microsoft.Xna.Framework;
 
 namespace ProjectMagma.Framework
 {
-    public class QuaternionAttribute : Attribute
+    public class Vector2Attribute : Attribute
     {
-        public QuaternionAttribute(string name)
+        public Vector2Attribute(string name)
         :   base(name)
         {
         }
@@ -18,7 +13,7 @@ namespace ProjectMagma.Framework
         {
             if (value.Trim().Length == 0)
             {
-                v = Quaternion.Identity;
+                v = Vector2.Zero;
             }
             else
             {
@@ -29,31 +24,22 @@ namespace ProjectMagma.Framework
                 }
                 if (splitArray.Length > 1)
                 {
-                    v.Y = float.Parse(splitArray[1]);
-                }
-                if (splitArray.Length > 2)
-                {
-                    v.Z = float.Parse(splitArray[2]);
-                }
-                if (splitArray.Length > 3)
-                {
-                    v.W = float.Parse(splitArray[3]);
+                    v.Y = float.Parse(splitArray[0]);
                 }
             }
         }
 
-        public Quaternion Value
+        public Vector2 Value
         {
             get
             {
                 return v;
             }
-
             set
             {
                 if (v != value)
                 {
-                    Quaternion oldValue = v;
+                    Vector2 oldValue = v;
                     v = value;
                     OnValueChanged(oldValue, v);
                 }
@@ -64,11 +50,11 @@ namespace ProjectMagma.Framework
         {
             get
             {
-                return String.Format("{0} {1} {2} {3}", v.X, v.Y, v.Z, v.W);
+                return string.Format("{0} {1}", v.X, v.Y);
             }
         }
 
-        private void OnValueChanged(Quaternion oldValue, Quaternion newValue)
+        private void OnValueChanged(Vector2 oldValue, Vector2 newValue)
         {
             if (ValueChanged != null)
             {
@@ -76,7 +62,7 @@ namespace ProjectMagma.Framework
             }
         }
 
-        public event QuaternionChangeEventHandler ValueChanged;
-        private Quaternion v;
+        public event Vector2ChangeHandler ValueChanged;
+        private Vector2 v;
     }
 }

@@ -1,0 +1,5 @@
+﻿<!ELEMENT Levels (Level*)>
+<!ELEMENT Level (Name, Description, FileName)>
+<!ELEMENT Name (#PCDATA)>
+<!ELEMENT Description (#PCDATA)>
+<!ELEMENT FileName (#PCDATA)>

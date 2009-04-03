@@ -1,0 +1,17 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<!DOCTYPE Levels SYSTEM "LevelInfo.dtd">
+<Levels>
+
+  <Level>
+    <Name>TestLevel1</Name>
+    <Description>A level to test!</Description>
+    <FileName>Level\TestLevel</FileName>
+  </Level>
+
+  <Level>
+    <Name>TestLevel2</Name>
+    <Description>The same level, but pssst</Description>
+    <FileName>Level\TestLevel</FileName>
+  </Level>
+
+</Levels>

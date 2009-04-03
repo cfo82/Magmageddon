@@ -8,7 +8,7 @@ namespace ProjectMagma.Renderer
 {
     public interface Renderable
     {
-        void Draw(GameTime gameTime);
+        void Draw(Renderer renderer, GameTime gameTime);
         RenderMode RenderMode { get; }
         Vector3 Position { get; }
     }

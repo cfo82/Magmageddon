@@ -6,24 +6,46 @@ using System.Text;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 
+using ProjectMagma.Simulation.Attributes;
+using ProjectMagma.Renderer;
+
 namespace ProjectMagma.Simulation
 {
     public class RenderHighlightProperty : Property
     {
         public RenderHighlightProperty()
         {
-            model = null;
         }
 
         public void OnAttached(Entity entity)
         {
-            this.entity = entity;
-            entity.Draw += OnDraw;
-            enabled = false;
+            Vector3 scale = Vector3.One;
+            Quaternion rotation = Quaternion.Identity;
+            Vector3 position = Vector3.Zero;
+
+            if (entity.HasVector3("scale"))
+            {
+                scale = entity.GetVector3("scale");
+                entity.GetVector3Attribute("scale").ValueChanged += ScaleChanged;
+            }
+            if (entity.HasQuaternion("rotation"))
+            {
+                rotation = entity.GetQuaternion("rotation");
+                entity.GetQuaternionAttribute("rotation").ValueChanged += RotationChanged;
+            }
+            if (entity.HasVector3("position"))
+            {
+                position = entity.GetVector3("position");
+                entity.GetVector3Attribute("position").ValueChanged += PositionChanged;
+            }
 
             // load the model
             string meshName = entity.GetString("mesh");
-            model = Game.Instance.Content.Load<Model>(meshName);
+            Model model = Game.Instance.Content.Load<Model>(meshName);
+
+            enabled = false;
+            renderable = new HighlightRenderable(scale, rotation, position, model);
+            this.entity = entity;
 
             // attach listener for management form
 #if !XBOX
@@ -36,101 +58,73 @@ namespace ProjectMagma.Simulation
 #if !XBOX
             Game.Instance.ManagementForm.EntitySelectionChanged -= OnEntitySelectionChanged;
 #endif
-            this.model = null;
-            entity.Draw -= OnDraw;
-            this.entity = null;
-            enabled = true;
+            if (enabled)
+            {
+                Game.Instance.Renderer.RemoveRenderable(renderable);
+            }
+
+            if (entity.HasVector3("position"))
+            {
+                entity.GetVector3Attribute("position").ValueChanged -= PositionChanged;
+            }
+            if (entity.HasQuaternion("rotation"))
+            {
+                entity.GetQuaternionAttribute("rotation").ValueChanged -= RotationChanged;
+            }
+            if (entity.HasVector3("scale"))
+            {
+                entity.GetVector3Attribute("scale").ValueChanged -= ScaleChanged;
+            }
+
+            entity = null;
         }
 
-        private void OnDraw(Entity entity, GameTime gameTime, RenderMode renderMode)
+        private void ScaleChanged(
+            Vector3Attribute sender,
+            Vector3 oldValue,
+            Vector3 newValue
+        )
         {
-            if (renderMode == RenderMode.RenderToSceneAlpha &&
-                enabled)
-            {
-                Debug.Assert(entity.HasAttribute("mesh"));
-                Debug.Assert(entity.HasAttribute("position"));
+            renderable.Scale = newValue;
+        }
 
-                Matrix world = Matrix.Identity;
+        private void RotationChanged(
+            QuaternionAttribute sender,
+            Quaternion oldValue,
+            Quaternion newValue
+        )
+        {
+            renderable.Rotation = newValue;
+        }
 
-                float scaleModificator = 1.2f;
-
-                // scaling
-                Vector3 scale = Vector3.Zero;
-                if (entity.HasVector3("scale"))
-                {
-                    scale = entity.GetVector3("scale");
-                    scale.X *= scaleModificator;
-                    scale.Y *= scaleModificator;
-                    scale.Z *= scaleModificator;
-                    world *= Matrix.CreateScale(scale);
-                }
-                else
-                {
-                    scale = new Vector3(scaleModificator, scaleModificator, scaleModificator);
-                    world *= Matrix.CreateScale(scale);
-                }
-
-                // y rotation (if we need other rotations, these are yet to be added)
-                if (entity.HasQuaternion("rotation"))
-                {
-                    Quaternion rotation = entity.GetQuaternion("rotation");
-                    world *= Matrix.CreateFromQuaternion(rotation);
-                }
-
-                // translation
-                Vector3 position = entity.GetVector3("position");
-                world *= Matrix.CreateTranslation(position);
-
-                Matrix[] transforms = new Matrix[model.Bones.Count];
-                model.CopyAbsoluteBoneTransformsTo(transforms);
-
-                foreach (ModelMesh mesh in model.Meshes)
-                {
-                    Game.Instance.GraphicsDevice.RenderState.DepthBufferEnable = true;
-                    Vector3[] diffuseColors = new Vector3[mesh.Effects.Count];
-                    int i = 0;
-                    foreach (BasicEffect effectx in mesh.Effects)
-                    {
-                        diffuseColors[i] = effectx.DiffuseColor;
-                        effectx.DiffuseColor = new Vector3(1.0f, 1.0f, 0.0f);
-                        effectx.EnableDefaultLighting();
-                        effectx.View = Game.Instance.View;
-                        effectx.Projection = Game.Instance.Projection;
-                        effectx.World = transforms[mesh.ParentBone.Index] * world;
-                        ++i;
-                    }
-
-                    //Game.Instance.GraphicsDevice.RenderState.DepthBufferEnable = false;
-                    Game.Instance.GraphicsDevice.RenderState.AlphaBlendEnable = true;
-                    Game.Instance.GraphicsDevice.RenderState.StencilFunction = CompareFunction.Always;
-                    Game.Instance.GraphicsDevice.RenderState.BlendFactor = new Color(0.5f, 0.5f, 0.5f, 0.5f);
-                    Game.Instance.GraphicsDevice.RenderState.SourceBlend = Blend.BlendFactor;
-                    Game.Instance.GraphicsDevice.RenderState.BlendFunction = BlendFunction.Add;
-                    Game.Instance.GraphicsDevice.RenderState.DestinationBlend = Blend.InverseBlendFactor;
-
-                    mesh.Draw();
-
-                    Game.Instance.GraphicsDevice.RenderState.AlphaBlendEnable = false;
-
-                    i = 0;
-                    foreach (BasicEffect effectx in mesh.Effects)
-                    {
-                        effectx.DiffuseColor = diffuseColors[i];
-                        ++i;
-                    }
-                }
-            }
+        private void PositionChanged(
+            Vector3Attribute sender,
+            Vector3 oldValue,
+            Vector3 newValue
+        )
+        {
+            renderable.Position = newValue;
         }
 
 #if !XBOX
         private void OnEntitySelectionChanged(ManagementForm managementForm, Entity oldSelection, Entity newSelection)
         {
+            if (enabled)
+            {
+                Game.Instance.Renderer.RemoveRenderable(renderable);
+            }
+
             enabled = this.entity == newSelection;
+
+            if (enabled)
+            {
+                Game.Instance.Renderer.AddRenderable(renderable);
+            }
         }
 #endif
 
-        private Entity entity;
-        private Model model;
+        private HighlightRenderable renderable;
         private bool enabled;
+        private Entity entity;
     }
 }

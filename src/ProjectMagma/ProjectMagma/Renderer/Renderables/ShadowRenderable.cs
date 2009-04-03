@@ -23,6 +23,7 @@ namespace ProjectMagma.Renderer
         }
 
         public void Draw(
+            Renderer renderer,
             GameTime gameTime
         )
         {
@@ -40,15 +41,15 @@ namespace ProjectMagma.Renderer
 
             foreach (ModelMesh mesh in model.Meshes)
             {
-                Effect effect = Game.Instance.shadowEffect;
+                Effect effect = renderer.ShadowEffect;
 
                 Game.Instance.GraphicsDevice.RenderState.DepthBufferEnable = true;
                 effect.CurrentTechnique = effect.Techniques["DepthMap"];
-                effect.Parameters["LightPosition"].SetValue(Game.Instance.lightPosition);
+                effect.Parameters["LightPosition"].SetValue(renderer.LightPosition);
                 effect.Parameters["World"].SetValue(transforms[mesh.ParentBone.Index] * world);
 
                 effect.Parameters["WorldLightViewProjection"].SetValue(
-                    transforms[mesh.ParentBone.Index] * world_offset * Game.Instance.lightView * Game.Instance.lightProjection);
+                    transforms[mesh.ParentBone.Index] * world_offset * renderer.LightView * renderer.LightProjection);
 
 
                 Effect backup = mesh.MeshParts[0].Effect;

@@ -46,31 +46,13 @@ namespace ProjectMagma
         private Simulation.Simulation simulation;
         private Renderer.Renderer renderer;
 
-        #region shadow related stuff
-        // see http://www.ziggyware.com/readarticle.php?article_id=161
-
-        // HACK: shouldnt be public, maybe extract this to some global rendering stuff class?
-        public Matrix lightView;
-        public Matrix lightProjection;
-        public Vector3 lightPosition = new Vector3(0, 10000, 0); // later: replace by orthographic light, not lookAt
-        public Vector3 lightTarget = Vector3.Zero;
-        public Texture2D lightResolve;
-        public Effect shadowEffect;
-        int shadowMapSize = 1024;
-        DepthStencilBuffer shadowStencilBuffer;
-        RenderTarget2D lightRenderTarget;
-        // ENDHACK
-
 #if !XBOX
         private FormCollection formCollection;
         private ManagementForm managementForm;
 #endif
 
-        #endregion
-
         private static Game instance;
 
-        public Effect testEffect; // public because it's only a test
         BloomComponent bloom;
 
         private Game()
@@ -167,13 +149,10 @@ namespace ProjectMagma
             // load default level
             //            LevelData levelData = Content.Load<LevelData>(levels[0].FileName);
 
-            testEffect = Content.Load<Effect>("Effects/TestEffect");
-            shadowEffect = Content.Load<Effect>("Effects/ShadowEffect");
+            renderer = new Renderer.Renderer(Content, GraphicsDevice);
 
             simulation = new ProjectMagma.Simulation.Simulation();
             simulation.Load(Content);
-
-            renderer = new Renderer.Renderer();
 
             #if !XBOX
             managementForm.BuildForm();
@@ -196,32 +175,6 @@ namespace ProjectMagma
 
             float aspectRatio = (float)viewport.Width / (float)viewport.Height;
 
-             //lightProjection = Matrix.CreatePerspectiveFieldOfView(
-                //MathHelper.ToRadians(10.0f), 1.0f, 1.0f, 10000.0f);
-            lightProjection = Matrix.CreateOrthographic(1500, 1500,
-                0.0f, 10000.0f);
-
-
-            // Set the light to look at the center of the scene.
-            lightView = Matrix.CreateLookAt(lightPosition,
-                                            lightTarget,
-                                            new Vector3(0, 0, -1));
-
-            // later: replace by something like this:
-            
-            lightRenderTarget = new RenderTarget2D(graphics.GraphicsDevice,
-                                 shadowMapSize,
-                                 shadowMapSize,
-                                 1,
-                                 SurfaceFormat.Color);
-
-            // Create out depth stencil buffer, using the shadow map size, 
-            //and the same format as our regular depth stencil buffer.
-            shadowStencilBuffer = new DepthStencilBuffer(
-                        graphics.GraphicsDevice,
-                        shadowMapSize,
-                        shadowMapSize,
-                        graphics.GraphicsDevice.DepthStencilBuffer.Format);
             currentCamera = simulation.EntityManager["camera1"];
 
             // play that funky musik white boy
@@ -290,22 +243,7 @@ namespace ProjectMagma
             formCollection.Render();
 #endif
 
-            GraphicsDevice.Clear(Color.CornflowerBlue);
-
-            // 1) Set the light's render target
-            GraphicsDevice.SetRenderTarget(0, lightRenderTarget);
-
-            // 2) Render the scene from the perspective of the light
-            RenderShadow(gameTime);
-
-            // 3) Set our render target back to the screen, and get the 
-            //depth texture created by step 2
-            GraphicsDevice.SetRenderTarget(0, null);
-            lightResolve = lightRenderTarget.GetTexture();
-
-            // 4) Render the scene from the view of the camera, 
-            //and do depth comparisons in the shader to determine shadowing
-            RenderScene(gameTime);
+            renderer.Render(gameTime);
 
             // will apply effect such as bloom
             base.Draw(gameTime);
@@ -318,39 +256,6 @@ namespace ProjectMagma
             formCollection.Draw();
 #endif
         }
-
-        private void RenderScene(GameTime gameTime)
-        {
-            foreach (Entity e in simulation.EntityManager)
-            {
-                e.OnDraw(gameTime, RenderMode.RenderToScene);
-            }
-            foreach (Entity e in simulation.EntityManager)
-            {
-                e.OnDraw(gameTime, RenderMode.RenderToSceneAlpha);
-            }
-        }
-
-        private void RenderShadow(GameTime gameTime)
-        {
-            // backup stencil buffer
-            DepthStencilBuffer oldStencilBuffer
-                = GraphicsDevice.DepthStencilBuffer;
-
-            GraphicsDevice.DepthStencilBuffer = shadowStencilBuffer;
-            GraphicsDevice.Clear(Color.White);
-
-            foreach (Entity e in simulation.EntityManager)
-            {
-                e.OnDraw(gameTime, RenderMode.RenderToShadowMap);
-            }
-
-            // restore stencil buffer
-            GraphicsDevice.DepthStencilBuffer = oldStencilBuffer;
-        }
-
-
-
 
         public Matrix View
         {
@@ -368,13 +273,6 @@ namespace ProjectMagma
             }
         }
 
-       
-
-        
-
-
-        
-
         public float EffectsVolume
         {
             get { return effectsVolume; }
@@ -384,8 +282,6 @@ namespace ProjectMagma
         {
             get { return musicVolume; }
         }
-
-        
 
 #if !XBOX
         public ManagementForm ManagementForm
@@ -400,6 +296,11 @@ namespace ProjectMagma
         public ProjectMagma.Simulation.Simulation Simulation
         {
             get { return simulation; }
+        }
+
+        public ProjectMagma.Renderer.Renderer Renderer
+        {
+            get { return renderer; }
         }
 
 

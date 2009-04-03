@@ -23,6 +23,7 @@ namespace ProjectMagma.Renderer
         }
 
         public void Draw(
+            Renderer renderer,
             GameTime gameTime
         )
         {
@@ -40,7 +41,7 @@ namespace ProjectMagma.Renderer
 
             foreach (ModelMesh mesh in model.Meshes)
             {
-                Effect effect = Game.Instance.shadowEffect;
+                Effect effect = renderer.ShadowEffect;
 
                 Game.Instance.GraphicsDevice.RenderState.DepthBufferEnable = true;
                 foreach (BasicEffect effectx in mesh.Effects)
@@ -54,13 +55,13 @@ namespace ProjectMagma.Renderer
                 Game.Instance.GraphicsDevice.RenderState.DepthBufferEnable = true;
 
                 effect.CurrentTechnique = effect.Techniques["Scene"];
-                effect.Parameters["ShadowMap"].SetValue(Game.Instance.lightResolve);
+                effect.Parameters["ShadowMap"].SetValue(renderer.LightResolve);
                 effect.Parameters["WorldCameraViewProjection"].SetValue(
                     transforms[mesh.ParentBone.Index] * world_offset * Game.Instance.View * Game.Instance.Projection);
                 effect.Parameters["World"].SetValue(transforms[mesh.ParentBone.Index] * world_offset);
 
                 effect.Parameters["WorldLightViewProjection"].SetValue(
-                    transforms[mesh.ParentBone.Index] * world_offset * Game.Instance.lightView * Game.Instance.lightProjection);
+                    transforms[mesh.ParentBone.Index] * world_offset * renderer.LightView * renderer.LightProjection);
 
 
                 Effect backup = mesh.MeshParts[0].Effect;
@@ -85,7 +86,7 @@ namespace ProjectMagma.Renderer
 
         public RenderMode RenderMode 
         {
-            get { return RenderMode.RenderToShadowMap; }
+            get { return RenderMode.RenderToScene; }
         }
 
         public Vector3 Scale

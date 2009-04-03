@@ -23,6 +23,7 @@ namespace ProjectMagma.Renderer
         }
 
         public void Draw(
+            Renderer renderer,
             GameTime gameTime
         )
         {
@@ -81,7 +82,7 @@ namespace ProjectMagma.Renderer
 
         public RenderMode RenderMode 
         {
-            get { return RenderMode.RenderToShadowMap; }
+            get { return RenderMode.RenderToSceneAlpha; }
         }
 
         public Vector3 Scale

@@ -2,7 +2,7 @@
 using Microsoft.Xna.Framework;
 using ProjectMagma.Collision;
 
-namespace ProjectMagma.Framework
+namespace ProjectMagma.Simulation
 {
     public class FlamethrowerControllerProperty : Property
     {
@@ -29,9 +29,9 @@ namespace ProjectMagma.Framework
 
         public void OnAttached(Entity flame)
         {
-            this.constants = Game.Instance.EntityManager["player_constants"];
+            this.constants = Game.Instance.Simulation.EntityManager["player_constants"];
             this.flame = flame;
-            this.player = Game.Instance.EntityManager[flame.GetString("player")];
+            this.player = Game.Instance.Simulation.EntityManager[flame.GetString("player")];
 
             player.GetVector3Attribute("position").ValueChanged += playerPositionHandler;
             player.GetQuaternionAttribute("rotation").ValueChanged += playerRotationHandler;
@@ -106,7 +106,7 @@ namespace ProjectMagma.Framework
                 else
                 {
                     flameThrowerState = FlameThrowerState.InActive;
-                    Game.Instance.EntityManager.RemoveDeferred(flame);
+                    Game.Instance.Simulation.EntityManager.RemoveDeferred(flame);
                 }
             }
 

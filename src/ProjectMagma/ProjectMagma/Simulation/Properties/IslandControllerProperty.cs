@@ -5,7 +5,7 @@ using Microsoft.Xna.Framework;
 using ProjectMagma.Collision;
 
 
-namespace ProjectMagma.Framework
+namespace ProjectMagma.Simulation
 {
     public class IslandControllerProperty : Property
     {
@@ -18,7 +18,7 @@ namespace ProjectMagma.Framework
         {
             Debug.Assert(entity.HasVector3("position"));
 
-            this.constants = Game.Instance.EntityManager["island_constants"];
+            this.constants = Game.Instance.Simulation.EntityManager["island_constants"];
 
             entity.AddIntAttribute("collisionCount", 0);
 
@@ -49,7 +49,7 @@ namespace ProjectMagma.Framework
         {
             if (island.GetInt("health") <= 0)
             {
-                Game.Instance.EntityManager.RemoveDeferred(island);
+                Game.Instance.Simulation.EntityManager.RemoveDeferred(island);
                 return;
             }
 
@@ -71,7 +71,7 @@ namespace ProjectMagma.Framework
             Vector3 islandPosition = island.GetVector3("position");
             bool collided = false;
 
-            foreach (Entity pillar in Game.Instance.PillarManager)
+            foreach (Entity pillar in Game.Instance.Simulation.PillarManager)
             {
                 Vector3 pillarPosition = pillar.GetVector3("position");
                 Vector3 dist = pillarPosition - islandPosition;

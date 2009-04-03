@@ -8,7 +8,7 @@ using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Content;
 using ProjectMagma.Shared.LevelData;
 
-namespace ProjectMagma.Framework
+namespace ProjectMagma.Simulation
 {
     public class Entity
     {

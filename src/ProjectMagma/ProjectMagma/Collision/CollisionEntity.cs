@@ -1,5 +1,5 @@
 ﻿using ProjectMagma.Shared.Math.Volume;
-using ProjectMagma.Framework;
+using ProjectMagma.Simulation;
 using Microsoft.Xna.Framework;
 
 namespace ProjectMagma.Collision

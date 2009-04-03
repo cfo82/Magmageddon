@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Audio;
 using Microsoft.Xna.Framework.Graphics;
@@ -8,10 +9,9 @@ using Microsoft.Xna.Framework.Media;
 using xWinFormsLib;
 #endif
 
-using ProjectMagma.Framework;
+using ProjectMagma.Simulation;
 using ProjectMagma.Shared.LevelData;
 using ProjectMagma.Collision;
-using System.Collections.Generic;
 
 // its worth to read this...
 // 
@@ -28,7 +28,7 @@ namespace ProjectMagma
         private SpriteBatch spriteBatch;
 
         // game paused?
-        private bool paused = false;
+        
 
         private List<LevelInfo> levels;
 
@@ -38,16 +38,11 @@ namespace ProjectMagma
         private float effectsVolume = 0;
         private float musicVolume = 0;
 
-        private EntityManager entityManager;
-        private EntityKindManager pillarManager;
-        private EntityKindManager islandManager;
-        private EntityKindManager playerManager;
-        private EntityKindManager powerupManager;
-        private EntityKindManager iceSpikeManager;
-        private CollisionManager collisionManager;
 
-        private GameTime currentGameTime;
+        
         private double lastUpdateAt = 0;
+
+        private Simulation.Simulation simulation;
 
         #region shadow related stuff
         // see http://www.ziggyware.com/readarticle.php?article_id=161
@@ -93,15 +88,8 @@ namespace ProjectMagma
             Window.Title = "Project Magma";
             Content.RootDirectory = "Content";
 
-            entityManager = new EntityManager();
-            pillarManager = new EntityKindManager(entityManager, "pillar");
-            islandManager = new EntityKindManager(entityManager, "island");
-            playerManager = new EntityKindManager(entityManager, "player");
-            powerupManager = new EntityKindManager(entityManager, "powerup");
-            iceSpikeManager = new EntityKindManager(entityManager, "ice_spike");
-            collisionManager = new CollisionManager();
 
-            appliedAt = new Dictionary<String, double>(entityManager.Count);
+            appliedAt = new Dictionary<String, double>();
 
             bloom = new BloomComponent(this);
             Components.Add(bloom);
@@ -156,12 +144,6 @@ namespace ProjectMagma
             base.Initialize();
         }
 
-        private void CreateManagementForm()
-        {
-
-            //Show the form
-        }
-
         /// <summary>
         /// LoadContent will be called once per game and is theF place to load
         /// all of your content.
@@ -181,14 +163,17 @@ namespace ProjectMagma
             levels = Content.Load<List<LevelInfo>>("Level/LevelInfo");
 
             // load default level
-            LevelData levelData = Content.Load<LevelData>("Level/TestLevel");
             //            LevelData levelData = Content.Load<LevelData>(levels[0].FileName);
 
             testEffect = Content.Load<Effect>("Effects/TestEffect");
             shadowEffect = Content.Load<Effect>("Effects/ShadowEffect");
 
-            entityManager.Load(levelData);
+            simulation = new ProjectMagma.Simulation.Simulation();
+            simulation.Load(Content);
 
+            #if !XBOX
+            managementForm.BuildForm();
+            #endif
             //Random islandRand = new Random(3432);
             //for(int i=0; i<10; ++i)
             //{
@@ -211,21 +196,12 @@ namespace ProjectMagma
             //}
 
             // set gamepad assignments
-            int gi = 0;
-            foreach (Entity e in playerManager)
-            {
-                e.AddIntAttribute("game_pad_index", gi++);
-            }
 
             // load hud and menu
             hud.LoadContent();
             menu.LoadContent();
 
             // preload sounds
-            foreach (Entity e in Game.Instance.powerupManager)
-            {
-                Game.Instance.Content.Load<SoundEffect>("Sounds/" + e.GetString("pickup_sound"));
-            }
             Game.Instance.Content.Load<SoundEffect>("Sounds/gong1");
             Game.Instance.Content.Load<SoundEffect>("Sounds/punch2");
             Game.Instance.Content.Load<SoundEffect>("Sounds/hit2");
@@ -262,9 +238,7 @@ namespace ProjectMagma
                         shadowMapSize,
                         shadowMapSize,
                         graphics.GraphicsDevice.DepthStencilBuffer.Format);
-            currentCamera = entityManager["camera1"];
-
-            CreateManagementForm();
+            currentCamera = simulation.EntityManager["camera1"];
 
             // play that funky musik white boy
             /*MediaPlayer.Play(Game.Instance.Content.Load<Song>("Sounds/music"));
@@ -300,8 +274,6 @@ namespace ProjectMagma
                 return;
             }
 
-            currentGameTime = gameTime;
-
             // fullscreen
             if(Keyboard.GetState().IsKeyDown(Keys.Enter)
                 && Keyboard.GetState().IsKeyDown(Keys.LeftAlt))
@@ -310,34 +282,18 @@ namespace ProjectMagma
                 graphics.ApplyChanges();
             }
 
-            if (!paused)
-            {
-                // update all entities
-                foreach (Entity e in entityManager)
-                {
-                    e.OnUpdate(gameTime);
-                }
-
-                // perform collision detection
-                collisionManager.Update(gameTime);
-
-                // execute deferred add/remove orders on the entityManager
-                entityManager.ExecuteDeferred();
-            }
-
 #if !XBOX
             // update the user interface
             formCollection.Update(gameTime);
 #endif
+
+            simulation.Update(gameTime);
 
             // update menu
             menu.Update(gameTime);
 
             // update all GameComponents registered
             base.Update(gameTime);
-
-            // set lastupdate time
-            lastUpdateAt = gameTime.TotalGameTime.TotalMilliseconds;
         }
 
         /// <summary>
@@ -381,11 +337,11 @@ namespace ProjectMagma
 
         private void RenderScene(GameTime gameTime)
         {
-            foreach (Entity e in entityManager)
+            foreach (Entity e in simulation.EntityManager)
             {
                 e.OnDraw(gameTime, RenderMode.RenderToScene);
             }
-            foreach (Entity e in entityManager)
+            foreach (Entity e in simulation.EntityManager)
             {
                 e.OnDraw(gameTime, RenderMode.RenderToSceneAlpha);
             }
@@ -400,7 +356,7 @@ namespace ProjectMagma
             graphics.GraphicsDevice.DepthStencilBuffer = shadowStencilBuffer;
             graphics.GraphicsDevice.Clear(Color.White);
 
-            foreach (Entity e in entityManager)
+            foreach (Entity e in simulation.EntityManager)
             {
                 e.OnDraw(gameTime, RenderMode.RenderToShadowMap);
             }
@@ -417,37 +373,7 @@ namespace ProjectMagma
             }
         }
 
-        public EntityKindManager PillarManager
-        {
-            get
-            {
-                return pillarManager;
-            }
-        }
 
-        public EntityKindManager IslandManager
-        {
-            get
-            {
-                return islandManager;
-            }
-        }
-
-        public EntityKindManager PlayerManager
-        {
-            get
-            {
-                return playerManager;
-            }
-        }
-
-        public EntityKindManager PowerupManager
-        {
-            get
-            {
-                return powerupManager;
-            }
-        }
 
 
         public Matrix View
@@ -466,31 +392,12 @@ namespace ProjectMagma
             }
         }
 
-        public EntityManager EntityManager
-        { 
-            get
-            {
-                return entityManager;
-            }
-        }
+       
 
-        public CollisionManager CollisionManager
-        {
-            get
-            {
-                return collisionManager;
-            }
-        }
+        
 
-        public double LastUpdateAt
-        {
-            get { return lastUpdateAt; }
-        }
 
-        public GameTime CurrentUpdateTime
-        {
-            get { return currentGameTime; }
-        }
+        
 
         public float EffectsVolume
         {
@@ -502,10 +409,7 @@ namespace ProjectMagma
             get { return musicVolume; }
         }
 
-        public bool Paused
-        {
-            get { return paused; }
-        }
+        
 
 #if !XBOX
         public ManagementForm ManagementForm
@@ -517,11 +421,19 @@ namespace ProjectMagma
         }
 #endif
 
+        public ProjectMagma.Simulation.Simulation Simulation
+        {
+            get { return simulation; }
+        }
+
 
         /**
          * TODO:
          * move stuff below into utility class
          **/
+
+
+        #region Strange Stuff used by Janicks code
 
         public static Vector3 GetPosition(Entity player)
         {
@@ -556,7 +468,7 @@ namespace ProjectMagma
         {
             if (pushbackVelocity.Length() > 0)
             {
-                float dt = Game.Instance.CurrentUpdateTime.ElapsedGameTime.Milliseconds / 1000.0f;
+                float dt = Game.Instance.Simulation.CurrentGameTime.ElapsedGameTime.Milliseconds / 1000.0f;
 
                 Console.WriteLine("pushback applied");
 
@@ -632,7 +544,7 @@ namespace ProjectMagma
         public void ExecuteAtInterval(Entity source, String identifier, float interval, IntervalExecutionAction action)
         {
             String fullIdentifier = source.Name + "_" + identifier;
-            double current = currentGameTime.TotalGameTime.TotalMilliseconds;
+            double current = simulation.CurrentGameTime.TotalGameTime.TotalMilliseconds;
 
             // if appliedAt doesn't contain string this is first time we called this functin
             if (!appliedAt.ContainsKey(fullIdentifier))
@@ -664,6 +576,8 @@ namespace ProjectMagma
                 appliedAt[fullIdentifier] = last + times * interval;
             }
         }
+
+        #endregion
     }
 
     public delegate void IntervalExecutionAction(int times);

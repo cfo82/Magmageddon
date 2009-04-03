@@ -11,7 +11,7 @@ using Microsoft.Xna.Framework.Media;
 using Microsoft.Xna.Framework.Net;
 using Microsoft.Xna.Framework.Storage;
 using xWinFormsLib;
-using ProjectMagma.Framework;
+using ProjectMagma.Simulation;
 
 namespace ProjectMagma
 {
@@ -22,10 +22,9 @@ namespace ProjectMagma
         public ManagementForm(FormCollection formCollection)
         {
             this.formCollection = formCollection;
-            BuildForm();
         }
 
-        private void BuildForm()
+        public void BuildForm()
         {
             isMinimized = false;
 
@@ -35,7 +34,7 @@ namespace ProjectMagma
             formCollection[formName].Style = Form.BorderStyle.Sizable;
 
             List<string> entityNames = new List<string>();
-            foreach (Entity e in Game.Instance.EntityManager)
+            foreach (Entity e in Game.Instance.Simulation.EntityManager)
             {
                 entityNames.Add(e.Name);
             }
@@ -60,8 +59,8 @@ namespace ProjectMagma
             formCollection[formName].Minimize();
 
             // register events
-            Game.Instance.EntityManager.EntityAdded += OnEntityAdded;
-            Game.Instance.EntityManager.EntityRemoved += OnEntityRemoved;
+            Game.Instance.Simulation.EntityManager.EntityAdded += OnEntityAdded;
+            Game.Instance.Simulation.EntityManager.EntityRemoved += OnEntityRemoved;
             formCollection[formName].OnResized += OnResized;
             ((Listbox)formCollection[formName][entityListName]).OnChangeSelection += OnEntityListSelectionChanged;
             ((Listbox)formCollection[formName][attributeListName]).OnChangeSelection += OnAttributeListSelectionChanged;
@@ -105,7 +104,7 @@ namespace ProjectMagma
             if (((Listbox)formCollection[formName][entityListName]).SelectedIndex >= 0)
             {
                 string selectedEntityName = ((Listbox)formCollection[formName][entityListName]).SelectedItem;
-                selectedEntity = Game.Instance.EntityManager[selectedEntityName];
+                selectedEntity = Game.Instance.Simulation.EntityManager[selectedEntityName];
 
                 ((Listbox)formCollection[formName][attributeListName]).Clear();
                 foreach (Attribute attribute in selectedEntity.Attributes.Values)
@@ -132,7 +131,7 @@ namespace ProjectMagma
             {
                 string selectedEntityName = ((Listbox)formCollection[formName][entityListName]).SelectedItem;
                 string selectedAttributeName = ((Listbox)formCollection[formName][attributeListName]).SelectedItem;
-                Entity selectedEntity = Game.Instance.EntityManager[selectedEntityName];
+                Entity selectedEntity = Game.Instance.Simulation.EntityManager[selectedEntityName];
                 if (selectedEntity.HasAttribute(selectedAttributeName))
                 {
                     Attribute attribute = selectedEntity.GetAttribute(selectedAttributeName);
@@ -148,7 +147,7 @@ namespace ProjectMagma
             {
                 string selectedEntityName = ((Listbox)formCollection[formName][entityListName]).SelectedItem;
                 string selectedAttributeName = ((Listbox)formCollection[formName][attributeListName]).SelectedItem;
-                Entity selectedEntity = Game.Instance.EntityManager[selectedEntityName];
+                Entity selectedEntity = Game.Instance.Simulation.EntityManager[selectedEntityName];
                 if (selectedEntity.HasAttribute(selectedAttributeName))
                 {
                     selectedEntity.GetAttribute(selectedAttributeName).Initialize(

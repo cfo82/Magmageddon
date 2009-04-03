@@ -3,7 +3,7 @@ using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Audio;
 using ProjectMagma.Collision;
 
-namespace ProjectMagma.Framework
+namespace ProjectMagma.Simulation
 {
     public class IceSpikeControllerProperty : Property
     {
@@ -15,7 +15,7 @@ namespace ProjectMagma.Framework
 
         public void OnAttached(Entity entity)
         {
-            this.constants = Game.Instance.EntityManager["player_constants"];
+            this.constants = Game.Instance.Simulation.EntityManager["player_constants"];
 
             ((CollisionProperty)entity.GetProperty("collision")).OnContact += IceSpikeCollisionHandler;
 
@@ -45,8 +45,8 @@ namespace ProjectMagma.Framework
             if (targetPlayerName != "")
             {
                 // incorporate homing effect towards targeted player
-                Entity targetPlayer = Game.Instance.PlayerManager[0];
-                foreach (Entity e in Game.Instance.PlayerManager)
+                Entity targetPlayer = Game.Instance.Simulation.PlayerManager[0];
+                foreach (Entity e in Game.Instance.Simulation.PlayerManager)
                 {
                     if (e.Name == targetPlayerName)
                     {
@@ -75,14 +75,14 @@ namespace ProjectMagma.Framework
             // check lifetime
             if(iceSpike.GetInt("creation_time") + constants.GetInt("ice_spike_lifetime") < iat)
             {
-                Game.Instance.EntityManager.RemoveDeferred(iceSpike);
+                Game.Instance.Simulation.EntityManager.RemoveDeferred(iceSpike);
                 return;
             }
 
             // remove if in lava
-            if (pos.Y < Game.Instance.EntityManager["lava"].GetVector3("position").Y)
+            if (pos.Y < Game.Instance.Simulation.EntityManager["lava"].GetVector3("position").Y)
             {
-                Game.Instance.EntityManager.RemoveDeferred(iceSpike);
+                Game.Instance.Simulation.EntityManager.RemoveDeferred(iceSpike);
                 return;
             }
 
@@ -103,7 +103,7 @@ namespace ProjectMagma.Framework
             {
                 if (other.HasAttribute("kind") && other.GetString("kind") == "player")
                     IceSpikePlayerCollisionHandler(gameTime, iceSpike, other);
-                Game.Instance.EntityManager.RemoveDeferred(iceSpike);
+                Game.Instance.Simulation.EntityManager.RemoveDeferred(iceSpike);
             }
         }
 

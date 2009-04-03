@@ -11,7 +11,7 @@ using Microsoft.Xna.Framework.Audio;
 using ProjectMagma.Collision;
 using ProjectMagma.Collision.CollisionTests;
 
-namespace ProjectMagma.Framework
+namespace ProjectMagma.Simulation
 {
     public class PlayerControllerProperty : Property
     {
@@ -57,7 +57,7 @@ namespace ProjectMagma.Framework
         {
             player.Update += OnUpdate;
 
-            this.constants = Game.Instance.EntityManager["player_constants"];
+            this.constants = Game.Instance.Simulation.EntityManager["player_constants"];
 
             player.AddQuaternionAttribute("rotation", Quaternion.Identity);
             player.AddVector3Attribute("velocity", Vector3.Zero);
@@ -76,7 +76,7 @@ namespace ProjectMagma.Framework
             player.AddIntAttribute("frozen", 0);
             player.AddStringAttribute("collisionPlayer", "");
 
-            Game.Instance.EntityManager.EntityRemoved += EntityRemovedHandler;
+            Game.Instance.Simulation.EntityManager.EntityRemoved += EntityRemovedHandler;
             ((CollisionProperty)player.GetProperty("collision")).OnContact += PlayerCollisionHandler;
 
             jetpackSound = Game.Instance.Content.Load<SoundEffect>("Sounds/jetpack");
@@ -91,9 +91,9 @@ namespace ProjectMagma.Framework
             arrow.AddStringAttribute("mesh", "Models/arrow");
             arrow.AddVector3Attribute("scale", new Vector3(12, 12, 12));
 
-            arrow.AddProperty("arrow_controller_property", new ArrowControllerProperty()); 
+            arrow.AddProperty("arrow_controller_property", new ArrowControllerProperty());
 
-            Game.Instance.EntityManager.AddDeferred(arrow);
+            Game.Instance.Simulation.EntityManager.AddDeferred(arrow);
 
             this.previousPosition = player.GetVector3("position");
             this.player = player;
@@ -102,10 +102,10 @@ namespace ProjectMagma.Framework
         public void OnDetached(Entity player)
         {
             player.Update -= OnUpdate;
-            Game.Instance.EntityManager.Remove(arrow);
+            Game.Instance.Simulation.EntityManager.Remove(arrow);
             if(flame != null)
-                Game.Instance.EntityManager.Remove(flame);
-            Game.Instance.EntityManager.EntityRemoved -= EntityRemovedHandler;
+                Game.Instance.Simulation.EntityManager.Remove(flame);
+            Game.Instance.Simulation.EntityManager.EntityRemoved -= EntityRemovedHandler;
             ((CollisionProperty)player.GetProperty("collision")).OnContact -= PlayerCollisionHandler;
         }
 
@@ -147,8 +147,8 @@ namespace ProjectMagma.Framework
                         player.AddProperty("shadow_cast", new ShadowCastProperty());
 
                         // random island selection
-                        int islandNo = rand.Next(Game.Instance.IslandManager.Count - 1);
-                        Entity island = Game.Instance.IslandManager[islandNo];
+                        int islandNo = rand.Next(Game.Instance.Simulation.IslandManager.Count - 1);
+                        Entity island = Game.Instance.Simulation.IslandManager[islandNo];
                         Vector3 pos = island.GetVector3("position");
                         pos.Y = pos.Y + 30; // todo: change this to point defined in mesh
                         player.SetVector3("position", pos);
@@ -329,7 +329,7 @@ namespace ProjectMagma.Framework
                 float aimDistance = float.PositiveInfinity;
                 Entity targetPlayer = null;
                 Vector3 distVector = Vector3.Zero;
-                foreach(Entity p in Game.Instance.PlayerManager)
+                foreach (Entity p in Game.Instance.Simulation.PlayerManager)
                 {
                     if(p != player)
                     {
@@ -377,7 +377,7 @@ namespace ProjectMagma.Framework
                 iceSpike.AddProperty("collision", new CollisionProperty());
                 iceSpike.AddProperty("controller", new IceSpikeControllerProperty());
 
-                Game.Instance.EntityManager.AddDeferred(iceSpike);
+                Game.Instance.Simulation.EntityManager.AddDeferred(iceSpike);
 
                 // update states
                 player.SetInt("energy", player.GetInt("energy") - constants.GetInt("ice_spike_energy_cost"));
@@ -416,7 +416,7 @@ namespace ProjectMagma.Framework
                         flame.AddProperty("collision", new CollisionProperty());
                         flame.AddProperty("controller", new FlamethrowerControllerProperty());
 
-                        Game.Instance.EntityManager.AddDeferred(flame);
+                        Game.Instance.Simulation.EntityManager.AddDeferred(flame);
                     }
                 }
                 else
@@ -471,8 +471,8 @@ namespace ProjectMagma.Framework
             // island attraction
             if (!arrow.HasProperty("render"))
             {
-                int islandNo = rand.Next(Game.Instance.IslandManager.Count - 1);
-                Entity island = Game.Instance.IslandManager[islandNo];
+                int islandNo = rand.Next(Game.Instance.Simulation.IslandManager.Count - 1);
+                Entity island = Game.Instance.Simulation.IslandManager[islandNo];
 
                 arrow.SetString("island", island.Name);
 
@@ -517,7 +517,7 @@ namespace ProjectMagma.Framework
             CheckPlayerAttributeRanges(player);
 
             // check collision with lava
-            Entity lava = Game.Instance.EntityManager["lava"];
+            Entity lava = Game.Instance.Simulation.EntityManager["lava"];
             if (playerPosition.Y < lava.GetVector3("position").Y)
                 PlayerLavaCollisionHandler(gameTime, player, lava);
         }

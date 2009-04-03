@@ -7,7 +7,7 @@ using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using ProjectMagma.Collision;
 
-namespace ProjectMagma.Framework
+namespace ProjectMagma.Simulation
 {
     public class PowerUpController : Property
     {
@@ -25,8 +25,8 @@ namespace ProjectMagma.Framework
             if (respawnAt != 0
                 && gameTime.TotalGameTime.TotalMilliseconds > respawnAt)
             {
-                int islandNo = rand.Next(Game.Instance.IslandManager.Count - 1);
-                islandEntity = Game.Instance.IslandManager[islandNo];
+                int islandNo = rand.Next(Game.Instance.Simulation.IslandManager.Count - 1);
+                islandEntity = Game.Instance.Simulation.IslandManager[islandNo];
 
                 powerupEntity.AddProperty("collision", new CollisionProperty());
                 powerupEntity.AddProperty("render", new RenderProperty());
@@ -41,7 +41,7 @@ namespace ProjectMagma.Framework
         )
         {
             this.powerupEntity = entity;
-            this.islandEntity = Game.Instance.EntityManager[entity.GetString("island_reference")];
+            this.islandEntity = Game.Instance.Simulation.EntityManager[entity.GetString("island_reference")];
 
             // initialize properties
             Debug.Assert(this.powerupEntity.HasVector3("relative_position"), "must have a relative translation attribute");

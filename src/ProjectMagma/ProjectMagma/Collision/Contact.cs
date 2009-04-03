@@ -1,5 +1,5 @@
 ﻿using Microsoft.Xna.Framework;
-using ProjectMagma.Framework;
+using ProjectMagma.Simulation;
 
 namespace ProjectMagma.Collision
 {

@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using Microsoft.Xna.Framework.Graphics;
-using ProjectMagma.Framework;
+using ProjectMagma.Simulation;
 using Microsoft.Xna.Framework;
 
 namespace ProjectMagma
@@ -32,7 +32,7 @@ namespace ProjectMagma
             energyBar = Game.Instance.Content.Load<Texture2D>("Sprites/HUD/energy");
             fuelBar = Game.Instance.Content.Load<Texture2D>("Sprites/HUD/fuel");
 
-            playerConstants = Game.Instance.EntityManager["player_constants"];
+            playerConstants = Game.Instance.Simulation.EntityManager["player_constants"];
         }
 
         internal void Draw(GameTime gameTime)
@@ -44,7 +44,7 @@ namespace ProjectMagma
             spriteBatch.Begin(SpriteBlendMode.AlphaBlend, SpriteSortMode.Deferred,
                 SaveStateMode.None, spriteScale);
 
-            foreach (Entity player in Game.Instance.PlayerManager)
+            foreach (Entity player in Game.Instance.Simulation.PlayerManager)
             {
                 int no = player.GetInt("number");
 
@@ -84,8 +84,8 @@ namespace ProjectMagma
                 spriteBatch.Draw(fuelBar, new Vector2(fuelX, 117), new Rectangle(0, 0, fuelBarWidth, fuelBar.Height), 
                     Color.White, 0f, Vector2.Zero, 1, effects, 0);
             }
-            spriteBatch.DrawString(font, String.Format("{0:00.0} fps", (1000f / (Game.Instance.CurrentUpdateTime.TotalGameTime.TotalMilliseconds-
-                Game.Instance.LastUpdateAt))), 
+            spriteBatch.DrawString(font, String.Format("{0:00.0} fps", (1000f / (Game.Instance.Simulation.CurrentGameTime.TotalGameTime.TotalMilliseconds -
+                Game.Instance.Simulation.LastUpdateAt))), 
                 new Vector2(screenWidth / 2-20, 5), Color.Black);
             spriteBatch.End();
         }

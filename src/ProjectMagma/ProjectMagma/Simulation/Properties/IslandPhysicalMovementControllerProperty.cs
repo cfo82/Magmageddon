@@ -5,7 +5,7 @@ using Microsoft.Xna.Framework;
 using ProjectMagma.Collision;
 
 
-namespace ProjectMagma.Framework
+namespace ProjectMagma.Simulation
 {
     public class IslandPhysicalMovementControllerProperty : IslandControllerPropertyBase
     {
@@ -46,7 +46,7 @@ namespace ProjectMagma.Framework
             Vector3 islandPosition = island.GetVector3("position");
             bool collided = false;
 
-            foreach (Entity pillar in Game.Instance.PillarManager)
+            foreach (Entity pillar in Game.Instance.Simulation.PillarManager)
             {
                 Vector3 pillarPosition = pillar.GetVector3("position");
                 Vector3 dist = pillarPosition - islandPosition;

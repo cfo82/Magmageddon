@@ -6,7 +6,7 @@ using System.Text;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 
-namespace ProjectMagma.Framework
+namespace ProjectMagma.Simulation
 {
     public class RenderHighlightProperty : Property
     {

@@ -1,5 +1,5 @@
 ﻿
-namespace ProjectMagma.Framework
+namespace ProjectMagma.Simulation
 {
     public class FloatAttribute : Attribute
     {

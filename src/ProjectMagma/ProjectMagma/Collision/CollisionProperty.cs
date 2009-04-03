@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
-using ProjectMagma.Framework;
+using ProjectMagma.Simulation;
 using ProjectMagma.Shared.Math.Volume;
 using ProjectMagma.Collision.CollisionTests;
 
@@ -25,17 +25,17 @@ namespace ProjectMagma.Collision
                 if (bv_type == "cylinder")
                 {
                     Cylinder3 bvCylinder = GetBoundingCylinder(entity);
-                    Game.Instance.CollisionManager.AddCollisionEntity(entity, this, bvCylinder);
+                    Game.Instance.Simulation.CollisionManager.AddCollisionEntity(entity, this, bvCylinder);
                 }
                 else if (bv_type == "alignedbox3tree")
                 {
                     AlignedBox3Tree bvTree = GetAlignedBox3Tree(entity);
-                    Game.Instance.CollisionManager.AddCollisionEntity(entity, this, bvTree);
+                    Game.Instance.Simulation.CollisionManager.AddCollisionEntity(entity, this, bvTree);
                 }
                 else if (bv_type == "sphere")
                 {
                     Sphere3 bvSphere = GetBoundingSphere(entity);
-                    Game.Instance.CollisionManager.AddCollisionEntity(entity, this, bvSphere);
+                    Game.Instance.Simulation.CollisionManager.AddCollisionEntity(entity, this, bvSphere);
                 }
             }
         }
@@ -44,7 +44,7 @@ namespace ProjectMagma.Collision
             Entity entity
         )
         {
-            Game.Instance.CollisionManager.RemoveCollisionEntity(this);
+            Game.Instance.Simulation.CollisionManager.RemoveCollisionEntity(this);
         }
 
         public void FireContact(GameTime gameTime, List<Contact> contacts)

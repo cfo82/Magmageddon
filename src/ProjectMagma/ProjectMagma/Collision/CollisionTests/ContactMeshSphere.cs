@@ -2,7 +2,7 @@
 using System.Diagnostics;
 using System.Collections.Generic;
 using Microsoft.Xna.Framework;
-using ProjectMagma.Framework;
+using ProjectMagma.Simulation;
 using ProjectMagma.Shared.Math.Distance;
 using ProjectMagma.Shared.Math.Volume;
 

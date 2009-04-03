@@ -7,7 +7,7 @@ using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using ProjectMagma.Collision;
 
-namespace ProjectMagma.Framework
+namespace ProjectMagma.Simulation
 {
     public class ArrowControllerProperty : Property
     {
@@ -53,7 +53,7 @@ namespace ProjectMagma.Framework
             }
             else
             {
-                island = Game.Instance.EntityManager[newIsland];
+                island = Game.Instance.Simulation.EntityManager[newIsland];
                 island.GetVector3Attribute("position").ValueChanged += OnIslandPositionChanged;
             }
         }

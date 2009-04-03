@@ -7,7 +7,7 @@ using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using ProjectMagma.Collision;
 
-namespace ProjectMagma.Framework
+namespace ProjectMagma.Simulation
 {
     public class DeathProperty : Property
     {
@@ -20,7 +20,7 @@ namespace ProjectMagma.Framework
         {
             if (entity.GetInt("health") <= 0)
             {
-                Game.Instance.EntityManager.RemoveDeferred(entity);
+                Game.Instance.Simulation.EntityManager.RemoveDeferred(entity);
                 return;
             }
         }

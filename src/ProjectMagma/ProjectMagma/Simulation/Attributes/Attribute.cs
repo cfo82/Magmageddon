@@ -1,5 +1,5 @@
 ﻿
-namespace ProjectMagma.Framework
+namespace ProjectMagma.Simulation
 {
     public abstract class Attribute
     {

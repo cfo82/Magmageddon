@@ -5,7 +5,7 @@ using Microsoft.Xna.Framework;
 using ProjectMagma.Collision;
 
 
-namespace ProjectMagma.Framework
+namespace ProjectMagma.Simulation
 {
     public abstract class IslandControllerPropertyBase : Property
     {
@@ -17,7 +17,7 @@ namespace ProjectMagma.Framework
         {
             Debug.Assert(entity.HasVector3("position"));
 
-            this.constants = Game.Instance.EntityManager["island_constants"];
+            this.constants = Game.Instance.Simulation.EntityManager["island_constants"];
 
             if (!entity.HasAttribute("max_health"))
                 entity.AddIntAttribute("max_health", (int) (Game.GetScale(entity).Length() * constants.GetFloat("scale_health_multiplier")));

@@ -1,6 +1,6 @@
 ﻿using Microsoft.Xna.Framework;
 
-namespace ProjectMagma.Framework
+namespace ProjectMagma.Simulation
 {
     public class QuaternionAttribute : Attribute
     {

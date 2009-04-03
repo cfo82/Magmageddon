@@ -5,7 +5,7 @@ using Microsoft.Xna.Framework;
 using ProjectMagma.Collision;
 
 
-namespace ProjectMagma.Framework
+namespace ProjectMagma.Simulation
 {
     public class IslandCircualarMovementControllerProperty : IslandControllerPropertyBase
     {
@@ -23,7 +23,7 @@ namespace ProjectMagma.Framework
                 entity.AddStringAttribute("pillar", pillar.Name);
             }
             else
-                pillar = Game.Instance.EntityManager[entity.GetString("pillar")];
+                pillar = Game.Instance.Simulation.EntityManager[entity.GetString("pillar")];
         }
 
         public override void OnDetached(Entity entity)
@@ -71,7 +71,7 @@ namespace ProjectMagma.Framework
             // find nearest pillar
             float dist = float.MaxValue;
             Entity nearest = null;
-            foreach (Entity pillar in Game.Instance.PillarManager)
+            foreach (Entity pillar in Game.Instance.Simulation.PillarManager)
             {
                 float d = (pillar.GetVector3("position") - island.GetVector3("position")).Length();
                 if (d < dist)

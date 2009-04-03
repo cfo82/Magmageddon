@@ -102,10 +102,10 @@
     <Compile Include="Collision\CollisionEntity.cs" />
     <Compile Include="Collision\BoundingVolumeTypeUtil.cs" />
     <Compile Include="Collision\CollisionProperty.cs" />
-    <Compile Include="EntityRemovedHandler.cs" />
-    <Compile Include="EntityAddedHandler.cs" />
-    <Compile Include="EntityKindManager.cs" />
-    <Compile Include="EntityManager.cs" />
+    <Compile Include="Simulation\Event\EntityRemovedHandler.cs" />
+    <Compile Include="Simulation\Event\EntityAddedHandler.cs" />
+    <Compile Include="Simulation\EntityKindManager.cs" />
+    <Compile Include="Simulation\EntityManager.cs" />
     <Compile Include="ManagementForm.cs">
       <SubType>Code</SubType>
     </Compile>
@@ -149,6 +149,7 @@
     <Compile Include="Simulation\Properties\RenderHighlightProperty.cs" />
     <Compile Include="Simulation\Properties\RenderProperty.cs" />
     <Compile Include="Simulation\Properties\ShadowCastProperty.cs" />
+    <Compile Include="Simulation\Simulation.cs" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="Game.ico" />

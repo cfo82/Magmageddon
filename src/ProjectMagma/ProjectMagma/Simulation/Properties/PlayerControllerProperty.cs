@@ -1,15 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using Microsoft.Xna.Framework;
-using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
-using Microsoft.Xna.Framework.Media;
-using System.Diagnostics;
 using Microsoft.Xna.Framework.Audio;
 using ProjectMagma.Collision;
-using ProjectMagma.Collision.CollisionTests;
+using ProjectMagma.Simulation.Attributes;
 
 namespace ProjectMagma.Simulation
 {

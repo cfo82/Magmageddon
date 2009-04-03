@@ -1,11 +1,10 @@
-﻿using System;
-using System.Diagnostics;
+﻿using System.Diagnostics;
 using System.Collections.Generic;
 using System.Reflection;
-using System.Linq;
 using System.Text;
 using Microsoft.Xna.Framework;
-using Microsoft.Xna.Framework.Content;
+
+using ProjectMagma.Simulation.Attributes;
 using ProjectMagma.Shared.LevelData;
 
 namespace ProjectMagma.Simulation
@@ -79,7 +78,7 @@ namespace ProjectMagma.Simulation
                 case AttributeTypes.Vector3: attribute = new Vector3Attribute(name); break;
                 case AttributeTypes.Quaternion: attribute = new QuaternionAttribute(name); break;
                 case AttributeTypes.Matrix: attribute = new MatrixAttribute(name); break;
-                default: throw new Exception("AttributeType '" + type + "' does not exist!");
+                default: throw new System.Exception("AttributeType '" + type + "' does not exist!");
             }
             attribute.Initialize(value);
             this.attributes.Add(attribute.Name, attribute);
@@ -377,8 +376,8 @@ namespace ProjectMagma.Simulation
 
         public void AddProperty(PropertyData propertyData)
         {
-            Type type = Type.GetType(propertyData.type);
-            ConstructorInfo constructorInfo = type.GetConstructor(new Type[0]);
+            System.Type type = System.Type.GetType(propertyData.type);
+            ConstructorInfo constructorInfo = type.GetConstructor(new System.Type[0]);
             Property property = constructorInfo.Invoke(new object[0]) as Property;
             AddProperty(propertyData.name, property);
         }

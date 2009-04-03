@@ -1,9 +1,10 @@
 ﻿
-namespace ProjectMagma.Simulation
+namespace ProjectMagma.Simulation.Attributes
 {
     public class BoolAttribute : Attribute
     {
-        public BoolAttribute(string name) :   base(name)
+        public BoolAttribute(string name)
+        :   base(name)
         {
         }
             

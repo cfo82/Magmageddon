@@ -1,6 +1,6 @@
 ﻿using Microsoft.Xna.Framework;
 
-namespace ProjectMagma.Simulation
+namespace ProjectMagma.Simulation.Attributes
 {
     public class MatrixAttribute : Attribute
     {

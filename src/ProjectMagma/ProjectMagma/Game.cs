@@ -10,6 +10,7 @@ using xWinFormsLib;
 #endif
 
 using ProjectMagma.Simulation;
+using ProjectMagma.Simulation.Attributes;
 using ProjectMagma.Shared.LevelData;
 using ProjectMagma.Collision;
 

@@ -1,7 +1,7 @@
 ﻿using Microsoft.Xna.Framework;
 using ProjectMagma.Simulation;
 
-namespace ProjectMagma.Simulation
+namespace ProjectMagma.Simulation.Attributes
 {
     public class Vector3Attribute : Attribute
     {

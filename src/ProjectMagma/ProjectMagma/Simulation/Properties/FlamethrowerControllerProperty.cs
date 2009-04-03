@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using Microsoft.Xna.Framework;
+using ProjectMagma.Simulation.Attributes;
 using ProjectMagma.Collision;
 
 namespace ProjectMagma.Simulation

@@ -12,8 +12,8 @@
     </Attributes>
     <Properties>
       <Property name="collision" type="ProjectMagma.Collision.CollisionProperty"/>
-      <Property name="render" type="ProjectMagma.Framework.RenderProperty"/>
-      <Property name="render_highlight" type="ProjectMagma.Framework.RenderHighlightProperty"/>
+      <Property name="render" type="ProjectMagma.Simulation.RenderProperty"/>
+      <Property name="render_highlight" type="ProjectMagma.Simulation.RenderHighlightProperty"/>
     </Properties>
   </Entity>
 
@@ -29,11 +29,11 @@
     </Attributes>
     <Properties>
       <Property name="collision" type="ProjectMagma.Collision.CollisionProperty"/>
-      <Property name="controller" type="ProjectMagma.Framework.IslandCircualarMovementControllerProperty"/>
-      <Property name="death" type="ProjectMagma.Framework.DeathProperty"/>
-      <Property name="shadow_cast" type="ProjectMagma.Framework.ShadowCastProperty"/>
-      <Property name="render" type="ProjectMagma.Framework.RenderProperty"/>
-      <Property name="render_highlight" type="ProjectMagma.Framework.RenderHighlightProperty"/>
+      <Property name="controller" type="ProjectMagma.Simulation.IslandCircualarMovementControllerProperty"/>
+      <Property name="death" type="ProjectMagma.Simulation.DeathProperty"/>
+      <Property name="shadow_cast" type="ProjectMagma.Simulation.ShadowCastProperty"/>
+      <Property name="render" type="ProjectMagma.Simulation.RenderProperty"/>
+      <Property name="render_highlight" type="ProjectMagma.Simulation.RenderHighlightProperty"/>
     </Properties>
   </Entity>
 
@@ -47,11 +47,11 @@
       <Attribute name="bv_type" template="string" value="sphere"/>
     </Attributes>
     <Properties>
-      <Property name="shadow_cast" type="ProjectMagma.Framework.ShadowCastProperty"/>
-      <Property name="render" type="ProjectMagma.Framework.RenderProperty"/>
-      <Property name="render_highlight" type="ProjectMagma.Framework.RenderHighlightProperty"/>
+      <Property name="shadow_cast" type="ProjectMagma.Simulation.ShadowCastProperty"/>
+      <Property name="render" type="ProjectMagma.Simulation.RenderProperty"/>
+      <Property name="render_highlight" type="ProjectMagma.Simulation.RenderHighlightProperty"/>
       <Property name="collision" type="ProjectMagma.Collision.CollisionProperty"/>
-      <Property name="controller" type="ProjectMagma.Framework.PlayerControllerProperty"/>
+      <Property name="controller" type="ProjectMagma.Simulation.PlayerControllerProperty"/>
     </Properties>
   </Entity>
 
@@ -70,10 +70,10 @@
     </Attributes>
     <Properties>
       <Property name="collision" type="ProjectMagma.Collision.CollisionProperty"/>
-      <Property name="controller" type="ProjectMagma.Framework.PowerUpController"/>
-      <Property name="shadow_cast" type="ProjectMagma.Framework.ShadowCastProperty"/>
-      <Property name="render" type="ProjectMagma.Framework.RenderProperty"/>
-      <Property name="render_highlight" type="ProjectMagma.Framework.RenderHighlightProperty"/>
+      <Property name="controller" type="ProjectMagma.Simulation.PowerUpController"/>
+      <Property name="shadow_cast" type="ProjectMagma.Simulation.ShadowCastProperty"/>
+      <Property name="render" type="ProjectMagma.Simulation.RenderProperty"/>
+      <Property name="render_highlight" type="ProjectMagma.Simulation.RenderHighlightProperty"/>
     </Properties>
   </Entity>
 </Level>

@@ -56,6 +56,24 @@
     </Properties>
   </Entity>
 
+  <Entity name="island_base_burnt" extends="island_base" abstract="true">
+    <Attributes>
+      <Attribute name="mesh" template="string" value="Models/bIsland_TypeA_001"/>
+    </Attributes>
+  </Entity>
+
+  <Entity name="island_base_grass" extends="island_base" abstract="true">
+    <Attributes>
+      <Attribute name="mesh" template="string" value="Models/gIsland_TypeA_001"/>
+    </Attributes>
+  </Entity>
+
+  <Entity name="island_base_ice" extends="island_base" abstract="true">
+    <Attributes>
+      <Attribute name="mesh" template="string" value="Models/iIsland_TypeA_001"/>
+    </Attributes>
+  </Entity>
+
   <Entity name="player_base" abstract="true">
     <Attributes>
       <Attribute name="kind" template="string" value="player"/>

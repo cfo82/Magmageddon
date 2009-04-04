@@ -53,31 +53,31 @@
   
   <!-- masses of game elements... -->
   
-  <Entity name="pillar1" extends="pillar_base">
+  <Entity name="pillar1" extends="pillar_base_001">
     <Attributes>
       <Attribute name="position" template="float3" value="230 0 260"/>
     </Attributes>
   </Entity>
 
-  <Entity name="pillar2" extends="pillar_base">
+  <Entity name="pillar2" extends="pillar_base_003">
     <Attributes>
       <Attribute name="position" template="float3" value="-300 0 150"/>
     </Attributes>
   </Entity>
 
-  <Entity name="pillar3" extends="pillar_base">
+  <Entity name="pillar3" extends="pillar_base_002">
     <Attributes>
       <Attribute name="position" template="float3" value="200 0 -120"/>
     </Attributes>
   </Entity>
 
-  <Entity name="pillar4" extends="pillar_base">
+  <Entity name="pillar4" extends="pillar_base_001">
     <Attributes>
       <Attribute name="position" template="float3" value="-100 0 0"/>
     </Attributes>
   </Entity>
 
-  <Entity name="pillar5" extends="pillar_base">
+  <Entity name="pillar5" extends="pillar_base_003">
     <Attributes>
       <Attribute name="position" template="float3" value="10 0 -300"/>
     </Attributes>

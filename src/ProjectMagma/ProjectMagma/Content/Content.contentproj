@@ -626,6 +626,21 @@
       <Importer>XmlImporter</Importer>
       <Processor>PassThroughProcessor</Processor>
     </None>
+    <Compile Include="Models\pillar_002.fbx">
+      <Name>pillar_002</Name>
+      <Importer>FbxImporter</Importer>
+      <Processor>PillarProcessor</Processor>
+    </Compile>
+    <Compile Include="Models\pillar_003.fbx">
+      <Name>pillar_003</Name>
+      <Importer>FbxImporter</Importer>
+      <Processor>PillarProcessor</Processor>
+    </Compile>
+    <Compile Include="Models\pillar_001.fbx">
+      <Name>pillar_001</Name>
+      <Importer>FbxImporter</Importer>
+      <Processor>PillarProcessor</Processor>
+    </Compile>
     <Compile Include="Models\RobBonesAnim.fbx">
       <Name>RobBonesAnim</Name>
       <Importer>FbxImporter</Importer>

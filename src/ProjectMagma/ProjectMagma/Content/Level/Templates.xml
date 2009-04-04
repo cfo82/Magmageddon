@@ -7,7 +7,6 @@
       <Attribute name="kind" template="string" value="pillar"/>
       <Attribute name="position" template="float3" value="230 0 260"/>
       <Attribute name="scale" template="float3" value="200 200 200"/>
-      <Attribute name="mesh" template="string" value="Models/pillar_primitive"/>
       <Attribute name="bv_type" template="string" value="cylinder"/>
     </Attributes>
     <Properties>
@@ -15,6 +14,24 @@
       <Property name="render" type="ProjectMagma.Simulation.RenderProperty"/>
       <Property name="render_highlight" type="ProjectMagma.Simulation.RenderHighlightProperty"/>
     </Properties>
+  </Entity>
+
+  <Entity name="pillar_base_001" extends="pillar_base" abstract="true">
+    <Attributes>
+      <Attribute name="mesh" template="string" value="Models/pillar_001"/>
+    </Attributes>
+  </Entity>
+
+  <Entity name="pillar_base_002" extends="pillar_base" abstract="true">
+    <Attributes>
+      <Attribute name="mesh" template="string" value="Models/pillar_002"/>
+    </Attributes>
+  </Entity>
+
+  <Entity name="pillar_base_003" extends="pillar_base" abstract="true">
+    <Attributes>
+      <Attribute name="mesh" template="string" value="Models/pillar_003"/>
+    </Attributes>
   </Entity>
 
   <Entity name="island_base" abstract="true">

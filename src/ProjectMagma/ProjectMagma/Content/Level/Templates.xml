@@ -41,7 +41,8 @@
       <Attribute name="scale" template="float3" value="70 70 70"/>
       <Attribute name="velocity" template="float3" value="0 0 0"/>
       <Attribute name="acceleration" template="float3" value="0 0 0"/>
-      <Attribute name="mesh" template="string" value="Models/islandproto_v002"/>
+      <Attribute name="mesh" template="string" value="Models/iIsland_TypeA_001"/>
+      <Attribute name="texture" template="string" value="Textures/island_diffuse_v003"/>
       <Attribute name="bv_type" template="string" value="alignedbox3tree"/>
     </Attributes>
     <Properties>
@@ -49,7 +50,7 @@
       <Property name="controller" type="ProjectMagma.Simulation.IslandCircualarMovementControllerProperty"/>
       <Property name="death" type="ProjectMagma.Simulation.DeathProperty"/>
       <Property name="shadow_cast" type="ProjectMagma.Simulation.ShadowCastProperty"/>
-      <Property name="render" type="ProjectMagma.Simulation.RenderProperty"/>
+      <Property name="render" type="ProjectMagma.Simulation.TexturedRenderProperty"/>
       <Property name="render_highlight" type="ProjectMagma.Simulation.RenderHighlightProperty"/>
     </Properties>
   </Entity>

@@ -65,6 +65,7 @@
     <Compile Include="Renderer\Renderables\HighlightRenderable.cs" />
     <Compile Include="Renderer\Renderables\Renderable.cs" />
     <Compile Include="Renderer\Renderables\ShadowRenderable.cs" />
+    <Compile Include="Renderer\Renderables\TexturedRenderable.cs" />
     <Compile Include="Renderer\Renderer.cs" />
     <Compile Include="Renderer\RenderMode.cs" />
     <Compile Include="Simulation\Attributes\Base\Attribute.cs" />
@@ -123,6 +124,7 @@
     <Compile Include="Simulation\Properties\Rendering\RenderHighlightProperty.cs" />
     <Compile Include="Simulation\Properties\Rendering\RenderProperty.cs" />
     <Compile Include="Simulation\Properties\Rendering\ShadowCastProperty.cs" />
+    <Compile Include="Simulation\Properties\Rendering\TexturedRenderProperty.cs" />
     <Compile Include="Simulation\Simulation.cs" />
   </ItemGroup>
   <ItemGroup>

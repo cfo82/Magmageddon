@@ -626,6 +626,26 @@
       <Importer>XmlImporter</Importer>
       <Processor>PassThroughProcessor</Processor>
     </None>
+    <Compile Include="Textures\island_diffuse_v003.tga">
+      <Name>island_diffuse_v003</Name>
+      <Importer>TextureImporter</Importer>
+      <Processor>TextureProcessor</Processor>
+    </Compile>
+    <Compile Include="Models\bIsland_TypeA_001.fbx">
+      <Name>bIsland_TypeA_001</Name>
+      <Importer>FbxImporter</Importer>
+      <Processor>IslandProcessor</Processor>
+    </Compile>
+    <Compile Include="Models\gIsland_TypeA_001.fbx">
+      <Name>gIsland_TypeA_001</Name>
+      <Importer>FbxImporter</Importer>
+      <Processor>IslandProcessor</Processor>
+    </Compile>
+    <Compile Include="Models\iIsland_TypeA_001.fbx">
+      <Name>iIsland_TypeA_001</Name>
+      <Importer>FbxImporter</Importer>
+      <Processor>IslandProcessor</Processor>
+    </Compile>
     <Compile Include="Models\pillar_002.fbx">
       <Name>pillar_002</Name>
       <Importer>FbxImporter</Importer>

@@ -626,6 +626,11 @@
       <Importer>XmlImporter</Importer>
       <Processor>PassThroughProcessor</Processor>
     </None>
+    <Compile Include="Models\RobBonesAnim.fbx">
+      <Name>RobBonesAnim</Name>
+      <Importer>FbxImporter</Importer>
+      <Processor>PlayerProcessor</Processor>
+    </Compile>
     <Compile Include="Models\arrow.fbx">
       <Name>arrow</Name>
       <Importer>FbxImporter</Importer>

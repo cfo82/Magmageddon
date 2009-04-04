@@ -171,7 +171,7 @@
     <Attributes>
       <Attribute name="number" template="int" value="1"/>
       <Attribute name="position" template="float3" value="-250 100 220"/>
-      <Attribute name="mesh" template="string" value="Models/player1_primitive"/>
+      <Attribute name="mesh" template="string" value="Models/RobBonesAnim"/>
       <Attribute name="player_id" template="int" value="1"/>
     </Attributes>
   </Entity>

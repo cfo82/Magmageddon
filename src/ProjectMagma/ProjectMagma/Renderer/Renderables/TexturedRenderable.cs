@@ -52,6 +52,7 @@ namespace ProjectMagma.Renderer
                     effectx.View = Game.Instance.View;
                     effectx.Projection = Game.Instance.Projection;
                     effectx.World = transforms[mesh.ParentBone.Index] * world;
+                    effectx.TextureEnabled = true;
                     effectx.Texture = texture;
                 }
                 mesh.Draw();

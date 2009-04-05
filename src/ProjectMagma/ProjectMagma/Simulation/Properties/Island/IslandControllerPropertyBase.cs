@@ -24,6 +24,7 @@ namespace ProjectMagma.Simulation
             entity.AddIntAttribute("health", entity.GetInt("max_health"));
 
             entity.AddVector3Attribute("repulsion_velocity", Vector3.Zero);
+            entity.AddStringAttribute("attracted_by", "");
 
             entity.Update += OnUpdate;
 
@@ -73,6 +74,19 @@ namespace ProjectMagma.Simulation
             Game.ApplyPushback(ref position, ref repulsionVelocity, constants.GetFloat("repulsion_deacceleration"));
             island.SetVector3("repulsion_velocity", repulsionVelocity);
             
+            // apply attraction by players
+            if (island.GetString("attracted_by") != "")
+            {
+                Entity player = Game.Instance.Simulation.EntityManager[island.GetString("attracted_by")];
+                Vector3 dir = player.GetVector3("position") - position;
+                dir.Normalize();
+
+                // todo: make constant
+                float attractionSpeed = 100;
+
+                position += dir * attractionSpeed * dt;
+            }
+
             island.SetVector3("position", position);
 
             playersOnIsland = 0;
@@ -82,10 +96,10 @@ namespace ProjectMagma.Simulation
         {
             Contact contact = contacts[0];
             Entity island = contact.EntityA;
-            Entity entity = contact.EntityB;
-            if(entity.HasString("kind"))
+            Entity other = contact.EntityB;
+            if(other.HasString("kind"))
             {
-                if (entity.GetString("kind") == "player")
+                if (other.GetString("kind") == "player")
                 {
                     // collision with player
                     if(Vector3.Dot(Vector3.UnitY, contact.Normal) > 0) // on top
@@ -93,14 +107,22 @@ namespace ProjectMagma.Simulation
                 }
                 else
                 {
+                    // change direction of repulsion
                     Vector3 repulsionVelocity = island.GetVector3("repulsion_velocity");
                     if (repulsionVelocity.Length() > 0)
                     {
-                        // go other direction
                         island.SetVector3("repulsion_velocity", -repulsionVelocity);
                     }
+                    
+                    // if attracted, apply repulsion to colliding islands
+                    if (island.GetString("attracted_by") != "")
+                    {
+                        // Entity player = Game.Instance.Simulation.EntityManager[island.GetString("attracted_by")];
+                        float attractionSpeed = 100;
+                        other.SetVector3("repulsion_velocity", contact.Normal * attractionSpeed + other.GetVector3("repulsion_velocity"));
+                    }
 
-                    CollisionHandler(gameTime, entity, contact);
+                    CollisionHandler(gameTime, other, contact);
                 }
             }
         }

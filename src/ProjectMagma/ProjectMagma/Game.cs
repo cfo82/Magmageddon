@@ -28,9 +28,7 @@ namespace ProjectMagma
         private GraphicsDeviceManager graphics;
         private SpriteBatch spriteBatch;
 
-        // game paused?
-        
-
+        private EntityManager robots;
         private List<LevelInfo> levels;
 
         private HUD hud;
@@ -38,8 +36,6 @@ namespace ProjectMagma
         private Entity currentCamera;
         private float effectsVolume = 0;
         private float musicVolume = 0;
-
-
         
         private double lastUpdateAt = 0;
 
@@ -143,22 +139,23 @@ namespace ProjectMagma
             // Create a new SpriteBatch, which can be used to draw textures.
             spriteBatch = new SpriteBatch(GraphicsDevice);
 
-            // load level infos
-            levels = Content.Load<List<LevelInfo>>("Level/LevelInfo");
-
-            // load default level
-            //            LevelData levelData = Content.Load<LevelData>(levels[0].FileName);
-
+            // initialize renderer
             renderer = new Renderer.Renderer(Content, GraphicsDevice);
 
+            // load level infos
+            levels = Content.Load<List<LevelInfo>>("Level/LevelInfo");
+            // load robot models
+            /*
+            robots = new EntityManager();
+            robots.Load(Content.Load<LevelData>("Level/Robots"));
+             */
+
             simulation = new ProjectMagma.Simulation.Simulation();
-            simulation.Load(Content);
+            simulation.Load(Content, "Level/TestLevel");
 
             #if !XBOX
             managementForm.BuildForm();
             #endif
-
-            // set gamepad assignments
 
             // load hud and menu
             hud.LoadContent();

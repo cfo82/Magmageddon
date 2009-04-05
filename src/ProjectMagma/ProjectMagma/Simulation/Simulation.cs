@@ -32,14 +32,15 @@ namespace ProjectMagma.Simulation
         }
 
         public void Load(
-            ContentManager content
+            ContentManager content,
+            String level
         )
         {
             lastUpdateAt = 0.0;
             paused = false;
 
             // load level data
-            LevelData levelData = content.Load<LevelData>("Level/TestLevel");
+            LevelData levelData = content.Load<LevelData>(level);
             entityManager.Load(levelData);
 
             int gi = 0;
@@ -47,6 +48,8 @@ namespace ProjectMagma.Simulation
             {
                 e.AddIntAttribute("game_pad_index", gi++);
             }
+
+            // load soundeffects
             foreach (Entity e in powerupManager)
             {
                 content.Load<SoundEffect>("Sounds/" + e.GetString("pickup_sound"));

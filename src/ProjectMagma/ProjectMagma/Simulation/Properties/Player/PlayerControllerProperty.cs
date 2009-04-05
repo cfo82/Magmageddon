@@ -31,6 +31,8 @@ namespace ProjectMagma.Simulation
         private double islandRepulsionStarteAt = 0;
         private double islandRepulsionStoppedAt = 0;
 
+        private Entity attractedIsland = null;
+
         Entity flame = null;
         Entity arrow;
 
@@ -83,7 +85,7 @@ namespace ProjectMagma.Simulation
             arrow.AddVector3Attribute("position", Vector3.Zero);
             arrow.AddStringAttribute("island", "");
 
-            arrow.AddStringAttribute("mesh", "Models/arrow");
+            arrow.AddStringAttribute("mesh", "Models/arrow"+player.GetInt("player_id"));
             arrow.AddVector3Attribute("scale", new Vector3(12, 12, 12));
 
             arrow.AddProperty("arrow_controller_property", new ArrowControllerProperty());
@@ -428,7 +430,8 @@ namespace ProjectMagma.Simulation
                     player.GetIntAttribute("energy"));
 
             // island repulsion
-            if (controllerInput.rightStickMoved
+            if (controllerInput.rightStickPressed
+                && controllerInput.rightStickMoved
                 && activeIsland != null
                 && fuel > 0)
             {
@@ -463,16 +466,66 @@ namespace ProjectMagma.Simulation
                 }
             }
 
-            // island attraction
-            if (!arrow.HasProperty("render"))
+            // island selection and attraction
+            Entity selectedIsland = null;
+            if (attractedIsland == null)
             {
-                int islandNo = rand.Next(Game.Instance.Simulation.IslandManager.Count - 1);
-                Entity island = Game.Instance.Simulation.IslandManager[islandNo];
+                if (controllerInput.rightStickMoved
+                    && activeIsland != null)
+                {
+                    // select closest island in direction of stick
+                    Vector3 stickDir = new Vector3(controllerInput.rightStickX, 0, controllerInput.rightStickY);
+                    stickDir.Normalize();
+                    float nearestDist = float.MaxValue;
+                    foreach (Entity island in Game.Instance.Simulation.IslandManager)
+                    {
+                        Vector3 islandDir = playerPosition - island.GetVector3("position");
+                        float dist = islandDir.Length();
+                        islandDir.Y = 0;
+                        float angle = Math.Abs(Vector3.Dot(stickDir, islandDir) / dist);
+                        if (angle < Math.PI / 4
+                            && dist < nearestDist
+                            && island != activeIsland)
+                        {
+                            selectedIsland = island;
+                            nearestDist = dist;
+                        }
+                    }
 
-                arrow.SetString("island", island.Name);
+                    arrow.SetString("island", selectedIsland.Name);
 
-                arrow.AddProperty("render", new RenderProperty());
-                arrow.AddProperty("shadow_cast", new ShadowCastProperty());
+                    if (!arrow.HasProperty("render"))
+                    {
+                        arrow.AddProperty("render", new RenderProperty());
+                        arrow.AddProperty("shadow_cast", new ShadowCastProperty());
+                    }
+                }
+                else
+                {
+                    if (arrow.HasProperty("render"))
+                    {
+                        arrow.RemoveProperty("render");
+                        arrow.RemoveProperty("shadow_cast");
+                    }
+                }
+
+                if (controllerInput.attractionButtonPressed
+                    && selectedIsland != null)
+                {
+                    attractedIsland = selectedIsland;
+                    attractedIsland.SetString("attracted_by", player.Name);
+                }
+            }
+            else
+            {
+                if (!controllerInput.attractionButtonPressed)
+                {
+                    arrow.RemoveProperty("render");
+                    arrow.RemoveProperty("shadow_cast");
+
+                    attractedIsland.SetString("attracted_by", "");
+                    attractedIsland = null;
+                }
             }
 
             #endregion
@@ -745,6 +798,7 @@ namespace ProjectMagma.Simulation
                 rightStickX = gamePadState.ThumbSticks.Right.X;
                 rightStickY = -gamePadState.ThumbSticks.Right.Y;
                 rightStickMoved = rightStickX != 0.0f || rightStickY != 0.0f;
+                rightStickPressed = gamePadState.Buttons.RightStick == ButtonState.Pressed;
 
                 if (!moveStickMoved)
                 {
@@ -824,10 +878,13 @@ namespace ProjectMagma.Simulation
                     (keyboardState.IsKeyDown(Keys.E) && playerIndex == PlayerIndex.One) ||
                     (keyboardState.IsKeyDown(Keys.Enter) && playerIndex == PlayerIndex.Two);
 
-                flamethrowerButtonPressed = 
-                    gamePadState.Triggers.Right > 0 ||
+                flamethrowerButtonPressed =
+                    gamePadState.Buttons.Y == ButtonState.Pressed ||
                     (keyboardState.IsKeyDown(Keys.R) && playerIndex == PlayerIndex.One) ||
                     (keyboardState.IsKeyDown(Keys.Delete) && playerIndex == PlayerIndex.Two);
+
+                attractionButtonPressed =
+                    gamePadState.Triggers.Right > 0;
 
                 #endregion
 
@@ -840,10 +897,10 @@ namespace ProjectMagma.Simulation
             public float leftStickX, leftStickY;
             public bool moveStickMoved;
             public float rightStickX, rightStickY;
-            public bool rightStickMoved;
+            public bool rightStickMoved, rightStickPressed;
 
             // buttons
-            public bool jetpackButtonPressed, flamethrowerButtonPressed, iceSpikeButtonPressed, hitButtonPressed;
+            public bool jetpackButtonPressed, flamethrowerButtonPressed, iceSpikeButtonPressed, hitButtonPressed, attractionButtonPressed;
 
             private static float gamepadEmulationValue = -1f;
         }

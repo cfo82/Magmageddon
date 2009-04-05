@@ -64,6 +64,8 @@
     <Compile Include="LevelData\Serialization\LevelInfoReader.cs" />
     <Compile Include="LevelData\Serialization\RobotInfoReader.cs" />
     <Compile Include="Math\Distance\Vector3Triangle3.cs" />
+    <Compile Include="Math\Intersection\Box3Box3.cs" />
+    <Compile Include="Math\Intersection\Box3Box3SAT.cs" />
     <Compile Include="Math\Intersection\Triangle3Triangle3.cs" />
     <Compile Include="Math\Volume\AlignedBox3.cs" />
     <Compile Include="Math\Volume\AlignedBox3Tree.cs" />

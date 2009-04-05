@@ -270,6 +270,10 @@ namespace ProjectMagma.Simulation
             {
                 Vector3 islandDir = destinationIsland.GetVector3("position") - playerPosition;
 
+                float yRotation = (float)Math.Atan2(islandDir.X, islandDir.Z);
+                Matrix rotationMatrix = Matrix.CreateRotationY(yRotation);
+                player.SetQuaternion("rotation", Quaternion.CreateFromRotationMatrix(rotationMatrix));
+
                 if (islandDir.Length() < 10 // todo: make this a constant
                     && (Math.Sign(lastIslandDir.X) != Math.Sign(islandDir.X)
                     || Math.Sign(lastIslandDir.Z) != Math.Sign(islandDir.Z)))
@@ -319,9 +323,12 @@ namespace ProjectMagma.Simulation
                 }
 
                 // rotation
-                float yRotation = (float)Math.Atan2(controllerInput.leftStickX, controllerInput.leftStickY);
-                Matrix rotationMatrix = Matrix.CreateRotationY(yRotation);
-                player.SetQuaternion("rotation", Quaternion.CreateFromRotationMatrix(rotationMatrix));
+                if (destinationIsland == null)
+                {
+                    float yRotation = (float)Math.Atan2(controllerInput.leftStickX, controllerInput.leftStickY);
+                    Matrix rotationMatrix = Matrix.CreateRotationY(yRotation);
+                    player.SetQuaternion("rotation", Quaternion.CreateFromRotationMatrix(rotationMatrix));
+                }
             }
 
             // pushback

@@ -24,7 +24,7 @@
       <Attribute name="max_gravity_speed" template="float" value="450"/>
 
       <Attribute name="ice_spike_speed" template="float" value="200"/>
-      <Attribute name="ice_spike_aim_angle" template="float" value="180"/>
+      <Attribute name="ice_spike_aim_angle" template="float" value="90"/>
       <Attribute name="ice_spike_energy_cost" template="int" value="14"/>
       <Attribute name="ice_spike_damage" template="int" value="10"/>
       <Attribute name="ice_spike_freeze_time" template="int" value="2500"/>
@@ -49,7 +49,12 @@
       <Attribute name="player_pushback_velocity_multiplier" template="float" value="80"/>
       <Attribute name="player_pushback_deacceleration" template="float" value="300"/>
 
-      <Attribute name="island_leave_timeout" template="float" value="100"/>
+      <Attribute name="island_aim_angle" template="float" value="30"/>
+      <Attribute name="island_deselection_timeout" template="float" value="100"/>
+      <Attribute name="island_jump_up_speed" template="float" value="1000"/>
+      <Attribute name="island_jump_speed" template="float" value="900"/>
+      <Attribute name="island_leave_timeout" template="float" value="50"/>
+
       <Attribute name="island_repulsion_velocity_multiplier" template="float" value="150"/>
       <Attribute name="island_repulsion_fuel_cost_multiplier" template="float" value="0.3"/>
       <Attribute name="island_repulsion_max_time" template="float" value="500"/>
@@ -74,7 +79,7 @@
       <Attribute name="pillar_attraction" template="float" value="0.0001"/>
       <Attribute name="pillar_repulsion" template="float" value="0.03"/>
 
-      <Attribute name="angle_speed" template="float" value="0.8"/>
+      <Attribute name="angle_speed" template="float" value="0.6"/>
 
       <Attribute name="sinking_speed" template="float" value="18.0"/>
       <Attribute name="rising_speed" template="float" value="40.0"/>

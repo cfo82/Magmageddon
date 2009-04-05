@@ -344,7 +344,7 @@ namespace ProjectMagma
             {
                 float dt = Game.Instance.Simulation.CurrentGameTime.ElapsedGameTime.Milliseconds / 1000.0f;
 
-                Console.WriteLine("pushback applied");
+//                Console.WriteLine("pushback applied: "+pushbackVelocity);
 
                 Vector3 oldVelocity = pushbackVelocity;
 

@@ -114,8 +114,11 @@ namespace ProjectMagma.Simulation
                     // if attracted, apply repulsion to colliding islands
                     if (island.GetString("attracted_by") != "")
                     {
-                        other.SetVector3("repulsion_velocity", contact.Normal * constants.GetFloat("attraction_speed") 
-                            + other.GetVector3("repulsion_velocity"));
+                        if (other.GetString("kind") == "island")
+                        {
+                            other.SetVector3("repulsion_velocity", contact.Normal * constants.GetFloat("attraction_speed")
+                                + other.GetVector3("repulsion_velocity"));
+                        }
                     }
 
                     CollisionHandler(gameTime, other, contact);

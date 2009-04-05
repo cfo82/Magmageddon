@@ -96,7 +96,8 @@ namespace ProjectMagma.Simulation
             Entity other = contact.EntityB;
             if(other.HasString("kind"))
             {
-                if (other.GetString("kind") == "player")
+                String kind = other.GetString("kind");
+                if (kind == "player")
                 {
                     // collision with player
                     if(Vector3.Dot(Vector3.UnitY, contact.Normal) > 0) // on top
@@ -108,25 +109,38 @@ namespace ProjectMagma.Simulation
                     Vector3 repulsionVelocity = island.GetVector3("repulsion_velocity");
                     if (repulsionVelocity.Length() > 0)
                     {
-                        island.SetVector3("repulsion_velocity", -repulsionVelocity);
+                        island.SetVector3("repulsion_velocity", -repulsionVelocity * constants.GetFloat("collision_damping"));
                     }
-                    
+                    else
+                    {
+                        // repulse in direction of normal
+                        island.SetVector3("repulsion_velocity", -contact.Normal * 100
+                            + island.GetVector3("repulsion_velocity"));
+                    }
+
                     // if attracted, apply repulsion to colliding islands
                     if (island.GetString("attracted_by") != "")
                     {
-                        if (other.GetString("kind") == "island")
+                        if (kind == "island")
                         {
                             other.SetVector3("repulsion_velocity", contact.Normal * constants.GetFloat("attraction_speed")
                                 + other.GetVector3("repulsion_velocity"));
                         }
+                        else
+                            if (kind == "pillar")
+                            {
+                                // repulse if collidet with pillar
+                                island.SetVector3("repulsion_velocity", -contact.Normal * constants.GetFloat("attraction_speed")
+                                    + island.GetVector3("repulsion_velocity"));
+                            }
                     }
 
-                    CollisionHandler(gameTime, other, contact);
+                    CollisionHandler(gameTime, island, other, contact);
                 }
             }
         }
 
-        protected abstract void CollisionHandler(GameTime gameTime, Entity entity, Contact co);
+        protected abstract void CollisionHandler(GameTime gameTime, Entity island, Entity other, Contact co);
 
         protected Entity constants;
         private int playersOnIsland;

@@ -131,9 +131,9 @@ namespace ProjectMagma.Simulation
             base.OnUpdate(island, gameTime);
         }
 
-        protected override void CollisionHandler(GameTime gameTime, Entity entity, Contact co)
+        protected override void CollisionHandler(GameTime gameTime, Entity island, Entity other, Contact co)
         {
-            if (entity.HasString("kind") && entity.GetString("kind") == "pillar")
+            if (other.HasString("kind") && other.GetString("kind") == "pillar")
             {
                 // todo: code here
 

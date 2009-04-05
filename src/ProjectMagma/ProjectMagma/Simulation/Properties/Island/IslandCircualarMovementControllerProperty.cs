@@ -56,13 +56,14 @@ namespace ProjectMagma.Simulation
             base.OnUpdate(island, gameTime);
         }
 
-        protected override void CollisionHandler(GameTime gameTime, Entity entity, Contact co)
+        protected override void CollisionHandler(GameTime gameTime, Entity island, Entity other, Contact co)
         {
-            if (entity.HasString("kind") && (entity.GetString("kind") == "pillar"
-                || entity.GetString("kind") == "pillar"))
+            if (island.HasString("kind") && (island.GetString("kind") == "pillar"
+                || island.GetString("kind") == "pillar"))
             {
                 // collision with pillar or island -> change direction
                 dir = -dir;
+                Console.WriteLine(island.Name + " changed direction");
             }
         }
 

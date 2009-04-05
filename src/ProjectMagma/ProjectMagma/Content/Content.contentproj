@@ -626,6 +626,16 @@
       <Importer>XmlImporter</Importer>
       <Processor>PassThroughProcessor</Processor>
     </None>
+    <Compile Include="Sprites\Menu\MenuFont.spritefont">
+      <Name>MenuFont</Name>
+      <Importer>FontDescriptionImporter</Importer>
+      <Processor>FontDescriptionProcessor</Processor>
+    </Compile>
+    <Compile Include="Models\arrow2.fbx">
+      <Name>arrow2</Name>
+      <Importer>FbxImporter</Importer>
+      <Processor>ModelProcessor</Processor>
+    </Compile>
     <Compile Include="Textures\island_diffuse_v003.tga">
       <Name>island_diffuse_v003</Name>
       <Importer>TextureImporter</Importer>
@@ -666,8 +676,8 @@
       <Importer>FbxImporter</Importer>
       <Processor>PlayerProcessor</Processor>
     </Compile>
-    <Compile Include="Models\arrow.fbx">
-      <Name>arrow</Name>
+    <Compile Include="Models\arrow1.fbx">
+      <Name>arrow1</Name>
       <Importer>FbxImporter</Importer>
       <Processor>ModelProcessor</Processor>
     </Compile>
@@ -733,6 +743,13 @@
       <Name>LevelInfo</Name>
       <Importer>LevelInfoImporter</Importer>
       <Processor>LevelInfoProcessor</Processor>
+    </Compile>
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="Level\RobotTemplates.xml">
+      <Name>RobotTemplates</Name>
+      <Importer>LevelImporter</Importer>
+      <Processor>LevelProcessor</Processor>
     </Compile>
   </ItemGroup>
   <Import Project="$(MSBuildExtensionsPath)\Microsoft\XNA Game Studio\v3.0\Microsoft.Xna.GameStudio.ContentPipeline.targets" />

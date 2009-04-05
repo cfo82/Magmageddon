@@ -49,16 +49,19 @@
       <Attribute name="player_pushback_velocity_multiplier" template="float" value="80"/>
       <Attribute name="player_pushback_deacceleration" template="float" value="300"/>
 
-      <Attribute name="island_aim_angle" template="float" value="30"/>
-      <Attribute name="island_deselection_timeout" template="float" value="100"/>
-      <Attribute name="island_jump_up_speed" template="float" value="1000"/>
-      <Attribute name="island_jump_speed" template="float" value="900"/>
       <Attribute name="island_leave_timeout" template="float" value="50"/>
+
+      <Attribute name="island_aim_angle" template="float" value="45"/>
+      <Attribute name="island_deselection_timeout" template="float" value="100"/>
+      <Attribute name="island_jump_height_multiplier" template="float" value="1.4"/>
+      <Attribute name="island_jump_speed" template="float" value="900"/>
+      <Attribute name="island_jump_destination_radius" template="float" value=".1"/>
+      <Attribute name="island_jump_interval" template="float" value="250"/>
 
       <Attribute name="island_repulsion_velocity_multiplier" template="float" value="150"/>
       <Attribute name="island_repulsion_fuel_cost_multiplier" template="float" value="0.3"/>
       <Attribute name="island_repulsion_max_time" template="float" value="500"/>
-      <Attribute name="island_repulsion_interval_time" template="float" value="500"/>
+      <Attribute name="island_repulsion_interval" template="float" value="500"/>
       <Attribute name="island_repulsion_min_fuel" template="int" value="1000"/>
       <Attribute name="island_repulsion_recharge_delay" template="float" value="1800"/>
 

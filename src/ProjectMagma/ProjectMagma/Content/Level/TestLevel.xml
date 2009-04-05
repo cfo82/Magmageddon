@@ -173,6 +173,7 @@
       <Attribute name="position" template="float3" value="-250 100 220"/>
       <Attribute name="mesh" template="string" value="Models/RobBonesAnim"/>
       <Attribute name="player_id" template="int" value="1"/>
+      <Attribute name="player_name" template="string" value="Bender"/>
     </Attributes>
   </Entity>
 
@@ -182,6 +183,7 @@
       <Attribute name="position" template="float3" value="60 160 -30"/>
       <Attribute name="mesh" template="string" value="Models/player2_primitive"/>
       <Attribute name="player_id" template="int" value="2"/>
+      <Attribute name="player_name" template="string" value="I, Robot"/>
     </Attributes>
   </Entity>
   

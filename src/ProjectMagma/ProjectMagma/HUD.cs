@@ -75,7 +75,7 @@ namespace ProjectMagma
                 }
 
                 spriteBatch.Draw(background, new Vector2(bgX, 0), null, Color.White, 0f, Vector2.Zero, 1, effects, 1);
-                spriteBatch.DrawString(font, player.Name, new Vector2(textX, 5), Color.Black);
+                spriteBatch.DrawString(font, player.GetString("player_name"), new Vector2(textX, 5), Color.Black);
 
                 spriteBatch.Draw(healthBar, new Vector2(healthX, 55), new Rectangle(0, 0, healthBarWidth, healthBar.Height), 
                     Color.White, 0f, Vector2.Zero, 1, effects, 0);

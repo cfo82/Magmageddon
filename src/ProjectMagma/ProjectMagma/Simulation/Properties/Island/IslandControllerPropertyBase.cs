@@ -114,7 +114,7 @@ namespace ProjectMagma.Simulation
                     else
                     {
                         // repulse in direction of normal
-                        island.SetVector3("repulsion_velocity", -contact.Normal * 100
+                        island.SetVector3("repulsion_velocity", -contact.Normal * 100 // todo: strange constant..
                             + island.GetVector3("repulsion_velocity"));
                     }
 

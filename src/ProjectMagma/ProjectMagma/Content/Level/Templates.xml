@@ -12,7 +12,7 @@
       <Attribute name="kind" template="string" value="pillar"/>
       <Attribute name="position" template="float3" value="230 0 260"/>
       <Attribute name="scale" template="float3" value="200 200 200"/>
-      <Attribute name="bv_type" template="string" value="cylinder"/>
+      <Attribute name="bv_type" template="string" value="alignedbox3tree"/>
       <Attribute name="texture" template="string" value="Textures/island_diffuse_v003"/>
     </Attributes>
     <Properties>

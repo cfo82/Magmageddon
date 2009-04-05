@@ -1,0 +1,26 @@
+Movement
+--------
+
+On Island:
+
+	Left Analog Stick:		Move Robot in XZ-plane
+	Left Trigger, A:		Activate Jetpack (->up)
+	Press Right Analog Stick:	"Kick" island in desired direction (XZ-plane)
+	Right Analog Stick + 
+		Left Trigger, A:	Jump on nearest island in desired direction
+	Right Analog Stick + 
+		Right Trigger:		Attrackt island nearest island in desired direction
+	
+In Air:
+	
+	Left Analog Stick:		Move Robot in XZ-Plane
+	Holding Left Trigger, A:	Keep jetpack active
+	Releasing Left Trigger, A:	Deactivate jetpack
+	
+	
+Actions
+-------
+	
+	Y:				Flamethrower
+	Right Trigger:			Ice spike
+	Right Shoulder:			Hit

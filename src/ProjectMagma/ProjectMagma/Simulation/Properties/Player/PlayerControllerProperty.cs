@@ -477,8 +477,8 @@ namespace ProjectMagma.Simulation
                     if (at < islandRepulsionStarteAt + constants.GetFloat("island_repulsion_max_time"))
                     {
                         float velocityMultiplier = constants.GetFloat("island_repulsion_velocity_multiplier");
-                        Vector3 velocity = new Vector3(-controllerInput.rightStickX * velocityMultiplier, 0, 
-                            -controllerInput.rightStickY * velocityMultiplier);
+                        Vector3 velocity = new Vector3(Math.Sign(controllerInput.rightStickX) * velocityMultiplier, 0, 
+                            Math.Sign(controllerInput.rightStickY) * velocityMultiplier);
                         activeIsland.SetVector3("repulsion_velocity", activeIsland.GetVector3("repulsion_velocity") + velocity);
 
                         fuel -= (int) (gameTime.ElapsedGameTime.Milliseconds * velocity.Length() * 

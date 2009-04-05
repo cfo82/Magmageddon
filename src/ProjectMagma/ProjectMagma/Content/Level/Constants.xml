@@ -91,6 +91,8 @@
       <Attribute name="scale_health_multiplier" template="float" value="1.8"/>
 
       <Attribute name="repulsion_deacceleration" template="float" value="900"/>
+
+      <Attribute name="attraction_speed" template="float" value="200"/>
     </Attributes>
   </Entity>
 

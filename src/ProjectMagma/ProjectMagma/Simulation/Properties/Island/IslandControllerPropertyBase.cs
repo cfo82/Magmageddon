@@ -81,10 +81,7 @@ namespace ProjectMagma.Simulation
                 Vector3 dir = player.GetVector3("position") - position;
                 dir.Normalize();
 
-                // todo: make constant
-                float attractionSpeed = 100;
-
-                position += dir * attractionSpeed * dt;
+                position += dir * constants.GetFloat("attraction_speed") * dt;
             }
 
             island.SetVector3("position", position);
@@ -117,9 +114,8 @@ namespace ProjectMagma.Simulation
                     // if attracted, apply repulsion to colliding islands
                     if (island.GetString("attracted_by") != "")
                     {
-                        // Entity player = Game.Instance.Simulation.EntityManager[island.GetString("attracted_by")];
-                        float attractionSpeed = 100;
-                        other.SetVector3("repulsion_velocity", contact.Normal * attractionSpeed + other.GetVector3("repulsion_velocity"));
+                        other.SetVector3("repulsion_velocity", contact.Normal * constants.GetFloat("attraction_speed") 
+                            + other.GetVector3("repulsion_velocity"));
                     }
 
                     CollisionHandler(gameTime, other, contact);

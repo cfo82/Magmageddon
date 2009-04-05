@@ -1,0 +1,36 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<!DOCTYPE Level SYSTEM "Levels.dtd">
+<Level>
+
+  <Entity name="robot_base" abstract="true">
+    <Attributes>
+      <Attribute name="kind" template="string" value="robot"/>
+      <Attribute name="scale" template="float3" value="13 13 13"/>
+      <Attribute name="bv_type" template="string" value="sphere"/>
+    </Attributes>
+    <Properties>
+      <Property name="shadow_cast" type="ProjectMagma.Simulation.ShadowCastProperty"/>
+      <Property name="render" type="ProjectMagma.Simulation.RenderProperty"/>
+      <Property name="render_highlight" type="ProjectMagma.Simulation.RenderHighlightProperty"/>
+      <Property name="collision" type="ProjectMagma.Simulation.Collision.CollisionProperty"/>
+      <Property name="controller" type="ProjectMagma.Simulation.PlayerControllerProperty"/>
+    </Properties>
+  </Entity>
+
+  <Entity name="green_robot" extends="robot_base">
+    <Attributes>
+      <Attribute name="name" template="string" value="Bender"/>
+      <Attribute name="description" template="string" value="A green Robot"/>
+      <Attribute name="mesh" template="string" value="Models/player1_primitive"/>
+    </Attributes>
+  </Entity>
+
+  <Entity name="yellow_robot" extends="robot_base">
+    <Attributes>
+      <Attribute name="name" template="string" value="I, Robot"/>
+      <Attribute name="description" template="string" value="A yellow Robot"/>
+      <Attribute name="mesh" template="string" value="Models/player2_primitive"/>
+    </Attributes>
+  </Entity>
+
+</Level>

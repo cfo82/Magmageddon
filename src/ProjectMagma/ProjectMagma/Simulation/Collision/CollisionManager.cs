@@ -27,7 +27,7 @@ namespace ProjectMagma.Simulation.Collision
             AddCollisionEntity(new CollisionEntity(entity, property, sphere));
         }
 
-        public void AddCollisionEntity(CollisionEntity collisionEntity)
+        void AddCollisionEntity(CollisionEntity collisionEntity)
         {
             if (!collisionEntities.Contains(collisionEntity) && !ContainsCollisionEntity(collisionEntity.collisionProperty))
             {

@@ -2,7 +2,7 @@
 
 namespace ProjectMagma.Simulation.Collision
 {
-    public class CollisionEntity
+    class CollisionEntity
     {
         public CollisionEntity(Entity entity, CollisionProperty property, Sphere3 sphere)
         {

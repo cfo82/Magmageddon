@@ -618,6 +618,9 @@
     </None>
   </ItemGroup>
   <ItemGroup>
+    <None Include="Level\RobotInfo.dtd">
+      <Name>RobotInfo</Name>
+    </None>
     <None Include="Level\LevelInfo.dtd">
       <Name>LevelInfo</Name>
     </None>
@@ -741,7 +744,7 @@
   <ItemGroup>
     <Compile Include="Level\LevelInfo.xml">
       <Name>LevelInfo</Name>
-      <Importer>LevelInfoImporter</Importer>
+      <Importer>LevelImporter</Importer>
       <Processor>LevelInfoProcessor</Processor>
     </Compile>
   </ItemGroup>
@@ -750,6 +753,13 @@
       <Name>RobotTemplates</Name>
       <Importer>LevelImporter</Importer>
       <Processor>LevelProcessor</Processor>
+    </Compile>
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="Level\RobotInfo.xml">
+      <Name>RobotInfo</Name>
+      <Importer>LevelImporter</Importer>
+      <Processor>RobotInfoProcessor</Processor>
     </Compile>
   </ItemGroup>
   <Import Project="$(MSBuildExtensionsPath)\Microsoft\XNA Game Studio\v3.0\Microsoft.Xna.GameStudio.ContentPipeline.targets" />

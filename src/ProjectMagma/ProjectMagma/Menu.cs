@@ -79,6 +79,8 @@ namespace ProjectMagma
                     active = true;
                     buttonPressedAt = at;
                     activeScreen = mainMenu;
+                    screens.Clear();
+                    screens.Add(mainMenu);
                 }
         }
 
@@ -95,17 +97,20 @@ namespace ProjectMagma
 
                 spriteBatch.Draw(background, new Vector2(0, 0), Color.White);
 
-                Vector2 pos = activeScreen.Position;
-                for(int i = activeScreen.MenuItems.Length-1; i >= 0; i--)
+                foreach (MenuScreen screen in screens)
                 {
-                    Texture2D sprite;
-                    if (i == activeScreen.Selected)
-                        sprite = activeScreen.MenuItems[i].SelectedSprite;
-                    else
-                        sprite = activeScreen.MenuItems[i].Sprite;
-                    float scale = (float)activeScreen.Width / (float)sprite.Width;
-                    pos.Y -= sprite.Height * scale;
-                    spriteBatch.Draw(sprite, pos, null, Color.White, 0, Vector2.Zero, scale, SpriteEffects.None, 0);
+                    Vector2 pos = screen.Position;
+                    for (int i = screen.MenuItems.Length - 1; i >= 0; i--)
+                    {
+                        Texture2D sprite;
+                        if (i == screen.Selected)
+                            sprite = screen.MenuItems[i].SelectedSprite;
+                        else
+                            sprite = screen.MenuItems[i].Sprite;
+                        float scale = (float)screen.Width / (float)sprite.Width;
+                        pos.Y -= sprite.Height * scale;
+                        spriteBatch.Draw(sprite, pos, null, Color.White, 0, Vector2.Zero, scale, SpriteEffects.None, 0);
+                    }
                 }
 
                 spriteBatch.End();
@@ -121,6 +126,7 @@ namespace ProjectMagma
 
 
         private MenuScreen activeScreen = null;
+        private readonly List<MenuScreen> screens = new List<MenuScreen>(); 
 
         private MainMenu mainMenu;
 

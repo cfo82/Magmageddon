@@ -1,6 +1,11 @@
 ﻿<?xml version="1.0" encoding="utf-8" ?>
 <!DOCTYPE Level SYSTEM "Levels.dtd">
 <Level>
+
+  <Includes>
+    <Include name="Level\RobotTemplates.xml"/>
+  </Includes>
+  
   <!-- abstract game entities (templates) -->
   <Entity name="pillar_base" abstract="true">
     <Attributes>
@@ -44,7 +49,7 @@
       <Attribute name="acceleration" template="float3" value="0 0 0"/>
       <Attribute name="mesh" template="string" value="Models/gIsland_TypeA_001"/>
       <Attribute name="texture" template="string" value="Textures/island_diffuse_v003"/>
-      <Attribute name="bv_type" template="string" value="alignedbox3tree"/>
+      <Attribute name="bv_type" template="string" value="cylinder"/>
     </Attributes>
     <Properties>
       <Property name="collision" type="ProjectMagma.Simulation.Collision.CollisionProperty"/>

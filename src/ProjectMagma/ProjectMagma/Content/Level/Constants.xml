@@ -45,9 +45,8 @@
       <Attribute name="hit_damage" template="int" value="20"/>
       <Attribute name="hit_cooldown" template="int" value="250"/>
       <Attribute name="hit_pushback_velocity_multiplier" template="float" value="200"/>
-
-      <Attribute name="player_pushback_velocity_multiplier" template="float" value="80"/>
       <Attribute name="player_pushback_deacceleration" template="float" value="300"/>
+      <Attribute name="player_pushback_velocity_multiplier" template="float" value="20"/>
 
       <Attribute name="island_leave_timeout" template="float" value="50"/>
 
@@ -91,6 +90,7 @@
       <Attribute name="scale_health_multiplier" template="float" value="1.8"/>
 
       <Attribute name="repulsion_deacceleration" template="float" value="900"/>
+      <Attribute name="collision_damping" template="float" value="0.8"/>
 
       <Attribute name="attraction_speed" template="float" value="200"/>
     </Attributes>

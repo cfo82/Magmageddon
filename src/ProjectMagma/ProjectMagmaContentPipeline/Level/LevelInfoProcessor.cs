@@ -17,11 +17,11 @@ namespace ProjectMagma.ContentPipeline.Level
         private static LevelInfo ProcessLevel(XmlElement level)
         {
             XmlNode el = level.FirstChild;
-            String name = el.Value;
+            String name = el.InnerText;
             el = el.NextSibling;
-            String description = el.Value;
+            String description = el.InnerText;
             el = el.NextSibling;
-            String fileName = el.Value;
+            String fileName = el.InnerText;
 
             return new LevelInfo(name, description, fileName);
         }
@@ -30,7 +30,7 @@ namespace ProjectMagma.ContentPipeline.Level
         {
             XmlElement documentRoot = input.DocumentElement;
 
-            XmlNodeList levelNodes = documentRoot.GetElementsByTagName("level");
+            XmlNodeList levelNodes = documentRoot.GetElementsByTagName("Level");
 
             List<LevelInfo> levels = new List<LevelInfo>(levelNodes.Count);
 

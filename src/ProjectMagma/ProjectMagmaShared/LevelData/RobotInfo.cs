@@ -9,13 +9,13 @@ namespace ProjectMagma.Shared.LevelData
     {
         private String name;
         private String description;
-        private String fileName;
+        private String entity;
 
-        public RobotInfo(String name, String description, String fileName)
+        public RobotInfo(String name, String description, String entity)
         {
             this.name = name;
             this.description = description;
-            this.fileName = fileName;
+            this.entity = entity;
         }
 
         public String Name
@@ -28,9 +28,9 @@ namespace ProjectMagma.Shared.LevelData
             get { return description; }
         }
 
-        public String FileName
+        public String Entity
         {
-            get { return fileName; }
+            get { return entity; }
         }
 
     }

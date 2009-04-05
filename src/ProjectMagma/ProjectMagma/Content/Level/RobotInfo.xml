@@ -1,0 +1,17 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<!DOCTYPE Robots SYSTEM "RobotInfo.dtd">
+<Robots>
+
+  <Robot>
+    <Name>Bender</Name>
+    <Description>A level to test!</Description>
+    <EntityName>green_robot</EntityName>
+  </Robot>
+
+  <Robot>
+    <Name>I, Robot</Name>
+    <Description>The same level, but pssst</Description>
+    <EntityName>yellow_robot</EntityName>
+  </Robot>
+
+</Robots>

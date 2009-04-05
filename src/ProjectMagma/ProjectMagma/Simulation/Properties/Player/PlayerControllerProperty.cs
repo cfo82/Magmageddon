@@ -61,6 +61,14 @@ namespace ProjectMagma.Simulation
 
             this.constants = Game.Instance.Simulation.EntityManager["player_constants"];
 
+            // random island selection
+            // TODO: make method
+            int islandNo = rand.Next(Game.Instance.Simulation.IslandManager.Count - 1);
+            Entity island = Game.Instance.Simulation.IslandManager[islandNo];
+            Vector3 pos = island.GetVector3("position");
+            pos.Y = pos.Y + 30; // todo: change this to point defined in mesh
+            player.AddVector3Attribute("position", pos);
+
             player.AddQuaternionAttribute("rotation", Quaternion.Identity);
             player.AddVector3Attribute("velocity", Vector3.Zero);
 
@@ -90,7 +98,7 @@ namespace ProjectMagma.Simulation
             arrow.AddVector3Attribute("position", Vector3.Zero);
             arrow.AddStringAttribute("island", "");
 
-            arrow.AddStringAttribute("mesh", "Models/arrow"+player.GetInt("player_id"));
+            arrow.AddStringAttribute("mesh", player.GetString("arrow_mesh"));
             arrow.AddVector3Attribute("scale", new Vector3(12, 12, 12));
 
             arrow.AddProperty("arrow_controller_property", new ArrowControllerProperty());

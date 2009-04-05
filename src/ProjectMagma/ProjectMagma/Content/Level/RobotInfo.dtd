@@ -1,0 +1,5 @@
+﻿<!ELEMENT Robots (Robot*)>
+<!ELEMENT Robot (Name, Description, EntityName)>
+<!ELEMENT Name (#PCDATA)>
+<!ELEMENT Description (#PCDATA)>
+<!ELEMENT EntityName (#PCDATA)>

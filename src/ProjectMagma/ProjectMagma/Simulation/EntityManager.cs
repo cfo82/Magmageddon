@@ -7,6 +7,7 @@ using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Content;
 using ProjectMagma.Simulation;
 using ProjectMagma.Shared.LevelData;
+using System.Diagnostics;
 
 namespace ProjectMagma.Simulation
 {
@@ -39,6 +40,35 @@ namespace ProjectMagma.Simulation
                 foreach (PropertyData propertyData in properties)
                 {
                     entity.AddProperty(propertyData.name, propertyData.type);
+                }
+                Add(entity);
+            }
+        }
+
+        public void Load(LevelData levelData, String[] bases, Entity[] entities)
+        {
+            // load normally 
+            Load(levelData);
+
+            // create additional entities
+            Debug.Assert(bases.Length == entities.Length);
+            for (int i = 0; i < bases.Length; i++)
+            {
+                String baseEntity = bases[i];
+                Entity entity = entities[i];
+
+                List<AttributeData> attributes = levelData.entities[baseEntity].CollectAttributes(levelData);
+                List<PropertyData> properties = levelData.entities[baseEntity].CollectProperties(levelData);
+
+                foreach (AttributeData attributeData in attributes)
+                {
+                    if(!entity.HasAttribute(attributeData.name))
+                        entity.AddAttribute(attributeData.name, attributeData.template, attributeData.value);
+                }
+                foreach (PropertyData propertyData in properties)
+                {
+                    if (!entity.HasProperty(propertyData.name))
+                        entity.AddProperty(propertyData.name, propertyData.type);
                 }
                 Add(entity);
             }

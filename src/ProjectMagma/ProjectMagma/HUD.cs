@@ -46,7 +46,7 @@ namespace ProjectMagma
 
             foreach (Entity player in Game.Instance.Simulation.PlayerManager)
             {
-                int no = player.GetInt("number");
+                int no = player.GetInt("game_pad_index");
 
                 float bgX, textX, healthX, energyX, fuelX;
                 
@@ -55,7 +55,7 @@ namespace ProjectMagma
                 int fuelBarWidth = fuelBar.Width * player.GetInt("fuel") / playerConstants.GetInt("max_fuel");
 
                 SpriteEffects effects;
-                if (no == 1)
+                if (no == 0)
                 {
                     effects = SpriteEffects.None;
                     bgX = 0;

@@ -28,7 +28,7 @@ namespace ProjectMagma
         private GraphicsDeviceManager graphics;
         private SpriteBatch spriteBatch;
 
-        private EntityManager robots;
+        private List<RobotInfo> robots;
         private List<LevelInfo> levels;
 
         private HUD hud;
@@ -67,7 +67,6 @@ namespace ProjectMagma
 
             Window.Title = "Project Magma";
             Content.RootDirectory = "Content";
-
 
             appliedAt = new Dictionary<String, double>();
 
@@ -144,14 +143,25 @@ namespace ProjectMagma
 
             // load level infos
             levels = Content.Load<List<LevelInfo>>("Level/LevelInfo");
-            // load robot models
-            /*
-            robots = new EntityManager();
-            robots.Load(Content.Load<LevelData>("Level/Robots"));
-             */
+            // load list of available robots
+            robots = Content.Load<List<RobotInfo>>("Level/RobotInfo");
 
+            // TODO: move this
+            // set default player
+            Entity player1 = new Entity("player1");
+            player1.AddIntAttribute("game_pad_index", 0);
+            player1.AddStringAttribute("robot_entity", robots[0].Entity);
+            player1.AddStringAttribute("player_name", robots[0].Name);
+
+            // set default player
+            Entity player2 = new Entity("player2");
+            player2.AddIntAttribute("game_pad_index", 1);
+            player2.AddStringAttribute("robot_entity", robots[1].Entity);
+            player2.AddStringAttribute("player_name", robots[1].Name);
+
+            // start simulation
             simulation = new ProjectMagma.Simulation.Simulation();
-            simulation.Load(Content, "Level/TestLevel");
+            simulation.Initialize(Content, "Level/TestLevel", new Entity[] {player1, player2});
 
             #if !XBOX
             managementForm.BuildForm();

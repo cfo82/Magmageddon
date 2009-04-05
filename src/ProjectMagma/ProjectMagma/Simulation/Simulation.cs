@@ -31,9 +31,10 @@ namespace ProjectMagma.Simulation
             collisionManager = new CollisionManager();
         }
 
-        public void Load(
+        public void Initialize(
             ContentManager content,
-            String level
+            String level,
+            Entity[] players
         )
         {
             lastUpdateAt = 0.0;
@@ -41,13 +42,12 @@ namespace ProjectMagma.Simulation
 
             // load level data
             LevelData levelData = content.Load<LevelData>(level);
-            entityManager.Load(levelData);
-
-            int gi = 0;
-            foreach (Entity e in playerManager)
+            String[] models = new String[players.Length];
+            for(int i = 0; i < models.Length; i++)
             {
-                e.AddIntAttribute("game_pad_index", gi++);
+                models[i] = players[i].GetString("robot_entity");
             }
+            entityManager.Load(levelData, models, players);
 
             // load soundeffects
             foreach (Entity e in powerupManager)

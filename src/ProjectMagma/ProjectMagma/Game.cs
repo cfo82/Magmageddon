@@ -34,8 +34,8 @@ namespace ProjectMagma
         private HUD hud;
         private Menu menu;
         private Entity currentCamera;
-        private float effectsVolume = 0.6f;
-        private float musicVolume = 0.4f;
+        private float effectsVolume = 0.2f;
+        private float musicVolume = 0.1f;
         
         private double lastUpdateAt = 0;
 

@@ -290,6 +290,16 @@ namespace ProjectMagma
             get { return musicVolume; }
         }
 
+        public List<RobotInfo> Robots
+        {
+            get { return robots; }
+        }
+
+        public List<LevelInfo> Levels
+        {
+            get { return levels; }
+        }
+
 #if !XBOX
         public ManagementForm ManagementForm
         {

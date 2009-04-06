@@ -87,7 +87,7 @@ namespace ProjectMagma
 
         public void OpenMenuScreen(MenuScreen screen)
         {
-            screen.Reset();
+            screen.OnOpen();
             screens.AddLast(screen);
             activeScreen = screen;
         }
@@ -100,6 +100,7 @@ namespace ProjectMagma
             }
             else
             {
+                screens.Last.Value.OnClose();
                 screens.RemoveLast();
                 activeScreen = screens.Last.Value;
             }
@@ -188,9 +189,14 @@ namespace ProjectMagma
             get { return position; }
         }
 
-        public virtual void Reset()
+        public virtual void OnOpen()
         {
         }
+
+        public virtual void OnClose()
+        {
+        }
+
 
         public abstract void Update(GameTime gameTime);
         public abstract void Draw(GameTime gameTime, SpriteBatch spriteBatch);
@@ -208,7 +214,7 @@ namespace ProjectMagma
             this.width = width;
         }
 
-        public override void Reset()
+        public override void OnOpen()
         {
             selected = 0;
         }

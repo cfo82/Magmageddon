@@ -141,6 +141,11 @@ namespace ProjectMagma.Simulation
         private EntityKindManager powerupManager;
         private EntityKindManager iceSpikeManager;
         private CollisionManager collisionManager;
+
+        /// <summary>
+        /// TODO: make own GameTime class, which can be paused and is independant of XNA's GameTime
+        /// </summary>
+
         private GameTime currentGameTime;
         private double lastUpdateAt;
         private bool paused;

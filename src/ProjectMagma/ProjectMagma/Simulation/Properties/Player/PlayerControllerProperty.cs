@@ -87,7 +87,10 @@ namespace ProjectMagma.Simulation
             player.AddStringAttribute("collisionPlayer", "");
 
             Game.Instance.Simulation.EntityManager.EntityRemoved += EntityRemovedHandler;
-            ((CollisionProperty)player.GetProperty("collision")).OnContact += PlayerCollisionHandler;
+            if (player.HasProperty("collision"))
+            {
+                ((CollisionProperty)player.GetProperty("collision")).OnContact += PlayerCollisionHandler;
+            }
 
             jetpackSound = Game.Instance.Content.Load<SoundEffect>("Sounds/jetpack");
             flameThrowerSound = Game.Instance.Content.Load<SoundEffect>("Sounds/flamethrower");
@@ -116,7 +119,10 @@ namespace ProjectMagma.Simulation
             if(flame != null)
                 Game.Instance.Simulation.EntityManager.Remove(flame);
             Game.Instance.Simulation.EntityManager.EntityRemoved -= EntityRemovedHandler;
-            ((CollisionProperty)player.GetProperty("collision")).OnContact -= PlayerCollisionHandler;
+            if (player.HasProperty("collision"))
+            {
+                ((CollisionProperty)player.GetProperty("collision")).OnContact -= PlayerCollisionHandler;
+            }
         }
 
         private void OnUpdate(Entity player, GameTime gameTime)

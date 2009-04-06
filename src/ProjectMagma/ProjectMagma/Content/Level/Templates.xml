@@ -79,23 +79,6 @@
     </Attributes>
   </Entity>
 
-  <Entity name="player_base" abstract="true">
-    <Attributes>
-      <Attribute name="kind" template="string" value="player"/>
-      <Attribute name="position" template="float3" value="-250 100 220"/>
-      <Attribute name="scale" template="float3" value="13 13 13"/>
-      <Attribute name="player_id" template="int" value="1"/>
-      <Attribute name="bv_type" template="string" value="alignedbox3tree"/>
-    </Attributes>
-    <Properties>
-      <Property name="shadow_cast" type="ProjectMagma.Simulation.ShadowCastProperty"/>
-      <Property name="render" type="ProjectMagma.Simulation.RenderProperty"/>
-      <Property name="render_highlight" type="ProjectMagma.Simulation.RenderHighlightProperty"/>
-      <Property name="collision" type="ProjectMagma.Simulation.Collision.CollisionProperty"/>
-      <Property name="controller" type="ProjectMagma.Simulation.PlayerControllerProperty"/>
-    </Properties>
-  </Entity>
-
   <Entity name="powerup_base" abstract="true">
     <Attributes>
       <Attribute name="kind" template="string" value="powerup"/>

@@ -129,6 +129,11 @@ namespace ProjectMagma
         /// </summary>
         protected override void LoadContent()
         {
+            ///
+            // TODO: load settings from storage, save at game close
+            // 
+
+
 #if !XBOX
             // create the gui system
             formCollection = new FormCollection(this.Window, Services, ref graphics);

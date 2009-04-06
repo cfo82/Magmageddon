@@ -34,8 +34,8 @@ namespace ProjectMagma
         private HUD hud;
         private Menu menu;
         private Entity currentCamera;
-        private float effectsVolume = 0;
-        private float musicVolume = 0;
+        private float effectsVolume = 0.6f;
+        private float musicVolume = 0.4f;
         
         private double lastUpdateAt = 0;
 
@@ -185,8 +185,8 @@ namespace ProjectMagma
             currentCamera = simulation.EntityManager["camera1"];
 
             // play that funky musik white boy
-            /*MediaPlayer.Play(Game.Instance.Content.Load<Song>("Sounds/music"));
-            MediaPlayer.Volume = musicVolume;*/
+            MediaPlayer.Play(Game.Instance.Content.Load<Song>("Sounds/music"));
+            MediaPlayer.Volume = musicVolume;
 
             MediaPlayer.IsMuted = true;
         }
@@ -283,11 +283,13 @@ namespace ProjectMagma
         public float EffectsVolume
         {
             get { return effectsVolume; }
+            set { effectsVolume = value; }
         }
 
         public float MusicVolume
         {
             get { return musicVolume; }
+            set { musicVolume = value; }
         }
 
         public List<RobotInfo> Robots

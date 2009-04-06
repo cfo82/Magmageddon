@@ -13,6 +13,7 @@ namespace ProjectMagma
     class Menu
     {
         public const float ButtonRepeatTimeout = 200;
+        public const float StickRepeatTimeout = 250;
         public const float StickDirectionSelectionMin = 0.6f;
 
         private static Menu instance = new Menu();
@@ -221,14 +222,14 @@ namespace ProjectMagma
         {
             selected++;
             if(selected == MenuItems.Length)
-                selected = 0;
+                selected = MenuItems.Length-1;
         }
 
         public void SelectPrevious()
         {
             selected--;
             if (selected < 0)
-                selected = MenuItems.Length-1;
+                selected = 0;
         }
 
         public abstract MenuItem[] MenuItems
@@ -244,32 +245,30 @@ namespace ProjectMagma
             if (at > menu.buttonPressedAt + Menu.ButtonRepeatTimeout)
             {
                 if (gamePadState.Buttons.Start == ButtonState.Pressed
-                    || gamePadState.Buttons.A == ButtonState.Pressed
-                    || Vector2.Dot(gamePadState.ThumbSticks.Left, Vector2.UnitX) > Menu.StickDirectionSelectionMin)
+                    || gamePadState.Buttons.A == ButtonState.Pressed)
                 {
                     SelectedItem.PerformAction();
                     menu.buttonPressedAt = at;
                 }
                 else
-                if (gamePadState.Buttons.X == ButtonState.Pressed
-                    || Vector2.Dot(gamePadState.ThumbSticks.Left, Vector2.UnitX) < -Menu.StickDirectionSelectionMin)
+                if (gamePadState.Buttons.X == ButtonState.Pressed)
                 {
                     menu.CloseActiveMenuScreen();
                     menu.buttonPressedAt = at;
                 }
             }
 
-            if (at > menu.elementSelectedAt + Menu.ButtonRepeatTimeout)
+            if (at > menu.elementSelectedAt + Menu.StickRepeatTimeout)
             {
                 if (Vector2.Dot(gamePadState.ThumbSticks.Left, Vector2.UnitY) > Menu.StickDirectionSelectionMin)
                 {
-                    SelectNext();
+                    SelectPrevious();
                     menu.elementSelectedAt = at;
                 }
                 else
                     if (Vector2.Dot(gamePadState.ThumbSticks.Left, Vector2.UnitY) < -Menu.StickDirectionSelectionMin)
                     {
-                        SelectPrevious();
+                        SelectNext();
                         menu.elementSelectedAt = at;
                     }
             }
@@ -280,33 +279,45 @@ namespace ProjectMagma
             Vector2 pos = Position;
             for (int i = MenuItems.Length - 1; i >= 0; i--)
             {
+                MenuItem item = MenuItems[i];
+
                 Texture2D sprite;
                 if (i == Selected)
-                    sprite = MenuItems[i].SelectedSprite;
+                    sprite = item.SelectedSprite;
                 else
-                    sprite = MenuItems[i].Sprite;
+                    sprite = item.Sprite;
 
                 float scale = (float)Width / (float)sprite.Width;
                 pos.Y -= sprite.Height * scale;
 
                 spriteBatch.Draw(sprite, pos, null, Color.White, 0, Vector2.Zero, scale, SpriteEffects.None, 0);
+
+                DrawWithItem(gameTime, spriteBatch, item, pos, scale);
             }
         }
+
+        public virtual void DrawWithItem(GameTime gameTime, SpriteBatch spriteBatch, MenuItem item, Vector2 pos, float scale)
+        {
+        }
+
     }
 
     class MainMenu : ItemizedMenuScreen
     {
         readonly MenuItem[] menuItems;
         readonly MenuScreen levelMenu;
+        readonly MenuScreen settingsMenu;
 
         public MainMenu(Menu menu): base(menu, new Vector2(30, 650), 200)
         {
             this.menuItems = new MenuItem[] { 
                 new MenuItem("new_game", "new_game", new ItemSelectionHandler(NewGameHandler)),
+                new MenuItem("settings", "settings", new ItemSelectionHandler(SettingsHandler)),
                 new MenuItem("exit_game", "exit_game", new ItemSelectionHandler(ExitGameHandler))
             };
 
             levelMenu = new LevelMenu(menu);
+            settingsMenu = new SettingsMenu(menu);
         }
 
         public override MenuItem[] MenuItems
@@ -317,6 +328,11 @@ namespace ProjectMagma
         private void NewGameHandler(MenuItem sender)
         {
             menu.OpenMenuScreen(levelMenu);
+        }
+
+        private void SettingsHandler(MenuItem sender)
+        {
+            menu.OpenMenuScreen(settingsMenu);
         }
 
         private void ExitGameHandler(MenuItem sender)
@@ -351,6 +367,111 @@ namespace ProjectMagma
 
         }
     }
+
+    class SettingsMenu : ItemizedMenuScreen
+    {
+        readonly MenuItem[] menuItems;
+        private readonly Texture2D volumeIndicator;
+        private readonly Texture2D volumeIndicatorSelected;
+
+        public SettingsMenu(Menu menu)
+            : base(menu, new Vector2(280, 600), 250)
+        {
+           this.menuItems = new MenuItem[] { 
+                new MenuItem("sound_volume", "sound_volume", new ItemSelectionHandler(DoNothing)),
+                new MenuItem("music_volume", "music_volume", new ItemSelectionHandler(DoNothing))
+            };
+
+           volumeIndicator = Game.Instance.Content.Load<Texture2D>("Sprites/Menu/volume_indicator");
+           volumeIndicatorSelected = Game.Instance.Content.Load<Texture2D>("Sprites/Menu/volume_indicator_selected");
+        }
+
+        public override MenuItem[] MenuItems
+        {
+            get { return menuItems; }
+        }
+
+        private void DoNothing(MenuItem sender)
+        {
+        }
+
+        public override void Update(GameTime gameTime)
+        {
+            base.Update(gameTime);
+
+            float dt = gameTime.ElapsedGameTime.Milliseconds / 1000f;
+            GamePadState gamePadState = GamePad.GetState(PlayerIndex.One);
+
+            if (Vector2.Dot(gamePadState.ThumbSticks.Left, Vector2.UnitX) > Menu.StickDirectionSelectionMin)
+            {
+                if (SelectedItem.Name == "music_volume")
+                    Game.Instance.MusicVolume += dt;
+                else
+                if (SelectedItem.Name == "sound_volume")
+                    Game.Instance.EffectsVolume += dt;
+            }
+            else
+                if (Vector2.Dot(gamePadState.ThumbSticks.Left, Vector2.UnitX) < -Menu.StickDirectionSelectionMin)
+                {
+                    if (SelectedItem.Name == "music_volume")
+                        Game.Instance.MusicVolume -= dt;
+                    else
+                        if (SelectedItem.Name == "sound_volume")
+                            Game.Instance.EffectsVolume -= dt;
+                }
+
+            if (Game.Instance.MusicVolume > 1)
+                Game.Instance.MusicVolume = 1;
+            if(Game.Instance.MusicVolume < 0)
+                Game.Instance.MusicVolume = 0;
+            if (Game.Instance.EffectsVolume > 1)
+                Game.Instance.EffectsVolume = 1;
+            if (Game.Instance.EffectsVolume < 0)
+                Game.Instance.EffectsVolume = 0;
+        }
+
+        public override void DrawWithItem(GameTime gameTime, SpriteBatch spriteBatch, MenuItem item, Vector2 pos, float scale)
+        {
+            if (item.Name == "music_volume")
+            {
+                pos.X += 550 * scale;
+                Vector2 nuScale = new Vector2(scale * Game.Instance.MusicVolume, scale);
+                if(SelectedItem == item)
+                    spriteBatch.Draw(volumeIndicatorSelected, pos, null, Color.White, 0, Vector2.Zero, nuScale, SpriteEffects.None, 0);
+                else
+                    spriteBatch.Draw(volumeIndicator, pos, null, Color.White, 0, Vector2.Zero, nuScale, SpriteEffects.None, 0);
+            }
+            else
+                if (item.Name == "sound_volume")
+                {
+                    pos.X += 550 * scale;
+                    Vector2 nuScale = new Vector2(scale * Game.Instance.EffectsVolume, scale);
+                    if (SelectedItem == item)
+                        spriteBatch.Draw(volumeIndicatorSelected, pos, null, Color.White, 0, Vector2.Zero, nuScale, SpriteEffects.None, 0);
+                    else
+                        spriteBatch.Draw(volumeIndicator, pos, null, Color.White, 0, Vector2.Zero, nuScale, SpriteEffects.None, 0);
+                }
+        }
+    }
+
+    /*
+    class PlayerMenu : MenuScreen
+    {
+        public PlayerMenu(Menu menu)
+            : base(menu, new Vector2(430, 600))
+        {
+        }
+
+
+        public abstract void Update(GameTime gameTime)
+        {
+        }
+
+        public abstract void Draw(GameTime gameTime, SpriteBatch spriteBatch)
+        {
+        }
+    }
+     */
 
     delegate void ItemSelectionHandler(MenuItem sender);
  

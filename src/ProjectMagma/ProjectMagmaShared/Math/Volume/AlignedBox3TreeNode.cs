@@ -52,6 +52,8 @@ namespace ProjectMagma.Shared.Math.Volume
                 return;
             }
 
+            //System.Diagnostics.Debugger.Launch();
+
             // split along the axis where we get triangles distributed the best...
             int halfNumTriangles = numTriangles / 2;
             int[] numLeft = new int[3] { Split(positions, Axis.AxisX), Split(positions, Axis.AxisY), Split(positions, Axis.AxisZ) };
@@ -59,7 +61,7 @@ namespace ProjectMagma.Shared.Math.Volume
             int min = 0; // 0 == x-axis, 1 == y-axis, 2 == z-axis
             Axis minAxis = Axis.AxisX;
             if (System.Math.Abs(diff[1]) < System.Math.Abs(diff[min])) { min = 1; minAxis = Axis.AxisY; }
-            if (System.Math.Abs(diff[1]) < System.Math.Abs(diff[min])) { min = 1; minAxis = Axis.AxisZ; }
+            if (System.Math.Abs(diff[2]) < System.Math.Abs(diff[min])) { min = 2; minAxis = Axis.AxisZ; }
             int splitCount = Split(positions, minAxis);
             if (splitCount == 0 || splitCount == numTriangles)
             {
@@ -67,8 +69,8 @@ namespace ProjectMagma.Shared.Math.Volume
                 return;
             }
 
-            left = new AlignedBox3TreeNode(splitCount, 0, indices, positions);
-            right = new AlignedBox3TreeNode(numTriangles - splitCount, splitCount * 3, indices, positions);
+            left = new AlignedBox3TreeNode(splitCount, baseIndex, indices, positions);
+            right = new AlignedBox3TreeNode(numTriangles - splitCount, baseIndex + splitCount * 3, indices, positions);
         }
 
         /// <summary>
@@ -163,6 +165,7 @@ namespace ProjectMagma.Shared.Math.Volume
                         indices[baseIndex + i * 3 + j] = indices[baseIndex + numLeft * 3 + j];
                         indices[baseIndex + numLeft * 3 + j] = tmp;
                     }
+                    ++numLeft;
                 }
             }
             return numLeft;

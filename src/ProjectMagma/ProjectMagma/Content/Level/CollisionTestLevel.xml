@@ -1,0 +1,79 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<!DOCTYPE Level SYSTEM "Levels.dtd">
+<Level>
+
+  <Includes>
+    <Include name="Level\Constants.xml"/>
+    <Include name="Level\Templates.xml"/>
+  </Includes>
+
+  <!-- "unique" game entities -->
+
+  <Entity name="camera1">
+    <Attributes>
+      <Attribute name="kind" template="string" value="camera"/>
+      <Attribute name="position" template="float3" value="0 700 1800"/>
+      <Attribute name="target" template="float3" value="0 150 0"/>
+      <Attribute name="up" template="float3" value="0 1 0"/>
+      <Attribute name="fov" template="float" value="18.5"/>
+      <Attribute name="near_clip" template="float" value="1"/>
+      <Attribute name="far_clip" template="float" value="10000"/>
+    </Attributes>
+    <Properties>
+      <Property name="camera" type="ProjectMagma.Simulation.CameraProperty"/>
+    </Properties>
+  </Entity>
+
+  <Entity name="lava">
+    <Attributes>
+      <Attribute name="kind" template="string" value="lava"/>
+      <Attribute name="position" template="float3" value="0 0 0"/>
+      <Attribute name="scale" template="float3" value="1000 1000 1000"/>
+      <Attribute name="mesh" template="string" value="Models/lava_primitive"/>
+    </Attributes>
+    <Properties>
+      <Property name="render" type="ProjectMagma.Simulation.RenderProperty"/>
+      <Property name="render_highlight" type="ProjectMagma.Simulation.RenderHighlightProperty"/>
+    </Properties>
+  </Entity>
+
+  <Entity name="cave">
+    <Attributes>
+      <Attribute name="kind" template="string" value="cave"/>
+      <Attribute name="position" template="float3" value="0 0 0"/>
+      <Attribute name="scale" template="float3" value="700 700 700"/>
+      <Attribute name="mesh" template="string" value="Models/cave_v002"/>
+    </Attributes>
+    <Properties>
+      <Property name="render" type="ProjectMagma.Simulation.RenderProperty"/>
+      <Property name="render_highlight" type="ProjectMagma.Simulation.RenderHighlightProperty"/>
+    </Properties>
+  </Entity>
+  
+  <!-- masses of game elements... -->
+  
+  <Entity name="pillar1" extends="pillar_base_001">
+    <Attributes>
+      <Attribute name="position" template="float3" value="0 0 0"/>
+    </Attributes>
+  </Entity>
+
+  <Entity name="island1">
+    <Attributes>
+      <Attribute name="kind" template="string" value="island"/>
+      <Attribute name="position" template="float3" value="60 160 0"/>
+      <Attribute name="scale" template="float3" value="70 70 70"/>
+      <Attribute name="velocity" template="float3" value="0 0 0"/>
+      <Attribute name="acceleration" template="float3" value="0 0 0"/>
+      <Attribute name="mesh" template="string" value="Models/gIsland_TypeA_001"/>
+      <Attribute name="texture" template="string" value="Textures/island_diffuse_v003"/>
+      <Attribute name="bv_type" template="string" value="alignedbox3tree"/>
+    </Attributes>
+    <Properties>
+      <Property name="collision" type="ProjectMagma.Simulation.Collision.CollisionProperty"/>
+      <Property name="shadow_cast" type="ProjectMagma.Simulation.ShadowCastProperty"/>
+      <Property name="render" type="ProjectMagma.Simulation.TexturedRenderProperty"/>
+      <Property name="render_highlight" type="ProjectMagma.Simulation.RenderHighlightProperty"/>
+    </Properties>
+  </Entity>
+</Level>

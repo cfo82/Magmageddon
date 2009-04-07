@@ -819,6 +819,13 @@
     </Compile>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Level\CollisionTestLevel.xml">
+      <Name>CollisionTestLevel</Name>
+      <Importer>LevelImporter</Importer>
+      <Processor>LevelProcessor</Processor>
+    </Compile>
+  </ItemGroup>
+  <ItemGroup>
     <Folder Include="Sprites\Menu\Player\" />
   </ItemGroup>
   <Import Project="$(MSBuildExtensionsPath)\Microsoft\XNA Game Studio\v3.0\Microsoft.Xna.GameStudio.ContentPipeline.targets" />

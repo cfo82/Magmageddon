@@ -81,7 +81,15 @@ namespace ProjectMagma.Simulation.Collision
                         );
                     if (contacts.Count > 0)
                     {
-                        //Console.WriteLine("Collision {0,4}: between {1} and {2}!", collisionCount, entity1.entity.Name, entity2.entity.Name);
+                        //if (
+                        //    entity1.entity.HasString("kind") && entity2.entity.HasString("kind") &&(
+                        //        entity1.entity.GetString("kind") == "pillar" ||
+                        //        entity2.entity.GetString("kind") == "pillar" ||
+                        //        (entity1.entity.GetString("kind") == "island" && entity2.entity.GetString("kind") == "island")
+                        //    ))
+                        //{
+                        //    System.Console.WriteLine("Collision {0,4}: between {1} and {2}!", collisionCount, entity1.entity.Name, entity2.entity.Name);
+                        //}
                         entity1.collisionProperty.FireContact(gameTime, contacts);
                         foreach (Contact c in contacts)
                         {

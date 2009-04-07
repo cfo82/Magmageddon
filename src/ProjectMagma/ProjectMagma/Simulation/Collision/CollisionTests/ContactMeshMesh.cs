@@ -14,9 +14,9 @@ namespace ProjectMagma.Simulation.Collision.CollisionTests
             List<Contact> contacts, bool reverse
         )
         {
-            Box3 box1 = node1.BoundingBox.CreateBox3(translation1, Matrix.Identity, scale1);
-            Box3 box2 = node2.BoundingBox.CreateBox3(translation2, Matrix.Identity, scale2);
-            if (!Intersection.IntersectBox3Box3(box1, worldTransform1, box2, worldTransform2))
+            Box3 box1 = node1.BoundingBox.CreateBox3(translation1, Matrix.CreateFromQuaternion(rotation1), scale1);
+            Box3 box2 = node2.BoundingBox.CreateBox3(translation2, Matrix.CreateFromQuaternion(rotation2), scale2);
+            if (!Intersection.IntersectBox3Box3(box1, box2))
             {
                 return;
             }
@@ -35,6 +35,8 @@ namespace ProjectMagma.Simulation.Collision.CollisionTests
                     tri2.Vertex0 = Vector3.Transform(tri2.Vertex0, worldTransform2);
                     tri2.Vertex1 = Vector3.Transform(tri2.Vertex1, worldTransform2);
                     tri2.Vertex2 = Vector3.Transform(tri2.Vertex2, worldTransform2);
+
+                    //System.Console.WriteLine("performing triangle<->triangle test!");
 
                     bool coplanar;
                     Vector3 isectpt1, isectpt2;
@@ -71,9 +73,9 @@ namespace ProjectMagma.Simulation.Collision.CollisionTests
         )
         {
             // TODO Box<->box checks
-            Box3 box1 = node1.BoundingBox.CreateBox3(translation1, Matrix.Identity, scale1);
-            Box3 box2 = node2.BoundingBox.CreateBox3(translation2, Matrix.Identity, scale2);
-            if (!Intersection.IntersectBox3Box3(box1, worldTransform1, box2, worldTransform2))
+            Box3 box1 = node1.BoundingBox.CreateBox3(translation1, Matrix.CreateFromQuaternion(rotation1), scale1);
+            Box3 box2 = node2.BoundingBox.CreateBox3(translation2, Matrix.CreateFromQuaternion(rotation2), scale2);
+            if (!Intersection.IntersectBox3Box3(box1, box2))
             {
                 return;
             }
@@ -123,9 +125,9 @@ namespace ProjectMagma.Simulation.Collision.CollisionTests
         )
         {
             // TODO Box<->box checks
-            Box3 box1 = node1.BoundingBox.CreateBox3(translation1, Matrix.Identity, scale1);
-            Box3 box2 = node2.BoundingBox.CreateBox3(translation2, Matrix.Identity, scale2);
-            if (!Intersection.IntersectBox3Box3(box1, worldTransform1, box2, worldTransform2))
+            Box3 box1 = node1.BoundingBox.CreateBox3(translation1, Matrix.CreateFromQuaternion(rotation1), scale1);
+            Box3 box2 = node2.BoundingBox.CreateBox3(translation2, Matrix.CreateFromQuaternion(rotation2), scale2);
+            if (!Intersection.IntersectBox3Box3(box1, box2))
             {
                 return;
             }
@@ -303,9 +305,9 @@ namespace ProjectMagma.Simulation.Collision.CollisionTests
             AlignedBox3Tree tree2 = (AlignedBox3Tree)boundingVolume2;
 
             // early exit if they do not intersect...
-            Box3 box1 = tree1.BoundingBox.CreateBox3(translation1, Matrix.Identity, scale1);
-            Box3 box2 = tree2.BoundingBox.CreateBox3(translation2, Matrix.Identity, scale2);
-            if (!Intersection.IntersectBox3Box3(box1, worldTransform1, box2, worldTransform2))
+            Box3 box1 = tree1.BoundingBox.CreateBox3(translation1, Matrix.CreateFromQuaternion(rotation1), scale1);
+            Box3 box2 = tree2.BoundingBox.CreateBox3(translation2, Matrix.CreateFromQuaternion(rotation2), scale2);
+            if (!Intersection.IntersectBox3Box3(box1, box2))
             {
                 return;
             }

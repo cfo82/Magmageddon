@@ -16,7 +16,7 @@ namespace ProjectMagma.Simulation
         {
         }
 
-        private void OnUpdate(Entity entity, GameTime gameTime)
+        private void OnUpdate(Entity entity, SimulationTime simTime)
         {
             if (entity.GetInt("health") <= 0)
             {

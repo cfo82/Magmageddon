@@ -13,5 +13,5 @@ namespace ProjectMagma.Simulation
         RenderToSceneAlpha
     }
 
-    public delegate void DrawHandler(Entity sender, GameTime gameTime, RenderMode renderMode);
+    public delegate void DrawHandler(Entity sender, SimulationTime gameTime, RenderMode renderMode);
 }

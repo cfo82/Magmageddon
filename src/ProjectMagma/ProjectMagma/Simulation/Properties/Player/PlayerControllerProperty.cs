@@ -28,14 +28,14 @@ namespace ProjectMagma.Simulation
         private double hitPerformedAt = 0;
 
         private double islandLeftAt = 0;
-        private double islandRepulsionStarteAt = 0;
-        private double islandRepulsionStoppedAt = 0;
+        private float islandRepulsionStarteAt = 0;
+        private float islandRepulsionStoppedAt = 0;
 
         private double islandSelectedAt = 0;
         private Entity selectedIsland = null;
         private Entity destinationIsland = null;
         private Vector3 lastIslandDir = Vector3.Zero;
-        private double islandJumpPerformedAt = 0;
+        private float islandJumpPerformedAt = 0;
         private Entity attractedIsland = null;
 
         Entity flame = null;
@@ -125,10 +125,10 @@ namespace ProjectMagma.Simulation
             }
         }
 
-        private void OnUpdate(Entity player, GameTime gameTime)
+        private void OnUpdate(Entity player, SimulationTime simTime)
         {
-            float dt = ((float)gameTime.ElapsedGameTime.Milliseconds)/1000.0f;
-            double at = gameTime.TotalGameTime.TotalMilliseconds;
+            float dt = simTime.Dt;
+            float at = simTime.At;
 
             #region death
             if (player.GetInt("health") <= 0)
@@ -261,7 +261,8 @@ namespace ProjectMagma.Simulation
                     jetpackActive = true;
                 }
                 
-                fuel -= gameTime.ElapsedGameTime.Milliseconds;
+                // todo: add constant that can modify this
+                fuel -= (int)simTime.DtMs;
                 playerVelocity += constants.GetVector3("jetpack_acceleration") * dt;
 
                 if (playerVelocity.Length() > constants.GetFloat("max_jetpack_speed"))
@@ -354,7 +355,7 @@ namespace ProjectMagma.Simulation
             if (player.GetInt("frozen") > 0)
             {
                 playerPosition = (previousPosition + playerPosition) / 2;
-                player.SetInt("frozen", player.GetInt("frozen") - gameTime.ElapsedGameTime.Milliseconds);
+                player.SetInt("frozen", player.GetInt("frozen") - (int)simTime.DtMs);
                 if (player.GetInt("frozen") < 0)
                     player.SetInt("frozen", 0);
             }
@@ -502,7 +503,7 @@ namespace ProjectMagma.Simulation
                             Math.Sign(controllerInput.rightStickY) * velocityMultiplier);
                         activeIsland.SetVector3("repulsion_velocity", activeIsland.GetVector3("repulsion_velocity") + velocity);
 
-                        fuel -= (int) (gameTime.ElapsedGameTime.Milliseconds * velocity.Length() * 
+                        fuel -= (int)(simTime.At * velocity.Length() * 
                             constants.GetFloat("island_repulsion_fuel_cost_multiplier"));
                     }
                     else
@@ -614,19 +615,19 @@ namespace ProjectMagma.Simulation
             {
                 if (activeIsland == null)
                 {
-                    fuel += (int)(gameTime.ElapsedGameTime.Milliseconds * constants.GetFloat("fuel_recharge_multiplier"));
+                    fuel += (int)(simTime.DtMs * constants.GetFloat("fuel_recharge_multiplier"));
                 }
                 else
                 {
                     // faster recharge standing on island, but only if jetpack was not used for repulsion
                     if (at > islandRepulsionStoppedAt + constants.GetFloat("island_repulsion_recharge_delay"))
                     {
-                        fuel += (int)(gameTime.ElapsedGameTime.Milliseconds * constants.GetFloat("fuel_recharge_multiplier_island"));
+                        fuel += (int)(simTime.DtMs * constants.GetFloat("fuel_recharge_multiplier_island"));
                     }
                     else
                     {
                         double diff = at - islandRepulsionStoppedAt;
-                        fuel += (int)(gameTime.ElapsedGameTime.Milliseconds * constants.GetFloat("fuel_recharge_multiplier_island")
+                        fuel += (int)(simTime.DtMs * constants.GetFloat("fuel_recharge_multiplier_island")
                             * diff / constants.GetFloat("island_repulsion_recharge_delay"));
                     }
                 }
@@ -646,7 +647,7 @@ namespace ProjectMagma.Simulation
             // check collision with lava
             Entity lava = Game.Instance.Simulation.EntityManager["lava"];
             if (playerPosition.Y < lava.GetVector3("position").Y)
-                PlayerLavaCollisionHandler(gameTime, player, lava);
+                PlayerLavaCollisionHandler(simTime, player, lava);
         }
 
         private void CheckPlayerAttributeRanges(Entity player)
@@ -673,7 +674,7 @@ namespace ProjectMagma.Simulation
                 player.SetInt("fuel", constants.GetInt("max_fuel"));
         }
 
-        private void PlayerCollisionHandler(GameTime gameTime, List<Contact> contacts)
+        private void PlayerCollisionHandler(SimulationTime simTime, List<Contact> contacts)
         {
             Contact c = contacts[0];
 
@@ -683,16 +684,16 @@ namespace ProjectMagma.Simulation
                 switch (kind)
                 {
                     case "island":
-                        PlayerIslandCollisionHandler(gameTime, c.EntityA, c.EntityB, contacts);
+                        PlayerIslandCollisionHandler(simTime, c.EntityA, c.EntityB, contacts);
                         break;
                     case "pillar":
-                        PlayerPillarCollisionHandler(gameTime, c.EntityA, c.EntityB, c);
+                        PlayerPillarCollisionHandler(simTime, c.EntityA, c.EntityB, c);
                         break;
                     case "player":
-                        PlayerPlayerCollisionHandler(gameTime, c.EntityA, c.EntityB, c);
+                        PlayerPlayerCollisionHandler(simTime, c.EntityA, c.EntityB, c);
                         break;
                     case "powerup":
-                        PlayerPowerupCollisionHandler(gameTime, c.EntityA, c.EntityB);
+                        PlayerPowerupCollisionHandler(simTime, c.EntityA, c.EntityB);
                         break;
                 }
                 CheckPlayerAttributeRanges(player);
@@ -700,17 +701,29 @@ namespace ProjectMagma.Simulation
             }
         }
 
-        private void PlayerIslandCollisionHandler(GameTime gameTime, Entity player, Entity island, List<Contact> contacts)
+        private void PlayerIslandCollisionHandler(SimulationTime simTime, Entity player, Entity island, List<Contact> contacts)
         {
             if (island == destinationIsland)
             {
                 // stop island jump
                 destinationIsland = null;
-                islandJumpPerformedAt = gameTime.TotalGameTime.TotalMilliseconds;
+                islandJumpPerformedAt = simTime.At;
                 return;
             }
 
-            float dt = ((float)gameTime.ElapsedGameTime.Milliseconds) / 1000.0f;
+            if (island == destinationIsland)
+            {
+                // stop island attraction
+                arrow.RemoveProperty("render");
+                arrow.RemoveProperty("shadow_cast");
+
+                attractedIsland.SetString("attracted_by", "");
+                attractedIsland = null;
+                selectedIsland = null;                 
+                return;
+            }
+
+            float dt = simTime.Dt;
 
             // use first contact
             Contact co = contacts[0];
@@ -764,13 +777,13 @@ namespace ProjectMagma.Simulation
             else
             {
                 Vector3 pos = player.GetVector3("position");
-                Vector3 velocity = -co.Normal * (pos - previousPosition).Length() * 1000 / gameTime.ElapsedGameTime.Milliseconds 
-                    / 2;
+                // todo constant 2??
+                Vector3 velocity = -co.Normal * (pos - previousPosition).Length() * simTime.Dt / 2;
                 player.SetVector3("collision_pushback_velocity", velocity);
             }
         }
 
-        private void PlayerPillarCollisionHandler(GameTime gameTime, Entity player, Entity pillar, Contact co)
+        private void PlayerPillarCollisionHandler(SimulationTime simTime, Entity player, Entity pillar, Contact co)
         {
             if (co.Normal.Y < 0)
             {
@@ -784,18 +797,18 @@ namespace ProjectMagma.Simulation
             else
             {
                 Vector3 pos = player.GetVector3("position");
-                Vector3 velocity = -co.Normal * (pos-previousPosition).Length() * 1000 / gameTime.ElapsedGameTime.Milliseconds;
+                Vector3 velocity = -co.Normal * (pos - previousPosition).Length() * simTime.Dt;
                 player.SetVector3("collision_pushback_velocity", velocity);
             }
         }
 
-        private void PlayerLavaCollisionHandler(GameTime gameTime, Entity player, Entity lava)
+        private void PlayerLavaCollisionHandler(SimulationTime simTime, Entity player, Entity lava)
         {
             Game.Instance.ApplyPerSecondSubstraction(player, "lava_damage", constants.GetInt("lava_damage_per_second"),
                 player.GetIntAttribute("health"));
         }
 
-        private void PlayerPowerupCollisionHandler(GameTime gameTime, Entity player, Entity powerup)
+        private void PlayerPowerupCollisionHandler(SimulationTime simTime, Entity player, Entity powerup)
         {
             // remove 
             powerup.RemoveProperty("collision");
@@ -803,8 +816,8 @@ namespace ProjectMagma.Simulation
             powerup.RemoveProperty("shadow_cast");
 
             // set respawn
-            powerup.SetFloat("respawn_at", (float) (gameTime.TotalGameTime.TotalMilliseconds + rand.NextDouble()
-                * 10000 + 5000));
+            // todo: extract constants into xml
+            powerup.SetFloat("respawn_at", (float) (simTime.At + rand.NextDouble() * 10000 + 5000));
 
             // use the power
             int oldVal = player.GetInt(powerup.GetString("power"));
@@ -816,11 +829,11 @@ namespace ProjectMagma.Simulation
             soundEffect.Play(Game.Instance.EffectsVolume);
         }
 
-        private void PlayerPlayerCollisionHandler(GameTime gameTime, Entity player, Entity otherPlayer, Contact c)
+        private void PlayerPlayerCollisionHandler(SimulationTime simTime, Entity player, Entity otherPlayer, Contact c)
         {
             // and hit?
             if (controllerInput.hitButtonPressed &&
-                gameTime.TotalGameTime.TotalMilliseconds > hitPerformedAt + constants.GetInt("hit_cooldown"))
+                simTime.At > hitPerformedAt + constants.GetInt("hit_cooldown"))
             {
                 // indicate hit!
                 SoundEffect soundEffect = Game.Instance.Content.Load<SoundEffect>("Sounds/punch2");
@@ -832,7 +845,7 @@ namespace ProjectMagma.Simulation
 
                 // set values
                 otherPlayer.SetVector3("hit_pushback_velocity", c.Normal * constants.GetFloat("hit_pushback_velocity_multiplier"));
-                hitPerformedAt = gameTime.TotalGameTime.TotalMilliseconds;
+                hitPerformedAt = simTime.At;
             }
             else
             {

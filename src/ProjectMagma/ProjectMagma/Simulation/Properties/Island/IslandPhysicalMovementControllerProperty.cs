@@ -26,9 +26,9 @@ namespace ProjectMagma.Simulation
             base.OnDetached(entity);
         }
 
-        protected override void OnUpdate(Entity island, GameTime gameTime)
+        protected override void OnUpdate(Entity island, SimulationTime simTime)
         {
-                    float dt = ((float)gameTime.ElapsedGameTime.Milliseconds)/1000.0f;
+            float dt = simTime.Dt;
 
             // control this island
             // read out attributes
@@ -128,10 +128,10 @@ namespace ProjectMagma.Simulation
             island.SetVector3("position", island.GetVector3("position") + dt * v_applied);
 
 
-            base.OnUpdate(island, gameTime);
+            base.OnUpdate(island, simTime);
         }
 
-        protected override void CollisionHandler(GameTime gameTime, Entity island, Entity other, Contact co)
+        protected override void CollisionHandler(SimulationTime simTime, Entity island, Entity other, Contact co)
         {
             if (other.HasString("kind") && other.GetString("kind") == "pillar")
             {

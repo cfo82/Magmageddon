@@ -11,7 +11,7 @@ namespace ProjectMagma.Simulation
         {
         }
 
-        private void OnUpdate(Entity powerupEntity, GameTime gameTime)
+        private void OnUpdate(Entity powerupEntity, SimulationTime simTime)
         {
         }
 

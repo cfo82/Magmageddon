@@ -62,7 +62,7 @@ namespace ProjectMagma.Simulation.Collision
 
         //static int collisionCount = 0;
 
-        public void Update(GameTime gameTime)
+        public void Update(SimulationTime simTime)
         {
             for (int i = 0; i < collisionEntities.Count; ++i)
             {
@@ -101,12 +101,12 @@ namespace ProjectMagma.Simulation.Collision
                         //{
                         //    System.Console.WriteLine("Collision {0,4}: between {1} and {2}!", collisionCount, entity1.entity.Name, entity2.entity.Name);
                         //}
-                        entity1.collisionProperty.FireContact(gameTime, contacts);
+                        entity1.collisionProperty.FireContact(simTime, contacts);
                         foreach (Contact c in contacts)
                         {
                             c.Reverse();
                         }
-                        entity2.collisionProperty.FireContact(gameTime, contacts);
+                        entity2.collisionProperty.FireContact(simTime, contacts);
                         //++collisionCount;
                     }
                 }

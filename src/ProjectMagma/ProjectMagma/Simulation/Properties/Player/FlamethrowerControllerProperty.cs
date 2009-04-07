@@ -54,10 +54,10 @@ namespace ProjectMagma.Simulation
             player.GetVector3Attribute("position").ValueChanged -= playerPositionHandler;
         }
 
-        private void OnUpdate(Entity flame, GameTime gameTime)
+        private void OnUpdate(Entity flame, SimulationTime simTime)
         {
-            float dt = ((float)gameTime.ElapsedGameTime.Milliseconds)/1000.0f;
-            at = gameTime.TotalGameTime.TotalMilliseconds;
+            float dt = simTime.Dt;
+            at = simTime.At;
 
             if (flameThrowerState == FlameThrowerState.InActive)
             {
@@ -145,7 +145,7 @@ namespace ProjectMagma.Simulation
             flameThrowerState = FlameThrowerState.Cooldown;
         }
 
-        private void FlamethrowerCollisionHandler(GameTime gameTime, List<Contact> contacts)
+        private void FlamethrowerCollisionHandler(SimulationTime simTime, List<Contact> contacts)
         {
             Contact c = contacts[0];
             Entity other = c.EntityB;

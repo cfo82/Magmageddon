@@ -29,14 +29,14 @@ namespace ProjectMagma.Simulation
             entity.Update -= OnUpdate;
         }
 
-        private void OnUpdate(Entity iceSpike, GameTime gameTime)
+        private void OnUpdate(Entity iceSpike, SimulationTime simTime)
         {
-            int iat = (int) gameTime.TotalGameTime.TotalMilliseconds;
+            int iat = (int)simTime.At;
 
             // fetch required values
             Vector3 pos = iceSpike.GetVector3("position");
             Vector3 v = iceSpike.GetVector3("velocity");
-            float dt = ((float)gameTime.ElapsedGameTime.Milliseconds)/1000.0f;
+            float dt = simTime.Dt;
 
             // accumulate forces
             Vector3 a = constants.GetVector3("ice_spike_gravity_acceleration");
@@ -91,7 +91,7 @@ namespace ProjectMagma.Simulation
             iceSpike.SetVector3("velocity", v);
         }
 
-        private void IceSpikeCollisionHandler(GameTime gameTime, List<Contact> contacts)
+        private void IceSpikeCollisionHandler(SimulationTime simTime, List<Contact> contacts)
         {
             Contact c = contacts[0];
 
@@ -102,12 +102,12 @@ namespace ProjectMagma.Simulation
                 && !(other.Name == iceSpike.GetString("player"))) // dont collide with shooter
             {
                 if (other.HasAttribute("kind") && other.GetString("kind") == "player")
-                    IceSpikePlayerCollisionHandler(gameTime, iceSpike, other);
+                    IceSpikePlayerCollisionHandler(simTime, iceSpike, other);
                 Game.Instance.Simulation.EntityManager.RemoveDeferred(iceSpike);
             }
         }
 
-        private void IceSpikePlayerCollisionHandler(GameTime gameTime, Entity iceSpike, Entity player)
+        private void IceSpikePlayerCollisionHandler(SimulationTime simTime, Entity iceSpike, Entity player)
         {
             // indicate hit
             SoundEffect soundEffect = Game.Instance.Content.Load<SoundEffect>("Sounds/sword-clash");

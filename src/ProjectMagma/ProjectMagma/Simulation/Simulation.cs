@@ -37,7 +37,6 @@ namespace ProjectMagma.Simulation
             Entity[] players
         )
         {
-            lastUpdateAt = 0.0;
             paused = false;
 
             // load level data
@@ -54,29 +53,31 @@ namespace ProjectMagma.Simulation
             {
                 content.Load<SoundEffect>("Sounds/" + e.GetString("pickup_sound"));
             }
+
+            simTime = new SimulationTime();
         }
 
         public void Update(GameTime gameTime)
         {
-            currentGameTime = gameTime;
-            
             if (!paused)
             {
+                // update simulation time
+                simTime.Update();
+
                 // update all entities
                 foreach (Entity e in entityManager)
                 {
-                    e.OnUpdate(gameTime);
+                    e.OnUpdate(simTime);
                 }
 
                 // perform collision detection
-                collisionManager.Update(gameTime);
+                collisionManager.Update(simTime);
 
                 // execute deferred add/remove orders on the entityManager
                 entityManager.ExecuteDeferred();
             }
-
-            // set lastupdate time
-            lastUpdateAt = gameTime.TotalGameTime.TotalMilliseconds;
+            else
+                simTime.Pause();
         }
 
         public EntityManager EntityManager
@@ -119,9 +120,9 @@ namespace ProjectMagma.Simulation
             }
         }
 
-        public GameTime CurrentGameTime
+        public SimulationTime Time
         {
-            get { return currentGameTime; }
+            get { return simTime; }
         }
 
         public bool Paused
@@ -129,12 +130,17 @@ namespace ProjectMagma.Simulation
             get { return paused; }
         }
 
-        public double LastUpdateAt
+        public void Pause()
         {
-            get { return lastUpdateAt; }
+            paused = true;
         }
 
-        private EntityManager entityManager;
+        public void Resume()
+        {
+            paused = false;
+        }
+
+        private readonly EntityManager entityManager;
         private EntityKindManager pillarManager;
         private EntityKindManager islandManager;
         private EntityKindManager playerManager;
@@ -142,12 +148,87 @@ namespace ProjectMagma.Simulation
         private EntityKindManager iceSpikeManager;
         private CollisionManager collisionManager;
 
-        /// <summary>
-        /// TODO: make own GameTime class, which can be paused and is independant of XNA's GameTime
-        /// </summary>
-
-        private GameTime currentGameTime;
-        private double lastUpdateAt;
+        private SimulationTime simTime;
         private bool paused;
+    }
+
+    public class SimulationTime
+    {
+        private long lastTick = DateTime.Now.Ticks;
+
+        private int frame = 0;
+
+        private float at = 0;
+        private float last = 0;
+
+        private float dt = 0;
+        private float dtMs = 0;
+
+        /// <summary>
+        /// the how manieth frame this is since simulation start
+        /// </summary>
+        public int Frame
+        {
+            get { return frame; }
+        }
+
+        /// <summary>
+        /// current time in total milliseconds passed since simulation start
+        /// </summary>
+        public float At
+        {
+            get { return at; }
+        }
+
+        /// <summary>
+        /// last time in total milliseconds passed since simulation start
+        /// </summary>
+        public float Last
+        {
+            get { return last; }
+        }
+
+        /// <summary>
+        /// difference between last and current update in fraction of a second
+        /// </summary>
+        public float Dt
+        {
+            get { return dt; }
+        }
+
+        /// <summary>
+        /// difference between last and current update in milliseconds
+        /// </summary>
+        public float DtMs
+        {
+            get { return dt; }
+        }
+
+        internal void Update()
+        {
+            // reset last
+            last = at;
+
+            // dt in milliseconds
+            dtMs = (float)((DateTime.Now.Ticks - lastTick) / 10000d);
+
+            // dt in seconds
+            dt = dtMs / 1000f;
+
+            // at is in milliseconds
+            at += dtMs;
+
+            // increase frame counter
+            frame++;
+
+            // reset lastTick
+            lastTick = DateTime.Now.Ticks;
+        }
+
+        internal void Pause()
+        {
+            lastTick = DateTime.Now.Ticks;
+        }
+
     }
 }

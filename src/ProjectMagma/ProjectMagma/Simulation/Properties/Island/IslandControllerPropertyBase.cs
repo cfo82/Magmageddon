@@ -42,9 +42,9 @@ namespace ProjectMagma.Simulation
              }
         }
 
-        protected virtual void OnUpdate(Entity island, GameTime gameTime)
+        protected virtual void OnUpdate(Entity island, SimulationTime simTime)
         {
-            float dt = ((float)gameTime.ElapsedGameTime.Milliseconds)/1000.0f;
+            float dt = simTime.Dt;
 
             // implement sinking/rising islands...
             Vector3 position = island.GetVector3("position");
@@ -56,9 +56,9 @@ namespace ProjectMagma.Simulation
             else
             {
                 if (playerLeftAt == 0)
-                    playerLeftAt = gameTime.TotalGameTime.TotalMilliseconds;
-                if (position.Y < originalPosition.Y && 
-                    gameTime.TotalGameTime.TotalMilliseconds > playerLeftAt + constants.GetInt("rising_delay"))
+                    playerLeftAt = simTime.At;
+                if (position.Y < originalPosition.Y &&
+                    simTime.At > playerLeftAt + constants.GetInt("rising_delay"))
                 {
                     position += dt * constants.GetFloat("rising_speed") * Vector3.UnitY;
                 }
@@ -89,7 +89,7 @@ namespace ProjectMagma.Simulation
             playersOnIsland = 0;
         }
 
-        private void CollisionHandler(GameTime gameTime, List<Contact> contacts)
+        private void CollisionHandler(SimulationTime simTime, List<Contact> contacts)
         {
             Contact contact = contacts[0];
             Entity island = contact.EntityA;
@@ -105,6 +105,8 @@ namespace ProjectMagma.Simulation
                 }
                 else
                 {
+                    Console.WriteLine("collision: " + island.Name + " with " + other.Name);
+
                     // change direction of repulsion
                     Vector3 repulsionVelocity = island.GetVector3("repulsion_velocity");
                     if (repulsionVelocity.Length() > 0)
@@ -135,12 +137,12 @@ namespace ProjectMagma.Simulation
                             }
                     }
 
-                    CollisionHandler(gameTime, island, other, contact);
+                    CollisionHandler(simTime, island, other, contact);
                 }
             }
         }
 
-        protected abstract void CollisionHandler(GameTime gameTime, Entity island, Entity other, Contact co);
+        protected abstract void CollisionHandler(SimulationTime simTime, Entity island, Entity other, Contact co);
 
         protected Entity constants;
         private int playersOnIsland;

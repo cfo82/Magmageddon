@@ -32,19 +32,19 @@ namespace ProjectMagma.Simulation
             attributes.Clear();
         }
 
-        public void OnUpdate(GameTime gameTime)
+        public void OnUpdate(SimulationTime simTime)
         {
             if (Update != null)
             {
-                Update(this, gameTime);
+                Update(this, simTime);
             }
         }
 
-        public void OnDraw(GameTime gameTime, RenderMode renderMode)
+        public void OnDraw(SimulationTime simTime, RenderMode renderMode)
         {
             if (Draw != null)
             {
-                Draw(this, gameTime, renderMode);
+                Draw(this, simTime, renderMode);
             }
         }
 

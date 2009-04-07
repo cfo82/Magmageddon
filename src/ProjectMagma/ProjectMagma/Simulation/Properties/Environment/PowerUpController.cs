@@ -17,11 +17,11 @@ namespace ProjectMagma.Simulation
             rand = new Random(234234);
         }
 
-        private void OnUpdate(Entity powerupEntity, GameTime gameTime)
+        private void OnUpdate(Entity powerupEntity, SimulationTime simTime)
         {
             float respawnAt = powerupEntity.GetFloat("respawn_at");
             if (respawnAt != 0
-                && gameTime.TotalGameTime.TotalMilliseconds > respawnAt)
+                && simTime.At > respawnAt)
             {
                 int islandNo = rand.Next(Game.Instance.Simulation.IslandManager.Count - 1);
                 islandEntity = Game.Instance.Simulation.IslandManager[islandNo];

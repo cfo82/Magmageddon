@@ -68,7 +68,7 @@ namespace ProjectMagma
             Window.Title = "Project Magma";
             Content.RootDirectory = "Content";
 
-            appliedAt = new Dictionary<String, double>();
+            appliedAt = new Dictionary<String, float>();
 
             bloom = new BloomComponent(this);
             Components.Add(bloom);
@@ -369,7 +369,7 @@ namespace ProjectMagma
         {
             if (pushbackVelocity.Length() > 0)
             {
-                float dt = Game.Instance.Simulation.CurrentGameTime.ElapsedGameTime.Milliseconds / 1000.0f;
+                float dt = Game.Instance.Simulation.Time.Dt;
 
 //                Console.WriteLine("pushback applied: "+pushbackVelocity);
 
@@ -387,7 +387,7 @@ namespace ProjectMagma
             }
         }
 
-        private readonly Dictionary<string, double> appliedAt;
+        private readonly Dictionary<string, float> appliedAt;
 
         public void ApplyPerSecondAddition(Entity source, String identifier, int perSecond, ref int value)
         {
@@ -445,7 +445,7 @@ namespace ProjectMagma
         public void ExecuteAtInterval(Entity source, String identifier, float interval, IntervalExecutionAction action)
         {
             String fullIdentifier = source.Name + "_" + identifier;
-            double current = simulation.CurrentGameTime.TotalGameTime.TotalMilliseconds;
+            float current = simulation.Time.At;
 
             // if appliedAt doesn't contain string this is first time we called this functin
             if (!appliedAt.ContainsKey(fullIdentifier))
@@ -454,8 +454,8 @@ namespace ProjectMagma
                 return;
             }
 
-            double last = appliedAt[fullIdentifier];
-            double nextUpdateTime = last + interval;
+            float last = appliedAt[fullIdentifier];
+            float nextUpdateTime = last + interval;
             // if we didnt adapt on last update, then there was no call to this method at that time
             // so we reset our time to current
             if (lastUpdateAt >= nextUpdateTime)

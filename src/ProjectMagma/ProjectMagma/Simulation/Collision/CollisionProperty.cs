@@ -5,7 +5,7 @@ using ProjectMagma.Shared.Math.Volume;
 
 namespace ProjectMagma.Simulation.Collision
 {
-    public delegate void ContactHandler(GameTime gameTime, List<Contact> contacts);
+    public delegate void ContactHandler(SimulationTime simTime, List<Contact> contacts);
 
     public class CollisionProperty : Property
     {
@@ -45,11 +45,11 @@ namespace ProjectMagma.Simulation.Collision
             Game.Instance.Simulation.CollisionManager.RemoveCollisionEntity(this);
         }
 
-        public void FireContact(GameTime gameTime, List<Contact> contacts)
+        public void FireContact(SimulationTime simTime, List<Contact> contacts)
         {
             if (OnContact != null)
             {
-                OnContact(gameTime, contacts);
+                OnContact(simTime, contacts);
             }
         }
 

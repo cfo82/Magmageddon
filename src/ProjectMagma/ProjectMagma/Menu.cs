@@ -46,9 +46,11 @@ namespace ProjectMagma
 
             if(active)
             {
-                if (gamePadState.Buttons.Start == ButtonState.Pressed)
+                if (at > buttonPressedAt + Menu.ButtonRepeatTimeout
+                    && gamePadState.Buttons.Start == ButtonState.Pressed)
                 {
                     Close();
+                    buttonPressedAt = at;
                 }
                 else
                 {
@@ -56,7 +58,8 @@ namespace ProjectMagma
                 }
             }
             else
-                if (gamePadState.Buttons.Start == ButtonState.Pressed)
+                if (at > buttonPressedAt + Menu.ButtonRepeatTimeout
+                    && gamePadState.Buttons.Start == ButtonState.Pressed)
                 {
                     Open();
                     buttonPressedAt = at;
@@ -108,6 +111,8 @@ namespace ProjectMagma
 
         public void Open()
         {
+            Game.Instance.Simulation.Pause();
+
             active = true;
             OpenMenuScreen(mainMenu);
         }
@@ -116,6 +121,8 @@ namespace ProjectMagma
         {
             active = false;
             screens.Clear();
+
+            Game.Instance.Simulation.Resume();
         }
 
         private bool active = false;

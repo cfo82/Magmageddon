@@ -6,5 +6,5 @@ using Microsoft.Xna.Framework;
 
 namespace ProjectMagma.Simulation
 {
-    public delegate void UpdateHandler(Entity sender, GameTime gameTime);
+    public delegate void UpdateHandler(Entity sender, SimulationTime simTime);
 }

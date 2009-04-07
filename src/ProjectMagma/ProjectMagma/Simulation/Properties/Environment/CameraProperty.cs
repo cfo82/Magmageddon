@@ -27,7 +27,7 @@ namespace ProjectMagma.Simulation
             // TODO: remove attributes!
         }
 
-        private void OnUpdate(Entity entity, GameTime gameTime)
+        private void OnUpdate(Entity entity, SimulationTime simTime)
         {
             #region update view matrix
 
@@ -38,7 +38,7 @@ namespace ProjectMagma.Simulation
 
             Vector3 movingPosition =
                 entity.GetVector3("position") +
-                entity.GetVector3("up") * (float) Math.Sin(gameTime.TotalRealTime.TotalMilliseconds * 0.002f) * 10.0f;
+                entity.GetVector3("up") * (float)Math.Sin(simTime.At * 0.002f) * 10.0f;
 
             // compute matrix
             view = Matrix.CreateLookAt(

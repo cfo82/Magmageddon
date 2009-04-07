@@ -84,8 +84,8 @@ namespace ProjectMagma
                 spriteBatch.Draw(fuelBar, new Vector2(fuelX, 117), new Rectangle(0, 0, fuelBarWidth, fuelBar.Height), 
                     Color.White, 0f, Vector2.Zero, 1, effects, 0);
             }
-            spriteBatch.DrawString(font, String.Format("{0:00.0} fps", (1000f / (Game.Instance.Simulation.CurrentGameTime.TotalGameTime.TotalMilliseconds -
-                Game.Instance.Simulation.LastUpdateAt))), 
+            spriteBatch.DrawString(font, String.Format("{0:00.0} fps", (1000f / gameTime.ElapsedGameTime.TotalMilliseconds))
+                + " " + String.Format("{0:00.0} sps", (1000f / Game.Instance.Simulation.Time.DtMs)), 
                 new Vector2(screenWidth / 2-20, 5), Color.Black);
             spriteBatch.End();
         }

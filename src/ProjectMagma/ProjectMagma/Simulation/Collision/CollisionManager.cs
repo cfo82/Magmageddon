@@ -71,12 +71,23 @@ namespace ProjectMagma.Simulation.Collision
                     List<Contact> contacts = new List<Contact>();
                     CollisionEntity entity1 = collisionEntities[i];
                     CollisionEntity entity2 = collisionEntities[j];
-                    Matrix worldTransform1 = CalculateWorldTransform(entity1);
-                    Matrix worldTransform2 = CalculateWorldTransform(entity2);
                     ContactTest test = contactTests[BoundingVolumeTypeUtil.ToNumber(entity1.volumeType), BoundingVolumeTypeUtil.ToNumber(entity2.volumeType)];
+
+                    Matrix worldTransform1;
+                    Vector3 position1 = GetPosition(entity1.entity);
+                    Quaternion rotation1 = GetRotation(entity1.entity);
+                    Vector3 scale1 = GetScale(entity1.entity);
+                    CalculateWorldTransform(ref position1, ref rotation1, ref scale1, out worldTransform1);
+
+                    Matrix worldTransform2;
+                    Vector3 position2 = GetPosition(entity2.entity);
+                    Quaternion rotation2 = GetRotation(entity2.entity);
+                    Vector3 scale2 = GetScale(entity2.entity);
+                    CalculateWorldTransform(ref position2, ref rotation2, ref scale2, out worldTransform2);
+
                     test(
-                        entity1.entity, entity1.volume, worldTransform1, GetPosition(entity1.entity), GetRotation(entity1.entity), GetScale(entity1.entity),
-                        entity2.entity, entity2.volume, worldTransform2, GetPosition(entity2.entity), GetRotation(entity2.entity), GetScale(entity2.entity),
+                        entity1.entity, entity1.volume, ref worldTransform1, ref position1, ref rotation1, ref scale1,
+                        entity2.entity, entity2.volume, ref worldTransform2, ref position2, ref rotation2, ref scale2,
                         contacts
                         );
                     if (contacts.Count > 0)
@@ -102,12 +113,19 @@ namespace ProjectMagma.Simulation.Collision
             }
         }
 
-        private Matrix CalculateWorldTransform(CollisionEntity e)
+        private void CalculateWorldTransform(
+            ref Vector3 translation,
+            ref Quaternion rotation,
+            ref Vector3 scale,
+            out Matrix world
+        )
         {
-            return 
-                Matrix.CreateScale(GetScale(e.entity)) *
-                Matrix.CreateFromQuaternion(GetRotation(e.entity)) * 
-                Matrix.CreateTranslation(GetPosition(e.entity));
+            Matrix scaleMatrix, rotationMatrix, translationMatrix, tempMatrix;
+            Matrix.CreateScale(ref scale, out scaleMatrix);
+            Matrix.CreateFromQuaternion(ref rotation, out rotationMatrix);
+            Matrix.CreateTranslation(ref translation, out translationMatrix);
+            Matrix.Multiply(ref scaleMatrix, ref rotationMatrix, out tempMatrix);
+            Matrix.Multiply(ref tempMatrix, ref translationMatrix, out world);
         }
 
         private Vector3 GetPosition(Entity entity)

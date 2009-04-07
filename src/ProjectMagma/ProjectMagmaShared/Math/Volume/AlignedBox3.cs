@@ -24,21 +24,8 @@ namespace ProjectMagma.Shared.Math.Volume
             get { return VolumeType.AlignedBox3; }
         }
 
-        /*public Box3 CreateBox3()
-        {
-            Box3 box = new Box3();
-            box.Center = (Min + Max) / 2.0f;
-            box.Axis[0] = Vector3.UnitX;
-            box.Axis[1] = Vector3.UnitY;
-            box.Axis[2] = Vector3.UnitZ;
-            box.HalfDim = (Max - Min) / 2.0f;
-            return box;
-        }*/
-
         public Box3 CreateBox3(
-            ref Vector3 translation,
-            ref Quaternion rotation,
-            ref Vector3 scale
+            ref Matrix world
         )
         {
             Vector3[] corners = new Vector3[] {
@@ -52,14 +39,6 @@ namespace ProjectMagma.Shared.Math.Volume
                 new Vector3(Max.X, Max.Y, Max.Z),
                 new Vector3(Min.X, Max.Y, Max.Z)
             };
-
-            Matrix scaleMatrix, rotationMatrix, translationMatrix, tempMatrix, world;
-            Matrix.CreateScale(ref scale, out scaleMatrix);
-            Matrix.CreateFromQuaternion(ref rotation, out rotationMatrix);
-            Matrix.CreateTranslation(ref translation, out translationMatrix);
-
-            Matrix.Multiply(ref scaleMatrix, ref rotationMatrix, out tempMatrix);
-            Matrix.Multiply(ref tempMatrix, ref translationMatrix, out world);
 
             for (int i = 0; i < 8; ++i)
             {

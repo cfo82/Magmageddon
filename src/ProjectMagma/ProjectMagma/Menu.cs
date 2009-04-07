@@ -46,7 +46,7 @@ namespace ProjectMagma
 
             if(active)
             {
-                if (gamePadState.Buttons.Back == ButtonState.Pressed)
+                if (gamePadState.Buttons.Start == ButtonState.Pressed)
                 {
                     Close();
                 }
@@ -260,8 +260,7 @@ namespace ProjectMagma
 
             if (at > menu.buttonPressedAt + Menu.ButtonRepeatTimeout)
             {
-                if (gamePadState.Buttons.Start == ButtonState.Pressed
-                    || gamePadState.Buttons.A == ButtonState.Pressed)
+                if (gamePadState.Buttons.A == ButtonState.Pressed)
                 {
                     SelectedItem.PerformAction();
                     menu.buttonPressedAt = at;

@@ -335,6 +335,7 @@ namespace ProjectMagma
             this.menuItems = new MenuItem[] { 
                 new MenuItem("new_game", "new_game", new ItemSelectionHandler(NewGameHandler)),
                 new MenuItem("settings", "settings", new ItemSelectionHandler(SettingsHandler)),
+                new MenuItem("help", "help", new ItemSelectionHandler(HelpHandler)),
                 new MenuItem("exit_game", "exit_game", new ItemSelectionHandler(ExitGameHandler))
             };
 
@@ -355,6 +356,10 @@ namespace ProjectMagma
         private void SettingsHandler(MenuItem sender)
         {
             menu.OpenMenuScreen(settingsMenu);
+        }
+
+        private void HelpHandler(MenuItem sender)
+        {
         }
 
         private void ExitGameHandler(MenuItem sender)

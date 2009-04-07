@@ -201,7 +201,7 @@ namespace ProjectMagma.Simulation
         /// </summary>
         public float DtMs
         {
-            get { return dt; }
+            get { return dtMs; }
         }
 
         internal void Update()

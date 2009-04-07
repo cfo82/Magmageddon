@@ -713,11 +713,6 @@
       <Importer>TextureImporter</Importer>
       <Processor>TextureProcessor</Processor>
     </Compile>
-    <Compile Include="Sprites\Menu\controller.png">
-      <Name>controller</Name>
-      <Importer>TextureImporter</Importer>
-      <Processor>TextureProcessor</Processor>
-    </Compile>
     <Compile Include="Sprites\Menu\new_game.png">
       <Name>new_game</Name>
       <Importer>TextureImporter</Importer>
@@ -823,6 +818,18 @@
       <Name>CollisionTestLevel</Name>
       <Importer>LevelImporter</Importer>
       <Processor>LevelProcessor</Processor>
+    </Compile>
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="Sprites\Menu\help.png">
+      <Name>help</Name>
+      <Importer>TextureImporter</Importer>
+      <Processor>TextureProcessor</Processor>
+    </Compile>
+    <Compile Include="Sprites\Menu\help_selected.png">
+      <Name>help_selected</Name>
+      <Importer>TextureImporter</Importer>
+      <Processor>TextureProcessor</Processor>
     </Compile>
   </ItemGroup>
   <ItemGroup>

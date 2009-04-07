@@ -14,8 +14,8 @@ namespace ProjectMagma.Simulation.Collision.CollisionTests
             List<Contact> contacts, bool reverse
         )
         {
-            Box3 box1 = node1.BoundingBox.CreateBox3(translation1, Matrix.CreateFromQuaternion(rotation1), scale1);
-            Box3 box2 = node2.BoundingBox.CreateBox3(translation2, Matrix.CreateFromQuaternion(rotation2), scale2);
+            Box3 box1 = node1.BoundingBox.CreateBox3(ref translation1, ref rotation1, ref scale1);
+            Box3 box2 = node2.BoundingBox.CreateBox3(ref translation2, ref rotation2, ref scale2);
             if (!Intersection.IntersectBox3Box3(box1, box2))
             {
                 return;
@@ -73,8 +73,8 @@ namespace ProjectMagma.Simulation.Collision.CollisionTests
         )
         {
             // TODO Box<->box checks
-            Box3 box1 = node1.BoundingBox.CreateBox3(translation1, Matrix.CreateFromQuaternion(rotation1), scale1);
-            Box3 box2 = node2.BoundingBox.CreateBox3(translation2, Matrix.CreateFromQuaternion(rotation2), scale2);
+            Box3 box1 = node1.BoundingBox.CreateBox3(ref translation1, ref rotation1, ref scale1);
+            Box3 box2 = node2.BoundingBox.CreateBox3(ref translation2, ref rotation2, ref scale2);
             if (!Intersection.IntersectBox3Box3(box1, box2))
             {
                 return;
@@ -125,8 +125,8 @@ namespace ProjectMagma.Simulation.Collision.CollisionTests
         )
         {
             // TODO Box<->box checks
-            Box3 box1 = node1.BoundingBox.CreateBox3(translation1, Matrix.CreateFromQuaternion(rotation1), scale1);
-            Box3 box2 = node2.BoundingBox.CreateBox3(translation2, Matrix.CreateFromQuaternion(rotation2), scale2);
+            Box3 box1 = node1.BoundingBox.CreateBox3(ref translation1, ref rotation1, ref scale1);
+            Box3 box2 = node2.BoundingBox.CreateBox3(ref translation2, ref rotation2, ref scale2);
             if (!Intersection.IntersectBox3Box3(box1, box2))
             {
                 return;
@@ -305,8 +305,8 @@ namespace ProjectMagma.Simulation.Collision.CollisionTests
             AlignedBox3Tree tree2 = (AlignedBox3Tree)boundingVolume2;
 
             // early exit if they do not intersect...
-            Box3 box1 = tree1.BoundingBox.CreateBox3(translation1, Matrix.CreateFromQuaternion(rotation1), scale1);
-            Box3 box2 = tree2.BoundingBox.CreateBox3(translation2, Matrix.CreateFromQuaternion(rotation2), scale2);
+            Box3 box1 = tree1.BoundingBox.CreateBox3(ref translation1, ref rotation1, ref scale1);
+            Box3 box2 = tree2.BoundingBox.CreateBox3(ref translation2, ref rotation2, ref scale2);
             if (!Intersection.IntersectBox3Box3(box1, box2))
             {
                 return;

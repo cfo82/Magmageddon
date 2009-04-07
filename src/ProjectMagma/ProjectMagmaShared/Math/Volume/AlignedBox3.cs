@@ -36,9 +36,9 @@ namespace ProjectMagma.Shared.Math.Volume
         }*/
 
         public Box3 CreateBox3(
-            Vector3 translation,
-            Matrix rotation,
-            Vector3 scale
+            ref Vector3 translation,
+            ref Quaternion rotation,
+            ref Vector3 scale
         )
         {
             Vector3[] corners = new Vector3[] {
@@ -53,10 +53,13 @@ namespace ProjectMagma.Shared.Math.Volume
                 new Vector3(Min.X, Max.Y, Max.Z)
             };
 
-            Matrix world = Matrix.Identity;
-            world *= Matrix.CreateScale(scale);
-            world *= rotation;
-            world *= Matrix.CreateTranslation(translation);
+            Matrix scaleMatrix, rotationMatrix, translationMatrix, tempMatrix, world;
+            Matrix.CreateScale(ref scale, out scaleMatrix);
+            Matrix.CreateFromQuaternion(ref rotation, out rotationMatrix);
+            Matrix.CreateTranslation(ref translation, out translationMatrix);
+
+            Matrix.Multiply(ref scaleMatrix, ref rotationMatrix, out tempMatrix);
+            Matrix.Multiply(ref tempMatrix, ref translationMatrix, out world);
 
             for (int i = 0; i < 8; ++i)
             {

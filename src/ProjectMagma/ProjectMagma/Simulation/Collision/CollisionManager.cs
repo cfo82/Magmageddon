@@ -61,7 +61,7 @@ namespace ProjectMagma.Simulation.Collision
             }
         }
 
-        static int collisionCount = 0;
+        //static int collisionCount = 0;
 
         public void Update(SimulationTime simTime)
         {
@@ -102,14 +102,14 @@ namespace ProjectMagma.Simulation.Collision
                         //        (entity1.entity.GetString("kind") == "island" && entity2.entity.GetString("kind") == "island")
                         //    ))
                         //{
-                            System.Console.WriteLine("Collision {0,4}: between {1} and {2}!", collisionCount, entity1.Entity.Name, entity2.Entity.Name);
+                        //    System.Console.WriteLine("Collision {0,4}: between {1} and {2}!", collisionCount, entity1.Entity.Name, entity2.Entity.Name);
                         //}
                         Debug.Assert(contact.EntityA == entity1.Entity && contact.EntityB == entity2.Entity);
                         entity1.CollisionProperty.FireContact(simTime, contact);
                         contact.Reverse();
                         Debug.Assert(contact.EntityA == entity2.Entity && contact.EntityB == entity1.Entity);
                         entity2.CollisionProperty.FireContact(simTime, contact);
-                        ++collisionCount;
+                        //++collisionCount;
                     }
                 }
             }

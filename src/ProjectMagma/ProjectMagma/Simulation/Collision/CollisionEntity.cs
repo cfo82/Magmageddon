@@ -4,33 +4,80 @@ namespace ProjectMagma.Simulation.Collision
 {
     class CollisionEntity
     {
-        public CollisionEntity(Entity entity, CollisionProperty property, Sphere3 sphere)
+        public CollisionEntity(
+            Entity entity,
+            CollisionProperty property,
+            Sphere3 sphere,
+            bool needAllContacts
+        )
+        :   this(entity, property, VolumeType.Sphere3, sphere, needAllContacts)
+        {
+        }
+
+        public CollisionEntity(
+            Entity entity,
+            CollisionProperty property,
+            AlignedBox3Tree tree,
+            bool needAllContacts
+        )
+        :   this(entity, property, VolumeType.AlignedBox3Tree, tree, needAllContacts)
+        {
+        }
+
+        public CollisionEntity(
+            Entity entity, 
+            CollisionProperty property,
+            Cylinder3 cylinder,
+            bool needAllContacts
+        )
+        :   this(entity, property, VolumeType.Cylinder3, cylinder, needAllContacts)
+        {
+        }
+
+        public CollisionEntity(
+            Entity entity,
+            CollisionProperty property,
+            VolumeType volumeType,
+            object volume,
+            bool needAllContacts
+        )
         {
             this.entity = entity;
             this.collisionProperty = property;
-            this.volumeType = VolumeType.Sphere3;
-            this.volume = sphere;
+            this.volumeType = volumeType;
+            this.volume = volume;
+            this.needAllContacts = needAllContacts;
         }
 
-        public CollisionEntity(Entity entity, CollisionProperty property, AlignedBox3Tree tree)
+        public Entity Entity
         {
-            this.entity = entity;
-            this.collisionProperty = property;
-            this.volumeType = VolumeType.AlignedBox3Tree;
-            this.volume = tree;
+            get { return entity; }
         }
 
-        public CollisionEntity(Entity entity, CollisionProperty property, Cylinder3 cylinder)
+        public CollisionProperty CollisionProperty
         {
-            this.entity = entity;
-            this.collisionProperty = property;
-            this.volumeType = VolumeType.Cylinder3;
-            this.volume = cylinder;
+            get { return collisionProperty; }
         }
 
-        public Entity entity;
-        public CollisionProperty collisionProperty;
-        public VolumeType volumeType;
-        public object volume;
+        public VolumeType VolumeType
+        {
+            get { return volumeType; }
+        }
+
+        public object Volume
+        {
+            get { return volume; }
+        }
+
+        public bool NeedAllContacts
+        {
+            get { return needAllContacts; }
+        }
+
+        private Entity entity;
+        private CollisionProperty collisionProperty;
+        private VolumeType volumeType;
+        private object volume;
+        private bool needAllContacts;
     }
 }

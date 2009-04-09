@@ -5,7 +5,7 @@ using ProjectMagma.Shared.Math.Volume;
 
 namespace ProjectMagma.Simulation.Collision
 {
-    public delegate void ContactHandler(SimulationTime simTime, List<Contact> contacts);
+    public delegate void ContactHandler(SimulationTime simTime, Contact contact);
 
     public class CollisionProperty : Property
     {
@@ -17,23 +17,25 @@ namespace ProjectMagma.Simulation.Collision
             Entity entity
         )
         {
+            bool needAllContacts = entity.HasBool("need_all_contacts") && entity.GetBool("need_all_contacts");
+
             if (entity.HasString("bv_type"))
             {
                 string bv_type = entity.GetString("bv_type");
                 if (bv_type == "cylinder")
                 {
                     Cylinder3 bvCylinder = GetBoundingCylinder(entity);
-                    Game.Instance.Simulation.CollisionManager.AddCollisionEntity(entity, this, bvCylinder);
+                    Game.Instance.Simulation.CollisionManager.AddCollisionEntity(entity, this, bvCylinder, needAllContacts);
                 }
                 else if (bv_type == "alignedbox3tree")
                 {
                     AlignedBox3Tree bvTree = GetAlignedBox3Tree(entity);
-                    Game.Instance.Simulation.CollisionManager.AddCollisionEntity(entity, this, bvTree);
+                    Game.Instance.Simulation.CollisionManager.AddCollisionEntity(entity, this, bvTree, needAllContacts);
                 }
                 else if (bv_type == "sphere")
                 {
                     Sphere3 bvSphere = GetBoundingSphere(entity);
-                    Game.Instance.Simulation.CollisionManager.AddCollisionEntity(entity, this, bvSphere);
+                    Game.Instance.Simulation.CollisionManager.AddCollisionEntity(entity, this, bvSphere, needAllContacts);
                 }
             }
         }
@@ -45,11 +47,11 @@ namespace ProjectMagma.Simulation.Collision
             Game.Instance.Simulation.CollisionManager.RemoveCollisionEntity(this);
         }
 
-        public void FireContact(SimulationTime simTime, List<Contact> contacts)
+        public void FireContact(SimulationTime simTime, Contact contact)
         {
             if (OnContact != null)
             {
-                OnContact(simTime, contacts);
+                OnContact(simTime, contact);
             }
         }
 

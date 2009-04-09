@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System.Diagnostics;
+using System.Collections.Generic;
 using Microsoft.Xna.Framework;
 using ProjectMagma.Shared.Math.Volume;
 using ProjectMagma.Simulation.Collision.CollisionTests;
@@ -12,24 +13,24 @@ namespace ProjectMagma.Simulation.Collision
             collisionEntities = new List<CollisionEntity>();
         }
 
-        public void AddCollisionEntity(Entity entity, CollisionProperty property, Cylinder3 cylinder)
+        public void AddCollisionEntity(Entity entity, CollisionProperty property, Cylinder3 cylinder, bool needAllContacts)
         {
-            AddCollisionEntity(new CollisionEntity(entity, property, cylinder));
+            AddCollisionEntity(new CollisionEntity(entity, property, cylinder, needAllContacts));
         }
 
-        public void AddCollisionEntity(Entity entity, CollisionProperty property, AlignedBox3Tree tree)
+        public void AddCollisionEntity(Entity entity, CollisionProperty property, AlignedBox3Tree tree, bool needAllContacts)
         {
-            AddCollisionEntity(new CollisionEntity(entity, property, tree));
+            AddCollisionEntity(new CollisionEntity(entity, property, tree, needAllContacts));
         }
 
-        public void AddCollisionEntity(Entity entity, CollisionProperty property, Sphere3 sphere)
+        public void AddCollisionEntity(Entity entity, CollisionProperty property, Sphere3 sphere, bool needAllContacts)
         {
-            AddCollisionEntity(new CollisionEntity(entity, property, sphere));
+            AddCollisionEntity(new CollisionEntity(entity, property, sphere, needAllContacts));
         }
 
         void AddCollisionEntity(CollisionEntity collisionEntity)
         {
-            if (!collisionEntities.Contains(collisionEntity) && !ContainsCollisionEntity(collisionEntity.collisionProperty))
+            if (!collisionEntities.Contains(collisionEntity) && !ContainsCollisionEntity(collisionEntity.CollisionProperty))
             {
                 collisionEntities.Add(collisionEntity);
             }
@@ -39,7 +40,7 @@ namespace ProjectMagma.Simulation.Collision
         {
             for (int i = 0; i < collisionEntities.Count; ++i)
             {
-                if (collisionEntities[i].collisionProperty == property)
+                if (collisionEntities[i].CollisionProperty == property)
                 {
                     return true;
                 }
@@ -52,7 +53,7 @@ namespace ProjectMagma.Simulation.Collision
         {
             for (int i = 0; i < collisionEntities.Count; ++i)
             {
-                if (collisionEntities[i].collisionProperty == property)
+                if (collisionEntities[i].CollisionProperty == property)
                 {
                     collisionEntities.RemoveAt(i);
                     return;
@@ -60,7 +61,7 @@ namespace ProjectMagma.Simulation.Collision
             }
         }
 
-        //static int collisionCount = 0;
+        static int collisionCount = 0;
 
         public void Update(SimulationTime simTime)
         {
@@ -68,30 +69,32 @@ namespace ProjectMagma.Simulation.Collision
             {
                 for (int j = i + 1; j < collisionEntities.Count; ++j)
                 {
-                    List<Contact> contacts = new List<Contact>();
                     CollisionEntity entity1 = collisionEntities[i];
                     CollisionEntity entity2 = collisionEntities[j];
-                    ContactTest test = contactTests[BoundingVolumeTypeUtil.ToNumber(entity1.volumeType), BoundingVolumeTypeUtil.ToNumber(entity2.volumeType)];
+                    ContactTest test = contactTests[BoundingVolumeTypeUtil.ToNumber(entity1.VolumeType), BoundingVolumeTypeUtil.ToNumber(entity2.VolumeType)];
 
                     Matrix worldTransform1;
-                    Vector3 position1 = GetPosition(entity1.entity);
-                    Quaternion rotation1 = GetRotation(entity1.entity);
-                    Vector3 scale1 = GetScale(entity1.entity);
+                    Vector3 position1 = GetPosition(entity1.Entity);
+                    Quaternion rotation1 = GetRotation(entity1.Entity);
+                    Vector3 scale1 = GetScale(entity1.Entity);
                     CalculateWorldTransform(ref position1, ref rotation1, ref scale1, out worldTransform1);
 
                     Matrix worldTransform2;
-                    Vector3 position2 = GetPosition(entity2.entity);
-                    Quaternion rotation2 = GetRotation(entity2.entity);
-                    Vector3 scale2 = GetScale(entity2.entity);
+                    Vector3 position2 = GetPosition(entity2.Entity);
+                    Quaternion rotation2 = GetRotation(entity2.Entity);
+                    Vector3 scale2 = GetScale(entity2.Entity);
                     CalculateWorldTransform(ref position2, ref rotation2, ref scale2, out worldTransform2);
 
+                    Contact contact = new Contact(entity1.Entity, entity2.Entity);
+
                     test(
-                        entity1.entity, entity1.volume, ref worldTransform1, ref position1, ref rotation1, ref scale1,
-                        entity2.entity, entity2.volume, ref worldTransform2, ref position2, ref rotation2, ref scale2,
-                        contacts
+                        entity1.Entity, entity1.Volume, ref worldTransform1, ref position1, ref rotation1, ref scale1,
+                        entity2.Entity, entity2.Volume, ref worldTransform2, ref position2, ref rotation2, ref scale2,
+                        entity1.NeedAllContacts || entity2.NeedAllContacts, ref contact
                         );
-                    if (contacts.Count > 0)
+                    if (contact.Count > 0)
                     {
+                        System.Console.WriteLine(contact.Count);
                         //if (
                         //    entity1.entity.HasString("kind") && entity2.entity.HasString("kind") &&(
                         //        entity1.entity.GetString("kind") == "pillar" ||
@@ -99,15 +102,14 @@ namespace ProjectMagma.Simulation.Collision
                         //        (entity1.entity.GetString("kind") == "island" && entity2.entity.GetString("kind") == "island")
                         //    ))
                         //{
-                        //    System.Console.WriteLine("Collision {0,4}: between {1} and {2}!", collisionCount, entity1.entity.Name, entity2.entity.Name);
+                            System.Console.WriteLine("Collision {0,4}: between {1} and {2}!", collisionCount, entity1.Entity.Name, entity2.Entity.Name);
                         //}
-                        entity1.collisionProperty.FireContact(simTime, contacts);
-                        foreach (Contact c in contacts)
-                        {
-                            c.Reverse();
-                        }
-                        entity2.collisionProperty.FireContact(simTime, contacts);
-                        //++collisionCount;
+                        Debug.Assert(contact.EntityA == entity1.Entity && contact.EntityB == entity2.Entity);
+                        entity1.CollisionProperty.FireContact(simTime, contact);
+                        contact.Reverse();
+                        Debug.Assert(contact.EntityA == entity2.Entity && contact.EntityB == entity1.Entity);
+                        entity2.CollisionProperty.FireContact(simTime, contact);
+                        ++collisionCount;
                     }
                 }
             }
@@ -159,7 +161,7 @@ namespace ProjectMagma.Simulation.Collision
 
         private readonly ContactTest[,] contactTests = new ContactTest[3, 3] {
             { ContactCylinderCylinder.Test, ContactCylinderMesh.Test, ContactCylinderSphere.Test },
-            { ContactMeshCylinder.Test, ContactMeshMesh.Test, ContactMeshSphere.Test },
+            { ContactMeshCylinder.Test, ContactMeshMeshBox.Test, ContactMeshSphere.Test },
             { ContactSphereCylinder.Test, ContactSphereMesh.Test, ContactSphereSphere.Test } 
         };
         private List<CollisionEntity> collisionEntities;

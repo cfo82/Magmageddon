@@ -10,7 +10,7 @@ namespace ProjectMagma.Simulation.Collision.CollisionTests
         public static void Test(
             Entity entity1, object boundingVolume1, ref Matrix worldTransform1, ref Vector3 translation1, ref Quaternion rotation1, ref Vector3 scale1,
             Entity entity2, object boundingVolume2, ref Matrix worldTransform2, ref Vector3 translation2, ref Quaternion rotation2, ref Vector3 scale2,
-            List<Contact> contacts
+            bool needAllContacts, ref Contact contact
             )
         {
             Sphere3 sphere1 = (Sphere3)boundingVolume1;
@@ -36,7 +36,8 @@ namespace ProjectMagma.Simulation.Collision.CollisionTests
                 if (diff.LengthSquared() < collisionLengthSquared)
                 {
                     diff.Normalize();
-                    contacts.Add(new Contact(entity1, entity2, center1 + diff * radius1, diff));
+                    Vector3 point = center1 + diff * radius1;
+                    contact.AddContactPoint(ref point, ref diff);
                 }
             }
             // above cylinder...
@@ -51,7 +52,8 @@ namespace ProjectMagma.Simulation.Collision.CollisionTests
                     Vector3 toProjected = projected - top2;
                     if (toProjected.LengthSquared() < radius2 * radius2)
                     {
-                        contacts.Add(new Contact(entity1, entity2, projected, -Vector3.UnitY));
+                        Vector3 normal = -Vector3.UnitY;
+                        contact.AddContactPoint(ref projected, ref normal);
                     }
                     else
                     {
@@ -60,7 +62,8 @@ namespace ProjectMagma.Simulation.Collision.CollisionTests
                         Vector3 diff = nearestPoint - center1;
                         if (diff.LengthSquared() < radius1 * radius1)
                         {
-                            contacts.Add(new Contact(entity1, entity2, nearestPoint, -Vector3.UnitY));
+                            Vector3 normal = -Vector3.UnitY;
+                            contact.AddContactPoint(ref nearestPoint, ref normal);
                         }
                     }
                 }
@@ -77,7 +80,8 @@ namespace ProjectMagma.Simulation.Collision.CollisionTests
                     Vector3 toProjected = projected - bottom2;
                     if (toProjected.LengthSquared() < radius2 * radius2)
                     {
-                        contacts.Add(new Contact(entity1, entity2, projected, Vector3.UnitY));
+                        Vector3 normal = Vector3.UnitY;
+                        contact.AddContactPoint(ref projected, ref normal);
                     }
                     else
                     {
@@ -86,7 +90,8 @@ namespace ProjectMagma.Simulation.Collision.CollisionTests
                         Vector3 diff = nearestPoint - center1;
                         if (diff.LengthSquared() < radius1 * radius1)
                         {
-                            contacts.Add(new Contact(entity1, entity2, projected, Vector3.UnitY));
+                            Vector3 normal = Vector3.UnitY;
+                            contact.AddContactPoint(ref nearestPoint, ref normal);
                         }
                     }
                 }

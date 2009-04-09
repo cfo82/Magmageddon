@@ -11,7 +11,7 @@ namespace ProjectMagma.Simulation.Collision.CollisionTests
         private static void Test(
             Entity entity1, AlignedBox3TreeNode node1, Vector3[] positions1, Matrix worldTransform1, Vector3 translation1, Quaternion rotation1, Vector3 scale1,
             Entity entity2, Sphere3 sphere2, Matrix worldTransform2, Vector3 translation2, Quaternion rotation2, Vector3 scale2,
-            List<Contact> contacts
+            bool needAllContacts, ref Contact contact
         )
         {
             /*
@@ -92,13 +92,15 @@ namespace ProjectMagma.Simulation.Collision.CollisionTests
                     float squaredDistance = SquaredDistance.Vector3Triangle3(ref sphereCenter, ref tri, out closestPoint);
                     if (squaredDistance < sphere2.Radius * sphere2.Radius)
                     {
-                        bool newContact = true;
-                        foreach (Contact c in contacts)
-                        { newContact = newContact && c.Position != closestPoint; }
-
-                        if (newContact)
+                        if (!contact.ContainsPoint(ref closestPoint))
                         {
-                            contacts.Add(new Contact(entity1, entity2, closestPoint, tri.Normal));
+                            Vector3 normal = tri.Normal;
+                            contact.AddContactPoint(ref closestPoint, ref normal);
+                        }
+
+                        if (!needAllContacts)
+                        {
+                            return;
                         }
                     }
                 }
@@ -108,12 +110,18 @@ namespace ProjectMagma.Simulation.Collision.CollisionTests
                 Test(
                     entity1, node1.Left, positions1, worldTransform1, translation1, rotation1, scale1,
                     entity2, sphere2, worldTransform2, translation2, rotation2, scale2,
-                    contacts
+                    needAllContacts, ref contact
                     );
+
+                if (!needAllContacts && contact.Count > 0)
+                {
+                    return;
+                }
+
                 Test(
                     entity1, node1.Right, positions1, worldTransform1, translation1, rotation1, scale1,
                     entity2, sphere2, worldTransform2, translation2, rotation2, scale2,
-                    contacts
+                    needAllContacts, ref contact
                     );
             }
         }
@@ -121,8 +129,8 @@ namespace ProjectMagma.Simulation.Collision.CollisionTests
         public static void Test(
             Entity entity1, object boundingVolume1, ref Matrix worldTransform1, ref Vector3 translation1, ref Quaternion rotation1, ref Vector3 scale1,
             Entity entity2, object boundingVolume2, ref Matrix worldTransform2, ref Vector3 translation2, ref Quaternion rotation2, ref Vector3 scale2,
-            List<Contact> contacts
-            )
+            bool needAllContacts, ref Contact contact
+        )
         {
             AlignedBox3Tree tree1 = (AlignedBox3Tree)boundingVolume1;
             Sphere3 sphere2 = (Sphere3)boundingVolume2;
@@ -132,7 +140,7 @@ namespace ProjectMagma.Simulation.Collision.CollisionTests
 
             Test(entity1, tree1.Root, tree1.Positions, worldTransform1, translation1, rotation1, scale1,
                 entity2, transformedSphere2, worldTransform2, translation2, rotation2, scale2,
-                contacts);
+                needAllContacts, ref contact);
         }
     }
 }

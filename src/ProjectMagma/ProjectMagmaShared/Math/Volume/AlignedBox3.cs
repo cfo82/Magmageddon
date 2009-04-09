@@ -24,6 +24,18 @@ namespace ProjectMagma.Shared.Math.Volume
             get { return VolumeType.AlignedBox3; }
         }
 
+        public void CreateSphere3(
+            ref Matrix world,
+            out Sphere3 sphere
+        )
+        {
+            Vector3 center = (Min + Max) / 2.0f;
+            Vector3 worldCenter = Vector3.Transform(center, world);
+            Vector3 worldMax = Vector3.Transform(Max, world);
+            Vector3 worldExtent = (worldMax - worldCenter);
+            sphere = new Sphere3(worldCenter, worldExtent.Length());
+        }
+
         public Box3 CreateBox3(
             ref Matrix world
         )

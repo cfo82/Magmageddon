@@ -89,9 +89,8 @@ namespace ProjectMagma.Simulation
             playersOnIsland = 0;
         }
 
-        private void CollisionHandler(SimulationTime simTime, List<Contact> contacts)
+        private void CollisionHandler(SimulationTime simTime, Contact contact)
         {
-            Contact contact = contacts[0];
             Entity island = contact.EntityA;
             Entity other = contact.EntityB;
             if(other.HasString("kind"))
@@ -100,7 +99,7 @@ namespace ProjectMagma.Simulation
                 if (kind == "player")
                 {
                     // collision with player
-                    if(Vector3.Dot(Vector3.UnitY, contact.Normal) > 0) // on top
+                    if(Vector3.Dot(Vector3.UnitY, contact[0].Normal) > 0) // on top
                         playersOnIsland++;
                 }
                 else
@@ -116,7 +115,7 @@ namespace ProjectMagma.Simulation
                     else
                     {
                         // repulse in direction of normal
-                        island.SetVector3("repulsion_velocity", -contact.Normal * 100 // todo: strange constant..
+                        island.SetVector3("repulsion_velocity", -contact[0].Normal * 100 // todo: strange constant..
                             + island.GetVector3("repulsion_velocity"));
                     }
 
@@ -125,14 +124,14 @@ namespace ProjectMagma.Simulation
                     {
                         if (kind == "island")
                         {
-                            other.SetVector3("repulsion_velocity", contact.Normal * constants.GetFloat("attraction_speed")
+                            other.SetVector3("repulsion_velocity", contact[0].Normal * constants.GetFloat("attraction_speed")
                                 + other.GetVector3("repulsion_velocity"));
                         }
                         else
                             if (kind == "pillar")
                             {
                                 // repulse if collidet with pillar
-                                island.SetVector3("repulsion_velocity", -contact.Normal * constants.GetFloat("attraction_speed")
+                                island.SetVector3("repulsion_velocity", -contact[0].Normal * constants.GetFloat("attraction_speed")
                                     + island.GetVector3("repulsion_velocity"));
                             }
                     }

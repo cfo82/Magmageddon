@@ -145,10 +145,9 @@ namespace ProjectMagma.Simulation
             flameThrowerState = FlameThrowerState.Cooldown;
         }
 
-        private void FlamethrowerCollisionHandler(SimulationTime simTime, List<Contact> contacts)
+        private void FlamethrowerCollisionHandler(SimulationTime simTime, Contact contact)
         {
-            Contact c = contacts[0];
-            Entity other = c.EntityB;
+            Entity other = contact.EntityB;
 
             if (other.HasAttribute("health"))
             {

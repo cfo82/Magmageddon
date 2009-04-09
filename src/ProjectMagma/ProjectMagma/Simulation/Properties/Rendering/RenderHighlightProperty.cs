@@ -48,16 +48,16 @@ namespace ProjectMagma.Simulation
             this.entity = entity;
 
             // attach listener for management form
-#if !XBOX
-            Game.Instance.ManagementForm.EntitySelectionChanged += OnEntitySelectionChanged;
-#endif
+//#if !XBOX
+//            Game.Instance.ManagementForm.EntitySelectionChanged += OnEntitySelectionChanged;
+//#endif
         }
 
         public void OnDetached(Entity entity)
         {
-#if !XBOX
-            Game.Instance.ManagementForm.EntitySelectionChanged -= OnEntitySelectionChanged;
-#endif
+//#if !XBOX
+//            Game.Instance.ManagementForm.EntitySelectionChanged -= OnEntitySelectionChanged;
+//#endif
             if (enabled)
             {
                 Game.Instance.Renderer.RemoveRenderable(renderable);
@@ -106,22 +106,22 @@ namespace ProjectMagma.Simulation
             renderable.Position = newValue;
         }
 
-#if !XBOX
-        private void OnEntitySelectionChanged(ManagementForm managementForm, Entity oldSelection, Entity newSelection)
-        {
-            if (enabled)
-            {
-                Game.Instance.Renderer.RemoveRenderable(renderable);
-            }
-
-            enabled = this.entity == newSelection;
-
-            if (enabled)
-            {
-                Game.Instance.Renderer.AddRenderable(renderable);
-            }
-        }
-#endif
+//#if !XBOX
+//        private void OnEntitySelectionChanged(ManagementForm managementForm, Entity oldSelection, Entity newSelection)
+//        {
+//            if (enabled)
+//            {
+//                Game.Instance.Renderer.RemoveRenderable(renderable);
+//            }
+//
+//            enabled = this.entity == newSelection;
+//
+//            if (enabled)
+//            {
+//                Game.Instance.Renderer.AddRenderable(renderable);
+//            }
+//        }
+//#endif
 
         private HighlightRenderable renderable;
         private bool enabled;

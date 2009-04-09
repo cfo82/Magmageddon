@@ -94,13 +94,15 @@
     <Compile Include="Simulation\Collision\CollisionTests\ContactCylinderMesh.cs" />
     <Compile Include="Simulation\Collision\CollisionTests\ContactCylinderSphere.cs" />
     <Compile Include="Simulation\Collision\CollisionTests\ContactMeshCylinder.cs" />
-    <Compile Include="Simulation\Collision\CollisionTests\ContactMeshMesh.cs" />
+    <Compile Include="Simulation\Collision\CollisionTests\ContactMeshMeshBox.cs" />
+    <Compile Include="Simulation\Collision\CollisionTests\ContactMeshMeshSphere.cs" />
     <Compile Include="Simulation\Collision\CollisionTests\ContactMeshSphere.cs" />
     <Compile Include="Simulation\Collision\CollisionTests\ContactSphereCylinder.cs" />
     <Compile Include="Simulation\Collision\CollisionTests\ContactSphereMesh.cs" />
     <Compile Include="Simulation\Collision\CollisionTests\ContactSphereSphere.cs" />
     <Compile Include="Simulation\Collision\CollisionTests\ContactTest.cs" />
     <Compile Include="Simulation\Collision\Contact.cs" />
+    <Compile Include="Simulation\Collision\ContactPoint.cs" />
     <Compile Include="Simulation\Entity.cs" />
     <Compile Include="Simulation\EntityKindManager.cs" />
     <Compile Include="Simulation\EntityManager.cs" />

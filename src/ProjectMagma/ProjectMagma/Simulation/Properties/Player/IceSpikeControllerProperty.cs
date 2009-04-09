@@ -91,13 +91,11 @@ namespace ProjectMagma.Simulation
             iceSpike.SetVector3("velocity", v);
         }
 
-        private void IceSpikeCollisionHandler(SimulationTime simTime, List<Contact> contacts)
+        private void IceSpikeCollisionHandler(SimulationTime simTime, Contact contact)
         {
-            Contact c = contacts[0];
-
             // remove spike
-            Entity iceSpike = c.EntityA;
-            Entity other = c.EntityB;
+            Entity iceSpike = contact.EntityA;
+            Entity other = contact.EntityB;
             if (!(other.Name == iceSpike.Name) // dont collide with self
                 && !(other.Name == iceSpike.GetString("player"))) // dont collide with shooter
             {

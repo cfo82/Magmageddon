@@ -1,26 +1,19 @@
-﻿using Microsoft.Xna.Framework;
+﻿using System.Collections;
+using System.Collections.Generic;
+using Microsoft.Xna.Framework;
 
 namespace ProjectMagma.Simulation.Collision
 {
-    public class Contact
+    public class Contact : IEnumerable<ContactPoint>
     {
-        private Entity entityA;
-        private Entity entityB;
-        private Vector3 position;
-        private Vector3 normal;
-
-        public Contact(Entity entityA, Entity entityB)
+        public Contact(
+            Entity entityA,
+            Entity entityB
+        )
         {
             this.entityA = entityA;
             this.entityB = entityB;
-        }
-
-        public Contact(Entity entityA, Entity entityB, Vector3 position, Vector3 normal)
-        {
-            this.entityA = entityA;
-            this.entityB = entityB;
-            this.position = position;
-            this.normal = normal;
+            contactPoints = new List<ContactPoint>();
         }
 
         public void Reverse()
@@ -28,17 +21,36 @@ namespace ProjectMagma.Simulation.Collision
             Entity temp = entityB;
             entityB = entityA;
             entityA = temp;
-            normal = -normal;
+
+            for (int i = 0; i < contactPoints.Count; ++i)
+            {
+                contactPoints[i] = new ContactPoint(contactPoints[i].Point, -contactPoints[i].Normal);
+            }
         }
 
-        public Vector3 Normal
+        public bool ContainsPoint(
+            ref Vector3 p
+        )
         {
-            get { return normal; }
+            for (int i = 0; i < contactPoints.Count; ++i)
+            {
+                if (contactPoints[i].Point == p)
+                    { return true; }
+            }
+            return false;
         }
 
-        public Vector3 Position
+        public void AddContactPoint(
+            ref Vector3 point,
+            ref Vector3 normal
+        )
         {
-            get { return position; }
+            contactPoints.Add(new ContactPoint(point, normal));
+        }
+
+        public Entity EntityA
+        {
+            get { return entityA; }
         }
 
         public Entity EntityB
@@ -46,9 +58,81 @@ namespace ProjectMagma.Simulation.Collision
             get { return entityB; }
         }
 
-        public Entity EntityA
+        public int Count
         {
-            get { return entityA; }
+            get
+            {
+                return contactPoints.Count;
+            }
         }
+
+        public ContactPoint this[int index]
+        {
+            get
+            {
+                return contactPoints[index];
+            }
+        }
+
+        #region Implement IEnumerable interface
+
+        private class ContactEnumerator : IEnumerator<ContactPoint>
+        {
+            public ContactEnumerator(Contact contact)
+            {
+                this.contact = contact;
+                this.index = -1;
+            }
+
+            public void Dispose()
+            {
+            }
+
+            public bool MoveNext()
+            {
+                ++index;
+                return index < contact.Count;
+            }
+
+            public void Reset()
+            {
+                index = -1;
+            }
+
+            public ContactPoint Current
+            {
+                get
+                {
+                    return contact[index];
+                }
+            }
+
+            object IEnumerator.Current
+            {
+                get
+                {
+                    return contact[index];
+                }
+            }
+
+            private Contact contact;
+            private int index = 0;
+        };
+
+        public IEnumerator<ContactPoint> GetEnumerator()
+        {
+            return new ContactEnumerator(this);
+        }
+
+        IEnumerator IEnumerable.GetEnumerator()
+        {
+            return new ContactEnumerator(this);
+        }
+
+        #endregion
+
+        private Entity entityA;
+        private Entity entityB;
+        private List<ContactPoint> contactPoints;
     }
 }

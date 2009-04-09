@@ -674,26 +674,24 @@ namespace ProjectMagma.Simulation
                 player.SetInt("fuel", constants.GetInt("max_fuel"));
         }
 
-        private void PlayerCollisionHandler(SimulationTime simTime, List<Contact> contacts)
+        private void PlayerCollisionHandler(SimulationTime simTime, Contact contact)
         {
-            Contact c = contacts[0];
-
-            if (c.EntityB.HasAttribute("kind"))
+            if (contact.EntityB.HasAttribute("kind"))
             {
-                String kind = c.EntityB.GetString("kind");
+                String kind = contact.EntityB.GetString("kind");
                 switch (kind)
                 {
                     case "island":
-                        PlayerIslandCollisionHandler(simTime, c.EntityA, c.EntityB, contacts);
+                        PlayerIslandCollisionHandler(simTime, contact.EntityA, contact.EntityB, contact);
                         break;
                     case "pillar":
-                        PlayerPillarCollisionHandler(simTime, c.EntityA, c.EntityB, c);
+                        PlayerPillarCollisionHandler(simTime, contact.EntityA, contact.EntityB, contact);
                         break;
                     case "player":
-                        PlayerPlayerCollisionHandler(simTime, c.EntityA, c.EntityB, c);
+                        PlayerPlayerCollisionHandler(simTime, contact.EntityA, contact.EntityB, contact);
                         break;
                     case "powerup":
-                        PlayerPowerupCollisionHandler(simTime, c.EntityA, c.EntityB);
+                        PlayerPowerupCollisionHandler(simTime, contact.EntityA, contact.EntityB);
                         break;
                 }
                 CheckPlayerAttributeRanges(player);
@@ -701,7 +699,7 @@ namespace ProjectMagma.Simulation
             }
         }
 
-        private void PlayerIslandCollisionHandler(SimulationTime simTime, Entity player, Entity island, List<Contact> contacts)
+        private void PlayerIslandCollisionHandler(SimulationTime simTime, Entity player, Entity island, Contact contact)
         {
             if (island == destinationIsland)
             {
@@ -725,11 +723,8 @@ namespace ProjectMagma.Simulation
 
             float dt = simTime.Dt;
 
-            // use first contact
-            Contact co = contacts[0];
-
             // on top?
-            if (Vector3.Dot(Vector3.UnitY, co.Normal) < 0
+            if (Vector3.Dot(Vector3.UnitY, contact[0].Normal) < 0
                 && destinationIsland == null // no on top while jumping...
             )
             {
@@ -755,17 +750,16 @@ namespace ProjectMagma.Simulation
                 player.SetVector3("velocity", Vector3.Zero);
 
                 // determine contact to use (the one with highest y value)
-                co = contacts[0];
-                for (int i = 1; i < contacts.Count; i++)
+                Vector3 point = contact[0].Point;
+                for (int i = 1; i < contact.Count; i++)
                 {
-                    Contact c = contacts[i];
-                    if (c.Position.Y > co.Position.Y)
-                        co = c;
+                    if (contact[i].Point.Y > contact[i].Point.Y)
+                        { point = contact[i].Point; }
                 }
 
                 // set position to contact point
                 Vector3 pos = player.GetVector3("position");
-                pos.Y = co.Position.Y;
+                pos.Y = point.Y;
                 player.SetVector3("position", pos);
 
 //                Console.WriteLine("player positioned at: " + pos);
@@ -778,14 +772,14 @@ namespace ProjectMagma.Simulation
             {
                 Vector3 pos = player.GetVector3("position");
                 // todo constant 2??
-                Vector3 velocity = -co.Normal * (pos - previousPosition).Length() * simTime.Dt / 2;
+                Vector3 velocity = -contact[0].Normal * (pos - previousPosition).Length() * simTime.Dt / 2;
                 player.SetVector3("collision_pushback_velocity", velocity);
             }
         }
 
         private void PlayerPillarCollisionHandler(SimulationTime simTime, Entity player, Entity pillar, Contact co)
         {
-            if (co.Normal.Y < 0)
+            if (co[0].Normal.Y < 0)
             {
                 // top
                 player.SetVector3("velocity", Vector3.Zero);
@@ -797,7 +791,7 @@ namespace ProjectMagma.Simulation
             else
             {
                 Vector3 pos = player.GetVector3("position");
-                Vector3 velocity = -co.Normal * (pos - previousPosition).Length() * simTime.Dt;
+                Vector3 velocity = -co[0].Normal * (pos - previousPosition).Length() * simTime.Dt;
                 player.SetVector3("collision_pushback_velocity", velocity);
             }
         }
@@ -844,13 +838,13 @@ namespace ProjectMagma.Simulation
                 CheckPlayerAttributeRanges(otherPlayer);
 
                 // set values
-                otherPlayer.SetVector3("hit_pushback_velocity", c.Normal * constants.GetFloat("hit_pushback_velocity_multiplier"));
+                otherPlayer.SetVector3("hit_pushback_velocity", c[0].Normal * constants.GetFloat("hit_pushback_velocity_multiplier"));
                 hitPerformedAt = simTime.At;
             }
             else
             {
                 // normal feedback
-                player.SetVector3("player_pushback_velocity", -c.Normal * constants.GetFloat("player_pushback_velocity_multiplier") / 2);
+                player.SetVector3("player_pushback_velocity", -c[0].Normal * constants.GetFloat("player_pushback_velocity_multiplier") / 2);
             }
         }
 

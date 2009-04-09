@@ -28,7 +28,6 @@ namespace ProjectMagma.Simulation
         private double hitPerformedAt = 0;
 
         private double islandLeftAt = 0;
-        private float islandRepulsionStarteAt = 0;
         private float islandRepulsionStoppedAt = 0;
 
         private double islandSelectedAt = 0;
@@ -498,40 +497,17 @@ namespace ProjectMagma.Simulation
                     player.GetIntAttribute("energy"));
 
             // island repulsion
-            if (controllerInput.rightStickPressed
-                && controllerInput.rightStickMoved
+            if (controllerInput.dPadPressed
                 && activeIsland != null
-                && fuel > 0)
+                && fuel > constants.GetInt("island_repulsion_fuel_cost"))
             {
-                if (at > islandRepulsionStoppedAt + constants.GetFloat("island_repulsion_interval"))
-                {
-                    if (islandRepulsionStarteAt == 0
-                        && player.GetInt("fuel") > constants.GetInt("island_repulsion_min_fuel"))
-                        islandRepulsionStarteAt = at;
-                    if (at < islandRepulsionStarteAt + constants.GetFloat("island_repulsion_max_time"))
-                    {
-                        float velocityMultiplier = constants.GetFloat("island_repulsion_velocity_multiplier");
-                        Vector3 velocity = new Vector3(Math.Sign(controllerInput.rightStickX) * velocityMultiplier, 0, 
-                            Math.Sign(controllerInput.rightStickY) * velocityMultiplier);
-                        activeIsland.SetVector3("repulsion_velocity", activeIsland.GetVector3("repulsion_velocity") + velocity);
+                float velocityMultiplier = constants.GetFloat("island_repulsion_velocity_multiplier");
+                Vector3 velocity = new Vector3(controllerInput.dPadX * velocityMultiplier, 0, controllerInput.dPadY * velocityMultiplier);
+                activeIsland.SetVector3("repulsion_velocity", activeIsland.GetVector3("repulsion_velocity") + velocity);
 
-                        fuel -= (int)(simTime.At * velocity.Length() * 
-                            constants.GetFloat("island_repulsion_fuel_cost_multiplier"));
-                    }
-                    else
-                    {
-                        islandRepulsionStarteAt = 0;
-                        islandRepulsionStoppedAt = at;
-                    }
-                }
-            }
-            else
-            {
-                if(islandRepulsionStarteAt > 0)
-                {
-                    islandRepulsionStarteAt = 0;
-                    islandRepulsionStoppedAt = at;
-                }
+                fuel -= constants.GetInt("island_repulsion_fuel_cost");
+
+                islandRepulsionStoppedAt = at;
             }
 
             // island selection and attraction
@@ -936,6 +912,12 @@ namespace ProjectMagma.Simulation
                 rightStickMoved = rightStickX != 0.0f || rightStickY != 0.0f;
                 rightStickPressed = gamePadState.Buttons.RightStick == ButtonState.Pressed;
 
+                dPadX = (gamePadState.DPad.Right == ButtonState.Pressed)? 1.0f : 0.0f
+                    - ((gamePadState.DPad.Left == ButtonState.Pressed) ? 1.0f : 0.0f);
+                dPadY = (gamePadState.DPad.Down == ButtonState.Pressed) ? 1.0f : 0.0f
+                    - ((gamePadState.DPad.Up == ButtonState.Pressed) ? 1.0f : 0.0f);
+                dPadPressed = dPadX != 0 || dPadY != 0;
+
                 if (!moveStickMoved)
                 {
                     if (playerIndex == PlayerIndex.One)
@@ -1034,6 +1016,8 @@ namespace ProjectMagma.Simulation
             public bool moveStickMoved;
             public float rightStickX, rightStickY;
             public bool rightStickMoved, rightStickPressed;
+            public bool dPadPressed;
+            public float dPadX, dPadY;
 
             // buttons
             public bool jetpackButtonPressed, flamethrowerButtonPressed, iceSpikeButtonPressed, hitButtonPressed, attractionButtonPressed;

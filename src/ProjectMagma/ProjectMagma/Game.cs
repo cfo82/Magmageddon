@@ -37,8 +37,6 @@ namespace ProjectMagma
         private float effectsVolume = 0.2f;
         private float musicVolume = 0.1f;
         
-        private double lastUpdateAt = 0;
-
         private Simulation.Simulation simulation;
         private Renderer.Renderer renderer;
 
@@ -458,7 +456,7 @@ namespace ProjectMagma
             float nextUpdateTime = last + interval;
             // if we didnt adapt on last update, then there was no call to this method at that time
             // so we reset our time to current
-            if (lastUpdateAt >= nextUpdateTime)
+            if (simulation.Time.Last >= nextUpdateTime)
             {
                 appliedAt[fullIdentifier] = current;
                 return;

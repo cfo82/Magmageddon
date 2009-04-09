@@ -802,21 +802,9 @@ namespace ProjectMagma.Simulation
 
         private void PlayerPillarCollisionHandler(SimulationTime simTime, Entity player, Entity pillar, Contact co)
         {
-            if (co[0].Normal.Y < 0)
-            {
-                // top
-                player.SetVector3("velocity", Vector3.Zero);
-
-                Vector3 pos = player.GetVector3("position");
-                pos.Y = previousPosition.Y;
-                player.SetVector3("position", pos);
-            }
-            else
-            {
-                Vector3 pos = player.GetVector3("position");
-                Vector3 velocity = -co[0].Normal * (pos - previousPosition).Length() * simTime.Dt;
-                player.SetVector3("collision_pushback_velocity", velocity);
-            }
+            Vector3 pos = player.GetVector3("position");
+            Vector3 velocity = -co[0].Normal * (pos - previousPosition).Length() * simTime.Dt;
+            player.SetVector3("collision_pushback_velocity", velocity);
         }
 
         private void PlayerLavaCollisionHandler(SimulationTime simTime, Entity player, Entity lava)

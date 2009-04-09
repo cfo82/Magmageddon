@@ -94,7 +94,7 @@ namespace ProjectMagma.Simulation.Collision
                         );
                     if (contact.Count > 0)
                     {
-                        System.Console.WriteLine(contact.Count);
+                        //System.Console.WriteLine(contact.Count);
                         //if (
                         //    entity1.entity.HasString("kind") && entity2.entity.HasString("kind") &&(
                         //        entity1.entity.GetString("kind") == "pillar" ||

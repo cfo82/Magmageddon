@@ -558,39 +558,7 @@ namespace ProjectMagma.Simulation
                     attractedIsland.SetString("attracted_by", player.Name);
                 }
 
-                // island jump start
-                if (controllerInput.jetpackButtonPressed
-                    && selectedIsland != null
-                    && at > islandJumpPerformedAt + constants.GetFloat("island_jump_interval")
-                )
-                {
-                    destinationIsland = selectedIsland;
 
-                    // calculate time to travel to island (in xz plane)
-                    Vector3 islandDir = destinationIsland.GetVector3("position") - playerPosition;
-                    lastIslandDir = islandDir;
-                    Vector3 islandDir2D = islandDir;
-                    islandDir2D.Y = 0;
-                    float dist2D = islandDir2D.Length();
-                    float time = dist2D / constants.GetFloat("island_jump_speed");
-
-                    if (islandDir.Y > 0)
-                    // use time to calculate speed on y-axis for nice jump, and multiplie with constant
-                    // that defines arc
-                    {
-                        playerVelocity =
-                            (Vector3.UnitY * islandDir.Y / time // component to travel Y distance
-                            - constants.GetVector3("gravity_acceleration") * time) // component to beat gravity
-                            * constants.GetFloat("island_jump_height_multiplier"); // modifier for arc
-                    }
-                    else
-                    {
-                        playerVelocity =
-                            (Vector3.UnitY * -islandDir.Y / time // component to travel Y distance
-                            - constants.GetVector3("gravity_acceleration") * time) // component to beat gravity
-                                * constants.GetFloat("island_jump_height_multiplier"); // modifier for arc
-                    }
-                }
             }
             else
             {
@@ -604,6 +572,40 @@ namespace ProjectMagma.Simulation
                     attractedIsland.SetString("attracted_by", "");
                     attractedIsland = null;
                     selectedIsland = null;
+                }
+            }
+
+            // island jump start
+            if (controllerInput.jetpackButtonPressed
+                && selectedIsland != null
+                && at > islandJumpPerformedAt + constants.GetFloat("island_jump_interval")
+            )
+            {
+                destinationIsland = selectedIsland;
+
+                // calculate time to travel to island (in xz plane)
+                Vector3 islandDir = destinationIsland.GetVector3("position") - playerPosition;
+                lastIslandDir = islandDir;
+                Vector3 islandDir2D = islandDir;
+                islandDir2D.Y = 0;
+                float dist2D = islandDir2D.Length();
+                float time = dist2D / constants.GetFloat("island_jump_speed");
+
+                if (islandDir.Y > 0)
+                // use time to calculate speed on y-axis for nice jump, and multiplie with constant
+                // that defines arc
+                {
+                    playerVelocity =
+                        (Vector3.UnitY * islandDir.Y / time // component to travel Y distance
+                        - constants.GetVector3("gravity_acceleration") * time) // component to beat gravity
+                        * constants.GetFloat("island_jump_height_multiplier"); // modifier for arc
+                }
+                else
+                {
+                    playerVelocity =
+                        (Vector3.UnitY * -islandDir.Y / time // component to travel Y distance
+                        - constants.GetVector3("gravity_acceleration") * time) // component to beat gravity
+                            * constants.GetFloat("island_jump_height_multiplier"); // modifier for arc
                 }
             }
 

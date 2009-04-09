@@ -214,8 +214,8 @@ namespace ProjectMagma.Simulation
                 else
                 {
                     // only "leave" island after certain amount of time
-                    if (islandLeftAt != 0 
-                        && at > islandLeftAt + constants.GetFloat("island_leave_timeout"))
+                    if (islandLeftAt != 0 /*
+                        && at > islandLeftAt + constants.GetFloat("island_leave_timeout")*/)
                     {
 //                        Console.WriteLine("island left");
                         ((Vector3Attribute)activeIsland.Attributes["position"]).ValueChanged -= IslandPositionHandler;
@@ -855,7 +855,9 @@ namespace ProjectMagma.Simulation
             else
             {
                 // normal feedback
-                player.SetVector3("player_pushback_velocity", -c[0].Normal * constants.GetFloat("player_pushback_velocity_multiplier") / 2);
+                if(movedByStick) // apply feedback to player that moved into the other one
+                    player.SetVector3("player_pushback_velocity", player.GetVector3("player_pushback_velocity")
+                        -c[0].Normal * constants.GetFloat("player_pushback_velocity_multiplier"));
             }
         }
 

@@ -18,7 +18,7 @@
       <Attribute name="fuel_recharge_multiplier" template="float" value="1.2"/>
       <Attribute name="fuel_recharge_multiplier_island" template="float" value="4"/>
       <Attribute name="max_jetpack_speed" template="float" value="200"/>
-      <Attribute name="jetpack_acceleration" template="float3" value="0 1300 0"/>
+      <Attribute name="jetpack_acceleration" template="float3" value="0 1600 0"/>
 
       <Attribute name="gravity_acceleration" template="float3" value="0 -900 0"/>
       <Attribute name="max_gravity_speed" template="float" value="450"/>
@@ -46,7 +46,7 @@
       <Attribute name="hit_cooldown" template="int" value="250"/>
       <Attribute name="hit_pushback_velocity_multiplier" template="float" value="200"/>
       <Attribute name="player_pushback_deacceleration" template="float" value="300"/>
-      <Attribute name="player_pushback_velocity_multiplier" template="float" value="20"/>
+      <Attribute name="player_pushback_velocity_multiplier" template="float" value="15"/>
 
       <Attribute name="island_leave_timeout" template="float" value="50"/>
 

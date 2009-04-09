@@ -104,7 +104,7 @@ namespace ProjectMagma.Simulation
                 }
                 else
                 {
-                    Console.WriteLine("collision: " + island.Name + " with " + other.Name);
+//                    Console.WriteLine("collision: " + island.Name + " with " + other.Name);
 
                     // change direction of repulsion
                     Vector3 repulsionVelocity = island.GetVector3("repulsion_velocity");

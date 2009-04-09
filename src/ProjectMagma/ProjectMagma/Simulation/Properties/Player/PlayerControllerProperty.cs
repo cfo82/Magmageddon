@@ -142,12 +142,22 @@ namespace ProjectMagma.Simulation
                     if (flameThrowerSoundInstance != null)
                         flameThrowerSoundInstance.Stop();
                     jetpackActive = false;
+                    selectedIsland = null;
+                    attractedIsland = null;
+                    destinationIsland = null;
 
                     Game.Instance.Content.Load<SoundEffect>("Sounds/death").Play(Game.Instance.EffectsVolume);
                     player.SetInt("deaths", player.GetInt("deaths") + 1);
 
                     player.RemoveProperty("render");
                     player.RemoveProperty("shadow_cast");
+
+                    if (arrow.HasProperty("render"))
+                    {
+                        arrow.RemoveProperty("render");
+                        arrow.RemoveProperty("shadow_cast");
+                    }
+
                     return;
                 }
                 else
@@ -166,7 +176,7 @@ namespace ProjectMagma.Simulation
                         int islandNo = rand.Next(Game.Instance.Simulation.IslandManager.Count - 1);
                         Entity island = Game.Instance.Simulation.IslandManager[islandNo];
                         Vector3 pos = island.GetVector3("position");
-                        pos.Y = pos.Y + 30; // todo: change this to point defined in mesh
+                        pos.Y = pos.Y + 5; // todo: change this to point defined in mesh
                         player.SetVector3("position", pos);
 
                         // reset
@@ -249,11 +259,12 @@ namespace ProjectMagma.Simulation
 
             // jetpack
             if (controllerInput.jetpackButtonPressed
+                && activeIsland == null
                 && selectedIsland == null
                 && destinationIsland == null
-                && at > islandJumpPerformedAt + constants.GetFloat("island_jump_interval")
+                && flame == null
                 && fuel > 0 
-                && flame == null)
+            )
             {
                 if (!jetpackActive)
                 {

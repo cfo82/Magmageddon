@@ -9,14 +9,26 @@ namespace ProjectMagma.Simulation.Collision.CollisionTests
 {
     class ContactMeshMeshBox
     {
+        class Context
+        {
+            public Entity entity1;
+            public Vector3[] positions1;
+            public Matrix worldTransform1;
+
+            public Entity entity2;
+            public Vector3[] positions2;
+            public Matrix worldTransform2;
+
+            public bool needAllContacts;
+            public Contact contact;
+        }
+
         private static void CollideLeafLeaf(
-            Entity entity1, AlignedBox3TreeNode node1, Vector3[] positions1, ref Matrix worldTransform1,
-            Entity entity2, AlignedBox3TreeNode node2, Vector3[] positions2, ref Matrix worldTransform2,
-            bool needAllContacts, ref Contact contact, bool reverse
+            ref Context context, AlignedBox3TreeNode node1, AlignedBox3TreeNode node2
         )
         {
-            Box3 box1 = node1.BoundingBox.CreateBox3(ref worldTransform1);
-            Box3 box2 = node2.BoundingBox.CreateBox3(ref worldTransform2);
+            Box3 box1 = node1.BoundingBox.CreateBox3(ref context.worldTransform1);
+            Box3 box2 = node2.BoundingBox.CreateBox3(ref context.worldTransform2);
             if (!Intersection.IntersectBox3Box3(box1, box2))
             {
                 return;
@@ -25,17 +37,17 @@ namespace ProjectMagma.Simulation.Collision.CollisionTests
             // "simple" tri<->tri test...
             for (int i = 0; i < node1.NumTriangles; ++i)
             {
-                Triangle3 tri1 = node1.GetTriangle(positions1, i);
-                tri1.Vertex0 = Vector3.Transform(tri1.Vertex0, worldTransform1);
-                tri1.Vertex1 = Vector3.Transform(tri1.Vertex1, worldTransform1);
-                tri1.Vertex2 = Vector3.Transform(tri1.Vertex2, worldTransform1);
+                Triangle3 tri1 = node1.GetTriangle(context.positions1, i);
+                tri1.Vertex0 = Vector3.Transform(tri1.Vertex0, context.worldTransform1);
+                tri1.Vertex1 = Vector3.Transform(tri1.Vertex1, context.worldTransform1);
+                tri1.Vertex2 = Vector3.Transform(tri1.Vertex2, context.worldTransform1);
 
                 for (int j = 0; j < node2.NumTriangles; ++j)
 		        {
-                    Triangle3 tri2 = node2.GetTriangle(positions2, j);
-                    tri2.Vertex0 = Vector3.Transform(tri2.Vertex0, worldTransform2);
-                    tri2.Vertex1 = Vector3.Transform(tri2.Vertex1, worldTransform2);
-                    tri2.Vertex2 = Vector3.Transform(tri2.Vertex2, worldTransform2);
+                    Triangle3 tri2 = node2.GetTriangle(context.positions2, j);
+                    tri2.Vertex0 = Vector3.Transform(tri2.Vertex0, context.worldTransform2);
+                    tri2.Vertex1 = Vector3.Transform(tri2.Vertex1, context.worldTransform2);
+                    tri2.Vertex2 = Vector3.Transform(tri2.Vertex2, context.worldTransform2);
 
                     //System.Console.WriteLine("performing triangle<->triangle test!");
 
@@ -45,14 +57,14 @@ namespace ProjectMagma.Simulation.Collision.CollisionTests
                     {
                         Vector3 point = (isectpt1 + isectpt2) / 2.0f;
 
-                        if (!contact.ContainsPoint(ref point))
+                        if (!context.contact.ContainsPoint(ref point))
                         {
-                            Debug.Assert((reverse && contact.EntityA == entity2) || contact.EntityA == entity1);
-                            Vector3 normal = reverse ? tri2.Normal : tri1.Normal;
-                            contact.AddContactPoint(ref point, ref normal);
+                            Debug.Assert(context.contact.EntityA == context.entity1 && context.contact.EntityB == context.entity2);
+                            Vector3 normal = tri1.Normal;
+                            context.contact.AddContactPoint(ref point, ref normal);
                         }
 
-                        if (!needAllContacts)
+                        if (!context.needAllContacts)
                         {
                             return;
                         }
@@ -62,14 +74,12 @@ namespace ProjectMagma.Simulation.Collision.CollisionTests
         }
 
         private static void CollideInnerLeaf(
-            Entity entity1, AlignedBox3TreeNode node1, Vector3[] positions1, ref Matrix worldTransform1,
-            Entity entity2, AlignedBox3TreeNode node2, Vector3[] positions2, ref Matrix worldTransform2,
-            bool needAllContacts, ref Contact contact, bool reverse
+            ref Context context, AlignedBox3TreeNode node1, AlignedBox3TreeNode node2
         )
         {
             // TODO Box<->box checks
-            Box3 box1 = node1.BoundingBox.CreateBox3(ref worldTransform1);
-            Box3 box2 = node2.BoundingBox.CreateBox3(ref worldTransform2);
+            Box3 box1 = node1.BoundingBox.CreateBox3(ref context.worldTransform1);
+            Box3 box2 = node2.BoundingBox.CreateBox3(ref context.worldTransform2);
             if (!Intersection.IntersectBox3Box3(box1, box2))
             {
                 return;
@@ -80,53 +90,74 @@ namespace ProjectMagma.Simulation.Collision.CollisionTests
 
             if (node1.Left.HasChildren)
             {
-                CollideInnerLeaf(
-                    entity1, node1.Left, positions1, ref worldTransform1,
-                    entity2, node2, positions2, ref worldTransform2,
-                    needAllContacts, ref contact, reverse
-                );
+                CollideInnerLeaf(ref context, node1.Left, node2);
             }
             else
             {
-                CollideLeafLeaf(
-                    entity1, node1.Left, positions1, ref worldTransform1,
-                    entity2, node2, positions2, ref worldTransform2,
-                    needAllContacts, ref contact, reverse
-                );
+                CollideLeafLeaf(ref context, node1.Left, node2);
             }
 
-            if (!needAllContacts && contact.Count > 0)
+            if (!context.needAllContacts && context.contact.Count > 0)
             {
                 return;
             }
 
             if (node1.Right.HasChildren)
             {
-                CollideInnerLeaf(
-                    entity1, node1.Right, positions1, ref worldTransform1,
-                    entity2, node2, positions2, ref worldTransform2,
-                    needAllContacts, ref contact, reverse
-                );
+                CollideInnerLeaf(ref context, node1.Right, node2);
             }
             else
             {
-                CollideLeafLeaf(
-                    entity1, node1.Right, positions1, ref worldTransform1,
-                    entity2, node2, positions2, ref worldTransform2,
-                    needAllContacts, ref contact, reverse
-                );
+                CollideLeafLeaf(ref context, node1.Right, node2);
+            }
+        }
+
+        private static void CollideLeafInner(
+            ref Context context, AlignedBox3TreeNode node1, AlignedBox3TreeNode node2
+        )
+        {
+            // TODO Box<->box checks
+            Box3 box1 = node1.BoundingBox.CreateBox3(ref context.worldTransform1);
+            Box3 box2 = node2.BoundingBox.CreateBox3(ref context.worldTransform2);
+            if (!Intersection.IntersectBox3Box3(box1, box2))
+            {
+                return;
+            }
+
+
+            // we know already that node2 is a leaf. this makes things simpler...
+
+            if (node2.Left.HasChildren)
+            {
+                CollideLeafInner(ref context, node1, node2.Left);
+            }
+            else
+            {
+                CollideLeafLeaf(ref context, node1, node2.Left);
+            }
+
+            if (!context.needAllContacts && context.contact.Count > 0)
+            {
+                return;
+            }
+
+            if (node2.Right.HasChildren)
+            {
+                CollideLeafInner(ref context, node1, node2.Right);
+            }
+            else
+            {
+                CollideLeafLeaf(ref context, node1, node2.Right);
             }
         }
 
         private static void CollideInnerInner(
-            Entity entity1, AlignedBox3TreeNode node1, Vector3[] positions1, ref Matrix worldTransform1,
-            Entity entity2, AlignedBox3TreeNode node2, Vector3[] positions2, ref Matrix worldTransform2,
-            bool needAllContacts, ref Contact contact, bool reverse
+            ref Context context, AlignedBox3TreeNode node1, AlignedBox3TreeNode node2
         )
         {
             // TODO Box<->box checks
-            Box3 box1 = node1.BoundingBox.CreateBox3(ref worldTransform1);
-            Box3 box2 = node2.BoundingBox.CreateBox3(ref worldTransform2);
+            Box3 box1 = node1.BoundingBox.CreateBox3(ref context.worldTransform1);
+            Box3 box2 = node2.BoundingBox.CreateBox3(ref context.worldTransform2);
             if (!Intersection.IntersectBox3Box3(box1, box2))
             {
                 return;
@@ -137,23 +168,15 @@ namespace ProjectMagma.Simulation.Collision.CollisionTests
                 if (node2.Left.HasChildren)
                 {
                     // node1.Left is innernode, node2.Left is innernode
-                    CollideInnerInner(
-                        entity1, node1.Left, positions1, ref worldTransform1,
-                        entity2, node2.Left, positions2, ref worldTransform2,
-                        needAllContacts, ref contact, reverse
-                    );
+                    CollideInnerInner(ref context, node1.Left, node2.Left);
                 }
                 else
                 {
                     // node1.Left is innernode, node2.Left is leafnode
-                    CollideInnerLeaf(
-                        entity1, node1.Left, positions1, ref worldTransform1,
-                        entity2, node2.Left, positions2, ref worldTransform2,
-                        needAllContacts, ref contact, reverse
-                    );
+                    CollideInnerLeaf(ref context, node1.Left, node2.Left);
                 }
 
-                if (!needAllContacts && contact.Count > 0)
+                if (!context.needAllContacts && context.contact.Count > 0)
                 {
                     return;
                 }
@@ -161,20 +184,12 @@ namespace ProjectMagma.Simulation.Collision.CollisionTests
                 if (node2.Right.HasChildren)
                 {
                     // node1.Left is innernode, node2.Right is innernode
-                    CollideInnerInner(
-                        entity1, node1.Left, positions1, ref worldTransform1,
-                        entity2, node2.Right, positions2, ref worldTransform2,
-                        needAllContacts, ref contact, reverse
-                    );
+                    CollideInnerInner(ref context, node1.Left, node2.Right);
                 }
                 else
                 {
                     // node1.Left is innernode, node2.Right is leafnode
-                    CollideInnerLeaf(
-                        entity1, node1.Left, positions1, ref worldTransform1,
-                        entity2, node2.Right, positions2, ref worldTransform2,
-                        needAllContacts, ref contact, reverse
-                    );
+                    CollideInnerLeaf(ref context, node1.Left, node2.Right);
                 }
             }
             else
@@ -182,23 +197,15 @@ namespace ProjectMagma.Simulation.Collision.CollisionTests
                 if (node2.Left.HasChildren)
                 {
                     // node1.Left is leafnode, node2.Left is innernode
-                    CollideInnerLeaf(
-                        entity2, node2.Left, positions2, ref worldTransform2,
-                        entity1, node1.Left, positions1, ref worldTransform1,
-                        needAllContacts, ref contact, !reverse
-                    );
+                    CollideLeafInner(ref context, node1.Left, node2.Left);
                 }
                 else
                 {
                     // node1.Left is leafnode, node2.Left is leafnode
-                    CollideLeafLeaf(
-                        entity1, node1.Left, positions1, ref worldTransform1,
-                        entity2, node2.Left, positions2, ref worldTransform2,
-                        needAllContacts, ref contact, reverse
-                    );
+                    CollideLeafLeaf(ref context, node1.Left, node2.Left);
                 }
 
-                if (!needAllContacts && contact.Count > 0)
+                if (!context.needAllContacts && context.contact.Count > 0)
                 {
                     return;
                 }
@@ -206,20 +213,12 @@ namespace ProjectMagma.Simulation.Collision.CollisionTests
                 if (node2.Right.HasChildren)
                 {
                     // node1.Left is leafnode, node2.Right is innernode
-                    CollideInnerLeaf(
-                        entity2, node2.Right, positions2, ref worldTransform2,
-                        entity1, node1.Left, positions1, ref worldTransform1,
-                        needAllContacts, ref contact, !reverse
-                    );
+                    CollideLeafInner(ref context, node1.Left, node2.Right);
                 }
                 else
                 {
                     // node1.Left is leafnode, node2.Right is leafnode
-                    CollideLeafLeaf(
-                        entity1, node1.Left, positions1, ref worldTransform1,
-                        entity2, node2.Right, positions2, ref worldTransform2,
-                        needAllContacts, ref contact, reverse
-                    );
+                    CollideLeafLeaf(ref context, node1.Left, node2.Right);
                 }
             }
 
@@ -228,23 +227,15 @@ namespace ProjectMagma.Simulation.Collision.CollisionTests
                 if (node2.Left.HasChildren)
                 {
                     // node1.Right is innernode, node2.Left is innernode
-                    CollideInnerInner(
-                        entity1, node1.Right, positions1, ref worldTransform1,
-                        entity2, node2.Left, positions2, ref worldTransform2,
-                        needAllContacts, ref contact, reverse
-                    );
+                    CollideInnerInner(ref context, node1.Right, node2.Left);
                 }
                 else
                 {
                     // node1.Right is innernode, node2.Left is leafnode
-                    CollideInnerLeaf(
-                        entity1, node1.Right, positions1, ref worldTransform1,
-                        entity2, node2.Left, positions2, ref worldTransform2,
-                        needAllContacts, ref contact, reverse
-                    );
+                    CollideInnerLeaf(ref context, node1.Right, node2.Left);
                 }
 
-                if (!needAllContacts && contact.Count > 0)
+                if (!context.needAllContacts && context.contact.Count > 0)
                 {
                     return;
                 }
@@ -252,20 +243,12 @@ namespace ProjectMagma.Simulation.Collision.CollisionTests
                 if (node2.Right.HasChildren)
                 {
                     // node1.Right is innernode, node2.Right is innernode
-                    CollideInnerInner(
-                        entity1, node1.Right, positions1, ref worldTransform1,
-                        entity2, node2.Right, positions2, ref worldTransform2,
-                        needAllContacts, ref contact, reverse
-                    );
+                    CollideInnerInner(ref context, node1.Right, node2.Right);
                 }
                 else
                 {
                     // node1.Right is innernode, node2.Right is leafnode
-                    CollideInnerLeaf(
-                        entity1, node1.Right, positions1, ref worldTransform1,
-                        entity2, node2.Right, positions2, ref worldTransform2,
-                        needAllContacts, ref contact, reverse
-                    );
+                    CollideInnerLeaf(ref context, node1.Right, node2.Right);
                 }
             }
             else
@@ -273,23 +256,15 @@ namespace ProjectMagma.Simulation.Collision.CollisionTests
                 if (node2.Left.HasChildren)
                 {
                     // node1.Right is leafnode, node2.Left is innernode
-                    CollideInnerLeaf(
-                        entity2, node2.Left, positions2, ref worldTransform2,
-                        entity1, node1.Right, positions1, ref worldTransform1,
-                        needAllContacts, ref contact, !reverse
-                    );
+                    CollideLeafInner(ref context, node1.Right, node2.Left);
                 }
                 else
                 {
                     // node1.Right is leafnode, node2.Left is leafnode
-                    CollideLeafLeaf(
-                        entity1, node1.Right, positions1, ref worldTransform1,
-                        entity2, node2.Left, positions2, ref worldTransform2,
-                        needAllContacts, ref contact, reverse
-                    );
+                    CollideLeafLeaf(ref context, node1.Right, node2.Left);
                 }
 
-                if (!needAllContacts && contact.Count > 0)
+                if (!context.needAllContacts && context.contact.Count > 0)
                 {
                     return;
                 }
@@ -297,20 +272,12 @@ namespace ProjectMagma.Simulation.Collision.CollisionTests
                 if (node2.Right.HasChildren)
                 {
                     // node1.Right is leafnode, node2.Right is innernode
-                    CollideInnerLeaf(
-                        entity2, node2.Right, positions2, ref worldTransform2,
-                        entity1, node1.Right, positions1, ref worldTransform1,
-                        needAllContacts, ref contact, !reverse
-                    );
+                    CollideLeafInner(ref context, node1.Right, node2.Right);
                 }
                 else
                 {
                     // node1.Right is leafnode, node2.Right is leafnode
-                    CollideLeafLeaf(
-                        entity1, node1.Right, positions1, ref worldTransform1,
-                        entity2, node2.Right, positions2, ref worldTransform2,
-                        needAllContacts, ref contact, reverse
-                    );
+                    CollideLeafLeaf(ref context, node1.Right, node2.Right);
                 }
             }
         }
@@ -332,42 +299,36 @@ namespace ProjectMagma.Simulation.Collision.CollisionTests
                 return;
             }
 
+            Context context = new Context();
+            context.entity1 = entity1;
+            context.positions1 = tree1.Positions;
+            context.worldTransform1 = worldTransform1;
+            context.entity2 = entity2;
+            context.positions2 = tree2.Positions;
+            context.worldTransform2 = worldTransform2;
+            context.needAllContacts = needAllContacts;
+            context.contact = contact;
+
             if (tree1.Root.HasChildren)
             {
                 if (tree2.Root.HasChildren)
                 {
-                    CollideInnerInner(
-                        entity1, tree1.Root, tree1.Positions, ref worldTransform1,
-                        entity2, tree2.Root, tree2.Positions, ref worldTransform2,
-                        needAllContacts, ref contact, false
-                    );
+                    CollideInnerInner(ref context, tree1.Root, tree2.Root);
                 }
                 else
                 {
-                    CollideInnerLeaf(
-                        entity1, tree1.Root, tree1.Positions, ref worldTransform1,
-                        entity2, tree2.Root, tree2.Positions, ref worldTransform2,
-                        needAllContacts, ref contact, false
-                    );
+                    CollideInnerLeaf(ref context, tree1.Root, tree2.Root);
                 }
             }
             else
             {
                 if (tree2.Root.HasChildren)
                 {
-                    CollideInnerLeaf(
-                        entity2, tree2.Root, tree2.Positions, ref worldTransform2,
-                        entity1, tree1.Root, tree1.Positions, ref worldTransform1,
-                        needAllContacts, ref contact, true
-                    );
+                    CollideLeafInner(ref context, tree1.Root, tree2.Root);
                 }
                 else
                 {
-                    CollideLeafLeaf(
-                        entity1, tree1.Root, tree1.Positions, ref worldTransform1,
-                        entity2, tree2.Root, tree2.Positions, ref worldTransform2,
-                        needAllContacts, ref contact, false
-                    );
+                    CollideLeafLeaf(ref context, tree1.Root, tree2.Root);
                 }
             }
         }

@@ -845,7 +845,16 @@
     </Compile>
   </ItemGroup>
   <ItemGroup>
-    <Folder Include="Sprites\Menu\Player\" />
+    <Compile Include="Sprites\Menu\Robot\green_robot.png">
+      <Name>green_robot</Name>
+      <Importer>TextureImporter</Importer>
+      <Processor>TextureProcessor</Processor>
+    </Compile>
+    <Compile Include="Sprites\Menu\Robot\yellow_robot.png">
+      <Name>yellow_robot</Name>
+      <Importer>TextureImporter</Importer>
+      <Processor>TextureProcessor</Processor>
+    </Compile>
   </ItemGroup>
   <Import Project="$(MSBuildExtensionsPath)\Microsoft\XNA Game Studio\v3.0\Microsoft.Xna.GameStudio.ContentPipeline.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

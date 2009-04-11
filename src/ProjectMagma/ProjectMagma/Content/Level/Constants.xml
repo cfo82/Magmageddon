@@ -70,6 +70,7 @@
 
   <Entity name="island_constants">
     <Attributes>
+      <!-- physical islands -->
       <Attribute name="random_strength" template="float" value="1200"/>
       <Attribute name="max_velocity" template="float" value="100"/>
       <Attribute name="damping" template="float" value="0.001"/>
@@ -78,8 +79,12 @@
       <Attribute name="pillar_attraction" template="float" value="0.0001"/>
       <Attribute name="pillar_repulsion" template="float" value="0.03"/>
 
+      <!-- circular moving islands-->
       <Attribute name="angle_speed" template="float" value="0.6"/>
+      <Attribute name="contact_pushback_multiplier" template="float" value="100"/>
 
+      <!-- all islands -->
+      
       <Attribute name="sinking_speed" template="float" value="18.0"/>
       <Attribute name="rising_speed" template="float" value="40.0"/>
       <Attribute name="rising_delay" template="int" value="100"/>

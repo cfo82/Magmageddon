@@ -6,7 +6,7 @@
     <Attributes>
       <Attribute name="kind" template="string" value="player"/>
       <Attribute name="scale" template="float3" value="13 13 13"/>
-      <Attribute name="bv_type" template="string" value="alignedbox3tree"/>
+      <Attribute name="bv_type" template="string" value="sphere"/>
     </Attributes>
     <Properties>
       <Property name="shadow_cast" type="ProjectMagma.Simulation.ShadowCastProperty"/>
@@ -19,14 +19,14 @@
 
   <Entity name="green_robot" extends="robot_base" abstract="true" >
     <Attributes>
-      <Attribute name="mesh" template="string" value="Models/RobBonesAnim"/>
+      <Attribute name="mesh" template="string" value="Models/player1_primitive"/>
       <Attribute name="arrow_mesh" template="string" value="Models/arrow1"/>
     </Attributes>
   </Entity>
 
   <Entity name="yellow_robot" extends="robot_base" abstract="true" >
     <Attributes>
-      <Attribute name="mesh" template="string" value="Models/RobBonesAnim"/>
+      <Attribute name="mesh" template="string" value="Models/player2_primitive"/>
       <Attribute name="arrow_mesh" template="string" value="Models/arrow2"/>
     </Attributes>
   </Entity>

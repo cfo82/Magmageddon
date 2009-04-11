@@ -13,6 +13,7 @@ using ProjectMagma.Simulation;
 using ProjectMagma.Simulation.Attributes;
 using ProjectMagma.Shared.LevelData;
 using ProjectMagma.Simulation.Collision;
+using xWinFormsLib;
 
 // its worth to read this...
 // 
@@ -41,8 +42,8 @@ namespace ProjectMagma
         private Renderer.Renderer renderer;
 
 //#if !XBOX
-//        private FormCollection formCollection;
-//        private ManagementForm managementForm;
+        private FormCollection formCollection;
+        private ManagementForm managementForm;
 //#endif
 
         private static Game instance;
@@ -133,9 +134,9 @@ namespace ProjectMagma
 
 
 //#if !XBOX
-//            // create the gui system
-//            formCollection = new FormCollection(this.Window, Services, ref graphics);
-//            managementForm = new ManagementForm(formCollection);
+            // create the gui system
+            formCollection = new FormCollection(this.Window, Services, ref graphics);
+            managementForm = new ManagementForm(formCollection);
 //#endif
 
             // Create a new SpriteBatch, which can be used to draw textures.
@@ -167,7 +168,7 @@ namespace ProjectMagma
             simulation.Initialize(Content, "Level/TestLevel", new Entity[] {player1, player2});
 
 //            #if !XBOX
-//            managementForm.BuildForm();
+            managementForm.BuildForm();
 //            #endif
 
             // load hud and menu
@@ -202,7 +203,7 @@ namespace ProjectMagma
         {
             // TODO: Unload any non ContentManager content here
 //#if !XBOX
-//            formCollection.Dispose();
+            formCollection.Dispose();
 //#endif
             MediaPlayer.Stop();
         }
@@ -214,13 +215,6 @@ namespace ProjectMagma
         /// <param name="gameTime">Provides a snapshot of timing values.</param>
         protected override void Update(GameTime gameTime)
         {
-            // don't do anything if not active app
-            if (!IsActive)
-            {
-                base.Update(gameTime);
-                return;
-            }
-
             // fullscreen
             if(Keyboard.GetState().IsKeyDown(Keys.Enter)
                 && Keyboard.GetState().IsKeyDown(Keys.LeftAlt))
@@ -231,7 +225,7 @@ namespace ProjectMagma
 
 //#if !XBOX
 //            // update the user interface
-//            formCollection.Update(gameTime);
+            formCollection.Update(gameTime);
 //#endif
 
             simulation.Update(gameTime);
@@ -250,7 +244,7 @@ namespace ProjectMagma
         protected override void Draw(GameTime gameTime)
         {
 //#if !XBOX
-//            formCollection.Render();
+            formCollection.Render();
 //#endif
 
             renderer.Render(gameTime);
@@ -263,7 +257,7 @@ namespace ProjectMagma
             menu.Draw(gameTime);
 
 //#if !XBOX
-//            formCollection.Draw();
+            formCollection.Draw();
 //#endif
         }
 
@@ -362,8 +356,13 @@ namespace ProjectMagma
                 return Quaternion.Identity;
             }
         }
+        public static void ApplyPushback(ref Vector3 position, ref Vector3 pushbackVelocity, float deacceleration)
+        {
+            ApplyPushback(ref position, ref pushbackVelocity, deacceleration, delegate { });
+        }
 
-        public static void ApplyPushback(ref Vector3 playerPosition, ref Vector3 pushbackVelocity, float deacceleration)
+        public static void ApplyPushback(ref Vector3 position, ref Vector3 pushbackVelocity, float deacceleration,
+            PushBackFinishedHandler ev)
         {
             if (pushbackVelocity.Length() > 0)
             {
@@ -378,10 +377,17 @@ namespace ProjectMagma
 
                 // if length increases we accelerate in opposite direction -> stop
                 if (pushbackVelocity.Length() > oldVelocity.Length())
+                {
+                    // apply old velocity again
+                    position += oldVelocity * dt;
+                    // set zero
                     pushbackVelocity = Vector3.Zero;
+                    // inform 
+                    ev();
+                }
 
                 // apply velocity
-                playerPosition += pushbackVelocity * dt;
+                position += pushbackVelocity * dt;
             }
         }
 
@@ -480,4 +486,5 @@ namespace ProjectMagma
     }
 
     public delegate void IntervalExecutionAction(int times);
+    public delegate void PushBackFinishedHandler();
 }

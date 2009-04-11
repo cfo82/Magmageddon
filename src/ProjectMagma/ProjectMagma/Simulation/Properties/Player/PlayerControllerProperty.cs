@@ -308,12 +308,15 @@ namespace ProjectMagma.Simulation
                     playerVelocity = Vector3.Zero;
                     islandJumpPerformedAt = at;
                 }
-                lastIslandDir = islandDir;
+                else
+                {
+                    lastIslandDir = islandDir;
 
-                islandDir.Normalize();
-                Vector3 velocity = islandDir * constants.GetFloat("island_jump_speed");
+                    islandDir.Normalize();
+                    Vector3 velocity = islandDir * constants.GetFloat("island_jump_speed");
 
-                playerPosition += velocity * dt;
+                    playerPosition += velocity * dt;
+                }
             }
 
             // gravity
@@ -710,6 +713,8 @@ namespace ProjectMagma.Simulation
                 return;
             }
 
+            // todo: this of course has to be checkd in island - island collision
+            // use listener on attracted_by attribute to do things in player if deactivated attraction
             if (island == destinationIsland)
             {
                 // stop island attraction

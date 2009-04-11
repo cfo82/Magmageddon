@@ -59,7 +59,8 @@ namespace ProjectMagma.Simulation
 
         public void Update(GameTime gameTime)
         {
-            if (!paused)
+            // pause simulation if explicitly paused or app changed
+            if (!paused && Game.Instance.IsActive)
             {
                 // update simulation time
                 simTime.Update();
@@ -228,6 +229,11 @@ namespace ProjectMagma.Simulation
         internal void Pause()
         {
             lastTick = DateTime.Now.Ticks;
+        }
+
+        public static float GetDt(float from, float to)
+        {
+            return (to - from) / 1000f;
         }
 
     }

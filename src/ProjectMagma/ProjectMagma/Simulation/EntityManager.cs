@@ -132,6 +132,11 @@ namespace ProjectMagma.Simulation
             removeDeferred.Clear();
         }
 
+        public void Clear()
+        {
+            entities.Clear();
+        }
+
         public IEnumerator<Entity> GetEnumerator()
         {
             return entities.Values.GetEnumerator();

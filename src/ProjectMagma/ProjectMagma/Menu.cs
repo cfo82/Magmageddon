@@ -44,26 +44,43 @@ namespace ProjectMagma
             double at = gameTime.TotalGameTime.TotalMilliseconds;
             GamePadState gamePadState = GamePad.GetState(PlayerIndex.One);
 
-            if(active)
+            if (active)
             {
-                if (at > buttonPressedAt + Menu.ButtonRepeatTimeout
-                    && gamePadState.Buttons.Start == ButtonState.Pressed)
+                if (at > buttonPressedAt + Menu.ButtonRepeatTimeout)
                 {
-                    Close();
-                    buttonPressedAt = at;
+
+                    if (gamePadState.Buttons.Start == ButtonState.Pressed)
+                    {
+                        Close();
+                        buttonPressedAt = at;
+                        return;
+                    }
+                    else
+                        if (gamePadState.Buttons.X == ButtonState.Pressed)
+                        {
+                            CloseActiveMenuScreen();
+                            buttonPressedAt = at;
+                        }
                 }
-                else
-                {
-                    activeScreen.Update(gameTime);
-                }
+
+                activeScreen.Update(gameTime);
             }
             else
+            {
                 if (at > buttonPressedAt + Menu.ButtonRepeatTimeout
                     && gamePadState.Buttons.Start == ButtonState.Pressed)
                 {
                     Open();
                     buttonPressedAt = at;
                 }
+                else
+                    // resume simulation as soon as x-button is released
+                    if (Game.Instance.Simulation.Paused
+                        && gamePadState.Buttons.X == ButtonState.Released)
+                    {
+                        Game.Instance.Simulation.Resume();
+                    }
+            }
         }
 
         internal void Draw(GameTime gameTime)
@@ -122,7 +139,7 @@ namespace ProjectMagma
             active = false;
             screens.Clear();
 
-            Game.Instance.Simulation.Resume();
+            // don't resume simulation yet, but only after x-button is released
         }
 
         private bool active = false;
@@ -272,23 +289,19 @@ namespace ProjectMagma
                     SelectedItem.PerformAction();
                     menu.buttonPressedAt = at;
                 }
-                else
-                if (gamePadState.Buttons.X == ButtonState.Pressed)
-                {
-                    menu.CloseActiveMenuScreen();
-                    menu.buttonPressedAt = at;
-                }
             }
 
             if (at > menu.elementSelectedAt + Menu.StickRepeatTimeout)
             {
-                if (Vector2.Dot(gamePadState.ThumbSticks.Left, Vector2.UnitY) > Menu.StickDirectionSelectionMin)
+                if (Vector2.Dot(gamePadState.ThumbSticks.Left, Vector2.UnitY) > Menu.StickDirectionSelectionMin
+                    || gamePadState.DPad.Up == ButtonState.Pressed)
                 {
                     SelectPrevious();
                     menu.elementSelectedAt = at;
                 }
                 else
-                    if (Vector2.Dot(gamePadState.ThumbSticks.Left, Vector2.UnitY) < -Menu.StickDirectionSelectionMin)
+                    if (Vector2.Dot(gamePadState.ThumbSticks.Left, Vector2.UnitY) < -Menu.StickDirectionSelectionMin
+                        || gamePadState.DPad.Down == ButtonState.Pressed)
                     {
                         SelectNext();
                         menu.elementSelectedAt = at;
@@ -371,6 +384,7 @@ namespace ProjectMagma
     class LevelMenu : ItemizedMenuScreen
     {
         readonly MenuItem[] menuItems;
+        readonly MenuScreen playerMenu;
 
         public LevelMenu(Menu menu)
             : base(menu, new Vector2(280, 600), 200)
@@ -382,6 +396,7 @@ namespace ProjectMagma
                 menuItems[i] = new MenuItem(levels[i].Name, levels[i].FileName,
                     new ItemSelectionHandler(LevelSelected));
             }
+            playerMenu = new PlayerMenu(menu, this);
         }
 
         public override MenuItem[] MenuItems
@@ -391,7 +406,9 @@ namespace ProjectMagma
 
         private void LevelSelected(MenuItem sender)
         {
-
+            Game.Instance.Simulation.EntityManager.Clear();
+            Game.Instance.Simulation.EntityManager.Load(Game.Instance.Content.Load<LevelData>(Game.Instance.Levels[Selected].FileName));
+            menu.OpenMenuScreen(playerMenu);
         }
     }
 
@@ -481,24 +498,60 @@ namespace ProjectMagma
         }
     }
 
-    /*
     class PlayerMenu : MenuScreen
     {
-        public PlayerMenu(Menu menu)
-            : base(menu, new Vector2(430, 600))
+        private readonly double[] playerButtonPressedAt = new double[] { 0, 0, 0, 0 };
+        private readonly bool[] playerActive = new bool[] { true, false, false, false };
+
+        private readonly Texture2D playerBackground;
+        private readonly Texture2D playerBackgroundInactive;
+
+        private readonly LevelMenu levelMenu;
+
+        public PlayerMenu(Menu menu, LevelMenu levelMenu)
+            : base(menu, new Vector2(550, 250))
         {
+            this.levelMenu = levelMenu;
+
+            playerBackground = Game.Instance.Content.Load<Texture2D>("Sprites/Menu/robot_selection_background");
+            playerBackgroundInactive = Game.Instance.Content.Load<Texture2D>("Sprites/Menu/robot_selection_background_inactive");
         }
 
-
-        public abstract void Update(GameTime gameTime)
+        public override void Update(GameTime gameTime)
         {
+            double at = gameTime.TotalGameTime.TotalMilliseconds;
+            for (int i = 0; i < 4; i++)
+            {
+                GamePadState gamepadState = GamePad.GetState((PlayerIndex)i);
+                if (gamepadState.Buttons.Start == ButtonState.Pressed
+                    && at > playerButtonPressedAt[i] + Menu.ButtonRepeatTimeout)
+                {
+                    playerActive[i] = !playerActive[i];
+                    playerButtonPressedAt[i] = at;
+                }
+            }
         }
 
-        public abstract void Draw(GameTime gameTime, SpriteBatch spriteBatch)
+        public override void Draw(GameTime gameTime, SpriteBatch spriteBatch)
         {
+            for (int i = 0; i < 4; i++)
+            {
+                Texture2D sprite = playerActive[i]?playerBackground:playerBackgroundInactive;
+                float scale = 200f / sprite.Width;
+                Vector2 pos = Position + new Vector2((i & 1) * 220, ((i & 2) >> 1) * (sprite.Height * scale + 20) );
+                spriteBatch.Draw(sprite, pos, null, Color.White, 0, Vector2.Zero, scale, SpriteEffects.None, 0);
+            }
+        }
+
+        public override void OnOpen()
+        {
+            // deactivate players who's gamepad was unplugged
+            for (int i = 0; i < 4; i++)
+            {
+                playerActive[i] = playerActive[i] && GamePad.GetCapabilities((PlayerIndex)i).IsConnected;
+            }
         }
     }
-     */
 
     delegate void ItemSelectionHandler(MenuItem sender);
  

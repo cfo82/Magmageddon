@@ -6,7 +6,7 @@
     <Attributes>
       <Attribute name="kind" template="string" value="player"/>
       <Attribute name="scale" template="float3" value="13 13 13"/>
-      <Attribute name="bv_type" template="string" value="sphere"/>
+      <Attribute name="bv_type" template="string" value="alignedbox3tree"/>
     </Attributes>
     <Properties>
       <Property name="shadow_cast" type="ProjectMagma.Simulation.ShadowCastProperty"/>

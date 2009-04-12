@@ -158,7 +158,7 @@ namespace ProjectMagma
             LoadLevel(levels[0].FileName);
 
 
-            // TODO: move this
+#if DEBUG
             // set default player
             Entity player1 = new Entity("player1");
             player1.AddIntAttribute("game_pad_index", 0);
@@ -170,6 +170,7 @@ namespace ProjectMagma
             player2.AddIntAttribute("game_pad_index", 1);
             player2.AddStringAttribute("robot_entity", robots[1].Entity);
             player2.AddStringAttribute("player_name", robots[1].Name);
+#endif
 
             simulation.AddPlayers(new Entity[] { player1, player2 });
 
@@ -201,7 +202,9 @@ namespace ProjectMagma
             MediaPlayer.IsMuted = true;
 
             // open menu
-//            menu.Open();
+#if !DEBUG
+            menu.Open();
+#endif
         }
 
         /// <summary>

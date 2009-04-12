@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using Microsoft.Xna.Framework;
-using ProjectMagma.Shared.Math.Volume;
+using ProjectMagma.Shared.Math.Primitives;
 
 namespace ProjectMagma.Shared.Math.Distance
 {

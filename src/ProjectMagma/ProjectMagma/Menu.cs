@@ -70,6 +70,7 @@ namespace ProjectMagma
                 if (at > buttonPressedAt + Menu.ButtonRepeatTimeout
                     && gamePadState.Buttons.Start == ButtonState.Pressed)
                 {
+                    Game.Instance.Simulation.Pause();
                     Open();
                     buttonPressedAt = at;
                 }
@@ -128,8 +129,6 @@ namespace ProjectMagma
 
         public void Open()
         {
-            Game.Instance.Simulation.Pause();
-
             active = true;
             OpenMenuScreen(mainMenu);
         }
@@ -405,37 +404,6 @@ namespace ProjectMagma
         }
     }
 
-    class LevelMenu : ItemizedMenuScreen
-    {
-        readonly MenuItem[] menuItems;
-        readonly MenuScreen playerMenu;
-
-        public LevelMenu(Menu menu)
-            : base(menu, new Vector2(280, 600), 200)
-        {
-            List<LevelInfo> levels = Game.Instance.Levels;
-            this.menuItems = new MenuItem[levels.Count];
-            for (int i = 0; i < menuItems.Length; i++)
-            {
-                menuItems[i] = new MenuItem(levels[i].Name, levels[i].FileName,
-                    new ItemSelectionHandler(LevelSelected));
-            }
-            playerMenu = new PlayerMenu(menu, this);
-        }
-
-        public override MenuItem[] MenuItems
-        {
-            get { return menuItems; }
-        }
-
-        private void LevelSelected(MenuItem sender)
-        {
-            Game.Instance.Simulation.EntityManager.Clear();
-            Game.Instance.Simulation.EntityManager.Load(Game.Instance.Content.Load<LevelData>(Game.Instance.Levels[Selected].FileName));
-            menu.OpenMenuScreen(playerMenu);
-        }
-    }
-
     class SettingsMenu : ItemizedMenuScreen
     {
         readonly MenuItem[] menuItems;
@@ -522,6 +490,37 @@ namespace ProjectMagma
         }
     }
 
+
+    class LevelMenu : ItemizedMenuScreen
+    {
+        readonly MenuItem[] menuItems;
+        readonly MenuScreen playerMenu;
+
+        public LevelMenu(Menu menu)
+            : base(menu, new Vector2(280, 600), 200)
+        {
+            List<LevelInfo> levels = Game.Instance.Levels;
+            this.menuItems = new MenuItem[levels.Count];
+            for (int i = 0; i < menuItems.Length; i++)
+            {
+                menuItems[i] = new MenuItem(levels[i].Name, levels[i].FileName,
+                    new ItemSelectionHandler(LevelSelected));
+            }
+            playerMenu = new PlayerMenu(menu, this);
+        }
+
+        public override MenuItem[] MenuItems
+        {
+            get { return menuItems; }
+        }
+
+        private void LevelSelected(MenuItem sender)
+        {
+            Game.Instance.LoadLevel(Game.Instance.Levels[Selected].FileName);
+            menu.OpenMenuScreen(playerMenu);
+        }
+    }
+
     class PlayerMenu : MenuScreen
     {
         private readonly Rectangle PlayerIconRect = new Rectangle(30, 30, 265, 350);
@@ -556,6 +555,28 @@ namespace ProjectMagma
         public override void Update(GameTime gameTime)
         {
             double at = gameTime.TotalGameTime.TotalMilliseconds;
+
+            if(at > menu.buttonPressedAt + Menu.ButtonRepeatTimeout
+                && GamePad.GetState(PlayerIndex.One).Buttons.A == ButtonState.Pressed)
+            {
+                List<Entity> players = new List<Entity>(4);
+                for (int i = 0; i < 4; i++)
+                {
+                    if (playerActive[i])
+                    {
+                        Entity player = new Entity("player"+(players.Count+1));
+                        player.AddIntAttribute("game_pad_index", i);
+                        player.AddStringAttribute("robot_entity", Game.Instance.Robots[robotSelected[i]].Entity);
+                        player.AddStringAttribute("player_name", Game.Instance.Robots[robotSelected[i]].Name);
+                        players.Add(player);
+                    }
+                }
+
+                Game.Instance.Simulation.AddPlayers(players.ToArray<Entity>());
+
+                menu.Close();
+            }
+
             for (int i = 0; i < 4; i++)
             {
                 GamePadState gamePadState = GamePad.GetState((PlayerIndex)i);

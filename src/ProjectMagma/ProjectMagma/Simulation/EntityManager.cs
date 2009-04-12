@@ -51,6 +51,11 @@ namespace ProjectMagma.Simulation
             Load(levelData);
 
             // create additional entities
+            AddEntities(levelData, bases, entities); 
+        }
+
+        public void AddEntities(LevelData levelData, String[] bases, Entity[] entities)
+        {
             Debug.Assert(bases.Length == entities.Length);
             for (int i = 0; i < bases.Length; i++)
             {
@@ -62,7 +67,7 @@ namespace ProjectMagma.Simulation
 
                 foreach (AttributeData attributeData in attributes)
                 {
-                    if(!entity.HasAttribute(attributeData.name))
+                    if (!entity.HasAttribute(attributeData.name))
                         entity.AddAttribute(attributeData.name, attributeData.template, attributeData.value);
                 }
                 foreach (PropertyData propertyData in properties)

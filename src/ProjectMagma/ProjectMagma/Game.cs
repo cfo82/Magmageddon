@@ -14,6 +14,8 @@ using ProjectMagma.Simulation.Attributes;
 using ProjectMagma.Shared.LevelData;
 using ProjectMagma.Simulation.Collision;
 using xWinFormsLib;
+using Microsoft.Xna.Framework.Storage;
+using Microsoft.Xna.Framework.GamerServices;
 
 // its worth to read this...
 // 
@@ -26,6 +28,9 @@ namespace ProjectMagma
     /// </summary>
     public class Game : Microsoft.Xna.Framework.Game
     {
+        private StorageDevice storageDevice;
+        private StorageContainer storageContainer; 
+
         private GraphicsDeviceManager graphics;
         private SpriteBatch spriteBatch;
 
@@ -52,11 +57,11 @@ namespace ProjectMagma
 
         private Game()
         {
+
             graphics = new GraphicsDeviceManager(this);
             hud = HUD.Instance;
             menu = Menu.Instance;
 
-            // TODO: remove v-sync in future!?
             this.IsFixedTimeStep = false;
 //            graphics.SynchronizeWithVerticalRetrace = false;
 //            graphics.ApplyChanges();
@@ -118,7 +123,6 @@ namespace ProjectMagma
         protected override void Initialize()
         {
             // TODO: Add your initialization logic here
-
             base.Initialize();
         }
 
@@ -150,22 +154,8 @@ namespace ProjectMagma
             // load list of available robots
             robots = Content.Load<List<RobotInfo>>("Level/RobotInfo");
 
-            // TODO: move this
-            // set default player
-            Entity player1 = new Entity("player1");
-            player1.AddIntAttribute("game_pad_index", 0);
-            player1.AddStringAttribute("robot_entity", robots[0].Entity);
-            player1.AddStringAttribute("player_name", robots[0].Name);
-
-            // set default player
-            Entity player2 = new Entity("player2");
-            player2.AddIntAttribute("game_pad_index", 1);
-            player2.AddStringAttribute("robot_entity", robots[1].Entity);
-            player2.AddStringAttribute("player_name", robots[1].Name);
-
-            // start simulation
-            simulation = new ProjectMagma.Simulation.Simulation();
-            simulation.Initialize(Content, "Level/TestLevel", new Entity[] {player1, player2});
+            // initialize simulation
+            LoadLevel(levels[0].FileName);
 
 //            #if !XBOX
             managementForm.BuildForm();
@@ -193,6 +183,20 @@ namespace ProjectMagma
             MediaPlayer.Volume = musicVolume;
 
             MediaPlayer.IsMuted = true;
+
+            // open menu
+            menu.Open();
+        }
+
+        /// <summary>
+        /// initializes a new simulation using the level provided
+        /// </summary>
+        /// <param name="level"></param>
+        public void LoadLevel(String level)
+        {
+            // init simulation
+            simulation = new ProjectMagma.Simulation.Simulation();
+            simulation.Initialize(Content, "Level/TestLevel");
         }
 
         /// <summary>
@@ -254,7 +258,7 @@ namespace ProjectMagma
             // will apply effect such as bloom
             base.Draw(gameTime);
 
-            // draw stuff which should net be filtered
+            // draw stuff which should not be filtered
             hud.Draw(gameTime);
             menu.Draw(gameTime);
 

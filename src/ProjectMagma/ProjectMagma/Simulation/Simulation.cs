@@ -20,6 +20,8 @@ namespace ProjectMagma.Simulation
 {
     public class Simulation
     {
+        private LevelData levelData;
+
         public Simulation()
         {
             entityManager = new EntityManager();
@@ -33,20 +35,14 @@ namespace ProjectMagma.Simulation
 
         public void Initialize(
             ContentManager content,
-            String level,
-            Entity[] players
+            String level
         )
         {
             paused = false;
 
             // load level data
-            LevelData levelData = content.Load<LevelData>(level);
-            String[] models = new String[players.Length];
-            for(int i = 0; i < models.Length; i++)
-            {
-                models[i] = players[i].GetString("robot_entity");
-            }
-            entityManager.Load(levelData, models, players);
+            levelData = content.Load<LevelData>(level);
+            entityManager.Load(levelData);
 
             // load soundeffects
             foreach (Entity e in powerupManager)
@@ -55,6 +51,16 @@ namespace ProjectMagma.Simulation
             }
 
             simTime = new SimulationTime();
+        }
+
+        public void AddPlayers(Entity[] players)
+        {
+            String[] models = new String[players.Length];
+            for(int i = 0; i < models.Length; i++)
+            {
+                models[i] = players[i].GetString("robot_entity");
+            }
+            entityManager.AddEntities(levelData, models, players);
         }
 
         public void Close()

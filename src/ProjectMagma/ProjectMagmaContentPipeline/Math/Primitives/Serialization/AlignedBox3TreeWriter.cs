@@ -4,7 +4,7 @@ using Microsoft.Xna.Framework.Content.Pipeline.Serialization.Compiler;
 using ProjectMagma.Shared.Math.Primitives;
 using ProjectMagma.Shared.Math.Primitives.Serialization;
 
-namespace ProjectMagma.ContentPipeline.Math.Volume.Serialization
+namespace ProjectMagma.ContentPipeline.Math.Primitives.Serialization
 {
     [ContentTypeWriter]
     public class AlignedBox3TreeWriter : ContentTypeWriter<AlignedBox3Tree>

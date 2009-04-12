@@ -325,16 +325,19 @@ namespace ProjectMagma.Simulation
                 }
             }
 
-            // gravity
-            if (activeIsland == null // don't apply gravity when standing on island
-                && (playerVelocity.Length() <= constants.GetFloat("max_gravity_speed")
-                || playerVelocity.Y > 0)) // gravity max speed only applies for downwards speeds
+            // only apply velocity if not on island
+            if (activeIsland == null)
             {
-                playerVelocity += constants.GetVector3("gravity_acceleration") * dt;
+                // gravity
+                if (playerVelocity.Length() <= constants.GetFloat("max_gravity_speed")
+                    || playerVelocity.Y > 0) // gravity max speed only applies for downwards speeds
+                {
+                    playerVelocity += constants.GetVector3("gravity_acceleration") * dt;
+                }
+        
+                // apply current velocity
+                playerPosition += playerVelocity * dt;
             }
-            
-            // apply current velocity
-            playerPosition += playerVelocity * dt;
 
 //            Console.WriteLine();
 //            Console.WriteLine("at: " + (int)gameTime.TotalGameTime.TotalMilliseconds);

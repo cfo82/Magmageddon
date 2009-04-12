@@ -170,11 +170,11 @@ namespace ProjectMagma
             player2.AddIntAttribute("game_pad_index", 1);
             player2.AddStringAttribute("robot_entity", robots[1].Entity);
             player2.AddStringAttribute("player_name", robots[1].Name);
-#endif
 
             simulation.AddPlayers(new Entity[] { player1, player2 });
+#endif
 
-//            #if !XBOX
+            //            #if !XBOX
             managementForm.BuildForm();
 //            #endif
 

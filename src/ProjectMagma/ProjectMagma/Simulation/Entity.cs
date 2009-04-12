@@ -222,6 +222,11 @@ namespace ProjectMagma.Simulation
             return HasAttribute(attribute) && IsQuaternion(attribute);
         }
 
+        public bool HasMatrix(string attribute)
+        {
+            return HasAttribute(attribute) && IsMatrix(attribute);
+        }
+
         public string GetString(string attribute)
         {
             return GetStringAttribute(attribute).Value;

@@ -1,13 +1,15 @@
 ﻿using System.Diagnostics;
 using System.Collections.Generic;
 using Microsoft.Xna.Framework;
-using ProjectMagma.Shared.Math.Volume;
+using ProjectMagma.Shared.Math.Primitives;
 using ProjectMagma.Simulation.Collision.CollisionTests;
 
 namespace ProjectMagma.Simulation.Collision
 {
     public class CollisionManager
     {
+        #region Construction and Destruction
+
         public CollisionManager()
         {
             this.testList = new TestList();
@@ -26,6 +28,10 @@ namespace ProjectMagma.Simulation.Collision
                 thread.Abort();
             }
         }
+
+        #endregion
+
+        #region Manage colliding entities
 
         public void AddCollisionEntity(Entity entity, CollisionProperty property, Cylinder3 cylinder, bool needAllContacts)
         {
@@ -51,6 +57,10 @@ namespace ProjectMagma.Simulation.Collision
         {
             testList.Remove(property);
         }
+
+        #endregion
+
+        #region Collision Detection
 
         //static int collisionCount = 0;
 
@@ -131,59 +141,24 @@ namespace ProjectMagma.Simulation.Collision
             //System.Console.WriteLine("  dt5: {0:G} {1}", ddt5, ddt5>10.0?"***************************************************":"");
         }
 
-        private void CalculateWorldTransform(
-            ref Vector3 translation,
-            ref Quaternion rotation,
-            ref Vector3 scale,
-            out Matrix world
-        )
-        {
-            Matrix scaleMatrix, rotationMatrix, translationMatrix, tempMatrix;
-            Matrix.CreateScale(ref scale, out scaleMatrix);
-            Matrix.CreateFromQuaternion(ref rotation, out rotationMatrix);
-            Matrix.CreateTranslation(ref translation, out translationMatrix);
-            Matrix.Multiply(ref scaleMatrix, ref rotationMatrix, out tempMatrix);
-            Matrix.Multiply(ref tempMatrix, ref translationMatrix, out world);
-        }
-
-        private Vector3 GetPosition(Entity entity)
-        {
-            return entity.GetVector3("position");
-        }
-
-        private Vector3 GetScale(Entity entity)
-        {
-            if (entity.HasVector3("scale"))
-            {
-                return entity.GetVector3("scale");
-            }
-            else
-            {
-                return Vector3.One;
-            }
-        }
-
-        private Quaternion GetRotation(Entity entity)
-        {
-            if (entity.HasQuaternion("rotation"))
-            {
-                return entity.GetQuaternion("rotation");
-            }
-            else
-            {
-                return Quaternion.Identity;
-            }
-        }
-
-        private readonly ContactTest[,] contactTests = new ContactTest[3, 3] {
+        public static readonly ContactTest[,] ContactTests = new ContactTest[3, 3] {
             { ContactCylinderCylinder.Test, ContactCylinderMesh.Test, ContactCylinderSphere.Test },
             { ContactMeshCylinder.Test, ContactMeshMeshBox.Test, ContactMeshSphere.Test },
             { ContactSphereCylinder.Test, ContactSphereMesh.Test, ContactSphereSphere.Test } 
         };
 
-        private readonly int[] threadAffinities = new int[] { 1, 3, 5 };
+        #endregion
 
+        #region Picking
+
+        #endregion
+
+        #region Member Variables
+
+        private readonly int[] threadAffinities = new int[] { 1, 3, 5 };
         private TestList testList;
         private CollisionThread[] threads;
+
+        #endregion
     }
 }

@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Content;
 
-namespace ProjectMagma.Shared.Math.Volume.Serialization
+namespace ProjectMagma.Shared.Math.Primitives.Serialization
 {
     public class VolumeCollectionReader : ContentTypeReader<VolumeCollection>
     {

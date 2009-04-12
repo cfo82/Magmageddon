@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
-using ProjectMagma.Shared.Math.Volume;
+using ProjectMagma.Shared.Math.Primitives;
 
 namespace ProjectMagma.Simulation.Collision
 {

@@ -2,7 +2,7 @@
 using System.Diagnostics;
 using Microsoft.Xna.Framework;
 
-namespace ProjectMagma.Shared.Math.Volume
+namespace ProjectMagma.Shared.Math.Primitives
 {
     /// <summary>
     /// this node is part of the collision tree of a triangle mesh. both position and index data will be stored inside the tree.

@@ -2,7 +2,7 @@
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Content;
 
-namespace ProjectMagma.Shared.Math.Volume.Serialization
+namespace ProjectMagma.Shared.Math.Primitives.Serialization
 {
     public class Sphere3Reader : ContentTypeReader<Sphere3>
     {

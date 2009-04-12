@@ -1,5 +1,5 @@
 ﻿
-namespace ProjectMagma.Shared.Math.Volume
+namespace ProjectMagma.Shared.Math.Primitives
 {
     public enum VolumeType
     {

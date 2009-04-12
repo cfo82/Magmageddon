@@ -1,8 +1,8 @@
 ﻿using System.Collections.Generic;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Content.Pipeline.Serialization.Compiler;
-using ProjectMagma.Shared.Math.Volume;
-using ProjectMagma.Shared.Math.Volume.Serialization;
+using ProjectMagma.Shared.Math.Primitives;
+using ProjectMagma.Shared.Math.Primitives.Serialization;
 
 namespace ProjectMagma.ContentPipeline.Math.Volume.Serialization
 {
@@ -11,7 +11,7 @@ namespace ProjectMagma.ContentPipeline.Math.Volume.Serialization
     {
         protected override void Write(ContentWriter output, VolumeCollection value)
         {
-            output.WriteObject<Dictionary<VolumeType, ProjectMagma.Shared.Math.Volume.Volume>>(value.Volumes);
+            output.WriteObject<Dictionary<VolumeType, ProjectMagma.Shared.Math.Primitives.Volume>>(value.Volumes);
         }
 
         public override string GetRuntimeReader(TargetPlatform targetPlatform)

@@ -1,9 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 
-namespace ProjectMagma.Shared.Math.Volume
+namespace ProjectMagma.Shared.Math.Primitives
 {
     public class VolumeCollection
     {

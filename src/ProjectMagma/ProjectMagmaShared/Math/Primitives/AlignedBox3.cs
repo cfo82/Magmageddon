@@ -1,10 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using Microsoft.Xna.Framework;
+﻿using Microsoft.Xna.Framework;
 
-namespace ProjectMagma.Shared.Math.Volume
+namespace ProjectMagma.Shared.Math.Primitives
 {
     public class AlignedBox3 : Volume
     {

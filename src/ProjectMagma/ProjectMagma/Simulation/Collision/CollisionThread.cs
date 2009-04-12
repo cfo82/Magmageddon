@@ -59,7 +59,10 @@ namespace ProjectMagma.Simulation.Collision
                     while (entry != null)
                     {
                         // do collision detection with this entry!
-                        ContactTest test = contactTests[BoundingVolumeTypeUtil.ToNumber(entry.EntityA.VolumeType), BoundingVolumeTypeUtil.ToNumber(entry.EntityB.VolumeType)];
+                        ContactTest test = CollisionManager.ContactTests[
+                            BoundingVolumeTypeUtil.ToNumber(entry.EntityA.VolumeType),
+                            BoundingVolumeTypeUtil.ToNumber(entry.EntityB.VolumeType)
+                            ];
 
                         Matrix worldTransform1;
                         Vector3 position1 = GetPosition(entry.EntityA.Entity);
@@ -187,12 +190,6 @@ namespace ProjectMagma.Simulation.Collision
         private int processor;
         private TestList testList;
         private Thread thread;
-        private List<Contact> contacts = new List<Contact>();
-
-        private static readonly ContactTest[,] contactTests = new ContactTest[3, 3] {
-            { ContactCylinderCylinder.Test, ContactCylinderMesh.Test, ContactCylinderSphere.Test },
-            { ContactMeshCylinder.Test, ContactMeshMeshBox.Test, ContactMeshSphere.Test },
-            { ContactSphereCylinder.Test, ContactSphereMesh.Test, ContactSphereSphere.Test } 
-        };
+        private List<Contact> contacts;
     }
 }

@@ -1,6 +1,6 @@
 ﻿using Microsoft.Xna.Framework;
 
-namespace ProjectMagma.Shared.Math.Volume
+namespace ProjectMagma.Shared.Math.Primitives
 {
     public struct Triangle3
     {

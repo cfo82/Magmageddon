@@ -2,15 +2,15 @@
 using System.Diagnostics;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Content.Pipeline.Serialization.Compiler;
-using ProjectMagma.Shared.Math.Volume;
-using ProjectMagma.Shared.Math.Volume.Serialization;
+using ProjectMagma.Shared.Math.Primitives;
+using ProjectMagma.Shared.Math.Primitives.Serialization;
 
 namespace ProjectMagma.ContentPipeline.Math.Volume.Serialization
 {
     [ContentTypeWriter]
-    public class VolumeWriter : ContentTypeWriter<ProjectMagma.Shared.Math.Volume.Volume>
+    public class VolumeWriter : ContentTypeWriter<ProjectMagma.Shared.Math.Primitives.Volume>
     {
-        protected override void Write(ContentWriter output, ProjectMagma.Shared.Math.Volume.Volume value)
+        protected override void Write(ContentWriter output, ProjectMagma.Shared.Math.Primitives.Volume value)
         {
         }
 

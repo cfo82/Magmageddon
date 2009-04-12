@@ -37,7 +37,6 @@ namespace ProjectMagma
         private List<RobotInfo> robots;
         private List<LevelInfo> levels;
 
-        private HUD hud;
         private Menu menu;
         private Entity currentCamera;
         private float effectsVolume = 0.2f;
@@ -59,7 +58,6 @@ namespace ProjectMagma
         {
 
             graphics = new GraphicsDeviceManager(this);
-            hud = HUD.Instance;
             menu = Menu.Instance;
 
             this.IsFixedTimeStep = false;
@@ -178,8 +176,7 @@ namespace ProjectMagma
             managementForm.BuildForm();
 //            #endif
 
-            // load hud and menu
-            hud.LoadContent();
+            // load menu
             menu.LoadContent();
 
             // preload sounds
@@ -192,8 +189,6 @@ namespace ProjectMagma
             Viewport viewport = graphics.GraphicsDevice.Viewport;
 
             float aspectRatio = (float)viewport.Width / (float)viewport.Height;
-
-            currentCamera = simulation.EntityManager["camera1"];
 
             // play that funky musik white boy
             MediaPlayer.Play(Game.Instance.Content.Load<Song>("Sounds/music"));
@@ -213,11 +208,16 @@ namespace ProjectMagma
         /// <param name="level"></param>
         public void LoadLevel(String level)
         {
+            // reset old simulation
             if(simulation != null)
                 simulation.EntityManager.Clear();
+
             // init simulation
             simulation = new ProjectMagma.Simulation.Simulation();
             simulation.Initialize(Content, "Level/TestLevel");
+
+            // set camera
+            currentCamera = simulation.EntityManager["camera1"];
         }
 
         /// <summary>
@@ -280,7 +280,6 @@ namespace ProjectMagma
             base.Draw(gameTime);
 
             // draw stuff which should not be filtered
-            hud.Draw(gameTime);
             menu.Draw(gameTime);
 
 //#if !XBOX

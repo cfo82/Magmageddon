@@ -14,6 +14,7 @@
       <Property name="render_highlight" type="ProjectMagma.Simulation.RenderHighlightProperty"/>
       <Property name="collision" type="ProjectMagma.Simulation.Collision.CollisionProperty"/>
       <Property name="controller" type="ProjectMagma.Simulation.PlayerControllerProperty"/>
+      <Property name="hud" type="ProjectMagma.Simulation.HUDProperty"/>
     </Properties>
   </Entity>
 

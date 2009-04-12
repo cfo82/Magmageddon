@@ -86,6 +86,7 @@
   <ItemGroup>
     <Compile Include="BloomComponent.cs" />
     <Compile Include="BloomSettings.cs" />
+    <Compile Include="Renderer\Renderables\HUDRenderable.cs" />
     <Compile Include="Renderer\Renderables\TexturedRenderable.cs" />
     <Compile Include="Renderer\Renderables\HighlightRenderable.cs" />
     <Compile Include="Renderer\Renderables\DefaultRenderable.cs" />
@@ -98,7 +99,6 @@
     <Compile Include="Simulation\Collision\CollisionTests\ContactCylinderMesh.cs" />
     <Compile Include="Simulation\Collision\CollisionTests\ContactMeshCylinder.cs" />
     <Compile Include="Simulation\Collision\CollisionTests\ContactMeshMeshBox.cs" />
-    <Compile Include="HUD.cs" />
     <Compile Include="Simulation\Collision\CollisionManager.cs" />
     <Compile Include="Simulation\Collision\CollisionTests\ContactMeshMeshSphere.cs" />
     <Compile Include="Simulation\Collision\CollisionThread.cs" />
@@ -157,6 +157,7 @@
     <Compile Include="Simulation\Properties\Player\PlayerControllerProperty.cs" />
     <Compile Include="Simulation\Properties\Environment\PowerUpController.cs" />
     <Compile Include="Simulation\Properties\Base\Property.cs" />
+    <Compile Include="Simulation\Properties\Rendering\HUDProperty.cs" />
     <Compile Include="Simulation\Properties\Rendering\TexturedRenderProperty.cs" />
     <Compile Include="Simulation\Properties\Rendering\RenderHighlightProperty.cs" />
     <Compile Include="Simulation\Properties\Rendering\RenderProperty.cs" />

@@ -52,7 +52,7 @@
 
       <Attribute name="island_aim_angle" template="float" value="45"/>
       <Attribute name="island_deselection_timeout" template="float" value="100"/>
-      <Attribute name="island_jump_height_multiplier" template="float" value="1.4"/>
+      <Attribute name="island_jump_height_multiplier" template="float" value="2"/>
       <Attribute name="island_jump_speed" template="float" value="900"/>
       <Attribute name="island_jump_destination_radius" template="float" value=".1"/>
       <Attribute name="island_jump_interval" template="float" value="250"/>

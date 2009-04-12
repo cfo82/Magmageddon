@@ -586,6 +586,7 @@ namespace ProjectMagma.Simulation
             // island jump start
             if (controllerInput.jetpackButtonPressed
                 && selectedIsland != null
+                && destinationIsland == null
                 && at > islandJumpPerformedAt + constants.GetFloat("island_jump_interval")
             )
             {

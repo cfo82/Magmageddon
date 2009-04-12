@@ -66,6 +66,8 @@
     <Compile Include="Math\Distance\Vector3Triangle3.cs" />
     <Compile Include="Math\Intersection\Box3Box3.cs" />
     <Compile Include="Math\Intersection\Box3Box3SAT.cs" />
+    <Compile Include="Math\Intersection\Ray3ABox3.cs" />
+    <Compile Include="Math\Intersection\Ray3Triangle3.cs" />
     <Compile Include="Math\Intersection\Triangle3Triangle3.cs" />
     <Compile Include="Math\Primitives\AlignedBox3.cs" />
     <Compile Include="Math\Primitives\AlignedBox3Tree.cs" />

@@ -605,9 +605,7 @@ namespace ProjectMagma.Simulation
                 }
                 else
                 {
-                    playerVelocity =
-                        (Vector3.UnitY * -islandDir.Y / time // component to travel Y distance
-                        - constants.GetVector3("gravity_acceleration") * time) // component to beat gravity
+                    playerVelocity = -constants.GetVector3("gravity_acceleration") * time
                             * constants.GetFloat("island_jump_height_multiplier"); // modifier for arc
                 }
             }

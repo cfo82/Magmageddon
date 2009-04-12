@@ -61,12 +61,12 @@ namespace ProjectMagma.Simulation
             {
                 // collision with pillar or island -> change direction, 
                 // if not already in direction away from that object
+                
+                // calculate direction of movement
                 Vector3 oldPosition = island.GetVector3("position");
                 Vector3 newPosition = oldPosition;
                 CalculateNewPosition(island, ref newPosition, simTime.Dt);
-
                 Vector3 diff = newPosition - oldPosition;
-
                 // check if normal is in opposite direction of theoretical velocity
                 if (Vector3.Dot(diff, co[0].Normal) > 0)
                 {
@@ -75,7 +75,7 @@ namespace ProjectMagma.Simulation
 
                 // not only change dir, but apply some pushback too...
                 Vector3 pushback = -co[0].Normal * constants.GetFloat("contact_pushback_multiplier");
-                pushback.Y = 0;
+                pushback.Y = 0; // only in xz plane
                 island.SetVector3("pushback_velocity", island.GetVector3("pushback_velocity") + pushback);
             }
         }

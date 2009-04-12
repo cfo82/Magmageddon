@@ -5,15 +5,15 @@ using Microsoft.Xna.Framework.Audio;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 using Microsoft.Xna.Framework.Media;
-//#if !XBOX
-//using xWinFormsLib;
-//#endif
+#if !XBOX
+using xWinFormsLib;
+#endif
 
 using ProjectMagma.Simulation;
 using ProjectMagma.Simulation.Attributes;
 using ProjectMagma.Shared.LevelData;
 using ProjectMagma.Simulation.Collision;
-using xWinFormsLib;
+
 using Microsoft.Xna.Framework.Storage;
 using Microsoft.Xna.Framework.GamerServices;
 
@@ -45,10 +45,10 @@ namespace ProjectMagma
         private Simulation.Simulation simulation;
         private Renderer.Renderer renderer;
 
-//#if !XBOX
+        #if !XBOX
         private FormCollection formCollection;
         private ManagementForm managementForm;
-//#endif
+        #endif
 
         private static Game instance;
 
@@ -135,11 +135,11 @@ namespace ProjectMagma
             // 
 
 
-//#if !XBOX
+            #if !XBOX
             // create the gui system
             formCollection = new FormCollection(this.Window, Services, ref graphics);
             managementForm = new ManagementForm(formCollection);
-//#endif
+            #endif
 
             // Create a new SpriteBatch, which can be used to draw textures.
             spriteBatch = new SpriteBatch(GraphicsDevice);
@@ -172,9 +172,9 @@ namespace ProjectMagma
             simulation.AddPlayers(new Entity[] { player1, player2 });
 #endif
 
-            //            #if !XBOX
+            #if !XBOX
             managementForm.BuildForm();
-//            #endif
+            #endif
 
             // load menu
             menu.LoadContent();
@@ -227,9 +227,9 @@ namespace ProjectMagma
         protected override void UnloadContent()
         {
             // TODO: Unload any non ContentManager content here
-//#if !XBOX
+            #if !XBOX
             formCollection.Dispose();
-//#endif
+            #endif
             simulation.Close();
 
             MediaPlayer.Stop();
@@ -250,10 +250,10 @@ namespace ProjectMagma
                 graphics.ApplyChanges();
             }
 
-//#if !XBOX
-//            // update the user interface
+            #if !XBOX
+            // update the user interface
             formCollection.Update(gameTime);
-//#endif
+            #endif
 
             simulation.Update(gameTime);
 
@@ -270,9 +270,9 @@ namespace ProjectMagma
         /// <param name="gameTime">Provides a snapshot of timing values.</param>
         protected override void Draw(GameTime gameTime)
         {
-//#if !XBOX
+            #if !XBOX
             formCollection.Render();
-//#endif
+            #endif
 
             // TODO: small hack until dominik has added the bloom component...
 
@@ -288,9 +288,9 @@ namespace ProjectMagma
             // draw stuff which should not be filtered
             menu.Draw(gameTime);
 
-//#if !XBOX
+            #if !XBOX
             formCollection.Draw();
-//#endif
+            #endif
         }
 
         public Matrix View
@@ -345,15 +345,15 @@ namespace ProjectMagma
             get { return levels; }
         }
 
-//#if !XBOX
-//        public ManagementForm ManagementForm
-//        {
-//            get
-//            {
-//                return managementForm;
-//            }
-//        }
-//#endif
+        #if !XBOX
+        public ManagementForm ManagementForm
+        {
+            get
+            {
+                return managementForm;
+            }
+        }
+        #endif
 
         public ProjectMagma.Simulation.Simulation Simulation
         {

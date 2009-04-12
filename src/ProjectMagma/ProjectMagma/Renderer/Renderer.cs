@@ -134,7 +134,6 @@ namespace ProjectMagma.Renderer
             Renderable renderable
         )
         {
-            List<Renderable> renderables = null;
             switch (renderable.RenderMode)
             {
                 case RenderMode.RenderToShadowMap: return shadowCaster;

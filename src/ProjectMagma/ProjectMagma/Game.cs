@@ -157,6 +157,22 @@ namespace ProjectMagma
             // initialize simulation
             LoadLevel(levels[0].FileName);
 
+
+            // TODO: move this
+            // set default player
+            Entity player1 = new Entity("player1");
+            player1.AddIntAttribute("game_pad_index", 0);
+            player1.AddStringAttribute("robot_entity", robots[0].Entity);
+            player1.AddStringAttribute("player_name", robots[0].Name);
+
+            // set default player
+            Entity player2 = new Entity("player2");
+            player2.AddIntAttribute("game_pad_index", 1);
+            player2.AddStringAttribute("robot_entity", robots[1].Entity);
+            player2.AddStringAttribute("player_name", robots[1].Name);
+
+            simulation.AddPlayers(new Entity[] { player1, player2 });
+
 //            #if !XBOX
             managementForm.BuildForm();
 //            #endif
@@ -185,7 +201,7 @@ namespace ProjectMagma
             MediaPlayer.IsMuted = true;
 
             // open menu
-            menu.Open();
+//            menu.Open();
         }
 
         /// <summary>
@@ -194,6 +210,8 @@ namespace ProjectMagma
         /// <param name="level"></param>
         public void LoadLevel(String level)
         {
+            if(simulation != null)
+                simulation.EntityManager.Clear();
             // init simulation
             simulation = new ProjectMagma.Simulation.Simulation();
             simulation.Initialize(Content, "Level/TestLevel");

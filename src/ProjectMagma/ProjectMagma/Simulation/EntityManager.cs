@@ -97,6 +97,11 @@ namespace ProjectMagma.Simulation
             }
         }
 
+        public bool ContainsEntity(Entity entity)
+        {
+            return this.entities.ContainsKey(entity.Name);
+        }
+
         public void Remove(Entity entity)
         {
             if (!this.entities.ContainsKey(entity.Name))

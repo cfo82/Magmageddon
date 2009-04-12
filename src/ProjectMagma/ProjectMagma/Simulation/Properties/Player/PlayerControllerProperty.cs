@@ -113,9 +113,17 @@ namespace ProjectMagma.Simulation
         public void OnDetached(Entity player)
         {
             player.Update -= OnUpdate;
-            Game.Instance.Simulation.EntityManager.Remove(arrow);
-            if(flame != null)
+
+            if (arrow != null && Game.Instance.Simulation.EntityManager.ContainsEntity(arrow))
+            {
+                Game.Instance.Simulation.EntityManager.Remove(arrow);
+            }
+
+            if (flame != null && Game.Instance.Simulation.EntityManager.ContainsEntity(flame))
+            {
                 Game.Instance.Simulation.EntityManager.Remove(flame);
+            }
+
             Game.Instance.Simulation.EntityManager.EntityRemoved -= EntityRemovedHandler;
             if (player.HasProperty("collision"))
             {

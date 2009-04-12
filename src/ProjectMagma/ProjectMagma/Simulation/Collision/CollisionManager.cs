@@ -166,6 +166,12 @@ namespace ProjectMagma.Simulation.Collision
         {
             // find the matching collision entity (in order to get the alignedbox3tree
             CollisionEntity collisionEntity = testList.GetCollisionEntity(entity);
+            if (collisionEntity == null)
+            {
+                outIsectPt = Vector3.Zero;
+                return false;
+            }
+
             Debug.Assert(collisionEntity.VolumeType == VolumeType.AlignedBox3Tree);
             if (collisionEntity.VolumeType != VolumeType.AlignedBox3Tree)
             {

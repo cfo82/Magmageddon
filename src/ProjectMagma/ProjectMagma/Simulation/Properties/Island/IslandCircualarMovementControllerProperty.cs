@@ -56,8 +56,7 @@ namespace ProjectMagma.Simulation
 
         protected override void CollisionHandler(SimulationTime simTime, Entity island, Entity other, Contact co)
         {
-            if (island.HasString("kind") 
-                && (island.GetString("kind") == "pillar"
+            if ((island.GetString("kind") == "pillar"
                 || island.GetString("kind") == "island"))
             {
                 // collision with pillar or island -> change direction, 
@@ -72,12 +71,12 @@ namespace ProjectMagma.Simulation
                 if (Vector3.Dot(diff, co[0].Normal) > 0)
                 {
                     dir = -dir;
-
-                    // not only change dir, but apply some pushback too...
-                    Vector3 pushback = -co[0].Normal * constants.GetFloat("contact_pushback_multiplier");
-                    pushback.Y = 0;
-                    island.SetVector3("pushback_velocity", island.GetVector3("pushback_velocity") + pushback);
                 }
+
+                // not only change dir, but apply some pushback too...
+                Vector3 pushback = -co[0].Normal * constants.GetFloat("contact_pushback_multiplier");
+                pushback.Y = 0;
+                island.SetVector3("pushback_velocity", island.GetVector3("pushback_velocity") + pushback);
             }
         }
 

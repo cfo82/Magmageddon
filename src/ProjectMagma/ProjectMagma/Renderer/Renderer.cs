@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Diagnostics;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -16,14 +17,16 @@ namespace ProjectMagma.Renderer
         )
         {
             this.device = device;
-            renderables = new List<Renderable>();
+            shadowCaster = new List<Renderable>();
+            opaqueRenderables = new List<Renderable>();
+            transparentRenderables = new List<Renderable>();
+            overlays = new List<Renderable>();
 
             shadowEffect = content.Load<Effect>("Effects/ShadowEffect");
 
             lightPosition = new Vector3(0, 10000, 0); // later: replace by orthographic light, not lookAt
             lightTarget = Vector3.Zero;
             lightProjection = Matrix.CreateOrthographic(1500, 1500, 0.0f, 10000.0f);
-
 
             // Set the light to look at the center of the scene.
             lightView = Matrix.CreateLookAt(
@@ -67,6 +70,19 @@ namespace ProjectMagma.Renderer
             // 4) Render the scene from the view of the camera, 
             //and do depth comparisons in the shader to determine shadowing
             RenderScene(gameTime);
+
+            // 5) Bloom (later HDR etc)
+            foreach (GameComponent component in Game.Instance.Components)
+            {
+                DrawableGameComponent drawableComponent = component as DrawableGameComponent;
+                if (drawableComponent != null)
+                {
+                    drawableComponent.Draw(gameTime);
+                }
+            }
+
+            // 5) Render overlays
+            RenderOverlays(gameTime);
         }
 
         private void RenderShadow(GameTime gameTime)
@@ -78,10 +94,10 @@ namespace ProjectMagma.Renderer
             device.DepthStencilBuffer = shadowStencilBuffer;
             device.Clear(Color.White);
 
-            foreach (Renderable renderable in renderables)
+            foreach (Renderable renderable in shadowCaster)
             {
-                if (renderable.RenderMode == RenderMode.RenderToShadowMap)
-                    { renderable.Draw(this, gameTime); }
+                Debug.Assert(renderable.RenderMode == RenderMode.RenderToShadowMap);
+                renderable.Draw(this, gameTime);
             }
 
             // restore stencil buffer
@@ -90,15 +106,42 @@ namespace ProjectMagma.Renderer
 
         private void RenderScene(GameTime gameTime)
         {
-            foreach (Renderable renderable in renderables)
+            foreach (Renderable renderable in opaqueRenderables)
             {
-                if (renderable.RenderMode == RenderMode.RenderToScene)
-                    { renderable.Draw(this, gameTime); }
+                Debug.Assert(renderable.RenderMode == RenderMode.RenderToScene);
+                renderable.Draw(this, gameTime);
             }
-            foreach (Renderable renderable in renderables)
+            
+            // TODO: need to sort transparent renderables by position (back to front!!)
+
+            foreach (Renderable renderable in transparentRenderables)
             {
-                if (renderable.RenderMode == RenderMode.RenderToSceneAlpha)
-                    { renderable.Draw(this, gameTime); }
+                Debug.Assert(renderable.RenderMode == RenderMode.RenderToSceneAlpha);
+                renderable.Draw(this, gameTime);
+            }
+        }
+
+        private void RenderOverlays(GameTime gameTime)
+        {
+            foreach (Renderable renderable in overlays)
+            {
+                Debug.Assert(renderable.RenderMode == RenderMode.RenderOverlays);
+                renderable.Draw(this, gameTime);
+            }
+        }
+
+        private List<Renderable> GetMatchingRenderableList(
+            Renderable renderable
+        )
+        {
+            List<Renderable> renderables = null;
+            switch (renderable.RenderMode)
+            {
+                case RenderMode.RenderToShadowMap: return shadowCaster;
+                case RenderMode.RenderToScene: return opaqueRenderables;
+                case RenderMode.RenderToSceneAlpha: return transparentRenderables;
+                case RenderMode.RenderOverlays: return overlays;
+                default: throw new Exception(string.Format("invalid RenderMode constant: {0}", renderable.RenderMode));
             }
         }
 
@@ -106,6 +149,8 @@ namespace ProjectMagma.Renderer
             Renderable renderable
         )
         {
+            List<Renderable> renderables = GetMatchingRenderableList(renderable);
+
             if (renderables.Contains(renderable))
             {
                 throw new Exception("invalid addition of already registered renderable");
@@ -118,6 +163,8 @@ namespace ProjectMagma.Renderer
             Renderable renderable
         )
         {
+            List<Renderable> renderables = GetMatchingRenderableList(renderable);
+            
             if (!renderables.Contains(renderable))
             {
                 throw new Exception("renderer does not contain the given renderable!");
@@ -166,7 +213,10 @@ namespace ProjectMagma.Renderer
             get { return lightProjection; }
         }
 
-        private List<Renderable> renderables;
+        private List<Renderable> shadowCaster;
+        private List<Renderable> opaqueRenderables;
+        private List<Renderable> transparentRenderables;
+        private List<Renderable> overlays;
 
         private GraphicsDevice device;
         private Matrix lightView;

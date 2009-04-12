@@ -274,10 +274,16 @@ namespace ProjectMagma
             formCollection.Render();
 //#endif
 
+            // TODO: small hack until dominik has added the bloom component...
+
             renderer.Render(gameTime);
+
+            Components.Remove(bloom); // prevent bloom here
 
             // will apply effect such as bloom
             base.Draw(gameTime);
+
+            Components.Add(bloom); // add it again in order for updates...
 
             // draw stuff which should not be filtered
             menu.Draw(gameTime);
@@ -291,7 +297,14 @@ namespace ProjectMagma
         {
             get
             {
-                return currentCamera.GetMatrix("view");
+                if (currentCamera.HasMatrix("view"))
+                {
+                    return currentCamera.GetMatrix("view");
+                }
+                else
+                {
+                    return Matrix.Identity;
+                }
             }
         }
 
@@ -299,7 +312,14 @@ namespace ProjectMagma
         {
             get
             {
-                return currentCamera.GetMatrix("projection");
+                if (currentCamera.HasMatrix("projection"))
+                {
+                    return currentCamera.GetMatrix("projection");
+                }
+                else
+                {
+                    return Matrix.Identity;
+                }
             }
         }
 

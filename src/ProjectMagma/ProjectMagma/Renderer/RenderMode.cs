@@ -9,6 +9,7 @@ namespace ProjectMagma.Renderer
     {
         RenderToShadowMap,
         RenderToScene,
-        RenderToSceneAlpha
+        RenderToSceneAlpha,
+        RenderOverlays
     }
 }

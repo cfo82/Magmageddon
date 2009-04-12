@@ -88,7 +88,7 @@ namespace ProjectMagma.Renderer
 
         public RenderMode RenderMode
         {
-            get { return ProjectMagma.Renderer.RenderMode.RenderToScene; }
+            get { return ProjectMagma.Renderer.RenderMode.RenderOverlays; }
         }
         public Vector3 Position { get { return Vector3.Zero; } }
 

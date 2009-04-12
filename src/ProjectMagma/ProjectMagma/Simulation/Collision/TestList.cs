@@ -117,6 +117,18 @@ namespace ProjectMagma.Simulation.Collision
             }
         }
 
+        public CollisionEntity GetCollisionEntity(Entity entity)
+        {
+            foreach (CollisionEntity collisionEntity in entityList)
+            {
+                if (collisionEntity.Entity == entity)
+                {
+                    return collisionEntity;
+                }
+            }
+            return null;
+        }
+
         void Apply(AddEntry entry)
         {
             foreach (CollisionEntity entity in entityList)

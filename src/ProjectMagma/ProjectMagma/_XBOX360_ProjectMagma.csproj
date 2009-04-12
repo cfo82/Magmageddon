@@ -113,6 +113,7 @@
     <Compile Include="Simulation\Event\EntityRemovedHandler.cs" />
     <Compile Include="Simulation\Event\PropertyAddedHandler.cs" />
     <Compile Include="Simulation\Event\UpdateHandler.cs" />
+    <Compile Include="Simulation\OrientationHelper.cs" />
     <Compile Include="Simulation\Properties\Base\Property.cs" />
     <Compile Include="Simulation\Properties\Environment\ArrowController.cs" />
     <Compile Include="Simulation\Properties\Environment\CameraProperty.cs" />

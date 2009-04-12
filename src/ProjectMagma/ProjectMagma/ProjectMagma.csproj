@@ -145,6 +145,7 @@
     <Compile Include="Simulation\Event\UpdateHandler.cs" />
     <Compile Include="Simulation\Attributes\Events\Vector2ChangeHandler.cs" />
     <Compile Include="Simulation\Attributes\Events\Vector3ChangeHandler.cs" />
+    <Compile Include="Simulation\OrientationHelper.cs" />
     <Compile Include="Simulation\Properties\Environment\ArrowController.cs" />
     <Compile Include="Simulation\Properties\Environment\CameraProperty.cs" />
     <Compile Include="Simulation\Properties\Player\DeathProperty.cs" />

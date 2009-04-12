@@ -64,17 +64,19 @@ namespace ProjectMagma.Simulation.Collision
                             BoundingVolumeTypeUtil.ToNumber(entry.EntityB.VolumeType)
                             ];
 
-                        Matrix worldTransform1;
-                        Vector3 position1 = GetPosition(entry.EntityA.Entity);
-                        Quaternion rotation1 = GetRotation(entry.EntityA.Entity);
-                        Vector3 scale1 = GetScale(entry.EntityA.Entity);
-                        CalculateWorldTransform(ref position1, ref rotation1, ref scale1, out worldTransform1);
 
-                        Matrix worldTransform2;
-                        Vector3 position2 = GetPosition(entry.EntityB.Entity);
-                        Quaternion rotation2 = GetRotation(entry.EntityB.Entity);
-                        Vector3 scale2 = GetScale(entry.EntityB.Entity);
-                        CalculateWorldTransform(ref position2, ref rotation2, ref scale2, out worldTransform2);
+                        Vector3 scale1, position1, scale2, position2;
+                        Quaternion rotation1, rotation2;
+                        Matrix worldTransform1, worldTransform2;
+                        OrientationHelper.GetTranslation(entry.EntityA.Entity, out position1);
+                        OrientationHelper.GetRotation(entry.EntityA.Entity, out rotation1);
+                        OrientationHelper.GetScale(entry.EntityA.Entity, out scale1);
+                        OrientationHelper.CalculateWorldTransform(ref position1, ref rotation1, ref scale1, out worldTransform1);
+
+                        OrientationHelper.GetTranslation(entry.EntityB.Entity, out position2);
+                        OrientationHelper.GetRotation(entry.EntityB.Entity, out rotation2);
+                        OrientationHelper.GetScale(entry.EntityB.Entity, out scale2);
+                        OrientationHelper.CalculateWorldTransform(ref position2, ref rotation2, ref scale2, out worldTransform2);
 
                         Contact contact = new Contact(entry.EntityA.Entity, entry.EntityB.Entity);
 
@@ -126,50 +128,6 @@ namespace ProjectMagma.Simulation.Collision
         {
             this.aborted = true;
             this.thread.Abort();
-        }
-
-        private void CalculateWorldTransform(
-            ref Vector3 translation,
-            ref Quaternion rotation,
-            ref Vector3 scale,
-            out Matrix world
-        )
-        {
-            Matrix scaleMatrix, rotationMatrix, translationMatrix, tempMatrix;
-            Matrix.CreateScale(ref scale, out scaleMatrix);
-            Matrix.CreateFromQuaternion(ref rotation, out rotationMatrix);
-            Matrix.CreateTranslation(ref translation, out translationMatrix);
-            Matrix.Multiply(ref scaleMatrix, ref rotationMatrix, out tempMatrix);
-            Matrix.Multiply(ref tempMatrix, ref translationMatrix, out world);
-        }
-
-        private Vector3 GetPosition(Entity entity)
-        {
-            return entity.GetVector3("position");
-        }
-
-        private Vector3 GetScale(Entity entity)
-        {
-            if (entity.HasVector3("scale"))
-            {
-                return entity.GetVector3("scale");
-            }
-            else
-            {
-                return Vector3.One;
-            }
-        }
-
-        private Quaternion GetRotation(Entity entity)
-        {
-            if (entity.HasQuaternion("rotation"))
-            {
-                return entity.GetQuaternion("rotation");
-            }
-            else
-            {
-                return Quaternion.Identity;
-            }
         }
 
         public int ContactCount

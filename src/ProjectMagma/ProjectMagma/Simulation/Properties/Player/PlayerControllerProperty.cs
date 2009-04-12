@@ -5,6 +5,7 @@ using Microsoft.Xna.Framework.Input;
 using Microsoft.Xna.Framework.Audio;
 using ProjectMagma.Simulation.Collision;
 using ProjectMagma.Simulation.Attributes;
+using ProjectMagma.Shared.Math.Primitives;
 
 namespace ProjectMagma.Simulation
 {
@@ -746,6 +747,15 @@ namespace ProjectMagma.Simulation
                     if (contact[i].Point.Y > contact[i].Point.Y)
                         { point = contact[i].Point; }
                 }
+
+                // TESTING ray TODO: janick now that you have what you wanted do something with it!!
+                Vector3 isectPt = Vector3.Zero;
+                Ray3 ray = new Ray3(player.GetVector3("position") + 1000 * Vector3.UnitY, -Vector3.UnitY);
+                if (Game.Instance.Simulation.CollisionManager.GetIntersectionPoint(ref ray, island, out isectPt))
+                {
+                    //Console.WriteLine("ray test succeeded: {0}", isectPt);
+                }
+
 
                 // set position to contact point
                 Vector3 pos = player.GetVector3("position");

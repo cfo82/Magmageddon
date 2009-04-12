@@ -1,6 +1,7 @@
 ﻿using System.Diagnostics;
 using System.Collections.Generic;
 using Microsoft.Xna.Framework;
+using ProjectMagma.Shared.Math;
 using ProjectMagma.Shared.Math.Primitives;
 using ProjectMagma.Simulation.Collision.CollisionTests;
 
@@ -150,6 +151,127 @@ namespace ProjectMagma.Simulation.Collision
         #endregion
 
         #region Picking
+
+        /// <summary>
+        /// this method is a bit hacky since I did not know where to place it. I may move it to a better
+        /// place somewhen in the future
+        /// </summary>
+        /// <param name="ray"></param>
+        /// <param name="entity"></param>
+        public bool GetIntersectionPoint(
+            ref Ray3 ray,
+            Entity entity,
+            out Vector3 outIsectPt
+        )
+        {
+            // find the matching collision entity (in order to get the alignedbox3tree
+            CollisionEntity collisionEntity = testList.GetCollisionEntity(entity);
+            Debug.Assert(collisionEntity.VolumeType == VolumeType.AlignedBox3Tree);
+            if (collisionEntity.VolumeType != VolumeType.AlignedBox3Tree)
+            {
+                outIsectPt = Vector3.Zero;
+                return false;
+            }
+
+            // get world transform of from the given entity
+            Matrix worldTransform;
+            AlignedBox3Tree tree = (AlignedBox3Tree)collisionEntity.Volume;
+            OrientationHelper.CalculateWorldTransform(entity, out worldTransform);
+
+            // transform the ray into the coordinate system of the entity
+            Matrix worldToEntityTransform = Matrix.Invert(worldTransform);
+            Matrix inverseTransposeWorldToEntityTransform = Matrix.Transpose(Matrix.Invert(worldToEntityTransform));
+            Ray3 entitySpaceRay = new Ray3(ray.Origin, ray.Direction);
+            entitySpaceRay.Origin = Vector3.Transform(entitySpaceRay.Origin, worldToEntityTransform);
+            entitySpaceRay.Direction = Vector3.Transform(entitySpaceRay.Direction, inverseTransposeWorldToEntityTransform);
+
+            float t; // parameter on ray, outIsectPt = ray.Origin + t * ray.Direction;
+            bool intersection = GetIntersectionPoint(ref entitySpaceRay, tree.Root, tree.Positions, out t);
+            if (intersection)
+            {
+                outIsectPt = Vector3.Transform(entitySpaceRay.Origin + t * entitySpaceRay.Direction, worldTransform);
+            }
+            else
+            {
+                outIsectPt = Vector3.Zero;
+            }
+            return intersection;
+        }
+
+        private bool GetIntersectionPoint(
+            ref Ray3 ray,
+            AlignedBox3TreeNode node,
+            Vector3[] positions,
+            out float t
+        )
+        {
+            AlignedBox3 boundingBox = node.BoundingBox;
+            if (!Intersection.IntersectRay3AlignedBox3(ref ray, ref boundingBox))
+            {
+                t = 0.0f;
+                return false;
+            }
+
+            if (node.HasChildren)
+            {
+                float t1, t2;
+                bool isect1 = GetIntersectionPoint(ref ray, node.Left, positions, out t1);
+                bool isect2 = GetIntersectionPoint(ref ray, node.Right, positions, out t2);
+
+                if (isect1 && isect2)
+                {
+                    t = t1 < t2 ? t1 : t2;
+                    return true;
+                }
+                else if (isect1)
+                {
+                    t = t1;
+                    return true;
+                }
+                else if (isect2)
+                {
+                    t = t2;
+                    return true;
+                }
+                else
+                {
+                    t = 0.0f;
+                    return false;
+                }
+            }
+            else
+            {
+                bool intersection = false;
+                float smallestT = float.MaxValue;
+                for (int i = 0; i < node.NumTriangles; ++i)
+                {
+                    float currentT = 0.0f;
+                    Vector3 isectPt = Vector3.Zero;
+                    Triangle3 tri = node.GetTriangle(positions, i);
+                    if (Intersection.IntersectRay3Triangle3(ref ray, ref tri, out currentT, out isectPt))
+                    {
+                        if (currentT < smallestT)
+                        {
+                            smallestT = currentT;
+                        }
+
+                        if (!intersection)
+                            { intersection = true; }
+                    }
+                }
+
+                if (intersection)
+                {
+                    t = smallestT;
+                    return true;
+                }
+                else
+                {
+                    t = 0.0f;
+                    return false;
+                }
+            }
+        }
 
         #endregion
 

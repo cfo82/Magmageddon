@@ -15,7 +15,6 @@ namespace ProjectMagma.Simulation
         private Entity constants;
 
         private Entity activeIsland = null;
-        private bool islandCollision = false;
 
         private readonly Random rand = new Random(DateTime.Now.Millisecond);
         private double respawnStartedAt = 0;
@@ -28,7 +27,6 @@ namespace ProjectMagma.Simulation
 
         private double hitPerformedAt = 0;
 
-        private double islandLeftAt = 0;
         private float islandRepulsionStoppedAt = 0;
 
         private double islandSelectedAt = 0;
@@ -147,6 +145,7 @@ namespace ProjectMagma.Simulation
                         attractedIsland.SetString("attracted_by", "");
                     attractedIsland = null;
                     destinationIsland = null;
+                    LeaveActiveIsland();
 
                     Game.Instance.Content.Load<SoundEffect>("Sounds/death").Play(Game.Instance.EffectsVolume);
                     player.SetInt("deaths", player.GetInt("deaths") + 1);
@@ -202,32 +201,29 @@ namespace ProjectMagma.Simulation
             #endregion
 
             #region collision reaction
-            // island leave check
-            if (islandCollision == false && activeIsland != null)
+            // position on island
+            if (activeIsland != null)
             {
-                if (movedByStick && !jetpackActive)
+                // position
+                Vector3 isectPt = Vector3.Zero;
+                Ray3 ray = new Ray3(player.GetVector3("position") + 1000 * Vector3.UnitY, -Vector3.UnitY);
+                if (Game.Instance.Simulation.CollisionManager.GetIntersectionPoint(ref ray, activeIsland, out isectPt))
                 {
-                    // reset movement, so we cannot fall from island just by walking
-                    Vector3 pos = previousPosition;
-                    pos.Y = player.GetVector3("position").Y;
+                    // set position to contact point
+                    Vector3 pos = player.GetVector3("position");
+                    pos.Y = isectPt.Y;
                     player.SetVector3("position", pos);
-//                    Console.WriteLine("position reset");
                 }
                 else
+                // not over island anymore
                 {
-                    // only "leave" island after certain amount of time
-                    if (islandLeftAt != 0 /*
-                        && at > islandLeftAt + constants.GetFloat("island_leave_timeout")*/)
+                    if (movedByStick) // prevent moving from island
                     {
-//                        Console.WriteLine("island left");
-                        ((Vector3Attribute)activeIsland.Attributes["position"]).ValueChanged -= IslandPositionHandler;
-                        activeIsland = null;
-                        islandLeftAt = 0;
+                        player.SetVector3("position", previousPosition);
                     }
                     else
                     {
-                        if(islandLeftAt == 0)
-                            islandLeftAt = at;
+                        LeaveActiveIsland();
                     }
                 }
             }
@@ -251,7 +247,6 @@ namespace ProjectMagma.Simulation
             // reset some stuff
             previousPosition = playerPosition;
             collisionOccured = false;
-            islandCollision = false;
             movedByStick = false;
 
             // get input
@@ -323,8 +318,9 @@ namespace ProjectMagma.Simulation
             }
 
             // gravity
-            if (playerVelocity.Length() <= constants.GetFloat("max_gravity_speed")
-                || playerVelocity.Y > 0) // gravity max speed only applies for downwards speeds
+            if (activeIsland == null // don't apply gravity when standing on island
+                && (playerVelocity.Length() <= constants.GetFloat("max_gravity_speed")
+                || playerVelocity.Y > 0)) // gravity max speed only applies for downwards speeds
             {
                 playerVelocity += constants.GetVector3("gravity_acceleration") * dt;
             }
@@ -529,7 +525,7 @@ namespace ProjectMagma.Simulation
                         // select closest island in direction of stick
                         Vector3 stickDir = new Vector3(controllerInput.rightStickX, 0, controllerInput.rightStickY);
                         stickDir.Normalize();
-                        selectedIsland = selectBestIsland(stickDir);
+                        selectedIsland = SelectBestIsland(stickDir);
 
                         if (selectedIsland != null)
                         {
@@ -563,8 +559,6 @@ namespace ProjectMagma.Simulation
                     attractedIsland = selectedIsland;
                     attractedIsland.SetString("attracted_by", player.Name);
                 }
-
-
             }
             else
             {
@@ -587,6 +581,8 @@ namespace ProjectMagma.Simulation
                 && at > islandJumpPerformedAt + constants.GetFloat("island_jump_interval")
             )
             {
+                LeaveActiveIsland();
+
                 destinationIsland = selectedIsland;
 
                 // calculate time to travel to island (in xz plane)
@@ -709,9 +705,19 @@ namespace ProjectMagma.Simulation
             float dt = simTime.Dt;
 
             // on top?
-            if (Vector3.Dot(Vector3.UnitY, contact[0].Normal) < 0
-                || activeIsland == island) // each collision with the active island is taken as on top
+            if (Vector3.Dot(Vector3.UnitY, contact[0].Normal) < 0)
             {
+                // add handler if active island changed
+                if (activeIsland != island)
+                {
+                    //                  Console.WriteLine((int)gameTime.TotalGameTime.TotalMilliseconds + island.Name + " activated");
+                    ((Vector3Attribute)island.Attributes["position"]).ValueChanged += IslandPositionHandler;
+
+                    LeaveActiveIsland();
+
+                    activeIsland = island;
+                }
+
                 if (island == destinationIsland)
                 {
                     // stop island jump
@@ -719,54 +725,19 @@ namespace ProjectMagma.Simulation
                     islandJumpPerformedAt = simTime.At;
                 }
 
-//                Console.WriteLine("on island " + island.Name); 
-
-                // add handler if active island changed
-                if (activeIsland != island)
-                {
-  //                  Console.WriteLine((int)gameTime.TotalGameTime.TotalMilliseconds + island.Name + " activated");
-                    ((Vector3Attribute)island.Attributes["position"]).ValueChanged += IslandPositionHandler;
-
-                    // remove old handler if there was other island active before
-                    if (activeIsland != null)
-                    {
-//                        Console.WriteLine("island changed from " + activeIsland.Name);
-                        ((Vector3Attribute)activeIsland.Attributes["position"]).ValueChanged -= IslandPositionHandler;
-                    }
-
-                    activeIsland = island;
-                }
-
                 // stop falling
                 player.SetVector3("velocity", Vector3.Zero);
 
-                // determine contact to use (the one with highest y value)
-                Vector3 point = contact[0].Point;
-                for (int i = 1; i < contact.Count; i++)
-                {
-                    if (contact[i].Point.Y > contact[i].Point.Y)
-                        { point = contact[i].Point; }
-                }
-
-                // TESTING ray TODO: janick now that you have what you wanted do something with it!!
+                // position
                 Vector3 isectPt = Vector3.Zero;
                 Ray3 ray = new Ray3(player.GetVector3("position") + 1000 * Vector3.UnitY, -Vector3.UnitY);
                 if (Game.Instance.Simulation.CollisionManager.GetIntersectionPoint(ref ray, island, out isectPt))
                 {
-                    //Console.WriteLine("ray test succeeded: {0}", isectPt);
+                    // set position to contact point
+                    Vector3 pos = player.GetVector3("position");
+                    pos.Y = isectPt.Y;
+                    player.SetVector3("position", pos);
                 }
-
-
-                // set position to contact point
-                Vector3 pos = player.GetVector3("position");
-                pos.Y = point.Y;
-                player.SetVector3("position", pos);
-
-//                Console.WriteLine("player positioned at: " + pos);
-
-                // and set state values
-                islandCollision = true;
-                activeIsland = island; // mark as active
             }
             else
             {
@@ -874,7 +845,7 @@ namespace ProjectMagma.Simulation
         /// </summary>
         /// <param name="dir">direction to select</param>
         /// <returns>an island entity or null</returns>
-        private Entity selectBestIsland(Vector3 dir)
+        private Entity SelectBestIsland(Vector3 dir)
         {
             float nearestDist = float.MaxValue;
             Entity selectedIsland = null;
@@ -894,6 +865,19 @@ namespace ProjectMagma.Simulation
             }
 
             return selectedIsland;
+        }
+
+        /// <summary>
+        /// resets the activeisland
+        /// </summary>
+        private void LeaveActiveIsland()
+        {
+            if (activeIsland != null)
+            {
+                Console.WriteLine(player.Name+" left island");
+                ((Vector3Attribute)activeIsland.Attributes["position"]).ValueChanged -= IslandPositionHandler;
+                activeIsland = null;
+            }
         }
 
         struct ControllerInput

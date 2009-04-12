@@ -1,6 +1,7 @@
 ﻿using System.Diagnostics;
 using System.Collections.Generic;
 using Microsoft.Xna.Framework;
+using ProjectMagma.Shared.Math;
 using ProjectMagma.Shared.Math.Distance;
 using ProjectMagma.Shared.Math.Volume;
 
@@ -14,65 +15,13 @@ namespace ProjectMagma.Simulation.Collision.CollisionTests
             bool needAllContacts, ref Contact contact
         )
         {
-            /*
-	            math::Matrix4x4<TypeT> translation_matrix;
-	            translation_matrix.ToTranslate(translation);
-	            math::Matrix4x4<TypeT> world_matrix = translation_matrix * rotation_matrix;
-
-	            // TODO: fix this early exit code!!
-	            math::Box3<TypeT> box;
-	            box.SetCenter(world_matrix * node->GetBoundingBox().GetCenter());
-	            box.SetExtents(node->GetBoundingBox().GetExtents());
-	            box.SetAxis(rotation_matrix.GetRow(0), 0);
-	            box.SetAxis(rotation_matrix.GetRow(1), 1);
-	            box.SetAxis(rotation_matrix.GetRow(2), 2);
-
-	            math::Vector3<TypeT> vertices[8];
-	            box.ComputeVertices(vertices);
-
-	            if (!intersect_orientedbox_sphere(box, sphere))
-	            {
-		            return;
-	            }
-            */
-
-            /*
-                math::Vector3<TypeT> min = node->GetBoundingBox().GetMin();
-                math::Vector3<TypeT> max = node->GetBoundingBox().GetMax();
-
-                math::Vector3r reference_vertices[8] = {
-                    math::Vector3r(min.x, min.y, min.z),
-                    math::Vector3r(max.x, min.y, min.z),
-                    math::Vector3r(min.x, max.y, min.z),
-                    math::Vector3r(max.x, max.y, min.z),
-                    math::Vector3r(min.x, min.y, max.z),
-                    math::Vector3r(max.x, min.y, max.z),
-                    math::Vector3r(min.x, max.y, max.z),
-                    math::Vector3r(max.x, max.y, max.z)
-                };
-                for (int i = 0; i < 8; ++i)
-                {
-                    reference_vertices[i] = world_matrix * reference_vertices[i];
-                }
-
-                for (int i = 0; i < 8; ++i)
-                {
-                    bool found = false;
-                    for (int j = 0; j < 8; ++j)
-                    {
-                        if (vertices[i] == reference_vertices[j])
-                        {
-                            found = true;
-                        }
-                    }
-                    if (!found)
-                    {
-                        int dummy;
-                        dummy = 7;
-                        printf("%d\n", dummy);
-                    }
-                }
-            */
+            Matrix identityMatrix = Matrix.Identity;
+            Box3 box1 = node1.BoundingBox.CreateBox3(ref worldTransform1);
+            Box3 box2 = sphere2.CreateBox3(ref identityMatrix);
+            if (!Intersection.IntersectBox3Box3(box1, box2))
+            {
+                return;
+            }
 
             // see if this node has some primitives => has no children
             if (!node1.HasChildren)

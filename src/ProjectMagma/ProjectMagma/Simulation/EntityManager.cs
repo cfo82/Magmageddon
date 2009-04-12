@@ -139,7 +139,10 @@ namespace ProjectMagma.Simulation
 
         public void Clear()
         {
-            entities.Clear();
+            while(entities.Count > 0)
+            {
+                Remove(entities.Values.Last<Entity>());
+            }
         }
 
         public IEnumerator<Entity> GetEnumerator()

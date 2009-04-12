@@ -142,6 +142,8 @@ namespace ProjectMagma.Simulation
                         flameThrowerSoundInstance.Stop();
                     jetpackActive = false;
                     selectedIsland = null;
+                    if (attractedIsland != null)
+                        attractedIsland.SetString("attracted_by", "");
                     attractedIsland = null;
                     destinationIsland = null;
 
@@ -605,7 +607,7 @@ namespace ProjectMagma.Simulation
                 }
                 else
                 {
-                    playerVelocity = -constants.GetVector3("gravity_acceleration") * time
+                    playerVelocity = -constants.GetVector3("gravity_acceleration") * time // component against gravity
                             * constants.GetFloat("island_jump_height_multiplier"); // modifier for arc
                 }
             }

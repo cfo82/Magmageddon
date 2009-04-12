@@ -705,35 +705,19 @@ namespace ProjectMagma.Simulation
 
         private void PlayerIslandCollisionHandler(SimulationTime simTime, Entity player, Entity island, Contact contact)
         {
-            if (island == destinationIsland)
-            {
-                // stop island jump
-                destinationIsland = null;
-                islandJumpPerformedAt = simTime.At;
-                return;
-            }
-
-            // todo: this of course has to be checkd in island - island collision
-            // use listener on attracted_by attribute to do things in player if deactivated attraction
-            if (island == destinationIsland)
-            {
-                // stop island attraction
-                arrow.RemoveProperty("render");
-                arrow.RemoveProperty("shadow_cast");
-
-                attractedIsland.SetString("attracted_by", "");
-                attractedIsland = null;
-                selectedIsland = null;                 
-                return;
-            }
-
             float dt = simTime.Dt;
 
             // on top?
             if (Vector3.Dot(Vector3.UnitY, contact[0].Normal) < 0
-                && destinationIsland == null // no on top while jumping...
-            )
+                || activeIsland == island) // each collision with the active island is taken as on top
             {
+                if (island == destinationIsland)
+                {
+                    // stop island jump
+                    destinationIsland = null;
+                    islandJumpPerformedAt = simTime.At;
+                }
+
 //                Console.WriteLine("on island " + island.Name); 
 
                 // add handler if active island changed

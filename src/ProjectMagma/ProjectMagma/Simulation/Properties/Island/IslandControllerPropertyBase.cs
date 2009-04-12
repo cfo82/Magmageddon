@@ -74,7 +74,7 @@ namespace ProjectMagma.Simulation
             // apply pushback from players 
             Vector3 repulsionVelocity = island.GetVector3("repulsion_velocity");
             Game.ApplyPushback(ref position, ref repulsionVelocity, constants.GetFloat("repulsion_deacceleration"),
-                    new PushBackFinishedHandler(OnPushbackEnded));
+                    OnPushbackEnded);
             island.SetVector3("repulsion_velocity", repulsionVelocity);
 
             // apply pushback from other objects as long as there is a collision

@@ -77,7 +77,6 @@ namespace ProjectMagma.Simulation.Collision.CollisionTests
             ref Context context, AlignedBox3TreeNode node1, AlignedBox3TreeNode node2
         )
         {
-            // TODO Box<->box checks
             Box3 box1 = node1.BoundingBox.CreateBox3(ref context.worldTransform1);
             Box3 box2 = node2.BoundingBox.CreateBox3(ref context.worldTransform2);
             if (!Intersection.IntersectBox3Box3(box1, box2))
@@ -116,7 +115,6 @@ namespace ProjectMagma.Simulation.Collision.CollisionTests
             ref Context context, AlignedBox3TreeNode node1, AlignedBox3TreeNode node2
         )
         {
-            // TODO Box<->box checks
             Box3 box1 = node1.BoundingBox.CreateBox3(ref context.worldTransform1);
             Box3 box2 = node2.BoundingBox.CreateBox3(ref context.worldTransform2);
             if (!Intersection.IntersectBox3Box3(box1, box2))
@@ -155,7 +153,6 @@ namespace ProjectMagma.Simulation.Collision.CollisionTests
             ref Context context, AlignedBox3TreeNode node1, AlignedBox3TreeNode node2
         )
         {
-            // TODO Box<->box checks
             Box3 box1 = node1.BoundingBox.CreateBox3(ref context.worldTransform1);
             Box3 box2 = node2.BoundingBox.CreateBox3(ref context.worldTransform2);
             if (!Intersection.IntersectBox3Box3(box1, box2))

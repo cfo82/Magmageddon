@@ -57,6 +57,11 @@ namespace ProjectMagma.Simulation
             simTime = new SimulationTime();
         }
 
+        public void Close()
+        {
+            collisionManager.Close();
+        }
+
         public void Update(GameTime gameTime)
         {
             // pause simulation if explicitly paused or app changed

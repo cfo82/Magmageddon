@@ -205,6 +205,8 @@ namespace ProjectMagma
 //#if !XBOX
             formCollection.Dispose();
 //#endif
+            simulation.Close();
+
             MediaPlayer.Stop();
         }
 

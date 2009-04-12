@@ -101,6 +101,7 @@
     <Compile Include="HUD.cs" />
     <Compile Include="Simulation\Collision\CollisionManager.cs" />
     <Compile Include="Simulation\Collision\CollisionTests\ContactMeshMeshSphere.cs" />
+    <Compile Include="Simulation\Collision\CollisionThread.cs" />
     <Compile Include="Simulation\Collision\Contact.cs" />
     <Compile Include="Simulation\Collision\CollisionTests\ContactCylinderCylinder.cs" />
     <Compile Include="Simulation\Collision\CollisionTests\ContactCylinderSphere.cs" />
@@ -111,6 +112,7 @@
     <Compile Include="Simulation\Collision\BoundingVolumeTypeUtil.cs" />
     <Compile Include="Simulation\Collision\CollisionProperty.cs" />
     <Compile Include="Simulation\Collision\ContactPoint.cs" />
+    <Compile Include="Simulation\Collision\TestList.cs" />
     <Compile Include="Simulation\Event\EntityRemovedHandler.cs" />
     <Compile Include="Simulation\Event\EntityAddedHandler.cs" />
     <Compile Include="Simulation\EntityKindManager.cs" />

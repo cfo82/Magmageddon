@@ -101,8 +101,10 @@
     <Compile Include="Simulation\Collision\CollisionTests\ContactSphereMesh.cs" />
     <Compile Include="Simulation\Collision\CollisionTests\ContactSphereSphere.cs" />
     <Compile Include="Simulation\Collision\CollisionTests\ContactTest.cs" />
+    <Compile Include="Simulation\Collision\CollisionThread.cs" />
     <Compile Include="Simulation\Collision\Contact.cs" />
     <Compile Include="Simulation\Collision\ContactPoint.cs" />
+    <Compile Include="Simulation\Collision\TestList.cs" />
     <Compile Include="Simulation\Entity.cs" />
     <Compile Include="Simulation\EntityKindManager.cs" />
     <Compile Include="Simulation\EntityManager.cs" />

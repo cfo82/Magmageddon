@@ -10,109 +10,125 @@ namespace ProjectMagma.Simulation.Collision
     {
         public CollisionManager()
         {
-            collisionEntities = new List<CollisionEntity>();
+            this.testList = new TestList();
+
+            threads = new CollisionThread[threadAffinities.Length];
+            for (int i = 0; i < threadAffinities.Length; ++i)
+            {
+                threads[i] = new CollisionThread(threadAffinities[i], testList);
+            }
+        }
+
+        public void Close()
+        {
+            foreach (CollisionThread thread in threads)
+            {
+                thread.Abort();
+            }
         }
 
         public void AddCollisionEntity(Entity entity, CollisionProperty property, Cylinder3 cylinder, bool needAllContacts)
         {
-            AddCollisionEntity(new CollisionEntity(entity, property, cylinder, needAllContacts));
+            testList.Add(new CollisionEntity(entity, property, cylinder, needAllContacts));
         }
 
         public void AddCollisionEntity(Entity entity, CollisionProperty property, AlignedBox3Tree tree, bool needAllContacts)
         {
-            AddCollisionEntity(new CollisionEntity(entity, property, tree, needAllContacts));
+            testList.Add(new CollisionEntity(entity, property, tree, needAllContacts));
         }
 
         public void AddCollisionEntity(Entity entity, CollisionProperty property, Sphere3 sphere, bool needAllContacts)
         {
-            AddCollisionEntity(new CollisionEntity(entity, property, sphere, needAllContacts));
-        }
-
-        void AddCollisionEntity(CollisionEntity collisionEntity)
-        {
-            if (!collisionEntities.Contains(collisionEntity) && !ContainsCollisionEntity(collisionEntity.CollisionProperty))
-            {
-                collisionEntities.Add(collisionEntity);
-            }
+            testList.Add(new CollisionEntity(entity, property, sphere, needAllContacts));
         }
 
         public bool ContainsCollisionEntity(CollisionProperty property)
         {
-            for (int i = 0; i < collisionEntities.Count; ++i)
-            {
-                if (collisionEntities[i].CollisionProperty == property)
-                {
-                    return true;
-                }
-            }
-
-            return false;
+            return testList.ContainsCollisionEntity(property);
         }
 
         public void RemoveCollisionEntity(CollisionProperty property)
         {
-            for (int i = 0; i < collisionEntities.Count; ++i)
-            {
-                if (collisionEntities[i].CollisionProperty == property)
-                {
-                    collisionEntities.RemoveAt(i);
-                    return;
-                }
-            }
+            testList.Remove(property);
         }
 
         //static int collisionCount = 0;
 
         public void Update(SimulationTime simTime)
         {
-            for (int i = 0; i < collisionEntities.Count; ++i)
+            //long t1 = System.DateTime.Now.Ticks;
+
+            testList.BeginCollisionDetection();
+
+            //long t2 = System.DateTime.Now.Ticks;
+            
+            foreach (CollisionThread t in threads)
             {
-                for (int j = i + 1; j < collisionEntities.Count; ++j)
+                t.Start();
+            }
+
+            //long t3 = System.DateTime.Now.Ticks;
+
+            foreach (CollisionThread t in threads)
+            {
+                t.Join();
+            }
+
+            //long t4 = System.DateTime.Now.Ticks;
+
+            testList.EndCollisionDetection();
+
+            //long t5 = System.DateTime.Now.Ticks;
+
+            foreach (CollisionThread t in threads)
+            {
+                //System.Console.WriteLine("collisions: " + t.ContactCount);
+
+                for (int i = 0; i < t.ContactCount; ++i)
                 {
-                    CollisionEntity entity1 = collisionEntities[i];
-                    CollisionEntity entity2 = collisionEntities[j];
-                    ContactTest test = contactTests[BoundingVolumeTypeUtil.ToNumber(entity1.VolumeType), BoundingVolumeTypeUtil.ToNumber(entity2.VolumeType)];
+                    Contact contact = t.GetContact(i);
 
-                    Matrix worldTransform1;
-                    Vector3 position1 = GetPosition(entity1.Entity);
-                    Quaternion rotation1 = GetRotation(entity1.Entity);
-                    Vector3 scale1 = GetScale(entity1.Entity);
-                    CalculateWorldTransform(ref position1, ref rotation1, ref scale1, out worldTransform1);
+                    //System.Console.WriteLine(contact.Count);
+                    //if (
+                    //    entry.EntityA.entity.HasString("kind") && entry.EntityB.entity.HasString("kind") &&(
+                    //        entry.EntityA.entity.GetString("kind") == "pillar" ||
+                    //        entry.EntityB.entity.GetString("kind") == "pillar" ||
+                    //        (entry.EntityA.entity.GetString("kind") == "island" && entry.EntityB.entity.GetString("kind") == "island")
+                    //    ))
+                    //{
+                    //    System.Console.WriteLine("Collision {0,4}: between {1} and {2}!", collisionCount, entry.EntityA.Entity.Name, entry.EntityB.Entity.Name);
+                    //}
 
-                    Matrix worldTransform2;
-                    Vector3 position2 = GetPosition(entity2.Entity);
-                    Quaternion rotation2 = GetRotation(entity2.Entity);
-                    Vector3 scale2 = GetScale(entity2.Entity);
-                    CalculateWorldTransform(ref position2, ref rotation2, ref scale2, out worldTransform2);
+                    CollisionProperty propertyA = (CollisionProperty)contact.EntityA.GetProperty("collision");
+                    CollisionProperty propertyB = (CollisionProperty)contact.EntityB.GetProperty("collision");
 
-                    Contact contact = new Contact(entity1.Entity, entity2.Entity);
-
-                    test(
-                        entity1.Entity, entity1.Volume, ref worldTransform1, ref position1, ref rotation1, ref scale1,
-                        entity2.Entity, entity2.Volume, ref worldTransform2, ref position2, ref rotation2, ref scale2,
-                        entity1.NeedAllContacts || entity2.NeedAllContacts, ref contact
-                        );
-                    if (contact.Count > 0)
-                    {
-                        //System.Console.WriteLine(contact.Count);
-                        //if (
-                        //    entity1.entity.HasString("kind") && entity2.entity.HasString("kind") &&(
-                        //        entity1.entity.GetString("kind") == "pillar" ||
-                        //        entity2.entity.GetString("kind") == "pillar" ||
-                        //        (entity1.entity.GetString("kind") == "island" && entity2.entity.GetString("kind") == "island")
-                        //    ))
-                        //{
-                        //    System.Console.WriteLine("Collision {0,4}: between {1} and {2}!", collisionCount, entity1.Entity.Name, entity2.Entity.Name);
-                        //}
-                        Debug.Assert(contact.EntityA == entity1.Entity && contact.EntityB == entity2.Entity);
-                        entity1.CollisionProperty.FireContact(simTime, contact);
-                        contact.Reverse();
-                        Debug.Assert(contact.EntityA == entity2.Entity && contact.EntityB == entity1.Entity);
-                        entity2.CollisionProperty.FireContact(simTime, contact);
-                        //++collisionCount;
-                    }
+                    propertyA.FireContact(simTime, contact);
+                    contact.Reverse();
+                    propertyB.FireContact(simTime, contact);
+                    //++collisionCount;
                 }
             }
+
+            //long t6 = System.DateTime.Now.Ticks;
+
+            //long dt1 = t2 - t1;
+            //long dt2 = t3 - t2;
+            //long dt3 = t4 - t3;
+            //long dt4 = t5 - t4;
+            //long dt5 = t6 - t5;
+
+            //double ddt1 = (double)dt1 / 10000.0;
+            //double ddt2 = (double)dt2 / 10000.0;
+            //double ddt3 = (double)dt3 / 10000.0;
+            //double ddt4 = (double)dt4 / 10000.0;
+            //double ddt5 = (double)dt5 / 10000.0;
+
+            //System.Console.WriteLine("collision detection timing: ");
+            //System.Console.WriteLine("  dt1: {0:G}", ddt1);
+            //System.Console.WriteLine("  dt2: {0:G}", ddt2);
+            //System.Console.WriteLine("  dt3: {0:G}", ddt3);
+            //System.Console.WriteLine("  dt4: {0:G}", ddt4);
+            //System.Console.WriteLine("  dt5: {0:G} {1}", ddt5, ddt5>10.0?"***************************************************":"");
         }
 
         private void CalculateWorldTransform(
@@ -164,6 +180,10 @@ namespace ProjectMagma.Simulation.Collision
             { ContactMeshCylinder.Test, ContactMeshMeshBox.Test, ContactMeshSphere.Test },
             { ContactSphereCylinder.Test, ContactSphereMesh.Test, ContactSphereSphere.Test } 
         };
-        private List<CollisionEntity> collisionEntities;
+
+        private readonly int[] threadAffinities = new int[] { 1, 3, 5 };
+
+        private TestList testList;
+        private CollisionThread[] threads;
     }
 }

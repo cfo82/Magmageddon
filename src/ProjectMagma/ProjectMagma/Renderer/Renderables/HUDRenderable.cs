@@ -7,7 +7,6 @@ namespace ProjectMagma.Renderer
     public class HUDRenderable : Renderable
     {
         public HUDRenderable(
-            string name,
             string playerName,
             int gamePadIndex,
             int health,
@@ -15,7 +14,8 @@ namespace ProjectMagma.Renderer
             int energy,
             int maxEnergy,
             int fuel,
-            int maxFuel
+            int maxFuel,
+            int frozen
         )
         {
             // graphics resources
@@ -27,7 +27,6 @@ namespace ProjectMagma.Renderer
             fuelBar = Game.Instance.Content.Load<Texture2D>("Sprites/HUD/fuel");
 
             // initialize variables
-            this.name = name;
             this.playerName = playerName;
             this.gamePadIndex = gamePadIndex;
             this.health = health;
@@ -36,6 +35,7 @@ namespace ProjectMagma.Renderer
             this.maxEnergy = maxEnergy;
             this.fuel = fuel;
             this.maxFuel = maxFuel;
+            this.frozen = frozen;
         }
 
         public void Draw(
@@ -56,6 +56,10 @@ namespace ProjectMagma.Renderer
             int energyBarWidth = energyBar.Width * energy / maxEnergy;
             int fuelBarWidth = fuelBar.Width * fuel / maxFuel;
 
+            double frozenSeconds = (double)this.frozen / 1000.0;
+            string frozenString = string.Format(" (frozen: {0:00.00})", frozenSeconds);
+            string nameString = this.playerName + frozenString;
+
             SpriteEffects effects;
             if (gamePadIndex == 0)
             {
@@ -70,14 +74,14 @@ namespace ProjectMagma.Renderer
             {
                 effects = SpriteEffects.FlipHorizontally;
                 bgX = screenWidth / 2;
-                textX = screenWidth - 14 - font.MeasureString(name).X;
+                textX = screenWidth - 14 - font.MeasureString(nameString).X;
                 healthX = screenWidth - 14 - healthBar.Width + (healthBar.Width - healthBarWidth);
                 energyX = screenWidth - 14 - energyBar.Width + (energyBar.Width - energyBarWidth); ;
                 fuelX = screenWidth - 14 - fuelBar.Width + (fuelBar.Width - fuelBarWidth); ;
             }
 
             spriteBatch.Draw(background, new Vector2(bgX, 0), null, Color.White, 0f, Vector2.Zero, 1, effects, 1);
-            spriteBatch.DrawString(font, playerName, new Vector2(textX, 5), Color.Silver);
+            spriteBatch.DrawString(font, nameString, new Vector2(textX, 5), Color.Black);
 
             spriteBatch.Draw(healthBar, new Vector2(healthX, 55), new Rectangle(0, 0, healthBarWidth, healthBar.Height),
                 Color.White, 0f, Vector2.Zero, 1, effects, 0);
@@ -100,11 +104,6 @@ namespace ProjectMagma.Renderer
         public Vector3 Position
         {
             get { return Vector3.Zero; }
-        }
-
-        public string Name
-        {
-            set { name = value; }
         }
 
         public string PlayerName
@@ -147,6 +146,11 @@ namespace ProjectMagma.Renderer
             set { maxFuel = value; }
         }
 
+        public int Frozen
+        {
+            set { frozen = value; }
+        }
+
         private SpriteFont font;
         private SpriteBatch spriteBatch;
 
@@ -155,7 +159,6 @@ namespace ProjectMagma.Renderer
         private Texture2D energyBar;
         private Texture2D fuelBar;
 
-        private string name;
         private string playerName;
         private int gamePadIndex;
         private int health;
@@ -164,5 +167,6 @@ namespace ProjectMagma.Renderer
         private int maxEnergy;
         private int fuel;
         private int maxFuel;
+        private int frozen;
     }
 }

@@ -13,10 +13,8 @@ namespace ProjectMagma.Simulation.Collision
     {
         public CollisionThread(int processor, TestList testList)
         {
-            this.startEvent = new object();
-            this.finishedEvent = new object();
-            this.started = false;
-            this.finished = false;
+            this.startEvent = new AutoResetEvent(false);
+            this.finishedEvent = new AutoResetEvent(false);
             this.aborted = false;
             this.processor = processor;
             this.testList = testList;
@@ -33,11 +31,7 @@ namespace ProjectMagma.Simulation.Collision
         public void Start()
         {
             contacts.Clear();
-            lock (startEvent)
-            {
-                started = true;
-                Monitor.Pulse(startEvent);
-            }
+            startEvent.Set();
         }
 
         private void Run()
@@ -46,14 +40,7 @@ namespace ProjectMagma.Simulation.Collision
             {
                 while (true)
                 {
-                    lock (startEvent)
-                    {
-                        if (!started)
-                        {
-                            Monitor.Wait(startEvent);
-                        }
-                        started = false;
-                    }
+                    startEvent.WaitOne();
 
                     TestList.TestEntry entry = testList.GetNextCollisionEntry();
                     while (entry != null)
@@ -95,11 +82,7 @@ namespace ProjectMagma.Simulation.Collision
                         entry = testList.GetNextCollisionEntry();
                     }
 
-                    lock (finishedEvent)
-                    {
-                        finished = true;
-                        Monitor.Pulse(finishedEvent);
-                    }
+                    finishedEvent.Set();
                 }
             }
             catch (ThreadAbortException ex)
@@ -114,14 +97,7 @@ namespace ProjectMagma.Simulation.Collision
 
         public void Join()
         {
-            lock (finishedEvent)
-            {
-                if (!finished)
-                {
-                    Monitor.Wait(finishedEvent);
-                }
-                finished = false;
-            }
+            finishedEvent.WaitOne();
         }
 
         public void Abort()
@@ -140,10 +116,9 @@ namespace ProjectMagma.Simulation.Collision
             return contacts[index];
         }
 
-        private object startEvent;
-        private object finishedEvent;
-        private bool started;
-        private bool finished;
+
+        private AutoResetEvent startEvent;
+        private AutoResetEvent finishedEvent;
         private bool aborted;
         private int processor;
         private TestList testList;

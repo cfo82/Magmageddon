@@ -88,9 +88,9 @@ namespace ProjectMagma
             // now we should keep to rendering on the main thread and move everything else to
             // the other cores.
 #if XBOX
-            Thread.CurrentThread.SetProcessorAffinity(new int[] { 4 });
+            System.Threading.Thread.CurrentThread.SetProcessorAffinity(new int[] { 4 });
 #endif
-   
+
             using (Game game = new Game())
             {
                 Game.instance = game;

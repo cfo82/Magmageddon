@@ -80,13 +80,13 @@ namespace ProjectMagma.Simulation.Collision
 
         public void Add(CollisionEntity entity)
         {
-            Debug.Assert(Interlocked.Read(ref inCollisionDetection) == 0);
+            Debug.Assert(inCollisionDetection == 0);
             changeList.Add(new AddEntry(this, entity));
         }
 
         public bool ContainsCollisionEntity(CollisionProperty property)
         {
-            Debug.Assert(Interlocked.Read(ref inCollisionDetection) == 0);
+            Debug.Assert(inCollisionDetection == 0);
             for (int i = 0; i < entityList.Count; ++i)
             {
                 if (entityList[i].CollisionProperty == property)
@@ -100,13 +100,13 @@ namespace ProjectMagma.Simulation.Collision
 
         public void Remove(CollisionEntity entity)
         {
-            Debug.Assert(Interlocked.Read(ref inCollisionDetection) == 0);
+            Debug.Assert(inCollisionDetection == 0);
             changeList.Add(new RemoveEntry(this, entity));
         }
 
         public void Remove(CollisionProperty property)
         {
-            Debug.Assert(Interlocked.Read(ref inCollisionDetection) == 0);
+            Debug.Assert(inCollisionDetection == 0);
             for (int i = 0; i < entityList.Count; ++i)
             {
                 if (entityList[i].CollisionProperty == property)
@@ -156,7 +156,7 @@ namespace ProjectMagma.Simulation.Collision
 
         public void BeginCollisionDetection()
         {
-            Debug.Assert(Interlocked.Read(ref inCollisionDetection) == 0);
+            Debug.Assert(inCollisionDetection == 0);
 
             foreach (ChangeEntry entry in changeList)
             {
@@ -170,7 +170,7 @@ namespace ProjectMagma.Simulation.Collision
 
         public TestEntry GetNextCollisionEntry()
         {
-            Debug.Assert(Interlocked.Read(ref inCollisionDetection) == 1);
+            Debug.Assert(inCollisionDetection == 1);
             long index = Interlocked.Increment(ref currentCollisionEntry);
 
             if (index < collisionList.Count)
@@ -185,14 +185,14 @@ namespace ProjectMagma.Simulation.Collision
 
         public void EndCollisionDetection()
         {
-            Debug.Assert(Interlocked.Read(ref inCollisionDetection) == 1);
+            Debug.Assert(inCollisionDetection == 1);
             Interlocked.Exchange(ref inCollisionDetection, 0);
         }
 
         private List<ChangeEntry> changeList;
         private List<CollisionEntity> entityList;
         private List<TestEntry> collisionList;
-        private long currentCollisionEntry;
-        private long inCollisionDetection;
+        private int currentCollisionEntry;
+        private int inCollisionDetection;
     }
 }

@@ -623,6 +623,11 @@
       <Importer>EffectImporter</Importer>
       <Processor>EffectProcessor</Processor>
     </Compile>
+    <Compile Include="Effects\SpriteBatch.fx">
+      <Name>SpriteBatch</Name>
+      <Importer>EffectImporter</Importer>
+      <Processor>EffectProcessor</Processor>
+    </Compile>
     <None Include="Level\RobotInfo.dtd">
       <Name>RobotInfo</Name>
     </None>

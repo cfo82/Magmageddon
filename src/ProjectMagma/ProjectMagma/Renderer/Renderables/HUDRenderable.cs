@@ -77,7 +77,7 @@ namespace ProjectMagma.Renderer
             }
 
             spriteBatch.Draw(background, new Vector2(bgX, 0), null, Color.White, 0f, Vector2.Zero, 1, effects, 1);
-            spriteBatch.DrawString(font, playerName, new Vector2(textX, 5), Color.Black);
+            spriteBatch.DrawString(font, playerName, new Vector2(textX, 5), Color.Silver);
 
             spriteBatch.Draw(healthBar, new Vector2(healthX, 55), new Rectangle(0, 0, healthBarWidth, healthBar.Height),
                 Color.White, 0f, Vector2.Zero, 1, effects, 0);
@@ -88,7 +88,7 @@ namespace ProjectMagma.Renderer
 
             spriteBatch.DrawString(font, String.Format("{0:00.0} fps", (1000f / gameTime.ElapsedGameTime.TotalMilliseconds))
                 + " " + String.Format("{0:00.0} sps", (1000f / Game.Instance.Simulation.Time.DtMs)),
-                new Vector2(screenWidth / 2 - 20, 5), Color.Black);
+                new Vector2(screenWidth / 2 - 20, 5), Color.Silver);
             spriteBatch.End();
         }
 

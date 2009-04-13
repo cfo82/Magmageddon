@@ -648,7 +648,6 @@
       <Name>lava_with_texcoords</Name>
       <Importer>FbxImporter</Importer>
       <Processor>ModelProcessor</Processor>
-      <ProcessorParameters_GenerateTangentFrames>True</ProcessorParameters_GenerateTangentFrames>
     </Compile>
     <Compile Include="Textures\Lava\firefractal.tga">
       <Name>firefractal</Name>

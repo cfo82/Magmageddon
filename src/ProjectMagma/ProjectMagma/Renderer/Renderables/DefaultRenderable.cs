@@ -46,6 +46,7 @@ namespace ProjectMagma.Renderer
                     effectx.View = Game.Instance.View;
                     effectx.Projection = Game.Instance.Projection;
                     effectx.World = transforms[mesh.ParentBone.Index] * world;
+                    effectx.PreferPerPixelLighting = true;
                 }
                 mesh.Draw();
                 renderer.Device.RenderState.DepthBufferEnable = true;

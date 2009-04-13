@@ -28,9 +28,6 @@ namespace ProjectMagma
     /// </summary>
     public class Game : Microsoft.Xna.Framework.Game
     {
-        private StorageDevice storageDevice;
-        private StorageContainer storageContainer; 
-
         private GraphicsDeviceManager graphics;
         private SpriteBatch spriteBatch;
 
@@ -293,34 +290,19 @@ namespace ProjectMagma
             #endif
         }
 
+        public Vector3 CameraPosition
+        {
+            get { return currentCamera.GetVector3("position"); }
+        }
+
         public Matrix View
         {
-            get
-            {
-                if (currentCamera.HasMatrix("view"))
-                {
-                    return currentCamera.GetMatrix("view");
-                }
-                else
-                {
-                    return Matrix.Identity;
-                }
-            }
+            get { return currentCamera.GetMatrix("view"); }
         }
 
         public Matrix Projection
         {
-            get
-            {
-                if (currentCamera.HasMatrix("projection"))
-                {
-                    return currentCamera.GetMatrix("projection");
-                }
-                else
-                {
-                    return Matrix.Identity;
-                }
-            }
+            get { return currentCamera.GetMatrix("projection"); }
         }
 
         public float EffectsVolume

@@ -50,6 +50,7 @@ namespace ProjectMagma.Renderer
                     effectx.World = transforms[mesh.ParentBone.Index] * world;
                     effectx.TextureEnabled = true;
                     effectx.Texture = texture;
+                    effectx.PreferPerPixelLighting = true;
                 }
                 mesh.Draw();
                 renderer.Device.RenderState.DepthBufferEnable = true;

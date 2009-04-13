@@ -618,6 +618,11 @@
     </None>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Effects\BasicEffect.fx">
+      <Name>BasicEffect</Name>
+      <Importer>EffectImporter</Importer>
+      <Processor>EffectProcessor</Processor>
+    </Compile>
     <None Include="Level\RobotInfo.dtd">
       <Name>RobotInfo</Name>
     </None>

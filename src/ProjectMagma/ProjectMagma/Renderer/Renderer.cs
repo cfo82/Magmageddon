@@ -102,6 +102,30 @@ namespace ProjectMagma.Renderer
             device.DepthStencilBuffer = oldStencilBuffer;
         }
 
+        private int TransparentRenderableComparison(
+            Renderable r1,
+            Renderable r2
+        )
+        {
+            Vector3 cameraPosition = Game.Instance.CameraPosition;
+
+            Vector3 r1Diff = cameraPosition - r1.Position;
+            Vector3 r2Diff = cameraPosition - r2.Position;
+
+            if (r1Diff.LengthSquared() > r2Diff.LengthSquared())
+            {
+                return -1;
+            }
+            else if (r1Diff.LengthSquared() < r2Diff.LengthSquared())
+            {
+                return 1;
+            }
+            else
+            {
+                return 0;
+            }
+        }
+
         private void RenderScene(GameTime gameTime)
         {
             foreach (Renderable renderable in opaqueRenderables)
@@ -110,7 +134,9 @@ namespace ProjectMagma.Renderer
                 renderable.Draw(this, gameTime);
             }
             
-            // TODO: need to sort transparent renderables by position (back to front!!)
+            // need to sort transparent renderables by position and render them (back to front!!)
+            // TODO: validate sorting... 
+            transparentRenderables.Sort(TransparentRenderableComparison);
 
             foreach (Renderable renderable in transparentRenderables)
             {

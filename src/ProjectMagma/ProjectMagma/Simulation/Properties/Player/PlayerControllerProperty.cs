@@ -209,33 +209,6 @@ namespace ProjectMagma.Simulation
             #endregion
 
             #region collision reaction
-            // position on island
-            if (activeIsland != null)
-            {
-                // position
-                Vector3 isectPt = Vector3.Zero;
-                Ray3 ray = new Ray3(player.GetVector3("position") + 1000 * Vector3.UnitY, -Vector3.UnitY);
-                if (Game.Instance.Simulation.CollisionManager.GetIntersectionPoint(ref ray, activeIsland, out isectPt))
-                {
-                    // set position to contact point
-                    Vector3 pos = player.GetVector3("position");
-                    pos.Y = isectPt.Y;
-                    player.SetVector3("position", pos);
-                }
-                else
-                // not over island anymore
-                {
-                    if (movedByStick) // prevent moving from island
-                    {
-                        player.SetVector3("position", previousPosition);
-                    }
-                    else
-                    {
-                        LeaveActiveIsland();
-                    }
-                }
-            }
-
             // reset collision response
             if (!collisionOccured)
             {
@@ -382,6 +355,33 @@ namespace ProjectMagma.Simulation
                 player.SetInt("frozen", player.GetInt("frozen") - (int)simTime.DtMs);
                 if (player.GetInt("frozen") < 0)
                     player.SetInt("frozen", 0);
+            }
+
+            // position on island
+            if (activeIsland != null)
+            {
+                // position
+                Vector3 isectPt = Vector3.Zero;
+                Ray3 ray = new Ray3(player.GetVector3("position") + 1000 * Vector3.UnitY, -Vector3.UnitY);
+                if (Game.Instance.Simulation.CollisionManager.GetIntersectionPoint(ref ray, activeIsland, out isectPt))
+                {
+                    // set position to contact point
+                    playerPosition.Y = isectPt.Y + 1; // todo: make constant?
+//                    Console.WriteLine("set on island at pos: " + playerPosition.Y);
+                    player.SetVector3("position", playerPosition);
+                }
+                else
+                // not over island anymore
+                {
+                    if (movedByStick) // prevent moving from island
+                    {
+                        player.SetVector3("position", previousPosition);
+                    }
+                    else
+                    {
+                        LeaveActiveIsland();
+                    }
+                }
             }
 
             #endregion
@@ -719,6 +719,8 @@ namespace ProjectMagma.Simulation
             // on top?
             if (Vector3.Dot(Vector3.UnitY, contact[0].Normal) < 0)
             {
+//                Console.WriteLine(player.Name + " collidet with " + island.Name);
+
                 // add handler if active island changed
                 if (activeIsland != island)
                 {

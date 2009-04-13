@@ -19,13 +19,12 @@ namespace ProjectMagma.Shared.Math
             // code taken from: http://www.geometrictools.com/
 
             // compute the offset origin, edges, and normal
-            Vector3 kDiff, kEdge1, kEdge2, kNormal;
-            kDiff = ray.Origin - triangle.Vertex0;
-            Vector3.Subtract(ref triangle.Vertex1, ref triangle.Vertex0, out kEdge1);
-            Vector3.Subtract(ref triangle.Vertex2, ref triangle.Vertex1, out kEdge2);
-            Vector3.Cross(ref kEdge1, ref kEdge2, out kNormal);
+            Vector3 kDiff = ray.Origin - triangle.Vertex0;
+            Vector3 kEdge1 = triangle.Vertex1 - triangle.Vertex0;
+            Vector3 kEdge2 = triangle.Vertex2 - triangle.Vertex0;
+            Vector3 kNormal = Vector3.Cross(kEdge1, kEdge2);
 
-            // Solve Q + t*D = b1*E1 + b2*E2 (Q = kDiff, D = line direction,
+            // Solve Q + t*D = b1*E1 + b2*E2 (Q = kDiff, D = ray direction,
             // E1 = kEdge1, E2 = kEdge2, N = Cross(E1,E2)) by
             //   |Dot(D,N)|*b1 = sign(Dot(D,N))*Dot(D,Cross(Q,E2))
             //   |Dot(D,N)|*b2 = sign(Dot(D,N))*Dot(D,Cross(E1,Q))
@@ -43,33 +42,35 @@ namespace ProjectMagma.Shared.Math
             }
             else
             {
-                // Line and triangle are parallel, call it a "no intersection"
-                // even if the line does intersect.
+                // Ray and triangle are parallel, call it a "no intersection"
+                // even if the ray does intersect.
                 outT = 0.0f;
                 outIsectPt = Vector3.Zero;
                 return false;
             }
 
             float fDdQxE2 = fSign * Vector3.Dot(ray.Direction, Vector3.Cross(kDiff, kEdge2));
-            if (fDdQxE2 >= (double)0.0)
+            if (fDdQxE2 >= (float)0.0)
             {
                 float fDdE1xQ = fSign * Vector3.Dot(ray.Direction, Vector3.Cross(kEdge1, kDiff));
-                if (fDdE1xQ >= (double)0.0)
+                if (fDdE1xQ >= (float)0.0)
                 {
                     if (fDdQxE2 + fDdE1xQ <= fDdN)
                     {
-                        // line intersects triangle
+                        // line intersects triangle, check if ray does
                         float fQdN = -fSign * Vector3.Dot(kDiff, kNormal);
-                        float fInv = (1.0f) / fDdN;
-                        float t = fQdN * fInv;
-                        float v = fDdQxE2 * fInv;
-                        float w = fDdE1xQ * fInv;
-                        float u = 1.0f - v - w;
-
-                        outT = t;
-                        outIsectPt = ray.Origin + t * ray.Direction;
-
-                        return true;
+                        if (fQdN >= (float)0.0)
+                        {
+                            // ray intersects triangle
+                            float fInv = (1.0f) / fDdN;
+                            outT = fQdN * fInv;
+                            outIsectPt = ray.Origin + outT * ray.Direction;
+                            //m_fTriB1 = fDdQxE2*fInv;
+                            //m_fTriB2 = fDdE1xQ*fInv;
+                            //m_fTriB0 = 1.0f - m_fTriB1 - m_fTriB2;
+                            return true;
+                        }
+                        // else: t < 0, no intersection
                     }
                     // else: b1+b2 > 1, no intersection
                 }

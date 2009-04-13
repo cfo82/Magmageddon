@@ -58,6 +58,7 @@
   <ItemGroup>
     <Compile Include="BloomComponent.cs" />
     <Compile Include="BloomSettings.cs" />
+    <Compile Include="Menu.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Game.cs" />
     <Compile Include="Renderer\Renderables\DefaultRenderable.cs" />

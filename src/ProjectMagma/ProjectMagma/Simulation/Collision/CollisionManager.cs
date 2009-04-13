@@ -187,9 +187,10 @@ namespace ProjectMagma.Simulation.Collision
             // transform the ray into the coordinate system of the entity
             Matrix worldToEntityTransform = Matrix.Invert(worldTransform);
             Matrix inverseTransposeWorldToEntityTransform = Matrix.Transpose(Matrix.Invert(worldToEntityTransform));
-            Ray3 entitySpaceRay = new Ray3(ray.Origin, ray.Direction);
-            entitySpaceRay.Origin = Vector3.Transform(entitySpaceRay.Origin, worldToEntityTransform);
-            entitySpaceRay.Direction = Vector3.Transform(entitySpaceRay.Direction, inverseTransposeWorldToEntityTransform);
+            Vector3 entitySpaceRayOrigin = Vector3.Transform(ray.Origin, worldToEntityTransform);
+            Vector3 entitySpaceRayDirection = Vector3.Transform(ray.Direction, inverseTransposeWorldToEntityTransform);
+            entitySpaceRayDirection.Normalize();
+            Ray3 entitySpaceRay = new Ray3(entitySpaceRayOrigin, entitySpaceRayDirection);
 
             float t; // parameter on ray, outIsectPt = ray.Origin + t * ray.Direction;
             bool intersection = GetIntersectionPoint(ref entitySpaceRay, tree.Root, tree.Positions, out t);

@@ -28,6 +28,7 @@ namespace ProjectMagma.Simulation
             entity.AddVector3Attribute("repulsion_velocity", Vector3.Zero);
             entity.AddVector3Attribute("pushback_velocity", Vector3.Zero);
             entity.AddStringAttribute("attracted_by", "");
+            entity.AddIntAttribute("players_on_island", 0);
 
             entity.Update += OnUpdate;
 
@@ -50,6 +51,7 @@ namespace ProjectMagma.Simulation
 
             // implement sinking/rising islands...
             Vector3 position = island.GetVector3("position");
+            int playersOnIsland = island.GetInt("players_on_island");
             if (playersOnIsland > 0)
             {
                 position += dt * constants.GetFloat("sinking_speed") * playersOnIsland * (-Vector3.UnitY);
@@ -119,9 +121,7 @@ namespace ProjectMagma.Simulation
                 String kind = other.GetString("kind");
                 if (kind == "player")
                 {
-                    // collision with player
-                    if(Vector3.Dot(Vector3.UnitY, contact[0].Normal) > 0) // on top
-                        playersOnIsland++;
+                    // do nothing
                 }
                 else
                 {
@@ -190,7 +190,6 @@ namespace ProjectMagma.Simulation
 
         protected Entity constants;
         protected Entity island;
-        private int playersOnIsland;
         private double playerLeftAt;
         private Vector3 originalPosition;
     }

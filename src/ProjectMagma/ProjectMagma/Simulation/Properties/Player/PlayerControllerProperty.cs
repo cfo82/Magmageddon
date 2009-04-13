@@ -375,7 +375,7 @@ namespace ProjectMagma.Simulation
                 {
                     if (movedByStick) // prevent moving from island
                     {
-                        player.SetVector3("position", previousPosition);
+                        playerPosition = previousPosition;
                     }
                     else
                     {
@@ -719,24 +719,33 @@ namespace ProjectMagma.Simulation
             // on top?
             if (Vector3.Dot(Vector3.UnitY, contact[0].Normal) < 0)
             {
+
 //                Console.WriteLine(player.Name + " collidet with " + island.Name);
-
-                // add handler if active island changed
-                if (activeIsland != island)
-                {
-                    //                  Console.WriteLine((int)gameTime.TotalGameTime.TotalMilliseconds + island.Name + " activated");
-                    ((Vector3Attribute)island.Attributes["position"]).ValueChanged += IslandPositionHandler;
-
-                    LeaveActiveIsland();
-
-                    activeIsland = island;
-                }
 
                 if (island == destinationIsland)
                 {
                     // stop island jump
                     destinationIsland = null;
                     islandJumpPerformedAt = simTime.At;
+                }
+                else
+                    if (destinationIsland != null) // if we are in jump, don't active
+                    {
+                        return;
+                    }
+
+                // has active island changed (either from none or another)
+                if (activeIsland != island)
+                {
+                    // leave old
+                    LeaveActiveIsland();
+
+                    // register with active
+                    ((Vector3Attribute)island.Attributes["position"]).ValueChanged += IslandPositionHandler;
+                    island.SetInt("players_on_island", island.GetInt("players_on_island") + 1);
+
+                    // update var
+                    activeIsland = island;
                 }
 
                 // stop falling
@@ -890,6 +899,7 @@ namespace ProjectMagma.Simulation
             {
                 Console.WriteLine(player.Name+" left island");
                 ((Vector3Attribute)activeIsland.Attributes["position"]).ValueChanged -= IslandPositionHandler;
+                activeIsland.SetInt("players_on_island", activeIsland.GetInt("players_on_island") - 1);
                 activeIsland = null;
             }
         }

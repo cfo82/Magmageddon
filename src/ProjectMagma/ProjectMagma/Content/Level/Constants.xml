@@ -83,10 +83,7 @@
       <Attribute name="angle_speed" template="float" value="0.6"/>
       <Attribute name="contact_pushback_multiplier" template="float" value="200"/>
 
-      <!-- all islands -->
-      
-      <Attribute name="sinking_speed" template="float" value="18.0"/>
-      <Attribute name="rising_speed" template="float" value="40.0"/>
+      <!-- all islands -->            <Attribute name="sinking_speed" template="float" value="18.0"/>      <Attribute name="rising_speed" template="float" value="40.0"/>
       <Attribute name="rising_delay" template="int" value="100"/>
 
       <Attribute name="scale_health_multiplier" template="float" value="1.8"/>

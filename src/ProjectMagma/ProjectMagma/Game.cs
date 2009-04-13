@@ -305,6 +305,14 @@ namespace ProjectMagma
             get { return currentCamera.GetMatrix("projection"); }
         }
 
+        public Vector3 EyePosition
+        {
+            get
+            {
+                return currentCamera.GetVector3("position");
+            }
+        }
+
         public float EffectsVolume
         {
             get { return effectsVolume; }

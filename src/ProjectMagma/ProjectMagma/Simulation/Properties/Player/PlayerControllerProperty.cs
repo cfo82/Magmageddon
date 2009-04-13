@@ -933,13 +933,13 @@ namespace ProjectMagma.Simulation
 
                         if (keyboardState.IsKeyDown(Keys.W))
                         {
-                            leftStickY = -gamepadEmulationValue;
+                            leftStickY = gamepadEmulationValue;
                             moveStickMoved = true;
                         }
                         else
                             if (keyboardState.IsKeyDown(Keys.S))
                             {
-                                leftStickY = gamepadEmulationValue;
+                                leftStickY = -gamepadEmulationValue;
                                 moveStickMoved = true;
                             }
                     }

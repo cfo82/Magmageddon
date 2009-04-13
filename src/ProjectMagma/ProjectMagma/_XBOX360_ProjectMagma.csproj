@@ -62,6 +62,7 @@
     <Compile Include="Game.cs" />
     <Compile Include="Renderer\Renderables\DefaultRenderable.cs" />
     <Compile Include="Renderer\Renderables\HighlightRenderable.cs" />
+    <Compile Include="Renderer\Renderables\LavaRenderable.cs" />
     <Compile Include="Renderer\Renderables\HUDRenderable.cs" />
     <Compile Include="Renderer\Renderables\Renderable.cs" />
     <Compile Include="Renderer\Renderables\ShadowRenderable.cs" />
@@ -125,6 +126,7 @@
     <Compile Include="Simulation\Properties\Player\FlamethrowerControllerProperty.cs" />
     <Compile Include="Simulation\Properties\Player\IceSpikeControllerProperty.cs" />
     <Compile Include="Simulation\Properties\Player\PlayerControllerProperty.cs" />
+    <Compile Include="Simulation\Properties\Rendering\LavaRenderProperty.cs" />
     <Compile Include="Simulation\Properties\Rendering\HUDProperty.cs" />
     <Compile Include="Simulation\Properties\Rendering\RenderHighlightProperty.cs" />
     <Compile Include="Simulation\Properties\Rendering\RenderProperty.cs" />

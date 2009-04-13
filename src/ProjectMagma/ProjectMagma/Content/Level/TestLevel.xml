@@ -12,10 +12,10 @@
   <Entity name="camera1">
     <Attributes>
       <Attribute name="kind" template="string" value="camera"/>
-      <Attribute name="position" template="float3" value="0 700 1800"/>
-      <Attribute name="target" template="float3" value="0 150 0"/>
+      <Attribute name="position" template="float3" value="0 420 1065"/>
+      <Attribute name="target" template="float3" value="0 180 0"/>
       <Attribute name="up" template="float3" value="0 1 0"/>
-      <Attribute name="fov" template="float" value="18.5"/>
+      <Attribute name="fov" template="float" value="33"/>
       <Attribute name="near_clip" template="float" value="1"/>
       <Attribute name="far_clip" template="float" value="10000"/>
     </Attributes>
@@ -28,11 +28,15 @@
     <Attributes>
       <Attribute name="kind" template="string" value="lava"/>
       <Attribute name="position" template="float3" value="0 0 0"/>
-      <Attribute name="scale" template="float3" value="1000 1000 1000"/>
-      <Attribute name="mesh" template="string" value="Models/lava_primitive"/>
+      <Attribute name="scale" template="float3" value="4 4 4"/>
+      <Attribute name="mesh" template="string" value="Models/lava_with_texcoords"/>
+      <Attribute name="sparsestucco_texture" template="string" value="Textures/Lava/sparsestucco"/>
+      <Attribute name="firefractal_texture" template="string" value="Textures/Lava/firefractal"/>
+      <Attribute name="vectorcloud_texture" template="string" value="Textures/Lava/vectorclouds"/>
+      <Attribute name="granite_texture" template="string" value="Textures/Lava/granite"/>
     </Attributes>
     <Properties>
-      <Property name="render" type="ProjectMagma.Simulation.RenderProperty"/>
+      <Property name="render" type="ProjectMagma.Simulation.LavaRenderProperty"/>
       <Property name="render_highlight" type="ProjectMagma.Simulation.RenderHighlightProperty"/>
     </Properties>
   </Entity>

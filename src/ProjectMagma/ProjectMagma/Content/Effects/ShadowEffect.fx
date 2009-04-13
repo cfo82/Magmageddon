@@ -176,12 +176,12 @@ float4 Scene_PS (SCENE_VS_OUTPUT Input) : COLOR0
     //than the depth we have in the texture
     float3 blah2= LightPosition-Input.WorldPosition;
     float blah=dot(Input.Normal,normalize(blah2));
-    if(len - depthBias > depth.r && abs(blah)>0.1)
+    if(len - depthBias > depth.r && abs(blah)>0.4)
     {
         // yes? then lets darken the pixel to black
         // (In normal use, you'd use a lighting equation here to 
         //determine exactly how much to darken the pixel)
-        color = float4(0,0,0,.3);
+        color = float4(0,0,0,.7);
     } else {
 		color = float4(1,1,1,0);
     }
@@ -195,5 +195,9 @@ technique Scene
     {
         VertexShader = compile vs_2_0 Scene_VS();
         PixelShader  = compile ps_2_0 Scene_PS();
+        
+        AlphaBlendEnable = true;
+        SrcBlend = SrcAlpha;
+        DestBlend = InvSrcAlpha;
     }
 }

@@ -39,12 +39,14 @@ namespace ProjectMagma.Renderer
 
             foreach (ModelMesh mesh in model.Meshes)
             {
-                Effect effect = renderer.ShadowEffect;
+                Effect shadowEffect = renderer.ShadowEffect;
 
                 renderer.Device.RenderState.DepthBufferEnable = true;
                 foreach (BasicEffect effectx in mesh.Effects)
                 {
                     effectx.EnableDefaultLighting();
+                    effectx.DiffuseColor = Vector3.One * 0.75f;
+                    effectx.SpecularColor = Vector3.One * 0.2f;
                     effectx.View = Game.Instance.View;
                     effectx.Projection = Game.Instance.Projection;
                     effectx.World = transforms[mesh.ParentBone.Index] * world;
@@ -55,20 +57,19 @@ namespace ProjectMagma.Renderer
                 mesh.Draw();
                 renderer.Device.RenderState.DepthBufferEnable = true;
 
-                effect.CurrentTechnique = effect.Techniques["Scene"];
-                effect.Parameters["ShadowMap"].SetValue(renderer.LightResolve);
-                effect.Parameters["WorldCameraViewProjection"].SetValue(
+                shadowEffect.CurrentTechnique = shadowEffect.Techniques["Scene"];
+                shadowEffect.Parameters["ShadowMap"].SetValue(renderer.LightResolve);
+                shadowEffect.Parameters["WorldCameraViewProjection"].SetValue(
                     transforms[mesh.ParentBone.Index] * world_offset * Game.Instance.View * Game.Instance.Projection);
-                effect.Parameters["World"].SetValue(transforms[mesh.ParentBone.Index] * world_offset);
+                shadowEffect.Parameters["World"].SetValue(transforms[mesh.ParentBone.Index] * world_offset);
 
-                effect.Parameters["WorldLightViewProjection"].SetValue(
+                shadowEffect.Parameters["WorldLightViewProjection"].SetValue(
                     transforms[mesh.ParentBone.Index] * world_offset * renderer.LightView * renderer.LightProjection);
-
 
                 Effect backup = mesh.MeshParts[0].Effect;
                 foreach (ModelMeshPart meshPart in mesh.MeshParts)
                 {
-                    meshPart.Effect = effect;
+                    meshPart.Effect = shadowEffect;
                 }
                 renderer.Device.RenderState.AlphaBlendEnable = false;
                 renderer.Device.RenderState.SourceBlend = Blend.SourceAlpha;

@@ -196,6 +196,7 @@ namespace ProjectMagma
             GraphicsDevice.SetRenderTarget(0, renderTarget);
 
             DrawFullscreenQuad(texture,
+                               //ProjectMagma.Game.Instance.GraphicsDevice.Viewport.Width, ProjectMagma.Game.Instance.GraphicsDevice.Viewport.Height,
                                renderTarget.Width, renderTarget.Height,
                                effect, currentBuffer);
 

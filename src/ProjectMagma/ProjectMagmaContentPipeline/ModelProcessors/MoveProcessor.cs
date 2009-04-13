@@ -1,4 +1,5 @@
 using System;
+using System.IO;
 using System.Diagnostics;
 using System.Collections.Generic;
 using System.Linq;
@@ -15,12 +16,26 @@ namespace ProjectMagma.ContentPipeline.ModelProcessors
     {
         public override ModelContent Process(NodeContent input, ContentProcessorContext context)
         {
+            // test for a collision mesh
+            string sourceFilename = input.Identity.SourceFilename;
+            int sourceFilenameEndingIndex = sourceFilename.LastIndexOf('.');
+            string collisionMeshFilename = sourceFilename.Substring(0, sourceFilenameEndingIndex) + "_col" + sourceFilename.Substring(sourceFilenameEndingIndex);
+            NodeContent collisionMeshContent = null;
+            if (File.Exists(collisionMeshFilename))
+            {
+                context.Logger.LogImportantMessage("  using '" + collisionMeshFilename + "' as collision mesh");
+                collisionMeshContent = context.BuildAndLoadAsset<NodeContent, NodeContent>(
+                    new ExternalReference<NodeContent>(collisionMeshFilename), null);
+            }
+
             // calculate bounds because changes are based on the bounding box
             AlignedBox3 bb = CalculateAlignedBox3(input, context);
 
             // first center the models (I think they are actually already centered...
             Vector3 diff = Vector3.Zero - (bb.Min + ((bb.Max - bb.Min) / 2.0f));
             MoveModel(input, context, diff);
+            if (collisionMeshContent != null)
+                { MoveModel(collisionMeshContent, context, diff); }
             bb.Max += diff;
             bb.Min += diff;
 
@@ -30,6 +45,8 @@ namespace ProjectMagma.ContentPipeline.ModelProcessors
             if (bb.Max.Z > scaleFactor) scaleFactor = bb.Max.Z;
             scaleFactor = 1.0f / scaleFactor;
             ScaleModel(input, context, scaleFactor);
+            if (collisionMeshContent != null)
+                { ScaleModel(collisionMeshContent, context, scaleFactor); }
             bb.Max *= scaleFactor;
             bb.Min *= scaleFactor;
 
@@ -37,6 +54,8 @@ namespace ProjectMagma.ContentPipeline.ModelProcessors
             Vector3 scaledOrigDiff = diff * scaleFactor;
             Vector3 diffCorrector = CalculateDiff(ref scaledOrigDiff, ref bb);
             MoveModel(input, context, diffCorrector);
+            if (collisionMeshContent != null)
+                { MoveModel(collisionMeshContent, context, diffCorrector); }
             bb.Min += diffCorrector;
             bb.Max += diffCorrector;
 
@@ -45,10 +64,20 @@ namespace ProjectMagma.ContentPipeline.ModelProcessors
 
             // add bounding volumes to the model
             VolumeCollection collection = new VolumeCollection();
-            collection.AddVolume(CalculateAlignedBox3(input, context));
-            collection.AddVolume(CalculateAlignedBox3Tree(input, context));
-            collection.AddVolume(CalculateCylinder3(input, context));
-            collection.AddVolume(CalculateSphere3(input, context));
+            if (collisionMeshContent == null)
+            {
+                collection.AddVolume(CalculateAlignedBox3(input, context));
+                collection.AddVolume(CalculateAlignedBox3Tree(input, context));
+                collection.AddVolume(CalculateCylinder3(input, context));
+                collection.AddVolume(CalculateSphere3(input, context));
+            }
+            else
+            {
+                collection.AddVolume(CalculateAlignedBox3(collisionMeshContent, context));
+                collection.AddVolume(CalculateAlignedBox3Tree(collisionMeshContent, context));
+                collection.AddVolume(CalculateCylinder3(collisionMeshContent, context));
+                collection.AddVolume(CalculateSphere3(collisionMeshContent, context));
+            }
             modelContent.Tag = collection;
             return modelContent;
         }

@@ -20,15 +20,15 @@
 
   <Entity name="green_robot" extends="robot_base" abstract="true" >
     <Attributes>
-      <Attribute name="mesh" template="string" value="Models/player1_primitive"/>
-      <Attribute name="arrow_mesh" template="string" value="Models/arrow1"/>
+      <Attribute name="mesh" template="string" value="Models/Primitives/player1_primitive"/>
+      <Attribute name="arrow_mesh" template="string" value="Models/Visualizations/arrow1"/>
     </Attributes>
   </Entity>
 
   <Entity name="yellow_robot" extends="robot_base" abstract="true" >
     <Attributes>
-      <Attribute name="mesh" template="string" value="Models/player2_primitive"/>
-      <Attribute name="arrow_mesh" template="string" value="Models/arrow2"/>
+      <Attribute name="mesh" template="string" value="Models/Primitives/player2_primitive"/>
+      <Attribute name="arrow_mesh" template="string" value="Models/Visualizations/arrow2"/>
     </Attributes>
   </Entity>
 

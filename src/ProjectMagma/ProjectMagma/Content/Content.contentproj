@@ -35,22 +35,22 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Models\island_primitive.fbx">
+    <Compile Include="Models\Primitives\island_primitive.fbx">
       <Name>island_primitive</Name>
       <Importer>FbxImporter</Importer>
       <Processor>IslandProcessor</Processor>
     </Compile>
-    <Compile Include="Models\lava_primitive.fbx">
+    <Compile Include="Models\Primitives\lava_primitive.fbx">
       <Name>lava_primitive</Name>
       <Importer>FbxImporter</Importer>
       <Processor>LavaProcessor</Processor>
     </Compile>
-    <Compile Include="Models\pillar_primitive.fbx">
+    <Compile Include="Models\Primitives\pillar_primitive.fbx">
       <Name>pillar_primitive</Name>
       <Importer>FbxImporter</Importer>
       <Processor>PillarProcessor</Processor>
     </Compile>
-    <Compile Include="Models\player_primitive.fbx">
+    <Compile Include="Models\Primitives\player_primitive.fbx">
       <Name>player_primitive</Name>
       <Importer>FbxImporter</Importer>
       <Processor>PlayerProcessor</Processor>
@@ -74,7 +74,7 @@
     </Compile>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Models\icespike_primitive.fbx">
+    <Compile Include="Models\Visualizations\icespike_primitive.fbx">
       <Name>icespike_primitive</Name>
       <Importer>FbxImporter</Importer>
       <Processor>IceSpikeProcessor</Processor>
@@ -105,7 +105,7 @@
     </Compile>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Models\powerup.fbx">
+    <Compile Include="Models\Primitives\powerup.fbx">
       <Name>powerup</Name>
       <Importer>FbxImporter</Importer>
       <Processor>PowerUpProcessor</Processor>
@@ -185,27 +185,27 @@
     </Compile>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Models\player1_primitive.fbx">
+    <Compile Include="Models\Primitives\player1_primitive.fbx">
       <Name>player1_primitive</Name>
       <Importer>FbxImporter</Importer>
       <Processor>PlayerProcessor</Processor>
     </Compile>
-    <Compile Include="Models\player2_primitive.fbx">
+    <Compile Include="Models\Primitives\player2_primitive.fbx">
       <Name>player2_primitive</Name>
       <Importer>FbxImporter</Importer>
       <Processor>PlayerProcessor</Processor>
     </Compile>
-    <Compile Include="Models\islandproto_v002.fbx">
+    <Compile Include="Models\Islands\Old\islandproto_v002.fbx">
       <Name>islandproto_v002</Name>
       <Importer>FbxImporter</Importer>
       <Processor>IslandProcessor</Processor>
     </Compile>
-    <Compile Include="Models\cave_v002.fbx">
+    <Compile Include="Models\Environment\cave_v002.fbx">
       <Name>cave_v002</Name>
       <Importer>FbxImporter</Importer>
       <Processor>CaveProcessor</Processor>
     </Compile>
-    <Compile Include="Models\flame_primitive.fbx">
+    <Compile Include="Models\Visualizations\flame_primitive.fbx">
       <Name>flame_primitive</Name>
       <Importer>FbxImporter</Importer>
       <Processor>FlameProcessor</Processor>
@@ -644,7 +644,37 @@
       <Importer>XmlImporter</Importer>
       <Processor>PassThroughProcessor</Processor>
     </None>
-    <Compile Include="Models\lava_with_texcoords.fbx">
+    <None Include="Models\Islands\bIsland_TypeA_001_col.fbx">
+      <Name>bIsland_TypeA_001_col</Name>
+      <Importer>FbxImporter</Importer>
+      <Processor>ModelProcessor</Processor>
+    </None>
+    <None Include="Models\Islands\iIsland_TypeA_001_col.fbx">
+      <Name>iIsland_TypeA_001_col</Name>
+      <Importer>FbxImporter</Importer>
+      <Processor>ModelProcessor</Processor>
+    </None>
+    <None Include="Models\Islands\gIsland_TypeA_001_col.fbx">
+      <Name>gIsland_TypeA_001_col</Name>
+      <Importer>FbxImporter</Importer>
+      <Processor>ModelProcessor</Processor>
+    </None>
+    <None Include="Models\Pillars\pillar_003_col.fbx">
+      <Name>pillar_003_col</Name>
+      <Importer>FbxImporter</Importer>
+      <Processor>ModelProcessor</Processor>
+    </None>
+    <None Include="Models\Pillars\pillar_002_col.fbx">
+      <Name>pillar_002_col</Name>
+      <Importer>FbxImporter</Importer>
+      <Processor>ModelProcessor</Processor>
+    </None>
+    <None Include="Models\Pillars\pillar_001_col.fbx">
+      <Name>pillar_001_col</Name>
+      <Importer>FbxImporter</Importer>
+      <Processor>ModelProcessor</Processor>
+    </None>
+    <Compile Include="Models\Environment\lava_with_texcoords.fbx">
       <Name>lava_with_texcoords</Name>
       <Importer>FbxImporter</Importer>
       <Processor>ModelProcessor</Processor>
@@ -674,7 +704,7 @@
       <Importer>FontDescriptionImporter</Importer>
       <Processor>FontDescriptionProcessor</Processor>
     </Compile>
-    <Compile Include="Models\arrow2.fbx">
+    <Compile Include="Models\Visualizations\arrow2.fbx">
       <Name>arrow2</Name>
       <Importer>FbxImporter</Importer>
       <Processor>ModelProcessor</Processor>
@@ -686,42 +716,42 @@
       <ProcessorParameters_ColorKeyColor>255, 255, 255, 255</ProcessorParameters_ColorKeyColor>
       <ProcessorParameters_ColorKeyEnabled>False</ProcessorParameters_ColorKeyEnabled>
     </Compile>
-    <Compile Include="Models\bIsland_TypeA_001.fbx">
+    <Compile Include="Models\Islands\bIsland_TypeA_001.fbx">
       <Name>bIsland_TypeA_001</Name>
       <Importer>FbxImporter</Importer>
       <Processor>IslandProcessor</Processor>
     </Compile>
-    <Compile Include="Models\gIsland_TypeA_001.fbx">
+    <Compile Include="Models\Islands\gIsland_TypeA_001.fbx">
       <Name>gIsland_TypeA_001</Name>
       <Importer>FbxImporter</Importer>
       <Processor>IslandProcessor</Processor>
     </Compile>
-    <Compile Include="Models\iIsland_TypeA_001.fbx">
+    <Compile Include="Models\Islands\iIsland_TypeA_001.fbx">
       <Name>iIsland_TypeA_001</Name>
       <Importer>FbxImporter</Importer>
       <Processor>IslandProcessor</Processor>
     </Compile>
-    <Compile Include="Models\pillar_002.fbx">
+    <Compile Include="Models\Pillars\pillar_002.fbx">
       <Name>pillar_002</Name>
       <Importer>FbxImporter</Importer>
       <Processor>PillarProcessor</Processor>
     </Compile>
-    <Compile Include="Models\pillar_003.fbx">
+    <Compile Include="Models\Pillars\pillar_003.fbx">
       <Name>pillar_003</Name>
       <Importer>FbxImporter</Importer>
       <Processor>PillarProcessor</Processor>
     </Compile>
-    <Compile Include="Models\pillar_001.fbx">
+    <Compile Include="Models\Pillars\pillar_001.fbx">
       <Name>pillar_001</Name>
       <Importer>FbxImporter</Importer>
       <Processor>PillarProcessor</Processor>
     </Compile>
-    <Compile Include="Models\RobBonesAnim.fbx">
+    <Compile Include="Models\Player\RobBonesAnim.fbx">
       <Name>RobBonesAnim</Name>
       <Importer>FbxImporter</Importer>
       <Processor>PlayerProcessor</Processor>
     </Compile>
-    <Compile Include="Models\arrow1.fbx">
+    <Compile Include="Models\Visualizations\arrow1.fbx">
       <Name>arrow1</Name>
       <Importer>FbxImporter</Importer>
       <Processor>ModelProcessor</Processor>

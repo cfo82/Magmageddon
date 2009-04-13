@@ -3993,7 +3993,7 @@ Objects:  {
         }
         UseMipMap: 0
         Filename: "F:/Studium/Master/Game Programming Lab/models/flame.tga"
-        RelativeFilename: "../Textures/flame.tga"
+        RelativeFilename: "../../Textures/flame.tga"
     }
     Texture: "Texture::file1", "" {
         Type: "TextureVideoClip"

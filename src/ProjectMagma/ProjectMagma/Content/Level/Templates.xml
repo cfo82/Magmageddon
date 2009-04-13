@@ -24,19 +24,19 @@
 
   <Entity name="pillar_base_001" extends="pillar_base" abstract="true">
     <Attributes>
-      <Attribute name="mesh" template="string" value="Models/pillar_001"/>
+      <Attribute name="mesh" template="string" value="Models/Pillars/pillar_001"/>
     </Attributes>
   </Entity>
 
   <Entity name="pillar_base_002" extends="pillar_base" abstract="true">
     <Attributes>
-      <Attribute name="mesh" template="string" value="Models/pillar_002"/>
+      <Attribute name="mesh" template="string" value="Models/Pillars/pillar_002"/>
     </Attributes>
   </Entity>
 
   <Entity name="pillar_base_003" extends="pillar_base" abstract="true">
     <Attributes>
-      <Attribute name="mesh" template="string" value="Models/pillar_003"/>
+      <Attribute name="mesh" template="string" value="Models/Pillars/pillar_003"/>
     </Attributes>
   </Entity>
 
@@ -47,7 +47,6 @@
       <Attribute name="scale" template="float3" value="70 70 70"/>
       <Attribute name="velocity" template="float3" value="0 0 0"/>
       <Attribute name="acceleration" template="float3" value="0 0 0"/>
-      <Attribute name="mesh" template="string" value="Models/gIsland_TypeA_001"/>
       <Attribute name="texture" template="string" value="Textures/island_diffuse_v003"/>
       <Attribute name="bv_type" template="string" value="alignedbox3tree"/>
     </Attributes>
@@ -63,19 +62,19 @@
 
   <Entity name="island_base_burnt" extends="island_base" abstract="true">
     <Attributes>
-      <Attribute name="mesh" template="string" value="Models/bIsland_TypeA_001"/>
+      <Attribute name="mesh" template="string" value="Models/Islands/bIsland_TypeA_001"/>
     </Attributes>
   </Entity>
 
   <Entity name="island_base_grass" extends="island_base" abstract="true">
     <Attributes>
-      <Attribute name="mesh" template="string" value="Models/gIsland_TypeA_001"/>
+      <Attribute name="mesh" template="string" value="Models/Islands/gIsland_TypeA_001"/>
     </Attributes>
   </Entity>
 
   <Entity name="island_base_ice" extends="island_base" abstract="true">
     <Attributes>
-      <Attribute name="mesh" template="string" value="Models/iIsland_TypeA_001"/>
+      <Attribute name="mesh" template="string" value="Models/Islands/iIsland_TypeA_001"/>
     </Attributes>
   </Entity>
 
@@ -84,7 +83,7 @@
       <Attribute name="kind" template="string" value="powerup"/>
       <Attribute name="position" template="float3" value="0 0 0"/>
       <Attribute name="island_reference" template="string" value="island4"/>
-      <Attribute name="mesh" template="string" value="Models/powerup"/>
+      <Attribute name="mesh" template="string" value="Models/Primitives/powerup"/>
       <Attribute name="scale" template="float3" value="8 8 8"/>
       <Attribute name="relative_position" template="float3" value="15 0 15"/>
       <Attribute name="power" template="string" value="energy"/>

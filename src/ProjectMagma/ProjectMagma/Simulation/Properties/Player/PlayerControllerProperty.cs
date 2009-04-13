@@ -445,7 +445,7 @@ namespace ProjectMagma.Simulation
                 iceSpike.AddVector3Attribute("velocity", aimVector);
                 iceSpike.AddVector3Attribute("position", pos);
 
-                iceSpike.AddStringAttribute("mesh", "Models/icespike_primitive");
+                iceSpike.AddStringAttribute("mesh", "Models/Visualizations/icespike_primitive");
                 iceSpike.AddVector3Attribute("scale", new Vector3(5, 5, 5));
 
                 iceSpike.AddStringAttribute("bv_type", "sphere");
@@ -482,7 +482,7 @@ namespace ProjectMagma.Simulation
                         flame.AddVector3Attribute("velocity", viewVector);
                         flame.AddVector3Attribute("position", pos);
 
-                        flame.AddStringAttribute("mesh", "Models/flame_primitive");
+                        flame.AddStringAttribute("mesh", "Models/Visualizations/flame_primitive");
                         flame.AddVector3Attribute("scale", new Vector3(0, 0, 0));
                         flame.AddVector3Attribute("full_scale", new Vector3(26, 26, 26));
                         flame.AddQuaternionAttribute("rotation", Game.GetRotation(player));

@@ -64,7 +64,7 @@ namespace ProjectMagma.Simulation
             int islandNo = rand.Next(Game.Instance.Simulation.IslandManager.Count - 1);
             Entity island = Game.Instance.Simulation.IslandManager[islandNo];
             Vector3 pos = island.GetVector3("position");
-            pos.Y = pos.Y + 30; // todo: change this to point defined in mesh
+            pos.Y = pos.Y + 10; // todo: change this to point defined in mesh
             player.AddVector3Attribute("position", pos);
 
             player.AddQuaternionAttribute("rotation", Quaternion.Identity);
@@ -283,6 +283,12 @@ namespace ProjectMagma.Simulation
                     || Math.Sign(lastIslandDir.Z) != Math.Sign(islandDir.Z)))
                 {
                     // oscillation -> stop
+                    activeIsland = destinationIsland;
+
+                    // register with active
+                    ((Vector3Attribute)activeIsland.Attributes["position"]).ValueChanged += IslandPositionHandler;
+                    activeIsland.SetInt("players_on_island", activeIsland.GetInt("players_on_island") + 1);
+
                     destinationIsland = null;
                     playerVelocity = Vector3.Zero;
                     islandJumpPerformedAt = at;

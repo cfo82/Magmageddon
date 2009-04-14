@@ -8,7 +8,13 @@ namespace ProjectMagma.Simulation.Attributes
         :   base(name)
         {
         }
-            
+
+        public Vector2Attribute(string name, Vector2 value)
+        :   base(name)
+        {
+            this.v = value;
+        }
+
         public override void Initialize(string value)
         {
             if (value.Trim().Length == 0)

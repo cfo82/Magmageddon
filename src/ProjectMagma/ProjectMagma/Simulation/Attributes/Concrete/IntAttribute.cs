@@ -7,7 +7,13 @@ namespace ProjectMagma.Simulation.Attributes
         :   base(name)
         {
         }
-            
+
+        public IntAttribute(string name, int value)
+        :   base(name)
+        {
+            this.v = value;
+        }
+
         public override void Initialize(string value)
         {
             if (value.Trim().Length == 0)
@@ -16,7 +22,7 @@ namespace ProjectMagma.Simulation.Attributes
             }
             else
             {
-                    this.v = int.Parse(value);
+                this.v = int.Parse(value);
             }
         }
 

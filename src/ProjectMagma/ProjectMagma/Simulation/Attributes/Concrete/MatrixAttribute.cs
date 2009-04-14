@@ -8,6 +8,12 @@ namespace ProjectMagma.Simulation.Attributes
         :   base(name)
         {
         }
+
+        public MatrixAttribute(string name, Matrix value)
+        :   base(name)
+        {
+            this.v = value;
+        }
             
         public override void Initialize(string value)
         {

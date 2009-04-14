@@ -8,7 +8,13 @@ namespace ProjectMagma.Simulation.Attributes
         :   base(name)
         {
         }
-            
+
+        public QuaternionAttribute(string name, Quaternion value)
+        :   base(name)
+        {
+            this.v = value;
+        }
+
         public override void Initialize(string value)
         {
             if (value.Trim().Length == 0)

@@ -75,21 +75,17 @@ namespace ProjectMagma.Simulation
                 default: throw new System.Exception("AttributeType '" + type + "' does not exist!");
             }
             attribute.Initialize(value);
-            this.attributes.Add(attribute.Name, attribute);
+            AddAttribute(attribute);
         }
 
         public void AddStringAttribute(string name, string value)
         {
-            StringAttribute attribute = new StringAttribute(name);
-            attribute.Value = value;
-            this.attributes.Add(attribute.Name, attribute);
+            AddAttribute(new StringAttribute(name, value));
         }
 
         public void AddIntAttribute(string name, int value)
         {
-            IntAttribute attribute = new IntAttribute(name);
-            attribute.Value = value;
-            this.attributes.Add(attribute.Name, attribute);
+            AddAttribute(new IntAttribute(name, value));
         }
 
         public void AddBoolAttribute(string name, bool value)
@@ -101,9 +97,7 @@ namespace ProjectMagma.Simulation
 
         public void AddFloatAttribute(string name, float value)
         {
-            FloatAttribute attribute = new FloatAttribute(name);
-            attribute.Value = value;
-            this.attributes.Add(attribute.Name, attribute);
+            AddAttribute(new FloatAttribute(name, value));
         }
 
         public void AddVector2Attribute(string name, Vector2 value)
@@ -115,22 +109,26 @@ namespace ProjectMagma.Simulation
 
         public void AddVector3Attribute(string name, Vector3 value)
         {
-            Vector3Attribute attribute = new Vector3Attribute(name);
-            attribute.Value = value;
-            this.attributes.Add(attribute.Name, attribute);
+            AddAttribute(new Vector3Attribute(name, value));
         }
 
         public void AddQuaternionAttribute(string name, Quaternion value)
         {
-            QuaternionAttribute attribute = new QuaternionAttribute(name);
-            attribute.Value = value;
-            this.attributes.Add(attribute.Name, attribute);
+            AddAttribute(new QuaternionAttribute(name, value));
         }
 
         public void AddMatrixAttribute(string name, Matrix value)
         {
-            MatrixAttribute attribute = new MatrixAttribute(name);
-            attribute.Value = value;
+            AddAttribute(new MatrixAttribute(name, value));
+        }
+
+        private void AddAttribute(Attribute attribute)
+        {
+            if (this.attributes.ContainsKey(attribute.Name))
+            {
+                throw new System.Exception(string.Format("attribute with name {0} already contained!", attribute.Name));
+            }
+
             this.attributes.Add(attribute.Name, attribute);
         }
 

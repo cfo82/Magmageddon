@@ -7,7 +7,13 @@ namespace ProjectMagma.Simulation.Attributes
         :   base(name)
         {
         }
-            
+
+        public StringAttribute(string name, string value)
+        :   base(name)
+        {
+            this.value = value;
+        }
+
         public override void Initialize(string value)
         {
             this.value = value;

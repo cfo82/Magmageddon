@@ -7,11 +7,16 @@ namespace ProjectMagma.Simulation.Attributes
         :   base(name)
         {
         }
-            
+
+        public BoolAttribute(string name, bool value)
+        :   base(name)
+        {
+            this.v = value;
+        }
+
         public override void Initialize(string value)
         {
             v = "true".Equals(value);
-
         }
 
         public bool Value

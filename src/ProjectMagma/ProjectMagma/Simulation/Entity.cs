@@ -90,9 +90,7 @@ namespace ProjectMagma.Simulation
 
         public void AddBoolAttribute(string name, bool value)
         {
-            BoolAttribute attribute = new BoolAttribute(name);
-            attribute.Value = value;
-            this.attributes.Add(attribute.Name, attribute);
+            AddAttribute(new BoolAttribute(name, value));
         }
 
         public void AddFloatAttribute(string name, float value)
@@ -102,9 +100,7 @@ namespace ProjectMagma.Simulation
 
         public void AddVector2Attribute(string name, Vector2 value)
         {
-            Vector2Attribute attribute = new Vector2Attribute(name);
-            attribute.Value = value;
-            this.attributes.Add(attribute.Name, attribute);
+            AddAttribute(new Vector2Attribute(name, value));
         }
 
         public void AddVector3Attribute(string name, Vector3 value)

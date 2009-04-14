@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
+using ProjectMagma.Shared.Math.Primitives;
 
 namespace ProjectMagma.Renderer
 {
@@ -21,10 +22,46 @@ namespace ProjectMagma.Renderer
             this.position = position;
             this.model = model;
 
-            effect = Game.Instance.Content.Load<Effect>("Effects/LavaEffect");
+            effect = Game.Instance.Content.Load<Effect>("Effects/Lava/Lava");
+            InitializeRandomOffsets();
 
-            fireFractalOffset = new Vector2(0.5f, 0.5f);
-            fireFractalRand = new Random(1234);
+            VolumeCollection collection = (VolumeCollection)model.Tag;
+            boundingBox = (AlignedBox3)collection.GetVolume(VolumeType.AlignedBox3);
+        }
+
+        private void InitializeRandomOffsets()
+        {
+            randomOffsetParameter = effect.Parameters["RandomOffset"];
+            randomOffsetCount = randomOffsetParameter.Elements.Count;
+            randomOffset = new Vector2[randomOffsetCount];
+            d_randomOffset = new Vector2[randomOffsetCount];
+            dd_randomOffset = new Vector2[randomOffsetCount];
+
+            for (int i = 0; i < randomOffsetCount; i++)
+            {
+                randomOffset[i] = new Vector2(0.5f, 0.5f);
+                d_randomOffset[i] = new Vector2(0.5f, 0.5f);
+            }
+            offsetRand = new Random(1234);
+        }
+
+        private void UpdateRandomOffsets()
+        {
+            for (int i = 0; i < randomOffsetCount; ++i)
+            {
+                dd_randomOffset[i] = new Vector2(
+                    (float)offsetRand.NextDouble() - 0.35f,
+                    (float)offsetRand.NextDouble() - 0.35f
+                );
+
+                d_randomOffset[i] += dd_randomOffset[i];
+                d_randomOffset[i].Normalize();
+
+                randomOffset[i] += d_randomOffset[i] * 0.001f;
+
+            }
+
+            randomOffsetParameter.SetValue(randomOffset);
         }
 
         public void SetTextures(
@@ -56,46 +93,32 @@ namespace ProjectMagma.Renderer
 
             foreach (ModelMesh mesh in model.Meshes)
             {
-                effect.CurrentTechnique = effect.Techniques["TextureColor"];
+                effect.CurrentTechnique = effect.Techniques["MultiPlaneLava"];
 
                 // transformation parameters
-                effect.Parameters["World"].SetValue(world);
-                effect.Parameters["View"].SetValue(Game.Instance.View);
-                effect.Parameters["Projection"].SetValue(Game.Instance.Projection);
-                effect.Parameters["EyePosition"].SetValue(Game.Instance.EyePosition);
+                effect.Parameters["g_mWorld"].SetValue(world);
+                effect.Parameters["g_mView"].SetValue(Game.Instance.View);
+                effect.Parameters["g_mWorldViewProjection"].SetValue(world * Game.Instance.View * Game.Instance.Projection);
 
                 // texture parameters
                 effect.Parameters["StuccoSparse"].SetValue(sparseStuccoTexture);
                 effect.Parameters["FireFractal"].SetValue(fireFractalTexture);
                 effect.Parameters["Granite"].SetValue(graniteTexture);
                 effect.Parameters["Clouds"].SetValue(vectorCloudTexture);
-                //glow.Parameters["FireFractalNormal"].SetValue(fireFractalNormal);
-                //glow.Parameters["GraniteNormal"].SetValue(graniteNormal);
-
-                // boolean parameters
-                effect.Parameters["boolParam1"].SetValue(false);
-                effect.Parameters["boolParam2"].SetValue(true);
-                effect.Parameters["boolParam3"].SetValue(true);
-                effect.Parameters["boolParam4"].SetValue(false);
-                effect.Parameters["boolParam5"].SetValue(false);
-                effect.Parameters["boolParam6"].SetValue(false);
 
                 // other stuff
+                effect.Parameters["g_LightDir"].SetValue(Vector3.Normalize(new Vector3(0, 1, 0)));
+                effect.Parameters["invert"].SetValue(true);
                 effect.Parameters["flickerStrength"].SetValue(0.01f);
                 effect.Parameters["StuccoCompression"].SetValue(0.65f);
+                
+                //effect.Parameters["minPlaneY"].SetValue(boundingBox.Min.Y);
+                //effect.Parameters["maxPlaneY"].SetValue(boundingBox.Max.Y);
 
-                // update random offset to animate textures
-                dd_fireFractalOffset = new Vector2(
-                    (float)fireFractalRand.NextDouble() - 0.35f,
-                    (float)fireFractalRand.NextDouble() - 0.35f
-                );
+                effect.Parameters["minPlaneY"].SetValue(-45.0f);
+                effect.Parameters["maxPlaneY"].SetValue(0.0f);
 
-                d_fireFractalOffset += dd_fireFractalOffset;
-                d_fireFractalOffset.Normalize();
-
-                fireFractalOffset += d_fireFractalOffset * 0.003f;
-
-                effect.Parameters["FireFractalOffset"].SetValue(fireFractalOffset);
+                UpdateRandomOffsets();
 
                 // draw the lava plane
                 foreach (ModelMeshPart meshPart in mesh.MeshParts)
@@ -158,10 +181,12 @@ namespace ProjectMagma.Renderer
 
         private Effect effect;
 
-        Vector2 fireFractalOffset;
-        Vector2 d_fireFractalOffset;
-        Vector2 dd_fireFractalOffset;
+        Vector2[] randomOffset, d_randomOffset, dd_randomOffset;
+        int randomOffsetCount;
+        EffectParameter randomOffsetParameter;
 
-        Random fireFractalRand;
+        AlignedBox3 boundingBox;
+
+        Random offsetRand;
     }
 }

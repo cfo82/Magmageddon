@@ -1,10 +1,11 @@
-#define RANDOM_OFFSET_COUNT 4
+#define RANDOM_OFFSET_COUNT 5
 float2 RandomOffset[RANDOM_OFFSET_COUNT];
 
 #define ColorRandomOffset (RandomOffset[0]*0.2)
 #define StuccoRandomOffset1 (RandomOffset[1])
 #define StuccoRandomOffset2 (RandomOffset[2])
-#define GraniteRandomOffset (RandomOffset[3]*0.2)
+#define StuccoRandomOffset3 (RandomOffset[3])
+#define GraniteRandomOffset (RandomOffset[4]*0.2)
 
 float planeFraction;
 float flickerStrength;

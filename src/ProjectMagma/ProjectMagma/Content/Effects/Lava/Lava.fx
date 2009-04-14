@@ -19,10 +19,10 @@ float4 getfirefractal(float2 texCoord)
 float getstucco(float2 texCoord, float compression)
 {
 	float stucco;
-	float4 stucco_rgba1 = tex2D(StuccoSparseSampler, texCoord*1.5 + StuccoRandomOffset1*.2);
-	float2 coords2 = texCoord*2 - StuccoRandomOffset2*.2;
-	float4 stucco_rgba2 = tex2D(StuccoSparseSampler, float2(coords2.y,-coords2.x));
-	stucco = 1-(stucco_rgba1.r)*(stucco_rgba2.r);	
+	float4 stucco_rgba1 = tex2D(StuccoSparseSampler, texCoord*1.60 + StuccoRandomOffset1*0.15);
+	float4 stucco_rgba2 = tex2D(StuccoSparseSampler, texCoord*2.00 - StuccoRandomOffset2*0.20);
+	float4 stucco_rgba3 = tex2D(StuccoSparseSampler, texCoord*2.75 - StuccoRandomOffset3*0.30);	
+	stucco = 1-(stucco_rgba1.r)*(stucco_rgba2.r)*(stucco_rgba3.r);	
 	stucco = (1-compression)*stucco+(compression)/2;
 	return stucco;
 }

@@ -618,8 +618,8 @@
     </None>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Effects\LavaEffect.fx">
-      <Name>LavaEffect</Name>
+    <Compile Include="Effects\Lava\DeprecatedLava.fx">
+      <Name>DeprecatedLava</Name>
       <Importer>EffectImporter</Importer>
       <Processor>EffectProcessor</Processor>
     </Compile>
@@ -630,6 +630,11 @@
     </Compile>
     <Compile Include="Effects\SpriteBatch.fx">
       <Name>SpriteBatch</Name>
+      <Importer>EffectImporter</Importer>
+      <Processor>EffectProcessor</Processor>
+    </Compile>
+    <Compile Include="Effects\Lava\Lava.fx">
+      <Name>Lava</Name>
       <Importer>EffectImporter</Importer>
       <Processor>EffectProcessor</Processor>
     </Compile>
@@ -683,21 +688,25 @@
       <Name>firefractal</Name>
       <Importer>TextureImporter</Importer>
       <Processor>TextureProcessor</Processor>
+      <ProcessorParameters_ColorKeyEnabled>False</ProcessorParameters_ColorKeyEnabled>
     </Compile>
     <Compile Include="Textures\Lava\granite.tga">
       <Name>granite</Name>
       <Importer>TextureImporter</Importer>
       <Processor>TextureProcessor</Processor>
+      <ProcessorParameters_ColorKeyEnabled>False</ProcessorParameters_ColorKeyEnabled>
     </Compile>
     <Compile Include="Textures\Lava\sparsestucco.tga">
       <Name>sparsestucco</Name>
       <Importer>TextureImporter</Importer>
       <Processor>TextureProcessor</Processor>
+      <ProcessorParameters_ColorKeyEnabled>False</ProcessorParameters_ColorKeyEnabled>
     </Compile>
     <Compile Include="Textures\Lava\vectorclouds.tga">
       <Name>vectorclouds</Name>
       <Importer>TextureImporter</Importer>
       <Processor>TextureProcessor</Processor>
+      <ProcessorParameters_ColorKeyEnabled>False</ProcessorParameters_ColorKeyEnabled>
     </Compile>
     <Compile Include="Sprites\Menu\MenuFont.spritefont">
       <Name>MenuFont</Name>
@@ -926,6 +935,22 @@
       <Name>yellow_robot</Name>
       <Importer>TextureImporter</Importer>
       <Processor>TextureProcessor</Processor>
+    </Compile>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Effects\Lava\Params.inc">
+      <Name>Params</Name>
+    </None>
+    <None Include="Effects\Lava\Structs.inc">
+      <Name>Structs</Name>
+    </None>
+    <None Include="Effects\Lava\Textures.inc">
+      <Name>Textures</Name>
+    </None>
+    <Compile Include="Models\Environment\lava10.fbx">
+      <Name>lava10</Name>
+      <Importer>FbxImporter</Importer>
+      <Processor>LavaProcessor</Processor>
     </Compile>
   </ItemGroup>
   <Import Project="$(MSBuildExtensionsPath)\Microsoft\XNA Game Studio\v3.0\Microsoft.Xna.GameStudio.ContentPipeline.targets" />

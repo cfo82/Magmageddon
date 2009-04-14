@@ -28,8 +28,9 @@
     <Attributes>
       <Attribute name="kind" template="string" value="lava"/>
       <Attribute name="position" template="float3" value="0 0 0"/>
-      <Attribute name="scale" template="float3" value="4 4 4"/>
-      <Attribute name="mesh" template="string" value="Models/Environment/lava_with_texcoords"/>
+      <Attribute name="scale" template="float3" value="0.8 0.12 0.8"/>
+      <!--<Attribute name="scale" template="float3" value="4 4 4"/>-->
+      <Attribute name="mesh" template="string" value="Models\Environment\lava10"/>
       <Attribute name="sparsestucco_texture" template="string" value="Textures/Lava/sparsestucco"/>
       <Attribute name="firefractal_texture" template="string" value="Textures/Lava/firefractal"/>
       <Attribute name="vectorcloud_texture" template="string" value="Textures/Lava/vectorclouds"/>

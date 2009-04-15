@@ -153,8 +153,7 @@ namespace ProjectMagma.Simulation
                     // deactivate
                     player.RemoveProperty("render");
                     player.RemoveProperty("shadow_cast");
-//                    player.RemoveProperty("collision");
-                    ((CollisionProperty)player.GetProperty("collision")).OnContact -= PlayerCollisionHandler;
+                    player.RemoveProperty("collision");
 
                     if (arrow.HasProperty("render"))
                     {
@@ -173,7 +172,7 @@ namespace ProjectMagma.Simulation
                     else 
                     {
                         // activate
-//                        player.AddProperty("collision", new CollisionProperty());
+                        player.AddProperty("collision", new CollisionProperty());
                         player.AddProperty("render", new RenderProperty());
                         player.AddProperty("shadow_cast", new ShadowCastProperty());
                         ((CollisionProperty)player.GetProperty("collision")).OnContact += PlayerCollisionHandler;

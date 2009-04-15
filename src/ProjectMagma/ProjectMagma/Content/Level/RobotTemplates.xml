@@ -5,6 +5,7 @@
   <Entity name="robot_base" abstract="true">
     <Attributes>
       <Attribute name="kind" template="string" value="player"/>
+      <Attribute name="positon" template="float3" value="0 0 0"/>
       <Attribute name="scale" template="float3" value="15 15 15"/>
       <Attribute name="bv_type" template="string" value="alignedbox3tree"/>
     </Attributes>

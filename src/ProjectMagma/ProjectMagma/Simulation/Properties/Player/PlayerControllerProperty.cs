@@ -903,9 +903,16 @@ namespace ProjectMagma.Simulation
             {
                 int islandNo = rand.Next(Game.Instance.Simulation.IslandManager.Count - 1);
                 island = Game.Instance.Simulation.IslandManager[islandNo];
+                // check no powerup on island
                 foreach(Entity powerup in Game.Instance.Simulation.PowerupManager)
                 {
                     if (island.Name == powerup.GetString("island_reference"))
+                        continue; // select again
+                }
+                // check island is far enough away of other players
+                foreach (Entity p in Game.Instance.Simulation.PlayerManager)
+                {
+                    if ((island.GetVector3("position") - p.GetVector3("position")).Length() < constants.GetFloat("respawn_min_distance_to_players"))
                         continue; // select again
                 }
                 // no powerup on selected island -> break;

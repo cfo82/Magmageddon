@@ -9,51 +9,6 @@ namespace ProjectMagma.Simulation.Collision
 {
     class TestList
     {
-        private interface ChangeEntry
-        {
-            void ApplyChange();
-        }
-
-        private class AddEntry : ChangeEntry
-        {
-            public AddEntry(
-                TestList testList,
-                CollisionEntity entity
-            )
-            {
-                this.TestList = testList;
-                this.Entity = entity;
-            }
-
-            public void ApplyChange()
-            {
-                TestList.Apply(this);
-            }
-
-            public readonly TestList TestList;
-            public readonly CollisionEntity Entity;
-        }
-
-        private class RemoveEntry : ChangeEntry
-        {
-            public RemoveEntry(
-                TestList testList,
-                CollisionEntity entity
-            )
-            {
-                this.TestList = testList;
-                this.Entity = entity;
-            }
-
-            public void ApplyChange()
-            {
-                TestList.Apply(this);
-            }
-
-            public readonly TestList TestList;
-            public readonly CollisionEntity Entity;
-        }
-
         public class TestEntry
         {
             public TestEntry(
@@ -71,7 +26,6 @@ namespace ProjectMagma.Simulation.Collision
 
         public TestList()
         {
-            this.changeList = new List<ChangeEntry>();
             this.entityList = new List<CollisionEntity>();
             this.collisionList = new List<TestEntry>();
             this.currentCollisionEntry = 0;
@@ -81,7 +35,13 @@ namespace ProjectMagma.Simulation.Collision
         public void Add(CollisionEntity entity)
         {
             Debug.Assert(inCollisionDetection == 0);
-            changeList.Add(new AddEntry(this, entity));
+
+            foreach (CollisionEntity otherEntity in entityList)
+            {
+                collisionList.Add(new TestEntry(entity, otherEntity));
+            }
+
+            entityList.Add(entity);
         }
 
         public bool ContainsCollisionEntity(CollisionProperty property)
@@ -101,12 +61,24 @@ namespace ProjectMagma.Simulation.Collision
         public void Remove(CollisionEntity entity)
         {
             Debug.Assert(inCollisionDetection == 0);
-            changeList.Add(new RemoveEntry(this, entity));
+         
+            for (int i = 0; i < collisionList.Count; ++i)
+            {
+                if (collisionList[i].EntityA == entity ||
+                    collisionList[i].EntityB == entity)
+                {
+                    collisionList.RemoveAt(i);
+                    --i;
+                }
+            }
+
+            entityList.Remove(entity);
         }
 
         public void Remove(CollisionProperty property)
         {
             Debug.Assert(inCollisionDetection == 0);
+
             for (int i = 0; i < entityList.Count; ++i)
             {
                 if (entityList[i].CollisionProperty == property)
@@ -129,40 +101,9 @@ namespace ProjectMagma.Simulation.Collision
             return null;
         }
 
-        void Apply(AddEntry entry)
-        {
-            foreach (CollisionEntity entity in entityList)
-            {
-                collisionList.Add(new TestEntry(entry.Entity, entity));
-            }
-
-            entityList.Add(entry.Entity);
-        }
-
-        void Apply(RemoveEntry entry)
-        {
-            for (int i = 0; i < collisionList.Count; ++i)
-            {
-                if (collisionList[i].EntityA == entry.Entity ||
-                    collisionList[i].EntityB == entry.Entity)
-                {
-                    collisionList.RemoveAt(i);
-                    --i;
-                }
-            }
-
-            entityList.Remove(entry.Entity);
-        }
-
         public void BeginCollisionDetection()
         {
             Debug.Assert(inCollisionDetection == 0);
-
-            foreach (ChangeEntry entry in changeList)
-            {
-                entry.ApplyChange();
-            }
-            changeList.Clear();
 
             Interlocked.Exchange(ref inCollisionDetection, 1);
             Interlocked.Exchange(ref currentCollisionEntry, -1);
@@ -189,7 +130,6 @@ namespace ProjectMagma.Simulation.Collision
             Interlocked.Exchange(ref inCollisionDetection, 0);
         }
 
-        private List<ChangeEntry> changeList;
         private List<CollisionEntity> entityList;
         private List<TestEntry> collisionList;
         private int currentCollisionEntry;

@@ -82,7 +82,6 @@
     <Attributes>
       <Attribute name="kind" template="string" value="powerup"/>
       <Attribute name="position" template="float3" value="0 0 0"/>
-      <Attribute name="island_reference" template="string" value="island4"/>
       <Attribute name="mesh" template="string" value="Models/Primitives/powerup"/>
       <Attribute name="scale" template="float3" value="8 8 8"/>
       <Attribute name="relative_position" template="float3" value="15 0 15"/>

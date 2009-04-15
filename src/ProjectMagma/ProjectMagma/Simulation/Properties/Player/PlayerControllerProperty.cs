@@ -184,6 +184,7 @@ namespace ProjectMagma.Simulation
                         int islandNo = rand.Next(Game.Instance.Simulation.IslandManager.Count - 1);
                         Entity island = Game.Instance.Simulation.IslandManager[islandNo];
                         SetActiveIsland(island);
+                        player.SetVector3("position", island.GetVector3("position"));
 
                         // reset
                         player.SetQuaternion("rotation", Quaternion.Identity);

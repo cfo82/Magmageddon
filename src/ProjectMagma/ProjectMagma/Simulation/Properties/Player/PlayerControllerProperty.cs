@@ -60,12 +60,6 @@ namespace ProjectMagma.Simulation
             this.player = player;
             this.constants = Game.Instance.Simulation.EntityManager["player_constants"];
 
-            // random island selection
-            int islandNo = rand.Next(Game.Instance.Simulation.IslandManager.Count - 1);
-            Entity island = Game.Instance.Simulation.IslandManager[islandNo];
-            SetActiveIsland(island);
-            player.AddVector3Attribute("position", island.GetVector3("position"));
-
             player.AddQuaternionAttribute("rotation", Quaternion.Identity);
             player.AddVector3Attribute("velocity", Vector3.Zero);
 
@@ -84,10 +78,7 @@ namespace ProjectMagma.Simulation
             player.AddStringAttribute("collisionPlayer", "");
 
             Game.Instance.Simulation.EntityManager.EntityRemoved += EntityRemovedHandler;
-            if (player.HasProperty("collision"))
-            {
-                ((CollisionProperty)player.GetProperty("collision")).OnContact += PlayerCollisionHandler;
-            }
+            ((CollisionProperty)player.GetProperty("collision")).OnContact += PlayerCollisionHandler;
 
             jetpackSound = Game.Instance.Content.Load<SoundEffect>("Sounds/jetpack");
             flameThrowerSound = Game.Instance.Content.Load<SoundEffect>("Sounds/flamethrower");
@@ -104,6 +95,8 @@ namespace ProjectMagma.Simulation
             arrow.AddProperty("arrow_controller_property", new ArrowControllerProperty());
 
             Game.Instance.Simulation.EntityManager.AddDeferred(arrow);
+
+            PositionOnRandomIsland();
 
             this.previousPosition = player.GetVector3("position");
         }
@@ -157,8 +150,11 @@ namespace ProjectMagma.Simulation
                     Game.Instance.Content.Load<SoundEffect>("Sounds/death").Play(Game.Instance.EffectsVolume);
                     player.SetInt("deaths", player.GetInt("deaths") + 1);
 
+                    // deactivate
                     player.RemoveProperty("render");
                     player.RemoveProperty("shadow_cast");
+//                    player.RemoveProperty("collision");
+                    ((CollisionProperty)player.GetProperty("collision")).OnContact -= PlayerCollisionHandler;
 
                     if (arrow.HasProperty("render"))
                     {
@@ -174,17 +170,17 @@ namespace ProjectMagma.Simulation
                         // do nothing
                         return;
                     }
-                    else
+                    else 
                     {
-                        // reposition
+                        // activate
+//                        player.AddProperty("collision", new CollisionProperty());
                         player.AddProperty("render", new RenderProperty());
                         player.AddProperty("shadow_cast", new ShadowCastProperty());
+                        ((CollisionProperty)player.GetProperty("collision")).OnContact += PlayerCollisionHandler;
+
 
                         // random island selection
-                        int islandNo = rand.Next(Game.Instance.Simulation.IslandManager.Count - 1);
-                        Entity island = Game.Instance.Simulation.IslandManager[islandNo];
-                        SetActiveIsland(island);
-                        player.SetVector3("position", island.GetVector3("position"));
+                        PositionOnRandomIsland();
 
                         // reset
                         player.SetQuaternion("rotation", Quaternion.Identity);
@@ -201,6 +197,7 @@ namespace ProjectMagma.Simulation
                         player.SetInt("frozen", 0);
                         player.SetString("collisionPlayer", "");
 
+                        // reset respawn timer
                         respawnStartedAt = 0;
                     }
             }
@@ -886,6 +883,28 @@ namespace ProjectMagma.Simulation
             }
 
             return selectedIsland;
+        }
+
+        /// <summary>
+        /// positions the player randomly on an island
+        /// </summary>
+        private void PositionOnRandomIsland()
+        {
+            Entity island;
+            for(;;)
+            {
+                int islandNo = rand.Next(Game.Instance.Simulation.IslandManager.Count - 1);
+                island = Game.Instance.Simulation.IslandManager[islandNo];
+                foreach(Entity powerup in Game.Instance.Simulation.PowerupManager)
+                {
+                    if (island.Name == powerup.GetString("island_reference"))
+                        continue; // select again
+                }
+                // no powerup on selected island -> break;
+                break; 
+            }
+            SetActiveIsland(island);
+            player.SetVector3("position", island.GetVector3("position"));
         }
 
         /// <summary>

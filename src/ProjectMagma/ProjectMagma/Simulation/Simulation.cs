@@ -124,6 +124,14 @@ namespace ProjectMagma.Simulation
             }
         }
 
+        public EntityKindManager PowerupManager
+        {
+            get
+            {
+                return powerupManager;
+            }
+        }
+
         public CollisionManager CollisionManager
         {
             get

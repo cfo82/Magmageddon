@@ -123,6 +123,7 @@
     </Attributes>
   </Entity>
 
+  
   <Entity name="island6" extends="island_base_burnt">
     <Attributes>
       <Attribute name="position" template="float3" value="-30 60 190"/>
@@ -136,6 +137,7 @@
       <Attribute name="scale" template="float3" value="40 40 40"/>
     </Attributes>
   </Entity>
+
 
   <Entity name="island8" extends="island_base_grass">
     <Attributes>

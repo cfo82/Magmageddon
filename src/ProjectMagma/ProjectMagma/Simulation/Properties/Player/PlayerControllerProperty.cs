@@ -57,15 +57,14 @@ namespace ProjectMagma.Simulation
         {
             player.Update += OnUpdate;
 
+            this.player = player;
             this.constants = Game.Instance.Simulation.EntityManager["player_constants"];
 
             // random island selection
-            // TODO: make method
             int islandNo = rand.Next(Game.Instance.Simulation.IslandManager.Count - 1);
             Entity island = Game.Instance.Simulation.IslandManager[islandNo];
-            Vector3 pos = island.GetVector3("position");
-            pos.Y = pos.Y + 10; // todo: change this to point defined in mesh
-            player.AddVector3Attribute("position", pos);
+            SetActiveIsland(island);
+            player.AddVector3Attribute("position", island.GetVector3("position"));
 
             player.AddQuaternionAttribute("rotation", Quaternion.Identity);
             player.AddVector3Attribute("velocity", Vector3.Zero);
@@ -107,7 +106,6 @@ namespace ProjectMagma.Simulation
             Game.Instance.Simulation.EntityManager.AddDeferred(arrow);
 
             this.previousPosition = player.GetVector3("position");
-            this.player = player;
         }
 
         public void OnDetached(Entity player)
@@ -125,6 +123,7 @@ namespace ProjectMagma.Simulation
             }
 
             Game.Instance.Simulation.EntityManager.EntityRemoved -= EntityRemovedHandler;
+
             if (player.HasProperty("collision"))
             {
                 ((CollisionProperty)player.GetProperty("collision")).OnContact -= PlayerCollisionHandler;
@@ -184,9 +183,7 @@ namespace ProjectMagma.Simulation
                         // random island selection
                         int islandNo = rand.Next(Game.Instance.Simulation.IslandManager.Count - 1);
                         Entity island = Game.Instance.Simulation.IslandManager[islandNo];
-                        Vector3 pos = island.GetVector3("position");
-                        pos.Y = pos.Y + 5; // todo: change this to point defined in mesh
-                        player.SetVector3("position", pos);
+                        SetActiveIsland(island);
 
                         // reset
                         player.SetQuaternion("rotation", Quaternion.Identity);
@@ -283,11 +280,7 @@ namespace ProjectMagma.Simulation
                     || Math.Sign(lastIslandDir.Z) != Math.Sign(islandDir.Z)))
                 {
                     // oscillation -> stop
-                    activeIsland = destinationIsland;
-
-                    // register with active
-                    ((Vector3Attribute)activeIsland.Attributes["position"]).ValueChanged += IslandPositionHandler;
-                    activeIsland.SetInt("players_on_island", activeIsland.GetInt("players_on_island") + 1);
+                    SetActiveIsland(destinationIsland);
 
                     destinationIsland = null;
                     playerVelocity = Vector3.Zero;
@@ -529,6 +522,9 @@ namespace ProjectMagma.Simulation
                 islandRepulsionStoppedAt = at;
             }
 
+            // TODO: island selection with islands/player projected in screen-plane.
+            // TODO: island selection don't change island if stick has not been moved
+
             // island selection and attraction
             if (attractedIsland == null
                 && destinationIsland == null)
@@ -745,13 +741,8 @@ namespace ProjectMagma.Simulation
                 {
                     // leave old
                     LeaveActiveIsland();
-
-                    // register with active
-                    ((Vector3Attribute)island.Attributes["position"]).ValueChanged += IslandPositionHandler;
-                    island.SetInt("players_on_island", island.GetInt("players_on_island") + 1);
-
-                    // update var
-                    activeIsland = island;
+                    // set new
+                    SetActiveIsland(island);
                 }
 
                 // stop falling
@@ -895,6 +886,22 @@ namespace ProjectMagma.Simulation
 
             return selectedIsland;
         }
+
+        /// <summary>
+        /// sets the activeisland
+        /// </summary>
+        private void SetActiveIsland(Entity island)
+        {
+            Console.WriteLine(player.Name + " activated island");
+
+            // register with active
+            ((Vector3Attribute)island.Attributes["position"]).ValueChanged += IslandPositionHandler;
+            island.SetInt("players_on_island", island.GetInt("players_on_island") + 1);
+
+            // set
+            activeIsland = island;
+        }
+
 
         /// <summary>
         /// resets the activeisland

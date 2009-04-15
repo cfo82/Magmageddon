@@ -9,11 +9,11 @@
       <Attribute name="bv_type" template="string" value="alignedbox3tree"/>
     </Attributes>
     <Properties>
+      <Property name="collision" type="ProjectMagma.Simulation.Collision.CollisionProperty"/>
+      <Property name="controller" type="ProjectMagma.Simulation.PlayerControllerProperty"/>
       <Property name="shadow_cast" type="ProjectMagma.Simulation.ShadowCastProperty"/>
       <Property name="render" type="ProjectMagma.Simulation.RenderProperty"/>
       <Property name="render_highlight" type="ProjectMagma.Simulation.RenderHighlightProperty"/>
-      <Property name="collision" type="ProjectMagma.Simulation.Collision.CollisionProperty"/>
-      <Property name="controller" type="ProjectMagma.Simulation.PlayerControllerProperty"/>
       <Property name="hud" type="ProjectMagma.Simulation.HUDProperty"/>
     </Properties>
   </Entity>

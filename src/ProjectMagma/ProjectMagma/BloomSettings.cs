@@ -77,7 +77,10 @@ namespace ProjectMagma
             new BloomSettings("Saturated",   0.25f,  4,   2,     1,    2,       0),
             new BloomSettings("Blurry",      0,      2,   1,     0.1f, 1,       1),
             new BloomSettings("Subtle",      0.5f,   2,   1,     1,    1,       1),
-            new BloomSettings("Custom",      0.4f,   3,   2.20f, 1,    0.7f,       1)
+            
+            new BloomSettings("Custom1",      0.4f,   3,   1.2f,  1,    1,       1),
+            // old
+            new BloomSettings("Custom2",      0.4f,   3,   2.20f, 1,    0.7f,       1)
         };
     }
 }

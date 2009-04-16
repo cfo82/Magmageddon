@@ -106,11 +106,11 @@ namespace ProjectMagma.Simulation.Collision
                     //        entry.EntityB.entity.GetString("kind") == "pillar" ||
                     //        (entry.EntityA.entity.GetString("kind") == "island" && entry.EntityB.entity.GetString("kind") == "island")
                     //    ))
-                    if ((contact.EntityA.HasString("kind") && contact.EntityA.GetString("kind") == "powerup") ||
-                        (contact.EntityB.HasString("kind") && contact.EntityB.GetString("kind") == "powerup"))
-                    {
-                        System.Console.WriteLine("Collision {0,4}: between {1} and {2}!", 0, contact.EntityA.Name, contact.EntityB.Name);
-                    }
+                    //if ((contact.EntityA.HasString("kind") && contact.EntityA.GetString("kind") == "powerup") ||
+                    //    (contact.EntityB.HasString("kind") && contact.EntityB.GetString("kind") == "powerup"))
+                    //{
+                    //    System.Console.WriteLine("Collision {0,4}: between {1} and {2}!", 0, contact.EntityA.Name, contact.EntityB.Name);
+                    //}
 
                     CollisionProperty propertyA = contact.EntityA.HasProperty("collision") ? (CollisionProperty)contact.EntityA.GetProperty("collision") : null;
                     CollisionProperty propertyB = contact.EntityB.HasProperty("collision") ? (CollisionProperty)contact.EntityB.GetProperty("collision") : null;

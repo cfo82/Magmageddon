@@ -731,9 +731,6 @@ namespace ProjectMagma.Simulation
                     case "player":
                         PlayerPlayerCollisionHandler(simTime, contact.EntityA, contact.EntityB, contact);
                         break;
-                    case "powerup":
-                        PlayerPowerupCollisionHandler(simTime, contact.EntityA, contact.EntityB);
-                        break;
                 }
                 CheckPlayerAttributeRanges(player);
                 collisionOccured = true;
@@ -805,35 +802,6 @@ namespace ProjectMagma.Simulation
         {
             Game.Instance.ApplyPerSecondSubstraction(player, "lava_damage", constants.GetInt("lava_damage_per_second"),
                 player.GetIntAttribute("health"));
-        }
-
-        private void PlayerPowerupCollisionHandler(SimulationTime simTime, Entity player, Entity powerup)
-        {
-            // TODO: collision handler code should be moved into the powerup. this would simplify the addition
-            // of different new powerups since we do not need to have a huge "if-powerup1 else if powerup2 else ..."
-            // switch but instead can attach different powerup properties to different kinds of powerups!
-
-            // TODO: janick das isch kei gueti idee mit dene RemovePRoperty-befehl! gsetzt de fall dass das
-            // powerup zwei kollisione hät wird de collisionmanager en exception werfe sobald er zu de zweite
-            // kollision iteriert well ihm dete s "collision"-property fehlt!
-
-            // remove 
-            powerup.RemoveProperty("collision");
-            powerup.RemoveProperty("render");
-            powerup.RemoveProperty("shadow_cast");
-
-            // set respawn
-            // todo: extract constants into xml
-            powerup.SetFloat("respawn_at", (float) (simTime.At + rand.NextDouble() * 10000 + 5000));
-
-            // use the power
-            int oldVal = player.GetInt(powerup.GetString("power"));
-            oldVal += powerup.GetInt("powerValue");
-            player.SetInt(powerup.GetString("power"), oldVal);
-            
-            // soundeffect
-            SoundEffect soundEffect = Game.Instance.Content.Load<SoundEffect>("Sounds/" + powerup.GetString("pickup_sound"));
-            soundEffect.Play(Game.Instance.EffectsVolume);
         }
 
         private void PlayerPlayerCollisionHandler(SimulationTime simTime, Entity player, Entity otherPlayer, Contact c)
@@ -950,7 +918,7 @@ namespace ProjectMagma.Simulation
                 // check island is far enough away of other players
                 foreach (Entity p in Game.Instance.Simulation.PlayerManager)
                 {
-                    if ((island.GetVector3("position") - p.GetVector3("position")).Length() < constants.GetFloat("respawn_min_distance_to_players"))
+                    if ((island.GetVector3("position") - p.GetVector3("position")).Length() > constants.GetFloat("respawn_min_distance_to_players"))
                         continue; // select again
                 }
                 // no powerup on selected island -> break;

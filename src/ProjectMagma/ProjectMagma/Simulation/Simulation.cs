@@ -44,12 +44,6 @@ namespace ProjectMagma.Simulation
             levelData = content.Load<LevelData>(level);
             entityManager.Load(levelData);
 
-            // load soundeffects
-            foreach (Entity e in powerupManager)
-            {
-                content.Load<SoundEffect>("Sounds/" + e.GetString("pickup_sound"));
-            }
-
             simTime = new SimulationTime();
         }
 

@@ -184,6 +184,8 @@ namespace ProjectMagma.Simulation
 
         protected virtual void OnAttractionEnded()
         {
+            // set new hovering position
+            originalPosition.Y = island.GetVector3("position").Y;
         }
 
         protected bool hadCollision;

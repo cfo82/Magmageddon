@@ -47,9 +47,7 @@ namespace ProjectMagma.Simulation
             Matrix rotation = Matrix.CreateRotationY(delta);
             radiusV = Vector3.Transform(radiusV, rotation);
 
-            // apply
-            radiusV.Y = island.GetVector3("position").Y;
-            
+            // set Y
             position.X = pillarPos.X + radiusV.X;
             position.Z = pillarPos.Z + radiusV.Z;
         }

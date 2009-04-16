@@ -278,7 +278,6 @@ namespace ProjectMagma.Simulation
                     SetActiveIsland(destinationIsland);
 
                     destinationIsland = null;
-                    selectedIsland = null;
                     playerVelocity = Vector3.Zero;
                     islandJumpPerformedAt = at;
                     jumpButtonReleased = false;
@@ -545,12 +544,15 @@ namespace ProjectMagma.Simulation
                 && destinationIsland == null)
             {
                 if (controllerInput.rightStickMoved
-                    && activeIsland != null) // must be standing on island
+                    && activeIsland != null
+                    && selectedIsland != activeIsland) // must be standing on island
                 {
                     Vector3 stickDir = new Vector3(controllerInput.rightStickX, 0, controllerInput.rightStickY);
                     stickDir.Normalize();
+                    // only allow reselection if stick moved slightly
                     bool stickMoved = Vector3.Dot(lastStickDir, stickDir) < constants.GetFloat("island_reselection_max_value");
-                    if (selectedIsland == null || stickMoved) // only allow reselection if stick moved slightly
+                    if ((selectedIsland == null || stickMoved)
+                        && at > islandSelectedAt + constants.GetFloat("island_reselection_timeout")) 
                     {
 //                        Console.WriteLine("new selection (old: " + ((selectedIsland != null) ? selectedIsland.Name : "") + "): " + lastStickDir + "." + stickDir + " = " +
 //                            Vector3.Dot(lastStickDir, stickDir));
@@ -581,6 +583,7 @@ namespace ProjectMagma.Simulation
                         selectedIsland = null;
                         arrow.RemoveProperty("render");
                         arrow.RemoveProperty("shadow_cast");
+                        islandSelectedAt = 0;
                     }
                 }
 
@@ -879,7 +882,8 @@ namespace ProjectMagma.Simulation
                 islandDir.Y = 0;
                 float angle = (float)(Math.Acos(Vector3.Dot(dir, islandDir) / dist));
 //                float angle = (float)(Math.Acos(Vector3.Dot(dir, islandDir) / dist) / Math.PI * 180);
-                if (island != activeIsland)
+                if (island != activeIsland
+                    && (angle / Math.PI * 180) < constants.GetFloat("island_aim_angle")) 
                 {
                     if(angle < closestAngle
                         || (Math.Abs(angle-closestAngle) < constants.GetFloat("island_aim_angle_eps")

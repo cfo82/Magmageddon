@@ -15,13 +15,13 @@ namespace ProjectMagma.Simulation.Collision.CollisionTests
             bool needAllContacts, ref Contact contact
         )
         {
-            Matrix identityMatrix = Matrix.Identity;
+            /*Matrix identityMatrix = Matrix.Identity;
             Box3 box1 = node1.BoundingBox.CreateBox3(ref worldTransform1);
             Box3 box2 = sphere2.CreateBox3(ref identityMatrix);
             if (!Intersection.IntersectBox3Box3(box1, box2))
             {
                 return;
-            }
+            }*/
 
             // see if this node has some primitives => has no children
             if (!node1.HasChildren)

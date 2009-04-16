@@ -71,13 +71,13 @@ namespace ProjectMagma.Renderer
                 {
                     meshPart.Effect = shadowEffect;
                 }
-                renderer.Device.RenderState.AlphaBlendEnable = false;
-                renderer.Device.RenderState.SourceBlend = Blend.SourceAlpha;
-                renderer.Device.RenderState.DestinationBlend = Blend.DestinationColor;
+                //renderer.Device.RenderState.AlphaBlendEnable = false;
+                //renderer.Device.RenderState.SourceBlend = Blend.SourceAlpha;
+                //renderer.Device.RenderState.DestinationBlend = Blend.DestinationColor;
 
                 mesh.Draw();
 
-                renderer.Device.RenderState.AlphaBlendEnable = false;
+                //renderer.Device.RenderState.AlphaBlendEnable = false;
 
                 foreach (ModelMeshPart meshPart in mesh.MeshParts)
                 {

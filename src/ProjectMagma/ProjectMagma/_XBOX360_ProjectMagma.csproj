@@ -58,11 +58,13 @@
   <ItemGroup>
     <Compile Include="BloomComponent.cs" />
     <Compile Include="BloomSettings.cs" />
+    <Compile Include="DoublyIntegrated.cs x.cs" />
     <Compile Include="Menu.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Game.cs" />
     <Compile Include="Renderer\Renderables\DefaultRenderable.cs" />
     <Compile Include="Renderer\Renderables\HighlightRenderable.cs" />
+    <Compile Include="Renderer\Renderables\IslandRenderable.cs" />
     <Compile Include="Renderer\Renderables\LavaRenderable.cs" />
     <Compile Include="Renderer\Renderables\HUDRenderable.cs" />
     <Compile Include="Renderer\Renderables\Renderable.cs" />
@@ -127,6 +129,7 @@
     <Compile Include="Simulation\Properties\Player\FlamethrowerControllerProperty.cs" />
     <Compile Include="Simulation\Properties\Player\IceSpikeControllerProperty.cs" />
     <Compile Include="Simulation\Properties\Player\PlayerControllerProperty.cs" />
+    <Compile Include="Simulation\Properties\Rendering\IslandRenderProperty.cs" />
     <Compile Include="Simulation\Properties\Rendering\LavaRenderProperty.cs" />
     <Compile Include="Simulation\Properties\Rendering\HUDProperty.cs" />
     <Compile Include="Simulation\Properties\Rendering\RenderHighlightProperty.cs" />

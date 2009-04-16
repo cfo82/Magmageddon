@@ -623,7 +623,7 @@
       <Importer>EffectImporter</Importer>
       <Processor>EffectProcessor</Processor>
     </Compile>
-    <Compile Include="Effects\BasicEffect.fx">
+    <Compile Include="Effects\Environment\BasicEffect.fx">
       <Name>BasicEffect</Name>
       <Importer>EffectImporter</Importer>
       <Processor>EffectProcessor</Processor>
@@ -938,6 +938,21 @@
     </Compile>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Effects\Environment\Island.fx">
+      <Name>Island</Name>
+      <Importer>EffectImporter</Importer>
+      <Processor>EffectProcessor</Processor>
+    </Compile>
+    <Compile Include="Effects\Environment\Pillar.fx">
+      <Name>Pillar</Name>
+      <Importer>EffectImporter</Importer>
+      <Processor>EffectProcessor</Processor>
+    </Compile>
+    <Compile Include="Effects\Environment\Cave.fx">
+      <Name>Cave</Name>
+      <Importer>EffectImporter</Importer>
+      <Processor>EffectProcessor</Processor>
+    </Compile>
     <None Include="Effects\Lava\Params.inc">
       <Name>Params</Name>
     </None>

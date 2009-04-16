@@ -55,7 +55,7 @@
       <Property name="controller" type="ProjectMagma.Simulation.IslandCircualarMovementControllerProperty"/>
       <Property name="death" type="ProjectMagma.Simulation.DeathProperty"/>
       <Property name="shadow_cast" type="ProjectMagma.Simulation.ShadowCastProperty"/>
-      <Property name="render" type="ProjectMagma.Simulation.TexturedRenderProperty"/>
+      <Property name="render" type="ProjectMagma.Simulation.IslandRenderProperty"/>
       <Property name="render_highlight" type="ProjectMagma.Simulation.RenderHighlightProperty"/>
     </Properties>
   </Entity>

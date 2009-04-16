@@ -86,7 +86,7 @@
   <ItemGroup>
     <Compile Include="BloomComponent.cs" />
     <Compile Include="BloomSettings.cs" />
-    <Compile Include="DoublyIntegrated.cs x.cs" />
+    <Compile Include="DoublyIntegrated.cs" />
     <Compile Include="Renderer\Renderables\IslandRenderable.cs" />
     <Compile Include="Renderer\Renderables\LavaRenderable.cs" />
     <Compile Include="Renderer\Renderables\HUDRenderable.cs" />

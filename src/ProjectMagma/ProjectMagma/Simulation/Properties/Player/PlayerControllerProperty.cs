@@ -944,7 +944,7 @@ namespace ProjectMagma.Simulation
         {
             if (activeIsland != null)
             {
-                Console.WriteLine(player.Name+" left island");
+                //Console.WriteLine(player.Name+" left island");
                 ((Vector3Attribute)activeIsland.Attributes["position"]).ValueChanged -= IslandPositionHandler;
                 activeIsland.SetInt("players_on_island", activeIsland.GetInt("players_on_island") - 1);
                 activeIsland = null;

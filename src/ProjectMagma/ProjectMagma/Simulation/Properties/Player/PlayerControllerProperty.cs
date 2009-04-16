@@ -35,6 +35,7 @@ namespace ProjectMagma.Simulation
         private Entity destinationIsland = null;
         private Vector3 lastIslandDir = Vector3.Zero;
         private float islandJumpPerformedAt = 0;
+        private bool jumpButtonReleased = true;
         private Entity attractedIsland = null;
 
         Entity flame = null;
@@ -280,6 +281,7 @@ namespace ProjectMagma.Simulation
                     selectedIsland = null;
                     playerVelocity = Vector3.Zero;
                     islandJumpPerformedAt = at;
+                    jumpButtonReleased = false;
                 }
                 else
                 {
@@ -294,6 +296,12 @@ namespace ProjectMagma.Simulation
 
                     playerPosition += velocity * dt;
                 }
+            }
+            else
+            {
+                // jumpButtonReleased gets set to true as soon as the jump button is not pressed anymore
+                if (!controllerInput.jetpackButtonPressed)
+                    jumpButtonReleased = true;
             }
 
             // only apply velocity if not on island
@@ -604,7 +612,7 @@ namespace ProjectMagma.Simulation
             if (controllerInput.jetpackButtonPressed
                 && selectedIsland != null
                 && destinationIsland == null
-                && at > islandJumpPerformedAt + constants.GetFloat("island_jump_interval")
+                && jumpButtonReleased // don't allow jumps by having the jump button pressed all the time
             )
             {
                 LeaveActiveIsland();

@@ -106,17 +106,39 @@ namespace ProjectMagma.Simulation.Collision
                     //        entry.EntityB.entity.GetString("kind") == "pillar" ||
                     //        (entry.EntityA.entity.GetString("kind") == "island" && entry.EntityB.entity.GetString("kind") == "island")
                     //    ))
-                    //{
-                    //    System.Console.WriteLine("Collision {0,4}: between {1} and {2}!", collisionCount, entry.EntityA.Entity.Name, entry.EntityB.Entity.Name);
-                    //}
+                    if ((contact.EntityA.HasString("kind") && contact.EntityA.GetString("kind") == "powerup") ||
+                        (contact.EntityB.HasString("kind") && contact.EntityB.GetString("kind") == "powerup"))
+                    {
+                        System.Console.WriteLine("Collision {0,4}: between {1} and {2}!", 0, contact.EntityA.Name, contact.EntityB.Name);
+                    }
 
-                    CollisionProperty propertyA = (CollisionProperty)contact.EntityA.GetProperty("collision");
-                    CollisionProperty propertyB = (CollisionProperty)contact.EntityB.GetProperty("collision");
+                    CollisionProperty propertyA = contact.EntityA.HasProperty("collision") ? (CollisionProperty)contact.EntityA.GetProperty("collision") : null;
+                    CollisionProperty propertyB = contact.EntityB.HasProperty("collision") ? (CollisionProperty)contact.EntityB.GetProperty("collision") : null;
 
-                    propertyA.FireContact(simTime, contact);
-                    contact.Reverse();
-                    propertyB.FireContact(simTime, contact);
-                    //++collisionCount;
+                    if (propertyA != null && propertyB != null)
+                    {
+                        propertyA.FireContact(simTime, contact);
+                        contact.Reverse();
+                        propertyB.FireContact(simTime, contact);
+                        //++collisionCount;
+                    }
+                    else
+                    {
+                        if (propertyA == null && propertyB == null)
+                        {
+                            throw new System.Exception(string.Format(
+                                "someone has illegaly removed the collision property from entity {0} and {1}!",
+                                contact.EntityA.Name, contact.EntityB.Name
+                                ));
+                        }
+                        else
+                        {
+                            throw new System.Exception(string.Format(
+                                "someone has illegaly removed the collision property from entity {0}!",
+                                propertyA == null ? contact.EntityA.Name : contact.EntityB.Name
+                                ));
+                        }
+                    }
                 }
             }
 

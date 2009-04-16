@@ -926,7 +926,7 @@ namespace ProjectMagma.Simulation
         /// </summary>
         private void SetActiveIsland(Entity island)
         {
-            Console.WriteLine(player.Name + " activated island");
+            //Console.WriteLine(player.Name + " activated island");
 
             // register with active
             ((Vector3Attribute)island.Attributes["position"]).ValueChanged += IslandPositionHandler;

@@ -614,10 +614,11 @@ namespace ProjectMagma.Simulation
                 // calculate time to travel to island (in xz plane) using an iterative approach
                 float oldTime = 0;
                 float time = 0;
+                float maxTime = 0;
                 Vector3 islandDir;
+                Vector3 islandPos = destinationIsland.GetVector3("position");
                 do
                 {
-                    Vector3 islandPos = Vector3.Zero;
                     ((IslandControllerPropertyBase)destinationIsland.GetProperty("controller")).CalculateNewPosition(destinationIsland,
                         ref islandPos, time);
 
@@ -626,6 +627,9 @@ namespace ProjectMagma.Simulation
                     islandDir2D.Y = 0;
                     float dist2D = islandDir2D.Length();
 
+                    if (time > maxTime)
+                        maxTime = time;
+
                     oldTime = time;
                     time = dist2D / constants.GetFloat("island_jump_speed");
                 } 
@@ -633,20 +637,8 @@ namespace ProjectMagma.Simulation
 
                 lastIslandDir = islandDir;
 
-                if (islandDir.Y > 0)
-                // use time to calculate speed on y-axis for nice jump, and multiplie with constant
-                // that defines arc
-                {
-                    playerVelocity =
-                        (Vector3.UnitY * islandDir.Y / time // component to travel Y distance
-                        - constants.GetVector3("gravity_acceleration") * time) // component to beat gravity
-                        * constants.GetFloat("island_jump_height_multiplier"); // modifier for arc
-                }
-                else
-                {
-                    playerVelocity = -constants.GetVector3("gravity_acceleration") * time // component against gravity
-                            * constants.GetFloat("island_jump_height_multiplier"); // modifier for arc
-                }
+                // component to beat gravity;
+                playerVelocity = -constants.GetVector3("gravity_acceleration") * maxTime;
             }
 
             #endregion

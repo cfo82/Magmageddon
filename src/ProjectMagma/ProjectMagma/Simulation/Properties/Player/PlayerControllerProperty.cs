@@ -788,6 +788,14 @@ namespace ProjectMagma.Simulation
 
         private void PlayerPowerupCollisionHandler(SimulationTime simTime, Entity player, Entity powerup)
         {
+            // TODO: collision handler code should be moved into the powerup. this would simplify the addition
+            // of different new powerups since we do not need to have a huge "if-powerup1 else if powerup2 else ..."
+            // switch but instead can attach different powerup properties to different kinds of powerups!
+
+            // TODO: janick das isch kei gueti idee mit dene RemovePRoperty-befehl! gsetzt de fall dass das
+            // powerup zwei kollisione hät wird de collisionmanager en exception werfe sobald er zu de zweite
+            // kollision iteriert well ihm dete s "collision"-property fehlt!
+
             // remove 
             powerup.RemoveProperty("collision");
             powerup.RemoveProperty("render");

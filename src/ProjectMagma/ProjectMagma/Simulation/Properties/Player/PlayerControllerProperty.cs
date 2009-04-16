@@ -23,13 +23,14 @@ namespace ProjectMagma.Simulation
 
         private int iceSpikeCount = 0;
         private int iceSpikeRemovedCount = 0;
-        private double iceSpikeFiredAt = 0;
+        private float iceSpikeFiredAt = 0;
 
         private double hitPerformedAt = 0;
 
         private float islandRepulsionStoppedAt = 0;
 
-        private double islandSelectedAt = 0;
+        private float islandSelectedAt = 0;
+        private Vector3 lastStickDir = Vector3.Zero;
         private Entity selectedIsland = null;
         private Entity destinationIsland = null;
         private Vector3 lastIslandDir = Vector3.Zero;
@@ -267,24 +268,25 @@ namespace ProjectMagma.Simulation
             if (destinationIsland != null)
             {
                 Vector3 islandDir = destinationIsland.GetVector3("position") - playerPosition;
-
-                float yRotation = (float)Math.Atan2(islandDir.X, islandDir.Z);
-                Matrix rotationMatrix = Matrix.CreateRotationY(yRotation);
-                player.SetQuaternion("rotation", Quaternion.CreateFromRotationMatrix(rotationMatrix));
-
-                if (islandDir.Length() < 10 // todo: make this a constant
-                    && (Math.Sign(lastIslandDir.X) != Math.Sign(islandDir.X)
-                    || Math.Sign(lastIslandDir.Z) != Math.Sign(islandDir.Z)))
+                Vector3 isectPt = Vector3.Zero;
+                Ray3 ray = new Ray3(playerPosition, -Vector3.UnitY);
+                if (Vector3.Dot(islandDir, lastIslandDir) < 0
+                    && Game.Instance.Simulation.CollisionManager.GetIntersectionPoint(ref ray, destinationIsland, out isectPt))
                 {
                     // oscillation -> stop
                     SetActiveIsland(destinationIsland);
 
                     destinationIsland = null;
+                    selectedIsland = null;
                     playerVelocity = Vector3.Zero;
                     islandJumpPerformedAt = at;
                 }
                 else
                 {
+                    float yRotation = (float)Math.Atan2(islandDir.X, islandDir.Z);
+                    Matrix rotationMatrix = Matrix.CreateRotationY(yRotation);
+                    player.SetQuaternion("rotation", Quaternion.CreateFromRotationMatrix(rotationMatrix));
+
                     lastIslandDir = islandDir;
 
                     islandDir.Normalize();
@@ -535,14 +537,18 @@ namespace ProjectMagma.Simulation
                 && destinationIsland == null)
             {
                 if (controllerInput.rightStickMoved
-                    && activeIsland != null)
+                    && activeIsland != null) // must be standing on island
                 {
-                    if(selectedIsland == null // only allow reselection after timeout
-                        || at > islandSelectedAt + constants.GetFloat("island_deselection_timeout"))
+                    Vector3 stickDir = new Vector3(controllerInput.rightStickX, 0, controllerInput.rightStickY);
+                    stickDir.Normalize();
+                    bool stickMoved = Vector3.Dot(lastStickDir, stickDir) < constants.GetFloat("island_reselection_max_value");
+                    if (selectedIsland == null || stickMoved) // only allow reselection if stick moved slightly
                     {
+//                        Console.WriteLine("new selection (old: " + ((selectedIsland != null) ? selectedIsland.Name : "") + "): " + lastStickDir + "." + stickDir + " = " +
+//                            Vector3.Dot(lastStickDir, stickDir));
+
                         // select closest island in direction of stick
-                        Vector3 stickDir = new Vector3(controllerInput.rightStickX, 0, controllerInput.rightStickY);
-                        stickDir.Normalize();
+                        lastStickDir = stickDir;
                         selectedIsland = SelectBestIsland(stickDir);
 
                         if (selectedIsland != null)
@@ -582,7 +588,8 @@ namespace ProjectMagma.Simulation
             {
                 // deactivate attraction
                 if (attractedIsland != null
-                    && !controllerInput.attractionButtonPressed)
+                    && (!controllerInput.attractionButtonPressed
+                    || controllerInput.jetpackButtonPressed))
                 {
                     arrow.RemoveProperty("render");
                     arrow.RemoveProperty("shadow_cast");
@@ -604,13 +611,27 @@ namespace ProjectMagma.Simulation
 
                 destinationIsland = selectedIsland;
 
-                // calculate time to travel to island (in xz plane)
-                Vector3 islandDir = destinationIsland.GetVector3("position") - playerPosition;
+                // calculate time to travel to island (in xz plane) using an iterative approach
+                float oldTime = 0;
+                float time = 0;
+                Vector3 islandDir;
+                do
+                {
+                    Vector3 islandPos = Vector3.Zero;
+                    ((IslandControllerPropertyBase)destinationIsland.GetProperty("controller")).CalculateNewPosition(destinationIsland,
+                        ref islandPos, time);
+
+                    islandDir = (islandPos - playerPosition); 
+                    Vector3 islandDir2D = islandDir;
+                    islandDir2D.Y = 0;
+                    float dist2D = islandDir2D.Length();
+
+                    oldTime = time;
+                    time = dist2D / constants.GetFloat("island_jump_speed");
+                } 
+                    while (Math.Abs(oldTime - time) > 1/1000f);
+
                 lastIslandDir = islandDir;
-                Vector3 islandDir2D = islandDir;
-                islandDir2D.Y = 0;
-                float dist2D = islandDir2D.Length();
-                float time = dist2D / constants.GetFloat("island_jump_speed");
 
                 if (islandDir.Y > 0)
                 // use time to calculate speed on y-axis for nice jump, and multiplie with constant
@@ -736,7 +757,7 @@ namespace ProjectMagma.Simulation
                     islandJumpPerformedAt = simTime.At;
                 }
                 else
-                    if (destinationIsland != null) // if we are in jump, don't active
+                    if (destinationIsland != null) // if we are in jump, don't active island
                     {
                         return;
                     }
@@ -880,20 +901,30 @@ namespace ProjectMagma.Simulation
         /// <returns>an island entity or null</returns>
         private Entity SelectBestIsland(Vector3 dir)
         {
-            float nearestDist = float.MaxValue;
+            float closestAngle = float.MaxValue;
+            float distance = float.MaxValue;
             Entity selectedIsland = null;
             foreach (Entity island in Game.Instance.Simulation.IslandManager)
             {
                 Vector3 islandDir = island.GetVector3("position") - player.GetVector3("position");
                 float dist = islandDir.Length();
                 islandDir.Y = 0;
-                float angle = (float)(Math.Acos(Vector3.Dot(dir, islandDir) / dist) / Math.PI * 180);
-                if (angle < constants.GetFloat("island_aim_angle")
-                    && dist < nearestDist
-                    && island != activeIsland)
+                float angle = (float)(Math.Acos(Vector3.Dot(dir, islandDir) / dist));
+//                float angle = (float)(Math.Acos(Vector3.Dot(dir, islandDir) / dist) / Math.PI * 180);
+                if (island != activeIsland)
                 {
-                    selectedIsland = island;
-                    nearestDist = dist;
+                    if(angle < closestAngle
+                        || (Math.Abs(angle-closestAngle) < constants.GetFloat("island_aim_angle_eps")
+                        && dist < distance))
+                    {
+                        if (Math.Abs(angle - closestAngle) < constants.GetFloat("island_aim_angle_eps")
+                            && closestAngle <= angle)
+                        { 
+                        }
+                        selectedIsland = island;
+                        closestAngle = angle;
+                        distance = dist;
+                    }
                 }
             }
 
@@ -934,7 +965,7 @@ namespace ProjectMagma.Simulation
         /// </summary>
         private void SetActiveIsland(Entity island)
         {
-            //Console.WriteLine(player.Name + " activated island");
+            Console.WriteLine(player.Name + " activated island");
 
             // register with active
             ((Vector3Attribute)island.Attributes["position"]).ValueChanged += IslandPositionHandler;
@@ -952,7 +983,7 @@ namespace ProjectMagma.Simulation
         {
             if (activeIsland != null)
             {
-                //Console.WriteLine(player.Name+" left island");
+                Console.WriteLine(player.Name+" left island");
                 ((Vector3Attribute)activeIsland.Attributes["position"]).ValueChanged -= IslandPositionHandler;
                 activeIsland.SetInt("players_on_island", activeIsland.GetInt("players_on_island") - 1);
                 activeIsland = null;

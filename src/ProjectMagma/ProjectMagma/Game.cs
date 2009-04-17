@@ -231,6 +231,8 @@ namespace ProjectMagma
             formCollection.Dispose();
             #endif
 
+            simulation.Close();
+
             MediaPlayer.Stop();
         }
 

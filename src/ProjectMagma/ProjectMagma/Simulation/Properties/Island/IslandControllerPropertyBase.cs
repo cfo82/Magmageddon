@@ -22,7 +22,7 @@ namespace ProjectMagma.Simulation
             this.constants = Game.Instance.Simulation.EntityManager["island_constants"];
 
             if (!entity.HasAttribute("max_health"))
-                entity.AddIntAttribute("max_health", (int) (Game.GetScale(entity).Length() * constants.GetFloat("scale_health_multiplier")));
+                entity.AddIntAttribute("max_health", (int) (entity.GetVector3("scale").Length() * constants.GetFloat("scale_health_multiplier")));
             entity.AddIntAttribute("health", entity.GetInt("max_health"));
 
             entity.AddVector3Attribute("repulsion_velocity", Vector3.Zero);
@@ -75,7 +75,7 @@ namespace ProjectMagma.Simulation
 
             // apply pushback from players 
             Vector3 repulsionVelocity = island.GetVector3("repulsion_velocity");
-            Game.ApplyPushback(ref position, ref repulsionVelocity, constants.GetFloat("repulsion_deacceleration"),
+            Simulation.ApplyPushback(ref position, ref repulsionVelocity, constants.GetFloat("repulsion_deacceleration"),
                     OnPushbackEnded);
             island.SetVector3("repulsion_velocity", repulsionVelocity);
 

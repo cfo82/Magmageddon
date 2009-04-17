@@ -223,7 +223,6 @@ namespace ProjectMagma.Simulation
 
             // reset some stuff
             previousPosition = playerPosition;
-            collisionOccured = false;
             movedByStick = false;
 
             // get input
@@ -384,7 +383,7 @@ namespace ProjectMagma.Simulation
             }
 
             // pushback
-            Game.ApplyPushback(ref playerPosition, ref collisionPushbackVelocity, 0f);
+            Game.ApplyPushback(ref playerPosition, ref collisionPushbackVelocity, constants.GetFloat("player_pushback_deacceleration"));
             Game.ApplyPushback(ref playerPosition, ref playerPushbackVelocity, constants.GetFloat("player_pushback_deacceleration"));
             Game.ApplyPushback(ref playerPosition, ref hitPushbackVelocity, constants.GetFloat("player_pushback_deacceleration"));
 
@@ -688,6 +687,9 @@ namespace ProjectMagma.Simulation
 
             CheckPlayerAttributeRanges(player);
 
+            // reset stuff
+            collisionOccured = false;
+
             // check collision with lava
             Entity lava = Game.Instance.Simulation.EntityManager["lava"];
             if (playerPosition.Y < lava.GetVector3("position").Y)
@@ -788,17 +790,16 @@ namespace ProjectMagma.Simulation
             else
             {
                 Vector3 pos = player.GetVector3("position");
-                // todo constant 2??
-                Vector3 velocity = -contact[0].Normal * (pos - previousPosition).Length() * simTime.Dt / 2;
-                player.SetVector3("collision_pushback_velocity", velocity);
+                Vector3 velocity = -contact[0].Normal * (pos - previousPosition).Length() / simTime.Dt;
+                player.SetVector3("collision_pushback_velocity", player.GetVector3("collision_pushback_velocity") + velocity);
             }
         }
 
         private void PlayerPillarCollisionHandler(SimulationTime simTime, Entity player, Entity pillar, Contact co)
         {
             Vector3 pos = player.GetVector3("position");
-            Vector3 velocity = -co[0].Normal * (pos - previousPosition).Length() * simTime.Dt;
-            player.SetVector3("collision_pushback_velocity", velocity);
+            Vector3 velocity = -co[0].Normal * (pos - previousPosition).Length() / simTime.Dt;
+            player.SetVector3("collision_pushback_velocity", player.GetVector3("collision_pushback_velocity") + velocity);
         }
 
         private void PlayerLavaCollisionHandler(SimulationTime simTime, Entity player, Entity lava)
@@ -809,6 +810,7 @@ namespace ProjectMagma.Simulation
 
         private void PlayerPlayerCollisionHandler(SimulationTime simTime, Entity player, Entity otherPlayer, Contact c)
         {
+            Console.WriteLine(player.Name + " collided with " + otherPlayer.Name);
             // and hit?
             if (controllerInput.hitButtonPressed &&
                 simTime.At > hitPerformedAt + constants.GetInt("hit_cooldown"))
@@ -828,7 +830,7 @@ namespace ProjectMagma.Simulation
             else
             {
                 // normal feedback
-                if(movedByStick) // apply feedback to player that moved into the other one
+                if((previousPosition-player.GetVector3("position")).Length() > 0.1) // apply feedback to player that changed its position
                     player.SetVector3("player_pushback_velocity", player.GetVector3("player_pushback_velocity")
                         -c[0].Normal * constants.GetFloat("player_pushback_velocity_multiplier"));
             }

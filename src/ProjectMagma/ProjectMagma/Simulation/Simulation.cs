@@ -15,6 +15,7 @@ using xWinFormsLib;
 
 using ProjectMagma.Simulation;
 using ProjectMagma.Shared.LevelData;
+using ProjectMagma.Simulation.Attributes;
 
 namespace ProjectMagma.Simulation
 {
@@ -154,6 +155,137 @@ namespace ProjectMagma.Simulation
         {
             paused = false;
         }
+
+        #region interval execution functionality
+
+        private readonly Dictionary<string, float> appliedAt = new Dictionary<String, float>();
+
+        public void ApplyPerSecondAddition(Entity source, String identifier, int perSecond, ref int value)
+        {
+            float interval = 1000f / perSecond;
+            ApplyIntervalAddition(source, identifier, interval, ref value);
+        }
+
+        public void ApplyPerSecondAddition(Entity source, String identifier, int perSecond, IntAttribute attr)
+        {
+            float interval = 1000f / perSecond;
+            ApplyIntervalAddition(source, identifier, interval, attr);
+        }
+
+        public void ApplyPerSecondSubstractrion(Entity source, String identifier, int perSecond, ref int value)
+        {
+            float interval = 1000f / perSecond;
+            ApplyIntervalSubstraction(source, identifier, interval, ref value);
+        }
+
+        public void ApplyPerSecondSubstraction(Entity source, String identifier, int perSecond, IntAttribute attr)
+        {
+            float interval = 1000f / perSecond;
+            ApplyIntervalSubstraction(source, identifier, interval, attr);
+        }
+
+        public void ApplyIntervalAddition(Entity source, String identifier, float interval, IntAttribute attr)
+        {
+            int val = attr.Value;
+            ApplyIntervalAddition(source, identifier, interval, ref val);
+            attr.Value = val;
+        }
+
+        public void ApplyIntervalAddition(Entity source, String identifier, float interval, ref int value)
+        {
+            int val = value;
+            ExecuteAtInterval(source, identifier, interval, delegate(int diff) { val += diff; });
+            value = val;
+        }
+
+        public void ApplyIntervalSubstraction(Entity source, String identifier, float interval, IntAttribute attr)
+        {
+            int val = attr.Value;
+            ApplyIntervalSubstraction(source, identifier, interval, ref val);
+            attr.Value = val;
+        }
+
+        public void ApplyIntervalSubstraction(Entity source, String identifier, float interval, ref int value)
+        {
+            int val = value;
+            ExecuteAtInterval(source, identifier, interval, delegate(int diff) { val -= diff; });
+            value = val;
+        }
+
+        public void ExecuteAtInterval(Entity source, String identifier, float interval, IntervalExecutionAction action)
+        {
+            String fullIdentifier = source.Name + "_" + identifier;
+            float current = Time.At;
+
+            // if appliedAt doesn't contain string this is first time we called this functin
+            if (!appliedAt.ContainsKey(fullIdentifier))
+            {
+                appliedAt.Add(fullIdentifier, current);
+                return;
+            }
+
+            float last = appliedAt[fullIdentifier];
+            float nextUpdateTime = last + interval;
+            // if we didnt adapt on last update, then there was no call to this method at that time
+            // so we reset our time to current
+            if (Time.Last >= nextUpdateTime)
+            {
+                appliedAt[fullIdentifier] = current;
+                return;
+            }
+
+            // do we have to update yet?
+            if (current >= nextUpdateTime)
+            {
+                // calculate how many updates would have happened in between
+                int times = (int)((current - last) / interval);
+
+                // execute action
+                action(times);
+
+                // update time
+                appliedAt[fullIdentifier] = last + times * interval;
+            }
+        }
+        #endregion
+
+        #region collision pushback
+
+        public static void ApplyPushback(ref Vector3 position, ref Vector3 pushbackVelocity, float deacceleration)
+        {
+            ApplyPushback(ref position, ref pushbackVelocity, deacceleration, delegate { });
+        }
+
+        public static void ApplyPushback(ref Vector3 position, ref Vector3 pushbackVelocity, float deacceleration,
+            PushBackFinishedHandler ev)
+        {
+            if (pushbackVelocity.Length() > 0)
+            {
+                float dt = Game.Instance.Simulation.Time.Dt;
+
+                //                Console.WriteLine("pushback applied: "+pushbackVelocity);
+
+                Vector3 oldVelocity = pushbackVelocity;
+
+                // apply de-acceleration
+                pushbackVelocity -= Vector3.Normalize(pushbackVelocity) * deacceleration * dt;
+
+                // if length increases we accelerate in opposite direction -> stop
+                if (pushbackVelocity.Length() > oldVelocity.Length())
+                {
+                    // apply old velocity again
+                    position += oldVelocity * dt;
+                    // set zero
+                    pushbackVelocity = Vector3.Zero;
+                    // inform 
+                    ev();
+                }
+
+                // apply velocity
+                position += pushbackVelocity * dt;
+            }
+        }
+        #endregion
 
         private readonly EntityManager entityManager;
         private EntityKindManager pillarManager;

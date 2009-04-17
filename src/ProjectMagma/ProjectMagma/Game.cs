@@ -58,16 +58,14 @@ namespace ProjectMagma
             menu = Menu.Instance;
 
             this.IsFixedTimeStep = false;
-            graphics.SynchronizeWithVerticalRetrace = false;
-            graphics.ApplyChanges();
+//            graphics.SynchronizeWithVerticalRetrace = false;
+//            graphics.ApplyChanges();
 
             graphics.PreferredBackBufferWidth = 1280;
             graphics.PreferredBackBufferHeight = 720;
 
             Window.Title = "Project Magma";
             Content.RootDirectory = "Content";
-
-            appliedAt = new Dictionary<String, float>();
 
             bloom = new BloomComponent(this);
             Components.Add(bloom);
@@ -131,6 +129,8 @@ namespace ProjectMagma
             // TODO: load settings from storage, save at game close
             // 
 
+//            GraphicsDevice.RenderState.MultiSampleAntiAlias = true;
+//            GraphicsDevice.PresentationParameters.MultiSampleType = MultiSampleType.FourSamples;
 
             #if !XBOX
             // create the gui system
@@ -357,170 +357,6 @@ namespace ProjectMagma
             get { return renderer; }
         }
 
-
-        /**
-         * TODO:
-         * move stuff below into utility class
-         **/
-
-
-        #region Strange Stuff used by Janicks code
-
-        public static Vector3 GetPosition(Entity player)
-        {
-            return player.GetVector3("position");
-        }
-
-        public static Vector3 GetScale(Entity player)
-        {
-            if (player.HasVector3("scale"))
-            {
-                return player.GetVector3("scale");
-            }
-            else
-            {
-                return Vector3.One;
-            }
-        }
-
-        public static Quaternion GetRotation(Entity player)
-        {
-            if (player.HasQuaternion("rotation"))
-            {
-                return player.GetQuaternion("rotation");
-            }
-            else
-            {
-                return Quaternion.Identity;
-            }
-        }
-        public static void ApplyPushback(ref Vector3 position, ref Vector3 pushbackVelocity, float deacceleration)
-        {
-            ApplyPushback(ref position, ref pushbackVelocity, deacceleration, delegate { });
-        }
-
-        public static void ApplyPushback(ref Vector3 position, ref Vector3 pushbackVelocity, float deacceleration,
-            PushBackFinishedHandler ev)
-        {
-            if (pushbackVelocity.Length() > 0)
-            {
-                float dt = Game.Instance.Simulation.Time.Dt;
-
-//                Console.WriteLine("pushback applied: "+pushbackVelocity);
-
-                Vector3 oldVelocity = pushbackVelocity;
-
-                // apply de-acceleration
-                pushbackVelocity -= Vector3.Normalize(pushbackVelocity) * deacceleration * dt;
-
-                // if length increases we accelerate in opposite direction -> stop
-                if (pushbackVelocity.Length() > oldVelocity.Length())
-                {
-                    // apply old velocity again
-                    position += oldVelocity * dt;
-                    // set zero
-                    pushbackVelocity = Vector3.Zero;
-                    // inform 
-                    ev();
-                }
-
-                // apply velocity
-                position += pushbackVelocity * dt;
-            }
-        }
-
-        private readonly Dictionary<string, float> appliedAt;
-
-        public void ApplyPerSecondAddition(Entity source, String identifier, int perSecond, ref int value)
-        {
-            float interval = 1000f / perSecond;
-            ApplyIntervalAddition(source, identifier, interval, ref value);
-        }
-
-        public void ApplyPerSecondAddition(Entity source, String identifier, int perSecond, IntAttribute attr)
-        {
-            float interval = 1000f / perSecond;
-            ApplyIntervalAddition(source, identifier, interval, attr);
-        }
-
-        public void ApplyPerSecondSubstractrion(Entity source, String identifier, int perSecond, ref int value)
-        {
-            float interval = 1000f / perSecond;
-            ApplyIntervalSubstraction(source, identifier, interval, ref value);
-        }
-
-        public void ApplyPerSecondSubstraction(Entity source, String identifier, int perSecond, IntAttribute attr)
-        {
-            float interval = 1000f / perSecond;
-            ApplyIntervalSubstraction(source, identifier, interval, attr);
-        }
-
-
-        public void ApplyIntervalAddition(Entity source, String identifier, float interval, IntAttribute attr)
-        {
-            int val = attr.Value;
-            ApplyIntervalAddition(source, identifier, interval, ref val);
-            attr.Value = val;
-        }
-
-        public void ApplyIntervalAddition(Entity source, String identifier, float interval, ref int value)
-        {
-            int val = value;
-            ExecuteAtInterval(source, identifier, interval, delegate(int diff) { val += diff; });
-            value = val;
-        }
-
-        public void ApplyIntervalSubstraction(Entity source, String identifier, float interval, IntAttribute attr)
-        {
-            int val = attr.Value;
-            ApplyIntervalSubstraction(source, identifier, interval, ref val);
-            attr.Value = val;
-        }
-
-        public void ApplyIntervalSubstraction(Entity source, String identifier, float interval, ref int value)
-        {
-            int val = value;
-            ExecuteAtInterval(source, identifier, interval, delegate(int diff) { val -= diff; });
-            value = val;
-        }
-
-        public void ExecuteAtInterval(Entity source, String identifier, float interval, IntervalExecutionAction action)
-        {
-            String fullIdentifier = source.Name + "_" + identifier;
-            float current = simulation.Time.At;
-
-            // if appliedAt doesn't contain string this is first time we called this functin
-            if (!appliedAt.ContainsKey(fullIdentifier))
-            {
-                appliedAt.Add(fullIdentifier, current);
-                return;
-            }
-
-            float last = appliedAt[fullIdentifier];
-            float nextUpdateTime = last + interval;
-            // if we didnt adapt on last update, then there was no call to this method at that time
-            // so we reset our time to current
-            if (simulation.Time.Last >= nextUpdateTime)
-            {
-                appliedAt[fullIdentifier] = current;
-                return;
-            }
-
-            // do we have to update yet?
-            if (current >= nextUpdateTime)
-            {
-                // calculate how many updates would have happened in between
-                int times = (int)((current - last) / interval);
-                
-                // execute action
-                action(times);
-                
-                // update time
-                appliedAt[fullIdentifier] = last + times * interval;
-            }
-        }
-
-        #endregion
     }
 
     public delegate void IntervalExecutionAction(int times);

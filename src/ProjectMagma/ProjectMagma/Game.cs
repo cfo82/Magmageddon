@@ -94,9 +94,9 @@ namespace ProjectMagma
                 Game.instance = game;
 
                 game.Run();
-                
-                Game.instance = null;
             }
+
+            Game.instance = null;
         }
 
         public static Game Instance

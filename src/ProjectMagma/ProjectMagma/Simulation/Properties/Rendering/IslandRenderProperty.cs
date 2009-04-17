@@ -47,6 +47,7 @@ namespace ProjectMagma.Simulation
             Texture2D islandTexture = Game.Instance.Content.Load<Texture2D>(islandTextureName);
 
             renderable = new IslandRenderable(scale, rotation, position, model);
+            renderable.WindStrength = entity.GetFloat("wind_strength");
             renderable.SetTexture(islandTexture);
             
             Game.Instance.Renderer.AddRenderable(renderable);

@@ -1,3 +1,17 @@
+// modified by dpk
+texture Clouds;
+sampler2D CloudsSampler = sampler_state
+{
+	Texture = <Clouds>;
+	MinFilter = Linear;
+	MagFilter = Linear;
+	MipFilter = Linear;
+	AddressU = Mirror;
+	AddressV = Mirror;
+};
+float4 WindStrength;
+float2 RandomOffset;
+
 //-----------------------------------------------------------------------------
 // BasicEffect.fx
 //
@@ -623,11 +637,24 @@ float4 PSBasicPixelLightingTx(PixelLightingPSInputTx pin) : COLOR
 	
 	ColorPair lightResult = ComputePerPixelLights(E, N);
 	
-	float4 diffuse = tex2D(TextureSampler, pin.TexCoord) * float4(lightResult.Diffuse * pin.Diffuse.rgb, pin.Diffuse.a);
+	float2 texCoord = pin.TexCoord;
+
+	if(abs(N.y)<0.4)	
+	{
+		float4 clouds = tex2D(CloudsSampler, texCoord + RandomOffset);
+		//float4 clouds = tex2D(CloudsSampler, texCoord);
+		float2 perturbation = clouds.gb * 2 * WindStrength - WindStrength;
+		texCoord.x += perturbation.x;
+	}	
+	
+	float4 diffuse = tex2D(TextureSampler, texCoord) * float4(lightResult.Diffuse * pin.Diffuse.rgb, pin.Diffuse.a);
 	float4 color = diffuse + float4(lightResult.Specular, 0);
 	color.rgb = lerp(color.rgb, FogColor, pin.PositionWS.w);
 	
-	return color;
+//	if(abs(N.y)<0.4)
+		//return float4(0,0,0,1);
+//	else
+		return color;
 }
 
 
@@ -670,8 +697,8 @@ PixelShader PSArray[12] =
 	
 	compile ps_2_0 PSBasicPixelLighting(),
 	compile ps_2_0 PSBasicPixelLighting(),
-	compile ps_2_0 PSBasicPixelLightingTx(),
-	compile ps_2_0 PSBasicPixelLightingTx(),
+	compile ps_3_0 PSBasicPixelLightingTx(),
+	compile ps_3_0 PSBasicPixelLightingTx(),
 };
 
 

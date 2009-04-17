@@ -3,7 +3,7 @@ using Microsoft.Xna.Framework.Graphics;
 
 namespace ProjectMagma.Renderer
 {
-    public class TexturedRenderable : Renderable
+    public class TexturedRenderable : ModelRenderable
     {
         public TexturedRenderable(
             Vector3 scale,

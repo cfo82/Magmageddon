@@ -22,9 +22,6 @@ namespace ProjectMagma.Simulation.Collision
 
             this.thread = new Thread(Run);
             this.thread.Name = "CollisionThread" + processor;
-#if XBOX
-            this.thread.SetProcessorAffinity(new int[]{processor});
-#endif
             this.thread.Start();
         }
 
@@ -36,6 +33,9 @@ namespace ProjectMagma.Simulation.Collision
 
         private void Run()
         {
+#if XBOX
+            this.thread.SetProcessorAffinity(processor);
+#endif
             try
             {
                 while (true)

@@ -56,7 +56,7 @@
       <Attribute name="island_reselection_max_value" template="float" value="0.9"/>
       <Attribute name="island_reselection_timeout" template="float" value="60"/>
       <Attribute name="island_deselection_timeout" template="float" value="200"/>
-      <Attribute name="island_jump_arc_height" template="float" value="120"/>
+      <Attribute name="island_jump_arc_height" template="float" value="220"/>
       <Attribute name="island_jump_speed" template="float" value="900"/>
       <Attribute name="island_jump_destination_radius" template="float" value=".1"/>
 

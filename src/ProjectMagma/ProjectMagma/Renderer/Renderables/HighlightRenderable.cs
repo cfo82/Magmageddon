@@ -3,7 +3,7 @@ using Microsoft.Xna.Framework.Graphics;
 
 namespace ProjectMagma.Renderer
 {
-    public class HighlightRenderable : Renderable
+    public class HighlightRenderable : ModelRenderable
     {
         public HighlightRenderable(
             Vector3 scale,

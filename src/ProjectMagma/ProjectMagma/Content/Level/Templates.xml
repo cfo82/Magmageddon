@@ -56,6 +56,7 @@
       <Property name="death" type="ProjectMagma.Simulation.DeathProperty"/>
       <Property name="shadow_cast" type="ProjectMagma.Simulation.ShadowCastProperty"/>
       <Property name="render" type="ProjectMagma.Simulation.IslandRenderProperty"/>
+      <!--Property name="render" type="ProjectMagma.Simulation.RenderProperty"/-->
       <Property name="render_highlight" type="ProjectMagma.Simulation.RenderHighlightProperty"/>
     </Properties>
   </Entity>
@@ -63,18 +64,21 @@
   <Entity name="island_base_burnt" extends="island_base" abstract="true">
     <Attributes>
       <Attribute name="mesh" template="string" value="Models/Islands/bIsland_TypeA_001"/>
+      <Attribute name="wind_strength" template="float" value="0.0"/>
     </Attributes>
   </Entity>
 
   <Entity name="island_base_grass" extends="island_base" abstract="true">
     <Attributes>
       <Attribute name="mesh" template="string" value="Models/Islands/gIsland_TypeA_001"/>
+      <Attribute name="wind_strength" template="float" value="0.015"/>
     </Attributes>
   </Entity>
 
   <Entity name="island_base_ice" extends="island_base" abstract="true">
     <Attributes>
       <Attribute name="mesh" template="string" value="Models/Islands/iIsland_TypeA_001"/>
+      <Attribute name="wind_strength" template="float" value="0.0"/>
     </Attributes>
   </Entity>
 

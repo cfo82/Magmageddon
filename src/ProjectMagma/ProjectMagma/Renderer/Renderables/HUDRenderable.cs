@@ -90,11 +90,23 @@ namespace ProjectMagma.Renderer
             spriteBatch.Draw(fuelBar, new Vector2(fuelX, 117), new Rectangle(0, 0, fuelBarWidth, fuelBar.Height),
                 Color.White, 0f, Vector2.Zero, 1, effects, 0);
 
-            spriteBatch.DrawString(font, String.Format("{0:00.0} fps", (1000f / gameTime.ElapsedGameTime.TotalMilliseconds))
-                + " " + String.Format("{0:00.0} sps", (1000f / Game.Instance.Simulation.Time.DtMs)),
-                new Vector2(screenWidth / 2 - 20, 5), Color.Silver);
+            //spriteBatch.DrawString(font, String.Format("{0:00.0} fps", (1000f / gameTime.ElapsedGameTime.TotalMilliseconds))
+            //    + " " + String.Format("{0:00.0} sps", (1000f / Game.Instance.Simulation.Time.DtMs)),
+            //  new Vector2(screenWidth / 2 - 20, 5), Color.Silver);
+
+            numFrames++;
+            totalMilliSeconds += gameTime.ElapsedGameTime.TotalMilliseconds;
+            spriteBatch.DrawString(
+                font,
+                String.Format("{0:000.0} fps", (1000f / gameTime.ElapsedGameTime.TotalMilliseconds)) + " " +
+                String.Format("{0:000.0} avg", (1000.0f * numFrames / totalMilliSeconds)),
+                new Vector2(screenWidth / 2 - 20, 5), Color.Silver
+            );
+
             spriteBatch.End();
         }
+        static int numFrames = 0;
+        static double totalMilliSeconds = 0;
 
         public RenderMode RenderMode
         {

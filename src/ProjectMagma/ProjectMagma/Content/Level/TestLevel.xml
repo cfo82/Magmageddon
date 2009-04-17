@@ -29,8 +29,9 @@
       <Attribute name="kind" template="string" value="lava"/>
       <Attribute name="position" template="float3" value="0 0 0"/>
       <Attribute name="scale" template="float3" value="0.8 0.12 0.8"/>
-      <!--<Attribute name="scale" template="float3" value="4 4 4"/>-->
+      <!--Attribute name="scale" template="float3" value="1200 4 1200"/-->
       <Attribute name="mesh" template="string" value="Models\Environment\lava10"/>
+      <!--Attribute name="mesh" template="string" value="Models\Primitives\lava_primitive"/-->
       <Attribute name="sparsestucco_texture" template="string" value="Textures/Lava/sparsestucco"/>
       <Attribute name="firefractal_texture" template="string" value="Textures/Lava/firefractal"/>
       <Attribute name="vectorcloud_texture" template="string" value="Textures/Lava/vectorclouds"/>
@@ -38,6 +39,7 @@
     </Attributes>
     <Properties>
       <Property name="render" type="ProjectMagma.Simulation.LavaRenderProperty"/>
+      <!--Property name="render" type="ProjectMagma.Simulation.RenderProperty"/-->
       <Property name="render_highlight" type="ProjectMagma.Simulation.RenderHighlightProperty"/>
     </Properties>
   </Entity>

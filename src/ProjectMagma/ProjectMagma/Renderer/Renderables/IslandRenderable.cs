@@ -8,7 +8,7 @@ using ProjectMagma.Shared.Math.Integration;
 
 namespace ProjectMagma.Renderer
 {
-    public class IslandRenderable : Renderable
+    public class IslandRenderable : ModelRenderable
     {
         public IslandRenderable (
             Vector3 scale,
@@ -26,10 +26,23 @@ namespace ProjectMagma.Renderer
 
             lavaBrightness = new DoublyIntegratedFloat(1.0f, 0.0f, 0.5f, 1.5f, -1.0f, 1.0f);
             lightTime = new DoublyIntegratedFloat(0.0f, 0.0f, 0.0f, 0.0f, -1.0f, 1.0f);
+            randomOffset = new DoublyIntegratedVector2(Vector2.Zero, Vector2.Zero, 0.0f, 0.0f, -1.0f, 1.0f);
+
+            effect.Parameters["DiffuseColor"].SetValue(Vector3.One * 1.0f);
+            effect.Parameters["EmissiveColor"].SetValue(new Vector3(0.0f, 0.0f, 0.0f));
+            effect.Parameters["SpecularColor"].SetValue(Vector3.One * 0.0f);
+            effect.Parameters["SpecularPower"].SetValue(1.0f);
+            effect.Parameters["Alpha"].SetValue(1.0f);
+
+            //effect.Parameters["FogEnabled"].SetValue(1.0f);
+            //effect.Parameters["FogStart"].SetValue(1000.0f);
+            //effect.Parameters["FogEnd"].SetValue(2000.0f);
+            //effect.Parameters["FogColor"].SetValue(new Vector3(1.0f, 1.0f, 1.0f));
         }
 
         private DoublyIntegratedFloat lightTime;
         private DoublyIntegratedFloat lavaBrightness;
+        private DoublyIntegratedVector2 randomOffset;
 
         public void SetTexture(
             Texture2D islandTexture
@@ -63,43 +76,34 @@ namespace ProjectMagma.Renderer
                 effect.Parameters["EyePosition"].SetValue(Game.Instance.EyePosition);
                 effect.Parameters["ShaderIndex"].SetValue(10);
 
-                effect.Parameters["DiffuseColor"].SetValue(Vector3.One * 1.0f);
-                effect.Parameters["EmissiveColor"].SetValue(new Vector3(0.0f, 0.0f, 0.0f));
-                effect.Parameters["SpecularColor"].SetValue(Vector3.One * 0.0f);
-                effect.Parameters["SpecularPower"].SetValue(1.0f);
-                effect.Parameters["Alpha"].SetValue(1.0f);
-
-                //effect.Parameters["DirLight0DiffuseColor"].SetValue(new Vector3(185, 203, 251)/255.0f*1.5f);
-                effect.Parameters["DirLight0DiffuseColor"].SetValue(new Vector3(112, 213, 255)/255.0f*1f);
-                effect.Parameters["DirLight0Direction"].SetValue(new Vector3(0,-1,0));
-                effect.Parameters["DirLight0SpecularColor"].SetValue(Vector3.One * 1.0f);
-
-                //lavaBrightness = (float)random.NextDouble() + 0.5f;
-                //float dd_lavaBrightness = (float) random.NextDouble() * 0.00002f - 0.00001f;
-                //d_lavaBrightness += dd_lavaBrightness * gameTime.ElapsedGameTime.Milliseconds;
-                //lavaBrightness += d_lavaBrightness * gameTime.ElapsedGameTime.Milliseconds;
-                //lavaBrightness = 1.0f;
-                lavaBrightness.RandomlyIntegrate(gameTime, 30.0f, 0.0f);
-                effect.Parameters["DirLight1DiffuseColor"].SetValue(new Vector3(1.0f, 0.5f, 0.1f)*lavaBrightness.Value);
-                effect.Parameters["DirLight1Direction"].SetValue(new Vector3(0, 1, -1));
-                effect.Parameters["DirLight1SpecularColor"].SetValue(Vector3.One * 1.0f);
-
-                effect.Parameters["DirLight2DiffuseColor"].SetValue(new Vector3(1.0f, 1.0f, 1.0f)*0.9f);
-                //Vector3 dir = new Vector3(7, -3, 20);
-
-                ////lightTimeX.RandomlyIntegrate(gameTime, 1000.0f, 0.0f);
-                lightTime.RandomlyIntegrate(gameTime, 10.0f, 0.2f);
-                Vector3 dir = new Vector3((float) Math.Cos(lightTime.Value),-0.2f,(float) Math.Sin(lightTime.Value));
-                effect.Parameters["DirLight2Direction"].SetValue(Vector3.Normalize(dir));
-                effect.Parameters["DirLight2SpecularColor"].SetValue(Vector3.One * 1.0f);
+                UpdateLights(renderer.LightManager);
 
                 effect.Parameters["BasicTexture"].SetValue(islandTexture);
+                effect.Parameters["Clouds"].SetValue(renderer.VectorCloudTexture);
+                effect.Parameters["WindStrength"].SetValue(windStrength);
+                randomOffset.RandomlyIntegrate(gameTime, 0.2f, 0.0f);
+                effect.Parameters["RandomOffset"].SetValue(randomOffset.Value);
 
                 mesh.Draw();
 
                 // second render pass - draw shadows upon current mesh
                 DrawShadow(ref renderer, mesh, world);
             }
+        }
+
+        private void UpdateLights(LightManager lightManager)
+        {
+            effect.Parameters["DirLight0DiffuseColor"].SetValue(lightManager.SkyLight.DiffuseColor);
+            effect.Parameters["DirLight0SpecularColor"].SetValue(lightManager.SkyLight.SpecularColor);
+            effect.Parameters["DirLight0Direction"].SetValue(lightManager.SkyLight.Direction);
+
+            effect.Parameters["DirLight1DiffuseColor"].SetValue(lightManager.LavaLight.DiffuseColor);
+            effect.Parameters["DirLight1SpecularColor"].SetValue(lightManager.LavaLight.SpecularColor);
+            effect.Parameters["DirLight1Direction"].SetValue(lightManager.LavaLight.Direction);
+
+            effect.Parameters["DirLight2DiffuseColor"].SetValue(lightManager.SpotLight.DiffuseColor);
+            effect.Parameters["DirLight2SpecularColor"].SetValue(lightManager.SpotLight.SpecularColor);
+            effect.Parameters["DirLight2Direction"].SetValue(lightManager.SpotLight.Direction);
         }
 
         private void DrawShadow(ref Renderer renderer, ModelMesh mesh, Matrix world)
@@ -148,6 +152,14 @@ namespace ProjectMagma.Renderer
             set { position = value; }
         }
 
+        public float WindStrength
+        {
+            get { return windStrength; }
+            set { windStrength = value; }
+        }
+
+        private float windStrength;
+
         private Vector3 scale;
         private Quaternion rotation;
         private Vector3 position;
@@ -156,7 +168,5 @@ namespace ProjectMagma.Renderer
         private Effect effect;
         
         private Texture2D islandTexture;
-
-        private Random random;
     }
 }

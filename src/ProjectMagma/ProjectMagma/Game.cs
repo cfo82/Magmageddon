@@ -58,8 +58,8 @@ namespace ProjectMagma
             menu = Menu.Instance;
 
             this.IsFixedTimeStep = false;
-//            graphics.SynchronizeWithVerticalRetrace = false;
-//            graphics.ApplyChanges();
+            graphics.SynchronizeWithVerticalRetrace = false;
+            graphics.ApplyChanges();
 
             graphics.PreferredBackBufferWidth = 1280;
             graphics.PreferredBackBufferHeight = 720;
@@ -206,8 +206,11 @@ namespace ProjectMagma
         public void LoadLevel(String level)
         {
             // reset old simulation
-            if(simulation != null)
-                simulation.EntityManager.Clear();
+            if (simulation != null)
+            {
+                simulation.Close();
+                
+            }
 
             // init simulation
             simulation = new ProjectMagma.Simulation.Simulation();
@@ -227,7 +230,6 @@ namespace ProjectMagma
             #if !XBOX
             formCollection.Dispose();
             #endif
-            simulation.Close();
 
             MediaPlayer.Stop();
         }

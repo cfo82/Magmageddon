@@ -48,10 +48,15 @@ namespace ProjectMagma.Renderer
                         shadowMapSize,
                         shadowMapSize,
                         device.DepthStencilBuffer.Format);
+
+            vectorCloudTexture = Game.Instance.Content.Load<Texture2D>("Textures/Lava/vectorclouds");
+            LightManager = new LightManager();
         }
         
         public void Render(GameTime gameTime)
         {
+            LightManager.Update(gameTime);
+
             device.Clear(Color.CornflowerBlue);
 
             // 1) Set the light's render target
@@ -236,6 +241,8 @@ namespace ProjectMagma.Renderer
             get { return lightProjection; }
         }
 
+        public LightManager LightManager { get; set; }
+
         private List<Renderable> shadowCaster;
         private List<Renderable> opaqueRenderables;
         private List<Renderable> transparentRenderables;
@@ -251,5 +258,14 @@ namespace ProjectMagma.Renderer
         private int shadowMapSize = 1024;
         private DepthStencilBuffer shadowStencilBuffer;
         private RenderTarget2D lightRenderTarget;
+
+        private Texture2D vectorCloudTexture;
+
+        public Texture2D VectorCloudTexture
+        {
+            get { return vectorCloudTexture; }
+        }   
+
+        //private LightManager lightManager;
     }
 }

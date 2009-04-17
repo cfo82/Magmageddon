@@ -7,7 +7,7 @@
       <Attribute name="kind" template="string" value="player"/>
       <Attribute name="position" template="float3" value="0 0 0"/>
       <Attribute name="scale" template="float3" value="15 15 15"/>
-      <Attribute name="bv_type" template="string" value="alignedbox3tree"/>
+      <Attribute name="bv_type" template="string" value="sphere"/>
     </Attributes>
     <Properties>
       <Property name="collision" type="ProjectMagma.Simulation.Collision.CollisionProperty"/>

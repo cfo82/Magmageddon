@@ -86,10 +86,14 @@
   <ItemGroup>
     <Compile Include="BloomComponent.cs" />
     <Compile Include="BloomSettings.cs" />
-    <Compile Include="DoublyIntegrated.cs" />
+    <Compile Include="DoublyIntegratedVector2.cs" />
+    <Compile Include="DoublyIntegratedFloat.cs" />
+    <Compile Include="Renderer\LightManager.cs" />
+    <Compile Include="Renderer\ParallelLight.cs" />
     <Compile Include="Renderer\Renderables\IslandRenderable.cs" />
     <Compile Include="Renderer\Renderables\LavaRenderable.cs" />
     <Compile Include="Renderer\Renderables\HUDRenderable.cs" />
+    <Compile Include="Renderer\Renderables\ModelRenderable.cs" />
     <Compile Include="Renderer\Renderables\TexturedRenderable.cs" />
     <Compile Include="Renderer\Renderables\HighlightRenderable.cs" />
     <Compile Include="Renderer\Renderables\DefaultRenderable.cs" />

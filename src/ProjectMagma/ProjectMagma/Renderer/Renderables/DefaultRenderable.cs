@@ -3,7 +3,7 @@ using Microsoft.Xna.Framework.Graphics;
 
 namespace ProjectMagma.Renderer
 {
-    public class DefaultRenderable : Renderable
+    public class DefaultRenderable : ModelRenderable
     {
         public DefaultRenderable(
             Vector3 scale,

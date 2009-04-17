@@ -226,12 +226,11 @@ namespace ProjectMagma
         /// </summary>
         protected override void UnloadContent()
         {
-            // TODO: Unload any non ContentManager content here
+            simulation.Close();
+
             #if !XBOX
             formCollection.Dispose();
             #endif
-
-            simulation.Close();
 
             MediaPlayer.Stop();
         }

@@ -60,8 +60,8 @@ namespace ProjectMagma.Simulation
 
         public void Close()
         {
-            collisionManager.Close();
             entityManager.Clear();
+            collisionManager.Close();
         }
 
         public void Update(GameTime gameTime)

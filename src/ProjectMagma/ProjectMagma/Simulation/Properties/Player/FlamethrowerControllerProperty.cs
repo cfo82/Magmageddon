@@ -89,7 +89,7 @@ namespace ProjectMagma.Simulation
             else
             if(flameThrowerState == FlameThrowerState.Active)
             {
-                Game.Instance.ApplyPerSecondSubstraction(flame, "energy_deducation", constants.GetInt("flamethrower_energy_per_second"),
+                Game.Instance.Simulation.ApplyPerSecondSubstraction(flame, "energy_deducation", constants.GetInt("flamethrower_energy_per_second"),
                     player.GetIntAttribute("energy"));
             }
             // else cooldown -> do nothing
@@ -151,7 +151,7 @@ namespace ProjectMagma.Simulation
 
             if (other.HasAttribute("health"))
             {
-                Game.Instance.ApplyPerSecondSubstraction(flame, other.Name+"_flamethrower_damage", constants.GetInt("flamethrower_damage_per_second"),
+                Game.Instance.Simulation.ApplyPerSecondSubstraction(flame, other.Name + "_flamethrower_damage", constants.GetInt("flamethrower_damage_per_second"),
                     other.GetIntAttribute("health"));
                 if (other.GetString("kind") == "player")
                     player.SetInt("frozen", 0);

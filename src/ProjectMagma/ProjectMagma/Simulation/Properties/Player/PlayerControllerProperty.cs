@@ -270,10 +270,9 @@ namespace ProjectMagma.Simulation
                 Vector3 islandDir = destinationIsland.GetVector3("position") - playerPosition;
                 Vector3 isectPt = Vector3.Zero;
                 Ray3 ray = new Ray3(playerPosition, -Vector3.UnitY);
-                if (Vector3.Dot(islandDir, lastIslandDir) < 0
+                if (Vector3.Dot(islandDir, lastIslandDir) < 0 // oscillation?
                     && Game.Instance.Simulation.CollisionManager.GetIntersectionPoint(ref ray, destinationIsland, out isectPt))
                 {
-                    // oscillation -> stop
                     SetActiveIsland(destinationIsland);
 
                     destinationIsland = null;
@@ -289,8 +288,10 @@ namespace ProjectMagma.Simulation
 
                     lastIslandDir = islandDir;
 
+//                    islandDir.Y = 0;
                     islandDir.Normalize();
                     Vector3 velocity = islandDir * constants.GetFloat("island_jump_speed");
+//                        - constants.GetVector3("gravity_acceleration") * dt;
 
                     playerPosition += velocity * dt;
                 }
@@ -383,9 +384,9 @@ namespace ProjectMagma.Simulation
             }
 
             // pushback
-            Game.ApplyPushback(ref playerPosition, ref collisionPushbackVelocity, constants.GetFloat("player_pushback_deacceleration"));
-            Game.ApplyPushback(ref playerPosition, ref playerPushbackVelocity, constants.GetFloat("player_pushback_deacceleration"));
-            Game.ApplyPushback(ref playerPosition, ref hitPushbackVelocity, constants.GetFloat("player_pushback_deacceleration"));
+            Simulation.ApplyPushback(ref playerPosition, ref collisionPushbackVelocity, constants.GetFloat("player_pushback_deacceleration"));
+            Simulation.ApplyPushback(ref playerPosition, ref playerPushbackVelocity, constants.GetFloat("player_pushback_deacceleration"));
+            Simulation.ApplyPushback(ref playerPosition, ref hitPushbackVelocity, constants.GetFloat("player_pushback_deacceleration"));
 
             // frozen!?
             if (player.GetInt("frozen") > 0)
@@ -410,7 +411,7 @@ namespace ProjectMagma.Simulation
 
                 // todo: specify point in model
                 Vector3 pos = new Vector3(playerPosition.X+5, playerPosition.Y+10, playerPosition.Z+5);
-                Vector3 viewVector = Vector3.Transform(new Vector3(0, 0, 1), Game.GetRotation(player));
+                Vector3 viewVector = Vector3.Transform(new Vector3(0, 0, 1), GetRotation(player));
 
                 #region search next player in range
 
@@ -485,7 +486,7 @@ namespace ProjectMagma.Simulation
                         flameThrowerSoundInstance = flameThrowerSound.Play(Game.Instance.EffectsVolume, 1, 0, true);
 
                         Vector3 pos = new Vector3(playerPosition.X+10, playerPosition.Y+10, playerPosition.Z);
-                        Vector3 viewVector = Vector3.Transform(new Vector3(0, 0, 1), Game.GetRotation(player));
+                        Vector3 viewVector = Vector3.Transform(new Vector3(0, 0, 1), GetRotation(player));
 
                         flame = new Entity("flame" + "_" + player.Name);
                         flame.AddStringAttribute("player", player.Name);
@@ -497,7 +498,7 @@ namespace ProjectMagma.Simulation
                         flame.AddStringAttribute("mesh", "Models/Visualizations/flame_primitive");
                         flame.AddVector3Attribute("scale", new Vector3(0, 0, 0));
                         flame.AddVector3Attribute("full_scale", new Vector3(26, 26, 26));
-                        flame.AddQuaternionAttribute("rotation", Game.GetRotation(player));
+                        flame.AddQuaternionAttribute("rotation", GetRotation(player));
 
                         flame.AddStringAttribute("bv_type", "sphere");
 
@@ -518,7 +519,7 @@ namespace ProjectMagma.Simulation
 
             // recharge energy
             if (flame == null)
-                Game.Instance.ApplyIntervalAddition(player, "energy_recharge", constants.GetInt("energy_recharge_interval"),
+                Game.Instance.Simulation.ApplyIntervalAddition(player, "energy_recharge", constants.GetInt("energy_recharge_interval"),
                     player.GetIntAttribute("energy"));
 
             // island repulsion
@@ -634,7 +635,7 @@ namespace ProjectMagma.Simulation
 
                     islandDir = (islandPos - playerPosition); 
                     Vector3 islandDir2D = islandDir;
-                    islandDir2D.Y = 0;
+//                    islandDir2D.Y = 0;
                     float dist2D = islandDir2D.Length();
 
                     if (time > maxTime)
@@ -746,23 +747,22 @@ namespace ProjectMagma.Simulation
         {
             float dt = simTime.Dt;
 
+            if (island == destinationIsland)
+            {
+                // ignore collision with destinationisland
+                return;
+            }
+
             // on top?
             if (Vector3.Dot(Vector3.UnitY, contact[0].Normal) < 0)
             {
 
 //                Console.WriteLine(player.Name + " collidet with " + island.Name);
 
-                if (island == destinationIsland)
+                if (destinationIsland != null) // if we are in jump, don't active island
                 {
-                    // stop island jump
-                    destinationIsland = null;
-                    islandJumpPerformedAt = simTime.At;
+                    return;
                 }
-                else
-                    if (destinationIsland != null) // if we are in jump, don't active island
-                    {
-                        return;
-                    }
 
                 // has active island changed (either from none or another)
                 if (activeIsland != island)
@@ -804,7 +804,7 @@ namespace ProjectMagma.Simulation
 
         private void PlayerLavaCollisionHandler(SimulationTime simTime, Entity player, Entity lava)
         {
-            Game.Instance.ApplyPerSecondSubstraction(player, "lava_damage", constants.GetInt("lava_damage_per_second"),
+            Game.Instance.Simulation.ApplyPerSecondSubstraction(player, "lava_damage", constants.GetInt("lava_damage_per_second"),
                 player.GetIntAttribute("health"));
         }
 
@@ -961,6 +961,35 @@ namespace ProjectMagma.Simulation
                 ((Vector3Attribute)activeIsland.Attributes["position"]).ValueChanged -= IslandPositionHandler;
                 activeIsland.SetInt("players_on_island", activeIsland.GetInt("players_on_island") - 1);
                 activeIsland = null;
+            }
+        }
+
+        public static Vector3 GetPosition(Entity player)
+        {
+            return player.GetVector3("position");
+        }
+
+        public static Vector3 GetScale(Entity player)
+        {
+            if (player.HasVector3("scale"))
+            {
+                return player.GetVector3("scale");
+            }
+            else
+            {
+                return Vector3.One;
+            }
+        }
+
+        public static Quaternion GetRotation(Entity player)
+        {
+            if (player.HasQuaternion("rotation"))
+            {
+                return player.GetQuaternion("rotation");
+            }
+            else
+            {
+                return Quaternion.Identity;
             }
         }
 

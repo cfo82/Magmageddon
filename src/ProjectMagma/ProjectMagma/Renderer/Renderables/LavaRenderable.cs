@@ -8,7 +8,7 @@ using ProjectMagma.Shared.Math.Primitives;
 
 namespace ProjectMagma.Renderer
 {
-    public class LavaRenderable : ModelRenderable
+    public class LavaRenderable : Renderable
     {
         public LavaRenderable(
             Vector3 scale,

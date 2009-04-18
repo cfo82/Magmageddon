@@ -8,7 +8,7 @@ using ProjectMagma.Shared.Math.Integration;
 
 namespace ProjectMagma.Renderer
 {
-    public class IslandRenderable : ModelRenderable
+    public class IslandRenderable : Renderable
     {
         public IslandRenderable (
             Vector3 scale,

@@ -3,7 +3,7 @@ using Microsoft.Xna.Framework.Graphics;
 
 namespace ProjectMagma.Renderer
 {
-    public class ShadowRenderable : ModelRenderable
+    public class ShadowRenderable : Renderable
     {
         public ShadowRenderable(
             Vector3 scale,

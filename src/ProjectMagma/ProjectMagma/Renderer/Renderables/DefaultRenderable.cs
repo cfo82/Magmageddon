@@ -5,108 +5,35 @@ namespace ProjectMagma.Renderer
 {
     public class DefaultRenderable : ModelRenderable
     {
-        public DefaultRenderable(
-            Vector3 scale,
-            Quaternion rotation,
-            Vector3 position,
-            Model model
-        )
+        public DefaultRenderable(Vector3 scale, Quaternion rotation, Vector3 position, Model model)
+            : base(scale, rotation, position, model) {}
+
+        protected override void DrawMesh(Renderer renderer, GameTime gameTime, ModelMesh mesh)
         {
-            this.scale = scale;
-            this.rotation = rotation;
-            this.position = position;
-            this.model = model;
-        }
-
-        public void Draw(
-            Renderer renderer,
-            GameTime gameTime
-        )
-        {
-            Matrix world = Matrix.Identity;
-            world *= Matrix.CreateScale(scale);
-            world *= Matrix.CreateFromQuaternion(rotation);
-            world *= Matrix.CreateTranslation(position);
-
-            Matrix[] transforms = new Matrix[model.Bones.Count];
-            model.CopyAbsoluteBoneTransformsTo(transforms);
-
-            // shadows should be floating a little above the receiving surface
-            Matrix world_offset = world;
-            world_offset *= Matrix.CreateTranslation(new Vector3(0, 3, 0));
-
-            foreach (ModelMesh mesh in model.Meshes)
+            //SetEffect(mesh, new BasicEffect(Game.Instance.GraphicsDevice, null));
+            foreach (BasicEffect basicEffect in mesh.Effects)
             {
-                Effect shadowEffect = renderer.ShadowEffect;
+                // set lighting settings
+                basicEffect.EnableDefaultLighting();
+                basicEffect.PreferPerPixelLighting = true;
 
-                renderer.Device.RenderState.DepthBufferEnable = true;
-                foreach (BasicEffect effectx in mesh.Effects)
-                {
-                    effectx.EnableDefaultLighting();
-                    effectx.View = Game.Instance.View;
-                    effectx.Projection = Game.Instance.Projection;
-                    effectx.World = transforms[mesh.ParentBone.Index] * world;
-                    effectx.PreferPerPixelLighting = true;
-                }
-                mesh.Draw();
-                renderer.Device.RenderState.DepthBufferEnable = true;
+                // set matrices
+                basicEffect.World = BoneTransformMatrix(mesh) * World;
+                basicEffect.View = Game.Instance.View;
+                basicEffect.Projection = Game.Instance.Projection;
 
-                shadowEffect.CurrentTechnique = shadowEffect.Techniques["Scene"];
-                shadowEffect.Parameters["ShadowMap"].SetValue(renderer.LightResolve);
-                shadowEffect.Parameters["WorldCameraViewProjection"].SetValue(
-                    transforms[mesh.ParentBone.Index] * world_offset * Game.Instance.View * Game.Instance.Projection);
-                shadowEffect.Parameters["World"].SetValue(transforms[mesh.ParentBone.Index] * world_offset);
+                // set lights
+                SetLights(basicEffect, renderer.LightManager);
 
-                shadowEffect.Parameters["WorldLightViewProjection"].SetValue(
-                    transforms[mesh.ParentBone.Index] * world_offset * renderer.LightView * renderer.LightProjection);
-
-
-                Effect backup = mesh.MeshParts[0].Effect;
-                foreach (ModelMeshPart meshPart in mesh.MeshParts)
-                {
-                    meshPart.Effect = shadowEffect;
-                }
-                renderer.Device.RenderState.AlphaBlendEnable = false;
-                renderer.Device.RenderState.SourceBlend = Blend.SourceAlpha;
-                renderer.Device.RenderState.DestinationBlend = Blend.DestinationColor;
-
-                mesh.Draw();
-
-                renderer.Device.RenderState.AlphaBlendEnable = false;
-
-                foreach (ModelMeshPart meshPart in mesh.MeshParts)
-                {
-                    meshPart.Effect = backup;
-                }
+                // set inherited parameters
+                SetBasicEffectParameters(basicEffect);
             }
+            mesh.Draw();
         }
 
-        public RenderMode RenderMode 
+        protected virtual void SetBasicEffectParameters(BasicEffect basicEffect)
         {
-            get { return RenderMode.RenderToScene; }
         }
 
-        public Vector3 Scale
-        {
-            get { return scale; }
-            set { scale = value; }
-        }
-
-        public Quaternion Rotation
-        {
-            get { return rotation; }
-            set { rotation = value; }
-        }
-
-        public Vector3 Position
-        {
-            get { return position; }
-            set { position = value; }
-        }
-
-        private Vector3 scale;
-        private Quaternion rotation;
-        private Vector3 position;
-        private Model model;
     }
 }

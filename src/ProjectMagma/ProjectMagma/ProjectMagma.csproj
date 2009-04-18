@@ -90,6 +90,7 @@
     <Compile Include="DoublyIntegratedFloat.cs" />
     <Compile Include="Renderer\LightManager.cs" />
     <Compile Include="Renderer\ParallelLight.cs" />
+    <Compile Include="Renderer\Renderables\RobotRenderable.cs" />
     <Compile Include="Renderer\Renderables\IslandRenderable.cs" />
     <Compile Include="Renderer\Renderables\LavaRenderable.cs" />
     <Compile Include="Renderer\Renderables\HUDRenderable.cs" />
@@ -164,6 +165,7 @@
     <Compile Include="Simulation\Properties\Player\PlayerControllerProperty.cs" />
     <Compile Include="Simulation\Properties\Environment\PowerUpController.cs" />
     <Compile Include="Simulation\Properties\Base\Property.cs" />
+    <Compile Include="Simulation\Properties\Rendering\RobotRenderProperty.cs" />
     <Compile Include="Simulation\Properties\Rendering\IslandRenderProperty.cs" />
     <Compile Include="Simulation\Properties\Rendering\HUDProperty.cs" />
     <Compile Include="Simulation\Properties\Rendering\LavaRenderProperty.cs" />
@@ -229,6 +231,9 @@
       <Project>{32868301-A135-4BB5-AA3A-44A5DE60C081}</Project>
       <Name>xWinFormsLib</Name>
     </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="ClassDiagram1.cd" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <Import Project="$(MSBuildExtensionsPath)\Microsoft\XNA Game Studio\Microsoft.Xna.GameStudio.targets" />

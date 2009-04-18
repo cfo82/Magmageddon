@@ -5,7 +5,7 @@
   <Robot>
     <Name>Bender</Name>
     <Description>A level to test!</Description>
-    <EntityName>green_robot</EntityName>
+    <EntityName>animated_robot</EntityName>
   </Robot>
 
   <Robot>

@@ -37,8 +37,8 @@ float4 ComputeIlluminationCombo( float2 texCoord, float3 vLightTS, float fOcclus
 
 	// -- compute diffuse
    float4 granite = tex2D(GraniteSampler, texCoord + GraniteRandomOffset);
-   float4 granite_for_diffuse = 0.3*granite+0.7*float4(1.0,0.6,0.4,1.0);    
-   float4 diffuse = stucco*granite_for_diffuse;
+   float4 granite_for_diffuse = 0.7*granite+0.3*float4(1.0,0.6,0.4,1.0);    
+   float4 diffuse = (1-stucco)*granite_for_diffuse;
    float4 cBaseColor = diffuse;
    
    // --- compute incandescence
@@ -53,10 +53,13 @@ float4 ComputeIlluminationCombo( float2 texCoord, float3 vLightTS, float fOcclus
 		float stucco_unc = getstucco(texCoord, 0);
 		if(invert) stucco_unc = 1-stucco_unc;
 		float3 vNormalTS = normalize(((1-stucco_unc)* n2 + stucco_unc) * n1);
+		
+	//vNormalTS = float3(0,0,1);
    
    // Compute diffuse color component:
    float3 vLightTSAdj = float3( vLightTS.x, -vLightTS.y, vLightTS.z );
    float4 cDiffuse = saturate( dot( vNormalTS, vLightTSAdj )) * float4(0.4,0.4,0.4,1);
+   cDiffuse = float4(0,0,0,0);
    
    // Composite the final color:
    
@@ -148,7 +151,7 @@ technique MultiPlaneLava
     {
         VertexShader = compile vs_3_0 MultiPlaneVS();
         PixelShader = compile ps_3_0 MultiPlanePS();
-        //AlphaBlendEnable = false;
+        AlphaBlendEnable = false;
         AlphaTestEnable = true;
         AlphaFunc = Greater;
         AlphaRef = 0.5;

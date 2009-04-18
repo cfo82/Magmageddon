@@ -13,7 +13,6 @@
       <Property name="collision" type="ProjectMagma.Simulation.Collision.CollisionProperty"/>
       <Property name="controller" type="ProjectMagma.Simulation.PlayerControllerProperty"/>
       <Property name="shadow_cast" type="ProjectMagma.Simulation.ShadowCastProperty"/>
-      <Property name="render" type="ProjectMagma.Simulation.RenderProperty"/>
       <Property name="render_highlight" type="ProjectMagma.Simulation.RenderHighlightProperty"/>
       <Property name="hud" type="ProjectMagma.Simulation.HUDProperty"/>
     </Properties>
@@ -24,6 +23,9 @@
       <Attribute name="mesh" template="string" value="Models/Primitives/player1_primitive"/>
       <Attribute name="arrow_mesh" template="string" value="Models/Visualizations/arrow1"/>
     </Attributes>
+    <Properties>
+      <Property name="render" type="ProjectMagma.Simulation.RenderProperty"/>
+    </Properties>
   </Entity>
 
   <Entity name="yellow_robot" extends="robot_base" abstract="true" >
@@ -31,6 +33,20 @@
       <Attribute name="mesh" template="string" value="Models/Primitives/player2_primitive"/>
       <Attribute name="arrow_mesh" template="string" value="Models/Visualizations/arrow2"/>
     </Attributes>
+    <Properties>
+      <Property name="render" type="ProjectMagma.Simulation.RenderProperty"/>
+    </Properties>
+  </Entity>
+
+  <Entity name="animated_robot" extends="robot_base" abstract="true" >
+    <Attributes>
+      <Attribute name="mesh" template="string" value="Models/Player/RobBonesAnim"/>
+      <Attribute name="arrow_mesh" template="string" value="Models/Visualizations/arrow2"/>
+      <Attribute name="scale" template="float3" value="30 30 30"/>
+    </Attributes>
+    <Properties>
+      <Property name="render" type="ProjectMagma.Simulation.RobotRenderProperty"/>
+    </Properties>
   </Entity>
 
 </Level>

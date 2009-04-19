@@ -130,79 +130,11 @@ namespace ProjectMagma.Simulation
             float dt = simTime.Dt;
             float at = simTime.At;
 
-            #region death
-            if (player.GetInt("health") <= 0)
+            if (CheckAndPerformDeath(player, at))
             {
-                if (respawnStartedAt == 0)
-                {
-                    respawnStartedAt = at;
-
-                    if (jetpackSoundInstance != null)
-                        jetpackSoundInstance.Stop();
-                    if (flameThrowerSoundInstance != null)
-                        flameThrowerSoundInstance.Stop();
-                    jetpackActive = false;
-                    selectedIsland = null;
-                    if (attractedIsland != null)
-                        attractedIsland.SetString("attracted_by", "");
-                    attractedIsland = null;
-                    destinationIsland = null;
-                    LeaveActiveIsland();
-
-                    Game.Instance.Content.Load<SoundEffect>("Sounds/death").Play(Game.Instance.EffectsVolume);
-                    player.SetInt("deaths", player.GetInt("deaths") + 1);
-
-                    // deactivate
-                    player.RemoveProperty("render");
-                    player.RemoveProperty("shadow_cast");
-                    player.RemoveProperty("collision");
-
-                    if (arrow.HasProperty("render"))
-                    {
-                        arrow.RemoveProperty("render");
-                        arrow.RemoveProperty("shadow_cast");
-                    }
-
-                    return;
-                }
-                else
-                    if (respawnStartedAt + constants.GetInt("respawn_time") >= at)
-                    {
-                        // do nothing
-                        return;
-                    }
-                    else 
-                    {
-                        // activate
-                        player.AddProperty("collision", new CollisionProperty());
-                        player.AddProperty("render", new BasicRenderProperty());
-                        player.AddProperty("shadow_cast", new ShadowCastProperty());
-                        ((CollisionProperty)player.GetProperty("collision")).OnContact += PlayerCollisionHandler;
-
-
-                        // random island selection
-                        PositionOnRandomIsland();
-
-                        // reset
-                        player.SetQuaternion("rotation", Quaternion.Identity);
-                        player.SetVector3("velocity", Vector3.Zero);
-
-                        player.SetVector3("collision_pushback_velocity", Vector3.Zero);
-                        player.SetVector3("player_pushback_velocity", Vector3.Zero);
-                        player.SetVector3("hit_pushback_velocity", Vector3.Zero);
-
-                        player.SetInt("energy", constants.GetInt("max_energy"));
-                        player.SetInt("health", constants.GetInt("max_health"));
-                        player.SetInt("fuel", constants.GetInt("max_fuel"));
-
-                        player.SetInt("frozen", 0);
-                        player.SetString("collisionPlayer", "");
-
-                        // reset respawn timer
-                        respawnStartedAt = 0;
-                    }
+                // don't execute any other code as long as player is dead
+                return;
             }
-            #endregion
 
             #region collision reaction
             // reset collision response
@@ -231,96 +163,376 @@ namespace ProjectMagma.Simulation
             #region movement
 
             // jetpack
-            if (controllerInput.jetpackButtonPressed
-                && activeIsland == null
-                && selectedIsland == null
-                && destinationIsland == null
-                && flame == null
-                && fuel > 0 
-            )
-            {
-                if (!jetpackActive)
-                {
-                    jetpackSoundInstance = jetpackSound.Play(0.4f * Game.Instance.EffectsVolume, 1, 0, true);
-                    jetpackActive = true;
-                }
-                
-                // todo: add constant that can modify this
-                fuel -= (int)simTime.DtMs;
-                playerVelocity += constants.GetVector3("jetpack_acceleration") * dt;
-
-                if (playerVelocity.Length() > constants.GetFloat("max_jetpack_speed"))
-                {
-                    playerVelocity.Normalize();
-                    playerVelocity *= constants.GetFloat("max_jetpack_speed");
-                }
-            }
-            else
-            {
-                if (jetpackActive)
-                {
-                    jetpackSoundInstance.Stop();
-                    jetpackActive = false;
-                }
-            }
+            PerformJetpackMovement(simTime, dt, ref playerVelocity, ref fuel);
 
             // perform island jump
-            if (destinationIsland != null)
-            {
-                Vector3 islandDir = destinationIsland.GetVector3("position") - playerPosition;
-                Vector3 isectPt = Vector3.Zero;
-                Ray3 ray = new Ray3(playerPosition, -Vector3.UnitY);
-                if (Vector3.Dot(islandDir, lastIslandDir) < 0 // oscillation?
-                    && Game.Instance.Simulation.CollisionManager.GetIntersectionPoint(ref ray, destinationIsland, out isectPt))
-                {
-                    SetActiveIsland(destinationIsland);
-
-                    destinationIsland = null;
-                    playerVelocity = Vector3.Zero;
-                    islandJumpPerformedAt = at;
-                    jumpButtonReleased = false;
-                }
-                else
-                {
-                    float yRotation = (float)Math.Atan2(islandDir.X, islandDir.Z);
-                    Matrix rotationMatrix = Matrix.CreateRotationY(yRotation);
-                    player.SetQuaternion("rotation", Quaternion.CreateFromRotationMatrix(rotationMatrix));
-
-                    lastIslandDir = islandDir;
-
-//                    islandDir.Y = 0;
-                    islandDir.Normalize();
-                    Vector3 velocity = islandDir * constants.GetFloat("island_jump_speed");
-//                        - constants.GetVector3("gravity_acceleration") * dt;
-
-                    playerPosition += velocity * dt;
-                }
-            }
-            else
-            {
-                // jumpButtonReleased gets set to true as soon as the jump button is not pressed anymore
-                if (!controllerInput.jetpackButtonPressed)
-                    jumpButtonReleased = true;
-            }
+            PerformIslandJump(player, dt, at, ref playerPosition, ref playerVelocity);
 
             // only apply velocity if not on island
-            if (activeIsland == null)
-            {
-                // gravity
-                if (playerVelocity.Length() <= constants.GetFloat("max_gravity_speed")
-                    || playerVelocity.Y > 0) // gravity max speed only applies for downwards speeds
-                {
-                    playerVelocity += constants.GetVector3("gravity_acceleration") * dt;
-                }
-        
-                // apply current velocity
-                playerPosition += playerVelocity * dt;
-            }
+            ApplyGravity(dt, ref playerPosition, ref playerVelocity);
 
 //            Console.WriteLine();
 //            Console.WriteLine("at: " + (int)gameTime.TotalGameTime.TotalMilliseconds);
 //            Console.WriteLine("velocity: " + playerVelocity + " led to change from " + previousPosition + " to " + playerPosition);
 
+            PerformStickMovement(player, dt, ref playerPosition, fuel);
+
+            // pushback
+            Simulation.ApplyPushback(ref playerPosition, ref collisionPushbackVelocity, constants.GetFloat("player_pushback_deacceleration"));
+            Simulation.ApplyPushback(ref playerPosition, ref playerPushbackVelocity, constants.GetFloat("player_pushback_deacceleration"));
+            Simulation.ApplyPushback(ref playerPosition, ref hitPushbackVelocity, constants.GetFloat("player_pushback_deacceleration"));
+
+            // frozen!?
+            PerformFrozenSlowdown(player, simTime, ref playerPosition);
+
+            #endregion
+
+            #region actions
+
+            playerPosition = PerformIceSpikeAction(player, at, playerPosition);
+
+            playerPosition = PerformFlamethrowerAction(player, playerPosition);
+
+            fuel = PerformIslandRepulsionAction(at, fuel);
+
+            // TODO: island selection with islands/player projected in screen-plane.
+            // TODO: island selection don't change island if stick has not been moved
+
+            // island selection and attraction
+            bool allowSelection = attractedIsland == null
+                && destinationIsland == null;
+            PerformIslandSelectionAction(at, allowSelection);
+            PerformIslandJumpAction(ref playerPosition, ref playerVelocity);
+            PerformIslandAttractionAction(player, allowSelection);
+            #endregion
+
+            #region recharge
+            // recharge energy
+            if (flame == null)
+            {
+                Game.Instance.Simulation.ApplyIntervalAddition(player, "energy_recharge", constants.GetInt("energy_recharge_interval"),
+                    player.GetIntAttribute("energy"));
+            }
+
+            // recharge fuel
+            if (!controllerInput.jetpackButtonPressed)
+            {
+                if (activeIsland == null)
+                {
+                    fuel += (int)(simTime.DtMs * constants.GetFloat("fuel_recharge_multiplier"));
+                }
+                else
+                {
+                    // faster recharge standing on island, but only if jetpack was not used for repulsion
+                    if (at > islandRepulsionStoppedAt + constants.GetFloat("island_repulsion_recharge_delay"))
+                    {
+                        fuel += (int)(simTime.DtMs * constants.GetFloat("fuel_recharge_multiplier_island"));
+                    }
+                    else
+                    {
+                        double diff = at - islandRepulsionStoppedAt;
+                        fuel += (int)(simTime.DtMs * constants.GetFloat("fuel_recharge_multiplier_island")
+                            * diff / constants.GetFloat("island_repulsion_recharge_delay"));
+                    }
+                }
+            }
+            #endregion
+
+            // update player attributes
+            player.SetInt("fuel", fuel);
+
+            player.SetVector3("position", playerPosition);
+            player.SetVector3("velocity", playerVelocity);
+            player.SetVector3("collision_pushback_velocity", collisionPushbackVelocity);
+            player.SetVector3("player_pushback_velocity", playerPushbackVelocity);
+            player.SetVector3("hit_pushback_velocity", hitPushbackVelocity);
+
+            CheckPlayerAttributeRanges(player);
+
+            // reset stuff
+            collisionOccured = false;
+
+            // check collision with lava
+            Entity lava = Game.Instance.Simulation.EntityManager["lava"];
+            if (playerPosition.Y < lava.GetVector3("position").Y)
+                PlayerLavaCollisionHandler(simTime, player, lava);
+        }
+
+        private void PerformIslandAttractionAction(Entity player, bool allowSelection)
+        {
+            // island attraction start
+            if (controllerInput.attractionButtonPressed
+                && selectedIsland != null
+                && allowSelection)
+            {
+                attractedIsland = selectedIsland;
+                attractedIsland.SetString("attracted_by", player.Name);
+            }
+            else
+            // deactivate attraction
+            if (attractedIsland != null
+                && (!controllerInput.attractionButtonPressed
+                || controllerInput.jetpackButtonPressed))
+            {
+                arrow.RemoveProperty("render");
+                arrow.RemoveProperty("shadow_cast");
+
+                attractedIsland.SetString("attracted_by", "");
+                attractedIsland = null;
+                selectedIsland = null;
+            }
+
+        }
+
+        private void PerformIslandJumpAction(ref Vector3 playerPosition, ref Vector3 playerVelocity)
+        {
+            // island jump start
+            if (controllerInput.jetpackButtonPressed
+                && selectedIsland != null
+                && destinationIsland == null
+                && jumpButtonReleased // don't allow jumps by having the jump button pressed all the time
+            )
+            {
+                LeaveActiveIsland();
+
+                destinationIsland = selectedIsland;
+
+                // calculate time to travel to island (in xz plane) using an iterative approach
+                float oldTime = 0;
+                float time = 0;
+                float maxTime = 0;
+                Vector3 islandDir;
+                Vector3 islandPos = destinationIsland.GetVector3("position");
+                do
+                {
+                    ((IslandControllerPropertyBase)destinationIsland.GetProperty("controller")).CalculateNewPosition(destinationIsland,
+                        ref islandPos, time);
+
+                    islandDir = (islandPos - playerPosition);
+                    Vector3 islandDir2D = islandDir;
+                    //                    islandDir2D.Y = 0;
+                    float dist2D = islandDir2D.Length();
+
+                    if (time > maxTime)
+                        maxTime = time;
+
+                    oldTime = time;
+                    time = dist2D / constants.GetFloat("island_jump_speed");
+                }
+                while (Math.Abs(oldTime - time) > 1 / 1000f);
+
+                lastIslandDir = islandDir;
+
+                // component to beat gravity;
+                playerVelocity = -constants.GetVector3("gravity_acceleration") * maxTime;
+            }
+        }
+
+        private void PerformIslandSelectionAction(float at, bool allowSelection)
+        {
+            if (allowSelection)
+            {
+                if (controllerInput.rightStickMoved
+                    && activeIsland != null
+                    && selectedIsland != activeIsland) // must be standing on island
+                {
+                    Vector3 stickDir = new Vector3(controllerInput.rightStickX, 0, controllerInput.rightStickY);
+                    stickDir.Normalize();
+                    // only allow reselection if stick moved slightly
+                    bool stickMoved = Vector3.Dot(lastStickDir, stickDir) < constants.GetFloat("island_reselection_max_value");
+                    if ((selectedIsland == null || stickMoved)
+                        && at > islandSelectedAt + constants.GetFloat("island_reselection_timeout"))
+                    {
+                        //                        Console.WriteLine("new selection (old: " + ((selectedIsland != null) ? selectedIsland.Name : "") + "): " + lastStickDir + "." + stickDir + " = " +
+                        //                            Vector3.Dot(lastStickDir, stickDir));
+
+                        // select closest island in direction of stick
+                        lastStickDir = stickDir;
+                        selectedIsland = SelectBestIsland(stickDir);
+
+                        if (selectedIsland != null)
+                        {
+                            islandSelectedAt = at;
+                            arrow.SetString("island", selectedIsland.Name);
+
+                            if (!arrow.HasProperty("render"))
+                            {
+                                arrow.AddProperty("render", new BasicRenderProperty());
+                                arrow.AddProperty("shadow_cast", new ShadowCastProperty());
+                            }
+                        }
+                    }
+                }
+                else
+                {
+                    // deselect after timeout
+                    if (selectedIsland != null
+                        && at > islandSelectedAt + constants.GetFloat("island_deselection_timeout"))
+                    {
+                        selectedIsland = null;
+                        arrow.RemoveProperty("render");
+                        arrow.RemoveProperty("shadow_cast");
+                        islandSelectedAt = 0;
+                    }
+                }
+            }
+        }
+
+        private int PerformIslandRepulsionAction(float at, int fuel)
+        {
+            // island repulsion
+            if (controllerInput.dPadPressed
+                && activeIsland != null
+                && fuel > constants.GetInt("island_repulsion_fuel_cost"))
+            {
+                float velocityMultiplier = constants.GetFloat("island_repulsion_velocity_multiplier");
+                Vector3 velocity = new Vector3(controllerInput.dPadX * velocityMultiplier, 0, controllerInput.dPadY * velocityMultiplier);
+                activeIsland.SetVector3("repulsion_velocity", activeIsland.GetVector3("repulsion_velocity") + velocity);
+
+                fuel -= constants.GetInt("island_repulsion_fuel_cost");
+
+                islandRepulsionStoppedAt = at;
+            }
+            return fuel;
+        }
+
+        private Vector3 PerformFlamethrowerAction(Entity player, Vector3 playerPosition)
+        {
+            // flamethrower
+            if (controllerInput.flamethrowerButtonPressed
+                && activeIsland != null) // only allowed on ground
+            {
+                if (flame == null)
+                {
+                    if (player.GetInt("energy") > constants.GetInt("flamethrower_warmup_energy_cost"))
+                    {
+                        // indicate 
+                        flameThrowerSoundInstance = flameThrowerSound.Play(Game.Instance.EffectsVolume, 1, 0, true);
+
+                        Vector3 pos = new Vector3(playerPosition.X + 10, playerPosition.Y + 10, playerPosition.Z);
+                        Vector3 viewVector = Vector3.Transform(new Vector3(0, 0, 1), GetRotation(player));
+
+                        flame = new Entity("flame" + "_" + player.Name);
+                        flame.AddStringAttribute("player", player.Name);
+                        flame.AddBoolAttribute("active", false);
+
+                        flame.AddVector3Attribute("velocity", viewVector);
+                        flame.AddVector3Attribute("position", pos);
+
+                        flame.AddStringAttribute("mesh", "Models/Visualizations/flame_primitive");
+                        flame.AddVector3Attribute("scale", new Vector3(0, 0, 0));
+                        flame.AddVector3Attribute("full_scale", new Vector3(26, 26, 26));
+                        flame.AddQuaternionAttribute("rotation", GetRotation(player));
+
+                        flame.AddStringAttribute("bv_type", "sphere");
+
+                        flame.AddProperty("render", new BasicRenderProperty());
+                        flame.AddProperty("collision", new CollisionProperty());
+                        flame.AddProperty("controller", new FlamethrowerControllerProperty());
+
+                        Game.Instance.Simulation.EntityManager.AddDeferred(flame);
+                    }
+                }
+                else
+                    if (player.GetInt("energy") <= 0)
+                        flame.SetBool("fueled", false);
+            }
+            else
+                if (flame != null)
+                    flame.SetBool("fueled", false);
+            return playerPosition;
+        }
+
+        private Vector3 PerformIceSpikeAction(Entity player, float at, Vector3 playerPosition)
+        {
+            // ice spike
+            if (controllerInput.iceSpikeButtonPressed && player.GetInt("energy") > constants.GetInt("ice_spike_energy_cost")
+                && (at - iceSpikeFiredAt) > constants.GetInt("ice_spike_cooldown"))
+            {
+                // indicate 
+                SoundEffect soundEffect = Game.Instance.Content.Load<SoundEffect>("Sounds/hit2");
+                soundEffect.Play(Game.Instance.EffectsVolume);
+
+                // todo: specify point in model
+                Vector3 pos = new Vector3(playerPosition.X + 5, playerPosition.Y + 10, playerPosition.Z + 5);
+                Vector3 viewVector = Vector3.Transform(new Vector3(0, 0, 1), GetRotation(player));
+
+                #region search next player in range
+
+                float angle = constants.GetFloat("ice_spike_aim_angle");
+                float aimDistance = float.PositiveInfinity;
+                Entity targetPlayer = null;
+                Vector3 distVector = Vector3.Zero;
+                foreach (Entity p in Game.Instance.Simulation.PlayerManager)
+                {
+                    if (p != player)
+                    {
+                        Vector3 pp = p.GetVector3("position");
+                        Vector3 pdir = pp - playerPosition;
+                        float a = (float)(Math.Acos(Vector3.Dot(pdir, viewVector) / pdir.Length() / viewVector.Length()) / Math.PI * 180);
+                        if (a < angle)
+                        {
+                            float ad = pdir.Length();
+                            if (ad < aimDistance)
+                            {
+                                targetPlayer = p;
+                                distVector = pdir;
+                                aimDistance = ad;
+                            }
+                        }
+                    }
+                }
+                String targetPlayerName = targetPlayer != null ? targetPlayer.Name : "";
+                //Console.WriteLine("targetPlayer: " + targetPlayerName);
+
+                #endregion
+
+                Vector3 aimVector = viewVector;
+                if (targetPlayer != null)
+                {
+                    aimVector = Vector3.Normalize(distVector);
+                }
+                aimVector *= constants.GetFloat("ice_spike_speed");
+
+                Entity iceSpike = new Entity("icespike" + (++iceSpikeCount) + "_" + player.Name);
+                iceSpike.AddStringAttribute("player", player.Name);
+                iceSpike.AddStringAttribute("target_player", targetPlayerName);
+                iceSpike.AddIntAttribute("creation_time", (int)at);
+
+                iceSpike.AddVector3Attribute("velocity", aimVector);
+                iceSpike.AddVector3Attribute("position", pos);
+
+                iceSpike.AddStringAttribute("mesh", "Models/Visualizations/icespike_primitive");
+                iceSpike.AddVector3Attribute("scale", new Vector3(5, 5, 5));
+
+                iceSpike.AddStringAttribute("bv_type", "sphere");
+
+                iceSpike.AddProperty("render", new BasicRenderProperty());
+                iceSpike.AddProperty("collision", new CollisionProperty());
+                iceSpike.AddProperty("controller", new IceSpikeControllerProperty());
+
+                Game.Instance.Simulation.EntityManager.AddDeferred(iceSpike);
+
+                // update states
+                player.SetInt("energy", player.GetInt("energy") - constants.GetInt("ice_spike_energy_cost"));
+                iceSpikeFiredAt = at;
+            }
+            return playerPosition;
+        }
+
+        private void PerformFrozenSlowdown(Entity player, SimulationTime simTime, ref Vector3 playerPosition)
+        {
+            if (player.GetInt("frozen") > 0)
+            {
+                playerPosition = (previousPosition + playerPosition) / 2;
+                player.SetInt("frozen", player.GetInt("frozen") - (int)simTime.DtMs);
+                if (player.GetInt("frozen") < 0)
+                    player.SetInt("frozen", 0);
+            }
+        }
+
+        private void PerformStickMovement(Entity player, float dt, ref Vector3 playerPosition, int fuel)
+        {
             if (controllerInput.moveStickMoved)
             {
                 movedByStick = true;
@@ -362,7 +574,7 @@ namespace ProjectMagma.Simulation
                     player.SetQuaternion("rotation", Quaternion.CreateFromRotationMatrix(rotationMatrix));
                 }
             }
-            else 
+            else
             {
                 if (activeIsland != null)
                 {
@@ -382,319 +594,185 @@ namespace ProjectMagma.Simulation
                     }
                 }
             }
+        }
 
-            // pushback
-            Simulation.ApplyPushback(ref playerPosition, ref collisionPushbackVelocity, constants.GetFloat("player_pushback_deacceleration"));
-            Simulation.ApplyPushback(ref playerPosition, ref playerPushbackVelocity, constants.GetFloat("player_pushback_deacceleration"));
-            Simulation.ApplyPushback(ref playerPosition, ref hitPushbackVelocity, constants.GetFloat("player_pushback_deacceleration"));
-
-            // frozen!?
-            if (player.GetInt("frozen") > 0)
+        private void ApplyGravity(float dt, ref Vector3 playerPosition, ref Vector3 playerVelocity)
+        {
+            if (activeIsland == null)
             {
-                playerPosition = (previousPosition + playerPosition) / 2;
-                player.SetInt("frozen", player.GetInt("frozen") - (int)simTime.DtMs);
-                if (player.GetInt("frozen") < 0)
-                    player.SetInt("frozen", 0);
-            }
-
-            #endregion
-
-            #region actions
-
-            // ice spike
-            if (controllerInput.iceSpikeButtonPressed && player.GetInt("energy") > constants.GetInt("ice_spike_energy_cost") 
-                && (at - iceSpikeFiredAt) > constants.GetInt("ice_spike_cooldown"))
-            {
-                // indicate 
-                SoundEffect soundEffect = Game.Instance.Content.Load<SoundEffect>("Sounds/hit2");
-                soundEffect.Play(Game.Instance.EffectsVolume);
-
-                // todo: specify point in model
-                Vector3 pos = new Vector3(playerPosition.X+5, playerPosition.Y+10, playerPosition.Z+5);
-                Vector3 viewVector = Vector3.Transform(new Vector3(0, 0, 1), GetRotation(player));
-
-                #region search next player in range
-
-                float angle = constants.GetFloat("ice_spike_aim_angle");
-                float aimDistance = float.PositiveInfinity;
-                Entity targetPlayer = null;
-                Vector3 distVector = Vector3.Zero;
-                foreach (Entity p in Game.Instance.Simulation.PlayerManager)
+                // gravity
+                if (playerVelocity.Length() <= constants.GetFloat("max_gravity_speed")
+                    || playerVelocity.Y > 0) // gravity max speed only applies for downwards speeds
                 {
-                    if(p != player)
-                    {
-                        Vector3 pp = p.GetVector3("position");
-                        Vector3 pdir = pp - playerPosition;
-                        float a = (float) (Math.Acos(Vector3.Dot(pdir, viewVector) / pdir.Length() / viewVector.Length()) / Math.PI * 180);
-                        if(a < angle)
-                        {
-                            float ad = pdir.Length();
-                            if(ad < aimDistance)
-                            {
-                                targetPlayer = p;
-                                distVector = pdir;
-                                aimDistance = ad;
-                            }
-                        }
-                    }
+                    playerVelocity += constants.GetVector3("gravity_acceleration") * dt;
                 }
-                String targetPlayerName = targetPlayer!=null ? targetPlayer.Name : "";
-                //Console.WriteLine("targetPlayer: " + targetPlayerName);
 
-                #endregion
-
-                Vector3 aimVector = viewVector;
-                if(targetPlayer != null)
-                {
-                    aimVector = Vector3.Normalize(distVector);
-                }
-                aimVector *= constants.GetFloat("ice_spike_speed");
-
-                Entity iceSpike = new Entity("icespike" + (++iceSpikeCount)+"_"+player.Name);
-                iceSpike.AddStringAttribute("player", player.Name);
-                iceSpike.AddStringAttribute("target_player", targetPlayerName);
-                iceSpike.AddIntAttribute("creation_time", (int) at);
-
-                iceSpike.AddVector3Attribute("velocity", aimVector);
-                iceSpike.AddVector3Attribute("position", pos);
-
-                iceSpike.AddStringAttribute("mesh", "Models/Visualizations/icespike_primitive");
-                iceSpike.AddVector3Attribute("scale", new Vector3(5, 5, 5));
-
-                iceSpike.AddStringAttribute("bv_type", "sphere");
-
-                iceSpike.AddProperty("render", new BasicRenderProperty());
-                iceSpike.AddProperty("collision", new CollisionProperty());
-                iceSpike.AddProperty("controller", new IceSpikeControllerProperty());
-
-                Game.Instance.Simulation.EntityManager.AddDeferred(iceSpike);
-
-                // update states
-                player.SetInt("energy", player.GetInt("energy") - constants.GetInt("ice_spike_energy_cost"));
-                iceSpikeFiredAt = at;
+                // apply current velocity
+                playerPosition += playerVelocity * dt;
             }
+        }
 
-            // flamethrower
-            if (controllerInput.flamethrowerButtonPressed 
-                && activeIsland != null) // only allowed on ground
+        private void PerformIslandJump(Entity player, float dt, float at, ref Vector3 playerPosition, ref Vector3 playerVelocity)
+        {
+            if (destinationIsland != null)
             {
-                if (flame == null)
+                Vector3 islandDir = destinationIsland.GetVector3("position") - playerPosition;
+                Vector3 isectPt = Vector3.Zero;
+                Ray3 ray = new Ray3(playerPosition, -Vector3.UnitY);
+                if (Vector3.Dot(islandDir, lastIslandDir) < 0 // oscillation?
+                    && Game.Instance.Simulation.CollisionManager.GetIntersectionPoint(ref ray, destinationIsland, out isectPt))
                 {
-                    if (player.GetInt("energy") > constants.GetInt("flamethrower_warmup_energy_cost"))
-                    {
-                        // indicate 
-                        flameThrowerSoundInstance = flameThrowerSound.Play(Game.Instance.EffectsVolume, 1, 0, true);
+                    SetActiveIsland(destinationIsland);
 
-                        Vector3 pos = new Vector3(playerPosition.X+10, playerPosition.Y+10, playerPosition.Z);
-                        Vector3 viewVector = Vector3.Transform(new Vector3(0, 0, 1), GetRotation(player));
-
-                        flame = new Entity("flame" + "_" + player.Name);
-                        flame.AddStringAttribute("player", player.Name);
-                        flame.AddBoolAttribute("active", false);
-
-                        flame.AddVector3Attribute("velocity", viewVector);
-                        flame.AddVector3Attribute("position", pos);
-
-                        flame.AddStringAttribute("mesh", "Models/Visualizations/flame_primitive");
-                        flame.AddVector3Attribute("scale", new Vector3(0, 0, 0));
-                        flame.AddVector3Attribute("full_scale", new Vector3(26, 26, 26));
-                        flame.AddQuaternionAttribute("rotation", GetRotation(player));
-
-                        flame.AddStringAttribute("bv_type", "sphere");
-
-                        flame.AddProperty("render", new BasicRenderProperty());
-                        flame.AddProperty("collision", new CollisionProperty());
-                        flame.AddProperty("controller", new FlamethrowerControllerProperty());
-
-                        Game.Instance.Simulation.EntityManager.AddDeferred(flame);
-                    }
-                }
-                else
-                    if (player.GetInt("energy") <= 0)
-                        flame.SetBool("fueled", false);
-            }
-            else
-                if (flame != null)
-                    flame.SetBool("fueled", false);
-
-            // recharge energy
-            if (flame == null)
-                Game.Instance.Simulation.ApplyIntervalAddition(player, "energy_recharge", constants.GetInt("energy_recharge_interval"),
-                    player.GetIntAttribute("energy"));
-
-            // island repulsion
-            if (controllerInput.dPadPressed
-                && activeIsland != null
-                && fuel > constants.GetInt("island_repulsion_fuel_cost"))
-            {
-                float velocityMultiplier = constants.GetFloat("island_repulsion_velocity_multiplier");
-                Vector3 velocity = new Vector3(controllerInput.dPadX * velocityMultiplier, 0, controllerInput.dPadY * velocityMultiplier);
-                activeIsland.SetVector3("repulsion_velocity", activeIsland.GetVector3("repulsion_velocity") + velocity);
-
-                fuel -= constants.GetInt("island_repulsion_fuel_cost");
-
-                islandRepulsionStoppedAt = at;
-            }
-
-            // TODO: island selection with islands/player projected in screen-plane.
-            // TODO: island selection don't change island if stick has not been moved
-
-            // island selection and attraction
-            if (attractedIsland == null
-                && destinationIsland == null)
-            {
-                if (controllerInput.rightStickMoved
-                    && activeIsland != null
-                    && selectedIsland != activeIsland) // must be standing on island
-                {
-                    Vector3 stickDir = new Vector3(controllerInput.rightStickX, 0, controllerInput.rightStickY);
-                    stickDir.Normalize();
-                    // only allow reselection if stick moved slightly
-                    bool stickMoved = Vector3.Dot(lastStickDir, stickDir) < constants.GetFloat("island_reselection_max_value");
-                    if ((selectedIsland == null || stickMoved)
-                        && at > islandSelectedAt + constants.GetFloat("island_reselection_timeout")) 
-                    {
-//                        Console.WriteLine("new selection (old: " + ((selectedIsland != null) ? selectedIsland.Name : "") + "): " + lastStickDir + "." + stickDir + " = " +
-//                            Vector3.Dot(lastStickDir, stickDir));
-
-                        // select closest island in direction of stick
-                        lastStickDir = stickDir;
-                        selectedIsland = SelectBestIsland(stickDir);
-
-                        if (selectedIsland != null)
-                        {
-                            islandSelectedAt = at;
-                            arrow.SetString("island", selectedIsland.Name);
-
-                            if (!arrow.HasProperty("render"))
-                            {
-                                arrow.AddProperty("render", new BasicRenderProperty());
-                                arrow.AddProperty("shadow_cast", new ShadowCastProperty());
-                            }
-                        }
-                    }
+                    destinationIsland = null;
+                    playerVelocity = Vector3.Zero;
+                    islandJumpPerformedAt = at;
+                    jumpButtonReleased = false;
                 }
                 else
                 {
-                    // deselect after timeout
-                    if (selectedIsland != null
-                        && at > islandSelectedAt + constants.GetFloat("island_deselection_timeout"))
-                    {
-                        selectedIsland = null;
-                        arrow.RemoveProperty("render");
-                        arrow.RemoveProperty("shadow_cast");
-                        islandSelectedAt = 0;
-                    }
-                }
+                    float yRotation = (float)Math.Atan2(islandDir.X, islandDir.Z);
+                    Matrix rotationMatrix = Matrix.CreateRotationY(yRotation);
+                    player.SetQuaternion("rotation", Quaternion.CreateFromRotationMatrix(rotationMatrix));
 
-                // island attraction start
-                if (controllerInput.attractionButtonPressed
-                    && selectedIsland != null)
-                {
-                    attractedIsland = selectedIsland;
-                    attractedIsland.SetString("attracted_by", player.Name);
+                    lastIslandDir = islandDir;
+
+                    //                    islandDir.Y = 0;
+                    islandDir.Normalize();
+                    Vector3 velocity = islandDir * constants.GetFloat("island_jump_speed");
+                    //                        - constants.GetVector3("gravity_acceleration") * dt;
+
+                    playerPosition += velocity * dt;
                 }
             }
             else
             {
-                // deactivate attraction
-                if (attractedIsland != null
-                    && (!controllerInput.attractionButtonPressed
-                    || controllerInput.jetpackButtonPressed))
-                {
-                    arrow.RemoveProperty("render");
-                    arrow.RemoveProperty("shadow_cast");
-
-                    attractedIsland.SetString("attracted_by", "");
-                    attractedIsland = null;
-                    selectedIsland = null;
-                }
+                // jumpButtonReleased gets set to true as soon as the jump button is not pressed anymore
+                if (!controllerInput.jetpackButtonPressed)
+                    jumpButtonReleased = true;
             }
+        }
 
-            // island jump start
+        private void PerformJetpackMovement(SimulationTime simTime, float dt, ref Vector3 playerVelocity, ref int fuel)
+        {
             if (controllerInput.jetpackButtonPressed
-                && selectedIsland != null
+                && activeIsland == null
+                && selectedIsland == null
                 && destinationIsland == null
-                && jumpButtonReleased // don't allow jumps by having the jump button pressed all the time
+                && flame == null
+                && fuel > 0
             )
             {
-                LeaveActiveIsland();
-
-                destinationIsland = selectedIsland;
-
-                // calculate time to travel to island (in xz plane) using an iterative approach
-                float oldTime = 0;
-                float time = 0;
-                float maxTime = 0;
-                Vector3 islandDir;
-                Vector3 islandPos = destinationIsland.GetVector3("position");
-                do
+                if (!jetpackActive)
                 {
-                    ((IslandControllerPropertyBase)destinationIsland.GetProperty("controller")).CalculateNewPosition(destinationIsland,
-                        ref islandPos, time);
+                    jetpackSoundInstance = jetpackSound.Play(0.4f * Game.Instance.EffectsVolume, 1, 0, true);
+                    jetpackActive = true;
+                }
 
-                    islandDir = (islandPos - playerPosition); 
-                    Vector3 islandDir2D = islandDir;
-//                    islandDir2D.Y = 0;
-                    float dist2D = islandDir2D.Length();
+                // todo: add constant that can modify this
+                fuel -= (int)simTime.DtMs;
+                playerVelocity += constants.GetVector3("jetpack_acceleration") * dt;
 
-                    if (time > maxTime)
-                        maxTime = time;
-
-                    oldTime = time;
-                    time = dist2D / constants.GetFloat("island_jump_speed");
-                } 
-                    while (Math.Abs(oldTime - time) > 1/1000f);
-
-                lastIslandDir = islandDir;
-
-                // component to beat gravity;
-                playerVelocity = -constants.GetVector3("gravity_acceleration") * maxTime;
+                if (playerVelocity.Length() > constants.GetFloat("max_jetpack_speed"))
+                {
+                    playerVelocity.Normalize();
+                    playerVelocity *= constants.GetFloat("max_jetpack_speed");
+                }
             }
-
-            #endregion
-
-            // recharge
-            if (!controllerInput.jetpackButtonPressed)
+            else
             {
-                if (activeIsland == null)
+                if (jetpackActive)
                 {
-                    fuel += (int)(simTime.DtMs * constants.GetFloat("fuel_recharge_multiplier"));
+                    jetpackSoundInstance.Stop();
+                    jetpackActive = false;
+                }
+            }
+        }
+
+        /// <summary>
+        /// checks if player's health has fallen below 0, then perform respawn
+        /// </summary>
+        /// <returns>wheter the player is currently dead or not</returns>
+        private bool CheckAndPerformDeath(Entity player, float at)
+        {
+            if (player.GetInt("health") <= 0)
+            {
+                if (respawnStartedAt == 0)
+                {
+                    respawnStartedAt = at;
+
+                    if (jetpackSoundInstance != null)
+                        jetpackSoundInstance.Stop();
+                    if (flameThrowerSoundInstance != null)
+                        flameThrowerSoundInstance.Stop();
+                    jetpackActive = false;
+                    selectedIsland = null;
+                    if (attractedIsland != null)
+                        attractedIsland.SetString("attracted_by", "");
+                    attractedIsland = null;
+                    destinationIsland = null;
+                    LeaveActiveIsland();
+
+                    Game.Instance.Content.Load<SoundEffect>("Sounds/death").Play(Game.Instance.EffectsVolume);
+                    player.SetInt("deaths", player.GetInt("deaths") + 1);
+
+                    // deactivate
+                    player.RemoveProperty("render");
+                    player.RemoveProperty("shadow_cast");
+                    player.RemoveProperty("collision");
+
+                    if (arrow.HasProperty("render"))
+                    {
+                        arrow.RemoveProperty("render");
+                        arrow.RemoveProperty("shadow_cast");
+                    }
+
+                    // dead
+                    return true;
                 }
                 else
-                {
-                    // faster recharge standing on island, but only if jetpack was not used for repulsion
-                    if (at > islandRepulsionStoppedAt + constants.GetFloat("island_repulsion_recharge_delay"))
+                    if (respawnStartedAt + constants.GetInt("respawn_time") >= at)
                     {
-                        fuel += (int)(simTime.DtMs * constants.GetFloat("fuel_recharge_multiplier_island"));
+                        // still dead
+                        return true;
                     }
                     else
                     {
-                        double diff = at - islandRepulsionStoppedAt;
-                        fuel += (int)(simTime.DtMs * constants.GetFloat("fuel_recharge_multiplier_island")
-                            * diff / constants.GetFloat("island_repulsion_recharge_delay"));
+                        // activate
+                        player.AddProperty("collision", new CollisionProperty());
+                        player.AddProperty("render", new BasicRenderProperty());
+                        player.AddProperty("shadow_cast", new ShadowCastProperty());
+                        ((CollisionProperty)player.GetProperty("collision")).OnContact += PlayerCollisionHandler;
+
+
+                        // random island selection
+                        PositionOnRandomIsland();
+
+                        // reset
+                        player.SetQuaternion("rotation", Quaternion.Identity);
+                        player.SetVector3("velocity", Vector3.Zero);
+
+                        player.SetVector3("collision_pushback_velocity", Vector3.Zero);
+                        player.SetVector3("player_pushback_velocity", Vector3.Zero);
+                        player.SetVector3("hit_pushback_velocity", Vector3.Zero);
+
+                        player.SetInt("energy", constants.GetInt("max_energy"));
+                        player.SetInt("health", constants.GetInt("max_health"));
+                        player.SetInt("fuel", constants.GetInt("max_fuel"));
+
+                        player.SetInt("frozen", 0);
+                        player.SetString("collisionPlayer", "");
+
+                        // reset respawn timer
+                        respawnStartedAt = 0;
+
+                        // alive again
+                        return false;
                     }
-                }
             }
 
-            // update player attributes
-            player.SetInt("fuel", fuel);
-
-            player.SetVector3("position", playerPosition);
-            player.SetVector3("velocity", playerVelocity);
-            player.SetVector3("collision_pushback_velocity", collisionPushbackVelocity);
-            player.SetVector3("player_pushback_velocity", playerPushbackVelocity);
-            player.SetVector3("hit_pushback_velocity", hitPushbackVelocity);
-
-            CheckPlayerAttributeRanges(player);
-
-            // reset stuff
-            collisionOccured = false;
-
-            // check collision with lava
-            Entity lava = Game.Instance.Simulation.EntityManager["lava"];
-            if (playerPosition.Y < lava.GetVector3("position").Y)
-                PlayerLavaCollisionHandler(simTime, player, lava);
+            // not dead
+            return false;
         }
 
         private void CheckPlayerAttributeRanges(Entity player)

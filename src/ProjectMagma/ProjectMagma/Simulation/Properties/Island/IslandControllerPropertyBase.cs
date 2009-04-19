@@ -27,13 +27,16 @@ namespace ProjectMagma.Simulation
 
             entity.AddVector3Attribute("repulsion_velocity", Vector3.Zero);
             entity.AddVector3Attribute("pushback_velocity", Vector3.Zero);
+
             entity.AddStringAttribute("attracted_by", "");
+            entity.AddVector3Attribute("attraction_velocity", Vector3.Zero);
             entity.AddIntAttribute("players_on_island", 0);
 
             entity.Update += OnUpdate;
 
             ((CollisionProperty)entity.GetProperty("collision")).OnContact += CollisionHandler;
             ((StringAttribute)entity.GetAttribute("attracted_by")).ValueChanged += AttracedByChangeHandler;
+            ((Vector3Attribute)entity.GetAttribute("repulsion_velocity")).ValueChanged += RepulsionChangeHandler;
 
             originalPosition = entity.GetVector3("position");
         }
@@ -42,41 +45,52 @@ namespace ProjectMagma.Simulation
         {
             entity.Update -= OnUpdate;
             ((CollisionProperty)entity.GetProperty("collision")).OnContact -= CollisionHandler;
-            ((StringAttribute)entity.GetAttribute("attracted_by")).ValueChanged += AttracedByChangeHandler;
+            ((StringAttribute)entity.GetAttribute("attracted_by")).ValueChanged -= AttracedByChangeHandler;
         }
 
         protected virtual void OnUpdate(Entity island, SimulationTime simTime)
         {
             float dt = simTime.Dt;
 
-            // implement sinking/rising islands...
+            // get position
             Vector3 position = island.GetVector3("position");
-            int playersOnIsland = island.GetInt("players_on_island");
-            if (playersOnIsland > 0)
-            {
-                position += dt * constants.GetFloat("sinking_speed") * playersOnIsland * (-Vector3.UnitY);
-                playerLeftAt = 0;
-            }
-            else
-            {
-                if (playerLeftAt == 0)
-                    playerLeftAt = simTime.At;
-                if (position.Y < originalPosition.Y &&
-                    simTime.At > playerLeftAt + constants.GetInt("rising_delay"))
-                {
-                    position += dt * constants.GetFloat("rising_speed") * Vector3.UnitY;
 
-                    if (position.Y > originalPosition.Y)
+            // if we are in normal state, constantly save current position
+            if (state == IslandState.Normal)
+            {
+                originalPosition = position;
+            }
+
+            // implement sinking and rising islands
+            int playersOnIsland = island.GetInt("players_on_island");
+            if (!hadCollision && state == IslandState.Normal)
+            {
+                if (playersOnIsland > 0)
+                {
+                    state = IslandState.Influenced; 
+                    position += dt * constants.GetFloat("sinking_speed") * playersOnIsland * (-Vector3.UnitY);
+                    playerLeftAt = 0;
+                }
+                else
+                {
+                    if (playerLeftAt == 0)
+                        playerLeftAt = simTime.At;
+                    if (simTime.At > playerLeftAt + constants.GetInt("rising_delay"))
                     {
-                        position.Y = originalPosition.Y;
+                        if (position.Y < originalPosition.Y)
+                        {
+                            position += dt * constants.GetFloat("sinking_speed") * (Vector3.UnitY);
+                        }
+                        else
+                            state = IslandState.Normal;
                     }
                 }
             }
 
-            // apply pushback from players 
+            // apply repulsion from players 
             Vector3 repulsionVelocity = island.GetVector3("repulsion_velocity");
             Simulation.ApplyPushback(ref position, ref repulsionVelocity, constants.GetFloat("repulsion_deacceleration"),
-                    OnPushbackEnded);
+                    OnRepulsionEnd);
             island.SetVector3("repulsion_velocity", repulsionVelocity);
 
             // apply pushback from other objects as long as there is a collision
@@ -87,29 +101,72 @@ namespace ProjectMagma.Simulation
             else
                 island.SetVector3("pushback_velocity", Vector3.Zero);
 
-            // apply movement only if no collision
-            if (!hadCollision)
+            // perform attraction
+            if (island.GetString("attracted_by") != "")
             {
-                // apply attraction by players
-                if (island.GetString("attracted_by") != "")
-                {
-                    Entity player = Game.Instance.Simulation.EntityManager[island.GetString("attracted_by")];
-                    Vector3 dir = player.GetVector3("position") - position;
-                    dir.Normalize();
+                // get direction to player
+                Entity player = Game.Instance.Simulation.EntityManager[island.GetString("attracted_by")];
+                Vector3 dir = player.GetVector3("position") - position;
+                dir.Normalize();
 
-                    position += dir * constants.GetFloat("attraction_speed") * dt;
+                if (!collisionWithDestination)
+                {
+                    Vector3 velocity = island.GetVector3("attraction_velocity");
+                    // deaccelerate a bit first if > max_speed
+                    if (velocity.Length() > constants.GetFloat("attraction_max_speed"))
+                    {
+                        velocity -= Vector3.Normalize(velocity) * constants.GetFloat("attraction_acceleration") * dt;
+                    }
+                    velocity += dir * constants.GetFloat("attraction_acceleration") * dt;
+                    velocity.Y += dir.Y * constants.GetFloat("attraction_acceleration") * dt; // faster acceleration on y axis
+                    island.SetVector3("attraction_velocity", velocity);
+
+                    // change position according to velocity
+                    position += velocity * dt;
                 }
                 else
                 {
-                    // calculate new postion in subclass
-                    CalculateNewPosition(island, ref position, dt);
+                    // hover on correct y
+                    position.Y += dir.Y * constants.GetFloat("attraction_max_speed") * dt;
                 }
+            }
+
+            // apply movement only if no collision
+            if (!hadCollision)
+            {
+                // perform repositioning
+                if (state == IslandState.Repositioning)
+                {
+                    // get direction of repositioning effort
+                    Vector3 dir = Vector3.Normalize(originalPosition - position);
+
+                    // calculate new position
+                    Vector3 newPosition = position;
+                    newPosition += dir * constants.GetFloat("repositioning_speed") * dt;
+
+                    // check if we are there yet
+                    if (Vector3.Dot(originalPosition - newPosition, originalPosition - position) < 0)
+                    {
+                        state = IslandState.Normal;
+                    }
+                    else
+                    {
+                        position = newPosition;
+                    }
+                }
+                else
+                    // normal movement
+                    if (state != IslandState.InfluencedNoMovement)
+                    {
+                        // calculate new postion in subclass
+                        CalculateNewPosition(island, ref position, dt);
+                    }
             }
 
             island.SetVector3("position", position);
 
-            playersOnIsland = 0;
             hadCollision = false;
+            collisionWithDestination = false;
         }
 
         private void CollisionHandler(SimulationTime simTime, Contact contact)
@@ -128,8 +185,6 @@ namespace ProjectMagma.Simulation
                     // only collision with objects which are not the player count
                     hadCollision = true;
 
-//                    Console.WriteLine("collision: " + island.Name + " with " + other.Name);
-
                     // change direction of repulsion
                     Vector3 repulsionVelocity = island.GetVector3("repulsion_velocity");
                     if (repulsionVelocity.Length() > 0)
@@ -137,40 +192,74 @@ namespace ProjectMagma.Simulation
                         // only if collision normal is in opposite direction of current repulsion
                         if (Vector3.Dot(repulsionVelocity, contact[0].Normal) < 0)
                         {
-                            island.SetVector3("repulsion_velocity", -repulsionVelocity * constants.GetFloat("collision_damping"));
+                            island.SetVector3("repulsion_velocity", Vector3.Reflect(repulsionVelocity, contact[0].Normal)
+                                * constants.GetFloat("collision_damping"));
                         }
                     }
 
-                    // if attracted, apply repulsion to colliding islands
                     if (island.GetString("attracted_by") != "")
                     {
+                        Vector3 attractionVelocity = island.GetVector3("attraction_velocity");
+
                         if (kind == "island")
                         {
-                            // todo: check here if collision island is island player who attracts is standing on
-
-                            // push the other island away
-                            other.SetVector3("repulsion_velocity", contact[0].Normal * constants.GetFloat("attraction_speed")
-                                + other.GetVector3("repulsion_velocity"));
-                        }
-                        else
-                            if (kind == "pillar")
+                            // check if collision island is island player who attracts is standing on
+                            Entity player = Game.Instance.Simulation.EntityManager[island.GetString("attracted_by")];
+                            if (other.Name == player.GetString("active_island"))
                             {
-                                // repulse if collision with pillar
-                                island.SetVector3("repulsion_velocity", -contact[0].Normal * constants.GetFloat("attraction_speed")
-                                    + island.GetVector3("repulsion_velocity"));
+                                collisionWithDestination = true;
+                                return;
                             }
-                    }
 
-                    CollisionHandler(simTime, island, other, contact);
+                            // push the other island away (if contact normal is opposed)
+                            if (Vector3.Dot(attractionVelocity, contact[0].Normal) < 0)
+                            {
+                                other.SetVector3("repulsion_velocity", island.GetVector3("attraction_velocity")
+                                    + other.GetVector3("repulsion_velocity"));
+                            }
+                        }
+
+                        // reflect for collision with pillar (if not already direction away from it)
+                        if (Vector3.Dot(attractionVelocity, contact[0].Normal) < 0)
+                        {
+                            island.SetVector3("attraction_velocity", Vector3.Reflect(island.GetVector3("attraction_velocity"),
+                                contact[0].Normal));
+                        }
+                    }
+                    else
+                        CollisionHandler(simTime, island, other, contact);
+
+                    // always ensure we apply a bit of pushback out of other entity so we don't get stuck in there
+                    if (!(other.GetString("kind") == "island"
+                        && other.GetString("attracted_by") != ""))
+                    {
+                        Vector3 pushback = -contact[0].Normal * constants.GetFloat("contact_pushback_multiplier");
+                        pushback.Y = 0; // only in xz plane
+                        island.SetVector3("pushback_velocity", island.GetVector3("pushback_velocity") + pushback);
+                    }
                 }
+            }
+        }
+
+        protected void RepulsionChangeHandler(Vector3Attribute sender, Vector3 oldValue, Vector3 newValue)
+        {
+            if (oldValue == Vector3.Zero
+                && newValue != Vector3.Zero)
+            {
+                OnRepulsionStart();
             }
         }
 
         protected void AttracedByChangeHandler(StringAttribute sender, string oldValue, string newValue)
         {
+            if (newValue != "" && oldValue == "")
+            {
+                OnAttractionStart();
+            }
+            else
             if (newValue == "" && oldValue != "")
             {
-                OnAttractionEnded();
+                OnAttractionEnd();
             }
         }
 
@@ -178,21 +267,45 @@ namespace ProjectMagma.Simulation
 
         protected abstract void CollisionHandler(SimulationTime simTime, Entity island, Entity other, Contact co);
 
-        protected virtual void OnPushbackEnded()
+        protected virtual void OnRepulsionStart()
         {
+            state = IslandState.Influenced;
         }
 
-        protected virtual void OnAttractionEnded()
+        protected virtual void OnAttractionStart()
         {
-            // set new hovering position
-            originalPosition.Y = island.GetVector3("position").Y;
+            state = IslandState.InfluencedNoMovement;
         }
 
+        protected virtual void OnRepulsionEnd()
+        {
+            state = IslandState.Repositioning;
+        }
+
+        protected virtual void OnAttractionEnd()
+        {
+            state = IslandState.Repositioning;
+            island.SetVector3("attraction_velocity", Vector3.Zero);
+        }
+
+        protected bool collisionWithDestination;
         protected bool hadCollision;
 
         protected Entity constants;
         protected Entity island;
         private double playerLeftAt;
+
+        protected enum IslandState
+        {
+            Influenced,             // island's track is influensed by the outside
+            InfluencedNoMovement,   // island's track is influensed by the outside, normal movement is prohibited
+            Repositioning,          // island is hovering back to original position
+            Normal                  // normal movement
+        }
+
+        protected IslandState state = IslandState.Normal;
+
+        // position to hover back to
         private Vector3 originalPosition;
     }
 }

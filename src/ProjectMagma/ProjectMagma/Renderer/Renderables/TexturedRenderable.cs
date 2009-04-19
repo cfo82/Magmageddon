@@ -3,13 +3,12 @@ using Microsoft.Xna.Framework.Graphics;
 
 namespace ProjectMagma.Renderer
 {
-    public class TexturedRenderable : DefaultRenderable
+    public class TexturedRenderable : BasicRenderable
     {
-        public TexturedRenderable(Vector3 scale, Quaternion rotation, Vector3 position, Model model, Texture2D texture)
+        public TexturedRenderable(Vector3 scale, Quaternion rotation, Vector3 position, Model model)
             : base(scale, rotation, position, model)
         {
-            this.texture = texture;
-            SpotLightStrength = 0.3f;
+            SpotLightStrength = 0.3f; // hack for pillars
         }
 
         protected virtual void SetBasicEffectParameters(BasicEffect basicEffect)
@@ -19,6 +18,11 @@ namespace ProjectMagma.Renderer
             basicEffect.EmissiveColor = Vector3.Zero;
             basicEffect.TextureEnabled = true;
             basicEffect.Texture = texture;
+        }
+
+        public void SetTexture(Texture2D texture)
+        {
+            this.texture = texture;
         }
 
         private Texture2D texture;

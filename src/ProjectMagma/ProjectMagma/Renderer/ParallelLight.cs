@@ -16,31 +16,13 @@ namespace ProjectMagma.Renderer
             Vector3 direction
         )
         {
-            this.diffuseColor = diffuseColor;
-            this.specularColor = specularColor;
-            this.direction = direction;
+            DiffuseColor = diffuseColor;
+            SpecularColor = specularColor;
+            Direction = direction;
         }
 
-        public Vector3 DiffuseColor
-        {
-            get { return diffuseColor; }
-            set { diffuseColor = value; }
-        }
-
-        public Vector3 SpecularColor
-        {
-            get { return specularColor; }
-            set { specularColor = value; }
-        }
-
-        public Vector3 Direction
-        {
-            get { return direction; }
-            set { direction = value; }
-        }
-
-        private Vector3 diffuseColor;
-        private Vector3 specularColor;
-        private Vector3 direction;
+        public Vector3 DiffuseColor { get; set; }
+        public Vector3 SpecularColor { get; set; }
+        public Vector3 Direction { get; set; }
     }
 }

@@ -108,4 +108,5 @@
       <Attribute name="respawn_min_distance_to_players" template="float" value="200"/>
     </Attributes>
   </Entity>
+
 </Level>

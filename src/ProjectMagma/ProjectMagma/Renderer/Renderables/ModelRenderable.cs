@@ -23,6 +23,7 @@ namespace ProjectMagma.Renderer
             this.Position = position;
             this.Model = model;
             this.boneTransforms = new Matrix[Model.Bones.Count];
+            ApplyEffectsToModel();
             defaultEffectMapping = CurrentPartEffectMapping();
             SkyLightStrength = 1.0f;
             LavaLightStrength = 1.0f;
@@ -47,6 +48,8 @@ namespace ProjectMagma.Renderer
         }
 
         #endregion
+
+        protected abstract void ApplyEffectsToModel();
 
         public void Draw(Renderer renderer, GameTime gameTime)
         {
@@ -83,9 +86,19 @@ namespace ProjectMagma.Renderer
                     meshPart.Effect = mapping[meshPart];
                 }
             }
-        }                
+        }
 
-        protected void SetEffect(ModelMesh mesh, Effect effect)
+
+        protected void SetModelEffect(Model model, Effect effect)
+        {
+            foreach (ModelMesh mesh in model.Meshes)
+            {
+                SetMeshEffect(mesh, effect);
+            }
+        }
+        
+
+        protected void SetMeshEffect(ModelMesh mesh, Effect effect)
         {
             foreach (ModelMeshPart meshPart in mesh.MeshParts)
             {
@@ -111,7 +124,7 @@ namespace ProjectMagma.Renderer
             shadowEffect.Parameters["WorldLightViewProjection"].SetValue(
                 world_offset * renderer.LightView * renderer.LightProjection);
 
-            SetEffect(mesh, shadowEffect);
+            SetMeshEffect(mesh, shadowEffect);
             mesh.Draw();
             RestorePartEffectMapping(defaultEffectMapping);
         }
@@ -150,9 +163,9 @@ namespace ProjectMagma.Renderer
         protected Model Model { get; set; }
         protected Matrix World { get; set; }
 
-        protected float SkyLightStrength { get; set; }
-        protected float LavaLightStrength { get; set; }
-        protected float SpotLightStrength { get; set; }
+        public float SkyLightStrength { get; set; }
+        public float LavaLightStrength { get; set; }
+        public float SpotLightStrength { get; set; }
 
         PartEffectMapping defaultEffectMapping;
     }

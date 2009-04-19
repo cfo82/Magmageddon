@@ -175,7 +175,7 @@ namespace ProjectMagma.Simulation
                     {
                         // activate
                         player.AddProperty("collision", new CollisionProperty());
-                        player.AddProperty("render", new RenderProperty());
+                        player.AddProperty("render", new BasicRenderProperty());
                         player.AddProperty("shadow_cast", new ShadowCastProperty());
                         ((CollisionProperty)player.GetProperty("collision")).OnContact += PlayerCollisionHandler;
 
@@ -463,7 +463,7 @@ namespace ProjectMagma.Simulation
 
                 iceSpike.AddStringAttribute("bv_type", "sphere");
 
-                iceSpike.AddProperty("render", new RenderProperty());
+                iceSpike.AddProperty("render", new BasicRenderProperty());
                 iceSpike.AddProperty("collision", new CollisionProperty());
                 iceSpike.AddProperty("controller", new IceSpikeControllerProperty());
 
@@ -502,7 +502,7 @@ namespace ProjectMagma.Simulation
 
                         flame.AddStringAttribute("bv_type", "sphere");
 
-                        flame.AddProperty("render", new RenderProperty());
+                        flame.AddProperty("render", new BasicRenderProperty());
                         flame.AddProperty("collision", new CollisionProperty());
                         flame.AddProperty("controller", new FlamethrowerControllerProperty());
 
@@ -568,7 +568,7 @@ namespace ProjectMagma.Simulation
 
                             if (!arrow.HasProperty("render"))
                             {
-                                arrow.AddProperty("render", new RenderProperty());
+                                arrow.AddProperty("render", new BasicRenderProperty());
                                 arrow.AddProperty("shadow_cast", new ShadowCastProperty());
                             }
                         }

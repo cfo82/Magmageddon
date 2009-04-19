@@ -22,7 +22,7 @@ namespace ProjectMagma.Renderer
 
             // initialize lava light
             lavaBaseColor = new Vector3(1.0f, 0.5f, 0.1f);
-            lavaBrightness = new DoublyIntegratedFloat(1.0f, 0.0f, 0.5f, 1.5f, -1.0f, 1.0f);
+            lavaBrightness = new DoublyIntegratedFloat(1.0f, 0.0f, 0.95f, 1.05f, -1.0f, 1.0f);
             LavaLight = new ParallelLight
             (
                 lavaBaseColor,
@@ -31,10 +31,10 @@ namespace ProjectMagma.Renderer
             );
 
             // initialize moving spot light
-            spotLightPhase = new DoublyIntegratedFloat(0.0f, 0.0f, 0.0f, 0.0f, -1.0f, 1.0f);
+            spotLightPhase = new DoublyIntegratedFloat(0.4f, 0.0f, 0.3f, 2.84f, -1.0f, 1.0f);
             SpotLight = new ParallelLight
             (
-                new Vector3(1.0f, 1.0f, 1.0f) * 1.2f,
+                new Vector3(1.0f, 1.0f, 1.0f) * 1.85f,
                 Vector3.One * 1.0f,
                 SpotLightDirection()
             );
@@ -47,13 +47,13 @@ namespace ProjectMagma.Renderer
             LavaLight.DiffuseColor = lavaBaseColor * lavaBrightness.Value;
 
             // update moving spot light
-            spotLightPhase.RandomlyIntegrate(gameTime, 10.0f, 0.2f);
+            spotLightPhase.RandomlyIntegrate(gameTime, 10.0f, 0.0f);
             SpotLight.Direction = SpotLightDirection();
         }
 
         private Vector3 SpotLightDirection()
         {
-            Vector3 dir = new Vector3((float)Math.Cos(spotLightPhase.Value), -0.2f, (float)Math.Sin(spotLightPhase.Value));
+            Vector3 dir = new Vector3((float)Math.Cos(spotLightPhase.Value), -0.32f, (float)Math.Sin(spotLightPhase.Value));
             return Vector3.Normalize(dir);
         }
 

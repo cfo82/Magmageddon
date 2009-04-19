@@ -97,7 +97,7 @@
     <Compile Include="Renderer\Renderables\ModelRenderable.cs" />
     <Compile Include="Renderer\Renderables\TexturedRenderable.cs" />
     <Compile Include="Renderer\Renderables\HighlightRenderable.cs" />
-    <Compile Include="Renderer\Renderables\DefaultRenderable.cs" />
+    <Compile Include="Renderer\Renderables\BasicRenderable.cs" />
     <Compile Include="Renderer\Renderables\Renderable.cs" />
     <Compile Include="Renderer\Renderer.cs" />
     <Compile Include="Renderer\RenderMode.cs" />
@@ -165,13 +165,14 @@
     <Compile Include="Simulation\Properties\Player\PlayerControllerProperty.cs" />
     <Compile Include="Simulation\Properties\Environment\PowerUpController.cs" />
     <Compile Include="Simulation\Properties\Base\Property.cs" />
+    <Compile Include="Simulation\Properties\Rendering\ModelRenderProperty.cs" />
     <Compile Include="Simulation\Properties\Rendering\RobotRenderProperty.cs" />
     <Compile Include="Simulation\Properties\Rendering\IslandRenderProperty.cs" />
     <Compile Include="Simulation\Properties\Rendering\HUDProperty.cs" />
     <Compile Include="Simulation\Properties\Rendering\LavaRenderProperty.cs" />
     <Compile Include="Simulation\Properties\Rendering\TexturedRenderProperty.cs" />
     <Compile Include="Simulation\Properties\Rendering\RenderHighlightProperty.cs" />
-    <Compile Include="Simulation\Properties\Rendering\RenderProperty.cs" />
+    <Compile Include="Simulation\Properties\Rendering\BasicRenderProperty.cs" />
     <Compile Include="Simulation\Properties\Rendering\ShadowCastProperty.cs" />
     <Compile Include="Simulation\Simulation.cs" />
   </ItemGroup>

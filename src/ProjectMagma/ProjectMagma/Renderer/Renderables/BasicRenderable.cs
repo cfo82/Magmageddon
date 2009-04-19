@@ -3,9 +3,9 @@ using Microsoft.Xna.Framework.Graphics;
 
 namespace ProjectMagma.Renderer
 {
-    public class DefaultRenderable : ModelRenderable
+    public class BasicRenderable : ModelRenderable
     {
-        public DefaultRenderable(Vector3 scale, Quaternion rotation, Vector3 position, Model model)
+        public BasicRenderable(Vector3 scale, Quaternion rotation, Vector3 position, Model model)
             : base(scale, rotation, position, model) {}
 
         protected override void DrawMesh(Renderer renderer, GameTime gameTime, ModelMesh mesh)
@@ -29,6 +29,11 @@ namespace ProjectMagma.Renderer
                 SetBasicEffectParameters(basicEffect);
             }
             mesh.Draw();
+        }
+
+        protected override void ApplyEffectsToModel()
+        {
+            // nothing to do, BasicEffect is applied by default.
         }
 
         protected virtual void SetBasicEffectParameters(BasicEffect basicEffect)

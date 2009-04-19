@@ -24,7 +24,7 @@
       <Attribute name="arrow_mesh" template="string" value="Models/Visualizations/arrow1"/>
     </Attributes>
     <Properties>
-      <Property name="render" type="ProjectMagma.Simulation.RenderProperty"/>
+      <Property name="render" type="ProjectMagma.Simulation.BasicRenderProperty"/>
     </Properties>
   </Entity>
 
@@ -34,7 +34,7 @@
       <Attribute name="arrow_mesh" template="string" value="Models/Visualizations/arrow2"/>
     </Attributes>
     <Properties>
-      <Property name="render" type="ProjectMagma.Simulation.RenderProperty"/>
+      <Property name="render" type="ProjectMagma.Simulation.BasicRenderProperty"/>
     </Properties>
   </Entity>
 

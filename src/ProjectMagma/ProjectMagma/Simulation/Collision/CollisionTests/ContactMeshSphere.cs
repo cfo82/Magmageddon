@@ -15,10 +15,18 @@ namespace ProjectMagma.Simulation.Collision.CollisionTests
             bool needAllContacts, ref Contact contact
         )
         {
-            Sphere3 sphere1;
+            /*Sphere3 sphere1;
             node1.BoundingBox.CreateSphere3(ref worldTransform1, out sphere1);
             Vector3 diff = sphere1.Center - sphere2.Center;
             if (diff.LengthSquared() > (sphere1.Radius + sphere2.Radius) * (sphere1.Radius + sphere2.Radius))
+            {
+                return;
+            }
+            */
+            Matrix identityMatrix = Matrix.Identity;
+            Box3 box1 = node1.BoundingBox.CreateBox3(ref worldTransform1);
+            Box3 box2 = sphere2.CreateBox3(ref identityMatrix);
+            if (!Intersection.IntersectBox3Box3(box1, box2))
             {
                 return;
             }

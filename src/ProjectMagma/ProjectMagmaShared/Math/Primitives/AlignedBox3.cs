@@ -69,9 +69,9 @@ namespace ProjectMagma.Shared.Math.Primitives
             box.Axis[0] = xAxis;
             box.Axis[1] = yAxis;
             box.Axis[2] = zAxis;
-            box.HalfDim[0] = halfDim.X;
-            box.HalfDim[1] = halfDim.Y;
-            box.HalfDim[2] = halfDim.Z;
+            box.HalfDim[0] = System.Math.Abs(halfDim.X);
+            box.HalfDim[1] = System.Math.Abs(halfDim.Y);
+            box.HalfDim[2] = System.Math.Abs(halfDim.Z);
             return box;
         }
 

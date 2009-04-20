@@ -7,7 +7,7 @@
       <Attribute name="kind" template="string" value="player"/>
       <Attribute name="position" template="float3" value="0 0 0"/>
       <Attribute name="scale" template="float3" value="15 15 15"/>
-      <Attribute name="bv_type" template="string" value="sphere"/>
+      <Attribute name="bv_type" template="string" value="alignedbox3tree"/>
     </Attributes>
     <Properties>
       <Property name="collision" type="ProjectMagma.Simulation.Collision.CollisionProperty"/>
@@ -44,8 +44,8 @@
   <Entity name="green_animated_robot" extends="robot_base" abstract="true" >
     <Attributes>
       <Attribute name="mesh" template="string" value="Models/Player/RobBonesAnim"/>
-      <Attribute name="arrow_mesh" template="string" value="Models/Visualizations/arrow2"/>
-      <Attribute name="scale" template="float3" value="30 30 30"/>
+      <Attribute name="arrow_mesh" template="string" value="Models/Visualizations/arrow1"/>
+      <Attribute name="scale" template="float3" value="15 15 15"/>
       <Attribute name="diffuse_color" template="float3" value="0 0.7 0.2"/>
       <Attribute name="specular_power" template="float" value="50"/>
     </Attributes>
@@ -58,7 +58,7 @@
     <Attributes>
       <Attribute name="mesh" template="string" value="Models/Player/RobBonesAnim"/>
       <Attribute name="arrow_mesh" template="string" value="Models/Visualizations/arrow2"/>
-      <Attribute name="scale" template="float3" value="30 30 30"/>
+      <Attribute name="scale" template="float3" value="15 15 15"/>
       <Attribute name="diffuse_color" template="float3" value="0.9 0.7 0"/>
       <Attribute name="specular_power" template="float" value="50"/>
     </Attributes>

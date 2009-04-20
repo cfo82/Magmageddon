@@ -306,7 +306,7 @@ namespace ProjectMagma.Simulation.Collision
 
         #region Member Variables
 
-        private readonly int[] threadAffinities = new int[] { 1, 3, 5 };
+        private readonly int[] threadAffinities = new int[] { 5 };
         private TestList testList;
         private CollisionThread[] threads;
 

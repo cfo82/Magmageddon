@@ -38,8 +38,40 @@ namespace ProjectMagma.Simulation.Collision
 
             foreach (CollisionEntity otherEntity in entityList)
             {
+                /*if (entity.Entity.HasString("kind") && entity.Entity.GetString("kind") == "pillar" &&
+                    otherEntity.Entity.HasString("kind") && otherEntity.Entity.GetString("kind") == "pillar")
+                {
+                    continue;
+                }
+                if (
+                    (
+                        entity.Entity.HasString("kind") && entity.Entity.GetString("kind") == "pillar" &&
+                        otherEntity.Entity.HasString("kind") && otherEntity.Entity.GetString("kind") == "powerup") ||
+                    (otherEntity.Entity.HasString("kind") && otherEntity.Entity.GetString("kind") == "pillar" &&
+                    entity.Entity.HasString("kind") && entity.Entity.GetString("kind") == "powerup"))
+                {
+                    continue;
+                }
+                if (
+                    (entity.Entity.HasString("kind") && entity.Entity.GetString("kind") == "island" &&
+                    otherEntity.Entity.HasString("kind") && otherEntity.Entity.GetString("kind") == "powerup") ||
+                    (otherEntity.Entity.HasString("kind") && otherEntity.Entity.GetString("kind") == "island" &&
+                    entity.Entity.HasString("kind") && entity.Entity.GetString("kind") == "powerup"))
+                {
+                    continue;
+                }*/
+
                 collisionList.Add(new TestEntry(entity, otherEntity));
             }
+
+            /*Console.WriteLine("number of collision tests: {0}", collisionList.Count);
+            if (collisionList.Count == 200)
+            {
+                foreach (TestEntry entry in collisionList)
+                {
+                    Console.WriteLine("colliding {0} with {1}", entry.EntityA.Entity.Name, entry.EntityB.Entity.Name);
+                }
+            }*/
 
             entityList.Add(entity);
         }

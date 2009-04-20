@@ -67,6 +67,8 @@ namespace ProjectMagma.Simulation.Collision
 
         public void Update(SimulationTime simTime)
         {
+            Game.Instance.Profiler.BeginSection("collision_update");
+
             //long t1 = System.DateTime.Now.Ticks;
 
             testList.BeginCollisionDetection();
@@ -162,6 +164,8 @@ namespace ProjectMagma.Simulation.Collision
             //System.Console.WriteLine("  dt3: {0:G}", ddt3);
             //System.Console.WriteLine("  dt4: {0:G}", ddt4);
             //System.Console.WriteLine("  dt5: {0:G} {1}", ddt5, ddt5>10.0?"***************************************************":"");
+
+            Game.Instance.Profiler.EndSection("collision_update");
         }
 
         public static readonly ContactTest[,] ContactTests = new ContactTest[3, 3] {

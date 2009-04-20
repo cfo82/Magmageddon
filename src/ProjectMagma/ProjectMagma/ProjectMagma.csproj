@@ -35,7 +35,7 @@
     <DebugType>full</DebugType>
     <Optimize>false</Optimize>
     <OutputPath>bin\x86\Debug\</OutputPath>
-    <DefineConstants>DEBUG;TRACE;WINDOWS</DefineConstants>
+    <DefineConstants>TRACE;DEBUG;WINDOWS;PROFILING</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
     <NoStdLib>true</NoStdLib>
@@ -88,6 +88,9 @@
     <Compile Include="BloomSettings.cs" />
     <Compile Include="DoublyIntegratedVector2.cs" />
     <Compile Include="DoublyIntegratedFloat.cs" />
+    <Compile Include="Profiler\FrameStatistics.cs" />
+    <Compile Include="Profiler\Profiler.cs" />
+    <Compile Include="Profiler\Section.cs" />
     <Compile Include="Renderer\LightManager.cs" />
     <Compile Include="Renderer\ParallelLight.cs" />
     <Compile Include="Renderer\Renderables\RobotRenderable.cs" />

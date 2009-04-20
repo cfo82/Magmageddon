@@ -819,7 +819,7 @@ namespace ProjectMagma.Simulation
                     Vector3 slidingDelta = cpos - contact[0].Point;
                     Vector3 slidingVelocity = slidingDelta / simTime.Dt;
 
-                    Console.WriteLine("orignal velocity " + player.GetVector3("island_jump_velocity") + "; sliding velocity: " + slidingVelocity);
+                    //Console.WriteLine("orignal velocity " + player.GetVector3("island_jump_velocity") + "; sliding velocity: " + slidingVelocity);
 
                     //                    slidingVelocity.Y = player.GetVector3("island_jump_velocity").Y;
                     slidingVelocity.Y = player.GetVector3("island_jump_velocity").Y;
@@ -915,7 +915,7 @@ namespace ProjectMagma.Simulation
 
         private void PlayerPlayerCollisionHandler(SimulationTime simTime, Entity player, Entity otherPlayer, Contact c)
         {
-            Console.WriteLine(player.Name + " collided with " + otherPlayer.Name);
+            //Console.WriteLine(player.Name + " collided with " + otherPlayer.Name);
             // and hit?
             if (controllerInput.hitButtonPressed &&
                 simTime.At > hitPerformedAt + constants.GetInt("hit_cooldown"))
@@ -1059,7 +1059,7 @@ namespace ProjectMagma.Simulation
         /// </summary>
         private void SetActiveIsland(Entity island)
         {
-            Console.WriteLine(player.Name + " activated island");
+            //Console.WriteLine(player.Name + " activated island");
 
             // register with active
             ((Vector3Attribute)island.Attributes["position"]).ValueChanged += IslandPositionHandler;
@@ -1078,7 +1078,7 @@ namespace ProjectMagma.Simulation
         {
             if (activeIsland != null)
             {
-                Console.WriteLine(player.Name+" left island");
+                //Console.WriteLine(player.Name+" left island");
                 ((Vector3Attribute)activeIsland.Attributes["position"]).ValueChanged -= IslandPositionHandler;
                 activeIsland.SetInt("players_on_island", activeIsland.GetInt("players_on_island") - 1);
 

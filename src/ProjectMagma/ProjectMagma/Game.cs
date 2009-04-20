@@ -42,6 +42,13 @@ namespace ProjectMagma
         private Simulation.Simulation simulation;
         private Renderer.Renderer renderer;
 
+        /// <summary>
+        /// assuming that the base class class update->draw->update->draw etc. the
+        /// profiler will begin a frame at the beginning of the udpate methode and
+        /// end the frame at the end of the draw methode
+        /// </summary>
+        private Profiler.Profiler profiler;
+
         #if !XBOX
         private FormCollection formCollection;
         private ManagementForm managementForm;
@@ -197,6 +204,11 @@ namespace ProjectMagma
 #if !DEBUG
             menu.Open();
 #endif
+
+            this.profiler = null;
+#if PROFILING
+            this.profiler = ProjectMagma.Profiler.Profiler.CreateProfiler("main_profiler");
+#endif
         }
 
         /// <summary>
@@ -233,6 +245,10 @@ namespace ProjectMagma
             #endif
 
             MediaPlayer.Stop();
+
+            #if PROFILING
+            profiler.Write("profiling.txt");
+            #endif
         }
 
         /// <summary>
@@ -242,6 +258,9 @@ namespace ProjectMagma
         /// <param name="gameTime">Provides a snapshot of timing values.</param>
         protected override void Update(GameTime gameTime)
         {
+            profiler.BeginFrame();
+            profiler.BeginSection("update");
+
             // fullscreen
             if(Keyboard.GetState().IsKeyDown(Keys.Enter)
                 && Keyboard.GetState().IsKeyDown(Keys.LeftAlt))
@@ -262,6 +281,8 @@ namespace ProjectMagma
 
             // update all GameComponents registered
             base.Update(gameTime);
+
+            profiler.EndSection("update");
         }
 
         /// <summary>
@@ -270,6 +291,8 @@ namespace ProjectMagma
         /// <param name="gameTime">Provides a snapshot of timing values.</param>
         protected override void Draw(GameTime gameTime)
         {
+            profiler.BeginSection("draw");
+
             #if !XBOX
             formCollection.Render();
             #endif
@@ -291,6 +314,9 @@ namespace ProjectMagma
             #if !XBOX
             formCollection.Draw();
             #endif
+
+            profiler.EndSection("draw");
+            profiler.EndFrame();
         }
 
         public Vector3 CameraPosition
@@ -358,6 +384,10 @@ namespace ProjectMagma
             get { return renderer; }
         }
 
+        public ProjectMagma.Profiler.Profiler Profiler
+        {
+            get { return profiler; }
+        }
     }
 
     public delegate void IntervalExecutionAction(int times);

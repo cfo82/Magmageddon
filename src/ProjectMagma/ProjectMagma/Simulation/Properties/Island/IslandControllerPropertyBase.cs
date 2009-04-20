@@ -63,11 +63,14 @@ namespace ProjectMagma.Simulation
 
             // implement sinking and rising islands
             int playersOnIsland = island.GetInt("players_on_island");
-            if (!hadCollision && state == IslandState.Normal)
+            if (!hadCollision)
             {
                 if (playersOnIsland > 0)
                 {
-                    state = IslandState.Influenced; 
+                    if (state == IslandState.Normal)
+                    {
+                        state = IslandState.Influenced;
+                    }
                     position += dt * constants.GetFloat("sinking_speed") * playersOnIsland * (-Vector3.UnitY);
                     playerLeftAt = 0;
                 }
@@ -82,7 +85,12 @@ namespace ProjectMagma.Simulation
                             position += dt * constants.GetFloat("sinking_speed") * (Vector3.UnitY);
                         }
                         else
-                            state = IslandState.Normal;
+                        {
+                            if (state == IslandState.Influenced)
+                            {
+                                state = IslandState.Normal;
+                            }
+                        }
                     }
                 }
             }
@@ -219,7 +227,7 @@ namespace ProjectMagma.Simulation
                             }
                         }
 
-                        // reflect for collision with pillar (if not already direction away from it)
+                        // reflect for collision with pillar (if not already in direction away from it)
                         if (Vector3.Dot(attractionVelocity, contact[0].Normal) < 0)
                         {
                             island.SetVector3("attraction_velocity", Vector3.Reflect(island.GetVector3("attraction_velocity"),

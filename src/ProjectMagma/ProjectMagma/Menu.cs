@@ -19,6 +19,7 @@ namespace ProjectMagma
         private static Menu instance = new Menu();
         
         public double buttonPressedAt = 0;
+        public GamePadState previousState;
         public double elementSelectedAt = 0;
 
         private Menu()
@@ -85,6 +86,7 @@ namespace ProjectMagma
                     }
             }
 
+            previousState = gamePadState;
             Game.Instance.Profiler.EndSection("menu_update");
         }
 
@@ -491,6 +493,12 @@ namespace ProjectMagma
                     else
                         spriteBatch.Draw(volumeIndicator, pos, null, Color.White, 0, Vector2.Zero, nuScale, SpriteEffects.None, 0);
                 }
+        }
+
+        public override void OnClose()
+        {
+            Game.Instance.SaveSettings();
+            base.OnClose();
         }
     }
 

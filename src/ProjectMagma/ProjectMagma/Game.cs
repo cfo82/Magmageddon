@@ -16,6 +16,8 @@ using ProjectMagma.Simulation.Collision;
 
 using Microsoft.Xna.Framework.Storage;
 using Microsoft.Xna.Framework.GamerServices;
+using System.IO;
+using System.Xml.Serialization;
 
 // its worth to read this...
 // 
@@ -36,8 +38,8 @@ namespace ProjectMagma
 
         private Menu menu;
         private Entity currentCamera;
-        private float effectsVolume = 0.2f;
-        private float musicVolume = 0.1f;
+
+        private Settings settings = new Settings();
         
         private Simulation.Simulation simulation;
         private Renderer.Renderer renderer;
@@ -58,9 +60,12 @@ namespace ProjectMagma
 
         BloomComponent bloom;
 
+        StorageDevice device;
+        bool storageAvailable = false;
+        IAsyncResult storageSelectionResult;
+
         private Game()
         {
-
             graphics = new GraphicsDeviceManager(this);
             menu = Menu.Instance;
 
@@ -76,6 +81,9 @@ namespace ProjectMagma
 
             bloom = new BloomComponent(this);
             //Components.Add(bloom);
+        
+            // needed to show Guide, which is needed for storage, which is needed for saving stuff
+            this.Components.Add(new GamerServicesComponent(this));
         }
 
         /// <summary>
@@ -159,7 +167,6 @@ namespace ProjectMagma
             // initialize simulation
             LoadLevel(levels[0].FileName);
 
-
 #if DEBUG
             // set default player
             Entity player1 = new Entity("player1");
@@ -196,9 +203,12 @@ namespace ProjectMagma
 
             // play that funky musik white boy
             MediaPlayer.Play(Game.Instance.Content.Load<Song>("Sounds/music"));
-            MediaPlayer.Volume = musicVolume;
+            MediaPlayer.Volume = MusicVolume;
 
             MediaPlayer.IsMuted = true;
+
+            // get storage device
+            storageSelectionResult = Guide.BeginShowStorageDeviceSelector(PlayerIndex.One, null, null);
 
             // open menu
 #if !DEBUG
@@ -220,8 +230,7 @@ namespace ProjectMagma
             // reset old simulation
             if (simulation != null)
             {
-                simulation.Close();
-                
+                simulation.Close();                
             }
 
             // init simulation
@@ -258,36 +267,48 @@ namespace ProjectMagma
         /// <param name="gameTime">Provides a snapshot of timing values.</param>
         protected override void Update(GameTime gameTime)
         {
-            profiler.TryEndFrame();
-            profiler.BeginFrame();
-            profiler.BeginSection("update");
-
-            // fullscreen
-            if(Keyboard.GetState().IsKeyDown(Keys.Enter)
-                && Keyboard.GetState().IsKeyDown(Keys.LeftAlt))
+            // get storage device as soon as selected
+            if (!storageAvailable && storageSelectionResult.IsCompleted)
             {
-                graphics.IsFullScreen = !this.graphics.IsFullScreen;
-                graphics.ApplyChanges();
+                device = Guide.EndShowStorageDeviceSelector(storageSelectionResult);
+                storageAvailable = true;
+                LoadSettings();
             }
 
-            #if !XBOX
-            // update the user interface
-            profiler.BeginSection("formcollection_update");
-            formCollection.Update(gameTime);
-            profiler.EndSection("formcollection_update");
-            #endif
+            // wait with normal update until storage available
+            if(storageAvailable)
+            {
+                profiler.TryEndFrame();
+                profiler.BeginFrame();
+                profiler.BeginSection("update");
+            
+                // fullscreen
+                if(Keyboard.GetState().IsKeyDown(Keys.Enter)
+                    && Keyboard.GetState().IsKeyDown(Keys.LeftAlt))
+                {
+                    graphics.IsFullScreen = !this.graphics.IsFullScreen;
+                    graphics.ApplyChanges();
+                }
 
-            simulation.Update(gameTime);
+                #if !XBOX
+            	profiler.BeginSection("formcollection_update");
+                // update the user interface
+                formCollection.Update(gameTime);
+            	profiler.EndSection("formcollection_update");
+                #endif
 
-            // update menu
-            menu.Update(gameTime);
+                simulation.Update(gameTime);
 
-            // update all GameComponents registered
-            profiler.BeginSection("base_update");
-            base.Update(gameTime);
-            profiler.EndSection("base_update");
+                // update menu
+                menu.Update(gameTime);
 
-            profiler.EndSection("update");
+                // update all GameComponents registered
+                profiler.BeginSection("base_update");
+                base.Update(gameTime);
+                profiler.EndSection("base_update");
+                
+                profiler.EndSection("update");
+            }
         }
 
         /// <summary>
@@ -350,14 +371,14 @@ namespace ProjectMagma
 
         public float EffectsVolume
         {
-            get { return effectsVolume; }
-            set { effectsVolume = value; }
+            get { return settings.effectsVolume; }
+            set { settings.effectsVolume = value; }
         }
 
         public float MusicVolume
         {
-            get { return musicVolume; }
-            set { musicVolume = value; }
+            get { return settings.musicVolume; }
+            set { settings.musicVolume = value; }
         }
 
         public List<RobotInfo> Robots
@@ -388,6 +409,53 @@ namespace ProjectMagma
         public ProjectMagma.Renderer.Renderer Renderer
         {
             get { return renderer; }
+        }
+
+        public void SaveSettings()
+        {
+            // Open a storage container.StorageContainer container =
+            StorageContainer container = device.OpenContainer(Window.Title);
+
+            // Get the path of the save game.
+            string filename = Path.Combine(container.Path, "settings.sav");
+
+            // Open the file, creating it if necessary.
+            using (FileStream stream = File.Open(filename, FileMode.Create))
+            {
+                XmlSerializer serializer = new XmlSerializer(typeof(Settings));
+                serializer.Serialize(stream, settings);
+            }
+
+            // Dispose the container, to commit changes.
+            container.Dispose();
+        }
+
+        public void LoadSettings()
+        {
+            // Open a storage container.StorageContainer container =
+            StorageContainer container = device.OpenContainer(Window.Title);
+
+            // Get the path of the save game.
+            string filename = Path.Combine(container.Path, "settings.sav");
+
+            // Open the file, creating it if necessary.
+            if (File.Exists(filename))
+            {
+                using (FileStream stream = File.Open(filename, FileMode.Open))
+                {
+                    XmlSerializer serializer = new XmlSerializer(typeof(Settings));
+                    settings = (Settings) serializer.Deserialize(stream);
+                }
+            }
+
+            // Dispose the container, to commit changes.
+            container.Dispose();
+        }
+
+        public class Settings
+        {
+            public float effectsVolume = 0.2f;
+            public float musicVolume = 0.1f;
         }
 
         public ProjectMagma.Profiler.Profiler Profiler

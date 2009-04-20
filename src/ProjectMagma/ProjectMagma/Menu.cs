@@ -56,7 +56,6 @@ namespace ProjectMagma
                     {
                         Close();
                         buttonPressedAt = at;
-                        return;
                     }
                     else
                         if (gamePadState.Buttons.X == ButtonState.Pressed)

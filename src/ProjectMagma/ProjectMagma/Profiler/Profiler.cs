@@ -14,6 +14,7 @@ namespace ProjectMagma.Profiler
             rootSection = new Section(this, null, "root");
             sectionStack = new List<Section>(100);
             frameNumber = 0;
+            inBeginFrame = false;
         }
 
         public static Profiler CreateProfiler(string debuginfo)
@@ -25,6 +26,7 @@ namespace ProjectMagma.Profiler
         [Conditional("PROFILING")]
         public void BeginFrame()
         {
+            inBeginFrame = true;
             rootSection.BeginFrame();
 
             sectionStack.Clear();
@@ -63,6 +65,25 @@ namespace ProjectMagma.Profiler
             rootSection.EndSection();
             rootSection.EndFrame();
             ++frameNumber;
+            inBeginFrame = false;
+        }
+
+        [Conditional("PROFILING")]
+        public void TryEndFrame()
+        {
+            if (inBeginFrame)
+            {
+                EndFrame();
+            }
+        }
+
+        [Conditional("PROFILING")]
+        public void TryBeginFrame()
+        {
+            if (!inBeginFrame)
+            {
+                BeginFrame();
+            }
         }
 
         public long FrameNumber
@@ -99,5 +120,6 @@ namespace ProjectMagma.Profiler
         private Section rootSection;
         private List<Section> sectionStack;
         long frameNumber;
+        bool inBeginFrame;
     }
 }

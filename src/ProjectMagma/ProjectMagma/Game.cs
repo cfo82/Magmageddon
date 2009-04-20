@@ -258,6 +258,7 @@ namespace ProjectMagma
         /// <param name="gameTime">Provides a snapshot of timing values.</param>
         protected override void Update(GameTime gameTime)
         {
+            profiler.TryEndFrame();
             profiler.BeginFrame();
             profiler.BeginSection("update");
 
@@ -291,6 +292,7 @@ namespace ProjectMagma
         /// <param name="gameTime">Provides a snapshot of timing values.</param>
         protected override void Draw(GameTime gameTime)
         {
+            profiler.TryBeginFrame();
             profiler.BeginSection("draw");
 
             #if !XBOX

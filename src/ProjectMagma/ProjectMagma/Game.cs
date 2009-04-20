@@ -275,11 +275,12 @@ namespace ProjectMagma
                 LoadSettings();
             }
 
+            profiler.TryEndFrame();
+            profiler.BeginFrame();
+
             // wait with normal update until storage available
             if(storageAvailable)
             {
-                profiler.TryEndFrame();
-                profiler.BeginFrame();
                 profiler.BeginSection("update");
             
                 // fullscreen

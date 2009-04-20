@@ -53,6 +53,7 @@
       <Attribute name="bv_type" template="string" value="cylinder"/>
       <Attribute name="lava_light_strength" template="float" value="0.7"/>
       <Attribute name="spot_light_strength" template="float" value="0.4"/>
+      <Attribute name="diffuse_color" template="float3" value="1.0 1.0 1.0"/>
     </Attributes>
     <Properties>
       <Property name="render" type="ProjectMagma.Simulation.BasicRenderProperty"/>

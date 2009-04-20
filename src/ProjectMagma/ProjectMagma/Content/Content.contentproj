@@ -623,8 +623,8 @@
       <Importer>EffectImporter</Importer>
       <Processor>EffectProcessor</Processor>
     </Compile>
-    <Compile Include="Effects\Environment\BasicEffect.fx">
-      <Name>BasicEffect</Name>
+    <Compile Include="Effects\Basic.fx">
+      <Name>Basic</Name>
       <Importer>EffectImporter</Importer>
       <Processor>EffectProcessor</Processor>
     </Compile>
@@ -953,6 +953,11 @@
       <Importer>EffectImporter</Importer>
       <Processor>EffectProcessor</Processor>
     </Compile>
+    <Compile Include="Effects\Environment\OriginalBasicEffect.fx">
+      <Name>OriginalBasicEffect</Name>
+      <Importer>EffectImporter</Importer>
+      <Processor>EffectProcessor</Processor>
+    </Compile>
     <None Include="Effects\Lava\Params.inc">
       <Name>Params</Name>
     </None>
@@ -969,8 +974,13 @@
     </Compile>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Sprites\Menu\Robot\animated_robot.png">
-      <Name>animated_robot</Name>
+    <Compile Include="Sprites\Menu\Robot\green_animated_robot.png">
+      <Name>green_animated_robot</Name>
+      <Importer>TextureImporter</Importer>
+      <Processor>TextureProcessor</Processor>
+    </Compile>
+    <Compile Include="Sprites\Menu\Robot\yellow_animated_robot.png">
+      <Name>yellow_animated_robot</Name>
       <Importer>TextureImporter</Importer>
       <Processor>TextureProcessor</Processor>
     </Compile>

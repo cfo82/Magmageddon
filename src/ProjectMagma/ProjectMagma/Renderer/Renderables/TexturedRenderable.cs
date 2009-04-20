@@ -7,24 +7,33 @@ namespace ProjectMagma.Renderer
     {
         public TexturedRenderable(Vector3 scale, Quaternion rotation, Vector3 position, Model model)
             : base(scale, rotation, position, model)
+        { }
+
+        protected override void SetDefaultMaterialParameters()
         {
-            SpotLightStrength = 0.3f; // hack for pillars
+            Alpha = 1.0f;
+            DiffuseColor = Vector3.One;
+            SpecularColor = Vector3.Zero;
+            EmissiveColor = Vector3.Zero;
         }
 
-        protected virtual void SetBasicEffectParameters(BasicEffect basicEffect)
+        protected override void ApplyTechnique(Effect effect)
         {
-            basicEffect.DiffuseColor = Vector3.One;
-            basicEffect.SpecularColor = Vector3.Zero;
-            basicEffect.EmissiveColor = Vector3.Zero;
-            basicEffect.TextureEnabled = true;
-            basicEffect.Texture = texture;
+            effect.CurrentTechnique = effect.Techniques["Textured"];
+        }
+
+        protected override void ApplyCustomEffectParameters(Effect effect, Renderer renderer, GameTime gameTime)
+        {
+            base.ApplyCustomEffectParameters(effect, renderer, gameTime);
+
+            effect.Parameters["BasicTexture"].SetValue(Texture);
         }
 
         public void SetTexture(Texture2D texture)
         {
-            this.texture = texture;
+            this.Texture = texture;
         }
 
-        private Texture2D texture;
+        protected Texture2D Texture { get; set; }
     }
 }

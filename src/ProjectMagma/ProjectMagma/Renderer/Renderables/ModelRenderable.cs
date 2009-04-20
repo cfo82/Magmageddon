@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Diagnostics;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 
@@ -28,6 +29,7 @@ namespace ProjectMagma.Renderer
             SkyLightStrength = 1.0f;
             LavaLightStrength = 1.0f;
             SpotLightStrength = 1.0f;
+            RenderChannel = RenderChannelType.One;
         }
 
         #endregion
@@ -106,6 +108,28 @@ namespace ProjectMagma.Renderer
             }
         }
 
+        protected void SetGlobalEffectParameter(string name, Vector3 value)
+        {
+            foreach (ModelMesh mesh in Model.Meshes)
+            {
+                foreach(Effect effect in mesh.Effects)
+                {
+                    effect.Parameters[name].SetValue(value);
+                }
+            }
+        }
+
+        protected void SetGlobalEffectParameter(string name, float value)
+        {
+            foreach (ModelMesh mesh in Model.Meshes)
+            {
+                foreach (Effect effect in mesh.Effects)
+                {
+                    effect.Parameters[name].SetValue(value);
+                }
+            }
+        }
+
         protected abstract void DrawMesh(Renderer renderer, GameTime gameTime, ModelMesh mesh);
 
         private void DrawShadow(ref Renderer renderer, ModelMesh mesh)
@@ -129,7 +153,7 @@ namespace ProjectMagma.Renderer
             RestorePartEffectMapping(defaultEffectMapping);
         }
 
-        protected void SetLights(Effect effect, LightManager lightManager)
+        protected void ApplyLights(Effect effect, LightManager lightManager)
         {
             effect.Parameters["DirLight0DiffuseColor"].SetValue(lightManager.SkyLight.DiffuseColor * SkyLightStrength);
             effect.Parameters["DirLight0SpecularColor"].SetValue(lightManager.SkyLight.SpecularColor * SkyLightStrength);
@@ -142,6 +166,25 @@ namespace ProjectMagma.Renderer
             effect.Parameters["DirLight2DiffuseColor"].SetValue(lightManager.SpotLight.DiffuseColor * SpotLightStrength);
             effect.Parameters["DirLight2SpecularColor"].SetValue(lightManager.SpotLight.SpecularColor * SpotLightStrength);
             effect.Parameters["DirLight2Direction"].SetValue(lightManager.SpotLight.Direction * SpotLightStrength);
+        }
+
+        protected void ApplyRenderChannel(Effect effect)
+        {
+            Vector4 RenderChannelColor = Vector4.Zero;
+            switch(RenderChannel)
+            {
+                case RenderChannelType.One:
+                    RenderChannelColor = new Vector4(1.0f, 0.0f, 0.0f, 1.0f);
+                    break;
+                case RenderChannelType.Two:
+                    RenderChannelColor = new Vector4(0.0f, 1.0f, 0.0f, 1.0f);
+                    break;
+                case RenderChannelType.Three:
+                    RenderChannelColor = new Vector4(0.0f, 0.0f, 1.0f, 1.0f);
+                    break;                
+            }
+            Debug.Assert(RenderChannelColor != Vector4.Zero);
+            effect.Parameters["RenderChannelColor"].SetValue(RenderChannelColor);
         }
 
         protected Matrix BoneTransformMatrix(ModelMesh mesh)
@@ -166,6 +209,9 @@ namespace ProjectMagma.Renderer
         public float SkyLightStrength { get; set; }
         public float LavaLightStrength { get; set; }
         public float SpotLightStrength { get; set; }
+
+        public enum RenderChannelType { One, Two, Three };
+        public RenderChannelType RenderChannel { get; set; }
 
         PartEffectMapping defaultEffectMapping;
     }

@@ -32,6 +32,26 @@ namespace ProjectMagma.Simulation
             {
                 Renderable.SpotLightStrength = entity.GetFloat("spot_light_strength");
             }
+            if (entity.HasVector3("diffuse_color"))
+            {
+                (Renderable as BasicRenderable).DiffuseColor = entity.GetVector3("diffuse_color");
+            }
+            if (entity.HasVector3("emissive_color"))
+            {
+                (Renderable as BasicRenderable).EmissiveColor = entity.GetVector3("emissive_color");
+            }
+            if (entity.HasVector3("specular_color"))
+            {
+                (Renderable as BasicRenderable).SpecularColor = entity.GetVector3("specular_color");
+            }
+            if (entity.HasFloat("specular_power"))
+            {
+                (Renderable as BasicRenderable).SpecularPower = entity.GetFloat("specular_power");
+            }
+            if (entity.HasFloat("alpha"))
+            {
+                (Renderable as BasicRenderable).Alpha = entity.GetFloat("alpha");
+            }
         }
     }
 }

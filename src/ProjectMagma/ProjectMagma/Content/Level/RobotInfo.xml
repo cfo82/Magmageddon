@@ -5,13 +5,13 @@
   <Robot>
     <Name>Bender</Name>
     <Description>A level to test!</Description>
-    <EntityName>animated_robot</EntityName>
+    <EntityName>green_animated_robot</EntityName>
   </Robot>
 
   <Robot>
     <Name>I, Robot</Name>
     <Description>The same level, but pssst</Description>
-    <EntityName>yellow_robot</EntityName>
+    <EntityName>yellow_animated_robot</EntityName>
   </Robot>
 
 </Robots>

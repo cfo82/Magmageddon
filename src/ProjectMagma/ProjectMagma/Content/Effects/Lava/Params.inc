@@ -10,6 +10,7 @@ float2 RandomOffset[RANDOM_OFFSET_COUNT];
 float planeFraction;
 float flickerStrength;
 float StuccoCompression;
+float4 RenderChannelColor;
 
 float minPlaneY, maxPlaneY;
 

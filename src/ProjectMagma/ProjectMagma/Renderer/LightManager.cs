@@ -16,12 +16,14 @@ namespace ProjectMagma.Renderer
             // initialize blueish sky light
             SkyLight = new ParallelLight(
                 new Vector3(112, 213, 255) / 255.0f * 1f,
+                //Vector3.One * 1.0f,
                 Vector3.One * 1.0f,
-                new Vector3(0, -1, 0)
+                new Vector3(0, -1, -0.3f)
+                //new Vector3(0.0f, -0.3f, -1.0f)
             );
 
             // initialize lava light
-            lavaBaseColor = new Vector3(1.0f, 0.5f, 0.1f);
+            lavaBaseColor = new Vector3(1.0f, 0.5f, 0.15f);
             lavaBrightness = new DoublyIntegratedFloat(1.0f, 0.0f, 0.95f, 1.05f, -1.0f, 1.0f);
             LavaLight = new ParallelLight
             (

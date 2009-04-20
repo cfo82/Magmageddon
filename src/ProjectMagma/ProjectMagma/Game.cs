@@ -272,7 +272,9 @@ namespace ProjectMagma
 
             #if !XBOX
             // update the user interface
+            profiler.BeginSection("formcollection_update");
             formCollection.Update(gameTime);
+            profiler.EndSection("formcollection_update");
             #endif
 
             simulation.Update(gameTime);
@@ -281,7 +283,9 @@ namespace ProjectMagma
             menu.Update(gameTime);
 
             // update all GameComponents registered
+            profiler.BeginSection("base_update");
             base.Update(gameTime);
+            profiler.EndSection("base_update");
 
             profiler.EndSection("update");
         }

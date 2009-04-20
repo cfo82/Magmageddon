@@ -66,6 +66,8 @@ namespace ProjectMagma.Simulation
 
         public void Update(GameTime gameTime)
         {
+            Game.Instance.Profiler.BeginSection("simulation_update");
+
             // pause simulation if explicitly paused or app changed
             if (!paused && Game.Instance.IsActive)
             {
@@ -85,7 +87,11 @@ namespace ProjectMagma.Simulation
                 entityManager.ExecuteDeferred();
             }
             else
+            {
                 simTime.Pause();
+            }
+
+            Game.Instance.Profiler.EndSection("simulation_update");
         }
 
         public EntityManager EntityManager

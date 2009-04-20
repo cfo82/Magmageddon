@@ -41,6 +41,8 @@ namespace ProjectMagma
 
         internal void Update(GameTime gameTime)
         {
+            Game.Instance.Profiler.BeginSection("menu_update");
+
             double at = gameTime.TotalGameTime.TotalMilliseconds;
             GamePadState gamePadState = GamePad.GetState(PlayerIndex.One);
 
@@ -82,6 +84,8 @@ namespace ProjectMagma
                         Game.Instance.Simulation.Resume();
                     }
             }
+
+            Game.Instance.Profiler.EndSection("menu_update");
         }
 
         internal void Draw(GameTime gameTime)

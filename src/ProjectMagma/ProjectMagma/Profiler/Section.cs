@@ -126,8 +126,6 @@ namespace ProjectMagma.Profiler
 
         public void WriteFrame(StreamWriter writer, int indent, long frameNumber)
         {
-            string indentString = GenerateIndent(indent);
-
             bool hasStats = false;
             FrameStatistics stats = new FrameStatistics();
             foreach (FrameStatistics i in frameStatistics)
@@ -141,13 +139,11 @@ namespace ProjectMagma.Profiler
 
             if (!hasStats)
             {
-                writer.WriteLine("{0}+-- {1} has no statistics", indentString, name);
+                writer.WriteLine("{0}+-- {1} has no statistics", GenerateIndent(indent), name);
             }
             else
             {
-                writer.WriteLine("{0}+-- {1}:", indentString, name);
-                writer.WriteLine("{0}      CallCount: {1}", indentString, stats.CallCount);
-                writer.WriteLine("{0}      Time:      {1}", indentString, stats.AccumulatedTime);
+                writer.WriteLine("{0}+-- {1}: {2}, {3}", GenerateIndent(indent), name, stats.CallCount, stats.AccumulatedTime);
             }
 
             foreach (Section child in children.Values)

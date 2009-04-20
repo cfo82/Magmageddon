@@ -4,6 +4,7 @@ using System.Diagnostics;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using Microsoft.Xna.Framework.Storage;
 
 namespace ProjectMagma.Profiler
 {
@@ -91,6 +92,7 @@ namespace ProjectMagma.Profiler
             get { return frameNumber; }
         }
 
+        [Conditional("PROFILING")]
         public void Write(string filename)
         {
             FileStream fs = new FileStream(filename, FileMode.Create, FileAccess.Write, FileShare.Write);
@@ -101,6 +103,28 @@ namespace ProjectMagma.Profiler
             sw.Close();
         }
 
+        [Conditional("PROFILING")]
+        public void Write(StorageDevice device, string windowTitle, string filename)
+        {
+            // Open a storage container.StorageContainer container =
+            StorageContainer container = device.OpenContainer(windowTitle);
+
+            // Get the path of the save game.
+            string absoluteFilename = Path.Combine(container.Path, filename);
+
+            // Open the file, creating it if necessary.
+            using (FileStream stream = File.Open(absoluteFilename, FileMode.Create))
+            {
+                StreamWriter writer = new StreamWriter(stream);
+                Write(writer);
+                writer.Close();
+            }
+
+            // Dispose the container, to commit changes.
+            container.Dispose();
+        }
+
+        [Conditional("PROFILING")]
         public void Write(StreamWriter writer)
         {
             writer.WriteLine("profiling information:");

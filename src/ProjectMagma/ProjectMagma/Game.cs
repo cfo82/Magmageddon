@@ -255,9 +255,7 @@ namespace ProjectMagma
 
             MediaPlayer.Stop();
 
-            #if PROFILING
-            profiler.Write("profiling.txt");
-            #endif
+            profiler.Write(device, Window.Title, "profiling.txt");
         }
 
         /// <summary>

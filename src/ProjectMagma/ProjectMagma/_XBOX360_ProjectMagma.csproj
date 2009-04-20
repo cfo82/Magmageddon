@@ -77,6 +77,7 @@
     <Compile Include="Renderer\Renderables\TexturedRenderable.cs" />
     <Compile Include="Renderer\Renderer.cs" />
     <Compile Include="Renderer\RenderMode.cs" />
+    <Compile Include="Renderer\RenderPass.cs" />
     <Compile Include="Simulation\Attributes\Base\Attribute.cs" />
     <Compile Include="Simulation\Attributes\Base\AttributeTypes.cs" />
     <Compile Include="Simulation\Attributes\Concrete\BoolAttribute.cs" />
@@ -202,6 +203,14 @@
     <Reference Include="mscorlib">
       <Private>False</Private>
     </Reference>
+    <Reference Include="ProjectMagmaContentPipeline, Version=1.0.0.0, Culture=neutral, processorArchitecture=x86">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\ProjectMagmaContentPipeline\bin\xbox\Release\ProjectMagmaContentPipeline.dll</HintPath>
+    </Reference>
+    <Reference Include="ProjectMagmaShared, Version=1.0.0.0, Culture=neutral, processorArchitecture=x86">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\ProjectMagmaShared\bin\Xbox 360\release\ProjectMagmaShared.dll</HintPath>
+    </Reference>
     <Reference Include="System">
       <Private>False</Private>
     </Reference>
@@ -216,12 +225,6 @@
       <Private>False</Private>
       <RequiredTargetFramework>3.5</RequiredTargetFramework>
     </Reference>
-  </ItemGroup>
-  <ItemGroup>
-    <ProjectReference Include="..\ProjectMagmaShared\_XBOX360_ProjectMagmaShared.csproj">
-      <Project>{9D08F9E6-E783-43F1-B9B8-C448B482A73D}</Project>
-      <Name>_XBOX360_ProjectMagmaShared</Name>
-    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <Import Project="$(MSBuildExtensionsPath)\Microsoft\XNA Game Studio\Microsoft.Xna.GameStudio.targets" />

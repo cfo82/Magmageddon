@@ -125,7 +125,7 @@ namespace ProjectMagma.Renderer
                 {
                     meshPart.Effect = effect;
                 }
-                mesh.Draw();
+                //mesh.Draw();
 
                 // draw the shadow
                 Effect shadowEffect = renderer.ShadowEffect;

@@ -68,7 +68,7 @@ namespace ProjectMagma
             Content.RootDirectory = "Content";
 
             bloom = new BloomComponent(this);
-            Components.Add(bloom);
+            //Components.Add(bloom);
         }
 
         /// <summary>
@@ -283,7 +283,7 @@ namespace ProjectMagma
             // will apply effect such as bloom
             base.Draw(gameTime);
 
-            Components.Add(bloom); // add it again in order for updates...
+            //Components.Add(bloom); // add it again in order for updates...
 
             // draw stuff which should not be filtered
             menu.Draw(gameTime);

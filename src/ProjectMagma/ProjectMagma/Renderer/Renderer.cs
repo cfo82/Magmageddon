@@ -59,8 +59,13 @@ namespace ProjectMagma.Renderer
             int height = pp.BackBufferHeight;
             SurfaceFormat format = pp.BackBufferFormat;
 
-            //resolveTarget = new ResolveTexture2D(GraphicsDevice, width, height, 1, format);
-            renderChannelTarget = new RenderTarget2D(Device, width, height, 1, format);
+            //EnablePostProcessing = true;
+            if (EnablePostProcessing)
+            {
+                resolveTarget = new ResolveTexture2D(Device, width, height, 1, format);
+                //Target0 = new RenderTarget2D(Device, width, height, 1, format);
+                Target1 = new RenderTarget2D(Device, width, height, 1, format);
+            }
         }
         
         public void Render(GameTime gameTime)
@@ -94,11 +99,13 @@ namespace ProjectMagma.Renderer
                 }
             }
 
+            if (EnablePostProcessing)
+            {
+                RenderTestPost();
+            }
+
             // 5) Render overlays
             RenderOverlays(gameTime);
-
-
-            //RenderTestPost();
         }
 
         private void RenderShadow(GameTime gameTime)
@@ -150,7 +157,11 @@ namespace ProjectMagma.Renderer
             //RenderTarget2D oldRenderTarget1 = (RenderTarget2D) Device.GetRenderTarget(1);
             //Device.SetRenderTarget(0, oldRenderTarget1);
             //Device.SetRenderTarget(1, oldRenderTarget0);
-            Device.SetRenderTarget(1, renderChannelTarget);
+            if (EnablePostProcessing)
+            {
+                //Device.SetRenderTarget(0, Target0);
+                Device.SetRenderTarget(1, Target1);
+            }
 
             foreach (Renderable renderable in opaqueRenderables)
             {
@@ -158,7 +169,6 @@ namespace ProjectMagma.Renderer
                 renderable.Draw(this, gameTime);
             }
 
-            Device.SetRenderTarget(1, null);
             // need to sort transparent renderables by position and render them (back to front!!)
             // TODO: validate sorting... 
             transparentRenderables.Sort(TransparentRenderableComparison);
@@ -168,13 +178,24 @@ namespace ProjectMagma.Renderer
                 Debug.Assert(renderable.RenderMode == RenderMode.RenderToSceneAlpha);
                 renderable.Draw(this, gameTime);
             }
+
+            if (EnablePostProcessing)
+            {
+                //Device.SetRenderTarget(0, null);
+                Device.ResolveBackBuffer(resolveTarget,0);
+                Device.SetRenderTarget(1, null);
+                //GeometryRender = Target0.GetTexture();
+                RenderChannels = Target1.GetTexture();
+            }
         }
 
         #region post-processing tests
 
         private void RenderTestPost()
         {
-            DrawFullscreenQuad(renderChannelTarget.GetTexture(), Device.Viewport.Width, Device.Viewport.Height, null);
+            //DrawFullscreenQuad(GeometryRender, Device.Viewport.Width / 2, Device.Viewport.Height, null);
+            DrawFullscreenQuad(RenderChannels, Device.Viewport.Width, Device.Viewport.Height / 2, null);
+            DrawFullscreenQuad(resolveTarget, Device.Viewport.Width/2, Device.Viewport.Height, null);
         }
 
         private void DrawFullscreenQuad(
@@ -345,12 +366,20 @@ namespace ProjectMagma.Renderer
 
         private Texture2D vectorCloudTexture;
 
+        public bool EnablePostProcessing { get; set; }
+
         public Texture2D VectorCloudTexture
         {
             get { return vectorCloudTexture; }
         }
 
-        private RenderTarget2D renderChannelTarget;
+        public RenderTarget2D Target0 { get; set; }
+        public RenderTarget2D Target1 { get; set; }
+
+        public Texture2D GeometryRender { get; set; }
+        public Texture2D RenderChannels { get; set; }
+
+        private ResolveTexture2D resolveTarget;
 
         //private LightManager lightManager;
     }

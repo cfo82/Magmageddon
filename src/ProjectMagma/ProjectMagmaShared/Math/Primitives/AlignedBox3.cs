@@ -75,6 +75,11 @@ namespace ProjectMagma.Shared.Math.Primitives
             return box;
         }
 
+        public override string ToString()
+        {
+            return string.Format("Min: {0}, Max: {1}, Center: {2}, Extents: {3}", Min, Max, (Max + Min) / 2.0f, (Max - Min) / 2.0f);
+        }
+
         public Vector3 Min;
         public Vector3 Max;
     }

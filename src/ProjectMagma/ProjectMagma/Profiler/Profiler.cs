@@ -29,6 +29,7 @@ namespace ProjectMagma.Profiler
 
             sectionStack.Clear();
             sectionStack.Add(rootSection);
+            rootSection.BeginSection();
         }
 
         [Conditional("PROFILING")]
@@ -59,6 +60,7 @@ namespace ProjectMagma.Profiler
         public void EndFrame()
         {
             Debug.Assert(sectionStack.Count == 1);
+            rootSection.EndSection();
             rootSection.EndFrame();
             ++frameNumber;
         }
@@ -70,7 +72,7 @@ namespace ProjectMagma.Profiler
 
         public void Write(string filename)
         {
-            FileStream fs = new FileStream(filename, FileMode.Truncate, FileAccess.Write, FileShare.Write);
+            FileStream fs = new FileStream(filename, FileMode.Create, FileAccess.Write, FileShare.Write);
             fs.Close();
 
             StreamWriter sw = new StreamWriter(filename, true, Encoding.ASCII);

@@ -71,6 +71,8 @@ namespace ProjectMagma.Simulation.Collision
 
             //long t1 = System.DateTime.Now.Ticks;
 
+            Game.Instance.Profiler.BeginSection("collision_detection");
+
             testList.BeginCollisionDetection();
 
             //long t2 = System.DateTime.Now.Ticks;
@@ -91,7 +93,11 @@ namespace ProjectMagma.Simulation.Collision
 
             testList.EndCollisionDetection();
 
+            Game.Instance.Profiler.EndSection("collision_detection");
+
             //long t5 = System.DateTime.Now.Ticks;
+
+            Game.Instance.Profiler.BeginSection("collision_response");
 
             foreach (CollisionThread t in threads)
             {
@@ -143,6 +149,8 @@ namespace ProjectMagma.Simulation.Collision
                     }
                 }
             }
+
+            Game.Instance.Profiler.EndSection("collision_response");
 
             //long t6 = System.DateTime.Now.Ticks;
 

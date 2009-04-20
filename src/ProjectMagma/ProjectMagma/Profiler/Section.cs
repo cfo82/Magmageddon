@@ -75,14 +75,17 @@ namespace ProjectMagma.Profiler
 
         public void EndFrame()
         {
-            totalStatistics.AccumulatedTime += frameStatistics[currentStatistics].AccumulatedTime;
-            totalStatistics.CallCount += frameStatistics[currentStatistics].CallCount;
-            ++totalFrameCount;
+            if (profiler.FrameNumber != this.allocatedAtFrame)
+            {
+                totalStatistics.AccumulatedTime += frameStatistics[currentStatistics].AccumulatedTime;
+                totalStatistics.CallCount += frameStatistics[currentStatistics].CallCount;
+                ++totalFrameCount;
 
-            if (frameStatistics[currentStatistics].AccumulatedTime > peakStatistics.AccumulatedTime)
-               { peakStatistics.AccumulatedTime = frameStatistics[currentStatistics].AccumulatedTime; }
-            if (frameStatistics[currentStatistics].CallCount > peakStatistics.CallCount)
-                { peakStatistics.CallCount = frameStatistics[currentStatistics].CallCount; }
+                if (frameStatistics[currentStatistics].AccumulatedTime > peakStatistics.AccumulatedTime)
+                    { peakStatistics.AccumulatedTime = frameStatistics[currentStatistics].AccumulatedTime; }
+                if (frameStatistics[currentStatistics].CallCount > peakStatistics.CallCount)
+                   { peakStatistics.CallCount = frameStatistics[currentStatistics].CallCount; }
+            }
 
             currentStatistics = (currentStatistics + 1) % NumFrameStatistics;
             

@@ -55,12 +55,6 @@ namespace ProjectMagma.Simulation
             // get position
             Vector3 position = island.GetVector3("position");
 
-            // if we are in normal state, constantly save current position
-            if (state == IslandState.Normal)
-            {
-                originalPosition = position;
-            }
-
             // implement sinking and rising islands
             int playersOnIsland = island.GetInt("players_on_island");
             if (!hadCollision)
@@ -145,17 +139,27 @@ namespace ProjectMagma.Simulation
                 // perform repositioning
                 if (state == IslandState.Repositioning)
                 {
+                    if (lastState != IslandState.Repositioning)
+                    {
+                        repositioningPosition = GetNearestPointOnPath(ref position);
+                    }
+
                     // get direction of repositioning effort
-                    Vector3 dir = Vector3.Normalize(originalPosition - position);
+                    Vector3 dir = Vector3.Normalize(repositioningPosition - position);
+                    // if players are standing on island, we only reposition in xz
+                    if (playersOnIsland > 0)
+                        dir.Y = 0;
 
                     // calculate new position
                     Vector3 newPosition = position;
                     newPosition += dir * constants.GetFloat("repositioning_speed") * dt;
 
-                    // check if we are there yet
-                    if (Vector3.Dot(originalPosition - newPosition, originalPosition - position) < 0)
+                    // check if we are there yet (respectivly a bit further)
+                    if (Vector3.Dot(repositioningPosition - newPosition, repositioningPosition - position) < 0)
                     {
+                        position = repositioningPosition;
                         state = IslandState.Normal;
+                        OnRepositioningEnded(dir);
                     }
                     else
                     {
@@ -175,6 +179,7 @@ namespace ProjectMagma.Simulation
 
             hadCollision = false;
             collisionWithDestination = false;
+            lastState = state;
         }
 
         private void CollisionHandler(SimulationTime simTime, Contact contact)
@@ -198,9 +203,11 @@ namespace ProjectMagma.Simulation
                     if (repulsionVelocity.Length() > 0)
                     {
                         // only if collision normal is in opposite direction of current repulsion
-                        if (Vector3.Dot(repulsionVelocity, contact[0].Normal) < 0)
+                        Vector3 xznormal = contact[0].Normal;
+                        xznormal.Y = 0;
+                        if (Vector3.Dot(repulsionVelocity, xznormal) > 0)
                         {
-                            island.SetVector3("repulsion_velocity", Vector3.Reflect(repulsionVelocity, contact[0].Normal)
+                            island.SetVector3("repulsion_velocity", Vector3.Reflect(repulsionVelocity, xznormal) 
                                 * constants.GetFloat("collision_damping"));
                         }
                     }
@@ -222,29 +229,25 @@ namespace ProjectMagma.Simulation
                             // push the other island away (if contact normal is opposed)
                             if (Vector3.Dot(attractionVelocity, contact[0].Normal) < 0)
                             {
-                                other.SetVector3("repulsion_velocity", island.GetVector3("attraction_velocity")
-                                    + other.GetVector3("repulsion_velocity"));
+                                Vector3 velocity = island.GetVector3("attraction_velocity")
+                                    * constants.GetFloat("collision_damping");
+                                velocity.Y = 0; // only in xz plane
+                                other.SetVector3("repulsion_velocity", velocity + other.GetVector3("repulsion_velocity"));
                             }
                         }
 
                         // reflect for collision with pillar (if not already in direction away from it)
-                        if (Vector3.Dot(attractionVelocity, contact[0].Normal) < 0)
+                        if (Vector3.Dot(attractionVelocity, contact[0].Normal) > 0)
                         {
-                            island.SetVector3("attraction_velocity", Vector3.Reflect(island.GetVector3("attraction_velocity"),
-                                contact[0].Normal));
+                            Vector3 velocity = island.GetVector3("attraction_velocity");
+                            // project onto normal
+                            Vector3 projection = Vector3.Dot(velocity, contact[0].Normal) * -contact[0].Normal;
+                            // add them together
+                            island.SetVector3("attraction_velocity", projection - velocity);
                         }
                     }
                     else
                         CollisionHandler(simTime, island, other, contact);
-
-                    // always ensure we apply a bit of pushback out of other entity so we don't get stuck in there
-                    if (!(other.GetString("kind") == "island"
-                        && other.GetString("attracted_by") != ""))
-                    {
-                        Vector3 pushback = -contact[0].Normal * constants.GetFloat("contact_pushback_multiplier");
-                        pushback.Y = 0; // only in xz plane
-                        island.SetVector3("pushback_velocity", island.GetVector3("pushback_velocity") + pushback);
-                    }
                 }
             }
         }
@@ -273,6 +276,12 @@ namespace ProjectMagma.Simulation
 
         public abstract void CalculateNewPosition(Entity island, ref Vector3 position, float dt);
 
+        /// <summary>
+        /// gets nearest position on islands original path from given position 
+        /// to reposition island to
+        /// </summary>
+        protected abstract Vector3 GetNearestPointOnPath(ref Vector3 position);
+
         protected abstract void CollisionHandler(SimulationTime simTime, Entity island, Entity other, Contact co);
 
         protected virtual void OnRepulsionStart()
@@ -296,6 +305,15 @@ namespace ProjectMagma.Simulation
             island.SetVector3("attraction_velocity", Vector3.Zero);
         }
 
+        /// <summary>
+        /// called when reposition ends
+        /// </summary>
+        /// <param name="dir">the direction from the last position</param>
+        protected virtual void OnRepositioningEnded(Vector3 dir)
+        {
+
+        }
+
         protected bool collisionWithDestination;
         protected bool hadCollision;
 
@@ -312,8 +330,12 @@ namespace ProjectMagma.Simulation
         }
 
         protected IslandState state = IslandState.Normal;
+        protected IslandState lastState = IslandState.Normal;
+
+        // position island started out at
+        protected Vector3 originalPosition;
 
         // position to hover back to
-        private Vector3 originalPosition;
+        private Vector3 repositioningPosition;
     }
 }

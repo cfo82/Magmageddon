@@ -23,7 +23,14 @@ namespace ProjectMagma.Simulation
                 AssignPillar(entity);
             }
             else
+            {
                 pillar = Game.Instance.Simulation.EntityManager[entity.GetString("pillar")];
+
+                // get radius
+                Vector3 radiusV = (island.GetVector3("position") - pillar.GetVector3("position"));
+                radiusV.Y = 0;
+                radius = radiusV.Length();
+            }
         }
 
         public override void OnDetached(Entity entity)
@@ -52,6 +59,27 @@ namespace ProjectMagma.Simulation
             position.Z = pillarPos.Z + radiusV.Z;
         }
 
+        protected override Vector3 GetNearestPointOnPath(ref Vector3 position)
+        {
+            // get direction of pillar
+            Vector3 pillarPos = pillar.GetVector3("position");
+            Vector3 dir = position - pillarPos;
+            dir.Y = 0; // y is ignored
+            dir.Normalize();
+            Vector3 nearest = pillarPos + dir * radius; // get point on circular path
+            nearest.Y = originalPosition.Y; // set height
+            return nearest;
+        }
+
+        protected virtual void OnRepositioningEnded(Vector3 dir)
+        {
+            // set direction of circular motion so movements seems smooth
+            Vector3 radiusDir = pillar.GetVector3("position") - island.GetVector3("position");
+            this.dir = Math.Sign(Vector3.Dot(dir, radiusDir));
+            if (this.dir == 0)
+                this.dir = 1;
+        }
+
         protected override void CollisionHandler(SimulationTime simTime, Entity island, Entity other, Contact co)
         {
             if ((other.GetString("kind") == "pillar"
@@ -70,20 +98,18 @@ namespace ProjectMagma.Simulation
                 {
                     dir = -dir;
                 }
+                else
+                    // always ensure we apply a bit of pushback out of other entity so we don't get stuck in there
+                    if (!(other.GetString("kind") == "island"
+                        && other.GetString("attracted_by") != "")
+                        && island.GetString("attracted_by") != null
+                        && island.GetVector3("repulsion_velocity") == Vector3.Zero)
+                    {
+                        Vector3 pushback = -co[0].Normal * constants.GetFloat("contact_pushback_multiplier");
+                        pushback.Y = 0; // only in xz plane
+                        island.SetVector3("pushback_velocity", island.GetVector3("pushback_velocity") + pushback);
+                    }
             }
-        }
-
-
-        protected override void OnRepulsionEnd()
-        {
-//            AssignPillar(island);
-            base.OnRepulsionEnd();
-        }
-
-        protected override void OnAttractionEnd()
-        {
-//            AssignPillar(island);
-            base.OnAttractionEnd();
         }
 
         private void AssignPillar(Entity island)
@@ -93,11 +119,14 @@ namespace ProjectMagma.Simulation
             Entity nearest = null;
             foreach (Entity pillar in Game.Instance.Simulation.PillarManager)
             {
-                float d = (pillar.GetVector3("position") - island.GetVector3("position")).Length();
+                Vector3 dir = pillar.GetVector3("position") - island.GetVector3("position");
+                float d = dir.Length();
                 if (d < dist)
                 {
                     nearest = pillar;
                     dist = d;
+                    dir.Y = 0;
+                    radius = dir.Length();
                 }
             }
 
@@ -106,6 +135,7 @@ namespace ProjectMagma.Simulation
         }
 
         private Entity pillar;
+        private float radius;
         private int dir = 1;
     }
 }

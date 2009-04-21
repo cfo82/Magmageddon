@@ -13,13 +13,14 @@ namespace ProjectMagma
     class Menu
     {
         public const float ButtonRepeatTimeout = 100;
-        public const float StickRepeatTimeout = 250;
+        public const float StickRepeatTimeout = 200;
         public const float StickDirectionSelectionMin = 0.6f;
 
         private static Menu instance = new Menu();
         
         public double buttonPressedAt = 0;
-        public GamePadState previousState = GamePad.GetState(PlayerIndex.One);
+        public GamePadState lastGPState = GamePad.GetState(PlayerIndex.One);
+        public KeyboardState lastKBState = Keyboard.GetState();
         public double elementSelectedAt = 0;
 
         private Menu()
@@ -46,20 +47,25 @@ namespace ProjectMagma
 
             double at = gameTime.TotalGameTime.TotalMilliseconds;
             GamePadState gamePadState = GamePad.GetState(PlayerIndex.One);
+            KeyboardState keyboardState = Keyboard.GetState();
 
             if (active)
             {
                 if (at > buttonPressedAt + Menu.ButtonRepeatTimeout)
                 {
-                    if (gamePadState.Buttons.Start == ButtonState.Pressed
-                        && previousState.Buttons.Start == ButtonState.Released)
+                    if ((gamePadState.Buttons.Start == ButtonState.Pressed
+                        && lastGPState.Buttons.Start == ButtonState.Released)
+                        || (keyboardState.IsKeyDown(Keys.Escape)
+                        && lastKBState.IsKeyUp(Keys.Escape)))
                     {
                         Close();
                         buttonPressedAt = at;
                     }
                     else
-                        if (gamePadState.Buttons.X == ButtonState.Pressed
-                            && previousState.Buttons.X == ButtonState.Released)
+                        if ((gamePadState.Buttons.X == ButtonState.Pressed
+                            && lastGPState.Buttons.X == ButtonState.Released)
+                            || (keyboardState.IsKeyDown(Keys.Back)
+                            && lastKBState.IsKeyUp(Keys.Back)))
                         {
                             CloseActiveMenuScreen();
                             buttonPressedAt = at;
@@ -71,8 +77,10 @@ namespace ProjectMagma
             else
             {
                 if (at > buttonPressedAt + Menu.ButtonRepeatTimeout
-                    && gamePadState.Buttons.Start == ButtonState.Pressed
-                    && previousState.Buttons.Start == ButtonState.Released)
+                    && ((gamePadState.Buttons.Start == ButtonState.Pressed
+                        && lastGPState.Buttons.Start == ButtonState.Released)
+                        || (keyboardState.IsKeyDown(Keys.Escape)
+                        && lastKBState.IsKeyUp(Keys.Escape))))
                 {
                     Game.Instance.Simulation.Pause();
                     Open();
@@ -87,7 +95,7 @@ namespace ProjectMagma
                     }
             }
 
-            previousState = gamePadState;
+            lastGPState = gamePadState;
             Game.Instance.Profiler.EndSection("menu_update");
         }
 
@@ -231,18 +239,21 @@ namespace ProjectMagma
         {
             double at = gameTime.TotalGameTime.TotalMilliseconds;
             GamePadState gamePadState = GamePad.GetState(PlayerIndex.One);
+            KeyboardState keyboardState = Keyboard.GetState();
 
             if (at > menu.elementSelectedAt + Menu.StickRepeatTimeout)
             {
                 if (Vector2.Dot(gamePadState.ThumbSticks.Left, Vector2.UnitY) > Menu.StickDirectionSelectionMin
-                    || gamePadState.DPad.Up == ButtonState.Pressed)
+                    || gamePadState.DPad.Up == ButtonState.Pressed
+                    || keyboardState.IsKeyDown(Keys.Up))
                 {
                     NavigationUp();
                     menu.elementSelectedAt = at;
                 }
                 else
                     if (Vector2.Dot(gamePadState.ThumbSticks.Left, Vector2.UnitY) < -Menu.StickDirectionSelectionMin
-                        || gamePadState.DPad.Down == ButtonState.Pressed)
+                        || gamePadState.DPad.Down == ButtonState.Pressed
+                        || keyboardState.IsKeyDown(Keys.Down))
                     {
                         NavigationDown();
                         menu.elementSelectedAt = at;
@@ -326,11 +337,14 @@ namespace ProjectMagma
         {
             double at = gameTime.TotalGameTime.TotalMilliseconds;
             GamePadState gamePadState = GamePad.GetState(PlayerIndex.One);
+            KeyboardState keyboardState = Keyboard.GetState();
 
             if (at > menu.buttonPressedAt + Menu.ButtonRepeatTimeout)
             {
-                if (gamePadState.Buttons.A == ButtonState.Pressed
-                    && menu.previousState.Buttons.A == ButtonState.Released)
+                if ((gamePadState.Buttons.A == ButtonState.Pressed
+                    && menu.lastGPState.Buttons.A == ButtonState.Released)
+                    || (keyboardState.IsKeyDown(Keys.Enter)
+                    && menu.lastKBState.IsKeyUp(Keys.Enter)))
                 {
                     SelectedItem.PerformAction();
                     menu.buttonPressedAt = at;
@@ -573,7 +587,10 @@ namespace ProjectMagma
             double at = gameTime.TotalGameTime.TotalMilliseconds;
 
             if(at > menu.buttonPressedAt + Menu.ButtonRepeatTimeout
-                && GamePad.GetState(PlayerIndex.One).Buttons.A == ButtonState.Pressed)
+               && ((GamePad.GetState(PlayerIndex.One).Buttons.A == ButtonState.Pressed
+                && menu.lastGPState.Buttons.A == ButtonState.Released)
+                || (Keyboard.GetState().IsKeyDown(Keys.Enter)
+                    && menu.lastKBState.IsKeyUp(Keys.Enter))))
             {
                 List<Entity> players = new List<Entity>(4);
                 for (int i = 0; i < 4; i++)

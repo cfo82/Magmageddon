@@ -12,14 +12,14 @@ namespace ProjectMagma
 {
     class Menu
     {
-        public const float ButtonRepeatTimeout = 200;
+        public const float ButtonRepeatTimeout = 100;
         public const float StickRepeatTimeout = 250;
         public const float StickDirectionSelectionMin = 0.6f;
 
         private static Menu instance = new Menu();
         
         public double buttonPressedAt = 0;
-        public GamePadState previousState;
+        public GamePadState previousState = GamePad.GetState(PlayerIndex.One);
         public double elementSelectedAt = 0;
 
         private Menu()
@@ -51,14 +51,15 @@ namespace ProjectMagma
             {
                 if (at > buttonPressedAt + Menu.ButtonRepeatTimeout)
                 {
-
-                    if (gamePadState.Buttons.Start == ButtonState.Pressed)
+                    if (gamePadState.Buttons.Start == ButtonState.Pressed
+                        && previousState.Buttons.Start == ButtonState.Released)
                     {
                         Close();
                         buttonPressedAt = at;
                     }
                     else
-                        if (gamePadState.Buttons.X == ButtonState.Pressed)
+                        if (gamePadState.Buttons.X == ButtonState.Pressed
+                            && previousState.Buttons.X == ButtonState.Released)
                         {
                             CloseActiveMenuScreen();
                             buttonPressedAt = at;
@@ -70,14 +71,15 @@ namespace ProjectMagma
             else
             {
                 if (at > buttonPressedAt + Menu.ButtonRepeatTimeout
-                    && gamePadState.Buttons.Start == ButtonState.Pressed)
+                    && gamePadState.Buttons.Start == ButtonState.Pressed
+                    && previousState.Buttons.Start == ButtonState.Released)
                 {
                     Game.Instance.Simulation.Pause();
                     Open();
                     buttonPressedAt = at;
                 }
                 else
-                    // resume simulation as soon as x-button is released
+                    // resume simulation as soon as x-button is released (so we don't accidentally fire)
                     if (Game.Instance.Simulation.Paused
                         && gamePadState.Buttons.X == ButtonState.Released)
                     {
@@ -327,7 +329,8 @@ namespace ProjectMagma
 
             if (at > menu.buttonPressedAt + Menu.ButtonRepeatTimeout)
             {
-                if (gamePadState.Buttons.A == ButtonState.Pressed)
+                if (gamePadState.Buttons.A == ButtonState.Pressed
+                    && menu.previousState.Buttons.A == ButtonState.Released)
                 {
                     SelectedItem.PerformAction();
                     menu.buttonPressedAt = at;
@@ -547,6 +550,8 @@ namespace ProjectMagma
 
         private readonly LevelMenu levelMenu;
 
+        private readonly GamePadState[] previousState = new GamePadState[4];
+
         public PlayerMenu(Menu menu, LevelMenu levelMenu)
             : base(menu, new Vector2(550, 250))
         {
@@ -562,7 +567,7 @@ namespace ProjectMagma
                 robotSprites[i] = Game.Instance.Content.Load<Texture2D>("Sprites/Menu/Robot/" + Game.Instance.Robots[i].Entity);
             }
         }
-
+        
         public override void Update(GameTime gameTime)
         {
             double at = gameTime.TotalGameTime.TotalMilliseconds;
@@ -592,7 +597,9 @@ namespace ProjectMagma
             {
                 GamePadState gamePadState = GamePad.GetState((PlayerIndex)i);
 
-                if (gamePadState.Buttons.Start == ButtonState.Pressed
+                if (i > 0 // don't allow player1 do deactivate
+                    && gamePadState.Buttons.Start == ButtonState.Pressed
+                    && previousState[i].Buttons.Start == ButtonState.Released
                     && at > playerButtonPressedAt[i] + Menu.ButtonRepeatTimeout)
                 {
                     playerActive[i] = !playerActive[i];

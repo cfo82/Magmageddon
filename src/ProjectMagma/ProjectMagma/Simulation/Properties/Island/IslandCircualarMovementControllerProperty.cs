@@ -71,10 +71,10 @@ namespace ProjectMagma.Simulation
             return nearest;
         }
 
-        protected virtual void OnRepositioningEnded(Vector3 dir)
+        protected override void OnRepositioningEnded(Vector3 dir)
         {
             // set direction of circular motion so movements seems smooth
-            Vector3 radiusDir = pillar.GetVector3("position") - island.GetVector3("position");
+            Vector3 radiusDir = island.GetVector3("position") - pillar.GetVector3("position");
             this.dir = Math.Sign(Vector3.Dot(dir, radiusDir));
             if (this.dir == 0)
                 this.dir = 1;

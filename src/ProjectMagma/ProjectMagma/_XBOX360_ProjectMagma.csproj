@@ -80,7 +80,8 @@
     <Compile Include="Renderer\Renderables\TexturedRenderable.cs" />
     <Compile Include="Renderer\Renderer.cs" />
     <Compile Include="Renderer\RenderMode.cs" />
-    <Compile Include="Renderer\RenderPass.cs" />
+    <Compile Include="Renderer\RenderPasses\GlowPass.cs" />
+    <Compile Include="Renderer\RenderPasses\RenderPass.cs" />
     <Compile Include="Simulation\Attributes\Base\Attribute.cs" />
     <Compile Include="Simulation\Attributes\Base\AttributeTypes.cs" />
     <Compile Include="Simulation\Attributes\Concrete\BoolAttribute.cs" />

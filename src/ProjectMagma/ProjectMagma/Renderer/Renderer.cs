@@ -62,9 +62,10 @@ namespace ProjectMagma.Renderer
             //EnablePostProcessing = true;
             if (EnablePostProcessing)
             {
-                resolveTarget = new ResolveTexture2D(Device, width, height, 1, format);
+                ResolveTarget = new ResolveTexture2D(Device, width, height, 1, format);
                 //Target0 = new RenderTarget2D(Device, width, height, 1, format);
                 Target1 = new RenderTarget2D(Device, width, height, 1, format);
+                glowPass = new GlowPass(this);
             }
         }
         
@@ -101,7 +102,7 @@ namespace ProjectMagma.Renderer
 
             if (EnablePostProcessing)
             {
-                RenderTestPost();
+                glowPass.Render(gameTime);
             }
 
             // 5) Render overlays
@@ -182,7 +183,7 @@ namespace ProjectMagma.Renderer
             if (EnablePostProcessing)
             {
                 //Device.SetRenderTarget(0, null);
-                Device.ResolveBackBuffer(resolveTarget,0);
+                Device.ResolveBackBuffer(ResolveTarget,0);
                 Device.SetRenderTarget(1, null);
                 //GeometryRender = Target0.GetTexture();
                 RenderChannels = Target1.GetTexture();
@@ -191,67 +192,6 @@ namespace ProjectMagma.Renderer
 
         #region post-processing tests
 
-        private void RenderTestPost()
-        {
-            //DrawFullscreenQuad(GeometryRender, Device.Viewport.Width / 2, Device.Viewport.Height, null);
-            DrawFullscreenQuad(RenderChannels, Device.Viewport.Width, Device.Viewport.Height / 2, null);
-            DrawFullscreenQuad(resolveTarget, Device.Viewport.Width/2, Device.Viewport.Height, null);
-        }
-
-        private void DrawFullscreenQuad(
-            Texture2D texture,
-            RenderTarget2D renderTarget,
-            Effect effect
-        )
-        {
-            Device.SetRenderTarget(0, renderTarget);
-            DrawFullscreenQuad
-            (
-                texture,
-                renderTarget.Width,
-                renderTarget.Height,
-                effect
-            );
-            Device.SetRenderTarget(0, null);
-        }
-
-
-        private void DrawFullscreenQuad(
-            Texture2D texture,
-            int width, int height,
-            Effect effect
-        )
-        {
-            SpriteBatch spriteBatch = new SpriteBatch(Device);
-            spriteBatch.Begin(SpriteBlendMode.None, SpriteSortMode.Immediate, SaveStateMode.None);
-
-            // Begin the custom effect, if it is currently enabled. If the user
-            // has selected one of the show intermediate buffer options, we still
-            // draw the quad to make sure the image will end up on the screen,
-            // but might need to skip applying the custom pixel shader.
-            //if (showBuffer >= currentBuffer)
-            //{
-            //    effect.Begin();
-            //    effect.CurrentTechnique.Passes[0].Begin();
-            //}
-            //BasicEffect beffect = new BasicEffect(Device, null);
-            //beffect.TextureEnabled = true;
-            //beffect.Texture = texture;
-            //beffect.Begin();
-
-            // Draw the quad.
-            spriteBatch.Draw(texture, new Rectangle(0, 0, width, height), Color.White);
-            spriteBatch.End();
-
-            //beffect.End();
-
-            //// End the custom effect.
-            //if (showBuffer >= currentBuffer)
-            //{
-            //    effect.CurrentTechnique.Passes[0].End();
-            //    effect.End();
-            //}
-        }
 
         #endregion
 
@@ -379,7 +319,9 @@ namespace ProjectMagma.Renderer
         public Texture2D GeometryRender { get; set; }
         public Texture2D RenderChannels { get; set; }
 
-        private ResolveTexture2D resolveTarget;
+        public ResolveTexture2D ResolveTarget { get; set; }
+
+        private GlowPass glowPass;
 
         //private LightManager lightManager;
     }

@@ -105,7 +105,8 @@
     <Compile Include="Renderer\Renderer.cs" />
     <Compile Include="Renderer\RenderMode.cs" />
     <Compile Include="Renderer\Renderables\ShadowRenderable.cs" />
-    <Compile Include="Renderer\RenderPass.cs" />
+    <Compile Include="Renderer\RenderPasses\RenderPass.cs" />
+    <Compile Include="Renderer\RenderPasses\GlowPass.cs" />
     <Compile Include="Simulation\Collision\CollisionTests\ContactSphereMesh.cs" />
     <Compile Include="Simulation\Collision\CollisionTests\ContactMeshSphere.cs" />
     <Compile Include="Simulation\Collision\CollisionTests\ContactCylinderMesh.cs" />

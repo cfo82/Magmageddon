@@ -9,12 +9,17 @@ using Microsoft.Xna.Framework.Graphics;
 using ProjectMagma.Simulation.Attributes;
 using ProjectMagma.Renderer;
 
+// todo: this should inherit from basicrenderproperty
 namespace ProjectMagma.Simulation
 {
     public class IslandRenderProperty : Property
     {
         public IslandRenderProperty()
         {
+        }
+        public void Squash()
+        {
+            renderable.Squash();
         }
 
         public void OnAttached(Entity entity)

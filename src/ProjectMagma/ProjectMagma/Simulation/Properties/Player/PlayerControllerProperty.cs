@@ -624,6 +624,11 @@ namespace ProjectMagma.Simulation
                 {
                     SetActiveIsland(destinationIsland);
 
+                    // -- added by dpk
+                    (destinationIsland.GetProperty("render") as IslandRenderProperty).Squash();
+                    //(player.GetProperty("render") as BasicRenderProperty).Squash();
+                    // -- /added by dpk
+
                     playerPosition = isectPt;
 
                     destinationIsland = null;
@@ -1064,7 +1069,7 @@ namespace ProjectMagma.Simulation
             // register with active
             ((Vector3Attribute)island.Attributes["position"]).ValueChanged += IslandPositionHandler;
             island.SetInt("players_on_island", island.GetInt("players_on_island") + 1);
-
+            
             // set
             activeIsland = island;
             player.SetString("active_island", island.Name);

@@ -53,5 +53,10 @@ namespace ProjectMagma.Simulation
                 (Renderable as BasicRenderable).Alpha = entity.GetFloat("alpha");
             }
         }
+
+        public void Squash()
+        {
+            (Renderable as BasicRenderable).Squash();
+        }
     }
 }

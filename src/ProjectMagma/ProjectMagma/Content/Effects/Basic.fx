@@ -231,12 +231,21 @@ float ComputeFogFactor(float d)
 // Vertex shaders
 //-----------------------------------------------------------------------------
 
-
+float SquashAmount = 0.0f;
 PixelLightingVSOutput VSBasicPixelLightingNm(VSInputNm vin)
 {
 	PixelLightingVSOutput vout;
 	
-	float4 pos_ws = mul(vin.Position, World);
+	float4x4 squashMatrix = float4x4
+	(
+		lerp(1.0f, sqrt(2.0f), SquashAmount), 0.0f, 0.0f, 0.0f,
+		0.0f, lerp(1.0f, 0.5f, SquashAmount), 0.0f, -SquashAmount*0.6f,
+		0.0f, 0.0f, lerp(1.0f, sqrt(2.0f), SquashAmount), 0.0f,
+		0.0f, 0.0f, 0.0f, 1.0f
+	);
+	
+	float4 squashed_ws = mul(squashMatrix, vin.Position);
+	float4 pos_ws = mul(squashed_ws, World);
 	float4 pos_vs = mul(pos_ws, View);
 	float4 pos_ps = mul(pos_vs, Projection);
 	
@@ -256,7 +265,16 @@ PixelLightingVSOutputTx VSBasicPixelLightingNmTx(VSInputNmTx vin)
 {
 	PixelLightingVSOutputTx vout;
 	
-	float4 pos_ws = mul(vin.Position, World);
+	float4x4 squashMatrix = float4x4
+	(
+		lerp(1.0f, sqrt(2.0f), SquashAmount), 0.0f, 0.0f, 0.0f,
+		0.0f, lerp(1.0f, 0.5f, SquashAmount), 0.0f, -SquashAmount*1.0f,
+		0.0f, 0.0f, lerp(1.0f, sqrt(2.0f), SquashAmount), 0.0f,
+		0.0f, 0.0f, 0.0f, 1.0f
+	);
+	
+	float4 squashed_ws = mul(squashMatrix, vin.Position);
+	float4 pos_ws = mul(squashed_ws, World);
 	float4 pos_vs = mul(pos_ws, View);
 	float4 pos_ps = mul(pos_vs, Projection);
 	

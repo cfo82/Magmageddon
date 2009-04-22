@@ -493,6 +493,7 @@ namespace ProjectMagma.Simulation
                     aimVector = Vector3.Normalize(distVector);
                 }
                 aimVector *= constants.GetFloat("ice_spike_speed");
+                aimVector.Y = constants.GetFloat("ice_spike_speed");
 
                 Entity iceSpike = new Entity("icespike" + (++iceSpikeCount) + "_" + player.Name);
                 iceSpike.AddStringAttribute("player", player.Name);
@@ -813,7 +814,7 @@ namespace ProjectMagma.Simulation
                     if (contact.EntityB == destinationIsland)
                         return;
 
-                    Vector3 position = previousPosition + player.GetVector3("island_jump_velocity") * simTime.Dt;
+                    Vector3 position = player.GetVector3("position");
 
                     // get distance of destination point to sliding plane
                     float distance = Vector3.Dot(contact[0].Normal, position - contact[0].Point);
@@ -824,7 +825,7 @@ namespace ProjectMagma.Simulation
                     Vector3 slidingDelta = cpos - contact[0].Point;
                     Vector3 slidingVelocity = slidingDelta / simTime.Dt;
 
-                    //Console.WriteLine("orignal velocity " + player.GetVector3("island_jump_velocity") + "; sliding velocity: " + slidingVelocity);
+//                    Console.WriteLine("orignal velocity " + player.GetVector3("island_jump_velocity") + "; sliding velocity: " + slidingVelocity);
 
                     //                    slidingVelocity.Y = player.GetVector3("island_jump_velocity").Y;
                     slidingVelocity.Y = player.GetVector3("island_jump_velocity").Y;
@@ -865,7 +866,7 @@ namespace ProjectMagma.Simulation
             }
 
             // on top?
-            if (Vector3.Dot(Vector3.UnitY, contact[0].Normal) < 0)
+            if (Vector3.Dot(-Vector3.UnitY, contact[0].Normal) > 0.25)
             {
 //                Console.WriteLine(player.Name + " collidet with " + island.Name);
 
@@ -940,7 +941,9 @@ namespace ProjectMagma.Simulation
             else
             {
                 // normal feedback
-                if ((previousPosition - player.GetVector3("position")).Length() > 0.1) // apply feedback to player that changed its position
+                Vector3 dir = previousPosition - player.GetVector3("position");
+                if (dir.Length() > 0.001 // apply feedback to player that changed its position
+                    && Vector3.Dot(dir, c[0].Normal) > 0) // and only if normal faces right direction
                 {
                     player.SetVector3("player_pushback_velocity", /*player.GetVector3("player_pushback_velocity")*/
                         - c[0].Normal * constants.GetFloat("player_pushback_velocity_multiplier"));
@@ -1123,10 +1126,16 @@ namespace ProjectMagma.Simulation
 
         struct ControllerInput
         {
+            private GamePadState oldGPState;
+            private KeyboardState oldKBState;
+
+            private GamePadState gamePadState;
+            private KeyboardState keyboardState;
+
             public void Update(PlayerIndex playerIndex)
             {
-                GamePadState gamePadState = GamePad.GetState(playerIndex);
-                KeyboardState keyboardState = Keyboard.GetState(playerIndex);
+                gamePadState = GamePad.GetState(playerIndex);
+                keyboardState = Keyboard.GetState(playerIndex);
 
                 #region joysticks
 
@@ -1232,6 +1241,26 @@ namespace ProjectMagma.Simulation
 
                 #endregion
 
+                oldGPState = gamePadState;
+                oldKBState = keyboardState;
+            }
+
+            private bool GetPressed(Buttons button)
+            {
+                return gamePadState.IsButtonDown(button)
+                    && oldGPState.IsButtonUp(button);
+            }
+
+            private bool GetReleased(Buttons button)
+            {
+                return gamePadState.IsButtonUp(button)
+                    && oldGPState.IsButtonDown(button);
+            }
+
+            private bool GetHold(Buttons button)
+            {
+                return gamePadState.IsButtonDown(button)
+                    && oldGPState.IsButtonDown(button);
             }
 
             // in order to use the following variables as private with getters/setters, do
@@ -1247,6 +1276,8 @@ namespace ProjectMagma.Simulation
 
             // buttons
             public bool jetpackButtonPressed, flamethrowerButtonPressed, iceSpikeButtonPressed, hitButtonPressed, attractionButtonPressed;
+            public bool jetpackButtonRelease, flamethrowerButtonRelease, iceSpikeButtonReleased, hitButtonReleased, attractionButtonReleased;
+            public bool jetpackButtonHold, flamethrowerButtonHold, iceSpikeButtonHold, hitButtonHold, attractionButtonHold;
 
             private static float gamepadEmulationValue = -1f;
         }

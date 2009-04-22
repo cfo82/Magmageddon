@@ -32,6 +32,12 @@ namespace ProjectMagma.Simulation
             entity.AddVector3Attribute("attraction_velocity", Vector3.Zero);
             entity.AddIntAttribute("players_on_island", 0);
 
+            // approximation of island's radius and height
+            Vector3 scale = island.GetVector3("scale");
+            entity.AddFloatAttribute("height", scale.Y);
+            scale.Y = 0;
+            entity.AddFloatAttribute("radius", scale.Length());
+
             entity.Update += OnUpdate;
 
             ((CollisionProperty)entity.GetProperty("collision")).OnContact += CollisionHandler;
@@ -108,28 +114,42 @@ namespace ProjectMagma.Simulation
             {
                 // get direction to player
                 Entity player = Game.Instance.Simulation.EntityManager[island.GetString("attracted_by")];
-                Vector3 dir = player.GetVector3("position") - position;
+                Entity playerIsland = Game.Instance.Simulation.EntityManager[player.GetString("active_island")];
+                Vector3 destinationPos = playerIsland.GetVector3("position");
+                Vector3 dir = destinationPos - position;
                 dir.Normalize();
+
+                bool inRadius = (position - destinationPos).Length()
+                        < island.GetFloat("radius") + playerIsland.GetFloat("radius");
+
+                bool inHeight =
+                    (position.Y < destinationPos.Y
+                    && position.Y > destinationPos.Y - playerIsland.GetFloat("height"))
+                    || (position.Y - island.GetFloat("height") < destinationPos.Y
+                    && position.Y - island.GetFloat("height") > destinationPos.Y - playerIsland.GetFloat("height"));
 
                 if (!collisionWithDestination)
                 {
-                    Vector3 velocity = island.GetVector3("attraction_velocity");
-                    // deaccelerate a bit first if > max_speed
-                    if (velocity.Length() > constants.GetFloat("attraction_max_speed"))
+                    if (!inRadius || inHeight)
                     {
-                        velocity -= Vector3.Normalize(velocity) * constants.GetFloat("attraction_acceleration") * dt;
-                    }
-                    velocity += dir * constants.GetFloat("attraction_acceleration") * dt;
-                    velocity.Y += dir.Y * constants.GetFloat("attraction_acceleration") * dt; // faster acceleration on y axis
-                    island.SetVector3("attraction_velocity", velocity);
+                        Vector3 velocity = island.GetVector3("attraction_velocity");
+                        // deaccelerate a bit first if > max_speed
+                        if (velocity.Length() > constants.GetFloat("attraction_max_speed"))
+                        {
+                            velocity -= Vector3.Normalize(velocity) * constants.GetFloat("attraction_acceleration") * dt;
+                        }
+                        velocity += dir * constants.GetFloat("attraction_acceleration") * dt;
+                        velocity.Y += dir.Y * constants.GetFloat("attraction_acceleration") * dt; // faster acceleration on y axis
+                        island.SetVector3("attraction_velocity", velocity);
 
-                    // change position according to velocity
-                    position += velocity * dt;
-                }
-                else
-                {
-                    // hover on correct y
-                    position.Y += dir.Y * constants.GetFloat("attraction_max_speed") * dt;
+                        // change position according to velocity
+                        position += velocity * dt;
+                    }
+                    else
+                    {
+                        // hover on correct y
+                        position.Y += dir.Y * constants.GetFloat("attraction_max_speed") * dt;
+                    }
                 }
             }
 

@@ -1093,6 +1093,11 @@ namespace ProjectMagma.Simulation
 
                 activeIsland = null;
                 player.SetString("active_island", "");
+
+                if(attractedIsland != null) // disable attraction
+                    attractedIsland.SetString("attracted_by", "");
+                // remove selection arrow
+                selectedIsland = null;
             }
         }
 

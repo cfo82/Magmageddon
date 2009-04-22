@@ -832,7 +832,7 @@ namespace ProjectMagma.Simulation
                     player.SetVector3("island_jump_velocity", slidingVelocity);
 
                     // also ensure we don't fall down yet
-                    player.SetVector3("velocity", player.GetVector3("velocity") - constants.GetVector3("gravity_acceleration") * simTime.Dt);
+//                    player.SetVector3("velocity", player.GetVector3("velocity") - constants.GetVector3("gravity_acceleration") * simTime.Dt);
 
                     return;
                 }

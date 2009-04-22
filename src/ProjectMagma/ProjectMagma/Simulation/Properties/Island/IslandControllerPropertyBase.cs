@@ -38,6 +38,8 @@ namespace ProjectMagma.Simulation
             scale.Y = 0;
             entity.AddFloatAttribute("radius", scale.Length());
 
+            entity.AddBoolAttribute("stop_attraction", false);
+
             entity.Update += OnUpdate;
 
             ((CollisionProperty)entity.GetProperty("collision")).OnContact += CollisionHandler;
@@ -149,6 +151,24 @@ namespace ProjectMagma.Simulation
                     {
                         // hover on correct y
                         position.Y += dir.Y * constants.GetFloat("attraction_max_speed") * dt;
+                    }
+                }
+                else
+                {
+                    attractionAtDestination = true;
+                    island.SetVector3("attraction_velocity", Vector3.Zero);
+                }
+
+                // check wheter to stop attraction (after timeout)
+                if (island.GetBool("stop_attraction"))
+                {
+                    if (attractionEndTimoutStartedAt == 0)
+                        attractionEndTimoutStartedAt = simTime.At;
+                    if (simTime.At > attractionEndTimoutStartedAt + constants.GetFloat("attraction_timeout")
+                        || !attractionAtDestination)
+                    {
+                        // finally stop attraction
+                        island.SetString("attracted_by", "");
                     }
                 }
             }
@@ -323,6 +343,9 @@ namespace ProjectMagma.Simulation
         {
             state = IslandState.Repositioning;
             island.SetVector3("attraction_velocity", Vector3.Zero);
+            island.SetBool("stop_attraction", false);
+            attractionEndTimoutStartedAt = 0;
+            attractionAtDestination = false;
         }
 
         /// <summary>
@@ -334,6 +357,9 @@ namespace ProjectMagma.Simulation
 
         }
 
+        private float attractionEndTimoutStartedAt = 0;
+
+        protected bool attractionAtDestination = false;
         protected bool collisionWithDestination;
         protected bool hadCollision;
 

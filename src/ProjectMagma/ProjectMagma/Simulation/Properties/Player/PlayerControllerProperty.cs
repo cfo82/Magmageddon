@@ -280,8 +280,11 @@ namespace ProjectMagma.Simulation
                 && (!controllerInput.attractionButtonPressed
                 || controllerInput.jetpackButtonPressed))
             {
-                // will call handler
-                attractedIsland.SetString("attracted_by", "");
+                // start attraction stop (has timeout)
+                attractedIsland.SetBool("stop_attraction", true);
+
+                // remove selection
+                RemoveSelectionArrow();
             }
 
         }
@@ -371,13 +374,18 @@ namespace ProjectMagma.Simulation
                     if (selectedIsland != null
                         && at > islandSelectedAt + constants.GetFloat("island_deselection_timeout"))
                     {
-                        selectedIsland = null;
-                        arrow.RemoveProperty("render");
-                        arrow.RemoveProperty("shadow_cast");
-                        islandSelectedAt = 0;
+                        RemoveSelectionArrow();
                     }
                 }
             }
+        }
+
+        private void RemoveSelectionArrow()
+        {
+            selectedIsland = null;
+            arrow.RemoveProperty("render");
+            arrow.RemoveProperty("shadow_cast");
+            islandSelectedAt = 0;
         }
 
         private void PerformIslandRepulsionAction(float at, ref int fuel)
@@ -968,8 +976,11 @@ namespace ProjectMagma.Simulation
                 sender.ValueChanged -= IslandAttracedByChangeHandler;
 
                 // remove arrow
-                arrow.RemoveProperty("render");
-                arrow.RemoveProperty("shadow_cast");
+                if (arrow.HasProperty("render"))
+                {
+                    arrow.RemoveProperty("render");
+                    arrow.RemoveProperty("shadow_cast");
+                }
 
                 // reset attraction and selection
                 attractedIsland = null;

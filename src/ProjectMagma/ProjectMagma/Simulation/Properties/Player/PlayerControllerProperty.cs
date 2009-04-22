@@ -295,8 +295,6 @@ namespace ProjectMagma.Simulation
                 && jumpButtonReleased // don't allow jumps by having the jump button pressed all the time
             )
             {
-                LeaveActiveIsland();
-
                 destinationIsland = selectedIsland;
 
                 // calculate time to travel to island (in xz plane) using an iterative approach
@@ -312,7 +310,6 @@ namespace ProjectMagma.Simulation
 
                     islandDir = (islandPos - playerPosition);
                     Vector3 islandDir2D = islandDir;
-                    //                    islandDir2D.Y = 0;
                     float dist2D = islandDir2D.Length();
 
                     if (time > maxTime)
@@ -328,6 +325,8 @@ namespace ProjectMagma.Simulation
                 playerVelocity = -constants.GetVector3("gravity_acceleration") * maxTime
                     + Vector3.UnitY * constants.GetFloat("island_jump_arc_height") * maxTime;
                 player.SetVector3("island_jump_velocity", Vector3.Normalize(islandDir) * constants.GetFloat("island_jump_speed"));
+
+                LeaveActiveIsland();
             }
         }
 
@@ -1088,16 +1087,16 @@ namespace ProjectMagma.Simulation
             if (activeIsland != null)
             {
                 //Console.WriteLine(player.Name+" left island");
+
                 ((Vector3Attribute)activeIsland.Attributes["position"]).ValueChanged -= IslandPositionHandler;
                 activeIsland.SetInt("players_on_island", activeIsland.GetInt("players_on_island") - 1);
 
                 activeIsland = null;
                 player.SetString("active_island", "");
 
-                if(attractedIsland != null) // disable attraction
+                // disable attraction
+                if(attractedIsland != null) 
                     attractedIsland.SetString("attracted_by", "");
-                // remove selection arrow
-                selectedIsland = null;
             }
         }
 

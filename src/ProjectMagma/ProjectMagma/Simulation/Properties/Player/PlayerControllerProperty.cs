@@ -325,7 +325,8 @@ namespace ProjectMagma.Simulation
 
                 lastIslandDir = islandDir;
 
-                playerVelocity = -constants.GetVector3("gravity_acceleration") * maxTime;
+                playerVelocity = -constants.GetVector3("gravity_acceleration") * maxTime
+                    + Vector3.UnitY * constants.GetFloat("island_jump_arc_height") * maxTime;
                 player.SetVector3("island_jump_velocity", Vector3.Normalize(islandDir) * constants.GetFloat("island_jump_speed"));
             }
         }

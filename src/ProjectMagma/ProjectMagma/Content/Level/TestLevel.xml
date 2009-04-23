@@ -50,13 +50,14 @@
       <Attribute name="position" template="float3" value="0 0 0"/>
       <Attribute name="scale" template="float3" value="700 700 700"/>
       <Attribute name="mesh" template="string" value="Models/Environment/cave_v002"/>
-      <Attribute name="bv_type" template="string" value="cylinder"/>
+      <Attribute name="bv_type" template="string" value="alignedbox3tree"/>
       <Attribute name="lava_light_strength" template="float" value="0.7"/>
       <Attribute name="spot_light_strength" template="float" value="0.4"/>
       <Attribute name="diffuse_color" template="float3" value="1.0 1.0 1.0"/>
     </Attributes>
     <Properties>
       <Property name="render" type="ProjectMagma.Simulation.BasicRenderProperty"/>
+      <!--Property name="collision" type="ProjectMagma.Simulation.Collision.CollisionProperty"/-->
       <Property name="render_highlight" type="ProjectMagma.Simulation.RenderHighlightProperty"/>
     </Properties>
   </Entity>

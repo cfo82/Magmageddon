@@ -141,8 +141,11 @@ namespace ProjectMagma.Simulation
                         {
                             velocity -= Vector3.Normalize(velocity) * constants.GetFloat("attraction_acceleration") * dt;
                         }
-                        velocity += dir * constants.GetFloat("attraction_acceleration") * dt;
-                        velocity.Y += dir.Y * constants.GetFloat("attraction_acceleration") * dt; // faster acceleration on y axis
+                        if (!hadCollision)
+                        {
+                            velocity += dir * constants.GetFloat("attraction_acceleration") * dt;
+                            velocity.Y += dir.Y * constants.GetFloat("attraction_acceleration") * dt; // faster acceleration on y axis
+                        }
                         island.SetVector3("attraction_velocity", velocity);
 
                         // change position according to velocity
@@ -255,22 +258,7 @@ namespace ProjectMagma.Simulation
                         }
                     }
 
-                    // adapt repositioning velocity
-                    if (state == IslandState.Repositioning)
-                    {
-                        // get distance of destination point to sliding plane
-                        float distance = Vector3.Dot(contact[0].Normal, repositioningPosition - contact[0].Point);
-
-                        // calculate point on plane
-                        Vector3 cpos = repositioningPosition - contact[0].Normal * distance;
-
-                        // get sliding velocity
-                        Vector3 slidingDir = Vector3.Normalize(cpos - contact[0].Point);
-                        Vector3 slidingVelocity = slidingDir * constants.GetFloat("repositioning_speed");
-
-                        island.SetVector3("repositioning_velocity", slidingVelocity);
-                    }
-                    else
+                    // attraction?
                     if (island.GetString("attracted_by") != "")
                     {
                         Vector3 attractionVelocity = island.GetVector3("attraction_velocity");
@@ -298,13 +286,36 @@ namespace ProjectMagma.Simulation
                         // reflect for collision with pillar (if not already in direction away from it)
                         if (Vector3.Dot(attractionVelocity, contact[0].Normal) > 0)
                         {
-                            Vector3 velocity = island.GetVector3("attraction_velocity");
+                            // compute only on x/z plane for now
+                            Vector3 velocityXZ = attractionVelocity;
+                            velocityXZ.Y = 0.0f;
+
                             // project onto normal
-                            Vector3 projection = Vector3.Dot(velocity, contact[0].Normal) * -contact[0].Normal;
-                            // add them together
-                            island.SetVector3("attraction_velocity", (projection - velocity)
-                                * constants.GetFloat("collision_damping"));
+                            Vector3 projection = Vector3.Dot(velocityXZ, contact[0].Normal) * contact[0].Normal;
+
+                            // compute orthogonal repulsion
+                            Vector3 new_velocity = Vector3.Normalize(projection - velocityXZ) * velocityXZ.Length();
+                            new_velocity.Y = attractionVelocity.Y;
+
+                            island.SetVector3("attraction_velocity", new_velocity);
+                                //* constants.GetFloat("collision_damping"));
                         }
+                    }
+                    else
+                    // adapt repositioning velocity
+                    if (state == IslandState.Repositioning)
+                    {
+                        // get distance of destination point to sliding plane
+                        float distance = Vector3.Dot(contact[0].Normal, repositioningPosition - contact[0].Point);
+
+                        // calculate point on plane
+                        Vector3 cpos = repositioningPosition - contact[0].Normal * distance;
+
+                        // get sliding velocity
+                        Vector3 slidingDir = Vector3.Normalize(cpos - contact[0].Point);
+                        Vector3 slidingVelocity = slidingDir * constants.GetFloat("repositioning_speed");
+
+                        island.SetVector3("repositioning_velocity", slidingVelocity);
                     }
                     else
                         CollisionHandler(simTime, island, other, contact);

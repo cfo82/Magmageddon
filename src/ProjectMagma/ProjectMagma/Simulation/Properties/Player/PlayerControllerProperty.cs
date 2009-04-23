@@ -113,6 +113,8 @@ namespace ProjectMagma.Simulation
             arrow.AddStringAttribute("mesh", player.GetString("arrow_mesh"));
             arrow.AddVector3Attribute("scale", new Vector3(12, 12, 12));
 
+            arrow.AddVector3Attribute("diffuse_color", new Vector3(1.0f, 0.1f, 0.4f));
+
             arrow.AddProperty("arrow_controller_property", new ArrowControllerProperty());
 
             Game.Instance.Simulation.EntityManager.AddDeferred(arrow);
@@ -315,6 +317,10 @@ namespace ProjectMagma.Simulation
                 && jumpButtonReleased // don't allow jumps by having the jump button pressed all the time
             )
             {
+                if ((selectedIsland.GetVector3("position") - player.GetVector3("position")).Length()
+                    > 300)
+                    return;
+
                 destinationIsland = selectedIsland;
 
                 // calculate time to travel to island (in xz plane) using an iterative approach
@@ -425,7 +431,8 @@ namespace ProjectMagma.Simulation
         private void PerformFlamethrowerAction(Entity player, Vector3 playerPosition)
         {
             // flamethrower
-            if (controllerInput.flamethrowerButtonPressed
+            if ((controllerInput.flamethrowerButtonPressed
+                || controllerInput.flamethrowerButtonHold)
                 && activeIsland != null) // only allowed on ground
             {
                 if (flame == null)
@@ -447,7 +454,7 @@ namespace ProjectMagma.Simulation
 
                         flame.AddStringAttribute("mesh", "Models/Visualizations/flame_primitive");
                         flame.AddVector3Attribute("scale", new Vector3(0, 0, 0));
-                        flame.AddVector3Attribute("full_scale", new Vector3(26, 26, 26));
+                        flame.AddVector3Attribute("full_scale", new Vector3(120, 120, 120));
                         flame.AddQuaternionAttribute("rotation", GetRotation(player));
 
                         flame.AddStringAttribute("bv_type", "sphere");

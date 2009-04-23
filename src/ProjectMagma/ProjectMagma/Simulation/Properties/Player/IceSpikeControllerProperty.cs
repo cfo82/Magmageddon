@@ -77,7 +77,7 @@ namespace ProjectMagma.Simulation
                     Vector3 vd = dot * acc;
                     // add them together for orthogonal acceleration
                     float factor = dist / origDist; // the closer we get, the more exact we accelerate
-                    a += (acc - vd) * constants.GetFloat("ice_spike_homing_acceleration") * (factor);
+//                    a += (acc - vd) * constants.GetFloat("ice_spike_homing_acceleration") * (factor);
                     a += (acc) * constants.GetFloat("ice_spike_homing_acceleration") * (1 - factor);
                 }
 

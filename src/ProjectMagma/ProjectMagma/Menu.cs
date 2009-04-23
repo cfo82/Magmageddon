@@ -645,7 +645,10 @@ namespace ProjectMagma
                             menu.elementSelectedAt = at;
                         }
                 }
+
+                previousState[i] = gamePadState;
             }
+
         }
 
         public override void Draw(GameTime gameTime, SpriteBatch spriteBatch)

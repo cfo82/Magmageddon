@@ -11,6 +11,23 @@ namespace ProjectMagma.Simulation
 {
     public class PlayerControllerProperty : Property
     {
+        #region button assignments
+        // gamepad buttons
+        private static readonly Buttons[] JetpackButtons = { Buttons.LeftTrigger, Buttons.A };
+        private static readonly Buttons[] IceSpikeButtons = { Buttons.X };
+        private static readonly Buttons[] HitButtons = { Buttons.RightShoulder };
+        private static readonly Buttons[] FlamethrowerButtons = { Buttons.Y };
+        private static readonly Buttons[] AttractionButtons = { Buttons.RightShoulder };
+
+        // keyboard keys
+        private static readonly Keys JetpackKey = Keys.Space;
+        private static readonly Keys IceSpikeKey = Keys.Q;
+        private static readonly Keys HitKey = Keys.E;
+        private static readonly Keys FlamethrowerKey = Keys.R;
+        private static readonly Keys AttractionKey = Keys.LeftControl;
+        #endregion
+
+
         private Entity player;
         private Entity constants;
 
@@ -1171,94 +1188,90 @@ namespace ProjectMagma.Simulation
 
                 if (!moveStickMoved)
                 {
-                    if (playerIndex == PlayerIndex.One)
+                    if (keyboardState.IsKeyDown(Keys.A))
                     {
-                        if (keyboardState.IsKeyDown(Keys.A))
-                        {
-                            leftStickX = gamepadEmulationValue;
-                            moveStickMoved = true;
-                        }
-                        else
-                            if (keyboardState.IsKeyDown(Keys.D))
-                            {
-                                leftStickX = -gamepadEmulationValue;
-                                moveStickMoved = true;
-                            }
-
-                        if (keyboardState.IsKeyDown(Keys.W))
-                        {
-                            leftStickY = gamepadEmulationValue;
-                            moveStickMoved = true;
-                        }
-                        else
-                            if (keyboardState.IsKeyDown(Keys.S))
-                            {
-                                leftStickY = -gamepadEmulationValue;
-                                moveStickMoved = true;
-                            }
+                        leftStickX = gamepadEmulationValue;
+                        moveStickMoved = true;
                     }
                     else
-                    {
-                        if (keyboardState.IsKeyDown(Keys.Left))
+                        if (keyboardState.IsKeyDown(Keys.D))
                         {
-                            leftStickX = gamepadEmulationValue;
+                            leftStickX = -gamepadEmulationValue;
+                            moveStickMoved = true;
+                        }
+
+                    if (keyboardState.IsKeyDown(Keys.W))
+                    {
+                        rightStickY = gamepadEmulationValue;
+                        moveStickMoved = true;
+                    }
+                    else
+                        if (keyboardState.IsKeyDown(Keys.S))
+                        {
+                            rightStickY = -gamepadEmulationValue;
+                            moveStickMoved = true;
+                        }
+
+                    if (keyboardState.IsKeyDown(Keys.Left))
+                        {
+                            rightStickX = gamepadEmulationValue;
                             moveStickMoved = true;
                         }
                         else
                             if (keyboardState.IsKeyDown(Keys.Right))
                             {
-                                leftStickX = -gamepadEmulationValue;
+                                rightStickX = -gamepadEmulationValue;
                                 moveStickMoved = true;
                             }
 
-                        if (keyboardState.IsKeyDown(Keys.Up))
+                    if (keyboardState.IsKeyDown(Keys.Up))
+                    {
+                        rightStickY = -gamepadEmulationValue;
+                        moveStickMoved = true;
+                    }
+                    else
+                        if (keyboardState.IsKeyDown(Keys.Down))
                         {
-                            leftStickY = -gamepadEmulationValue;
+                            rightStickY = gamepadEmulationValue;
                             moveStickMoved = true;
                         }
-                        else
-                            if (keyboardState.IsKeyDown(Keys.Down))
-                            {
-                                leftStickY = gamepadEmulationValue;
-                                moveStickMoved = true;
-                            }
-                    }
                 }
 
                 #endregion
 
                 #region action buttons
 
-                jetpackButtonPressed =
-                    gamePadState.Buttons.A == ButtonState.Pressed ||
-                    gamePadState.Triggers.Left > 0 ||
-                    (keyboardState.IsKeyDown(Keys.Space) && playerIndex == PlayerIndex.One) ||
-                    (keyboardState.IsKeyDown(Keys.Insert) && playerIndex == PlayerIndex.Two);
-
-                iceSpikeButtonPressed = gamePadState.Buttons.X == ButtonState.Pressed;
-                if((keyboardState.IsKeyDown(Keys.Q) && playerIndex == PlayerIndex.One) ||
-                    (keyboardState.IsKeyDown(Keys.RightControl) && playerIndex == PlayerIndex.Two))
-                {
-                    iceSpikeButtonPressed = true;
-                }
-
-                hitButtonPressed =
-                    gamePadState.Buttons.RightShoulder == ButtonState.Pressed ||
-                    (keyboardState.IsKeyDown(Keys.E) && playerIndex == PlayerIndex.One) ||
-                    (keyboardState.IsKeyDown(Keys.Enter) && playerIndex == PlayerIndex.Two);
-
-                flamethrowerButtonPressed =
-                    gamePadState.Buttons.Y == ButtonState.Pressed ||
-                    (keyboardState.IsKeyDown(Keys.R) && playerIndex == PlayerIndex.One) ||
-                    (keyboardState.IsKeyDown(Keys.Delete) && playerIndex == PlayerIndex.Two);
-
-                attractionButtonPressed =
-                    gamePadState.Triggers.Right > 0;
+                SetStates(JetpackButtons, JetpackKey, out jetpackButtonPressed, out jetpackButtonHold, out jetpackButtonReleased);
+                SetStates(IceSpikeButtons, IceSpikeKey, out iceSpikeButtonPressed, out iceSpikeButtonHold, out iceSpikeButtonReleased);
+                SetStates(HitButtons, HitKey, out hitButtonPressed, out hitButtonHold, out hitButtonReleased);
+                SetStates(FlamethrowerButtons, FlamethrowerKey, out flamethrowerButtonPressed, out flamethrowerButtonHold, out flamethrowerButtonReleased);
+                SetStates(AttractionButtons, AttractionKey, out attractionButtonPressed, out attractionButtonHold, out attractionButtonReleased);
 
                 #endregion
 
                 oldGPState = gamePadState;
                 oldKBState = keyboardState;
+            }
+
+            private void SetStates(Buttons[] buttons, Keys key,
+                out bool pressedIndicator,
+                out bool holdIndicator,
+                out bool releasedIndicator)
+            {
+                pressedIndicator = false;
+                releasedIndicator = false;
+                holdIndicator = false;
+
+                for (int i = 0; i < buttons.Length; i++)
+                {
+                    pressedIndicator |= GetPressed(buttons[i]);
+                    releasedIndicator |= GetReleased(buttons[i]);
+                    holdIndicator |= GetHold(buttons[i]);
+                }
+
+                pressedIndicator |= GetPressed(key);
+                releasedIndicator |= GetReleased(key);
+                holdIndicator |= GetHold(key);
             }
 
             private bool GetPressed(Buttons button)
@@ -1279,9 +1292,24 @@ namespace ProjectMagma.Simulation
                     && oldGPState.IsButtonDown(button);
             }
 
-            // in order to use the following variables as private with getters/setters, do
-            // we really need 15 lines per variable?!
-            
+            private bool GetPressed(Keys key)
+            {
+                return keyboardState.IsKeyDown(key)
+                    && oldKBState.IsKeyUp(key);
+            }
+
+            private bool GetReleased(Keys key)
+            {
+                return keyboardState.IsKeyUp(key)
+                    && oldKBState.IsKeyDown(key);
+            }
+
+            private bool GetHold(Keys key)
+            {
+                return keyboardState.IsKeyDown(key)
+                    && oldKBState.IsKeyDown(key);
+            }
+           
             // joystick
             public float leftStickX, leftStickY;
             public bool moveStickMoved;
@@ -1292,7 +1320,7 @@ namespace ProjectMagma.Simulation
 
             // buttons
             public bool jetpackButtonPressed, flamethrowerButtonPressed, iceSpikeButtonPressed, hitButtonPressed, attractionButtonPressed;
-            public bool jetpackButtonRelease, flamethrowerButtonRelease, iceSpikeButtonReleased, hitButtonReleased, attractionButtonReleased;
+            public bool jetpackButtonReleased, flamethrowerButtonReleased, iceSpikeButtonReleased, hitButtonReleased, attractionButtonReleased;
             public bool jetpackButtonHold, flamethrowerButtonHold, iceSpikeButtonHold, hitButtonHold, attractionButtonHold;
 
             private static float gamepadEmulationValue = -1f;

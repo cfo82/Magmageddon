@@ -34,10 +34,10 @@
       <Attribute name="ice_spike_damage" template="int" value="10"/>
       <Attribute name="ice_spike_freeze_time" template="int" value="2500"/>
       <Attribute name="ice_spike_cooldown" template="int" value="500"/>
-      <Attribute name="ice_spike_initial_speed_multiplier" template="float3" value="60 200 60"/>
-      <Attribute name="ice_spike_max_speed" template="float" value="400"/>
+      <Attribute name="ice_spike_initial_speed_multiplier" template="float3" value="140 300 140"/>
+      <Attribute name="ice_spike_max_speed" template="float" value="440"/>
       <Attribute name="ice_spike_gravity_acceleration" template="float3" value="0 -200 0"/>
-      <Attribute name="ice_spike_homing_acceleration" template="float" value="1000"/>
+      <Attribute name="ice_spike_homing_acceleration" template="float" value="5000"/>
       <Attribute name="ice_spike_uniform_acceleration" template="float" value="1000"/>
       <Attribute name="ice_spike_lifetime" template="int" value="5000"/>
 

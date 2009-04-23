@@ -45,28 +45,33 @@ namespace ProjectMagma.Simulation
             if (targetPlayerName != "")
             {
                 // incorporate homing effect towards targeted player
-                Entity targetPlayer = Game.Instance.Simulation.PlayerManager[0];
-                foreach (Entity e in Game.Instance.Simulation.PlayerManager)
-                {
-                    if (e.Name == targetPlayerName)
-                    {
-                        targetPlayer = e;
-                        break;
-                    }
-                }
+                Entity targetPlayer = Game.Instance.Simulation.EntityManager[targetPlayerName];
                 Vector3 targetPlayerPos = targetPlayer.GetVector3("position");
-                Vector3 diff = targetPlayerPos - pos;
-                diff.Normalize();
-                a += diff * constants.GetFloat("ice_spike_homing_acceleration");
+
+                // deaccelerate a bit if to fast
+                if (v.Length() > constants.GetFloat("ice_spike_max_speed"))
+                {
+                    a = -Vector3.Normalize(v) * constants.GetFloat("ice_spike_homing_acceleration");
+                }
+                else
+                {
+                    // get acceleration to direction
+                    Vector3 acc = Vector3.Normalize(targetPlayerPos - pos);
+                    // project onto velocity direction
+                    Vector3 vd = Vector3.Normalize(v);
+                    // add them together for orthogonal acceleration
+                    a += Vector3.Normalize(acc) * constants.GetFloat("ice_spike_homing_acceleration");
+                }
             }
             else
             {
+                /*
                 // incorporate uniform acceleration
                 Vector3 a_uniform = v;
                 a_uniform.Normalize();
                 a += a_uniform * constants.GetFloat("ice_spike_uniform_acceleration");
+                 */
             }
-
 
             // integrate
             v += a * dt;

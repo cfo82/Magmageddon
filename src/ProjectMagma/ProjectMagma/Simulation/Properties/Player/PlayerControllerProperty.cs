@@ -500,8 +500,8 @@ namespace ProjectMagma.Simulation
                 {
                     aimVector = Vector3.Normalize(distVector);
                 }
-                aimVector *= constants.GetFloat("ice_spike_speed");
-                aimVector.Y = constants.GetFloat("ice_spike_speed");
+                aimVector.Y = 1;
+                aimVector *= constants.GetVector3("ice_spike_initial_speed_multiplier");
 
                 Entity iceSpike = new Entity("icespike" + (++iceSpikeCount) + "_" + player.Name);
                 iceSpike.AddStringAttribute("player", player.Name);
@@ -619,6 +619,8 @@ namespace ProjectMagma.Simulation
 
         private void PerformIslandJump(Entity player, float dt, float at, ref Vector3 playerPosition, ref Vector3 playerVelocity)
         {
+            // todo: maybe use this!? http://www.ziggyware.com/readarticle.php?article_id=92
+
             if (destinationIsland != null)
             {
                 // apply from last jump
@@ -874,7 +876,8 @@ namespace ProjectMagma.Simulation
             }
 
             // on top?
-            if (Vector3.Dot(-Vector3.UnitY, contact[0].Normal) > 0.25)
+            if (Vector3.Dot(-Vector3.UnitY, contact[0].Normal) > 0.25
+                || island == attractedIsland)
             {
 //                Console.WriteLine(player.Name + " collidet with " + island.Name);
 

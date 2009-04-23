@@ -4,7 +4,15 @@
 
   <!-- constants -->
 
-  <Entity name="player_constants">
+  <Entity name="constants">
+    <Attributes>
+      <Attribute name="gravity_acceleration" template="float3" value="0 -900 0"/>
+      <Attribute name="max_gravity_speed" template="float" value="450"/>
+    </Attributes>
+  </Entity>
+          
+  
+  <Entity name="player_constants" extends="constants">
     <Attributes>
       <Attribute name="respawn_time" template="int" value="1000"/>
       <Attribute name="respawn_min_distance_to_players" template="float" value="150"/>
@@ -21,19 +29,17 @@
       <Attribute name="max_jetpack_speed" template="float" value="200"/>
       <Attribute name="jetpack_acceleration" template="float3" value="0 1600 0"/>
 
-      <Attribute name="gravity_acceleration" template="float3" value="0 -900 0"/>
-      <Attribute name="max_gravity_speed" template="float" value="450"/>
-
-      <Attribute name="ice_spike_speed" template="float" value="200"/>
       <Attribute name="ice_spike_aim_angle" template="float" value="90"/>
       <Attribute name="ice_spike_energy_cost" template="int" value="14"/>
       <Attribute name="ice_spike_damage" template="int" value="10"/>
       <Attribute name="ice_spike_freeze_time" template="int" value="2500"/>
       <Attribute name="ice_spike_cooldown" template="int" value="500"/>
-      <Attribute name="ice_spike_gravity_acceleration" template="float3" value="0 -18 0"/>
+      <Attribute name="ice_spike_initial_speed_multiplier" template="float3" value="60 200 60"/>
+      <Attribute name="ice_spike_max_speed" template="float" value="400"/>
+      <Attribute name="ice_spike_gravity_acceleration" template="float3" value="0 -200 0"/>
       <Attribute name="ice_spike_homing_acceleration" template="float" value="1000"/>
       <Attribute name="ice_spike_uniform_acceleration" template="float" value="1000"/>
-      <Attribute name="ice_spike_lifetime" template="int" value="1000"/>
+      <Attribute name="ice_spike_lifetime" template="int" value="5000"/>
 
       <Attribute name="flamethrower_warmup_time" template="int" value="600"/>
       <Attribute name="flamethrower_warmup_energy_cost" template="int" value="20"/>
@@ -69,7 +75,7 @@
     </Attributes>
   </Entity>
 
-  <Entity name="island_constants">
+  <Entity name="island_constants" extends="constants">
     <Attributes>
       <!-- physical islands -->
       <Attribute name="random_strength" template="float" value="1200"/>
@@ -101,7 +107,7 @@
     </Attributes>
   </Entity>
 
-  <Entity name="powerup_constants">
+  <Entity name="powerup_constants" extends="constants">
     <Attributes>
       <Attribute name="respawn_min_time" template="float" value="5000"/>
       <Attribute name="respawn_random_time" template="float" value="10000"/>

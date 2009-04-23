@@ -82,6 +82,9 @@
     <Compile Include="Renderer\RenderMode.cs" />
     <Compile Include="Renderer\RenderPasses\Copy of GlowPass.cs" />
     <Compile Include="Renderer\RenderPasses\GlowPass.cs" />
+    <Compile Include="Renderer\RenderPasses\HDRCombinePass.cs">
+      <SubType>Code</SubType>
+    </Compile>
     <Compile Include="Renderer\RenderPasses\RenderPass.cs" />
     <Compile Include="Simulation\Attributes\Base\Attribute.cs" />
     <Compile Include="Simulation\Attributes\Base\AttributeTypes.cs" />

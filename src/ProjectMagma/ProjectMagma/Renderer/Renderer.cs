@@ -59,13 +59,14 @@ namespace ProjectMagma.Renderer
             int height = pp.BackBufferHeight;
             SurfaceFormat format = pp.BackBufferFormat;
 
-            EnablePostProcessing = false;
+            //EnablePostProcessing = true;
             if (EnablePostProcessing)
             {
-                ResolveTarget = new ResolveTexture2D(Device, width, height, 1, format);
-                //Target0 = new RenderTarget2D(Device, width, height, 1, format);
+                //ResolveTarget = new ResolveTexture2D(Device, width, height, 1, format);
+                Target0 = new RenderTarget2D(Device, width, height, 1, format);
                 Target1 = new RenderTarget2D(Device, width, height, 1, format);
-                glowPass = new GlowPass(this);
+                glowPass = new GlowPass(this, Target0, Target1);
+                hdrCombinePass = new HdrCombinePass(this, Target0, Target1);
             }
         }
         
@@ -102,7 +103,13 @@ namespace ProjectMagma.Renderer
 
             if (EnablePostProcessing)
             {
+                hdrCombinePass.GeometryRender = GeometryRender;
+
                 glowPass.Render(gameTime);
+
+                hdrCombinePass.BlurGeometryRender = glowPass.BlurGeometryRender;
+                hdrCombinePass.RenderChannelColor = glowPass.BlurRenderChannelColor;
+                hdrCombinePass.Render(gameTime);
             }
 
             // 5) Render overlays
@@ -160,7 +167,7 @@ namespace ProjectMagma.Renderer
             //Device.SetRenderTarget(1, oldRenderTarget0);
             if (EnablePostProcessing)
             {
-                //Device.SetRenderTarget(0, Target0);
+                Device.SetRenderTarget(0, Target0);
                 Device.SetRenderTarget(1, Target1);
             }
 
@@ -184,10 +191,9 @@ namespace ProjectMagma.Renderer
 
             if (EnablePostProcessing)
             {
-                //Device.SetRenderTarget(0, null);
-                Device.ResolveBackBuffer(ResolveTarget,0);
+                Device.SetRenderTarget(0, null);
                 Device.SetRenderTarget(1, null);
-                //GeometryRender = Target0.GetTexture();
+                GeometryRender = Target0.GetTexture();
                 RenderChannels = Target1.GetTexture();
             }
         }
@@ -315,8 +321,8 @@ namespace ProjectMagma.Renderer
             get { return vectorCloudTexture; }
         }
 
-        public RenderTarget2D Target0 { get; set; }
-        public RenderTarget2D Target1 { get; set; }
+        private RenderTarget2D Target0 { get; set; }
+        private RenderTarget2D Target1 { get; set; }
 
         public Texture2D GeometryRender { get; set; }
         public Texture2D RenderChannels { get; set; }
@@ -324,6 +330,7 @@ namespace ProjectMagma.Renderer
         public ResolveTexture2D ResolveTarget { get; set; }
 
         private GlowPass glowPass;
+        private HdrCombinePass hdrCombinePass;
 
         //private LightManager lightManager;
     }

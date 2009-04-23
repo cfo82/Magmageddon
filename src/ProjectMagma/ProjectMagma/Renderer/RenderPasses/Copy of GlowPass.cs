@@ -10,8 +10,8 @@ namespace ProjectMagma.Renderer
 {
     public class TestPass : RenderPass
     {
-        public TestPass(Renderer Renderer)
-            : base(Renderer)
+        public TestPass(Renderer renderer, RenderTarget2D target0, RenderTarget2D target1)
+            : base(renderer, target0, target1)
         {
         }
 

@@ -20,11 +20,10 @@ sampler2D RenderChannelSampler = sampler_state
 	AddressV = Clamp;
 };
 
-
-texture geom;
-sampler2D TextureSampler = sampler_state
+texture GeometryRender;
+sampler2D GeometryRenderSampler = sampler_state
 {
-	Texture = <geom>;
+	Texture = <GeometryRender>;
 	MinFilter = Linear;
 	MagFilter = Linear;
 	MipFilter = Linear;
@@ -54,7 +53,7 @@ PSOutput PixelShader(float2 texCoord : TEXCOORD0) : COLOR0
 		//c += tex2D(TextureSampler, texCoord + SampleOffsets[i]*1.5) * SampleWeights[i] * tex2D(RenderChannelSampler, texCoord+ SampleOffsets[i]*1.5).r;
 		//c += tex2D(TextureSampler, texCoord + SampleOffsets[i]*0.3) * SampleWeights[i] * tex2D(RenderChannelSampler, texCoord+ SampleOffsets[i]*0.3).g;
 		////} else {
-		outp.Color += tex2D(TextureSampler, texCoord + SampleOffsets[i]) * SampleWeights[i];
+		outp.Color += tex2D(GeometryRenderSampler, texCoord + SampleOffsets[i]) * SampleWeights[i];
 		outp.RenderChannelColor += tex2D(RenderChannelSampler, texCoord + SampleOffsets[i]) * SampleWeights[i];
 		//}
     }	

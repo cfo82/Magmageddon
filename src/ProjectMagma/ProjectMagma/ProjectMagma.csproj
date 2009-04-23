@@ -106,6 +106,7 @@
     <Compile Include="Renderer\RenderMode.cs" />
     <Compile Include="Renderer\Renderables\ShadowRenderable.cs" />
     <Compile Include="Renderer\RenderPasses\Copy of GlowPass.cs" />
+    <Compile Include="Renderer\RenderPasses\HdrCombinePass.cs" />
     <Compile Include="Renderer\RenderPasses\RenderPass.cs" />
     <Compile Include="Renderer\RenderPasses\GlowPass.cs" />
     <Compile Include="Simulation\Collision\CollisionTests\ContactSphereMesh.cs" />

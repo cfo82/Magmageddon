@@ -10,8 +10,8 @@ namespace ProjectMagma.Renderer
 {
     public class GlowPass : RenderPass
     {
-        public GlowPass(Renderer Renderer)
-            : base(Renderer)
+        public GlowPass(Renderer renderer, RenderTarget2D target0, RenderTarget2D target1)
+            : base(renderer, target0, target1)
         {
             originalBlurEffect = Game.Instance.Content.Load<Effect>("Effects/GaussianBlur");
             gaussianBlurEffect = Game.Instance.Content.Load<Effect>("Effects/BlurModified");
@@ -38,12 +38,22 @@ namespace ProjectMagma.Renderer
             ////DrawFullscreenQuad(Renderer.ResolveTarget, gaussianBlurEffect);
 
 
-            gaussianBlurEffect.Parameters["geom"].SetValue(Renderer.ResolveTarget);
+            gaussianBlurEffect.Parameters["GeometryRender"].SetValue(Target0.GetTexture());
             SetBlurEffectParameters(1.0f / Renderer.Device.Viewport.Width, 0, gaussianBlurEffect, Renderer.RenderChannels);
-            DrawFullscreenQuad(Renderer.ResolveTarget, Renderer.Target1, gaussianBlurEffect);
-            SetBlurEffectParameters(0, 1.0f / Renderer.Device.Viewport.Height, gaussianBlurEffect, Renderer.RenderChannels);
-            DrawFullscreenQuad(Renderer.Target1.GetTexture(), gaussianBlurEffect);
-            //DrawFullscreenQuad(Renderer.ResolveTarget, gaussianBlurEffect);
+            DrawFullscreenQuad(Renderer.GeometryRender, Target0, Target1, gaussianBlurEffect);
+
+            gaussianBlurEffect.Parameters["GeometryRender"].SetValue(Target0.GetTexture());
+            SetBlurEffectParameters(0, 1.0f / Renderer.Device.Viewport.Height, gaussianBlurEffect, Target1.GetTexture());
+            DrawFullscreenQuad(Renderer.GeometryRender, Target0, Target1, gaussianBlurEffect);
+
+            BlurGeometryRender = Target0.GetTexture();
+            BlurRenderChannelColor = Target1.GetTexture();
+
+            //DrawFullscreenQuad(Renderer.RenderChannels, null);
+
+            //gaussianBlurEffect.Parameters["geom"].SetValue(Renderer.ResolveTarget);
+            //SetBlurEffectParameters(1.0f / Renderer.Device.Viewport.Width, 0, gaussianBlurEffect, Renderer.RenderChannels);
+            //DrawFullscreenQuad(Renderer.GeometryRender, gaussianBlurEffect);
 
 //            gaussianBlurEffect.Parameters["geom"].SetValue(Renderer.GeometryRender);
 
@@ -147,5 +157,8 @@ namespace ProjectMagma.Renderer
 
 
         private Effect originalBlurEffect, gaussianBlurEffect;
+
+        public Texture2D BlurGeometryRender { get; set; }
+        public Texture2D BlurRenderChannelColor { get; set; }
     }
 }

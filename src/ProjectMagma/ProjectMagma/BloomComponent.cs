@@ -20,8 +20,6 @@ namespace ProjectMagma
     {
         #region Fields
 
-        SpriteBatch spriteBatch;
-
         Effect bloomExtractEffect;
         Effect bloomCombineEffect;
         Effect gaussianBlurEffect;
@@ -30,6 +28,8 @@ namespace ProjectMagma
         RenderTarget2D renderTarget1;
         RenderTarget2D renderTarget2;
 
+
+        SpriteBatch spriteBatch;
 
         // Choose what display settings the bloom should use.
         public BloomSettings Settings

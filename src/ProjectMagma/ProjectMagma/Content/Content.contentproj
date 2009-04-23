@@ -958,6 +958,11 @@
       <Importer>EffectImporter</Importer>
       <Processor>EffectProcessor</Processor>
     </Compile>
+    <Compile Include="Effects\BlurModified.fx">
+      <Name>BlurModified</Name>
+      <Importer>EffectImporter</Importer>
+      <Processor>EffectProcessor</Processor>
+    </Compile>
     <None Include="Effects\Lava\Params.inc">
       <Name>Params</Name>
     </None>

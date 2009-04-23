@@ -59,7 +59,7 @@ namespace ProjectMagma.Renderer
             int height = pp.BackBufferHeight;
             SurfaceFormat format = pp.BackBufferFormat;
 
-            //EnablePostProcessing = true;
+            EnablePostProcessing = false;
             if (EnablePostProcessing)
             {
                 ResolveTarget = new ResolveTexture2D(Device, width, height, 1, format);
@@ -163,6 +163,8 @@ namespace ProjectMagma.Renderer
                 //Device.SetRenderTarget(0, Target0);
                 Device.SetRenderTarget(1, Target1);
             }
+
+            Device.Clear(Color.Black);
 
             foreach (Renderable renderable in opaqueRenderables)
             {

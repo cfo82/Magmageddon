@@ -48,7 +48,7 @@ namespace ProjectMagma.Simulation
                 Entity targetPlayer = Game.Instance.Simulation.EntityManager[targetPlayerName];
                 Vector3 targetPlayerPos = targetPlayer.GetVector3("position");
 
-                // deaccelerate a bit if to fast
+                // deaccelerate a bit if too fast
                 if (v.Length() > constants.GetFloat("ice_spike_max_speed"))
                 {
                     a = -Vector3.Normalize(v) * constants.GetFloat("ice_spike_homing_acceleration");
@@ -120,7 +120,6 @@ namespace ProjectMagma.Simulation
             player.SetInt("health", player.GetInt("health") - constants.GetInt("ice_spike_damage"));
             player.SetInt("frozen", player.GetInt("frozen") + constants.GetInt("ice_spike_freeze_time"));
         }
-
 
         private Vector3 GetPosition(Entity entity)
         {

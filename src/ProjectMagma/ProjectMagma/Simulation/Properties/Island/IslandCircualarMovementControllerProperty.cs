@@ -105,7 +105,8 @@ namespace ProjectMagma.Simulation
                         && island.GetString("attracted_by") != null
                         && island.GetVector3("repulsion_velocity") == Vector3.Zero)
                     {
-                        Vector3 pushback = -co[0].Normal * constants.GetFloat("contact_pushback_multiplier");
+                        Vector3 pushback = -co[0].Normal * (island.GetVector3("position") - co[0].Point).Length();
+                            //;constants.GetFloat("contact_pushback_multiplier");
                         pushback.Y = 0; // only in xz plane
                         island.SetVector3("pushback_velocity", island.GetVector3("pushback_velocity") + pushback);
                     }

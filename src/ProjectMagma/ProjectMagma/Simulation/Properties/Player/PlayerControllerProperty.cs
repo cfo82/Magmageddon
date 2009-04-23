@@ -649,8 +649,7 @@ namespace ProjectMagma.Simulation
                 }
                 else
                 {
-                    // not yet -> calculate velocity for jump
-
+                    // not yet -> calculate next velocity for jump
                     float yRotation = (float)Math.Atan2(islandDir.X, islandDir.Z);
                     Matrix rotationMatrix = Matrix.CreateRotationY(yRotation);
                     player.SetQuaternion("rotation", Quaternion.CreateFromRotationMatrix(rotationMatrix));
@@ -722,9 +721,6 @@ namespace ProjectMagma.Simulation
                         flameThrowerSoundInstance.Stop();
                     jetpackActive = false;
                     selectedIsland = null;
-                    if (attractedIsland != null)
-                        attractedIsland.SetString("attracted_by", "");
-                    attractedIsland = null;
                     destinationIsland = null;
                     LeaveActiveIsland();
 
@@ -816,7 +812,7 @@ namespace ProjectMagma.Simulation
         {
             if (contact.EntityB.HasAttribute("kind"))
             {
-                // slide
+                // slide on jump
                 if (destinationIsland != null
                     && (contact.EntityB.GetString("kind") == "pillar"
                     || contact.EntityB.GetString("kind") == "island"))
@@ -824,7 +820,7 @@ namespace ProjectMagma.Simulation
                     if (contact.EntityB == destinationIsland)
                         return;
 
-                    Vector3 position = player.GetVector3("position");
+                    Vector3 position = destinationIsland.GetVector3("position");
 
                     // get distance of destination point to sliding plane
                     float distance = Vector3.Dot(contact[0].Normal, position - contact[0].Point);
@@ -832,13 +828,13 @@ namespace ProjectMagma.Simulation
                     // calculate point on plane
                     Vector3 cpos = position - contact[0].Normal * distance;
 
-                    Vector3 slidingDelta = cpos - contact[0].Point;
-                    Vector3 slidingVelocity = slidingDelta / simTime.Dt;
+                    Vector3 slidingDir = Vector3.Normalize(cpos - contact[0].Point);
+                    Vector3 slidingVelocity = slidingDir * constants.GetFloat("island_jump_speed");
 
 //                    Console.WriteLine("orignal velocity " + player.GetVector3("island_jump_velocity") + "; sliding velocity: " + slidingVelocity);
 
                     //                    slidingVelocity.Y = player.GetVector3("island_jump_velocity").Y;
-                    slidingVelocity.Y = player.GetVector3("island_jump_velocity").Y;
+//                    slidingVelocity.Y = player.GetVector3("island_jump_velocity").Y;
                     player.SetVector3("island_jump_velocity", slidingVelocity);
 
                     // also ensure we don't fall down yet
@@ -981,13 +977,11 @@ namespace ProjectMagma.Simulation
                 // remove arrow
                 if (arrow.HasProperty("render"))
                 {
-                    arrow.RemoveProperty("render");
-                    arrow.RemoveProperty("shadow_cast");
+                    RemoveSelectionArrow();
                 }
 
                 // reset attraction and selection
                 attractedIsland = null;
-                selectedIsland = null;
             }
         }
 
@@ -1109,8 +1103,11 @@ namespace ProjectMagma.Simulation
                 player.SetString("active_island", "");
 
                 // disable attraction
-                if(attractedIsland != null) 
+                if (attractedIsland != null)
+                {
                     attractedIsland.SetString("attracted_by", "");
+                    attractedIsland = null;
+                }
             }
         }
 

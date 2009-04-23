@@ -2,6 +2,7 @@
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Audio;
 using ProjectMagma.Simulation.Collision;
+using System;
 
 namespace ProjectMagma.Simulation
 {
@@ -13,11 +14,22 @@ namespace ProjectMagma.Simulation
         {
         }
 
+        private float origDist;
+
         public void OnAttached(Entity entity)
         {
             this.constants = Game.Instance.Simulation.EntityManager["player_constants"];
 
             ((CollisionProperty)entity.GetProperty("collision")).OnContact += IceSpikeCollisionHandler;
+
+            string targetPlayerName = entity.GetString("target_player");
+            if (targetPlayerName != "")
+            {
+                targetPlayer = Game.Instance.Simulation.EntityManager[targetPlayerName];
+                origDist = (targetPlayer.GetVector3("position") - entity.GetVector3("position")).Length();
+            }
+            else
+                targetPlayer = null;
 
             entity.Update += OnUpdate;
         }
@@ -28,6 +40,8 @@ namespace ProjectMagma.Simulation
 
             entity.Update -= OnUpdate;
         }
+
+        private float correctedAt = 0;
 
         private void OnUpdate(Entity iceSpike, SimulationTime simTime)
         {
@@ -41,11 +55,9 @@ namespace ProjectMagma.Simulation
             // accumulate forces
             Vector3 a = constants.GetVector3("ice_spike_gravity_acceleration");
 
-            string targetPlayerName = iceSpike.GetString("target_player");
-            if (targetPlayerName != "")
+            if (targetPlayer != null)
             {
                 // incorporate homing effect towards targeted player
-                Entity targetPlayer = Game.Instance.Simulation.EntityManager[targetPlayerName];
                 Vector3 targetPlayerPos = targetPlayer.GetVector3("position");
 
                 // deaccelerate a bit if too fast
@@ -56,12 +68,20 @@ namespace ProjectMagma.Simulation
                 else
                 {
                     // get acceleration to direction
-                    Vector3 acc = Vector3.Normalize(targetPlayerPos - pos);
+                    Vector3 acc = targetPlayerPos - pos;
+                    float dist = acc.Length();
+                    acc.Normalize();
+                    // "angle"
+                    float dot = Vector3.Dot(Vector3.Normalize(v), acc);
                     // project onto velocity direction
-                    Vector3 vd = Vector3.Normalize(v);
+                    Vector3 vd = dot * acc;
                     // add them together for orthogonal acceleration
-                    a += Vector3.Normalize(acc) * constants.GetFloat("ice_spike_homing_acceleration");
+                    float factor = dist / origDist; // the closer we get, the more exact we accelerate
+                    a += (acc - vd) * constants.GetFloat("ice_spike_homing_acceleration") * (factor);
+                    a += (acc) * constants.GetFloat("ice_spike_homing_acceleration") * (1 - factor);
                 }
+
+                correctedAt = simTime.At;
             }
             else
             {
@@ -150,7 +170,6 @@ namespace ProjectMagma.Simulation
             }
         }
 
-        //private Entity target;
-
+        private Entity targetPlayer;
     }
 }

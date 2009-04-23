@@ -17,7 +17,7 @@ namespace ProjectMagma.Simulation
         private static readonly Buttons[] IceSpikeButtons = { Buttons.X };
         private static readonly Buttons[] HitButtons = { Buttons.RightShoulder };
         private static readonly Buttons[] FlamethrowerButtons = { Buttons.Y };
-        private static readonly Buttons[] AttractionButtons = { Buttons.RightShoulder };
+        private static readonly Buttons[] AttractionButtons = { Buttons.RightTrigger };
 
         // keyboard keys
         private static readonly Keys JetpackKey = Keys.Space;
@@ -237,7 +237,7 @@ namespace ProjectMagma.Simulation
             }
 
             // recharge fuel
-            if (!controllerInput.jetpackButtonPressed)
+            if (!controllerInput.jetpackButtonHold)
             {
                 if (activeIsland == null)
                 {
@@ -294,7 +294,7 @@ namespace ProjectMagma.Simulation
             else
             // deactivate attraction
             if (attractedIsland != null
-                && (!controllerInput.attractionButtonPressed
+                && (!controllerInput.attractionButtonHold
                 || controllerInput.jetpackButtonPressed))
             {
                 // start attraction stop (has timeout)
@@ -686,7 +686,8 @@ namespace ProjectMagma.Simulation
 
         private void PerformJetpackMovement(SimulationTime simTime, float dt, ref Vector3 playerVelocity, ref int fuel)
         {
-            if (controllerInput.jetpackButtonPressed
+            if ((controllerInput.jetpackButtonPressed
+                || controllerInput.jetpackButtonHold)
                 && activeIsland == null
                 && selectedIsland == null
                 && destinationIsland == null

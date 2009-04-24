@@ -25,3 +25,9 @@ struct PS_INPUT
    float4 pos : TEXCOORD3;
    float3 vNormalWS         : TEXCOORD4;   // Normal vector in world space
 };
+
+struct PSOutput
+{
+	float4 Color              : COLOR0;
+	float4 RenderChannelColor : COLOR1;
+};

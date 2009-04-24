@@ -311,6 +311,8 @@ PSOutput PSBasicPixelLighting(PixelLightingPSInput pin) : COLOR
 	PSOutput Output;
 	Output.Color = color;
 	Output.RenderChannelColor = RenderChannelColor;
+	Output.RenderChannelColor.a = saturate(pin.PositionWS.y/2000);
+
 	return Output;
 }
 
@@ -344,6 +346,8 @@ PSOutput PSBasicPixelLightingTx(PixelLightingPSInputTx pin) : COLOR
 	PSOutput Output;
 	Output.Color = color;
 	Output.RenderChannelColor = RenderChannelColor;
+	Output.RenderChannelColor.a = saturate(pin.PositionWS.y/2000);
+	//Output.RenderChannelColor.a = 0.3f;
 	return Output;
 }
 

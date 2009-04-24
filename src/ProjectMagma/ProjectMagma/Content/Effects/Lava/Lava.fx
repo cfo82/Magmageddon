@@ -121,8 +121,10 @@ VS_OUTPUT MultiPlaneVS(float4 inPositionOS  : POSITION,
 //------------------------------------------------------------
 //                      PIXEL SHADER
 //------------------------------------------------------------
-float4 MultiPlanePS(PS_INPUT i) : COLOR0
+PSOutput MultiPlanePS(PS_INPUT i) : COLOR0
 {
+	PSOutput outp;
+
 	// compute perturbed texture coordinates
     float4 clouds = tex2D(CloudsSampler, i.texCoord + RandomOffset[0]);
 	float2 perturbation = clouds.gb * 2 * flickerStrength - flickerStrength;
@@ -139,7 +141,12 @@ float4 MultiPlanePS(PS_INPUT i) : COLOR0
 	// compute composite RGBA color
 	float3 cResultColor_rgb = cResultColor.rgb;
 	float planeFraction = (i.pos.y - minPlaneY) / (maxPlaneY - minPlaneY);
-	return float4(cResultColor_rgb*0.7, alphaStucco >= planeFraction ? 1 : 0);
+	
+	outp.Color = float4(cResultColor_rgb*0.7, alphaStucco >= planeFraction ? 1 : 0);
+	//outp.RenderChannelColor = float4(0,0,1,1);
+	outp.RenderChannelColor = RenderChannelColor;
+	return outp;
+	//return float4(cResultColor_rgb*0.7, alphaStucco >= planeFraction ? 1 : 0);
 	//return float4(alphaStucco,0,0,1);
 	//return float4(-i.pos.y*0.025,0,0,1);
 	//return float4(planeFraction,0,0,1);

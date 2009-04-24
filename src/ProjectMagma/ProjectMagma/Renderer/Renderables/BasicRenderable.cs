@@ -62,6 +62,8 @@ namespace ProjectMagma.Renderer
 
         protected virtual void ApplyCustomEffectParameters(Effect effect, Renderer renderer, GameTime gameTime)
         {
+            // in the end, this method in BasicRenderable should be empty and all the features
+            // be implemented in individual methods which are called by their name
             double time_since_last_squash = gameTime.TotalRealTime.TotalMilliseconds - last_squash_start;
             int t = 170;
             float a = 0.2f;

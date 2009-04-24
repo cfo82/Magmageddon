@@ -59,7 +59,7 @@ namespace ProjectMagma.Renderer
             int height = pp.BackBufferHeight;
             SurfaceFormat format = pp.BackBufferFormat;
 
-            //EnablePostProcessing = true;
+            EnablePostProcessing = true;
             if (EnablePostProcessing)
             {
                 //ResolveTarget = new ResolveTexture2D(Device, width, height, 1, format);

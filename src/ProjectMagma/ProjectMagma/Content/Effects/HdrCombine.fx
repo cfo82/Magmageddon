@@ -79,7 +79,7 @@ float4 PixelShader(float2 texCoord : TEXCOORD0) : COLOR0
 	
 	float4 channel_map = tex2D(RenderChannelColorSampler, texCoord);
     
-    return channel_map.a;
+    //return channel_map.a;
 
     // Combine the two images.
     return channel1*channel_map.r + channel2*channel_map.g + channel3*channel_map.b;

@@ -158,6 +158,7 @@ namespace ProjectMagma
 
             // initialize renderer
             renderer = new Renderer.Renderer(Content, GraphicsDevice);
+            renderer.EnablePostProcessing = false;
 
             // load level infos
             levels = Content.Load<List<LevelInfo>>("Level/LevelInfo");

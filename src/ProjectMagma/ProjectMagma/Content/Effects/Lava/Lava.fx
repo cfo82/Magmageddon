@@ -81,6 +81,8 @@ VS_OUTPUT MultiPlaneVS(float4 inPositionOS  : POSITION,
         
     // Transform and output input position 
     Out.position = mul( inPositionOS, g_mWorldViewProjection );
+    
+    //Out.position.y += sin(inPositionOS.x/7)*40;
        
     // Propagate texture coordinate through:
     Out.texCoord = inTexCoord;

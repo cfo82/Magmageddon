@@ -38,7 +38,7 @@ namespace ProjectMagma.Renderer
             ////DrawFullscreenQuad(Renderer.ResolveTarget, gaussianBlurEffect);
 
 
-            gaussianBlurEffect.Parameters["GeometryRender"].SetValue(Target0.GetTexture());
+            gaussianBlurEffect.Parameters["GeometryRender"].SetValue(GeometryRender);
             SetBlurEffectParameters(1.0f / Renderer.Device.Viewport.Width, 0, gaussianBlurEffect, Renderer.RenderChannels);
             DrawFullscreenQuad(Renderer.GeometryRender, Target0, Target1, gaussianBlurEffect);
 
@@ -49,7 +49,7 @@ namespace ProjectMagma.Renderer
             BlurGeometryRender = Target0.GetTexture();
             BlurRenderChannelColor = Target1.GetTexture();
 
-            //DrawFullscreenQuad(Renderer.RenderChannels, null);
+            //DrawFullscreenQuad(BlurRenderChannelColor, null);
 
             //gaussianBlurEffect.Parameters["geom"].SetValue(Renderer.ResolveTarget);
             //SetBlurEffectParameters(1.0f / Renderer.Device.Viewport.Width, 0, gaussianBlurEffect, Renderer.RenderChannels);
@@ -158,6 +158,7 @@ namespace ProjectMagma.Renderer
 
         private Effect originalBlurEffect, gaussianBlurEffect;
 
+        public Texture2D GeometryRender { get; set; }
         public Texture2D BlurGeometryRender { get; set; }
         public Texture2D BlurRenderChannelColor { get; set; }
     }

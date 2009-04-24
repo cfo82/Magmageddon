@@ -9,6 +9,8 @@
 float2 SampleOffsets[SAMPLE_COUNT];
 float SampleWeights[SAMPLE_COUNT];
 
+texture blah : register(s0);
+
 texture RenderChannelColor;
 sampler2D RenderChannelSampler = sampler_state
 {

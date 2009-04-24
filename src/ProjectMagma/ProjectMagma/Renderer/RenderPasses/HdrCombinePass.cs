@@ -21,7 +21,8 @@ namespace ProjectMagma.Renderer
             hdrCombineEffect.Parameters["GeometryRender"].SetValue(GeometryRender);
             hdrCombineEffect.Parameters["BlurGeometryRender"].SetValue(BlurGeometryRender);
             hdrCombineEffect.Parameters["RenderChannelColor"].SetValue(RenderChannelColor);
-            DrawFullscreenQuad(Renderer.RenderChannels, hdrCombineEffect);
+            DrawFullscreenQuad(BlurGeometryRender, hdrCombineEffect);
+            //DrawFullscreenQuad(GeometryRender, null);
         }
 
         private Effect hdrCombineEffect;

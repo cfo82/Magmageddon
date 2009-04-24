@@ -890,9 +890,10 @@ namespace ProjectMagma.Simulation
         {
             float dt = simTime.Dt;
 
-            if (island == destinationIsland)
+            if (island == destinationIsland
+                || island == activeIsland)
             {
-                // ignore collision with destinationisland
+                // ignore collision with destination or current island
                 return;
             }
 

@@ -8,25 +8,34 @@ using ProjectMagma.Shared.Math.Primitives;
 
 namespace ProjectMagma.Renderer
 {
-    public class LavaRenderable : Renderable
+    public class LavaRenderable : BasicRenderable
     {
-        public LavaRenderable(
-            Vector3 scale,
-            Quaternion rotation,
-            Vector3 position,
-            Model model
-        )
+        public LavaRenderable(Vector3 scale, Quaternion rotation, Vector3 position, Model model)
+            : base(scale, rotation, position, model)
         {
-            this.scale = scale;
-            this.rotation = rotation;
-            this.position = position;
-            this.model = model;
-
             effect = Game.Instance.Content.Load<Effect>("Effects/Lava/Lava");
             InitializeRandomOffsets();
 
             VolumeCollection collection = (VolumeCollection)model.Tag;
             boundingBox = (AlignedBox3)collection.GetVolume(VolumeType.AlignedBox3);
+
+            UseLights = false;
+            UseMaterialParameters = false;
+            UseSquash = false;
+
+            RenderChannel = RenderChannelType.Two;
+        }
+
+        protected override void ApplyEffectsToModel()
+        {
+            Effect effect = Game.Instance.Content.Load<Effect>("Effects/Lava/Lava");
+            SetDefaultMaterialParameters();
+            SetModelEffect(Model, effect);
+        }
+
+        protected override void ApplyTechnique(Effect effect)
+        {
+            effect.CurrentTechnique = effect.Techniques["MultiPlaneLava"];
         }
 
         private void InitializeRandomOffsets()
@@ -75,104 +84,134 @@ namespace ProjectMagma.Renderer
             this.fireFractalTexture = fireFractalTexture;
             this.vectorCloudTexture = vectorCloudTexture;
             this.graniteTexture = graniteTexture;
+            this.temperatureTexture = Game.Instance.Content.Load<Texture2D>("Textures/lava/temperature");
         }
 
-        public void Draw(
-            Renderer renderer,
-            GameTime gameTime
-        )
+        private Texture2D temperatureTexture;        
+
+        protected override void ApplyCustomEffectParameters(Effect effect, Renderer renderer, GameTime gameTime)
         {
-            Matrix world = Matrix.Identity;
-            world *= Matrix.CreateScale(scale);
-            world *= Matrix.CreateFromQuaternion(rotation);
-            world *= Matrix.CreateTranslation(position);
+            base.ApplyCustomEffectParameters(effect, renderer, gameTime);
 
-            // shadows should be floating a little above the receiving surface
-            Matrix world_offset = world;
-            world_offset *= Matrix.CreateTranslation(new Vector3(0, 3, 0));
+            effect.Parameters["WorldViewProjection"].SetValue(
+                effect.Parameters["World"].GetValueMatrix() *
+                effect.Parameters["View"].GetValueMatrix() *
+                effect.Parameters["Projection"].GetValueMatrix()
+            );
 
-            foreach (ModelMesh mesh in model.Meshes)
-            {
-                effect.CurrentTechnique = effect.Techniques["MultiPlaneLava"];
+            effect.Parameters["StuccoSparse"].SetValue(sparseStuccoTexture);
+            effect.Parameters["FireFractal"].SetValue(fireFractalTexture);
+            effect.Parameters["Granite"].SetValue(graniteTexture);
+            effect.Parameters["Clouds"].SetValue(vectorCloudTexture);
+            effect.Parameters["Temperature"].SetValue(temperatureTexture);
 
-                // transformation parameters
-                effect.Parameters["g_mWorld"].SetValue(world);
-                effect.Parameters["g_mView"].SetValue(Game.Instance.View);
-                effect.Parameters["g_mWorldViewProjection"].SetValue(world * Game.Instance.View * Game.Instance.Projection);
+            effect.Parameters["g_LightDir"].SetValue(Vector3.Normalize(new Vector3(0, 1, 0)));
+            effect.Parameters["invert"].SetValue(true);
+            effect.Parameters["flickerStrength"].SetValue(0.01f);
+            effect.Parameters["StuccoCompression"].SetValue(0.65f);
 
-                // texture parameters
-                effect.Parameters["StuccoSparse"].SetValue(sparseStuccoTexture);
-                effect.Parameters["FireFractal"].SetValue(fireFractalTexture);
-                effect.Parameters["Granite"].SetValue(graniteTexture);
-                effect.Parameters["Clouds"].SetValue(vectorCloudTexture);
+            effect.Parameters["minPlaneY"].SetValue(-45.0f);
+            effect.Parameters["maxPlaneY"].SetValue(0.0f);
 
-                // other stuff
-                effect.Parameters["g_LightDir"].SetValue(Vector3.Normalize(new Vector3(0, 1, 0)));
-                effect.Parameters["invert"].SetValue(true);
-                effect.Parameters["flickerStrength"].SetValue(0.01f);
-                effect.Parameters["StuccoCompression"].SetValue(0.65f);
+            UpdateRandomOffsets();
+        }
+
+        //public void Draw(
+        //    Renderer renderer,
+        //    GameTime gameTime
+        //)
+        //{
+        //    Matrix world = Matrix.Identity;
+        //    world *= Matrix.CreateScale(scale);
+        //    world *= Matrix.CreateFromQuaternion(rotation);
+        //    world *= Matrix.CreateTranslation(position);
+
+        //    // shadows should be floating a little above the receiving surface
+        //    Matrix world_offset = world;
+        //    world_offset *= Matrix.CreateTranslation(new Vector3(0, 3, 0));
+
+        //    foreach (ModelMesh mesh in model.Meshes)
+        //    {
+        //        effect.CurrentTechnique = effect.Techniques["MultiPlaneLava"];
+
+        //        // transformation parameters
+        //        effect.Parameters["g_mWorld"].SetValue(world);
+        //        effect.Parameters["g_mView"].SetValue(Game.Instance.View);
+        //        effect.Parameters["g_mWorldViewProjection"].SetValue(world * Game.Instance.View * Game.Instance.Projection);
+
+        //        // texture parameters
+        //        effect.Parameters["StuccoSparse"].SetValue(sparseStuccoTexture);
+        //        effect.Parameters["FireFractal"].SetValue(fireFractalTexture);
+        //        effect.Parameters["Granite"].SetValue(graniteTexture);
+        //        effect.Parameters["Clouds"].SetValue(vectorCloudTexture);
+
+        //        // other stuff
+        //        effect.Parameters["g_LightDir"].SetValue(Vector3.Normalize(new Vector3(0, 1, 0)));
+        //        effect.Parameters["invert"].SetValue(true);
+        //        effect.Parameters["flickerStrength"].SetValue(0.01f);
+        //        effect.Parameters["StuccoCompression"].SetValue(0.65f);
                 
-                //effect.Parameters["minPlaneY"].SetValue(boundingBox.Min.Y);
-                //effect.Parameters["maxPlaneY"].SetValue(boundingBox.Max.Y);
+        //        //effect.Parameters["minPlaneY"].SetValue(boundingBox.Min.Y);
+        //        //effect.Parameters["maxPlaneY"].SetValue(boundingBox.Max.Y);
 
-                effect.Parameters["minPlaneY"].SetValue(-45.0f);
-                effect.Parameters["maxPlaneY"].SetValue(0.0f);
+        //        effect.Parameters["minPlaneY"].SetValue(-45.0f);
+        //        effect.Parameters["maxPlaneY"].SetValue(0.0f);
 
-                UpdateRandomOffsets();
+        //        UpdateRandomOffsets();
 
-                // draw the lava plane
-                foreach (ModelMeshPart meshPart in mesh.MeshParts)
-                {
-                    meshPart.Effect = effect;
-                }
-                mesh.Draw();
+        //        // draw the lava plane
+        //        foreach (ModelMeshPart meshPart in mesh.MeshParts)
+        //        {
+        //            meshPart.Effect = effect;
+        //        }
+        //        mesh.Draw();
 
-                // draw the shadow
-                Effect shadowEffect = renderer.ShadowEffect;
+        //        // draw the shadow
+        //        Effect shadowEffect = renderer.ShadowEffect;
 
-                shadowEffect.CurrentTechnique = shadowEffect.Techniques["Scene"];
-                shadowEffect.Parameters["ShadowMap"].SetValue(renderer.LightResolve);
-                shadowEffect.Parameters["WorldCameraViewProjection"].SetValue(
-                    world_offset * Game.Instance.View * Game.Instance.Projection);
-                shadowEffect.Parameters["World"].SetValue(world_offset);
+        //        shadowEffect.CurrentTechnique = shadowEffect.Techniques["Scene"];
+        //        shadowEffect.Parameters["ShadowMap"].SetValue(renderer.LightResolve);
+        //        shadowEffect.Parameters["WorldCameraViewProjection"].SetValue(
+        //            world_offset * Game.Instance.View * Game.Instance.Projection);
+        //        shadowEffect.Parameters["World"].SetValue(world_offset);
 
-                shadowEffect.Parameters["WorldLightViewProjection"].SetValue(
-                    world_offset * renderer.LightView * renderer.LightProjection);
-                foreach (ModelMeshPart meshPart in mesh.MeshParts)
-                {
-                    meshPart.Effect = shadowEffect;
-                }
-                mesh.Draw();
-            }
-        }
+        //        shadowEffect.Parameters["WorldLightViewProjection"].SetValue(
+        //            world_offset * renderer.LightView * renderer.LightProjection);
+        //        foreach (ModelMeshPart meshPart in mesh.MeshParts)
+        //        {
+        //            meshPart.Effect = shadowEffect;
+        //        }
+        //        mesh.Draw();
+        //    }
+        //}
 
-        public RenderMode RenderMode 
-        {
-            get { return RenderMode.RenderToScene; }
-        }
+        //public RenderMode RenderMode 
+        //{
+        //    get { return RenderMode.RenderToScene; }
+        //}
 
-        public Vector3 Scale
-        {
-            get { return scale; }
-            set { scale = value; }
-        }
+        //public Vector3 Scale
+        //{
+        //    get { return scale; }
+        //    set { scale = value; }
+        //}
 
-        public Quaternion Rotation
-        {
-            get { return rotation; }
-            set { rotation = value; }
-        }
+        //public Quaternion Rotation
+        //{
+        //    get { return rotation; }
+        //    set { rotation = value; }
+        //}
 
-        public Vector3 Position
-        {
-            get { return position; }
-            set { position = value; }
-        }
+        //public Vector3 Position
+        //{
+        //    get { return position; }
+        //    set { position = value; }
+        //}
 
-        private Vector3 scale;
-        private Quaternion rotation;
-        private Vector3 position;
-        private Model model;
+        //private Vector3 scale;
+        //private Quaternion rotation;
+        //private Vector3 position;
+        //private Model model;
 
         private Texture2D sparseStuccoTexture;
         private Texture2D fireFractalTexture;

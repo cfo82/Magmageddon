@@ -9,7 +9,7 @@
 float2 SampleOffsets[SAMPLE_COUNT];
 float SampleWeights[SAMPLE_COUNT];
 
-texture blah : register(s0);
+sampler i_hate_microsoft_dont_remove_this_it_wont_work : register(s0);
 
 texture RenderChannelColor;
 sampler2D RenderChannelSampler = sampler_state
@@ -72,6 +72,6 @@ technique GaussianBlur
 {
     pass Pass1
     {
-        PixelShader = compile ps_3_0 PixelShader();
+        PixelShader = compile ps_2_0 PixelShader();
     }
 }

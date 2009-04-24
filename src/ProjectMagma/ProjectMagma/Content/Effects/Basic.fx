@@ -345,6 +345,30 @@ PSOutput PSBasicPixelLightingTx(PixelLightingPSInputTx pin) : COLOR
 //	else
 	PSOutput Output;
 	Output.Color = color;
+	//Output.Color.a = max(pin.PositionWS.y/100,tex2D(CloudsSampler, texCoord).x);
+	
+	float YAmplitude = 30;
+	float XZFrequency = 0.001;
+	float Hardness = 20;
+	
+	//float2 off = tex2D(CloudsSampler, RandomOffset*100).x;
+	//float2 off = (float2(RandomOffset.x, RandomOffset.y) + float2(RandomOffset.y, -RandomOffset.x))/2; // sample anisotropically
+	float2 off = float2(RandomOffset.x, RandomOffset.y);
+	
+	float thresh1 = tex2D(CloudsSampler, pin.PositionWS.xz*XZFrequency + off*10).x;
+	float thresh2 = tex2D(CloudsSampler, pin.PositionWS.xz*XZFrequency - off*10).x;
+	
+	float thresh = (thresh1+thresh2)/2;
+	float y = pin.PositionWS.y/YAmplitude;
+	//Output.Color.a = y < thresh ? 0 : 1;	
+	
+	// this is for pillars
+	Output.Color.a = saturate((y - thresh)*Hardness);
+	
+	// this is for islands
+	//if(pin.PositionWS.y<17)	
+	//Output.Color.a = saturate((pin.PositionWS.y-17)*0.8);
+	
 	Output.RenderChannelColor = RenderChannelColor;
 //	Output.RenderChannelColor.a = saturate(pin.PositionWS.y/2000);
 	//Output.RenderChannelColor.a = 0.3f;

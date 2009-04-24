@@ -74,3 +74,15 @@ sampler2D CloudsSampler = sampler_state
 	AddressU = Mirror;
 	AddressV = Mirror;
 };
+
+texture Temperature;
+sampler2D TemperatureSampler = sampler_state
+{
+	Texture = <Temperature>;
+	MinFilter = Linear;
+	MagFilter = Linear;
+	MipFilter = Linear;
+	AddressU = Mirror;
+	AddressV = Mirror;
+};
+

@@ -20,7 +20,7 @@
     </Attributes>
     <Properties>
       <Property name="collision" type="ProjectMagma.Simulation.Collision.CollisionProperty"/>
-      <Property name="render" type="ProjectMagma.Simulation.TexturedRenderProperty"/>
+      <Property name="render" type="ProjectMagma.Simulation.EnvironmentRenderProperty"/>
       <Property name="render_highlight" type="ProjectMagma.Simulation.RenderHighlightProperty"/>
     </Properties>
   </Entity>

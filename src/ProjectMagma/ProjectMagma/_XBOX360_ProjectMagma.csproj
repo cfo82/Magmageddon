@@ -69,6 +69,7 @@
     <Compile Include="Renderer\ParallelLight.cs" />
     <Compile Include="Renderer\LightManager.cs" />
     <Compile Include="Renderer\Renderables\BasicRenderable.cs" />
+    <Compile Include="Renderer\Renderables\EnvironmentRenderable.cs" />
     <Compile Include="Renderer\Renderables\HighlightRenderable.cs" />
     <Compile Include="Renderer\Renderables\IslandRenderable.cs" />
     <Compile Include="Renderer\Renderables\LavaRenderable.cs" />
@@ -144,6 +145,7 @@
     <Compile Include="Simulation\Properties\Player\IceSpikeControllerProperty.cs" />
     <Compile Include="Simulation\Properties\Player\PlayerControllerProperty.cs" />
     <Compile Include="Simulation\Properties\Rendering\BasicRenderProperty.cs" />
+    <Compile Include="Simulation\Properties\Rendering\EnvironmentRenderProperty.cs" />
     <Compile Include="Simulation\Properties\Rendering\IslandRenderProperty.cs" />
     <Compile Include="Simulation\Properties\Rendering\LavaRenderProperty.cs" />
     <Compile Include="Simulation\Properties\Rendering\HUDProperty.cs" />

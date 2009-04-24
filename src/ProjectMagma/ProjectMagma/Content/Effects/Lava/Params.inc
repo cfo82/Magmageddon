@@ -23,7 +23,9 @@ float3 g_LightDir;                  // Light's direction in world space
 //float    g_fHeightMapScale;         // Describes the useful range of values for the height field
 
 // Matrices:
-float4x4 g_mWorld;                  // World matrix for object
-float4x4 g_mWorldViewProjection;    // World * View * Projection matrix
-float4x4 g_mView;                   // View matrix 
+float4x4 World;                  // World matrix for object
+float4x4 WorldViewProjection;    // World * View * Projection matrix
 
+
+float4x4 View;                   // View matrix, not really used here
+float4x4 Projection; // not really used here

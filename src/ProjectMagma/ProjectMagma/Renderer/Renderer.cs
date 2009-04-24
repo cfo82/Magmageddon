@@ -14,6 +14,8 @@ namespace ProjectMagma.Renderer
             GraphicsDevice device
         )
         {
+            EnablePostProcessing = true;
+
             this.device = device;
             shadowCaster = new List<Renderable>();
             opaqueRenderables = new List<Renderable>();

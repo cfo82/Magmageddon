@@ -93,6 +93,7 @@
     <Compile Include="Profiler\Section.cs" />
     <Compile Include="Renderer\LightManager.cs" />
     <Compile Include="Renderer\ParallelLight.cs" />
+    <Compile Include="Renderer\Renderables\EnvironmentRenderable.cs" />
     <Compile Include="Renderer\Renderables\RobotRenderable.cs" />
     <Compile Include="Renderer\Renderables\IslandRenderable.cs" />
     <Compile Include="Renderer\Renderables\LavaRenderable.cs" />
@@ -172,6 +173,7 @@
     <Compile Include="Simulation\Properties\Player\PlayerControllerProperty.cs" />
     <Compile Include="Simulation\Properties\Environment\PowerUpController.cs" />
     <Compile Include="Simulation\Properties\Base\Property.cs" />
+    <Compile Include="Simulation\Properties\Rendering\EnvironmentRenderProperty.cs" />
     <Compile Include="Simulation\Properties\Rendering\ModelRenderProperty.cs" />
     <Compile Include="Simulation\Properties\Rendering\RobotRenderProperty.cs" />
     <Compile Include="Simulation\Properties\Rendering\IslandRenderProperty.cs" />

@@ -28,7 +28,8 @@
     <Attributes>
       <Attribute name="kind" template="string" value="lava"/>
       <Attribute name="position" template="float3" value="0 0 0"/>
-      <Attribute name="scale" template="float3" value="0.8 0.12 0.8"/>
+      <!--Attribute name="scale" template="float3" value="0.8 0.12 0.8"/-->
+      <Attribute name="scale" template="float3" value="800 120 800"/>
       <!--Attribute name="scale" template="float3" value="1200 4 1200"/-->
       <Attribute name="mesh" template="string" value="Models\Environment\lava10"/>
       <!--Attribute name="mesh" template="string" value="Models\Primitives\lava_primitive"/-->

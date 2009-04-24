@@ -13,20 +13,27 @@ float4 getfirefractal(float2 texCoord)
 	)/2;
 }
 
+float gettemperature(float2 texCoord)
+{
+	return tex2D(TemperatureSampler, texCoord).x;
+}
+
 //------------------------------------------------------------
 //                COMPUTE HEIGHT MAP (STUCCO)
 //------------------------------------------------------------
 float getstucco(float2 texCoord, float compression)
 {
 	float stucco;
-	float4 stucco_rgba1 = tex2D(StuccoSparseSampler, texCoord*1.60 + StuccoRandomOffset1*0.15);
-	float4 stucco_rgba2 = tex2D(StuccoSparseSampler, texCoord*2.00 - StuccoRandomOffset2*0.20);
-	float4 stucco_rgba3 = tex2D(StuccoSparseSampler, texCoord*2.75 - StuccoRandomOffset3*0.30);	
+	float temperature = gettemperature(texCoord);
+	float4 stucco_rgba1 = tex2D(StuccoSparseSampler, texCoord*1.60 + StuccoRandomOffset1*0.15*temperature*2);
+	float4 stucco_rgba2 = tex2D(StuccoSparseSampler, texCoord*2.00 - StuccoRandomOffset2*0.20*temperature*2);
+	float4 stucco_rgba3 = tex2D(StuccoSparseSampler, texCoord*2.75 - StuccoRandomOffset3*0.30*temperature*2);	
 	stucco = 1-(stucco_rgba1.r)*(stucco_rgba2.r)*(stucco_rgba3.r);	
 	stucco = (1-compression)*stucco+(compression)/2;
 	return stucco;
 }
 
+float temperatureImpact = 0.65;
 
 //------------------------------------------------------------
 //                 EVALUATE LIGHTING MODEL
@@ -64,6 +71,8 @@ float4 ComputeIlluminationCombo( float2 texCoord, float3 vLightTS, float fOcclus
    // Composite the final color:
    
    float4 cFinalColor = cDiffuse * cBaseColor + incandescence;
+   
+   cFinalColor *= (1 - temperatureImpact) + (gettemperature(texCoord) * temperatureImpact);
    return cFinalColor;  
 }   
 
@@ -80,7 +89,7 @@ VS_OUTPUT MultiPlaneVS(float4 inPositionOS  : POSITION,
     VS_OUTPUT Out;
         
     // Transform and output input position 
-    Out.position = mul( inPositionOS, g_mWorldViewProjection );
+    Out.position = mul( inPositionOS, WorldViewProjection );
     
     //Out.position.y += sin(inPositionOS.x/7)*40;
        
@@ -88,9 +97,9 @@ VS_OUTPUT MultiPlaneVS(float4 inPositionOS  : POSITION,
     Out.texCoord = inTexCoord;
 
     // Transform the normal, tangent and binormal vectors from object space to homogeneous projection space:
-    float3 vNormalWS   = mul( vInNormalOS,   (float3x3) g_mWorld );
-    float3 vTangentWS  = mul( vInTangentOS,  (float3x3) g_mWorld );
-    float3 vBinormalWS = mul( vInBinormalOS, (float3x3) g_mWorld );
+    float3 vNormalWS   = mul( vInNormalOS,   (float3x3) World );
+    float3 vTangentWS  = mul( vInTangentOS,  (float3x3) World );
+    float3 vBinormalWS = mul( vInBinormalOS, (float3x3) World );
     
     // Propagate the world space vertex normal through:   
     Out.vNormalWS = vNormalWS;
@@ -100,7 +109,7 @@ VS_OUTPUT MultiPlaneVS(float4 inPositionOS  : POSITION,
     vBinormalWS = normalize( vBinormalWS );
     
     // Compute position in world space:
-    float4 vPositionWS = mul( inPositionOS, g_mWorld );
+    float4 vPositionWS = mul( inPositionOS, World );
                  
     // Compute denormalized light vector in world space:
     float3 vLightWS = g_LightDir;
@@ -143,6 +152,9 @@ PSOutput MultiPlanePS(PS_INPUT i) : COLOR0
 	float planeFraction = (i.pos.y - minPlaneY) / (maxPlaneY - minPlaneY);
 	
 	outp.Color = float4(cResultColor_rgb*0.7, alphaStucco >= planeFraction ? 1 : 0);
+	
+	//outp.Color = float4(1,0,0,1);
+	//outp.Color = tex2D(TemperatureSampler, i.texCoord);
 	//outp.RenderChannelColor = float4(0,0,1,1);
 	outp.RenderChannelColor = RenderChannelColor;
 	return outp;

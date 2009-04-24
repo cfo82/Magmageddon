@@ -977,6 +977,11 @@
     <None Include="Effects\Lava\Textures.inc">
       <Name>Textures</Name>
     </None>
+    <Compile Include="Textures\Lava\temperature.tga">
+      <Name>temperature</Name>
+      <Importer>TextureImporter</Importer>
+      <Processor>TextureProcessor</Processor>
+    </Compile>
     <Compile Include="Models\Environment\lava10.fbx">
       <Name>lava10</Name>
       <Importer>FbxImporter</Importer>

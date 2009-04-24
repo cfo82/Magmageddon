@@ -1,4 +1,4 @@
-texture blah : register(s0);
+sampler i_hate_microsoft_dont_remove_this_it_wont_work : register(s0);
 
 texture GeometryRender;
 sampler2D GeometryRenderSampler = sampler_state
@@ -34,12 +34,16 @@ sampler2D RenderChannelColorSampler = sampler_state
 };
   
 
-float BloomIntensity[3] = {2.0, 2.0, 2.0};
+float BloomIntensity[3] = {0.0, 0.0, 2.0};
 float BaseIntensity[3] = {1.0, 1.0, 1.0};
 
-float BloomSaturation[3] = {1.0, 0.0, -1.0};
-float BaseSaturation[3] = {1.0, 0.0, -1.0};
+float BloomSaturation[3] = {1.0, 1.0, -1.0};
+float BaseSaturation[3] = {1.0, 1.0, -1.0};
 
+float In1[3] = {1.0, 1.0, 1.0};
+float Out1[3] = {1.0, 1.0, 1.0};
+float In2[3] = {1.0, 1.0, 1.0};
+float Out2[3] = {1.0, 1.0, 1.0};
 
 // Helper for modifying the saturation of a color.
 float4 AdjustSaturation(float4 color, float saturation)
@@ -47,6 +51,8 @@ float4 AdjustSaturation(float4 color, float saturation)
     // The constants 0.3, 0.59, and 0.11 are chosen because the
     // human eye is more sensitive to green light, and less to blue.
     float grey = dot(color, float3(0.3, 0.59, 0.11));
+
+	//return color;
 
     return lerp(grey, color, saturation);
 }
@@ -79,7 +85,7 @@ float4 PixelShader(float2 texCoord : TEXCOORD0) : COLOR0
 	
 	float4 channel_map = tex2D(RenderChannelColorSampler, texCoord);
     
-    //return channel_map.a;
+    //return channel_map;
 
     // Combine the two images.
     return channel1*channel_map.r + channel2*channel_map.g + channel3*channel_map.b;

@@ -18,22 +18,29 @@ float gettemperature(float2 texCoord)
 	return tex2D(TemperatureSampler, texCoord).x;
 }
 
+float ComputeFogFactor(float d)
+{
+    return clamp((d - FogStart) / (FogEnd - FogStart), 0, 1) * FogEnabled;
+}
+
 //------------------------------------------------------------
 //                COMPUTE HEIGHT MAP (STUCCO)
 //------------------------------------------------------------
+float stuccoFrequency = 0.7;
+
 float getstucco(float2 texCoord, float compression)
 {
 	float stucco;
 	float temperature = gettemperature(texCoord);
-	float4 stucco_rgba1 = tex2D(StuccoSparseSampler, texCoord*1.60 + StuccoRandomOffset1*0.15*temperature*2);
-	float4 stucco_rgba2 = tex2D(StuccoSparseSampler, texCoord*2.00 - StuccoRandomOffset2*0.20*temperature*2);
-	float4 stucco_rgba3 = tex2D(StuccoSparseSampler, texCoord*2.75 - StuccoRandomOffset3*0.30*temperature*2);	
+	float4 stucco_rgba1 = tex2D(StuccoSparseSampler, texCoord*1.60*stuccoFrequency + StuccoRandomOffset1*0.15*temperature*1.5);
+	float4 stucco_rgba2 = tex2D(StuccoSparseSampler, texCoord*2.00*stuccoFrequency - StuccoRandomOffset2*0.20*temperature*1.5);
+	float4 stucco_rgba3 = tex2D(StuccoSparseSampler, texCoord*2.75*stuccoFrequency - StuccoRandomOffset3*0.30*temperature*1.5);	
 	stucco = 1-(stucco_rgba1.r)*(stucco_rgba2.r)*(stucco_rgba3.r);	
 	stucco = (1-compression)*stucco+(compression)/2;
 	return stucco;
 }
 
-float temperatureImpact = 0.65;
+float temperatureImpact = 0.45;
 
 //------------------------------------------------------------
 //                 EVALUATE LIGHTING MODEL
@@ -43,7 +50,7 @@ float4 ComputeIlluminationCombo( float2 texCoord, float3 vLightTS, float fOcclus
     float stucco = getstucco(texCoord, StuccoCompression);    
 
 	// -- compute diffuse
-   float4 granite = tex2D(GraniteSampler, texCoord + GraniteRandomOffset);
+   float4 granite = tex2D(GraniteSampler, texCoord*25 + GraniteRandomOffset);
    float4 granite_for_diffuse = 0.7*granite+0.3*float4(1.0,0.6,0.4,1.0);    
    float4 diffuse = (1-stucco)*granite_for_diffuse;
    float4 cBaseColor = diffuse;
@@ -66,11 +73,12 @@ float4 ComputeIlluminationCombo( float2 texCoord, float3 vLightTS, float fOcclus
    // Compute diffuse color component:
    float3 vLightTSAdj = float3( vLightTS.x, -vLightTS.y, vLightTS.z );
    float4 cDiffuse = saturate( dot( vNormalTS, vLightTSAdj )) * float4(0.4,0.4,0.4,1);
-   cDiffuse = float4(0,0,0,0);
+   cDiffuse = float4(1,1,1,1);
    
    // Composite the final color:
    
-   float4 cFinalColor = cDiffuse * cBaseColor + incandescence;
+   //float4 cFinalColor = cDiffuse * cBaseColor + incandescence;
+   float4 cFinalColor = incandescence;
    
    cFinalColor *= (1 - temperatureImpact) + (gettemperature(texCoord) * temperatureImpact);
    return cFinalColor;  
@@ -123,6 +131,10 @@ VS_OUTPUT MultiPlaneVS(float4 inPositionOS  : POSITION,
 	// compute where the current plane is
 	//Out.planeFraction = (inPositionOS.y - minPlaneY) / (maxPlaneY - minPlaneY);
 	Out.pos = inPositionOS;
+	
+	float3 OutPosition = Out.position;
+	Out.pos.w = ComputeFogFactor(length(EyePosition - OutPosition));
+	
    return Out;
 }
 
@@ -148,7 +160,7 @@ PSOutput MultiPlanePS(PS_INPUT i) : COLOR0
 	if(invert) alphaStucco = 1 - alphaStucco;
 	
 	// compute composite RGBA color
-	float3 cResultColor_rgb = cResultColor.rgb;
+	float3 cResultColor_rgb = lerp(cResultColor.rgb,FogColor, i.pos.w);
 	float planeFraction = (i.pos.y - minPlaneY) / (maxPlaneY - minPlaneY);
 	
 	outp.Color = float4(cResultColor_rgb*0.7, alphaStucco >= planeFraction ? 1 : 0);

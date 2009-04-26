@@ -15,8 +15,12 @@ namespace ProjectMagma.Renderer
         {
             randomOffset = new DoublyIntegratedVector2
             (
-                Vector2.Zero, Vector2.Zero, 0.0f, 0.0f, -1.0f, 1.0f
+                Vector2.Zero, new Vector2(0.0002f, 0.0002f), 0.0f, 0.0f, -0.0004f, 0.0004f
             );
+            EnvGroundWavesAmplitude = 15.0f;
+            EnvGroundWavesFrequency = 0.002f;
+            EnvGroundWavesHardness = 15.0f;
+            EnvGroundWavesVelocity = 0.003f;
             RenderChannel = RenderChannelType.One;
         }
 
@@ -31,12 +35,19 @@ namespace ProjectMagma.Renderer
         {
             base.ApplyCustomEffectParameters(effect, renderer, gameTime);
 
-            randomOffset.RandomlyIntegrate(gameTime, 0.0008f, 0.0f);
+            randomOffset.RandomlyIntegrate(gameTime, EnvGroundWavesVelocity, 0.0f);
             effect.Parameters["RandomOffset"].SetValue(randomOffset.Value);
-        }
 
-        //public float WindStrength { get; set; }
+            effect.Parameters["EnvGroundWavesAmplitude"].SetValue(EnvGroundWavesAmplitude);
+            effect.Parameters["EnvGroundWavesFrequency"].SetValue(EnvGroundWavesFrequency);
+            effect.Parameters["EnvGroundWavesHardness"].SetValue(EnvGroundWavesHardness);
+        }
         
         private DoublyIntegratedVector2 randomOffset;
+
+        public float EnvGroundWavesAmplitude { get; set; }
+        public float EnvGroundWavesFrequency { get; set; }
+        public float EnvGroundWavesHardness { get; set; }
+        public float EnvGroundWavesVelocity { get; set; }
     }
 }

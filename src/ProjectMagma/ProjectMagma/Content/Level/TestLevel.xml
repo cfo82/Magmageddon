@@ -48,16 +48,22 @@
   <Entity name="cave">
     <Attributes>
       <Attribute name="kind" template="string" value="cave"/>
-      <Attribute name="position" template="float3" value="0 0 0"/>
+      <Attribute name="position" template="float3" value="0 -20 0"/>
       <Attribute name="scale" template="float3" value="700 700 700"/>
       <Attribute name="mesh" template="string" value="Models/Environment/cave_v002"/>
       <Attribute name="bv_type" template="string" value="alignedbox3tree"/>
-      <Attribute name="lava_light_strength" template="float" value="0.7"/>
-      <Attribute name="spot_light_strength" template="float" value="0.4"/>
+      <Attribute name="texture" template="string" value="Textures/Environment/cave_diffuse_v001"/>
+      <!--Attribute name="texture" template="string" value="Textures/custom_uv_diag"/-->
+      <Attribute name="lava_light_strength" template="float" value="1.0"/>
+      <Attribute name="spot_light_strength" template="float" value="1.0"/>
       <Attribute name="diffuse_color" template="float3" value="1.0 1.0 1.0"/>
+      <Attribute name="env_ground_waves_amplitude" template="float" value="45"/>
+      <Attribute name="env_ground_waves_frequency" template="float" value="0.0004"/>
+      <Attribute name="env_ground_waves_hardness" template="float" value="15"/>
+      <Attribute name="env_ground_waves_velocity" template="float" value="0.003"/>
     </Attributes>
     <Properties>
-      <Property name="render" type="ProjectMagma.Simulation.BasicRenderProperty"/>
+      <Property name="render" type="ProjectMagma.Simulation.EnvironmentRenderProperty"/>
       <!--Property name="collision" type="ProjectMagma.Simulation.Collision.CollisionProperty"/-->
       <Property name="render_highlight" type="ProjectMagma.Simulation.RenderHighlightProperty"/>
     </Properties>
@@ -67,31 +73,31 @@
   
   <Entity name="pillar1" extends="pillar_base_001">
     <Attributes>
-      <Attribute name="position" template="float3" value="230 0 260"/>
+      <Attribute name="position" template="float3" value="230 -50 260"/>
     </Attributes>
   </Entity>
 
   <Entity name="pillar2" extends="pillar_base_003">
     <Attributes>
-      <Attribute name="position" template="float3" value="-300 0 150"/>
+      <Attribute name="position" template="float3" value="-300 -50 150"/>
     </Attributes>
   </Entity>
 
   <Entity name="pillar3" extends="pillar_base_002">
     <Attributes>
-      <Attribute name="position" template="float3" value="200 0 -120"/>
+      <Attribute name="position" template="float3" value="200 -50 -120"/>
     </Attributes>
   </Entity>
 
   <Entity name="pillar4" extends="pillar_base_001">
     <Attributes>
-      <Attribute name="position" template="float3" value="-100 0 0"/>
+      <Attribute name="position" template="float3" value="-100 -50 0"/>
     </Attributes>
   </Entity>
 
   <Entity name="pillar5" extends="pillar_base_003">
     <Attributes>
-      <Attribute name="position" template="float3" value="10 0 -300"/>
+      <Attribute name="position" template="float3" value="10 -50 -300"/>
     </Attributes>
   </Entity>
 

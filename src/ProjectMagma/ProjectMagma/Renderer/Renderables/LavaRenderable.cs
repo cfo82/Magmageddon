@@ -108,10 +108,16 @@ namespace ProjectMagma.Renderer
             effect.Parameters["g_LightDir"].SetValue(Vector3.Normalize(new Vector3(0, 1, 0)));
             effect.Parameters["invert"].SetValue(true);
             effect.Parameters["flickerStrength"].SetValue(0.01f);
-            effect.Parameters["StuccoCompression"].SetValue(0.65f);
+            effect.Parameters["StuccoCompression"].SetValue(0.5f);
 
             effect.Parameters["minPlaneY"].SetValue(-45.0f);
             effect.Parameters["maxPlaneY"].SetValue(0.0f);
+
+            effect.Parameters["FogEnabled"].SetValue(0.0f);
+            effect.Parameters["FogStart"].SetValue(1000.0f);
+            effect.Parameters["FogEnd"].SetValue(2000.0f);
+            effect.Parameters["FogColor"].SetValue(Vector3.One);
+            effect.Parameters["EyePosition"].SetValue(Game.Instance.EyePosition);
 
             UpdateRandomOffsets();
         }

@@ -86,7 +86,7 @@ namespace ProjectMagma.Renderer
             // in the end, this method in BasicRenderable should be empty and all the features
             // be implemented in individual methods which are called by their name
 
-            //effect.Parameters["FogEnabled"].SetValue(1.0f);
+            //effect.Parameters["FogEnabled"].SetValue(0.0f);
             //effect.Parameters["FogStart"].SetValue(1000.0f);
             //effect.Parameters["FogEnd"].SetValue(2000.0f);
             //effect.Parameters["FogColor"].SetValue(Vector3.One);

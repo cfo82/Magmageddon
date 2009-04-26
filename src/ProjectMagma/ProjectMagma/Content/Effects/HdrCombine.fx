@@ -33,17 +33,19 @@ sampler2D RenderChannelColorSampler = sampler_state
 	AddressV = Clamp;
 };
   
+float BloomSensitivity[3];
 
-float BloomIntensity[3] = {0.0, 0.0, 2.0};
-float BaseIntensity[3] = {1.0, 1.0, 1.0};
+float BloomIntensity[3];
+float BaseIntensity[3];
 
-float BloomSaturation[3] = {1.0, 1.0, -1.0};
-float BaseSaturation[3] = {1.0, 1.0, -1.0};
+float BloomSaturation[3];
+float BaseSaturation[3];
 
-float In1[3] = {1.0, 1.0, 1.0};
-float Out1[3] = {1.0, 1.0, 1.0};
-float In2[3] = {1.0, 1.0, 1.0};
-float Out2[3] = {1.0, 1.0, 1.0};
+float In1[3];
+float Out1[3];
+float In2[3];
+float Out2[3];
+
 
 // Helper for modifying the saturation of a color.
 float4 AdjustSaturation(float4 color, float saturation)
@@ -58,22 +60,48 @@ float4 AdjustSaturation(float4 color, float saturation)
 }
 
 
+float4 ToneMap(float4 color, int channel)
+{
+    float amplitude = length(color);
+    float in1 = In1[channel]; float out1 = Out1[channel];
+    float in2 = In2[channel]; float out2 = Out2[channel];
+
+    // 2nd order lagrangian polynomial, could be simplified to monic 
+    // basis but then the coefficients are harder to determine.    
+    float weight =
+		(out1*amplitude*(amplitude-in2))/(in1*(in1-in2)) +
+		(out2*amplitude*(amplitude-in1))/(in2*(in2-in1));	
+
+	return weight*normalize(color);	
+}
+
+		//(out2*ll*(ll-in3))/(in2*(in2-in3)) +
+		//(out3*ll*(ll-in2))/(in3*(in3-in2));	
+
+
 float4 ChannelPixelShader(float2 texCoord : TEXCOORD0, int channel)
 {
     // Look up the bloom and original base image colors.
     float4 bloom = tex2D(BlurGeometryRenderSampler, texCoord);
     float4 base = tex2D(GeometryRenderSampler, texCoord);
     
+    // Weight Bloom component according to sensitivity
+    bloom = saturate(bloom/(1.0f-BloomSensitivity[channel]) - 2*BloomSensitivity[channel]);
+
     // Adjust color saturation and intensity.
-    bloom = AdjustSaturation(bloom, BloomSaturation[channel]) * BloomIntensity[channel];
-    base = AdjustSaturation(base, BaseSaturation[channel]) * BaseIntensity[channel];
+    //bloom = AdjustSaturation(bloom, BloomSaturation[channel]) * BloomIntensity[channel];
+    //base = AdjustSaturation(base, BaseSaturation[channel]) * BaseIntensity[channel];
+
+    bloom *= BloomIntensity[channel];
+    base *= BaseIntensity[channel];
     
     // Darken down the base image in areas where there is a lot of bloom,
     // to prevent things looking excessively burned-out.
-    base *= (1 - saturate(bloom));
+    //base *= (1 - saturate(bloom));
     
     // Combine the two images.
-    return base + bloom;
+    float4 tonemapped = ToneMap(base + bloom, channel);    
+    return tonemapped;
 }
 
 

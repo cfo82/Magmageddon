@@ -10,101 +10,35 @@ using ProjectMagma.Simulation.Attributes;
 using ProjectMagma.Renderer;
 
 // def. environment: pillars, cave
-
-// todo: this should inherit from basicrenderproperty
 namespace ProjectMagma.Simulation
 {
-    public class EnvironmentRenderProperty : Property
+    public class EnvironmentRenderProperty : TexturedRenderProperty
     {
-        public EnvironmentRenderProperty()
+        public override void CreateRenderable(Vector3 scale, Quaternion rotation, Vector3 position, Model model)
         {
-        }
-        public void Squash()
-        {
-            renderable.Squash();
+            Renderable = new EnvironmentRenderable(scale, rotation, position, model);
         }
 
-        public void OnAttached(Entity entity)
+        public override void SetRenderableParameters(Entity entity)
         {
-            Vector3 scale = Vector3.One;
-            Quaternion rotation = Quaternion.Identity;
-            Vector3 position = Vector3.Zero;
+            base.SetRenderableParameters(entity);
 
-            if (entity.HasVector3("scale"))
+            if (entity.HasFloat("env_ground_waves_amplitude"))
             {
-                scale = entity.GetVector3("scale");
-                entity.GetVector3Attribute("scale").ValueChanged += ScaleChanged;
+                (Renderable as EnvironmentRenderable).EnvGroundWavesAmplitude = entity.GetFloat("env_ground_waves_amplitude");
             }
-            if (entity.HasQuaternion("rotation"))
+            if (entity.HasFloat("env_ground_waves_frequency"))
             {
-                rotation = entity.GetQuaternion("rotation");
-                entity.GetQuaternionAttribute("rotation").ValueChanged += RotationChanged;
+                (Renderable as EnvironmentRenderable).EnvGroundWavesFrequency = entity.GetFloat("env_ground_waves_frequency");
             }
-            if (entity.HasVector3("position"))
+            if (entity.HasFloat("env_ground_waves_hardness"))
             {
-                position = entity.GetVector3("position");
-                entity.GetVector3Attribute("position").ValueChanged += PositionChanged;
+                (Renderable as EnvironmentRenderable).EnvGroundWavesHardness = entity.GetFloat("env_ground_waves_hardness");
             }
-
-            // load the model
-            string meshName = entity.GetString("mesh");
-            Model model = Game.Instance.Content.Load<Model>(meshName);
-
-            string islandTextureName = entity.GetString("texture");
-            Texture2D islandTexture = Game.Instance.Content.Load<Texture2D>(islandTextureName);
-
-            renderable = new EnvironmentRenderable(scale, rotation, position, model);
-            //renderable.WindStrength = entity.GetFloat("wind_strength");
-            renderable.SetTexture(islandTexture);
-            
-            Game.Instance.Renderer.AddRenderable(renderable);
-        }
-
-        public void OnDetached(Entity entity)
-        {
-            Game.Instance.Renderer.RemoveRenderable(renderable);
-
-            if (entity.HasVector3("position"))
+            if (entity.HasFloat("env_ground_waves_velocity"))
             {
-                entity.GetVector3Attribute("position").ValueChanged -= PositionChanged;
-            }
-            if (entity.HasQuaternion("rotation"))
-            {
-                entity.GetQuaternionAttribute("rotation").ValueChanged -= RotationChanged;
-            }
-            if (entity.HasVector3("scale"))
-            {
-                entity.GetVector3Attribute("scale").ValueChanged -= ScaleChanged;
+                (Renderable as EnvironmentRenderable).EnvGroundWavesVelocity = entity.GetFloat("env_ground_waves_velocity");
             }
         }
-
-        private void ScaleChanged(
-            Vector3Attribute sender,
-            Vector3 oldValue,
-            Vector3 newValue
-        )
-        {
-            renderable.Scale = newValue;
-        }
-
-        private void RotationChanged(
-            QuaternionAttribute sender,
-            Quaternion oldValue,
-            Quaternion newValue
-        )
-        {
-            renderable.Rotation = newValue;
-        }
-
-        private void PositionChanged(
-            Vector3Attribute sender,
-            Vector3 oldValue,
-            Vector3 newValue
-        )
-        {
-            renderable.Position = newValue;
-        }
-
-        private EnvironmentRenderable renderable;
     }
 }

@@ -36,6 +36,8 @@ uniform const sampler TextureSampler : register(s0) = sampler_state
 	MipFilter = Linear;
 	MinFilter = Linear;
 	MagFilter = Linear;
+	AddressU = Wrap;
+	AddressV = Wrap;	
 };
 
 
@@ -316,6 +318,10 @@ PSOutput PSBasicPixelLighting(PixelLightingPSInput pin) : COLOR
 	return Output;
 }
 
+float EnvGroundWavesAmplitude = 40;
+float EnvGroundWavesFrequency = 0.001;
+float EnvGroundWavesHardness = 30;
+
 
 PSOutput PSBasicPixelLightingTx(PixelLightingPSInputTx pin) : COLOR
 {
@@ -347,23 +353,22 @@ PSOutput PSBasicPixelLightingTx(PixelLightingPSInputTx pin) : COLOR
 	Output.Color = color;
 	//Output.Color.a = max(pin.PositionWS.y/100,tex2D(CloudsSampler, texCoord).x);
 	
-	float YAmplitude = 30;
-	float XZFrequency = 0.001;
-	float Hardness = 20;
 	
 	//float2 off = tex2D(CloudsSampler, RandomOffset*100).x;
 	//float2 off = (float2(RandomOffset.x, RandomOffset.y) + float2(RandomOffset.y, -RandomOffset.x))/2; // sample anisotropically
 	float2 off = float2(RandomOffset.x, RandomOffset.y);
 	
-	float thresh1 = tex2D(CloudsSampler, pin.PositionWS.xz*XZFrequency + off*10).x;
-	float thresh2 = tex2D(CloudsSampler, pin.PositionWS.xz*XZFrequency - off*10).x;
+	float thresh1 = tex2D(CloudsSampler, pin.PositionWS.xz*EnvGroundWavesFrequency + off*10).x;
+	float thresh2 = tex2D(CloudsSampler, pin.PositionWS.xz*EnvGroundWavesFrequency - off*10).x;
 	
 	float thresh = (thresh1+thresh2)/2;
-	float y = pin.PositionWS.y/YAmplitude;
+	float y = pin.PositionWS.y/EnvGroundWavesAmplitude;
 	//Output.Color.a = y < thresh ? 0 : 1;	
 	
 	// this is for pillars
-	Output.Color.a = saturate((y - thresh)*Hardness);
+	Output.Color.a = saturate((y - thresh)*EnvGroundWavesHardness);
+	//Output.Color.xy = texCoord;
+	//Output.Color.z = 0;
 	
 	// this is for islands
 	//if(pin.PositionWS.y<17)	

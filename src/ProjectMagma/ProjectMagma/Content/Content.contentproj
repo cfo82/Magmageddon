@@ -977,6 +977,26 @@
     <None Include="Effects\Lava\Textures.inc">
       <Name>Textures</Name>
     </None>
+    <Compile Include="Textures\Environment\cave_diffuse_v001.tga">
+      <Name>cave_diffuse_v001</Name>
+      <Importer>TextureImporter</Importer>
+      <Processor>TextureProcessor</Processor>
+    </Compile>
+    <Compile Include="Textures\Environment\cave_NRM_v001.tga">
+      <Name>cave_NRM_v001</Name>
+      <Importer>TextureImporter</Importer>
+      <Processor>TextureProcessor</Processor>
+    </Compile>
+    <Compile Include="Textures\Environment\cave_SPEC_v001.tga">
+      <Name>cave_SPEC_v001</Name>
+      <Importer>TextureImporter</Importer>
+      <Processor>TextureProcessor</Processor>
+    </Compile>
+    <Compile Include="Textures\Environment\environ_diffuse_v003.tga">
+      <Name>environ_diffuse_v003</Name>
+      <Importer>TextureImporter</Importer>
+      <Processor>TextureProcessor</Processor>
+    </Compile>
     <Compile Include="Textures\Lava\temperature.tga">
       <Name>temperature</Name>
       <Importer>TextureImporter</Importer>
@@ -996,6 +1016,13 @@
     </Compile>
     <Compile Include="Sprites\Menu\Robot\yellow_animated_robot.png">
       <Name>yellow_animated_robot</Name>
+      <Importer>TextureImporter</Importer>
+      <Processor>TextureProcessor</Processor>
+    </Compile>
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="Textures\custom_uv_diag.png">
+      <Name>custom_uv_diag</Name>
       <Importer>TextureImporter</Importer>
       <Processor>TextureProcessor</Processor>
     </Compile>

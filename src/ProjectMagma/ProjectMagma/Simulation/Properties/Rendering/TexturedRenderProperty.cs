@@ -22,9 +22,24 @@ namespace ProjectMagma.Simulation
         {
             base.SetRenderableParameters(entity);
 
-            string textureName = entity.GetString("texture");
-            Texture2D texture = Game.Instance.Content.Load<Texture2D>(textureName);            
-            (Renderable as TexturedRenderable).SetTexture(texture);
+            if (entity.HasString("diffuse_texture"))
+            {
+                string textureName = entity.GetString("diffuse_texture");
+                Texture2D texture = Game.Instance.Content.Load<Texture2D>(textureName);
+                (Renderable as TexturedRenderable).DiffuseTexture = texture;
+            }
+            if (entity.HasString("specular_texture"))
+            {
+                string textureName = entity.GetString("specular_texture");
+                Texture2D texture = Game.Instance.Content.Load<Texture2D>(textureName);
+                (Renderable as TexturedRenderable).SpecularTexture = texture;
+            }
+            if (entity.HasString("normal_texture"))
+            {
+                string textureName = entity.GetString("normal_texture");
+                Texture2D texture = Game.Instance.Content.Load<Texture2D>(textureName);
+                (Renderable as TexturedRenderable).NormalTexture = texture;
+            }
         }
     }
 }

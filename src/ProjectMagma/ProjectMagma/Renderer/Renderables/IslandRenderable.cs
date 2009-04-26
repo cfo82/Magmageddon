@@ -17,7 +17,7 @@ namespace ProjectMagma.Renderer
             (
                 Vector2.Zero, Vector2.Zero, 0.0f, 0.0f, -1.0f, 1.0f
             );
-            //RenderChannel = RenderChannelType.Two;
+            RenderChannel = RenderChannelType.Three;
         }
 
         protected override void ApplyEffectsToModel()
@@ -25,6 +25,11 @@ namespace ProjectMagma.Renderer
             Effect effect = Game.Instance.Content.Load<Effect>("Effects/Environment/Island");
             SetDefaultMaterialParameters();
             SetModelEffect(Model, effect);
+        }
+
+        protected override void ApplyTechnique(Effect effect)
+        {
+            effect.CurrentTechnique = effect.Techniques["Island"];
         }
        
         protected override void ApplyCustomEffectParameters(Effect effect, Renderer renderer, GameTime gameTime)

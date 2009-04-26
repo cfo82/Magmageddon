@@ -26,14 +26,13 @@ namespace ProjectMagma.Renderer
         {
             base.ApplyCustomEffectParameters(effect, renderer, gameTime);
 
-            effect.Parameters["BasicTexture"].SetValue(Texture);
+            effect.Parameters["DiffuseTexture"].SetValue(DiffuseTexture);
+            effect.Parameters["SpecularTexture"].SetValue(SpecularTexture);
+            effect.Parameters["NormalTexture"].SetValue(NormalTexture);
         }
 
-        public void SetTexture(Texture2D texture)
-        {
-            this.Texture = texture;
-        }
-
-        protected Texture2D Texture { get; set; }
+        public Texture2D DiffuseTexture { get; set; }
+        public Texture2D SpecularTexture { get; set; }
+        public Texture2D NormalTexture { get; set; }
     }
 }

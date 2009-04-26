@@ -48,12 +48,12 @@ namespace ProjectMagma.Simulation
             string meshName = entity.GetString("mesh");
             Model model = Game.Instance.Content.Load<Model>(meshName);
 
-            string islandTextureName = entity.GetString("texture");
+            string islandTextureName = entity.GetString("diffuse_texture");
             Texture2D islandTexture = Game.Instance.Content.Load<Texture2D>(islandTextureName);
 
             renderable = new IslandRenderable(scale, rotation, position, model);
             renderable.WindStrength = entity.GetFloat("wind_strength");
-            renderable.SetTexture(islandTexture);
+            renderable.DiffuseTexture = islandTexture;
             
             Game.Instance.Renderer.AddRenderable(renderable);
         }

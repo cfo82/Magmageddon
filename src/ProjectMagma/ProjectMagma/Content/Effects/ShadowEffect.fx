@@ -181,7 +181,7 @@ float4 Scene_PS (SCENE_VS_OUTPUT Input) : COLOR0
         // yes? then lets darken the pixel to black
         // (In normal use, you'd use a lighting equation here to 
         //determine exactly how much to darken the pixel)
-        float alpha=0.7;
+        float alpha=0.4;
         
         // 9500 is 1
         // 10500 is 0
@@ -190,7 +190,7 @@ float4 Scene_PS (SCENE_VS_OUTPUT Input) : COLOR0
         //if(depth.r>0.4)
 		//	alpha=0;
 			
-		alpha=saturate((0.485-depth.r)*30)*0.7;
+		alpha=saturate((0.485-depth.r)*30)*0.3;
 		if(len>0.498) alpha=0; // evil hack. only topmost lava layer should be affected.
 		color = float4(.15,.05,0,alpha);
     } else {

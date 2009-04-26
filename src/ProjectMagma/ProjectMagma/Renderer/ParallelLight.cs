@@ -12,12 +12,12 @@ namespace ProjectMagma.Renderer
     {
         public ParallelLight(
             Vector3 diffuseColor,
-            Vector3 specularColor,
+            //Vector3 specularColor,
             Vector3 direction
         )
         {
             DiffuseColor = diffuseColor;
-            SpecularColor = specularColor;
+            SpecularColor = diffuseColor;
             Direction = direction;
         }
 

@@ -19,7 +19,7 @@ namespace ProjectMagma.Renderer
             );
             EnvGroundWavesAmplitude = 15.0f;
             EnvGroundWavesFrequency = 0.002f;
-            EnvGroundWavesHardness = 15.0f;
+            EnvGroundWavesHardness = 5.5f;
             EnvGroundWavesVelocity = 0.003f;
             RenderChannel = RenderChannelType.One;
         }
@@ -30,7 +30,11 @@ namespace ProjectMagma.Renderer
         //    SetDefaultMaterialParameters();
         //    SetModelEffect(Model, effect);
         //}
-       
+        protected override void ApplyTechnique(Effect effect)
+        {
+            effect.CurrentTechnique = effect.Techniques["Environment"];
+        }
+
         protected override void ApplyCustomEffectParameters(Effect effect, Renderer renderer, GameTime gameTime)
         {
             base.ApplyCustomEffectParameters(effect, renderer, gameTime);

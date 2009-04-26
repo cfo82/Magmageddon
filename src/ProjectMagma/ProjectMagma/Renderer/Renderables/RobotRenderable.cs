@@ -6,7 +6,7 @@ namespace ProjectMagma.Renderer
     public class RobotRenderable : BasicRenderable
     {
         public RobotRenderable(Vector3 scale, Quaternion rotation, Vector3 position, Model model)
-            : base(scale, rotation, position, model) {}
+            : base(scale, rotation, position, model) { }
 
         protected override void SetDefaultMaterialParameters()
         {

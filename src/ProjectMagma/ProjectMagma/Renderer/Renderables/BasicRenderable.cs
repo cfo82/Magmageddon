@@ -13,6 +13,7 @@ namespace ProjectMagma.Renderer
             UseLights = true;
             UseMaterialParameters = true;
             UseSquash = true;
+            RenderChannel = RenderChannelType.Three;
         }
 
 
@@ -51,7 +52,7 @@ namespace ProjectMagma.Renderer
 
         protected override void ApplyEffectsToModel()
         {
-            Effect effect = Game.Instance.Content.Load<Effect>("Effects/Basic");
+            Effect effect = Game.Instance.Content.Load<Effect>("Effects/Basic/Basic");
             SetDefaultMaterialParameters();
             SetModelEffect(Model, effect);
         }

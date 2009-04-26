@@ -623,7 +623,7 @@
       <Importer>EffectImporter</Importer>
       <Processor>EffectProcessor</Processor>
     </Compile>
-    <Compile Include="Effects\Basic.fx">
+    <Compile Include="Effects\Basic\Basic.fx">
       <Name>Basic</Name>
       <Importer>EffectImporter</Importer>
       <Processor>EffectProcessor</Processor>
@@ -1026,6 +1026,39 @@
       <Importer>TextureImporter</Importer>
       <Processor>TextureProcessor</Processor>
     </Compile>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Effects\Basic\Textures.inc.fx">
+      <Name>Textures.inc</Name>
+      <Importer>EffectImporter</Importer>
+    </None>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Effects\Basic\Params.inc.fx">
+      <Name>Params.inc</Name>
+      <Importer>EffectImporter</Importer>
+    </None>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Effects\Basic\Lighting.inc.fx">
+      <Name>Lighting.inc</Name>
+      <Importer>EffectImporter</Importer>
+      <Processor>EffectProcessor</Processor>
+    </None>
+    <None Include="Effects\Basic\Pixel.inc.fx">
+      <Name>Pixel.inc</Name>
+      <Importer>EffectImporter</Importer>
+      <Processor>EffectProcessor</Processor>
+    </None>
+    <None Include="Effects\Basic\Structs.inc.fx">
+      <Name>Structs.inc</Name>
+      <Importer>EffectImporter</Importer>
+    </None>
+    <None Include="Effects\Basic\Vertex.inc.fx">
+      <Name>Vertex.inc</Name>
+      <Importer>EffectImporter</Importer>
+      <Processor>PassThroughProcessor</Processor>
+    </None>
   </ItemGroup>
   <Import Project="$(MSBuildExtensionsPath)\Microsoft\XNA Game Studio\v3.0\Microsoft.Xna.GameStudio.ContentPipeline.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

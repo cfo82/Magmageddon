@@ -10,10 +10,13 @@ namespace ProjectMagma.Renderer
         {
             start_squash = false;
             last_squash_start = -10000;
+            squash_wavelength = 170;
+            squash_amplitude = 0.2f;
             UseLights = true;
             UseMaterialParameters = true;
             UseSquash = true;
             RenderChannel = RenderChannelType.Three;
+            if (PersistentSquash) start_squash = true;
         }
 
 
@@ -97,14 +100,22 @@ namespace ProjectMagma.Renderer
         private void ApplySquashParameters(Effect effect, GameTime gameTime)
         {
             double time_since_last_squash = gameTime.TotalRealTime.TotalMilliseconds - last_squash_start;
-            int t = 170;
-            float a = 0.2f;
-            if (time_since_last_squash > 0 && time_since_last_squash <= t / 2)
-                effect.Parameters["SquashAmount"].SetValue((float)time_since_last_squash / t * a * 2);
-            else if (time_since_last_squash >= t / 2 && time_since_last_squash <= t)
-                effect.Parameters["SquashAmount"].SetValue((float)(t - time_since_last_squash) / t * a * 2);
-            else
+            if (time_since_last_squash > 0 && time_since_last_squash <= squash_wavelength / 2)
+                effect.Parameters["SquashAmount"].SetValue((float)time_since_last_squash / squash_wavelength * squash_amplitude * 2);
+            else if (time_since_last_squash >= squash_wavelength / 2 && time_since_last_squash <= squash_wavelength)
+                effect.Parameters["SquashAmount"].SetValue((float)(squash_wavelength - time_since_last_squash) / squash_wavelength * squash_amplitude * 2);
+            else if (time_since_last_squash > squash_wavelength)
+            {
                 effect.Parameters["SquashAmount"].SetValue(0.0f);
+                if (PersistentSquash)
+                {
+                    start_squash = true;
+                }
+            }
+            else
+            {   // time_since_last_squash <= 0
+                // do nothing for now
+            }
         }
 
         private void ApplyMaterialParameters(Effect effect)
@@ -123,6 +134,14 @@ namespace ProjectMagma.Renderer
 
         private bool start_squash;
         private double last_squash_start;
+
+        private float squash_wavelength;
+        private float squash_amplitude;
+        public Vector2 SquashParams {
+            get { return new Vector2(squash_wavelength, squash_amplitude); }
+            set { squash_wavelength = value.X; squash_amplitude = value.Y; }
+        }
+        public bool PersistentSquash { get; set; }
 
         public Vector3 DiffuseColor { get; set; }
         public Vector3 EmissiveColor { get; set; }

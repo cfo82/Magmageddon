@@ -1050,6 +1050,11 @@
       <Importer>EffectImporter</Importer>
       <Processor>EffectProcessor</Processor>
     </None>
+    <None Include="Effects\Basic\Special.inc.fx">
+      <Name>Special.inc</Name>
+      <Importer>EffectImporter</Importer>
+      <Processor>EffectProcessor</Processor>
+    </None>
     <None Include="Effects\Basic\Structs.inc.fx">
       <Name>Structs.inc</Name>
       <Importer>EffectImporter</Importer>

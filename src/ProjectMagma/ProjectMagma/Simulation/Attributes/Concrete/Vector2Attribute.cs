@@ -30,7 +30,7 @@ namespace ProjectMagma.Simulation.Attributes
                 }
                 if (splitArray.Length > 1)
                 {
-                    v.Y = float.Parse(splitArray[0]);
+                    v.Y = float.Parse(splitArray[1]);
                 }
             }
         }

@@ -28,8 +28,8 @@
   <Entity name="cave" abstract="true">
     <Attributes>
       <Attribute name="kind" template="string" value="cave"/>
-      <Attribute name="position" template="float3" value="0 -20 0"/>
-      <Attribute name="scale" template="float3" value="700 700 700"/>
+      <Attribute name="position" template="float3" value="0 -20 90"/>
+      <Attribute name="scale" template="float3" value="800 800 800"/>
       <Attribute name="mesh" template="string" value="Models/Environment/cave_v002"/>
       <Attribute name="bv_type" template="string" value="alignedbox3tree"/>
       <Attribute name="diffuse_texture" template="string" value="Textures/Environment/cave_diffuse_v001"/>
@@ -73,7 +73,7 @@
     <Attributes>
       <Attribute name="kind" template="string" value="island"/>
       <Attribute name="position" template="float3" value="60 160 -30"/>
-      <Attribute name="scale" template="float3" value="70 70 70"/>
+      <Attribute name="scale" template="float3" value="55 55 55"/>
       <Attribute name="velocity" template="float3" value="0 0 0"/>
       <Attribute name="acceleration" template="float3" value="0 0 0"/>
       <Attribute name="diffuse_texture" template="string" value="Textures/Environment/environ_diffuse_v003"/>
@@ -116,14 +116,13 @@
       <Attribute name="kind" template="string" value="powerup"/>
       <Attribute name="position" template="float3" value="0 0 0"/>
       <Attribute name="mesh" template="string" value="Models/Primitives/powerup"/>
-      <Attribute name="scale" template="float3" value="8 8 8"/>
+      <Attribute name="scale" template="float3" value="16 16 16"/>
       <Attribute name="relative_position" template="float3" value="15 0 15"/>
-      <Attribute name="power" template="string" value="energy"/>
-      <Attribute name="powerValue" template="int" value="100"/>
       <Attribute name="pickup_sound" template="string" value="excellent"/>
       <Attribute name="bv_type" template="string" value="sphere"/>
       <Attribute name="diffuse_color" template="float3" value="1.0 1.0 1.0"/>
-      <Attribute name="emissive_color" template="float3" value="0.2 0.2 0.2"/>
+      <Attribute name="emissive_color" template="float3" value="0.0 0.0 0.0"/>
+      <Attribute name="persistent_squash" template="float2" value="700.0 1.0"/>
     </Attributes>
     <Properties>
       <Property name="collision" type="ProjectMagma.Simulation.Collision.CollisionProperty"/>
@@ -133,4 +132,25 @@
       <Property name="render_highlight" type="ProjectMagma.Simulation.RenderHighlightProperty"/>
     </Properties>
   </Entity>
+
+  <Entity name="powerup_health" extends="powerup_base" abstract="true">
+    <Attributes>
+      <Attribute name="power" template="string" value="health"/>
+      <Attribute name="powerValue" template="int" value="100"/>
+      <Attribute name="diffuse_color" template="float3" value="0.9 0.5 0.5"/>
+      <Attribute name="emissive_color" template="float3" value="0.1 0.0 0.0"/>
+      <Attribute name="alpha" template="float" value="0.85"/>
+    </Attributes>    
+  </Entity>
+
+  <Entity name="powerup_energy" extends="powerup_base" abstract="true">
+    <Attributes>
+      <Attribute name="power" template="string" value="energy"/>
+      <Attribute name="powerValue" template="int" value="100"/>
+      <Attribute name="diffuse_color" template="float3" value="0.5 0.9 0.5"/>
+      <Attribute name="emissive_color" template="float3" value="0.0 0.1 0.0"/>
+      <Attribute name="alpha" template="float" value="0.85"/>
+    </Attributes>
+  </Entity>
+
 </Level>

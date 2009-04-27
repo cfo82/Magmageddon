@@ -230,6 +230,14 @@ namespace ProjectMagma.Renderer
             }
         }
 
+        //public void RecomputeLavaTemperature(Renderable lava, List<Renderable> lava)
+        //{
+        //    Texture2D tex = new Texture2D(device, 256, 256);
+
+        //    lava;
+        //}
+
+
         public void AddRenderable(
             Renderable renderable
         )

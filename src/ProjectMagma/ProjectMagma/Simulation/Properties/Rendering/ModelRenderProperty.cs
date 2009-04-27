@@ -97,6 +97,6 @@ namespace ProjectMagma.Simulation
             Renderable.Position = newValue;
         }
 
-        protected ModelRenderable Renderable;
+        public ModelRenderable Renderable;
     }
 }

@@ -239,6 +239,23 @@ namespace ProjectMagma
 
             // set camera
             currentCamera = simulation.EntityManager["camera1"];
+
+            RecomputeLavaTemperature();
+        }
+
+        void RecomputeLavaTemperature()
+        {
+            List<Renderer.Renderable> pillars = new List<Renderer.Renderable>();
+            Renderer.Renderable lava;
+
+            foreach (Entity entity in simulation.PillarManager)
+            {
+                if (entity.HasString("type") && entity.GetString("type") == "lava")
+                    lava = (entity.GetProperty("render") as ModelRenderProperty).Renderable;
+                if (entity.HasString("type") && entity.GetString("type") == "pillar")
+                    pillars.Add((entity.GetProperty("render") as ModelRenderProperty).Renderable);
+            }
+            System.Console.WriteLine("blah");
         }
 
         /// <summary>

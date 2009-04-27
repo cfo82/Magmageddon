@@ -52,6 +52,12 @@ namespace ProjectMagma.Simulation
             {
                 (Renderable as BasicRenderable).Alpha = entity.GetFloat("alpha");
             }
+            if (entity.HasVector2("persistent_squash"))
+            {
+                (Renderable as BasicRenderable).SquashParams = entity.GetVector2("persistent_squash");
+                (Renderable as BasicRenderable).PersistentSquash = true;
+            }
+
         }
 
         public void Squash()

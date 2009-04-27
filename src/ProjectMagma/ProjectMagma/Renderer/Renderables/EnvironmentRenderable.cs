@@ -17,10 +17,10 @@ namespace ProjectMagma.Renderer
             (
                 Vector2.Zero, new Vector2(0.0002f, 0.0002f), 0.0f, 0.0f, -0.0004f, 0.0004f
             );
-            EnvGroundWavesAmplitude = 15.0f;
-            EnvGroundWavesFrequency = 0.002f;
-            EnvGroundWavesHardness = 5.5f;
-            EnvGroundWavesVelocity = 0.003f;
+            //EnvGroundWavesAmplitude = 15.0f;
+            //EnvGroundWavesFrequency = 0.002f;
+            //EnvGroundWavesHardness = 5.5f;
+            //EnvGroundWavesVelocity = 0.003f;
             RenderChannel = RenderChannelType.One;
         }
 
@@ -45,6 +45,10 @@ namespace ProjectMagma.Renderer
             effect.Parameters["EnvGroundWavesAmplitude"].SetValue(EnvGroundWavesAmplitude);
             effect.Parameters["EnvGroundWavesFrequency"].SetValue(EnvGroundWavesFrequency);
             effect.Parameters["EnvGroundWavesHardness"].SetValue(EnvGroundWavesHardness);
+
+            effect.Parameters["DirLight1BottomAmpMaxY"].SetValue(300);
+            effect.Parameters["DirLight1BottomAmpStrength"].SetValue(3);
+            //effect.Parameters["EnvGroundWavesHardness"].SetValue(EnvGroundWavesHardness);
         }
         
         private DoublyIntegratedVector2 randomOffset;

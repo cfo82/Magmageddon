@@ -73,15 +73,15 @@ namespace ProjectMagma.Renderer
         {
             effect.Parameters["DirLight0DiffuseColor"].SetValue(lightManager.SkyLight.DiffuseColor * SkyLightStrength);
             effect.Parameters["DirLight0SpecularColor"].SetValue(lightManager.SkyLight.SpecularColor * SkyLightStrength);
-            effect.Parameters["DirLight0Direction"].SetValue(lightManager.SkyLight.Direction * SkyLightStrength);
+            effect.Parameters["DirLight0Direction"].SetValue(lightManager.SkyLight.Direction);
 
             effect.Parameters["DirLight1DiffuseColor"].SetValue(lightManager.LavaLight.DiffuseColor * LavaLightStrength);
             effect.Parameters["DirLight1SpecularColor"].SetValue(lightManager.LavaLight.SpecularColor * LavaLightStrength);
-            effect.Parameters["DirLight1Direction"].SetValue(lightManager.LavaLight.Direction * LavaLightStrength);
+            effect.Parameters["DirLight1Direction"].SetValue(lightManager.LavaLight.Direction);
 
             effect.Parameters["DirLight2DiffuseColor"].SetValue(lightManager.SpotLight.DiffuseColor * SpotLightStrength);
             effect.Parameters["DirLight2SpecularColor"].SetValue(lightManager.SpotLight.SpecularColor * SpotLightStrength);
-            effect.Parameters["DirLight2Direction"].SetValue(lightManager.SpotLight.Direction * SpotLightStrength);
+            effect.Parameters["DirLight2Direction"].SetValue(lightManager.SpotLight.Direction);
         }
 
         protected virtual void ApplyCustomEffectParameters(Effect effect, Renderer renderer, GameTime gameTime)

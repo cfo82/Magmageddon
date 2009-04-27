@@ -2,12 +2,12 @@ float SquashAmount = 0.0f;
 float4 WindStrength;
 float2 RandomOffset;
 float4 RenderChannelColor;
-float DirLight1BottomAmpMaxY = 300;
-float DirLight1BottomAmpStrength = 3;
+float DirLight1BottomAmpMaxY = 0;// = 300;
+float DirLight1BottomAmpStrength = 1;//= 3;
 
-float EnvGroundWavesAmplitude = 40;
-float EnvGroundWavesFrequency = 0.001;
-float EnvGroundWavesHardness = 5;
+float EnvGroundWavesAmplitude;
+float EnvGroundWavesFrequency;
+float EnvGroundWavesHardness;
 
 
 //-----------------------------------------------------------------------------

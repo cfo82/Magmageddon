@@ -13,5 +13,9 @@ namespace ProjectMagma.ContentPipeline.ModelProcessors
     [ContentProcessor(DisplayName = "Magma - Ice Spike Processor")]
     public class IceSpikeProcessor : MoveProcessor
     {
+        protected override Vector3 CalculateDiff(ref Vector3 origDiff, ref ProjectMagma.Shared.Math.Primitives.AlignedBox3 bb)
+        {
+            return new Vector3(-bb.Max.X, 0, 0);
+        }
     }
 }

@@ -18,7 +18,7 @@ namespace ProjectMagma.Renderer
             this.model = model;
         }
 
-        public void Draw(
+        public override void Draw(
             Renderer renderer,
             GameTime gameTime
         )
@@ -68,7 +68,7 @@ namespace ProjectMagma.Renderer
             }
         }
 
-        public RenderMode RenderMode 
+        public override RenderMode RenderMode 
         {
             get { return RenderMode.RenderToShadowMap; }
         }
@@ -85,7 +85,7 @@ namespace ProjectMagma.Renderer
             set { rotation = value; }
         }
 
-        public Vector3 Position
+        public override Vector3 Position
         {
             get { return position; }
             set { position = value; }

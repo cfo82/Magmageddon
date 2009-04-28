@@ -38,7 +38,7 @@ namespace ProjectMagma.Renderer
             this.frozen = frozen;
         }
 
-        public void Draw(
+        public override void Draw(
             Renderer renderer,
             GameTime gameTime
         )
@@ -108,14 +108,15 @@ namespace ProjectMagma.Renderer
         static int numFrames = 0;
         static double totalMilliSeconds = 0;
 
-        public RenderMode RenderMode
+        public override RenderMode RenderMode
         {
             get { return ProjectMagma.Renderer.RenderMode.RenderOverlays; }
         }
 
-        public Vector3 Position
+        public override Vector3 Position
         {
             get { return Vector3.Zero; }
+            set { }
         }
 
         public string PlayerName

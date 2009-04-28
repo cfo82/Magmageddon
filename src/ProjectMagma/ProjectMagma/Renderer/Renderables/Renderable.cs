@@ -2,10 +2,20 @@
 
 namespace ProjectMagma.Renderer
 {
-    public interface Renderable
+    public abstract class Renderable
     {
-        void Draw(Renderer renderer, GameTime gameTime);
-        RenderMode RenderMode { get; }
-        Vector3 Position { get; }
+        public virtual void Update(Renderer renderer, GameTime gameTime)
+        {
+        }
+
+        public virtual bool NeedsUpdate
+        {
+            get{ return false; }
+        }
+
+        public abstract void Draw(Renderer renderer, GameTime gameTime);
+
+        public abstract RenderMode RenderMode { get; }
+        public abstract Vector3 Position { get; set; }
     }
 }

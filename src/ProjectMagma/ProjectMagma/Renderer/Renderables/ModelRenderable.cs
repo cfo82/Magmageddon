@@ -53,7 +53,7 @@ namespace ProjectMagma.Renderer
 
         protected abstract void ApplyEffectsToModel();
 
-        public void Draw(Renderer renderer, GameTime gameTime)
+        public override void Draw(Renderer renderer, GameTime gameTime)
         {
             RecomputeWorldMatrix();
             RecomputeBoneTransforms();
@@ -178,7 +178,7 @@ namespace ProjectMagma.Renderer
             return boneTransforms[mesh.ParentBone.Index];
         }
 
-        public RenderMode RenderMode 
+        public override RenderMode RenderMode 
         {
             get { return RenderMode.RenderToScene; }
         }
@@ -187,7 +187,7 @@ namespace ProjectMagma.Renderer
 
         public Vector3 Scale { get; set; }
         public Quaternion Rotation { get; set; }
-        public Vector3 Position { get; set; }
+        public override Vector3 Position { get; set; }
         
         protected Model Model { get; set; }
         protected Matrix World { get; set; }

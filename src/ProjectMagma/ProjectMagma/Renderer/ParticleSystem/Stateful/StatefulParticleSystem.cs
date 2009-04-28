@@ -90,6 +90,18 @@ namespace ProjectMagma.Renderer.ParticleSystem.Stateful
             this.emitters.Add(emitter);
         }
 
+        public void RemoveEmitter(
+            ParticleEmitter emitter
+        )
+        {
+            if (!this.emitters.Contains(emitter))
+            {
+                throw new ArgumentException("the given emitter is not registered!");
+            }
+
+            this.emitters.Remove(emitter);
+        }
+
         void CreateParticles(GameTime gameTime)
         {
             Vector2 positionHalfPixel = new Vector2(1.0f / (2.0f * positionTextures[0].Width), 1.0f / (2.0f * positionTextures[0].Height));

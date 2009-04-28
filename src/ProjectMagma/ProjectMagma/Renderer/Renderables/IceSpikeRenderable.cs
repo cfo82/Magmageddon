@@ -14,21 +14,40 @@ namespace ProjectMagma.Renderer
     {
         public IceSpikeRenderable(
             Vector3 position,
-            Vector3 direction
+            Vector3 direction,
+            bool dead
         )
         {
+            this.position = position;
+            this.direction = direction;
+            this.dead = dead;
+
             iceSpikeEffect = Game.Instance.Content.Load<Effect>("Effects/Sfx/IceSpike").Clone(Game.Instance.GraphicsDevice);
 
-            iceSpikeEmitter = new PointEmitter(new Vector3(0, 25, 0), 2500.0f);
+            iceSpikeEmitter = null;
             iceSpikeSystem = new IceSpike(Game.Instance.Content, Game.Instance.GraphicsDevice);
-            iceSpikeSystem.AddEmitter(iceSpikeEmitter);
             iceSpikeModel = Game.Instance.Content.Load<Model>("Models/Sfx/IceSpike");
             iceSpikeTexture = Game.Instance.Content.Load<Texture2D>("Textures/Sfx/IceSpikeHead");
         }
 
         public override void Update(Renderer renderer, GameTime gameTime)
         {
-            iceSpikeEmitter.Point = position;
+            if (!dead && iceSpikeEmitter == null)
+            {
+                iceSpikeEmitter = new PointEmitter(new Vector3(0, 25, 0), 2500.0f);
+                iceSpikeSystem.AddEmitter(iceSpikeEmitter);
+            }
+
+            if (dead && iceSpikeEmitter != null)
+            {
+                iceSpikeSystem.RemoveEmitter(iceSpikeEmitter);
+                iceSpikeEmitter = null;
+            }
+
+            if (iceSpikeEmitter != null)
+            {
+                iceSpikeEmitter.Point = position;
+            }
             iceSpikeSystem.Position = position;
             iceSpikeSystem.Direction = direction;
             iceSpikeSystem.Update(gameTime);
@@ -41,16 +60,19 @@ namespace ProjectMagma.Renderer
 
         public override void Draw(Renderer renderer, GameTime gameTime)
         {
-            Vector3 up = Vector3.Up;
-            Vector3 direction = iceSpikeSystem.Direction;
-            Vector3 right = Vector3.Cross(up, direction);
-            up = Vector3.Cross(direction, right);
+            if (!dead)
+            {
+                Vector3 up = Vector3.Up;
+                Vector3 direction = iceSpikeSystem.Direction;
+                Vector3 right = Vector3.Cross(up, direction);
+                up = Vector3.Cross(direction, right);
 
-            Matrix scale = Matrix.CreateScale(iceSpikeModelScale);
-            Matrix position = Matrix.CreateWorld(iceSpikeSystem.Position, right, up);
-            Matrix world = Matrix.Multiply(scale, position);
+                Matrix scale = Matrix.CreateScale(iceSpikeModelScale);
+                Matrix position = Matrix.CreateWorld(iceSpikeSystem.Position, right, up);
+                Matrix world = Matrix.Multiply(scale, position);
 
-            DrawIceSpike(renderer, world, Game.Instance.View, Game.Instance.Projection);
+                DrawIceSpike(renderer, world, Game.Instance.View, Game.Instance.Projection);
+            }
             iceSpikeSystem.Render(Game.Instance.View, Game.Instance.Projection);
         }
 
@@ -108,6 +130,12 @@ namespace ProjectMagma.Renderer
             set { direction = value; }
         }
 
+        public bool Dead
+        {
+            get { return dead; }
+            set { dead = value; }
+        }
+
         public override RenderMode RenderMode
         {
             get { return RenderMode.RenderToSceneAlpha; }
@@ -115,6 +143,7 @@ namespace ProjectMagma.Renderer
 
         private Vector3 position;
         private Vector3 direction;
+        private bool dead;
 
         private float iceSpikeModelScale = 15;
         private PointEmitter iceSpikeEmitter;

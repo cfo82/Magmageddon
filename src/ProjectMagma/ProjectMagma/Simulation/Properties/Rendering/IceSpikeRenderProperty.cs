@@ -17,6 +17,7 @@ namespace ProjectMagma.Simulation
         {
             Vector3 position = Vector3.Zero;
             Vector3 velocity = Vector3.UnitZ;
+            bool dead = false;
 
             if (entity.HasVector3("position"))
             {
@@ -30,9 +31,15 @@ namespace ProjectMagma.Simulation
                 entity.GetVector3Attribute("velocity").ValueChanged += VelocityChanged;
             }
 
+            if (entity.HasBool("dead"))
+            {
+                dead = entity.GetBool("dead");
+                entity.GetBoolAttribute("dead").ValueChanged += DeadChanged;
+            }
+
             velocity.Normalize();
 
-            renderable = new IceSpikeRenderable(position, velocity);
+            renderable = new IceSpikeRenderable(position, velocity, dead);
 
             Game.Instance.Renderer.AddRenderable(renderable);
         }
@@ -69,6 +76,15 @@ namespace ProjectMagma.Simulation
             Vector3 direction = newValue;
             direction.Normalize();
             renderable.Direction = direction;
+        }
+
+        private void DeadChanged(
+            BoolAttribute sender,
+            bool oldValue,
+            bool newValue
+        )
+        {
+            renderable.Dead = newValue;
         }
 
         private IceSpikeRenderable renderable;

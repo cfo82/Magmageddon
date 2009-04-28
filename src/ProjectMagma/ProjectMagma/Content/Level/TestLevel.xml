@@ -109,14 +109,14 @@
 
   <Entity name="island5" extends="island_base_grass2">
     <Attributes>
-      <Attribute name="position" template="float3" value="150 50 160"/>
+      <Attribute name="position" template="float3" value="150 150 160"/>
     </Attributes>
   </Entity>
 
   
   <Entity name="island6" extends="island_base_grass3">
     <Attributes>
-      <Attribute name="position" template="float3" value="-30 80 190"/>
+      <Attribute name="position" template="float3" value="-30 180 190"/>
     </Attributes>
   </Entity>
 

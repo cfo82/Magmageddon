@@ -343,7 +343,7 @@ namespace ProjectMagma.Simulation
                     }
                     else
                     {
-                        arrow.SetVector2("persistent_squash", new Vector2(1400f, 0.8f));
+                        arrow.SetVector2("persistent_squash", new Vector2(1000f, 0.8f));
                     }
                 }
             }
@@ -454,6 +454,7 @@ namespace ProjectMagma.Simulation
             selectedIsland = null;
             arrow.RemoveProperty("render");
             arrow.RemoveProperty("shadow_cast");
+            arrow.SetVector2("persistent_squash", new Vector2(1000f, 0.8f));
             islandSelectedAt = 0;
         }
 

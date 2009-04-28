@@ -113,7 +113,10 @@ namespace ProjectMagma.Simulation
             arrow.AddStringAttribute("mesh", player.GetString("arrow_mesh"));
             arrow.AddVector3Attribute("scale", new Vector3(12, 12, 12));
 
-            arrow.AddVector3Attribute("diffuse_color", new Vector3(1.0f, 0.1f, 0.4f));
+            arrow.AddVector3Attribute("diffuse_color", player.GetVector3("diffuse_color"));
+            arrow.AddVector3Attribute("specular_color", Vector3.One);
+            arrow.AddFloatAttribute("specular_power", 0.5f);
+            arrow.AddVector2Attribute("persistent_squash", new Vector2(1000, 0.8f));
 
             arrow.AddProperty("arrow_controller_property", new ArrowControllerProperty());
 
@@ -227,7 +230,7 @@ namespace ProjectMagma.Simulation
                 && destinationIsland == null;
             PerformIslandSelectionAction(at, allowSelection);
             PerformIslandJumpAction(ref playerPosition, ref playerVelocity);
-            PerformIslandAttractionAction(player, allowSelection);
+            PerformIslandAttractionAction(player, allowSelection, ref playerPosition, ref playerVelocity);
             #endregion
 
             #region recharge
@@ -282,7 +285,8 @@ namespace ProjectMagma.Simulation
                 PlayerLavaCollisionHandler(simTime, player, lava);
         }
 
-        private void PerformIslandAttractionAction(Entity player, bool allowSelection)
+        private void PerformIslandAttractionAction(Entity player, bool allowSelection,
+            ref Vector3 playerPosition, ref Vector3 playerVelocity)
         {
             // island attraction start
             if (controllerInput.attractionButtonPressed
@@ -294,18 +298,55 @@ namespace ProjectMagma.Simulation
                 ((StringAttribute)attractedIsland.GetAttribute("attracted_by")).ValueChanged += IslandAttracedByChangeHandler;
             }
             else
-            // deactivate attraction
-            if (attractedIsland != null
-                && (!controllerInput.attractionButtonHold
-                || controllerInput.jetpackButtonPressed))
+            // running attraction
+            if (attractedIsland != null)
             {
-                // start attraction stop (has timeout)
-                attractedIsland.SetBool("stop_attraction", true);
+                // deactivate
+                if(!controllerInput.attractionButtonHold
+                    || controllerInput.jetpackButtonPressed)
+                {
+                    // start attraction stop (has timeout)
+                    attractedIsland.SetBool("stop_attraction", true);
 
-                // remove selection
-                RemoveSelectionArrow();
+                    // initiate jump
+                    if ((attractedIsland.GetVector3("position") - player.GetVector3("position")).Length()
+                        < constants.GetFloat("island_attraction_jump_range"))
+                    {
+                        StartIslandJump(attractedIsland, ref playerPosition, ref playerVelocity);
+                    }
+
+                    // remove selection
+                    RemoveSelectionArrow();
+                }
+                else
+                {
+                    // check range
+                    if ((attractedIsland.GetVector3("position") - playerPosition).Length()
+                        < constants.GetFloat("island_attraction_jump_range"))
+                    {
+                        /*
+                        // start attraction stop (has timeout)
+                        attractedIsland.SetBool("stop_attraction", true);
+
+                        // initiate jump
+                        if ((attractedIsland.GetVector3("position") - player.GetVector3("position")).Length()
+                            < constants.GetFloat("island_attraction_jump_range"))
+                        {
+                            StartIslandJump(attractedIsland, ref playerPosition, ref playerVelocity);
+                        }
+
+                        // remove selection
+                        RemoveSelectionArrow();
+                        */
+
+                        arrow.SetVector2("persistent_squash", new Vector2(100f, 1f));
+                    }
+                    else
+                    {
+                        arrow.SetVector2("persistent_squash", new Vector2(1400f, 0.8f));
+                    }
+                }
             }
-
         }
 
         private void PerformIslandJumpAction(ref Vector3 playerPosition, ref Vector3 playerVelocity)
@@ -321,39 +362,44 @@ namespace ProjectMagma.Simulation
                 //    > 300)
                 //    return;
 
-                destinationIsland = selectedIsland;
-
-                // calculate time to travel to island (in xz plane) using an iterative approach
-                float oldTime = 0;
-                float time = 0;
-                float maxTime = 0;
-                Vector3 islandDir;
-                Vector3 islandPos = destinationIsland.GetVector3("position");
-                do
-                {
-                    ((IslandControllerPropertyBase)destinationIsland.GetProperty("controller")).CalculateNewPosition(destinationIsland,
-                        ref islandPos, time);
-
-                    islandDir = (islandPos - playerPosition);
-                    Vector3 islandDir2D = islandDir;
-                    float dist2D = islandDir2D.Length();
-
-                    if (time > maxTime)
-                        maxTime = time;
-
-                    oldTime = time;
-                    time = dist2D / constants.GetFloat("island_jump_speed");
-                }
-                while (Math.Abs(oldTime - time) > 1 / 1000f);
-
-                lastIslandDir = islandDir;
-
-                playerVelocity = -constants.GetVector3("gravity_acceleration") * maxTime
-                    + Vector3.UnitY * constants.GetFloat("island_jump_arc_height") * maxTime;
-                player.SetVector3("island_jump_velocity", Vector3.Normalize(islandDir) * constants.GetFloat("island_jump_speed"));
-
-                LeaveActiveIsland();
+                StartIslandJump(selectedIsland, ref playerPosition, ref playerVelocity);
             }
+        }
+
+        private void StartIslandJump(Entity island, ref Vector3 playerPosition, ref Vector3 playerVelocity)
+        {
+            destinationIsland = island;
+
+            // calculate time to travel to island (in xz plane) using an iterative approach
+            float oldTime = 0;
+            float time = 0;
+            float maxTime = 0;
+            Vector3 islandDir;
+            Vector3 islandPos = destinationIsland.GetVector3("position");
+            do
+            {
+                ((IslandControllerPropertyBase)destinationIsland.GetProperty("controller")).CalculateNewPosition(destinationIsland,
+                    ref islandPos, time);
+
+                islandDir = (islandPos - playerPosition);
+                Vector3 islandDir2D = islandDir;
+                float dist2D = islandDir2D.Length();
+
+                if (time > maxTime)
+                    maxTime = time;
+
+                oldTime = time;
+                time = dist2D / constants.GetFloat("island_jump_speed");
+            }
+            while (Math.Abs(oldTime - time) > 1 / 1000f);
+
+            lastIslandDir = islandDir;
+
+            playerVelocity = -constants.GetVector3("gravity_acceleration") * maxTime
+                + Vector3.UnitY * constants.GetFloat("island_jump_arc_height") * maxTime;
+            player.SetVector3("island_jump_velocity", Vector3.Normalize(islandDir) * constants.GetFloat("island_jump_speed"));
+
+            LeaveActiveIsland();
         }
 
         private void PerformIslandSelectionAction(float at, bool allowSelection)

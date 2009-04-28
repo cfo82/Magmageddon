@@ -89,8 +89,8 @@
       <Property name="controller" type="ProjectMagma.Simulation.IslandCircualarMovementControllerProperty"/>
       <Property name="death" type="ProjectMagma.Simulation.DeathProperty"/>
       <Property name="shadow_cast" type="ProjectMagma.Simulation.ShadowCastProperty"/>
-      <Property name="render" type="ProjectMagma.Simulation.IslandRenderProperty"/>
       <!--Property name="render" type="ProjectMagma.Simulation.BasicRenderProperty"/-->
+      <Property name="render" type="ProjectMagma.Simulation.IslandRenderProperty"/>
       <Property name="render_highlight" type="ProjectMagma.Simulation.RenderHighlightProperty"/>
     </Properties>
   </Entity>
@@ -127,7 +127,7 @@
       <Attribute name="bv_type" template="string" value="sphere"/>
       <Attribute name="diffuse_color" template="float3" value="1.0 1.0 1.0"/>
       <Attribute name="emissive_color" template="float3" value="0.0 0.0 0.0"/>
-      <Attribute name="persistent_squash" template="float2" value="700.0 1.0"/>
+      <Attribute name="persistent_squash" template="float2" value="1400.0 1.0"/>
     </Attributes>
     <Properties>
       <Property name="collision" type="ProjectMagma.Simulation.Collision.CollisionProperty"/>

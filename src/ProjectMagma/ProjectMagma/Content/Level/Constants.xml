@@ -10,7 +10,6 @@
       <Attribute name="max_gravity_speed" template="float" value="450"/>
     </Attributes>
   </Entity>
-          
   
   <Entity name="player_constants" extends="constants">
     <Attributes>
@@ -60,9 +59,10 @@
       <Attribute name="island_reselection_max_value" template="float" value="0.9"/>
       <Attribute name="island_reselection_timeout" template="float" value="60"/>
       <Attribute name="island_deselection_timeout" template="float" value="200"/>
-      <Attribute name="island_jump_arc_height" template="float" value="140"/>
+      <Attribute name="island_jump_arc_height" template="float" value="20"/>
       <Attribute name="island_jump_speed" template="float" value="900"/>
       <Attribute name="island_jump_destination_radius" template="float" value=".1"/>
+      <Attribute name="island_attraction_jump_range" template="float" value="200"/>
 
       <Attribute name="island_repulsion_velocity_multiplier" template="float" value="450"/>
       <Attribute name="island_repulsion_fuel_cost" template="int" value="1500"/>

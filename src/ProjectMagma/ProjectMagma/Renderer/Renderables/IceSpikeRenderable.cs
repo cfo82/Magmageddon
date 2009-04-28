@@ -43,9 +43,11 @@ namespace ProjectMagma.Renderer
         {
             Vector3 up = Vector3.Up;
             Vector3 direction = iceSpikeSystem.Direction;
+            Vector3 right = Vector3.Cross(up, direction);
+            up = Vector3.Cross(direction, right);
 
             Matrix scale = Matrix.CreateScale(iceSpikeModelScale);
-            Matrix position = Matrix.CreateWorld(iceSpikeSystem.Position, Vector3.Cross(up, direction), Vector3.Up);
+            Matrix position = Matrix.CreateWorld(iceSpikeSystem.Position, right, up);
             Matrix world = Matrix.Multiply(scale, position);
 
             DrawIceSpike(renderer, world, Game.Instance.View, Game.Instance.Projection);

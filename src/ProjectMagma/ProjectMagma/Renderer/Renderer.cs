@@ -270,6 +270,11 @@ namespace ProjectMagma.Renderer
             Renderable renderable
         )
         {
+            if (updateRenderables.Contains(renderable))
+            {
+                updateRenderables.Remove(renderable);
+            }
+
             List<Renderable> renderables = GetMatchingRenderableList(renderable);
             
             if (!renderables.Contains(renderable))

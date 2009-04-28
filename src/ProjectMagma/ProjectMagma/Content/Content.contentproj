@@ -1064,6 +1064,58 @@
       <Importer>EffectImporter</Importer>
       <Processor>PassThroughProcessor</Processor>
     </None>
+    <Compile Include="Effects\Sfx\IceSpike.fx">
+      <Name>IceSpike</Name>
+      <Importer>EffectImporter</Importer>
+      <Processor>EffectProcessor</Processor>
+    </Compile>
+    <None Include="Effects\Sfx\ParticleSystem\Stateful\CreateParticles.fx">
+      <Name>CreateParticles</Name>
+      <Importer>EffectImporter</Importer>
+      <Processor>EffectProcessor</Processor>
+    </None>
+    <Compile Include="Effects\Sfx\ParticleSystem\Stateful\Default.fx">
+      <Name>Default</Name>
+      <Importer>EffectImporter</Importer>
+      <Processor>EffectProcessor</Processor>
+    </Compile>
+    <Compile Include="Effects\Sfx\ParticleSystem\Stateful\IceSpike\IceSpike.fx">
+      <Name>IceSpike</Name>
+      <Importer>EffectImporter</Importer>
+      <Processor>EffectProcessor</Processor>
+    </Compile>
+    <None Include="Effects\Sfx\ParticleSystem\Stateful\RenderParticles.fx">
+      <Name>RenderParticles</Name>
+      <Importer>EffectImporter</Importer>
+      <Processor>EffectProcessor</Processor>
+    </None>
+    <Compile Include="Effects\Sfx\ParticleSystem\Stateful\Smoke\Smoke.fx">
+      <Name>Smoke</Name>
+      <Importer>EffectImporter</Importer>
+      <Processor>EffectProcessor</Processor>
+    </Compile>
+    <None Include="Effects\Sfx\ParticleSystem\Stateful\UpdateParticles.fx">
+      <Name>UpdateParticles</Name>
+      <Importer>EffectImporter</Importer>
+      <Processor>EffectProcessor</Processor>
+    </None>
+    <Compile Include="Models\Sfx\IceSpike.fbx">
+      <Name>IceSpike</Name>
+      <Importer>FbxImporter</Importer>
+      <Processor>IceSpikeProcessor</Processor>
+    </Compile>
+    <Compile Include="Textures\Sfx\IceSpikeHead.tga">
+      <Name>IceSpikeHead</Name>
+      <Importer>TextureImporter</Importer>
+      <Processor>TextureProcessor</Processor>
+    </Compile>
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="Textures\Sfx\IceSpikeTrail.png">
+      <Name>IceSpikeTrail</Name>
+      <Importer>TextureImporter</Importer>
+      <Processor>TextureProcessor</Processor>
+    </Compile>
   </ItemGroup>
   <Import Project="$(MSBuildExtensionsPath)\Microsoft\XNA Game Studio\v3.0\Microsoft.Xna.GameStudio.ContentPipeline.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

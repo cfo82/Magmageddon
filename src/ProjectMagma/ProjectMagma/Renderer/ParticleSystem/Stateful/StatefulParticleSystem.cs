@@ -289,7 +289,7 @@ namespace ProjectMagma.Renderer.ParticleSystem.Stateful
         private GraphicsDevice device;
 
 
-        private int textureSize = 192;
+        private int textureSize = 92;
         private int activeTexture;
         private RenderTarget2D[] positionTextures;
         private RenderTarget2D[] velocityTextures;

@@ -39,7 +39,7 @@
       <Attribute name="granite_texture" template="string" value="Textures/Lava/granite"/>
     </Attributes>
     <Properties>
-      <Property name="render" type="ProjectMagma.Simulation.BasicRenderProperty"/>
+      <Property name="render" type="ProjectMagma.Simulation.LavaRenderProperty"/>
       <!--Property name="render" type="ProjectMagma.Simulation.BasicRenderProperty"/-->
       <Property name="render_highlight" type="ProjectMagma.Simulation.RenderHighlightProperty"/>
     </Properties>

@@ -19,7 +19,7 @@ namespace ProjectMagma.Renderer
         {
             iceSpikeEffect = Game.Instance.Content.Load<Effect>("Effects/Sfx/IceSpike").Clone(Game.Instance.GraphicsDevice);
 
-            iceSpikeEmitter = new PointEmitter(new Vector3(0, 25, 0), 5000.0f);
+            iceSpikeEmitter = new PointEmitter(new Vector3(0, 25, 0), 2500.0f);
             iceSpikeSystem = new IceSpike(Game.Instance.Content, Game.Instance.GraphicsDevice);
             iceSpikeSystem.AddEmitter(iceSpikeEmitter);
             iceSpikeModel = Game.Instance.Content.Load<Model>("Models/Sfx/IceSpike");

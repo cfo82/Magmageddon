@@ -325,6 +325,8 @@ namespace ProjectMagma
                 
                 profiler.EndSection("update");
             }
+
+            renderer.Update(gameTime);
         }
 
         /// <summary>

@@ -317,9 +317,9 @@ namespace ProjectMagma.Simulation
                 && jumpButtonReleased // don't allow jumps by having the jump button pressed all the time
             )
             {
-                if ((selectedIsland.GetVector3("position") - player.GetVector3("position")).Length()
-                    > 300)
-                    return;
+                //if ((selectedIsland.GetVector3("position") - player.GetVector3("position")).Length()
+                //    > 300)
+                //    return;
 
                 destinationIsland = selectedIsland;
 
@@ -540,7 +540,7 @@ namespace ProjectMagma.Simulation
 
                 iceSpike.AddStringAttribute("bv_type", "sphere");
 
-                iceSpike.AddProperty("render", new BasicRenderProperty());
+                iceSpike.AddProperty("render", new IceSpikeRenderProperty());
                 iceSpike.AddProperty("collision", new CollisionProperty());
                 iceSpike.AddProperty("controller", new IceSpikeControllerProperty());
 

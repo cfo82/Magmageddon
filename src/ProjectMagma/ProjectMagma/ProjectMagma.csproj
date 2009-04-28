@@ -93,6 +93,17 @@
     <Compile Include="Profiler\Section.cs" />
     <Compile Include="Renderer\LightManager.cs" />
     <Compile Include="Renderer\ParallelLight.cs" />
+    <Compile Include="Renderer\ParticleSystem\Emitter\CircleEmitter.cs" />
+    <Compile Include="Renderer\ParticleSystem\Emitter\PointEmitter.cs" />
+    <Compile Include="Renderer\ParticleSystem\NewParticle.cs" />
+    <Compile Include="Renderer\ParticleSystem\ParticleEmitter.cs" />
+    <Compile Include="Renderer\ParticleSystem\ParticleSystem.cs" />
+    <Compile Include="Renderer\ParticleSystem\Stateful\CreateVertex.cs" />
+    <Compile Include="Renderer\ParticleSystem\Stateful\IceSpike\IceSpike.cs" />
+    <Compile Include="Renderer\ParticleSystem\Stateful\RenderVertex.cs" />
+    <Compile Include="Renderer\ParticleSystem\Stateful\Smoke\Smoke.cs" />
+    <Compile Include="Renderer\ParticleSystem\Stateful\StatefulParticleSystem.cs" />
+    <Compile Include="Renderer\Renderables\IceSpikeRenderable.cs" />
     <Compile Include="Renderer\Renderables\EnvironmentRenderable.cs" />
     <Compile Include="Renderer\Renderables\RobotRenderable.cs" />
     <Compile Include="Renderer\Renderables\IslandRenderable.cs" />
@@ -172,6 +183,7 @@
     <Compile Include="Simulation\Properties\Player\PlayerControllerProperty.cs" />
     <Compile Include="Simulation\Properties\Environment\PowerUpController.cs" />
     <Compile Include="Simulation\Properties\Base\Property.cs" />
+    <Compile Include="Simulation\Properties\Rendering\IceSpikeRenderProperty.cs" />
     <Compile Include="Simulation\Properties\Rendering\EnvironmentRenderProperty.cs" />
     <Compile Include="Simulation\Properties\Rendering\ModelRenderProperty.cs" />
     <Compile Include="Simulation\Properties\Rendering\RobotRenderProperty.cs" />

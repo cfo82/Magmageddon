@@ -17,6 +17,7 @@ namespace ProjectMagma.Renderer
             EnablePostProcessing = true;
 
             this.device = device;
+            updateRenderables = new List<Renderable>();
             shadowCaster = new List<Renderable>();
             opaqueRenderables = new List<Renderable>();
             transparentRenderables = new List<Renderable>();
@@ -69,6 +70,14 @@ namespace ProjectMagma.Renderer
                 Target2 = new RenderTarget2D(Device, width, height, 1, format);
                 glowPass = new GlowPass(this, Target2, Target1);
                 hdrCombinePass = new HdrCombinePass(this, Target0, Target1);
+            }
+        }
+
+        public void Update(GameTime gameTime)
+        {
+            foreach (Renderable renderable in updateRenderables)
+            {
+                renderable.Update(this, gameTime);
             }
         }
         
@@ -242,6 +251,11 @@ namespace ProjectMagma.Renderer
             Renderable renderable
         )
         {
+            if (renderable.NeedsUpdate)
+            {
+                updateRenderables.Add(renderable);
+            }
+
             List<Renderable> renderables = GetMatchingRenderableList(renderable);
 
             if (renderables.Contains(renderable))
@@ -308,6 +322,7 @@ namespace ProjectMagma.Renderer
 
         public LightManager LightManager { get; set; }
 
+        private List<Renderable> updateRenderables;
         private List<Renderable> shadowCaster;
         private List<Renderable> opaqueRenderables;
         private List<Renderable> transparentRenderables;

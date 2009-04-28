@@ -70,7 +70,7 @@ namespace ProjectMagma
             menu = Menu.Instance;
 
             this.IsFixedTimeStep = false;
-            graphics.SynchronizeWithVerticalRetrace = false;
+            graphics.SynchronizeWithVerticalRetrace = true;
             graphics.ApplyChanges();
 
             graphics.PreferredBackBufferWidth = 1280;

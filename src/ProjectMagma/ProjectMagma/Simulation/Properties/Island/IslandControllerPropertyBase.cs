@@ -57,6 +57,8 @@ namespace ProjectMagma.Simulation
             ((StringAttribute)entity.GetAttribute("attracted_by")).ValueChanged -= AttracedByChangeHandler;
         }
 
+        private double collisionAt = 0;
+
         protected virtual void OnUpdate(Entity island, SimulationTime simTime)
         {
             float dt = simTime.Dt;
@@ -143,8 +145,15 @@ namespace ProjectMagma.Simulation
                         }
                         if (!hadCollision)
                         {
-                            velocity += dir * constants.GetFloat("attraction_acceleration") * dt;
-                            velocity.Y += dir.Y * constants.GetFloat("attraction_acceleration") * dt; // faster acceleration on y axis
+//                            if (simTime.At > collisionAt + 1000)
+                            {
+                                velocity += dir * constants.GetFloat("attraction_acceleration") * dt;
+                                velocity.Y += dir.Y * constants.GetFloat("attraction_acceleration") * dt; // faster acceleration on y axis
+                            }
+                        }
+                        else
+                        {
+                            collisionAt = simTime.At;
                         }
                         island.SetVector3("attraction_velocity", velocity);
 
@@ -244,16 +253,18 @@ namespace ProjectMagma.Simulation
                     // only collision with objects which are not the player count
                     hadCollision = true;
 
+                    Vector3 normal = CalculatePseudoNormalIsland(island, other);
+
                     // change direction of repulsion
                     Vector3 repulsionVelocity = island.GetVector3("repulsion_velocity");
                     if (repulsionVelocity.Length() > 0)
                     {
                         // only if collision normal is in opposite direction of current repulsion
-                        Vector3 xznormal = contact[0].Normal;
+                        Vector3 xznormal = normal;
                         xznormal.Y = 0;
                         if (Vector3.Dot(repulsionVelocity, xznormal) > 0)
                         {
-                            island.SetVector3("repulsion_velocity", Vector3.Reflect(repulsionVelocity, xznormal) 
+                            island.SetVector3("repulsion_velocity", Vector3.Reflect(repulsionVelocity, xznormal)
                                 * constants.GetFloat("collision_damping"));
                         }
                     }
@@ -274,7 +285,7 @@ namespace ProjectMagma.Simulation
                             }
 
                             // push the other island away (if contact normal is opposed)
-                            if (Vector3.Dot(attractionVelocity, contact[0].Normal) > 0)
+                            if (Vector3.Dot(attractionVelocity, normal) > 0)
                             {
                                 Vector3 velocity = island.GetVector3("attraction_velocity")
                                     * constants.GetFloat("collision_damping");
@@ -283,22 +294,36 @@ namespace ProjectMagma.Simulation
                             }
                         }
 
-                        // reflect for collision with pillar (if not already in direction away from it)
-                        if (Vector3.Dot(attractionVelocity, contact[0].Normal) > 0)
+                        // reflect for collision with pillar/island (if not already in direction away from it)
+                        //if (Vector3.Dot(attractionVelocity, normal) > 0)
                         {
+                            Vector3 normXZ = normal;
+                            normXZ.Y = 0;
+                            normXZ.Normalize();
+
                             // compute only on x/z plane for now
                             Vector3 velocityXZ = attractionVelocity;
                             velocityXZ.Y = 0.0f;
 
                             // project onto normal
-                            Vector3 projection = Vector3.Dot(velocityXZ, contact[0].Normal) * contact[0].Normal;
+                            Vector3 projection = Vector3.Dot(velocityXZ, normXZ) * normXZ;
 
                             // compute orthogonal repulsion
-                            Vector3 new_velocity = Vector3.Normalize(projection - velocityXZ) * velocityXZ.Length();
-                            new_velocity.Y = attractionVelocity.Y;
+                            Vector3 newVelocity = Vector3.Normalize(projection - velocityXZ);
+                            newVelocity.Y = 0; // -contact[0].Normal.Y * attractionVelocity.Y;
 
-                            island.SetVector3("attraction_velocity", new_velocity);
-                                //* constants.GetFloat("collision_damping"));
+                            // repulse in direction of normal too
+                            if (Vector3.Dot(attractionVelocity, normal) > 0)
+                            {
+                                newVelocity += -normal;
+                                if (other.GetString("kind") == "pillar")
+                                    newVelocity.Y = 0;
+                            }
+                            newVelocity *= attractionVelocity.Length() * constants.GetFloat("collision_damping");
+
+                            Console.WriteLine("newvelocity: " + newVelocity);
+
+                            island.SetVector3("attraction_velocity", newVelocity);
                         }
                     }
                     else
@@ -321,6 +346,23 @@ namespace ProjectMagma.Simulation
                         CollisionHandler(simTime, island, other, contact);
                 }
             }
+        }
+
+        private Vector3 CalculatePseudoNormalIsland(Entity entityA, Entity entityB)
+        {
+            Vector3 normal;
+            if(entityB.GetString("kind") == "pillar")
+            {
+                normal = entityB.GetVector3("position")-entityA.GetVector3("position");
+                normal.Y = 0;
+                normal.Normalize();
+            }
+            else
+            {
+                normal = entityB.GetVector3("position")-entityA.GetVector3("position");
+                normal.Normalize();
+            }
+            return normal;
         }
 
         protected void RepulsionChangeHandler(Vector3Attribute sender, Vector3 oldValue, Vector3 newValue)

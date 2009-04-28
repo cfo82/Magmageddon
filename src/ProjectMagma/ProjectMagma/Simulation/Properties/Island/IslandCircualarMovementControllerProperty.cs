@@ -98,18 +98,18 @@ namespace ProjectMagma.Simulation
                 {
                     dir = -dir;
                 }
-                else
-                    // always ensure we apply a bit of pushback out of other entity so we don't get stuck in there
-                    if (!(other.GetString("kind") == "island"
-                        && other.GetString("attracted_by") != "")
-                        && island.GetString("attracted_by") != null
-                        && island.GetVector3("repulsion_velocity") == Vector3.Zero)
-                    {
-                        Vector3 pushback = -co[0].Normal * (island.GetVector3("position") - co[0].Point).Length();
-                            //;constants.GetFloat("contact_pushback_multiplier");
-                        pushback.Y = 0; // only in xz plane
-                        island.SetVector3("pushback_velocity", island.GetVector3("pushback_velocity") + pushback);
-                    }
+
+                // always ensure we apply a bit of pushback out of other entity so we don't get stuck in there
+                if (!(other.GetString("kind") == "island"
+                    && other.GetString("attracted_by") != "")
+                    && island.GetString("attracted_by") != null
+                    && island.GetVector3("repulsion_velocity") == Vector3.Zero)
+                {
+                    Vector3 pushback = -co[0].Normal * (island.GetVector3("position") - co[0].Point).Length();
+                        //;constants.GetFloat("contact_pushback_multiplier");
+                    pushback.Y = 0; // only in xz plane
+                    island.SetVector3("pushback_velocity", island.GetVector3("pushback_velocity") + pushback);
+                }
             }
         }
 

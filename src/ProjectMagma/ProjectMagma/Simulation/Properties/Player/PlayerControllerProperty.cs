@@ -65,7 +65,7 @@ namespace ProjectMagma.Simulation
 
         // values which get reset on each update
         private bool collisionOccured = false;
-        private bool movedByStick = false;
+        //private bool movedByStick = false;
         Vector3 previousPosition;
 
         public PlayerControllerProperty()

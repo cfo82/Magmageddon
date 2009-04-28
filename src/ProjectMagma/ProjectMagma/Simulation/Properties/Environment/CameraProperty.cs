@@ -11,7 +11,7 @@ namespace ProjectMagma.Simulation
 {
     public class CameraProperty : Property
     {
-        DoublyIntegratedFloat phi, theta; // for later use
+        //DoublyIntegratedFloat phi, theta; // for later use
 
         public CameraProperty()
         {

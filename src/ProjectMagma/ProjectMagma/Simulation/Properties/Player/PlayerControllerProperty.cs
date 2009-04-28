@@ -291,6 +291,7 @@ namespace ProjectMagma.Simulation
             // island attraction start
             if (controllerInput.attractionButtonPressed
                 && selectedIsland != null
+                && destinationIsland == null // not during jump
                 && allowSelection)
             {
                 attractedIsland = selectedIsland;
@@ -376,6 +377,7 @@ namespace ProjectMagma.Simulation
             float maxTime = 0;
             Vector3 islandDir;
             Vector3 islandPos = destinationIsland.GetVector3("position");
+            int count = 0;
             do
             {
                 ((IslandControllerPropertyBase)destinationIsland.GetProperty("controller")).CalculateNewPosition(destinationIsland,
@@ -390,8 +392,10 @@ namespace ProjectMagma.Simulation
 
                 oldTime = time;
                 time = dist2D / constants.GetFloat("island_jump_speed");
+
+                count++;
             }
-            while (Math.Abs(oldTime - time) > 1 / 1000f);
+            while ((Math.Abs(oldTime - time) > 1 / 1000f) && (count < 10));
 
             lastIslandDir = islandDir;
 

@@ -47,11 +47,11 @@ namespace ProjectMagma.Renderer
         //private float[] BloomIntensity = { 1.15f, 0.7f, 2.0f };
         //private float[] BaseIntensity = { 0.75f, 0.8f, 1.0f };
 
-        private float[] BloomIntensity = { 0.8f, 0.7f, 0.2f };
+        private float[] BloomIntensity = { 0.8f, 0.7f, 0.0f };
         private float[] BaseIntensity = { 0.87f, 0.8f, 1.0f };
 
         private float[] BloomSaturation = { 0.5f, 0.8f, 1.0f };
-        private float[] BaseSaturation = { 1.0f, 1.0f, 4.0f };
+        private float[] BaseSaturation = { 1.0f, 1.0f, 1.0f };
 
         private float[] In1 = { 1.0f, 1.4f, 1.0f };
         //private float[] Out1 = { 1.0f, 0.8f, 1.0f };

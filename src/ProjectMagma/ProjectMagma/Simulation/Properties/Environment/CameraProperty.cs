@@ -5,11 +5,14 @@ using System.Linq;
 using System.Text;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
+using ProjectMagma.Shared.Math.Integration;
 
 namespace ProjectMagma.Simulation
 {
     public class CameraProperty : Property
     {
+        DoublyIntegratedFloat phi, theta; // for later use
+
         public CameraProperty()
         {
         }

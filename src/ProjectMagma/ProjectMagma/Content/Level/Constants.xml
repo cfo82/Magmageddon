@@ -38,7 +38,8 @@
       <Attribute name="ice_spike_gravity_acceleration" template="float3" value="0 -200 0"/>
       <Attribute name="ice_spike_homing_acceleration" template="float" value="5000"/>
       <Attribute name="ice_spike_uniform_acceleration" template="float" value="1000"/>
-      <Attribute name="ice_spike_lifetime" template="int" value="5000"/>
+      <Attribute name="ice_spike_lifetime" template="int" value="6000"/>
+      <Attribute name="ice_spike_death_timeout" template="int" value="3500"/>
 
       <Attribute name="flamethrower_warmup_time" template="int" value="600"/>
       <Attribute name="flamethrower_warmup_energy_cost" template="int" value="20"/>

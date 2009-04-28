@@ -14,8 +14,6 @@ namespace ProjectMagma.Simulation
         {
         }
 
-        private float origDist;
-
         public void OnAttached(Entity entity)
         {
             this.constants = Game.Instance.Simulation.EntityManager["player_constants"];
@@ -26,7 +24,6 @@ namespace ProjectMagma.Simulation
             if (targetPlayerName != "")
             {
                 targetPlayer = Game.Instance.Simulation.EntityManager[targetPlayerName];
-                origDist = (targetPlayer.GetVector3("position") - entity.GetVector3("position")).Length();
             }
             else
                 targetPlayer = null;
@@ -41,11 +38,16 @@ namespace ProjectMagma.Simulation
             entity.Update -= OnUpdate;
         }
 
-        private float correctedAt = 0;
-
         private void OnUpdate(Entity iceSpike, SimulationTime simTime)
         {
-            int iat = (int)simTime.At;
+            if (diedAt > 0)
+            {
+                if (simTime.At > diedAt + constants.GetInt("ice_spike_death_timeout"))
+                {
+                    Game.Instance.Simulation.EntityManager.RemoveDeferred(iceSpike);
+                }
+                return;
+            }
 
             // fetch required values
             Vector3 pos = iceSpike.GetVector3("position");
@@ -72,8 +74,6 @@ namespace ProjectMagma.Simulation
                     a += dir * constants.GetFloat("ice_spike_homing_acceleration");// *(1 - factor);
                     a.Y *= 0.6f; // don't accelerate as fast on y axis
                 }
-
-                correctedAt = simTime.At;
             }
             else
             {
@@ -90,16 +90,16 @@ namespace ProjectMagma.Simulation
             pos += v * dt;
 
             // check lifetime
-            if(iceSpike.GetInt("creation_time") + constants.GetInt("ice_spike_lifetime") < iat)
+            if(iceSpike.GetInt("creation_time") + constants.GetInt("ice_spike_lifetime") < simTime.At)
             {
-                Game.Instance.Simulation.EntityManager.RemoveDeferred(iceSpike);
+                SetDead(iceSpike, simTime);
                 return;
             }
 
             // remove if in lava
-            if (pos.Y < Game.Instance.Simulation.EntityManager["lava"].GetVector3("position").Y)
+            if (pos.Y < Game.Instance.Simulation.EntityManager["lava"].GetVector3("position").Y - 20)
             {
-                Game.Instance.Simulation.EntityManager.RemoveDeferred(iceSpike);
+                SetDead(iceSpike, simTime);
                 return;
             }
 
@@ -118,8 +118,15 @@ namespace ProjectMagma.Simulation
             {
                 if (other.HasAttribute("kind") && other.GetString("kind") == "player")
                     IceSpikePlayerCollisionHandler(simTime, iceSpike, other);
-                Game.Instance.Simulation.EntityManager.RemoveDeferred(iceSpike);
+                SetDead(iceSpike, simTime);
             }
+        }
+
+        private void SetDead(Entity iceSpike, SimulationTime simTime)
+        {
+            diedAt = simTime.At;
+            iceSpike.SetBool("dead", true);
+            ((CollisionProperty)iceSpike.GetProperty("collision")).OnContact -= IceSpikeCollisionHandler;
         }
 
         private void IceSpikePlayerCollisionHandler(SimulationTime simTime, Entity iceSpike, Entity player)
@@ -163,5 +170,6 @@ namespace ProjectMagma.Simulation
         }
 
         private Entity targetPlayer;
+        private double diedAt = 0;
     }
 }

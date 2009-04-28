@@ -578,6 +578,7 @@ namespace ProjectMagma.Simulation
                 iceSpike.AddStringAttribute("player", player.Name);
                 iceSpike.AddStringAttribute("target_player", targetPlayerName);
                 iceSpike.AddIntAttribute("creation_time", (int)at);
+                iceSpike.AddBoolAttribute("dead", false);
 
                 iceSpike.AddVector3Attribute("velocity", aimVector);
                 iceSpike.AddVector3Attribute("position", pos);

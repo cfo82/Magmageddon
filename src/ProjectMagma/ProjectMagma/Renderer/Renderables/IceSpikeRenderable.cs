@@ -50,6 +50,7 @@ namespace ProjectMagma.Renderer
             }
             iceSpikeSystem.Position = position;
             iceSpikeSystem.Direction = direction;
+            iceSpikeSystem.Dead = dead;
             iceSpikeSystem.Update(gameTime);
         }
 

@@ -76,7 +76,7 @@ UpdateParticlesPixelShaderOutput UpdateIceSpikePixelShader(
 	// calculate gravity... blend in slowly at the end of the rotation force
 	float gravity_age = max(0,age-IceSpikeGravityStart);
 	float normalized_gravity_age = gravity_age/(IceSpikeParticleLifetime-IceSpikeGravityStart);
-	float3 gravity_force = float3(0,-9.81,0) * 500 * pow(normalized_gravity_age,2);
+	float3 gravity_force = float3(0,-9.81,0) * 1000 * pow(normalized_gravity_age,2);
 	
 	float3 force = rotation_force + gravity_force;
 	

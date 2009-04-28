@@ -42,6 +42,10 @@ namespace ProjectMagma.Renderer.ParticleSystem.Stateful.IceSpike
 
             parameters["IceSpikePosition"].SetValue(position);
             parameters["IceSpikeDirection"].SetValue(direction);
+            if (dead)
+            {
+                parameters["IceSpikeGravityStart"].SetValue(0.0f);
+            }
         }
 
         protected override void SetRenderingParameters(EffectParameterCollection parameters)
@@ -63,8 +67,15 @@ namespace ProjectMagma.Renderer.ParticleSystem.Stateful.IceSpike
             set { direction = value; direction.Normalize(); }
         }
 
+        public bool Dead
+        {
+            get { return dead; }
+            set { dead = true; }
+        }
+
         private Vector3 position;
         private Vector3 direction;
+        private bool dead;
         private Texture2D trailSprite;
     }
 }

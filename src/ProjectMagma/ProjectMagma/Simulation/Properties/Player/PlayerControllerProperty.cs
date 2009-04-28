@@ -65,7 +65,7 @@ namespace ProjectMagma.Simulation
 
         // values which get reset on each update
         private bool collisionOccured = false;
-        //private bool movedByStick = false;
+        //private bool movedByStick;
         Vector3 previousPosition;
 
         public PlayerControllerProperty()
@@ -179,7 +179,7 @@ namespace ProjectMagma.Simulation
 
             // reset some stuff
             previousPosition = playerPosition;
-            movedByStick = false;
+            //movedByStick = false;
 
             // get input
             controllerInput.Update(playerIndex);
@@ -619,7 +619,7 @@ namespace ProjectMagma.Simulation
         {
             if (controllerInput.moveStickMoved)
             {
-                movedByStick = true;
+                //movedByStick = true;
 
                 // XZ movement
                 if (activeIsland == null)

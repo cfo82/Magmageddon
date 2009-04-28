@@ -68,8 +68,8 @@ namespace ProjectMagma.Simulation
                 else
                 {
                     // get acceleration to direction
-                    Vector3 dir = targetPlayerPos - pos;
-                    a += dir * constants.GetFloat("ice_spike_homing_acceleration");
+                    Vector3 dir = Vector3.Normalize(targetPlayerPos - pos);
+                    a += dir * constants.GetFloat("ice_spike_homing_acceleration");// *(1 - factor);
                     a.Y *= 0.6f; // don't accelerate as fast on y axis
                 }
 

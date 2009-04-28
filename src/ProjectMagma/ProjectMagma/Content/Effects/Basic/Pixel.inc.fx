@@ -42,7 +42,7 @@ PSOutput PSIsland(PixelLightingPSInputTx pin) : COLOR
 	PS_START
 	float2 texCoord = pin.TexCoord;
 	ComputeLighting(lightResult, normal, pin.PositionWS, pin.NormalWS);	
-	PerturbIslandTexCoords(texCoord, normal.y);
+	//PerturbIslandTexCoords(texCoord, normal.y);
 	ComputeDiffSpecColorTx(Output.Color, texCoord, lightResult, pin.PositionWS.w);
 	PerturbIslandGroundAlpha(Output.Color.a, pin.PositionWS);
 	return Output;

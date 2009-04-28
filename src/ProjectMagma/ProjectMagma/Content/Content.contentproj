@@ -649,21 +649,6 @@
       <Importer>XmlImporter</Importer>
       <Processor>PassThroughProcessor</Processor>
     </None>
-    <None Include="Models\Islands\bIsland_TypeA_001_col.fbx">
-      <Name>bIsland_TypeA_001_col</Name>
-      <Importer>FbxImporter</Importer>
-      <Processor>ModelProcessor</Processor>
-    </None>
-    <None Include="Models\Islands\iIsland_TypeA_001_col.fbx">
-      <Name>iIsland_TypeA_001_col</Name>
-      <Importer>FbxImporter</Importer>
-      <Processor>ModelProcessor</Processor>
-    </None>
-    <None Include="Models\Islands\gIsland_TypeA_001_col.fbx">
-      <Name>gIsland_TypeA_001_col</Name>
-      <Importer>FbxImporter</Importer>
-      <Processor>ModelProcessor</Processor>
-    </None>
     <None Include="Models\Pillars\pillar_003_col.fbx">
       <Name>pillar_003_col</Name>
       <Importer>FbxImporter</Importer>
@@ -724,21 +709,6 @@
       <Processor>TextureProcessor</Processor>
       <ProcessorParameters_ColorKeyColor>255, 255, 255, 255</ProcessorParameters_ColorKeyColor>
       <ProcessorParameters_ColorKeyEnabled>False</ProcessorParameters_ColorKeyEnabled>
-    </Compile>
-    <Compile Include="Models\Islands\bIsland_TypeA_001.fbx">
-      <Name>bIsland_TypeA_001</Name>
-      <Importer>FbxImporter</Importer>
-      <Processor>IslandProcessor</Processor>
-    </Compile>
-    <Compile Include="Models\Islands\gIsland_TypeA_001.fbx">
-      <Name>gIsland_TypeA_001</Name>
-      <Importer>FbxImporter</Importer>
-      <Processor>IslandProcessor</Processor>
-    </Compile>
-    <Compile Include="Models\Islands\iIsland_TypeA_001.fbx">
-      <Name>iIsland_TypeA_001</Name>
-      <Importer>FbxImporter</Importer>
-      <Processor>IslandProcessor</Processor>
     </Compile>
     <Compile Include="Models\Pillars\pillar_002.fbx">
       <Name>pillar_002</Name>
@@ -1099,6 +1069,116 @@
       <Importer>EffectImporter</Importer>
       <Processor>EffectProcessor</Processor>
     </None>
+    <Compile Include="Models\Islands\burnt3.fbx">
+      <Name>burnt3</Name>
+      <Importer>FbxImporter</Importer>
+      <Processor>IslandProcessor</Processor>
+    </Compile>
+    <Compile Include="Models\Islands\burnt3_col.fbx">
+      <Name>burnt3_col</Name>
+      <Importer>FbxImporter</Importer>
+      <Processor>IslandProcessor</Processor>
+    </Compile>
+    <Compile Include="Models\Islands\grass1.fbx">
+      <Name>grass1</Name>
+      <Importer>FbxImporter</Importer>
+      <Processor>IslandProcessor</Processor>
+    </Compile>
+    <Compile Include="Models\Islands\grass1_col.fbx">
+      <Name>grass1_col</Name>
+      <Importer>FbxImporter</Importer>
+      <Processor>IslandProcessor</Processor>
+    </Compile>
+    <Compile Include="Models\Islands\grass2.fbx">
+      <Name>grass2</Name>
+      <Importer>FbxImporter</Importer>
+      <Processor>IslandProcessor</Processor>
+    </Compile>
+    <Compile Include="Models\Islands\grass2_col.fbx">
+      <Name>grass2_col</Name>
+      <Importer>FbxImporter</Importer>
+      <Processor>IslandProcessor</Processor>
+    </Compile>
+    <Compile Include="Models\Islands\grass3.fbx">
+      <Name>grass3</Name>
+      <Importer>FbxImporter</Importer>
+      <Processor>IslandProcessor</Processor>
+    </Compile>
+    <Compile Include="Models\Islands\grass3_col.fbx">
+      <Name>grass3_col</Name>
+      <Importer>FbxImporter</Importer>
+      <Processor>IslandProcessor</Processor>
+    </Compile>
+    <Compile Include="Models\Islands\grass4.fbx">
+      <Name>grass4</Name>
+      <Importer>FbxImporter</Importer>
+      <Processor>IslandProcessor</Processor>
+    </Compile>
+    <Compile Include="Models\Islands\grass4_col.fbx">
+      <Name>grass4_col</Name>
+      <Importer>FbxImporter</Importer>
+      <Processor>IslandProcessor</Processor>
+    </Compile>
+    <Compile Include="Models\Islands\ice1.fbx">
+      <Name>ice1</Name>
+      <Importer>FbxImporter</Importer>
+      <Processor>IslandProcessor</Processor>
+    </Compile>
+    <Compile Include="Models\Islands\ice1_col.fbx">
+      <Name>ice1_col</Name>
+      <Importer>FbxImporter</Importer>
+      <Processor>IslandProcessor</Processor>
+    </Compile>
+    <Compile Include="Models\Islands\ice2.fbx">
+      <Name>ice2</Name>
+      <Importer>FbxImporter</Importer>
+      <Processor>IslandProcessor</Processor>
+    </Compile>
+    <Compile Include="Models\Islands\ice2_col.fbx">
+      <Name>ice2_col</Name>
+      <Importer>FbxImporter</Importer>
+      <Processor>IslandProcessor</Processor>
+    </Compile>
+    <Compile Include="Models\Islands\ice3.fbx">
+      <Name>ice3</Name>
+      <Importer>FbxImporter</Importer>
+      <Processor>IslandProcessor</Processor>
+    </Compile>
+    <Compile Include="Models\Islands\ice3_col.fbx">
+      <Name>ice3_col</Name>
+      <Importer>FbxImporter</Importer>
+      <Processor>IslandProcessor</Processor>
+    </Compile>
+    <Compile Include="Models\Islands\ice4.fbx">
+      <Name>ice4</Name>
+      <Importer>FbxImporter</Importer>
+      <Processor>IslandProcessor</Processor>
+    </Compile>
+    <Compile Include="Models\Islands\ice4_col.fbx">
+      <Name>ice4_col</Name>
+      <Importer>FbxImporter</Importer>
+      <Processor>IslandProcessor</Processor>
+    </Compile>
+    <Compile Include="Models\Islands\burnt1.fbx">
+      <Name>burnt1</Name>
+      <Importer>FbxImporter</Importer>
+      <Processor>IslandProcessor</Processor>
+    </Compile>
+    <Compile Include="Models\Islands\burnt1_col.fbx">
+      <Name>burnt1_col</Name>
+      <Importer>FbxImporter</Importer>
+      <Processor>IslandProcessor</Processor>
+    </Compile>
+    <Compile Include="Models\Islands\burnt2.fbx">
+      <Name>burnt2</Name>
+      <Importer>FbxImporter</Importer>
+      <Processor>IslandProcessor</Processor>
+    </Compile>
+    <Compile Include="Models\Islands\burnt2_col.fbx">
+      <Name>burnt2_col</Name>
+      <Importer>FbxImporter</Importer>
+      <Processor>IslandProcessor</Processor>
+    </Compile>
     <Compile Include="Models\Sfx\IceSpike.fbx">
       <Name>IceSpike</Name>
       <Importer>FbxImporter</Importer>
@@ -1115,6 +1195,14 @@
       <Name>IceSpikeTrail</Name>
       <Importer>TextureImporter</Importer>
       <Processor>TextureProcessor</Processor>
+    </Compile>
+  </ItemGroup>
+  <Import Project="$(MSBuildExtensionsPath)\Microsoft\XNA Game Studio\v3.0\Microsoft.Xna.GameStudio.ContentPipeline.targets" />
+  <ItemGroup>
+    <Compile Include="Level\IslandTemplates.xml">
+      <Name>IslandTemplates</Name>
+      <Importer>LevelImporter</Importer>
+      <Processor>LevelProcessor</Processor>
     </Compile>
   </ItemGroup>
   <Import Project="$(MSBuildExtensionsPath)\Microsoft\XNA Game Studio\v3.0\Microsoft.Xna.GameStudio.ContentPipeline.targets" />

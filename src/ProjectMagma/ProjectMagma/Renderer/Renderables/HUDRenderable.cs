@@ -94,7 +94,7 @@ namespace ProjectMagma.Renderer
             //    + " " + String.Format("{0:00.0} sps", (1000f / Game.Instance.Simulation.Time.DtMs)),
             //  new Vector2(screenWidth / 2 - 20, 5), Color.Silver);
 
-#if DEBUG
+#if DEBUG || XBOX
             numFrames++;
             totalMilliSeconds += gameTime.ElapsedGameTime.TotalMilliseconds;
 

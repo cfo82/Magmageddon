@@ -94,17 +94,35 @@ namespace ProjectMagma.Renderer
             //    + " " + String.Format("{0:00.0} sps", (1000f / Game.Instance.Simulation.Time.DtMs)),
             //  new Vector2(screenWidth / 2 - 20, 5), Color.Silver);
 
+#if DEBUG
             numFrames++;
             totalMilliSeconds += gameTime.ElapsedGameTime.TotalMilliseconds;
-            spriteBatch.DrawString(
-                font,
-                String.Format("{0:000.0} fps", (1000f / gameTime.ElapsedGameTime.TotalMilliseconds)) + " " +
-                String.Format("{0:000.0} avg", (1000.0f * numFrames / totalMilliSeconds)),
-                new Vector2(screenWidth / 2 - 20, 5), Color.Silver
-            );
+
+            // only start after 2 sec "warmup"
+            if (totalMilliSeconds > 2000)
+            {
+                float fps = (float)(1000f / gameTime.ElapsedGameTime.TotalMilliseconds);
+                if (fps > maxFPS)
+                    maxFPS = fps;
+                if (fps < minFPS)
+                    minFPS = fps;
+                spriteBatch.DrawString(
+                    font,
+                    String.Format("{0:000.0} fps", fps) + " " +
+                    String.Format("{0:00.0} avg", (1000.0f * numFrames / totalMilliSeconds)) + " " +
+                    String.Format("{0:00.0} min", minFPS) + " " +
+                    String.Format("{0:00.0} max", maxFPS),
+                    new Vector2(screenWidth / 2 - 150, 5), Color.Silver
+                );
+            }
+#endif
 
             spriteBatch.End();
         }
+
+        private float minFPS = float.MaxValue;
+        private float maxFPS = 0;
+
         static int numFrames = 0;
         static double totalMilliSeconds = 0;
 

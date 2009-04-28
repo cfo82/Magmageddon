@@ -1,0 +1,120 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<!DOCTYPE Level SYSTEM "Levels.dtd">
+<Level>
+
+  <Entity name="island_base" abstract="true">
+    <Attributes>
+      <Attribute name="kind" template="string" value="island"/>
+      <Attribute name="position" template="float3" value="60 160 -30"/>
+      <Attribute name="scale" template="float3" value="70 70 70"/>
+      <Attribute name="velocity" template="float3" value="0 0 0"/>
+      <Attribute name="acceleration" template="float3" value="0 0 0"/>
+      <Attribute name="diffuse_texture" template="string" value="Textures/Environment/environ_diffuse_v003"/>
+      <Attribute name="bv_type" template="string" value="alignedbox3tree"/>
+      <Attribute name="lava_light_strength" template="float" value="10.0"/>
+    </Attributes>
+    <Properties>
+      <Property name="collision" type="ProjectMagma.Simulation.Collision.CollisionProperty"/>
+      <Property name="controller" type="ProjectMagma.Simulation.IslandCircualarMovementControllerProperty"/>
+      <Property name="death" type="ProjectMagma.Simulation.DeathProperty"/>
+      <Property name="shadow_cast" type="ProjectMagma.Simulation.ShadowCastProperty"/>
+      <Property name="render" type="ProjectMagma.Simulation.IslandRenderProperty"/>
+      <!--Property name="render" type="ProjectMagma.Simulation.BasicRenderProperty"/-->
+      <Property name="render_highlight" type="ProjectMagma.Simulation.RenderHighlightProperty"/>
+    </Properties>
+  </Entity>
+
+  <!-- xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx -->
+  
+  <Entity name="island_base_burnt" extends="island_base" abstract="true">
+    <Attributes>
+      <Attribute name="wind_strength" template="float" value="0.0"/>
+    </Attributes>
+  </Entity>
+
+  <Entity name="island_base_grass" extends="island_base" abstract="true">
+    <Attributes>
+      <Attribute name="wind_strength" template="float" value="0.015"/>
+    </Attributes>
+  </Entity>
+
+  <Entity name="island_base_ice" extends="island_base" abstract="true">
+    <Attributes>
+      <Attribute name="wind_strength" template="float" value="0.0"/>
+    </Attributes>
+  </Entity>
+
+  <!-- xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx -->
+
+  <Entity name="island_base_burnt1" extends="island_base_burnt" abstract="true">
+    <Attributes>
+      <Attribute name="mesh" template="string" value="Models/Islands/burnt1"/>
+    </Attributes>
+  </Entity>
+
+  <Entity name="island_base_burnt2" extends="island_base_burnt" abstract="true">
+    <Attributes>
+      <Attribute name="mesh" template="string" value="Models/Islands/burnt2"/>
+    </Attributes>
+  </Entity>
+
+  <Entity name="island_base_burnt3" extends="island_base_burnt" abstract="true">
+    <Attributes>
+      <Attribute name="mesh" template="string" value="Models/Islands/burnt3"/>
+    </Attributes>
+  </Entity>
+
+  <!-- xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx -->
+
+  <Entity name="island_base_grass1" extends="island_base_grass" abstract="true">
+    <Attributes>
+      <Attribute name="mesh" template="string" value="Models/Islands/grass1"/>
+    </Attributes>
+  </Entity>
+
+  <Entity name="island_base_grass2" extends="island_base_grass" abstract="true">
+    <Attributes>
+      <Attribute name="mesh" template="string" value="Models/Islands/grass2"/>
+    </Attributes>
+  </Entity>
+
+  <Entity name="island_base_grass3" extends="island_base_grass" abstract="true">
+    <Attributes>
+      <Attribute name="mesh" template="string" value="Models/Islands/grass3"/>
+    </Attributes>
+  </Entity>
+
+  <Entity name="island_base_grass4" extends="island_base_grass" abstract="true">
+    <Attributes>
+      <Attribute name="mesh" template="string" value="Models/Islands/grass4"/>
+    </Attributes>
+  </Entity>
+
+  <!-- xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx -->
+
+  <Entity name="island_base_ice1" extends="island_base_ice" abstract="true">
+    <Attributes>
+      <Attribute name="mesh" template="string" value="Models/Islands/ice1"/>
+    </Attributes>
+  </Entity>
+
+  <Entity name="island_base_ice2" extends="island_base_ice" abstract="true">
+    <Attributes>
+      <Attribute name="mesh" template="string" value="Models/Islands/ice2"/>
+    </Attributes>
+  </Entity>
+
+  <Entity name="island_base_ice3" extends="island_base_ice" abstract="true">
+    <Attributes>
+      <Attribute name="mesh" template="string" value="Models/Islands/ice3"/>
+    </Attributes>
+  </Entity>
+
+  <Entity name="island_base_ice4" extends="island_base_ice" abstract="true">
+    <Attributes>
+      <Attribute name="mesh" template="string" value="Models/Islands/ice4"/>
+    </Attributes>
+  </Entity>
+
+
+</Level>

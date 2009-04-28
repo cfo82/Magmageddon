@@ -68,17 +68,9 @@ namespace ProjectMagma.Simulation
                 else
                 {
                     // get acceleration to direction
-                    Vector3 acc = targetPlayerPos - pos;
-                    float dist = acc.Length();
-                    acc.Normalize();
-                    // "angle"
-                    float dot = Vector3.Dot(Vector3.Normalize(v), acc);
-                    // project onto velocity direction
-                    Vector3 vd = dot * acc;
-                    // add them together for orthogonal acceleration
-                    float factor = dist / origDist; // the closer we get, the more exact we accelerate
-//                    a += (acc - vd) * constants.GetFloat("ice_spike_homing_acceleration") * (factor);
-                    a += (acc) * constants.GetFloat("ice_spike_homing_acceleration") * (1 - factor);
+                    Vector3 dir = targetPlayerPos - pos;
+                    a += dir * constants.GetFloat("ice_spike_homing_acceleration");
+                    a.Y *= 0.6f; // don't accelerate as fast on y axis
                 }
 
                 correctedAt = simTime.At;

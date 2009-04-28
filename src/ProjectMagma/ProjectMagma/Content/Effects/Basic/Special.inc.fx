@@ -32,7 +32,7 @@ inline void PerturbEnvGroundWavesAlpha(out float alpha, inout float4 renderChann
 //-----------------------------------------------------------------------------
 //
 //-----------------------------------------------------------------------------
-void PerturbIslandGroundAlpha(out float alpha, in float4 position)
+void PerturbIslandGroundAlpha(inout float alpha, in float4 position)
 {
 	if(position.y<17)
 	{

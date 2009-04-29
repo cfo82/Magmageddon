@@ -16,7 +16,7 @@ namespace ProjectMagma.ContentPipeline.ModelProcessors
     {
         protected override Vector3 CalculateDiff(ref Vector3 origDiff, ref AlignedBox3 bb)
         {
-            return new Vector3(0, 0.0f - bb.Max.Y, 0);
+            return new Vector3(0, 0.0f - bb.Min.Y, 0);
         }
     }
 }

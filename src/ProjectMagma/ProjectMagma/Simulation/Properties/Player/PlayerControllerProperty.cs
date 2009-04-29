@@ -12,12 +12,14 @@ namespace ProjectMagma.Simulation
     public class PlayerControllerProperty : Property
     {
         #region button assignments
+        private const bool LeftStickSelection = true;
+
         // gamepad buttons
+        private static readonly Buttons[] AttractionButtons = { Buttons.RightTrigger, Buttons.B };
         private static readonly Buttons[] JetpackButtons = { Buttons.LeftTrigger, Buttons.A };
         private static readonly Buttons[] IceSpikeButtons = { Buttons.X };
-        private static readonly Buttons[] HitButtons = { Buttons.RightShoulder };
         private static readonly Buttons[] FlamethrowerButtons = { Buttons.Y };
-        private static readonly Buttons[] AttractionButtons = { Buttons.RightTrigger };
+        private static readonly Buttons[] HitButtons = { Buttons.RightShoulder };
 
         // keyboard keys
         private static readonly Keys JetpackKey = Keys.Space;
@@ -639,9 +641,18 @@ namespace ProjectMagma.Simulation
                     Ray3 ray = new Ray3(playerPosition + 1000 * Vector3.UnitY, -Vector3.UnitY);
                     if (Game.Instance.Simulation.CollisionManager.GetIntersectionPoint(ref ray, activeIsland, out isectPt))
                     {
-                        // set position to contact point
-                        playerPosition.Y = isectPt.Y + 1; // todo: make constant?
-                        player.SetVector3("position", playerPosition);
+                        Console.WriteLine("h-diff " + ( isectPt.Y - previousPosition.Y));
+                        // check angle
+                        if (isectPt.Y - previousPosition.Y > 10)
+                        {
+                            playerPosition = previousPosition;
+                        }
+                        else
+                        {
+                            // set position to contact point
+                            playerPosition.Y = isectPt.Y + 1; // todo: make constant?
+                            player.SetVector3("position", playerPosition);
+                        }
                     }
                     else
                     // not over island anymore -> don't allow movement
@@ -701,20 +712,18 @@ namespace ProjectMagma.Simulation
             {
                 // apply from last jump
                 playerPosition += player.GetVector3("island_jump_velocity") * dt;
+                Console.WriteLine(playerPosition);
 
                 // check for arrival
                 Vector3 islandDir = destinationIsland.GetVector3("position") - playerPosition;
                 Vector3 isectPt = Vector3.Zero;
-                Ray3 ray = new Ray3(playerPosition, -Vector3.UnitY);
+                Ray3 ray = new Ray3(playerPosition + 10 * Vector3.UnitY, -Vector3.UnitY);
                 if (Vector3.Dot(islandDir, lastIslandDir) < 0 // oscillation?
                    && Game.Instance.Simulation.CollisionManager.GetIntersectionPoint(ref ray, destinationIsland, out isectPt))
                 {
                     SetActiveIsland(destinationIsland);
 
-                    // -- added by dpk
                     (destinationIsland.GetProperty("render") as IslandRenderProperty).Squash();
-                    //(player.GetProperty("render") as BasicRenderProperty).Squash();
-                    // -- /added by dpk
 
                     playerPosition = isectPt;
 
@@ -941,11 +950,10 @@ namespace ProjectMagma.Simulation
         private void PlayerIslandCollisionHandler(SimulationTime simTime, Entity player, Entity island, Contact contact)
         {
             float dt = simTime.Dt;
-
-            if (island == destinationIsland
-                || island == activeIsland)
+            if (activeIsland != null)
             {
-                // ignore collision with destination or current island
+                // don't do any collision reaction if we are standing on an island
+                // this is handled in island's collision reaction
                 return;
             }
 
@@ -1027,11 +1035,11 @@ namespace ProjectMagma.Simulation
             {
                 // normal feedback
                 Vector3 dir = previousPosition - player.GetVector3("position");
-                if (dir.Length() > 0.001 // apply feedback to player that changed its position
-                    && Vector3.Dot(dir, c[0].Normal) > 0) // and only if normal faces right direction
+                Vector3 normal = otherPlayer.GetVector3("position") - player.GetVector3("position");
+                if (Vector3.Dot(dir, normal) > 0) // and only if normal faces right direction
                 {
-                    player.SetVector3("player_pushback_velocity", /*player.GetVector3("player_pushback_velocity")*/
-                        - c[0].Normal * constants.GetFloat("player_pushback_velocity_multiplier"));
+                    player.SetVector3("collision_pushback_velocity", player.GetVector3("collision_pushback_velocity")
+                        - normal * 10);
                 }
             }
         }
@@ -1236,8 +1244,16 @@ namespace ProjectMagma.Simulation
                 leftStickX = gamePadState.ThumbSticks.Left.X;
                 leftStickY = -gamePadState.ThumbSticks.Left.Y;
                 moveStickMoved = leftStickX != 0.0f || leftStickY != 0.0f;
-                rightStickX = gamePadState.ThumbSticks.Right.X;
-                rightStickY = -gamePadState.ThumbSticks.Right.Y;
+                if (PlayerControllerProperty.LeftStickSelection)
+                {
+                    rightStickX = gamePadState.ThumbSticks.Left.X;
+                    rightStickY = -gamePadState.ThumbSticks.Left.Y;
+                }
+                else
+                {
+                    rightStickX = gamePadState.ThumbSticks.Right.X;
+                    rightStickY = -gamePadState.ThumbSticks.Right.Y;
+                }
                 rightStickMoved = rightStickX != 0.0f || rightStickY != 0.0f;
                 rightStickPressed = gamePadState.Buttons.RightStick == ButtonState.Pressed;
 

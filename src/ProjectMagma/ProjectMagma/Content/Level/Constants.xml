@@ -56,7 +56,7 @@
       <Attribute name="player_pushback_velocity_multiplier" template="float" value="120"/>
 
       <Attribute name="island_aim_angle_eps" template="float" value="0.2"/>
-      <Attribute name="island_aim_angle" template="float" value="60"/>
+      <Attribute name="island_aim_angle" template="float" value="180"/>
       <Attribute name="island_reselection_max_value" template="float" value="0.9"/>
       <Attribute name="island_reselection_timeout" template="float" value="60"/>
       <Attribute name="island_deselection_timeout" template="float" value="200"/>

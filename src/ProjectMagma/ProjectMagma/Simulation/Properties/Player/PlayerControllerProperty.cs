@@ -66,7 +66,7 @@ namespace ProjectMagma.Simulation
 
         // values which get reset on each update
         private bool collisionOccured = false;
-        //private bool movedByStick;
+        private bool movedByStick;
         Vector3 previousPosition;
 
         public PlayerControllerProperty()
@@ -180,7 +180,7 @@ namespace ProjectMagma.Simulation
 
             // reset some stuff
             previousPosition = playerPosition;
-            //movedByStick = false;
+            movedByStick = false;
 
             // get input
             controllerInput.Update(playerIndex, simTime);
@@ -189,6 +189,9 @@ namespace ProjectMagma.Simulation
 
             // jetpack
             PerformJetpackMovement(simTime, dt, ref playerVelocity, ref fuel);
+
+            // xz movement
+            PerformStickMovement(player, dt, ref playerPosition, fuel);
 
             // perform island jump
             PerformIslandJump(player, dt, at, ref playerPosition, ref playerVelocity);
@@ -203,10 +206,8 @@ namespace ProjectMagma.Simulation
 //            Console.WriteLine("at: " + (int)gameTime.TotalGameTime.TotalMilliseconds);
 //            Console.WriteLine("velocity: " + playerVelocity + " led to change from " + previousPosition + " to " + playerPosition);
 
-            PerformStickMovement(player, dt, ref playerPosition, fuel);
-
             // pushback
-            Simulation.ApplyPushback(ref playerPosition, ref collisionPushbackVelocity, constants.GetFloat("player_pushback_deacceleration"));
+            Simulation.ApplyPushback(ref playerPosition, ref collisionPushbackVelocity, 0f /*constants.GetFloat("player_pushback_deacceleration")*/);
             Simulation.ApplyPushback(ref playerPosition, ref playerPushbackVelocity, constants.GetFloat("player_pushback_deacceleration"));
             Simulation.ApplyPushback(ref playerPosition, ref hitPushbackVelocity, constants.GetFloat("player_pushback_deacceleration"));
 
@@ -558,7 +559,7 @@ namespace ProjectMagma.Simulation
                 soundEffect.Play(Game.Instance.EffectsVolume);
 
                 // todo: specify point in model
-                Vector3 pos = new Vector3(playerPosition.X + 5, playerPosition.Y + 10, playerPosition.Z + 5);
+                Vector3 pos = new Vector3(playerPosition.X, playerPosition.Y + 15, playerPosition.Z);
                 Vector3 viewVector = Vector3.Transform(new Vector3(0, 0, 1), GetRotation(player));
 
                 #region search next player in range
@@ -640,7 +641,7 @@ namespace ProjectMagma.Simulation
         {
             if (controllerInput.moveStickMoved)
             {
-                //movedByStick = true;
+                movedByStick = true;
 
                 // XZ movement
                 if (activeIsland == null)
@@ -660,7 +661,7 @@ namespace ProjectMagma.Simulation
                     if (Simulation.GetPositionOnSurface(ref playerPosition, activeIsland, out isectPt))
                     {
 //                        Console.WriteLine("h-diff " + ( isectPt.Y - previousPosition.Y));
-                        // check angle
+                        // check height difference
                         if (isectPt.Y - previousPosition.Y > 10)
                         {
                             playerPosition = previousPosition;
@@ -669,7 +670,6 @@ namespace ProjectMagma.Simulation
                         {
                             // set position to contact point
                             playerPosition.Y = isectPt.Y + 1; // todo: make constant?
-                            player.SetVector3("position", playerPosition);
                         }
                     }
                     else
@@ -733,7 +733,7 @@ namespace ProjectMagma.Simulation
                 // check for arrival
                 Vector3 islandDir = destinationIsland.GetVector3("position") - playerPosition;
                 Vector3 isectPt = Vector3.Zero;
-                Ray3 ray = new Ray3(playerPosition + 10 * Vector3.UnitY, -Vector3.UnitY);
+                Ray3 ray = new Ray3(playerPosition + 1000 * Vector3.UnitY, -Vector3.UnitY);
                 if (Vector3.Dot(islandDir, lastIslandDir) < 0 // oscillation?
                    && Game.Instance.Simulation.CollisionManager.GetIntersectionPoint(ref ray, destinationIsland, out isectPt))
                 {
@@ -1041,15 +1041,33 @@ namespace ProjectMagma.Simulation
             }
             else
             {
+                /*
                 // normal feedback
                 Vector3 dir = previousPosition - player.GetVector3("position");
                 dir.Y = 0;
                 Vector3 normal = otherPlayer.GetVector3("position") - player.GetVector3("position");
                 normal.Y = 0;
-                if (Vector3.Dot(dir, normal) > 0) // and only if normal faces right direction
+                if (Vector3.Dot(dir, normal) > 0 // and only if normal faces right direction
+                    || dir == Vector3.Zero) 
                 {
                     player.SetVector3("collision_pushback_velocity", player.GetVector3("collision_pushback_velocity")
                         - normal * 5);
+                }
+                 */
+                if(movedByStick)
+                {
+                    Vector3 position = otherPlayer.GetVector3("position");
+
+                    // get distance of destination point to sliding plane
+                    float distance = Vector3.Dot(c[0].Normal, position - c[0].Point);
+
+                    // calculate point on plane
+                    Vector3 cpos = position - c[0].Normal * distance;
+
+                    Vector3 slidingDir = Vector3.Normalize(cpos - c[0].Point);
+                    Vector3 slidingVelocity = slidingDir * (previousPosition-player.GetVector3("position")).Length();
+
+                    player.SetVector3("position", previousPosition + slidingVelocity);
                 }
             }
         }

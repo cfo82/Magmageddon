@@ -133,8 +133,8 @@ namespace ProjectMagma.Simulation
         {
             flame.SetQuaternion("rotation", newValue);
 
-            if (flameThrowerState == FlameThrowerState.Active)
-                scaleFactor = constants.GetFloat("flamethrower_turn_scale");
+//            if (flameThrowerState == FlameThrowerState.Active)
+//                scaleFactor = constants.GetFloat("flamethrower_turn_scale");
         }
 
         private void flameFuelChangeHandler(BoolAttribute sender, bool oldValue, bool newValue)

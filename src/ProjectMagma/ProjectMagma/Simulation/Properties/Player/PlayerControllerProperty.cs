@@ -184,7 +184,7 @@ namespace ProjectMagma.Simulation
             //movedByStick = false;
 
             // get input
-            controllerInput.Update(playerIndex);
+            controllerInput.Update(playerIndex, simTime);
 
             #region movement
 
@@ -520,8 +520,38 @@ namespace ProjectMagma.Simulation
                     }
                 }
                 else
+                {
+                    // change rotation towards selected island
+                    if (selectedIsland != null)
+                    {
+                        /*
+                        Vector3 D = (selectedIsland.GetVector3("position") - playerPosition);
+                        Vector3 Right = Vector3.Cross(Vector3.UnitY, D);
+                        Vector3.Normalize(ref Right, out Right);
+                        Vector3 Backwards = Vector3.Cross(Right, Vector3.UnitY);
+                        Vector3.Normalize(ref Backwards, out Backwards);
+                        Vector3 Up = Vector3.Cross(Backwards, Right);
+                        Matrix rot = new Matrix(Right.X, Right.Y, Right.Z, 0, Up.X, Up.Y, Up.Z, 0, Backwards.X, Backwards.Y, Backwards.Z, 0, 0, 0, 0, 1);
+                         */
+
+                        Vector3 tminusp = (selectedIsland.GetVector3("position") - playerPosition); 
+                        Vector3 ominusp = Vector3.Backward;
+                        tminusp.Normalize();
+                        float theta = (float)System.Math.Acos(Vector3.Dot(tminusp, ominusp));
+                        Vector3 cross = Vector3.Cross(ominusp, tminusp);
+
+                        cross.Normalize();
+
+                        Quaternion targetQ = Quaternion.CreateFromAxisAngle(cross, theta);
+
+                        flame.SetQuaternion("rotation", targetQ);
+                    }
+
                     if (player.GetInt("energy") <= 0)
+                    {
                         flame.SetBool("fueled", false);
+                    }
+                }
             }
             else
                 if (flame != null)
@@ -637,9 +667,8 @@ namespace ProjectMagma.Simulation
                     playerPosition.Z += controllerInput.leftStickY * dt * constants.GetFloat("z_axis_movement_multiplier");
 
                     // position on island surface
-                    Vector3 isectPt = Vector3.Zero;
-                    Ray3 ray = new Ray3(playerPosition + 1000 * Vector3.UnitY, -Vector3.UnitY);
-                    if (Game.Instance.Simulation.CollisionManager.GetIntersectionPoint(ref ray, activeIsland, out isectPt))
+                    Vector3 isectPt;
+                    if (Simulation.GetPositionOnSurface(ref playerPosition, activeIsland, out isectPt))
                     {
                         Console.WriteLine("h-diff " + ( isectPt.Y - previousPosition.Y));
                         // check angle
@@ -675,8 +704,7 @@ namespace ProjectMagma.Simulation
                 {
                     // position on island surface
                     Vector3 isectPt = Vector3.Zero;
-                    Ray3 ray = new Ray3(playerPosition + 1000 * Vector3.UnitY, -Vector3.UnitY);
-                    if (Game.Instance.Simulation.CollisionManager.GetIntersectionPoint(ref ray, activeIsland, out isectPt))
+                    if (Simulation.GetPositionOnSurface(ref playerPosition, activeIsland, out isectPt))
                     {
                         // set position to contact point
                         playerPosition.Y = isectPt.Y + 1; // todo: make constant?
@@ -981,14 +1009,13 @@ namespace ProjectMagma.Simulation
                 player.SetVector3("velocity", Vector3.Zero);
 
                 // position
-                Vector3 isectPt = Vector3.Zero;
-                Ray3 ray = new Ray3(player.GetVector3("position") + 1000 * Vector3.UnitY, -Vector3.UnitY);
-                if (Game.Instance.Simulation.CollisionManager.GetIntersectionPoint(ref ray, island, out isectPt))
+                Vector3 isectPt;
+                Vector3 playerPosition = player.GetVector3("position");
+                if (Simulation.GetPositionOnSurface(ref playerPosition, island, out isectPt))
                 {
                     // set position to contact point
-                    Vector3 pos = player.GetVector3("position");
-                    pos.Y = isectPt.Y;
-                    player.SetVector3("position", pos);
+                    playerPosition.Y = isectPt.Y;
+                    player.SetVector3("position", playerPosition);
                 }
             }
             else
@@ -1016,7 +1043,7 @@ namespace ProjectMagma.Simulation
         {
             //Console.WriteLine(player.Name + " collided with " + otherPlayer.Name);
             // and hit?
-            if (controllerInput.hitButtonPressed &&
+            if (simTime.At < controllerInput.hitButtonPressedAt + 500 && // todo: make constant
                 simTime.At > hitPerformedAt + constants.GetInt("hit_cooldown"))
             {
                 // indicate hit!
@@ -1234,7 +1261,7 @@ namespace ProjectMagma.Simulation
             private GamePadState gamePadState;
             private KeyboardState keyboardState;
 
-            public void Update(PlayerIndex playerIndex)
+            public void Update(PlayerIndex playerIndex, SimulationTime simTime)
             {
                 gamePadState = GamePad.GetState(playerIndex);
                 keyboardState = Keyboard.GetState(playerIndex);
@@ -1326,6 +1353,9 @@ namespace ProjectMagma.Simulation
 
                 #endregion
 
+                if (hitButtonPressed)
+                    hitButtonPressedAt = simTime.At;
+
                 oldGPState = gamePadState;
                 oldKBState = keyboardState;
             }
@@ -1399,6 +1429,9 @@ namespace ProjectMagma.Simulation
             public bool jetpackButtonPressed, flamethrowerButtonPressed, iceSpikeButtonPressed, hitButtonPressed, attractionButtonPressed;
             public bool jetpackButtonReleased, flamethrowerButtonReleased, iceSpikeButtonReleased, hitButtonReleased, attractionButtonReleased;
             public bool jetpackButtonHold, flamethrowerButtonHold, iceSpikeButtonHold, hitButtonHold, attractionButtonHold;
+
+            // times
+            public float hitButtonPressedAt;
 
             private static float gamepadEmulationValue = -1f;
         }

@@ -119,6 +119,7 @@
     <Compile Include="Math\Primitives\Serialization\VolumeWriter.cs" />
     <Compile Include="Math\Primitives\Serialization\VolumeCollectionWriter.cs" />
     <Compile Include="ModelProcessors\CaveProcessor.cs" />
+    <Compile Include="ModelProcessors\ExplosionProcessor.cs" />
     <Compile Include="ModelProcessors\FlameProcessor.cs" />
     <Compile Include="ModelProcessors\PowerUpProcessor.cs" />
     <Compile Include="ModelProcessors\IceSpikeProcessor.cs" />

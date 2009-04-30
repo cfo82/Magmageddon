@@ -122,6 +122,7 @@ namespace ProjectMagma.Simulation
                 Entity playerIsland = Game.Instance.Simulation.EntityManager[player.GetString("active_island")];
                 Vector3 destinationPos = playerIsland.GetVector3("position");
                 Vector3 dir = destinationPos - position;
+                float dist = dir.Length();
                 dir.Normalize();
 
                 bool inRadius = (position - destinationPos).Length()
@@ -138,10 +139,14 @@ namespace ProjectMagma.Simulation
                     if (!inRadius || inHeight)
                     {
                         Vector3 velocity = island.GetVector3("attraction_velocity");
-                        // deaccelerate a bit first if > max_speed
-                        if (velocity.Length() > constants.GetFloat("attraction_max_speed"))
+                        float maxSpeed = constants.GetFloat("attraction_max_speed");
+                        if (dist < 200) // todo: make constant
+                            maxSpeed *= dist / 400;
+
+                        // don't allow being faster than max-speed
+                        if (velocity.Length() > maxSpeed)
                         {
-                            velocity -= Vector3.Normalize(velocity) * constants.GetFloat("attraction_acceleration") * dt;
+                            velocity = Vector3.Normalize(velocity) * maxSpeed;
                         }
                         if (!hadCollision)
                         {

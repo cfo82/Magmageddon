@@ -1013,7 +1013,7 @@ namespace ProjectMagma.Simulation
                 if (Simulation.GetPositionOnSurface(ref playerPosition, island, out isectPt))
                 {
                     // set position to contact point
-                    playerPosition.Y = isectPt.Y;
+                    playerPosition.Y = isectPt.Y + 1;
                     player.SetVector3("position", playerPosition);
                 }
             }

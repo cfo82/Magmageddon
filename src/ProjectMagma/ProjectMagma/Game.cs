@@ -266,7 +266,8 @@ namespace ProjectMagma
         {
             simulation.Close();
 
-#if !XBOX && DEBUG            formCollection.Dispose();
+#if !XBOX && DEBUG            
+            formCollection.Dispose();
 #endif
 
             MediaPlayer.Stop();
@@ -305,7 +306,8 @@ namespace ProjectMagma
                     graphics.ApplyChanges();
                 }
 
-#if !XBOX && DEBUG            	profiler.BeginSection("formcollection_update");
+#if !XBOX && DEBUG            	
+                profiler.BeginSection("formcollection_update");
                 // update the user interface
                 formCollection.Update(gameTime);
             	profiler.EndSection("formcollection_update");
@@ -336,7 +338,8 @@ namespace ProjectMagma
             profiler.TryBeginFrame();
             profiler.BeginSection("draw");
 
-#if !XBOX && DEBUG            formCollection.Render();
+#if !XBOX && DEBUG            
+            formCollection.Render();
 #endif
 
             // TODO: small hack until dominik has added the bloom component...
@@ -353,7 +356,8 @@ namespace ProjectMagma
             // draw stuff which should not be filtered
             menu.Draw(gameTime);
 
-#if !XBOX && DEBUG            formCollection.Draw();
+#if !XBOX && DEBUG            
+            formCollection.Draw();
 #endif
 
             profiler.EndSection("draw");

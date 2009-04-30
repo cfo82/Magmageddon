@@ -280,52 +280,58 @@ namespace ProjectMagma.Simulation.Collision.CollisionTests
         }
 
         public static void Test(
-            Entity entity1, object boundingVolume1, ref Matrix worldTransform1, ref Vector3 translation1, ref Quaternion rotation1, ref Vector3 scale1,
-            Entity entity2, object boundingVolume2, ref Matrix worldTransform2, ref Vector3 translation2, ref Quaternion rotation2, ref Vector3 scale2,
+            Entity entity1, object[] boundingVolumes1, ref Matrix worldTransform1, ref Vector3 translation1, ref Quaternion rotation1, ref Vector3 scale1,
+            Entity entity2, object[] boundingVolumes2, ref Matrix worldTransform2, ref Vector3 translation2, ref Quaternion rotation2, ref Vector3 scale2,
             bool needAllContacts, ref Contact contact
             )
         {
-            AlignedBox3Tree tree1 = (AlignedBox3Tree)boundingVolume1;
-            AlignedBox3Tree tree2 = (AlignedBox3Tree)boundingVolume2;
+            AlignedBox3Tree[] trees1 = (AlignedBox3Tree[])boundingVolumes1;
+            AlignedBox3Tree[] trees2 = (AlignedBox3Tree[])boundingVolumes2;
 
-            // early exit if they do not intersect...
-            Box3 box1 = tree1.BoundingBox.CreateBox3(ref worldTransform1);
-            Box3 box2 = tree2.BoundingBox.CreateBox3(ref worldTransform2);
-            if (!Intersection.IntersectBox3Box3(box1, box2))
+            foreach (AlignedBox3Tree tree1 in trees1)
             {
-                return;
-            }
+                foreach (AlignedBox3Tree tree2 in trees2)
+                {
+                    // early exit if they do not intersect...
+                    Box3 box1 = tree1.BoundingBox.CreateBox3(ref worldTransform1);
+                    Box3 box2 = tree2.BoundingBox.CreateBox3(ref worldTransform2);
+                    if (!Intersection.IntersectBox3Box3(box1, box2))
+                    {
+                        continue;
+                    }
 
-            Context context = new Context();
-            context.entity1 = entity1;
-            context.positions1 = tree1.Positions;
-            context.worldTransform1 = worldTransform1;
-            context.entity2 = entity2;
-            context.positions2 = tree2.Positions;
-            context.worldTransform2 = worldTransform2;
-            context.needAllContacts = needAllContacts;
-            context.contact = contact;
+                    Context context = new Context();
+                    context.entity1 = entity1;
+                    context.positions1 = tree1.Positions;
+                    context.worldTransform1 = worldTransform1;
+                    context.entity2 = entity2;
+                    context.positions2 = tree2.Positions;
+                    context.worldTransform2 = worldTransform2;
+                    context.needAllContacts = needAllContacts;
+                    context.contact = contact;
 
-            if (tree1.Root.HasChildren)
-            {
-                if (tree2.Root.HasChildren)
-                {
-                    CollideInnerInner(ref context, tree1.Root, tree2.Root);
-                }
-                else
-                {
-                    CollideInnerLeaf(ref context, tree1.Root, tree2.Root);
-                }
-            }
-            else
-            {
-                if (tree2.Root.HasChildren)
-                {
-                    CollideLeafInner(ref context, tree1.Root, tree2.Root);
-                }
-                else
-                {
-                    CollideLeafLeaf(ref context, tree1.Root, tree2.Root);
+                    if (tree1.Root.HasChildren)
+                    {
+                        if (tree2.Root.HasChildren)
+                        {
+                            CollideInnerInner(ref context, tree1.Root, tree2.Root);
+                        }
+                        else
+                        {
+                            CollideInnerLeaf(ref context, tree1.Root, tree2.Root);
+                        }
+                    }
+                    else
+                    {
+                        if (tree2.Root.HasChildren)
+                        {
+                            CollideLeafInner(ref context, tree1.Root, tree2.Root);
+                        }
+                        else
+                        {
+                            CollideLeafLeaf(ref context, tree1.Root, tree2.Root);
+                        }
+                    }
                 }
             }
         }

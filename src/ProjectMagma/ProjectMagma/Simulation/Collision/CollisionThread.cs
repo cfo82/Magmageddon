@@ -68,8 +68,8 @@ namespace ProjectMagma.Simulation.Collision
                         Contact contact = new Contact(entry.EntityA.Entity, entry.EntityB.Entity);
 
                         test(
-                            entry.EntityA.Entity, entry.EntityA.Volume, ref worldTransform1, ref position1, ref rotation1, ref scale1,
-                            entry.EntityB.Entity, entry.EntityB.Volume, ref worldTransform2, ref position2, ref rotation2, ref scale2,
+                            entry.EntityA.Entity, entry.EntityA.Volumes, ref worldTransform1, ref position1, ref rotation1, ref scale1,
+                            entry.EntityB.Entity, entry.EntityB.Volumes, ref worldTransform2, ref position2, ref rotation2, ref scale2,
                             entry.EntityA.NeedAllContacts || entry.EntityB.NeedAllContacts, ref contact
                             );
                         if (contact.Count > 0)

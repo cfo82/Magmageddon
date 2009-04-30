@@ -146,7 +146,7 @@ namespace ProjectMagma.ContentPipeline.ModelProcessors
             ModelContent modelContent = base.Process(input, context);
 
             // add bounding volumes to the model
-            modelContent.Tag = CalculateCollisionVolumes(collisionMeshContent, context);
+            modelContent.Tag = CalculateCollisionVolumes(new NodeContent[] { collisionMeshContent }, context);
 
             return modelContent;
         }
@@ -156,9 +156,7 @@ namespace ProjectMagma.ContentPipeline.ModelProcessors
             ContentProcessorContext context
         )
         {
-#if DEBUG
             context.Logger.LogWarning(null, input.Identity, "processing legacy file using the graphical mesh as collision mesh");
-#endif
 
             // calculate bounds because changes are based on the bounding box
             AlignedBox3 bb = CalculateAlignedBox3(input, context, false);
@@ -169,7 +167,7 @@ namespace ProjectMagma.ContentPipeline.ModelProcessors
             ModelContent modelContent = base.Process(input, context);
 
             // add bounding volumes to the model
-            modelContent.Tag = CalculateCollisionVolumes(input, context);
+            modelContent.Tag = CalculateCollisionVolumes(new NodeContent[] { input }, context);
 
             return modelContent;
         }
@@ -254,13 +252,17 @@ namespace ProjectMagma.ContentPipeline.ModelProcessors
             // TODO: take all collision meshes not only the first one!
             VolumeCollection collection = new VolumeCollection();
 
-            if (collisionNodes.Count > 0)
+            if (collisionNodes.Count == 0)
             {
-                modelContent.Tag = CalculateCollisionVolumes(currentGroupNode, context);
+                context.Logger.LogWarning(null, input.Identity, "unable to find a collision mesh in group {0}", CurrentGroup);
+                modelContent.Tag = CalculateCollisionVolumes(new NodeContent[] { currentGroupNode }, context);
             }
             else
             {
-                modelContent.Tag = CalculateCollisionVolumes(collisionNodes[0], context);
+                NodeContent[] collisionNodesArray = new NodeContent[collisionNodes.Count];
+                for (int i = 0; i < collisionNodes.Count; ++i)
+                    { collisionNodesArray[i] = collisionNodes[i]; }
+                modelContent.Tag = CalculateCollisionVolumes(collisionNodesArray, context);
             }
 
             return modelContent;
@@ -397,17 +399,62 @@ namespace ProjectMagma.ContentPipeline.ModelProcessors
 
         #region Volume Calculations
 
-        private VolumeCollection CalculateCollisionVolumes(
-            NodeContent collisionNode,
+        private List<VolumeCollection> CalculateCollisionVolumes(
+            NodeContent[] collisionNodes,
             ContentProcessorContext context
         )
         {
-            VolumeCollection collection = new VolumeCollection();
-            collection.AddVolume(CalculateAlignedBox3(collisionNode, context, false));
-            collection.AddVolume(CalculateAlignedBox3Tree(collisionNode, context, false));
-            collection.AddVolume(CalculateCylinder3(collisionNode, context, false));
-            collection.AddVolume(CalculateSphere3(collisionNode, context, false));
-            return collection;
+            List<VolumeCollection> collectionList = new List<VolumeCollection>();
+            foreach (NodeContent currentNode in collisionNodes)
+            {
+                VolumeCollection collection = new VolumeCollection();
+                collection.AddVolume(CalculateAlignedBox3(currentNode, context, false));
+                collection.AddVolume(CalculateAlignedBox3Tree(currentNode, context, false));
+                collection.AddVolume(CalculateCylinder3(currentNode, context, false));
+                collection.AddVolume(CalculateSphere3(currentNode, context, false));
+                collectionList.Add(collection);
+            }
+            return collectionList;
+            /*if (collisionNodes.Length == 1)
+            {
+                VolumeCollection collection = new VolumeCollection();
+                collection.AddVolume(CalculateAlignedBox3(collisionNodes[0], context, false));
+                collection.AddVolume(CalculateAlignedBox3Tree(collisionNodes[0], context, false));
+                collection.AddVolume(CalculateCylinder3(collisionNodes[0], context, false));
+                collection.AddVolume(CalculateSphere3(collisionNodes[0], context, false));
+                collectionList.Add(collection);
+            }
+            else
+            {
+                MultiVolume alignedBox3Container = new MultiVolume();
+                foreach (NodeContent currentNode in collisionNodes)
+                {
+                    alignedBox3Container.Add(CalculateAlignedBox3(currentNode, context, false));
+                }
+                collection.AddVolume(alignedBox3Container);
+
+                MultiVolume alignedBox3TreeContainer = new MultiVolume();
+                foreach (NodeContent currentNode in collisionNodes)
+                {
+                    alignedBox3TreeContainer.Add(CalculateAlignedBox3Tree(currentNode, context, false));
+                }
+                collection.AddVolume(alignedBox3TreeContainer);
+
+                MultiVolume cylinder3Container = new MultiVolume();
+                foreach (NodeContent currentNode in collisionNodes)
+                {
+                    cylinder3Container.Add(CalculateCylinder3(currentNode, context, false));
+                }
+                collection.AddVolume(cylinder3Container);
+
+                MultiVolume sphere3Container = new MultiVolume();
+                foreach (NodeContent currentNode in collisionNodes)
+                {
+                    sphere3Container.Add(CalculateSphere3(currentNode, context, false));
+                }
+                collection.AddVolume(sphere3Container);
+            }
+            return collection;*/
         }
 
         private AlignedBox3 CalculateAlignedBox3(

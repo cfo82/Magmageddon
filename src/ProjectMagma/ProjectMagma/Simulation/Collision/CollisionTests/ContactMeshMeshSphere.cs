@@ -292,59 +292,65 @@ namespace ProjectMagma.Simulation.Collision.CollisionTests
         }
 
         public static void Test(
-            Entity entity1, object boundingVolume1, ref Matrix worldTransform1, ref Vector3 translation1, ref Quaternion rotation1, ref Vector3 scale1,
-            Entity entity2, object boundingVolume2, ref Matrix worldTransform2, ref Vector3 translation2, ref Quaternion rotation2, ref Vector3 scale2,
+            Entity entity1, object[] boundingVolumes1, ref Matrix worldTransform1, ref Vector3 translation1, ref Quaternion rotation1, ref Vector3 scale1,
+            Entity entity2, object[] boundingVolumes2, ref Matrix worldTransform2, ref Vector3 translation2, ref Quaternion rotation2, ref Vector3 scale2,
             bool needAllContacts, ref Contact contact
         )
         {
-            AlignedBox3Tree tree1 = (AlignedBox3Tree)boundingVolume1;
-            AlignedBox3Tree tree2 = (AlignedBox3Tree)boundingVolume2;
+            AlignedBox3Tree[] trees1 = (AlignedBox3Tree[])boundingVolumes1;
+            AlignedBox3Tree[] trees2 = (AlignedBox3Tree[])boundingVolumes2;
 
-            // early exit if they do not intersect...
-            Sphere3 sphere1, sphere2;
-            tree1.BoundingBox.CreateSphere3(ref worldTransform1, out sphere1);
-            tree2.BoundingBox.CreateSphere3(ref worldTransform2, out sphere2);
-            if ((sphere1.Center - sphere2.Center).LengthSquared() > (sphere1.Radius + sphere2.Radius) * (sphere1.Radius + sphere2.Radius))
+            foreach (AlignedBox3Tree tree1 in trees1)
             {
-                return;
-            }
+                foreach (AlignedBox3Tree tree2 in trees2)
+                {
+                    // early exit if they do not intersect...
+                    Sphere3 sphere1, sphere2;
+                    tree1.BoundingBox.CreateSphere3(ref worldTransform1, out sphere1);
+                    tree2.BoundingBox.CreateSphere3(ref worldTransform2, out sphere2);
+                    if ((sphere1.Center - sphere2.Center).LengthSquared() > (sphere1.Radius + sphere2.Radius) * (sphere1.Radius + sphere2.Radius))
+                    {
+                        continue;
+                    }
 
-            if (tree1.Root.HasChildren)
-            {
-                if (tree2.Root.HasChildren)
-                {
-                    CollideInnerInner(
-                        entity1, tree1.Root, tree1.Positions, ref worldTransform1,
-                        entity2, tree2.Root, tree2.Positions, ref worldTransform2,
-                        ref contact, false
-                    );
-                }
-                else
-                {
-                    CollideInnerLeaf(
-                        entity1, tree1.Root, tree1.Positions, ref worldTransform1,
-                        entity2, tree2.Root, tree2.Positions, ref worldTransform2,
-                        ref contact, false
-                    );
-                }
-            }
-            else
-            {
-                if (tree2.Root.HasChildren)
-                {
-                    CollideInnerLeaf(
-                        entity2, tree2.Root, tree2.Positions, ref worldTransform2,
-                        entity1, tree1.Root, tree1.Positions, ref worldTransform1,
-                        ref contact, true
-                    );
-                }
-                else
-                {
-                    CollideLeafLeaf(
-                        entity1, tree1.Root, tree1.Positions, ref worldTransform1,
-                        entity2, tree2.Root, tree2.Positions, ref worldTransform2,
-                        ref contact, false
-                    );
+                    if (tree1.Root.HasChildren)
+                    {
+                        if (tree2.Root.HasChildren)
+                        {
+                            CollideInnerInner(
+                                entity1, tree1.Root, tree1.Positions, ref worldTransform1,
+                                entity2, tree2.Root, tree2.Positions, ref worldTransform2,
+                                ref contact, false
+                            );
+                        }
+                        else
+                        {
+                            CollideInnerLeaf(
+                                entity1, tree1.Root, tree1.Positions, ref worldTransform1,
+                                entity2, tree2.Root, tree2.Positions, ref worldTransform2,
+                                ref contact, false
+                            );
+                        }
+                    }
+                    else
+                    {
+                        if (tree2.Root.HasChildren)
+                        {
+                            CollideInnerLeaf(
+                                entity2, tree2.Root, tree2.Positions, ref worldTransform2,
+                                entity1, tree1.Root, tree1.Positions, ref worldTransform1,
+                                ref contact, true
+                            );
+                        }
+                        else
+                        {
+                            CollideLeafLeaf(
+                                entity1, tree1.Root, tree1.Positions, ref worldTransform1,
+                                entity2, tree2.Root, tree2.Positions, ref worldTransform2,
+                                ref contact, false
+                            );
+                        }
+                    }
                 }
             }
         }

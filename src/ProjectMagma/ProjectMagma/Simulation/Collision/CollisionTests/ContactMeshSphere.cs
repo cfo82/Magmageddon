@@ -84,20 +84,26 @@ namespace ProjectMagma.Simulation.Collision.CollisionTests
         }
 
         public static void Test(
-            Entity entity1, object boundingVolume1, ref Matrix worldTransform1, ref Vector3 translation1, ref Quaternion rotation1, ref Vector3 scale1,
-            Entity entity2, object boundingVolume2, ref Matrix worldTransform2, ref Vector3 translation2, ref Quaternion rotation2, ref Vector3 scale2,
+            Entity entity1, object[] boundingVolumes1, ref Matrix worldTransform1, ref Vector3 translation1, ref Quaternion rotation1, ref Vector3 scale1,
+            Entity entity2, object[] boundingVolumes2, ref Matrix worldTransform2, ref Vector3 translation2, ref Quaternion rotation2, ref Vector3 scale2,
             bool needAllContacts, ref Contact contact
         )
         {
-            AlignedBox3Tree tree1 = (AlignedBox3Tree)boundingVolume1;
-            Sphere3 sphere2 = (Sphere3)boundingVolume2;
+            AlignedBox3Tree[] trees1 = (AlignedBox3Tree[])boundingVolumes1;
+            Sphere3[] spheres2 = (Sphere3[])boundingVolumes2;
 
-            Debug.Assert(scale2.X == scale2.Y && scale2.Y == scale2.Z);
-            Sphere3 transformedSphere2 = new Sphere3(Vector3.Transform(sphere2.Center, worldTransform2), sphere2.Radius * scale2.X);
+            foreach (AlignedBox3Tree tree1 in trees1)
+            {
+                foreach (Sphere3 sphere2 in spheres2)
+                {
+                    Debug.Assert(scale2.X == scale2.Y && scale2.Y == scale2.Z);
+                    Sphere3 transformedSphere2 = new Sphere3(Vector3.Transform(sphere2.Center, worldTransform2), sphere2.Radius * scale2.X);
 
-            Test(entity1, tree1.Root, tree1.Positions, worldTransform1, translation1, rotation1, scale1,
-                entity2, transformedSphere2, worldTransform2, translation2, rotation2, scale2,
-                needAllContacts, ref contact);
+                    Test(entity1, tree1.Root, tree1.Positions, worldTransform1, translation1, rotation1, scale1,
+                        entity2, transformedSphere2, worldTransform2, translation2, rotation2, scale2,
+                        needAllContacts, ref contact);
+                }
+            }
         }
     }
 }

@@ -324,7 +324,7 @@ namespace ProjectMagma.Simulation
                             // todo: this will occur if projection is Vector3.Zero. what to do then?
                             if (float.IsInfinity(newVelocity.X))
                             {
-                                Console.WriteLine("newvelocity: " + newVelocity);
+                                //Console.WriteLine("newvelocity: " + newVelocity);
                             }
 
                             island.SetVector3("attraction_velocity", newVelocity);

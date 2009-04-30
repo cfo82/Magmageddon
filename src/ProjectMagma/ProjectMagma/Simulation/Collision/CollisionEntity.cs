@@ -7,30 +7,30 @@ namespace ProjectMagma.Simulation.Collision
         public CollisionEntity(
             Entity entity,
             CollisionProperty property,
-            Sphere3 sphere,
+            Sphere3[] spheres,
             bool needAllContacts
         )
-        :   this(entity, property, VolumeType.Sphere3, sphere, needAllContacts)
+        :   this(entity, property, VolumeType.Sphere3, spheres, needAllContacts)
         {
         }
 
         public CollisionEntity(
             Entity entity,
             CollisionProperty property,
-            AlignedBox3Tree tree,
+            AlignedBox3Tree[] trees,
             bool needAllContacts
         )
-        :   this(entity, property, VolumeType.AlignedBox3Tree, tree, needAllContacts)
+        :   this(entity, property, VolumeType.AlignedBox3Tree, trees, needAllContacts)
         {
         }
 
         public CollisionEntity(
             Entity entity, 
             CollisionProperty property,
-            Cylinder3 cylinder,
+            Cylinder3[] cylinders,
             bool needAllContacts
         )
-        :   this(entity, property, VolumeType.Cylinder3, cylinder, needAllContacts)
+        :   this(entity, property, VolumeType.Cylinder3, cylinders, needAllContacts)
         {
         }
 
@@ -38,14 +38,14 @@ namespace ProjectMagma.Simulation.Collision
             Entity entity,
             CollisionProperty property,
             VolumeType volumeType,
-            object volume,
+            object[] volumes,
             bool needAllContacts
         )
         {
             this.entity = entity;
             this.collisionProperty = property;
             this.volumeType = volumeType;
-            this.volume = volume;
+            this.volumes = volumes;
             this.needAllContacts = needAllContacts;
         }
 
@@ -64,9 +64,9 @@ namespace ProjectMagma.Simulation.Collision
             get { return volumeType; }
         }
 
-        public object Volume
+        public object[] Volumes
         {
-            get { return volume; }
+            get { return volumes; }
         }
 
         public bool NeedAllContacts
@@ -77,7 +77,7 @@ namespace ProjectMagma.Simulation.Collision
         private Entity entity;
         private CollisionProperty collisionProperty;
         private VolumeType volumeType;
-        private object volume;
+        private object[] volumes;
         private bool needAllContacts;
     }
 }

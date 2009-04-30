@@ -19,23 +19,39 @@ namespace ProjectMagma.Simulation.Collision
         {
             bool needAllContacts = entity.HasBool("need_all_contacts") && entity.GetBool("need_all_contacts");
 
+            Model model = Game.Instance.Content.Load<Model>(entity.GetString("mesh"));
+            List<VolumeCollection> collisionVolumes = (List<VolumeCollection>)model.Tag;
+
             if (entity.HasString("bv_type"))
             {
                 string bv_type = entity.GetString("bv_type");
                 if (bv_type == "cylinder")
                 {
-                    Cylinder3 bvCylinder = GetBoundingCylinder(entity);
-                    Game.Instance.Simulation.CollisionManager.AddCollisionEntity(entity, this, bvCylinder, needAllContacts);
+                    Cylinder3[] bvCylinders = new Cylinder3[collisionVolumes.Count];
+                    for (int i = 0; i < collisionVolumes.Count; ++i)
+                    { bvCylinders[i] = (Cylinder3)collisionVolumes[i].GetVolume(VolumeType.Cylinder3); }
+                    Game.Instance.Simulation.CollisionManager.AddCollisionEntity(entity, this, bvCylinders, needAllContacts);
                 }
                 else if (bv_type == "alignedbox3tree")
                 {
-                    AlignedBox3Tree bvTree = GetAlignedBox3Tree(entity);
-                    Game.Instance.Simulation.CollisionManager.AddCollisionEntity(entity, this, bvTree, needAllContacts);
+                    AlignedBox3Tree[] bvTrees = new AlignedBox3Tree[collisionVolumes.Count];
+                    for (int i = 0; i < collisionVolumes.Count; ++i)
+                        { bvTrees[i] = (AlignedBox3Tree)collisionVolumes[i].GetVolume(VolumeType.AlignedBox3Tree); }
+                    Game.Instance.Simulation.CollisionManager.AddCollisionEntity(entity, this, bvTrees, needAllContacts);
                 }
                 else if (bv_type == "sphere")
                 {
-                    Sphere3 bvSphere = GetBoundingSphere(entity);
-                    Game.Instance.Simulation.CollisionManager.AddCollisionEntity(entity, this, bvSphere, needAllContacts);
+                    Sphere3[] bvSpheres = new Sphere3[collisionVolumes.Count];
+                    for (int i = 0; i < collisionVolumes.Count; ++i)
+                        { bvSpheres[i] = (Sphere3)collisionVolumes[i].GetVolume(VolumeType.Sphere3); }
+                    Game.Instance.Simulation.CollisionManager.AddCollisionEntity(entity, this, bvSpheres, needAllContacts);
+                }
+                else if (bv_type == "alignedbox3")
+                {
+                    AlignedBox3[] bvBoxes = new AlignedBox3[collisionVolumes.Count];
+                    for (int i = 0; i < collisionVolumes.Count; ++i)
+                        { bvBoxes[i] = (AlignedBox3)collisionVolumes[i].GetVolume(VolumeType.AlignedBox3); }
+                    throw new System.Exception("bounding boxes not yet supported!");
                 }
             }
         }
@@ -53,35 +69,6 @@ namespace ProjectMagma.Simulation.Collision
             {
                 OnContact(simTime, contact);
             }
-        }
-
-        private Sphere3 GetBoundingSphere(Entity entity)
-        {
-            Model model = Game.Instance.Content.Load<Model>(entity.GetString("mesh"));
-            VolumeCollection collection = (VolumeCollection)model.Tag;
-            return (Sphere3)collection.GetVolume(VolumeType.Sphere3);
-        }
-
-        // calculates y-axis aligned bounding cylinder
-        private Cylinder3 GetBoundingCylinder(Entity entity)
-        {
-            Model model = Game.Instance.Content.Load<Model>(entity.GetString("mesh"));
-            VolumeCollection collection = (VolumeCollection)model.Tag;
-            return (Cylinder3)collection.GetVolume(VolumeType.Cylinder3);
-        }
-
-        private AlignedBox3Tree GetAlignedBox3Tree(Entity entity)
-        {
-            Model model = Game.Instance.Content.Load<Model>(entity.GetString("mesh"));
-            VolumeCollection collection = (VolumeCollection)model.Tag;
-            return (AlignedBox3Tree)collection.GetVolume(VolumeType.AlignedBox3Tree);
-        }
-
-        private AlignedBox3 GetBoundingBox(Entity entity)
-        {
-            Model model = Game.Instance.Content.Load<Model>(entity.GetString("mesh"));
-            VolumeCollection collection = (VolumeCollection)model.Tag;
-            return (AlignedBox3)collection.GetVolume(VolumeType.AlignedBox3);
         }
         
         public event ContactHandler OnContact;

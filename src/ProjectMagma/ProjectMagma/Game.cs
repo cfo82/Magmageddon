@@ -255,7 +255,7 @@ namespace ProjectMagma
                 if (entity.HasString("type") && entity.GetString("type") == "pillar")
                     pillars.Add((entity.GetProperty("render") as ModelRenderProperty).Renderable);
             }
-            System.Console.WriteLine("blah");
+            //System.Console.WriteLine("blah");
         }
 
         /// <summary>

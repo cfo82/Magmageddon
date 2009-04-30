@@ -16,9 +16,6 @@ namespace ProjectMagma.Renderer
             effect = Game.Instance.Content.Load<Effect>("Effects/Lava/Lava");
             InitializeRandomOffsets();
 
-            VolumeCollection collection = (VolumeCollection)model.Tag;
-            boundingBox = (AlignedBox3)collection.GetVolume(VolumeType.AlignedBox3);
-
             UseLights = false;
             UseMaterialParameters = false;
             UseSquash = false;

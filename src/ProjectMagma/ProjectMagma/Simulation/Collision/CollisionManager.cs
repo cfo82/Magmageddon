@@ -34,19 +34,19 @@ namespace ProjectMagma.Simulation.Collision
 
         #region Manage colliding entities
 
-        public void AddCollisionEntity(Entity entity, CollisionProperty property, Cylinder3 cylinder, bool needAllContacts)
+        public void AddCollisionEntity(Entity entity, CollisionProperty property, Cylinder3[] cylinders, bool needAllContacts)
         {
-            testList.Add(new CollisionEntity(entity, property, cylinder, needAllContacts));
+            testList.Add(new CollisionEntity(entity, property, cylinders, needAllContacts));
         }
 
-        public void AddCollisionEntity(Entity entity, CollisionProperty property, AlignedBox3Tree tree, bool needAllContacts)
+        public void AddCollisionEntity(Entity entity, CollisionProperty property, AlignedBox3Tree[] trees, bool needAllContacts)
         {
-            testList.Add(new CollisionEntity(entity, property, tree, needAllContacts));
+            testList.Add(new CollisionEntity(entity, property, trees, needAllContacts));
         }
 
-        public void AddCollisionEntity(Entity entity, CollisionProperty property, Sphere3 sphere, bool needAllContacts)
+        public void AddCollisionEntity(Entity entity, CollisionProperty property, Sphere3[] spheres, bool needAllContacts)
         {
-            testList.Add(new CollisionEntity(entity, property, sphere, needAllContacts));
+            testList.Add(new CollisionEntity(entity, property, spheres, needAllContacts));
         }
 
         public bool ContainsCollisionEntity(CollisionProperty property)
@@ -114,10 +114,11 @@ namespace ProjectMagma.Simulation.Collision
                     //        entry.EntityB.entity.GetString("kind") == "pillar" ||
                     //        (entry.EntityA.entity.GetString("kind") == "island" && entry.EntityB.entity.GetString("kind") == "island")
                     //    ))
-                    //if ((contact.EntityA.HasString("kind") && contact.EntityA.GetString("kind") == "powerup") ||
-                    //    (contact.EntityB.HasString("kind") && contact.EntityB.GetString("kind") == "powerup"))
+                    //if ((contact.EntityA.HasString("kind") && contact.EntityA.GetString("kind") == "cave") ||
+                    //    (contact.EntityB.HasString("kind") && contact.EntityB.GetString("kind") == "cave"))
                     //{
-                    //    System.Console.WriteLine("Collision {0,4}: between {1} and {2}!", 0, contact.EntityA.Name, contact.EntityB.Name);
+                    //    System.Console.WriteLine("Collision {0,4}: between {1} and {2}!", collisionCount, contact.EntityA.Name, contact.EntityB.Name);
+                    //    ++collisionCount;
                     //}
 
                     CollisionProperty propertyA = contact.EntityA.HasProperty("collision") ? (CollisionProperty)contact.EntityA.GetProperty("collision") : null;
@@ -128,7 +129,6 @@ namespace ProjectMagma.Simulation.Collision
                         propertyA.FireContact(simTime, contact);
                         contact.Reverse();
                         propertyB.FireContact(simTime, contact);
-                        //++collisionCount;
                     }
                     else
                     {
@@ -215,7 +215,7 @@ namespace ProjectMagma.Simulation.Collision
 
             // get world transform of from the given entity
             Matrix worldTransform;
-            AlignedBox3Tree tree = (AlignedBox3Tree)collisionEntity.Volume;
+            AlignedBox3Tree[] tree = (AlignedBox3Tree[])collisionEntity.Volumes;
             OrientationHelper.CalculateWorldTransform(entity, out worldTransform);
 
             // transform the ray into the coordinate system of the entity
@@ -227,7 +227,7 @@ namespace ProjectMagma.Simulation.Collision
             Ray3 entitySpaceRay = new Ray3(entitySpaceRayOrigin, entitySpaceRayDirection);
 
             float t; // parameter on ray, outIsectPt = ray.Origin + t * ray.Direction;
-            bool intersection = GetIntersectionPoint(ref entitySpaceRay, tree.Root, tree.Positions, out t);
+            bool intersection = GetIntersectionPoint(ref entitySpaceRay, tree[0].Root, tree[0].Positions, out t);
             if (intersection)
             {
                 outIsectPt = Vector3.Transform(entitySpaceRay.Origin + t * entitySpaceRay.Direction, worldTransform);

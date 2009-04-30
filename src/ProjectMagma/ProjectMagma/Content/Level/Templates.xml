@@ -35,7 +35,7 @@
       <Attribute name="kind" template="string" value="cave"/>
       <Attribute name="position" template="float3" value="0 -20 90"/>
       <Attribute name="scale" template="float3" value="800 800 800"/>
-      <Attribute name="mesh" template="string" value="Models/Environment/cave_v002"/>
+      <Attribute name="mesh" template="string" value="Models/Environment/cave_grp"/>
       <Attribute name="bv_type" template="string" value="alignedbox3tree"/>
       <Attribute name="diffuse_texture" template="string" value="Textures/Environment/cave_diffuse_v001"/>
       <!--Attribute name="diffuse_texture" template="string" value="Textures/custom_uv_diag"/-->
@@ -51,7 +51,7 @@
     </Attributes>
     <Properties>
       <Property name="render" type="ProjectMagma.Simulation.EnvironmentRenderProperty"/>
-      <!--Property name="collision" type="ProjectMagma.Simulation.Collision.CollisionProperty"/-->
+      <Property name="collision" type="ProjectMagma.Simulation.Collision.CollisionProperty"/>
       <Property name="render_highlight" type="ProjectMagma.Simulation.RenderHighlightProperty"/>
     </Properties>
   </Entity>

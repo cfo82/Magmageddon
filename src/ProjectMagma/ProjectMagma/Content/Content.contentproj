@@ -1069,6 +1069,11 @@
       <Importer>EffectImporter</Importer>
       <Processor>EffectProcessor</Processor>
     </None>
+    <Compile Include="Models\Environment\cave_apr30.fbx">
+      <Name>cave_apr30</Name>
+      <Importer>FbxImporter</Importer>
+      <Processor>CaveProcessor</Processor>
+    </Compile>
     <None Include="Models\Islands\burnt1_col.fbx">
       <Name>burnt1_col</Name>
       <Importer>FbxImporter</Importer>

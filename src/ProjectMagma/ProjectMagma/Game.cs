@@ -62,6 +62,14 @@ namespace ProjectMagma
         bool storageAvailable = false;
         IAsyncResult storageSelectionResult;
 
+        // framecounter
+        private SpriteFont font;
+        private float minFPS = float.MaxValue;
+        private float maxFPS = 0;
+        private static int numFrames = 0;
+        private static double totalMilliSeconds = 0;
+
+
         private Game()
         {
             graphics = new GraphicsDeviceManager(this);
@@ -214,6 +222,8 @@ namespace ProjectMagma
 #if PROFILING
             this.profiler = ProjectMagma.Profiler.Profiler.CreateProfiler("main_profiler");
 #endif
+
+            font = Game.Instance.Content.Load<SpriteFont>("Sprites/HUD/HUDFont");
         }
 
         /// <summary>
@@ -324,6 +334,34 @@ namespace ProjectMagma
             renderer.Update(gameTime);
         }
 
+        private void DrawFrameCounter(GameTime gameTime)
+        {
+            spriteBatch.Begin();
+
+            numFrames++;
+            totalMilliSeconds += gameTime.ElapsedGameTime.TotalMilliseconds;
+
+            // only start after 2 sec "warmup"
+            if (totalMilliSeconds > 2000)
+            {
+                float fps = (float)(1000f / gameTime.ElapsedGameTime.TotalMilliseconds);
+                if (fps > maxFPS)
+                    maxFPS = fps;
+                if (fps < minFPS)
+                    minFPS = fps;
+                spriteBatch.DrawString(
+                    font,
+                    String.Format("{0:000.0} fps", fps) + " " +
+                    String.Format("{0:00.0} avg", (1000.0f * numFrames / totalMilliSeconds)) + " " +
+                    String.Format("{0:00.0} min", minFPS) + " " +
+                    String.Format("{0:00.0} max", maxFPS),
+                    new Vector2(GraphicsDevice.Viewport.Width / 2 - 150, 5), Color.Silver
+                );
+            }
+
+            spriteBatch.End();
+        }
+
         /// <summary>
         /// This is called when the game should draw itself.
         /// </summary>
@@ -348,6 +386,7 @@ namespace ProjectMagma
 #if !XBOX && DEBUG            
             formCollection.Draw();
 #endif
+            DrawFrameCounter(gameTime);
 
             profiler.EndSection("draw");
             profiler.EndFrame();

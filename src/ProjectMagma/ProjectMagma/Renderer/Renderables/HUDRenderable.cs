@@ -93,37 +93,8 @@ namespace ProjectMagma.Renderer
             spriteBatch.Draw(fuelBar, new Vector2(fuelX, 117), new Rectangle(0, 0, fuelBarWidth, fuelBar.Height),
                 Color.White, 0f, Vector2.Zero, 1, effects, 0);
 
-#if DEBUG || XBOX
-            numFrames++;
-            totalMilliSeconds += gameTime.ElapsedGameTime.TotalMilliseconds;
-
-            // only start after 2 sec "warmup"
-            if (totalMilliSeconds > 2000)
-            {
-                float fps = (float)(1000f / gameTime.ElapsedGameTime.TotalMilliseconds);
-                if (fps > maxFPS)
-                    maxFPS = fps;
-                if (fps < minFPS)
-                    minFPS = fps;
-                spriteBatch.DrawString(
-                    font,
-                    String.Format("{0:000.0} fps", fps) + " " +
-                    String.Format("{0:00.0} avg", (1000.0f * numFrames / totalMilliSeconds)) + " " +
-                    String.Format("{0:00.0} min", minFPS) + " " +
-                    String.Format("{0:00.0} max", maxFPS),
-                    new Vector2(screenWidth / 2 - 150, 5), Color.Silver
-                );
-            }
-#endif
-
             spriteBatch.End();
         }
-
-        private float minFPS = float.MaxValue;
-        private float maxFPS = 0;
-
-        static int numFrames = 0;
-        static double totalMilliSeconds = 0;
 
         public override RenderMode RenderMode
         {

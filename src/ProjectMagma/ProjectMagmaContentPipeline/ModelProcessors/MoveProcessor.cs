@@ -14,72 +14,378 @@ namespace ProjectMagma.ContentPipeline.ModelProcessors
 {
     public abstract class MoveProcessor : ModelProcessor
     {
+        #region Main processing
+
+        /// <summary>
+        /// </summary>
+        /// <param name="input"></param>
+        /// <param name="context"></param>
+        /// <returns></returns>
         public override ModelContent Process(NodeContent input, ContentProcessorContext context)
         {
-            // test for a collision mesh
-            string sourceFilename = input.Identity.SourceFilename;
-            int sourceFilenameEndingIndex = sourceFilename.LastIndexOf('.');
-            string collisionMeshFilename = sourceFilename.Substring(0, sourceFilenameEndingIndex) + "_col" + sourceFilename.Substring(sourceFilenameEndingIndex);
-            NodeContent collisionMeshContent = null;
+            ApplyParameters(context);
+
+#if DEBUG
+            // in debug mode we output the structure of this mesh
+            context.Logger.LogImportantMessage("  Identity: " + input.Identity.SourceFilename);
+            context.Logger.LogImportantMessage("  Mesh Hierarchy: ");
+            LogStructure(input, context, 2);
+#endif
+
+            // test for an external collision mesh. If there is one we use it and abandon any internal
+            // collision-mesh nodes.
+            string absoluteSourceFilename = input.Identity.SourceFilename;
+            string sourceFilename = absoluteSourceFilename.Substring(absoluteSourceFilename.LastIndexOf('\\') + 1);
+            int sourceFilenameEndingIndex = absoluteSourceFilename.LastIndexOf('.');
+            string collisionMeshFilename = absoluteSourceFilename.Substring(0, sourceFilenameEndingIndex) + "_col" + absoluteSourceFilename.Substring(sourceFilenameEndingIndex);
             if (File.Exists(collisionMeshFilename))
             {
-                context.Logger.LogImportantMessage("  using '" + collisionMeshFilename + "' as collision mesh");
-                collisionMeshContent = context.BuildAndLoadAsset<NodeContent, NodeContent>(
-                    new ExternalReference<NodeContent>(collisionMeshFilename), null);
+                return ProcessFileWithSeparateCollisionMesh(input, context, collisionMeshFilename);
             }
 
+            // if the file does not contain neither has a collision model on its side nor has any collision $
+            // meshes stored inside it then this must be a legacy file...
+            if (!ContainsCollisionNode(input))
+            {
+                return ProcessLegacyFile(input, context);
+            }
+
+            // if the call is not yet marked as recursively done it must be a container file
+            if (!CallRecursive)
+            {
+                return ProcessContainerFile(input, context);
+            }
+            else // it must be the processing of a group inside a container
+            {
+                Debug.Assert(CallRecursive);
+                Debug.Assert(CurrentGroup.Length > 0);
+
+                return ProcessContainerGroup(input, context);
+            }
+        }
+
+        private void ApplyParameters(
+            ContentProcessorContext context
+        )
+        {
+            CallRecursive = false;
+            CurrentGroup = "";
+
+            foreach (string key in context.Parameters.Keys)
+            {
+                if (key == "CallRecursive")
+                {
+                    CallRecursive = (bool)context.Parameters[key];
+                }
+                else if (key == "CurrentGroup")
+                {
+                    CurrentGroup = (string)context.Parameters[key];
+                }
+                else
+                {
+                    throw new ArgumentException(string.Format("found invalid key ({0}) in parameters", key));
+                }
+            }
+        }
+
+        private void LogStructure(
+            NodeContent input,
+            ContentProcessorContext context,
+            int indent
+        )
+        {
+            string indentString = "";
+            for (int i = 0; i < indent; ++i)
+            {
+                indentString += "  ";
+            }
+
+            context.Logger.LogImportantMessage("{0}{1}", indentString, input.Name);
+            foreach (NodeContent child in input.Children)
+            {
+                LogStructure(child, context, indent + 1);
+            }
+        }
+
+        private bool ContainsCollisionNode(
+            NodeContent input
+        )
+        {
+            if (IsCollisionNode(input))
+                { return true; }
+
+            foreach (NodeContent child in input.Children)
+            {
+                if (ContainsCollisionNode(child))
+                    { return true; }
+            }
+
+            return false;
+        }
+
+        private ModelContent ProcessFileWithSeparateCollisionMesh(
+            NodeContent input,
+            ContentProcessorContext context,
+            string collisionMeshFilename
+        )
+        {
+#if DEBUG
+            context.Logger.LogImportantMessage("  processing file using a separate collision mesh");
+            context.Logger.LogImportantMessage("  using '" + collisionMeshFilename + "' as collision mesh");
+#endif
+
+            NodeContent collisionMeshContent = collisionMeshContent = context.BuildAndLoadAsset<NodeContent, NodeContent>(
+                new ExternalReference<NodeContent>(collisionMeshFilename), null);
+
             // calculate bounds because changes are based on the bounding box
-            AlignedBox3 bb = CalculateAlignedBox3(input, context);
+            AlignedBox3 boundingBox = CalculateAlignedBox3(input, context, true);
 
-            // first center the models (I think they are actually already centered...
-            Vector3 diff = Vector3.Zero - (bb.Min + ((bb.Max - bb.Min) / 2.0f));
-            MoveModel(input, context, diff);
-            if (collisionMeshContent != null)
-                { MoveModel(collisionMeshContent, context, diff); }
-            bb.Max += diff;
-            bb.Min += diff;
-
-            // now that the models are centered scale them
-            float scaleFactor = bb.Max.X;
-            if (bb.Max.Y > scaleFactor) scaleFactor = bb.Max.Y;
-            if (bb.Max.Z > scaleFactor) scaleFactor = bb.Max.Z;
-            scaleFactor = 1.0f / scaleFactor;
-            ScaleModel(input, context, scaleFactor);
-            if (collisionMeshContent != null)
-                { ScaleModel(collisionMeshContent, context, scaleFactor); }
-            bb.Max *= scaleFactor;
-            bb.Min *= scaleFactor;
-
-            // now let the subclass decide on how to modify the position
-            Vector3 scaledOrigDiff = diff * scaleFactor;
-            Vector3 diffCorrector = CalculateDiff(ref scaledOrigDiff, ref bb);
-            MoveModel(input, context, diffCorrector);
-            if (collisionMeshContent != null)
-                { MoveModel(collisionMeshContent, context, diffCorrector); }
-            bb.Min += diffCorrector;
-            bb.Max += diffCorrector;
+            TransformMeshes(new NodeContent[] { input, collisionMeshContent }, context, ref boundingBox);
 
             // let the base class process the model
             ModelContent modelContent = base.Process(input, context);
 
             // add bounding volumes to the model
-            VolumeCollection collection = new VolumeCollection();
-            if (collisionMeshContent == null)
+            modelContent.Tag = CalculateCollisionVolumes(collisionMeshContent, context);
+
+            return modelContent;
+        }
+
+        private ModelContent ProcessLegacyFile(
+            NodeContent input,
+            ContentProcessorContext context
+        )
+        {
+#if DEBUG
+            context.Logger.LogWarning(null, input.Identity, "processing legacy file using the graphical mesh as collision mesh");
+#endif
+
+            // calculate bounds because changes are based on the bounding box
+            AlignedBox3 bb = CalculateAlignedBox3(input, context, false);
+
+            TransformMeshes(new NodeContent[] { input }, context, ref bb);
+
+            // let the base class process the model
+            ModelContent modelContent = base.Process(input, context);
+
+            // add bounding volumes to the model
+            modelContent.Tag = CalculateCollisionVolumes(input, context);
+
+            return modelContent;
+        }
+
+        private ModelContent ProcessContainerFile(
+            NodeContent input,
+            ContentProcessorContext context
+        )
+        {
+#if DEBUG
+            context.Logger.LogImportantMessage("  processing file as a model container");
+#endif
+
+            int startIndex = input.Identity.SourceFilename.LastIndexOf("Content\\") + "Content\\".Length;
+            int endIndex = input.Identity.SourceFilename.LastIndexOf('\\') + 1;
+            string dir = input.Identity.SourceFilename.Substring(startIndex, endIndex - startIndex);
+
+            // parameters to be passed into the processor
+            OpaqueDataDictionary dictionary = new OpaqueDataDictionary();
+            dictionary.Add("CallRecursive", true);
+
+            foreach (NodeContent child in input.Children)
             {
-                collection.AddVolume(CalculateAlignedBox3(input, context));
-                collection.AddVolume(CalculateAlignedBox3Tree(input, context));
-                collection.AddVolume(CalculateCylinder3(input, context));
-                collection.AddVolume(CalculateSphere3(input, context));
+#if DEBUG
+                context.Logger.LogImportantMessage("  spawning a new build process for {0}", child.Name);
+#endif
+
+                dictionary["CurrentGroup"] = child.Name;
+
+                context.BuildAsset<NodeContent, ModelContent>(
+                    new ExternalReference<NodeContent>(input.Identity.SourceFilename),
+                    this.GetType().Name, dictionary, null, dir + child.Name);
+            }
+
+            return base.Process(input, context);
+        }
+
+        private ModelContent ProcessContainerGroup(
+            NodeContent input,
+            ContentProcessorContext context
+        )
+        {
+#if DEBUG
+            context.Logger.LogImportantMessage("  processing one group contained in a model container");
+#endif
+
+            // find the child to process!
+            NodeContent currentGroupNode = GetChild(input, CurrentGroup);
+            Debug.Assert(currentGroupNode != null);
+            if (currentGroupNode == null)
+            {
+                throw new ArgumentException(string.Format("unable to find referenced child ({0})!", CurrentGroup));
+            }
+
+            // calculate bounds because changes are based on the bounding box
+            AlignedBox3 bb = CalculateAlignedBox3(currentGroupNode, context, true);
+
+            // transform the graphical mesh and the collision meshes in one step!
+            TransformMeshes(new NodeContent[] { currentGroupNode }, context, ref bb);
+
+            // extract all collision meshes
+            List<NodeContent> collisionNodes = new List<NodeContent>();
+            foreach (NodeContent child in currentGroupNode.Children)
+            {
+                if (IsCollisionNode(child))
+                {
+                    collisionNodes.Add(child);
+                }
+            }
+            foreach (NodeContent collisionMesh in collisionNodes)
+            {
+#if DEBUG
+                context.Logger.LogImportantMessage("  using {0} as a collision fragment", collisionMesh.Name);
+#endif
+                currentGroupNode.Children.Remove(collisionMesh);
+            }
+
+            // let the base class process the graphical model
+            ModelContent modelContent = base.Process(currentGroupNode, context);
+
+            // now we process our collision meshes... 
+            // TODO: take all collision meshes not only the first one!
+            VolumeCollection collection = new VolumeCollection();
+
+            if (collisionNodes.Count > 0)
+            {
+                modelContent.Tag = CalculateCollisionVolumes(currentGroupNode, context);
             }
             else
             {
-                collection.AddVolume(CalculateAlignedBox3(collisionMeshContent, context));
-                collection.AddVolume(CalculateAlignedBox3Tree(collisionMeshContent, context));
-                collection.AddVolume(CalculateCylinder3(collisionMeshContent, context));
-                collection.AddVolume(CalculateSphere3(collisionMeshContent, context));
+                modelContent.Tag = CalculateCollisionVolumes(collisionNodes[0], context);
             }
-            modelContent.Tag = collection;
+
             return modelContent;
+        }
+
+        #endregion
+
+        #region Mesh Processing
+
+        private void TransformMeshes(
+            NodeContent[] inputNodes,
+            ContentProcessorContext context,
+            ref AlignedBox3 boundingBox
+        )
+        {
+            foreach (NodeContent input in inputNodes)
+            {
+                RemoveTextureReferences(input, context);
+            }
+
+            // first center the models (I think they are actually already centered...
+            Vector3 diff = Vector3.Zero - (boundingBox.Min + ((boundingBox.Max - boundingBox.Min) / 2.0f));
+            foreach (NodeContent input in inputNodes)
+            {
+                MoveModel(input, context, diff);
+            }
+            boundingBox.Max += diff;
+            boundingBox.Min += diff;
+
+            // now that the models are centered scale them
+            float scaleFactor = boundingBox.Max.X;
+            if (boundingBox.Max.Y > scaleFactor) scaleFactor = boundingBox.Max.Y;
+            if (boundingBox.Max.Z > scaleFactor) scaleFactor = boundingBox.Max.Z;
+            scaleFactor = 1.0f / scaleFactor;
+            foreach (NodeContent input in inputNodes)
+            {
+                ScaleModel(input, context, scaleFactor);
+            }
+            boundingBox.Max *= scaleFactor;
+            boundingBox.Min *= scaleFactor;
+
+            // now let the subclass decide on how to modify the position
+            Vector3 scaledOrigDiff = diff * scaleFactor;
+            Vector3 diffCorrector = CalculateDiff(ref scaledOrigDiff, ref boundingBox);
+            foreach (NodeContent input in inputNodes)
+            {
+                MoveModel(input, context, diffCorrector);
+            }
+            boundingBox.Min += diffCorrector;
+            boundingBox.Max += diffCorrector;
+        }
+
+        private void RemoveTextureReferences(
+            NodeContent input,
+            ContentProcessorContext context
+        )
+        {
+            MeshContent mesh = input as MeshContent;
+            if (mesh != null)
+            {
+                foreach (GeometryContent geometry in mesh.Geometry)
+                {
+                    geometry.Material.Textures.Clear();
+                }
+            }
+
+            // Go through all children
+            foreach (NodeContent child in input.Children)
+            {
+                RemoveTextureReferences(child, context);
+            }
+        }
+
+        private void MoveModel(
+            NodeContent input,
+            ContentProcessorContext context,
+            Vector3 diff
+            )
+        {
+            MeshContent mesh = input as MeshContent;
+            if (mesh != null)
+            {
+                for (int i = 0; i < mesh.Positions.Count; ++i)
+                {
+                    Matrix inverseTransform = Matrix.Invert(mesh.AbsoluteTransform);
+                    Vector3 position = Vector3.Transform(mesh.Positions[i], mesh.AbsoluteTransform);
+                    position += diff;
+                    position = Vector3.Transform(position, inverseTransform);
+
+                    mesh.Positions[i] = position;
+                }
+            }
+
+            // Go through all children
+            foreach (NodeContent child in input.Children)
+            {
+                MoveModel(child, context, diff);
+            }
+        }
+
+        private void ScaleModel(
+            NodeContent input,
+            ContentProcessorContext context,
+            float scaleFactor
+        )
+        {
+            MeshContent mesh = input as MeshContent;
+            if (mesh != null)
+            {
+                for (int i = 0; i < mesh.Positions.Count; ++i)
+                {
+                    Matrix inverseTransform = Matrix.Invert(mesh.AbsoluteTransform);
+                    Vector3 position = Vector3.Transform(mesh.Positions[i], mesh.AbsoluteTransform);
+                    position *= scaleFactor;
+                    position = Vector3.Transform(position, inverseTransform);
+
+                    mesh.Positions[i] = position;
+                }
+            }
+
+            // Go through all childs
+            foreach (NodeContent child in input.Children)
+            {
+                ScaleModel(child, context, scaleFactor);
+            }
         }
 
         protected virtual Vector3 CalculateDiff(ref Vector3 origDiff, ref AlignedBox3 bb)
@@ -87,24 +393,45 @@ namespace ProjectMagma.ContentPipeline.ModelProcessors
             return Vector3.Zero;
         }
 
+        #endregion
+
+        #region Volume Calculations
+
+        private VolumeCollection CalculateCollisionVolumes(
+            NodeContent collisionNode,
+            ContentProcessorContext context
+        )
+        {
+            VolumeCollection collection = new VolumeCollection();
+            collection.AddVolume(CalculateAlignedBox3(collisionNode, context, false));
+            collection.AddVolume(CalculateAlignedBox3Tree(collisionNode, context, false));
+            collection.AddVolume(CalculateCylinder3(collisionNode, context, false));
+            collection.AddVolume(CalculateSphere3(collisionNode, context, false));
+            return collection;
+        }
+
         private AlignedBox3 CalculateAlignedBox3(
             NodeContent input,
-            ContentProcessorContext context
+            ContentProcessorContext context,
+            bool ignoreCollisionNodes
         )
         {
             AlignedBox3 alignedBox = new AlignedBox3();
             alignedBox.Min = new Vector3(Single.MaxValue, Single.MaxValue, Single.MaxValue);
             alignedBox.Max = new Vector3(Single.MinValue, Single.MinValue, Single.MinValue);
-            CalculateAlignedBox3(input, context, ref alignedBox);
+            CalculateAlignedBox3(input, context, ignoreCollisionNodes, ref alignedBox);
             return alignedBox;
         }
 
         private void CalculateAlignedBox3(
             NodeContent input,
             ContentProcessorContext context,
+            bool ignoreCollisionNodes,
             ref AlignedBox3 box
             )
         {
+            if (ignoreCollisionNodes && IsCollisionNode(input)) { return; }
+
             MeshContent mesh = input as MeshContent;
             if (mesh != null)
             {
@@ -123,19 +450,20 @@ namespace ProjectMagma.ContentPipeline.ModelProcessors
             // Go through all children
             foreach (NodeContent child in input.Children)
             {
-                CalculateAlignedBox3(child, context, ref box);
+                CalculateAlignedBox3(child, context, ignoreCollisionNodes, ref box);
             }
         }
 
         private AlignedBox3Tree CalculateAlignedBox3Tree(
             NodeContent input,
-            ContentProcessorContext context
+            ContentProcessorContext context,
+            bool ignoreCollisionNodes
         )
         {
             // collect positions and indices
             List<Vector3> positionList = new List<Vector3>();
             List<UInt16> indexList = new List<UInt16>();
-            CalculateAlignedBox3Tree(input, context, positionList, indexList);
+            CalculateAlignedBox3Tree(input, context, ignoreCollisionNodes, positionList, indexList);
             if (indexList.Count % 3 != 0)
                 { throw new Exception("invalid number of indices!"); }
 
@@ -152,10 +480,13 @@ namespace ProjectMagma.ContentPipeline.ModelProcessors
         private void CalculateAlignedBox3Tree(
             NodeContent input,
             ContentProcessorContext context,
+            bool ignoreCollisionNodes,
             List<Vector3> positions,
             List<UInt16> indices
             )
         {
+            if (ignoreCollisionNodes && IsCollisionNode(input)) { return; }
+
             MeshContent mesh = input as MeshContent;
             if (mesh != null)
             {
@@ -207,18 +538,19 @@ namespace ProjectMagma.ContentPipeline.ModelProcessors
             // Go through all children
             foreach (NodeContent child in input.Children)
             {
-                CalculateAlignedBox3Tree(child, context, positions, indices);
+                CalculateAlignedBox3Tree(child, context, ignoreCollisionNodes ,positions, indices);
             }
         }
 
         // calculates y-axis aligned bounding cylinder
         private Cylinder3 CalculateCylinder3(
             NodeContent input,
-            ContentProcessorContext context
+            ContentProcessorContext context,
+            bool ignoreCollisionNodes
         )
         {
             // calculate center
-            AlignedBox3 bb = CalculateAlignedBox3(input, context);
+            AlignedBox3 bb = CalculateAlignedBox3(input, context, ignoreCollisionNodes);
             Vector3 center = (bb.Min + bb.Max) / 2;
 
             float top = bb.Max.Y;
@@ -236,11 +568,12 @@ namespace ProjectMagma.ContentPipeline.ModelProcessors
 
         private Sphere3 CalculateSphere3(
             NodeContent input,
-            ContentProcessorContext context
+            ContentProcessorContext context,
+            bool ignoreCollisionNodes
         )
         {
             // calculate center
-            AlignedBox3 bb = CalculateAlignedBox3(input, context);
+            AlignedBox3 bb = CalculateAlignedBox3(input, context, ignoreCollisionNodes);
             Vector3 center = (bb.Min + bb.Max) / 2;
 
             // calculate radius
@@ -250,57 +583,62 @@ namespace ProjectMagma.ContentPipeline.ModelProcessors
             return new Sphere3(center, radius);
         }
 
-        private void MoveModel(
-            NodeContent input,
-            ContentProcessorContext context,
-            Vector3 diff
-            )
+        #endregion
+
+        #region Helper Functions
+
+        /// <summary>
+        /// returns a flag indicating if the node (and all its children) belong to the collision
+        /// mesh of a model. 
+        /// </summary>
+        /// <param name="node"></param>
+        /// <returns></returns>
+        private bool IsCollisionNode(
+            NodeContent node
+        )
         {
-            MeshContent mesh = input as MeshContent;
-            if (mesh != null)
-            {
-                for (int i = 0; i < mesh.Positions.Count; ++i)
-                {
-                    Matrix inverseTransform = Matrix.Invert(mesh.AbsoluteTransform);
-                    Vector3 position = Vector3.Transform(mesh.Positions[i], mesh.AbsoluteTransform);
-                    position += diff;
-                    position = Vector3.Transform(position, inverseTransform);
+            return node.Name.EndsWith("_col");
+        }
 
-                    mesh.Positions[i] = position;
+        private NodeContent GetChild(
+            NodeContent node,
+            string childName
+        )
+        {
+            foreach (NodeContent child in node.Children)
+            {
+                if (child.Name == childName)
+                {
+                    return child;
                 }
             }
 
-            // Go through all children
-            foreach (NodeContent child in input.Children)
-            {
-                MoveModel(child, context, diff);
-            }
+            return null;
         }
 
-        private void ScaleModel(
-            NodeContent input,
-            ContentProcessorContext context,
-            float scaleFactor
-        ) {
-            MeshContent mesh = input as MeshContent;
-            if (mesh != null)
-            {
-                for (int i = 0; i < mesh.Positions.Count; ++i)
-                {
-                    Matrix inverseTransform = Matrix.Invert(mesh.AbsoluteTransform);
-                    Vector3 position = Vector3.Transform(mesh.Positions[i], mesh.AbsoluteTransform);
-                    position *= scaleFactor;
-                    position = Vector3.Transform(position, inverseTransform);
+        #endregion
 
-                    mesh.Positions[i] = position;
-                }
-            }
+        #region Properties
 
-            // Go through all childs
-            foreach (NodeContent child in input.Children)
-            {
-                ScaleModel(child, context, scaleFactor);
-            }
+        /// <summary>
+        /// Property storing if this is a recursive call to the processor (thus we only have to process one of
+        /// the sub-groups!)
+        /// </summary>
+        public bool CallRecursive
+        {
+            set;
+            get;
         }
+
+        /// <summary>
+        /// Property identifying which of the subgroups have to be processed
+        /// </summary>
+        public string CurrentGroup
+        {
+            set;
+            get;
+        }
+
+        #endregion
     }
 }

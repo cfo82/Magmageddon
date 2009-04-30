@@ -1069,13 +1069,68 @@
       <Importer>EffectImporter</Importer>
       <Processor>EffectProcessor</Processor>
     </None>
-    <Compile Include="Models\Islands\burnt3.fbx">
-      <Name>burnt3</Name>
+    <None Include="Models\Islands\burnt1_col.fbx">
+      <Name>burnt1_col</Name>
+      <Importer>FbxImporter</Importer>
+      <Processor>ModelProcessor</Processor>
+    </None>
+    <None Include="Models\Islands\burnt2_col.fbx">
+      <Name>burnt2_col</Name>
+      <Importer>FbxImporter</Importer>
+      <Processor>ModelProcessor</Processor>
+    </None>
+    <None Include="Models\Islands\burnt3_col.fbx">
+      <Name>burnt3_col</Name>
+      <Importer>FbxImporter</Importer>
+      <Processor>ModelProcessor</Processor>
+    </None>
+    <None Include="Models\Islands\grass1_col.fbx">
+      <Name>grass1_col</Name>
+      <Importer>FbxImporter</Importer>
+      <Processor>ModelProcessor</Processor>
+    </None>
+    <None Include="Models\Islands\grass2_col.fbx">
+      <Name>grass2_col</Name>
+      <Importer>FbxImporter</Importer>
+      <Processor>ModelProcessor</Processor>
+    </None>
+    <None Include="Models\Islands\grass3_col.fbx">
+      <Name>grass3_col</Name>
+      <Importer>FbxImporter</Importer>
+      <Processor>ModelProcessor</Processor>
+    </None>
+    <None Include="Models\Islands\grass4_col.fbx">
+      <Name>grass4_col</Name>
+      <Importer>FbxImporter</Importer>
+      <Processor>ModelProcessor</Processor>
+    </None>
+    <None Include="Models\Islands\ice1_col.fbx">
+      <Name>ice1_col</Name>
+      <Importer>FbxImporter</Importer>
+      <Processor>ModelProcessor</Processor>
+    </None>
+    <None Include="Models\Islands\ice2_col.fbx">
+      <Name>ice2_col</Name>
+      <Importer>FbxImporter</Importer>
+      <Processor>ModelProcessor</Processor>
+    </None>
+    <None Include="Models\Islands\ice3_col.fbx">
+      <Name>ice3_col</Name>
+      <Importer>FbxImporter</Importer>
+      <Processor>ModelProcessor</Processor>
+    </None>
+    <None Include="Models\Islands\ice4_col.fbx">
+      <Name>ice4_col</Name>
+      <Importer>FbxImporter</Importer>
+      <Processor>ModelProcessor</Processor>
+    </None>
+    <Compile Include="Models\Islands\all_rend_and_col.fbx">
+      <Name>all_rend_and_col</Name>
       <Importer>FbxImporter</Importer>
       <Processor>IslandProcessor</Processor>
     </Compile>
-    <Compile Include="Models\Islands\burnt3_col.fbx">
-      <Name>burnt3_col</Name>
+    <Compile Include="Models\Islands\burnt3.fbx">
+      <Name>burnt3</Name>
       <Importer>FbxImporter</Importer>
       <Processor>IslandProcessor</Processor>
     </Compile>
@@ -1084,18 +1139,8 @@
       <Importer>FbxImporter</Importer>
       <Processor>IslandProcessor</Processor>
     </Compile>
-    <Compile Include="Models\Islands\grass1_col.fbx">
-      <Name>grass1_col</Name>
-      <Importer>FbxImporter</Importer>
-      <Processor>IslandProcessor</Processor>
-    </Compile>
     <Compile Include="Models\Islands\grass2.fbx">
       <Name>grass2</Name>
-      <Importer>FbxImporter</Importer>
-      <Processor>IslandProcessor</Processor>
-    </Compile>
-    <Compile Include="Models\Islands\grass2_col.fbx">
-      <Name>grass2_col</Name>
       <Importer>FbxImporter</Importer>
       <Processor>IslandProcessor</Processor>
     </Compile>
@@ -1104,18 +1149,8 @@
       <Importer>FbxImporter</Importer>
       <Processor>IslandProcessor</Processor>
     </Compile>
-    <Compile Include="Models\Islands\grass3_col.fbx">
-      <Name>grass3_col</Name>
-      <Importer>FbxImporter</Importer>
-      <Processor>IslandProcessor</Processor>
-    </Compile>
     <Compile Include="Models\Islands\grass4.fbx">
       <Name>grass4</Name>
-      <Importer>FbxImporter</Importer>
-      <Processor>IslandProcessor</Processor>
-    </Compile>
-    <Compile Include="Models\Islands\grass4_col.fbx">
-      <Name>grass4_col</Name>
       <Importer>FbxImporter</Importer>
       <Processor>IslandProcessor</Processor>
     </Compile>
@@ -1124,18 +1159,8 @@
       <Importer>FbxImporter</Importer>
       <Processor>IslandProcessor</Processor>
     </Compile>
-    <Compile Include="Models\Islands\ice1_col.fbx">
-      <Name>ice1_col</Name>
-      <Importer>FbxImporter</Importer>
-      <Processor>IslandProcessor</Processor>
-    </Compile>
     <Compile Include="Models\Islands\ice2.fbx">
       <Name>ice2</Name>
-      <Importer>FbxImporter</Importer>
-      <Processor>IslandProcessor</Processor>
-    </Compile>
-    <Compile Include="Models\Islands\ice2_col.fbx">
-      <Name>ice2_col</Name>
       <Importer>FbxImporter</Importer>
       <Processor>IslandProcessor</Processor>
     </Compile>
@@ -1144,18 +1169,8 @@
       <Importer>FbxImporter</Importer>
       <Processor>IslandProcessor</Processor>
     </Compile>
-    <Compile Include="Models\Islands\ice3_col.fbx">
-      <Name>ice3_col</Name>
-      <Importer>FbxImporter</Importer>
-      <Processor>IslandProcessor</Processor>
-    </Compile>
     <Compile Include="Models\Islands\ice4.fbx">
       <Name>ice4</Name>
-      <Importer>FbxImporter</Importer>
-      <Processor>IslandProcessor</Processor>
-    </Compile>
-    <Compile Include="Models\Islands\ice4_col.fbx">
-      <Name>ice4_col</Name>
       <Importer>FbxImporter</Importer>
       <Processor>IslandProcessor</Processor>
     </Compile>
@@ -1164,18 +1179,8 @@
       <Importer>FbxImporter</Importer>
       <Processor>IslandProcessor</Processor>
     </Compile>
-    <Compile Include="Models\Islands\burnt1_col.fbx">
-      <Name>burnt1_col</Name>
-      <Importer>FbxImporter</Importer>
-      <Processor>IslandProcessor</Processor>
-    </Compile>
     <Compile Include="Models\Islands\burnt2.fbx">
       <Name>burnt2</Name>
-      <Importer>FbxImporter</Importer>
-      <Processor>IslandProcessor</Processor>
-    </Compile>
-    <Compile Include="Models\Islands\burnt2_col.fbx">
-      <Name>burnt2_col</Name>
       <Importer>FbxImporter</Importer>
       <Processor>IslandProcessor</Processor>
     </Compile>
@@ -1205,7 +1210,6 @@
       <Processor>LevelProcessor</Processor>
     </Compile>
   </ItemGroup>
-  <Import Project="$(MSBuildExtensionsPath)\Microsoft\XNA Game Studio\v3.0\Microsoft.Xna.GameStudio.ContentPipeline.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.
   <Target Name="BeforeBuild">

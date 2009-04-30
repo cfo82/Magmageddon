@@ -48,19 +48,19 @@
 
   <Entity name="island_base_burnt1" extends="island_base_burnt" abstract="true">
     <Attributes>
-      <Attribute name="mesh" template="string" value="Models/Islands/burnt1"/>
+      <Attribute name="mesh" template="string" value="Models/Islands/burnt1_grp"/>
     </Attributes>
   </Entity>
 
   <Entity name="island_base_burnt2" extends="island_base_burnt" abstract="true">
     <Attributes>
-      <Attribute name="mesh" template="string" value="Models/Islands/burnt2"/>
+      <Attribute name="mesh" template="string" value="Models/Islands/burnt2_grp"/>
     </Attributes>
   </Entity>
 
   <Entity name="island_base_burnt3" extends="island_base_burnt" abstract="true">
     <Attributes>
-      <Attribute name="mesh" template="string" value="Models/Islands/burnt3"/>
+      <Attribute name="mesh" template="string" value="Models/Islands/burnt3_grp"/>
     </Attributes>
   </Entity>
 
@@ -68,25 +68,25 @@
 
   <Entity name="island_base_grass1" extends="island_base_grass" abstract="true">
     <Attributes>
-      <Attribute name="mesh" template="string" value="Models/Islands/grass1"/>
+      <Attribute name="mesh" template="string" value="Models/Islands/grass1_grp"/>
     </Attributes>
   </Entity>
 
   <Entity name="island_base_grass2" extends="island_base_grass" abstract="true">
     <Attributes>
-      <Attribute name="mesh" template="string" value="Models/Islands/grass2"/>
+      <Attribute name="mesh" template="string" value="Models/Islands/grass2_grp"/>
     </Attributes>
   </Entity>
 
   <Entity name="island_base_grass3" extends="island_base_grass" abstract="true">
     <Attributes>
-      <Attribute name="mesh" template="string" value="Models/Islands/grass3"/>
+      <Attribute name="mesh" template="string" value="Models/Islands/grass3_grp"/>
     </Attributes>
   </Entity>
 
   <Entity name="island_base_grass4" extends="island_base_grass" abstract="true">
     <Attributes>
-      <Attribute name="mesh" template="string" value="Models/Islands/grass4"/>
+      <Attribute name="mesh" template="string" value="Models/Islands/grass4_grp"/>
     </Attributes>
   </Entity>
 
@@ -94,25 +94,25 @@
 
   <Entity name="island_base_ice1" extends="island_base_ice" abstract="true">
     <Attributes>
-      <Attribute name="mesh" template="string" value="Models/Islands/ice1"/>
+      <Attribute name="mesh" template="string" value="Models/Islands/ice1_grp"/>
     </Attributes>
   </Entity>
 
   <Entity name="island_base_ice2" extends="island_base_ice" abstract="true">
     <Attributes>
-      <Attribute name="mesh" template="string" value="Models/Islands/ice2"/>
+      <Attribute name="mesh" template="string" value="Models/Islands/ice2_grp"/>
     </Attributes>
   </Entity>
 
   <Entity name="island_base_ice3" extends="island_base_ice" abstract="true">
     <Attributes>
-      <Attribute name="mesh" template="string" value="Models/Islands/ice3"/>
+      <Attribute name="mesh" template="string" value="Models/Islands/ice3_grp"/>
     </Attributes>
   </Entity>
 
   <Entity name="island_base_ice4" extends="island_base_ice" abstract="true">
     <Attributes>
-      <Attribute name="mesh" template="string" value="Models/Islands/ice4"/>
+      <Attribute name="mesh" template="string" value="Models/Islands/ice4_grp"/>
     </Attributes>
   </Entity>
 

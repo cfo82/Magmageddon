@@ -24,7 +24,7 @@ namespace ProjectMagma.Simulation.Collision
             List<VolumeCollection> collisionVolumes = (List<VolumeCollection>)model.Tag;
             if (collisionVolumes == null)
             {
-                throw new Exception(string.Format("model {0} has no collision volumes!", modelName));
+                throw new System.Exception(string.Format("model {0} has no collision volumes!", modelName));
             }
 
             if (entity.HasString("bv_type"))

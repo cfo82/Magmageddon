@@ -16,6 +16,8 @@ using xWinFormsLib;
 using ProjectMagma.Simulation;
 using ProjectMagma.Shared.LevelData;
 using ProjectMagma.Simulation.Attributes;
+using System.Diagnostics;
+using ProjectMagma.Shared.Math.Primitives;
 
 namespace ProjectMagma.Simulation
 {
@@ -290,6 +292,21 @@ namespace ProjectMagma.Simulation
                 // apply velocity
                 position += pushbackVelocity * dt;
             }
+        }
+        #endregion
+
+        #region other helper functions
+        /// <summary>
+        /// gets position on surface of specified entity
+        /// </summary>
+        /// <param name="position">the position to start looking at</param>
+        /// <param name="entity">the entity to query</param>
+        /// <returns></returns>
+        public static bool GetPositionOnSurface(ref Vector3 position, Entity entity, out Vector3 surfacePosition)
+        {
+            Debug.Assert(entity.HasProperty("collision"));
+            Ray3 ray = new Ray3(position + 1000 * Vector3.UnitY, -Vector3.UnitY);
+            return Game.Instance.Simulation.CollisionManager.GetIntersectionPoint(ref ray, entity, out surfacePosition);
         }
         #endregion
 

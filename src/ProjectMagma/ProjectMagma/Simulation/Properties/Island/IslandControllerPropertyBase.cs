@@ -248,7 +248,7 @@ namespace ProjectMagma.Simulation
                 {
                     // do nothing
                 }
-                else
+                else 
                 {
                     // only collision with objects which are not the player count
                     hadCollision = true;
@@ -319,9 +319,12 @@ namespace ProjectMagma.Simulation
                                 if (other.GetString("kind") == "pillar")
                                     newVelocity.Y = 0;
                             }
-                            newVelocity *= attractionVelocity.Length() * constants.GetFloat("collision_damping");
+                            newVelocity *= attractionVelocity.Length(); // *constants.GetFloat("collision_damping");
 
-                            Console.WriteLine("newvelocity: " + newVelocity);
+                            if (float.IsInfinity(newVelocity.X))
+                            {
+                                Console.WriteLine("newvelocity: " + newVelocity);
+                            }
 
                             island.SetVector3("attraction_velocity", newVelocity);
                         }

@@ -160,14 +160,14 @@
   <Entity name="powerup1" extends="powerup_health">
     <Attributes>
       <Attribute name="island_reference" template="string" value="island4"/>
-      <Attribute name="relative_position" template="float3" value="15 0 15"/>
+      <Attribute name="relative_position" template="float3" value="15 10 15"/>
     </Attributes>
   </Entity>
 
   <Entity name="powerup2" extends="powerup_energy">
     <Attributes>
       <Attribute name="island_reference" template="string" value="island2"/>
-      <Attribute name="relative_position" template="float3" value="-20 0 -5"/>
+      <Attribute name="relative_position" template="float3" value="-20 10 -5"/>
     </Attributes>
   </Entity>
 </Level>

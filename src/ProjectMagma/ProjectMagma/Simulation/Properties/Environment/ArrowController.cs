@@ -38,9 +38,9 @@ namespace ProjectMagma.Simulation
         private void OnIslandChanged(StringAttribute sender,
             String oldIsland, String newIsland)
         {
+            // reset handler on old island
             if(island != null)
                 island.GetVector3Attribute("position").ValueChanged -= OnIslandPositionChanged;
-
 
             if ("" == newIsland)
             {
@@ -48,8 +48,16 @@ namespace ProjectMagma.Simulation
             }
             else
             {
+                // register new island
                 island = Game.Instance.Simulation.EntityManager[newIsland];
                 island.GetVector3Attribute("position").ValueChanged += OnIslandPositionChanged;
+
+                // calculate offset
+                Vector3 islandPos = island.GetVector3("position");
+                Vector3 surfacePos;
+                Simulation.GetPositionOnSurface(ref islandPos, island, out surfacePos);
+                // todo: 30 should be constant from xml
+                positionOffset = surfacePos.Y - islandPos.Y + 30;
             }
         }
 
@@ -59,10 +67,10 @@ namespace ProjectMagma.Simulation
             Vector3 newPosition
         )
         {
-            // todo get position from model
-            this.arrow.SetVector3("position", newPosition + Vector3.UnitY*30);
+            this.arrow.SetVector3("position", island.GetVector3("position") + Vector3.UnitY * positionOffset);
         }
 
+        private float positionOffset = 0;
         private Entity arrow;
         private Entity island;
     }

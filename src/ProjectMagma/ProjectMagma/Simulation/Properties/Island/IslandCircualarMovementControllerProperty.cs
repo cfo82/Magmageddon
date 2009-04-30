@@ -80,7 +80,7 @@ namespace ProjectMagma.Simulation
                 this.dir = 1;
         }
 
-        protected override void CollisionHandler(SimulationTime simTime, Entity island, Entity other, Contact co)
+        protected override void CollisionHandler(SimulationTime simTime, Entity island, Entity other, Contact co, ref Vector3 normal)
         {
             if ((other.GetString("kind") == "pillar"
                 || other.GetString("kind") == "island"))
@@ -94,7 +94,7 @@ namespace ProjectMagma.Simulation
                 CalculateNewPosition(island, ref newPosition, simTime.Dt);
                 Vector3 diff = newPosition - oldPosition;
                 // check if normal is in opposite direction of theoretical velocity
-                if (Vector3.Dot(diff, co[0].Normal) > 0)
+                if (Vector3.Dot(diff, normal) > 0)
                 {
                     dir = -dir;
 
@@ -104,8 +104,7 @@ namespace ProjectMagma.Simulation
                         && island.GetString("attracted_by") != null
                         && island.GetVector3("repulsion_velocity") == Vector3.Zero)
                     {
-                        Vector3 pushback = -co[0].Normal * (island.GetVector3("position") - co[0].Point).Length();
-                        //;constants.GetFloat("contact_pushback_multiplier");
+                        Vector3 pushback = -normal * (island.GetVector3("position") - other.GetVector3("position")).Length();
                         pushback.Y = 0; // only in xz plane
                         island.SetVector3("pushback_velocity", island.GetVector3("pushback_velocity") + pushback);
                     }

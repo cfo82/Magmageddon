@@ -321,6 +321,7 @@ namespace ProjectMagma.Simulation
                             }
                             newVelocity *= attractionVelocity.Length(); // *constants.GetFloat("collision_damping");
 
+                            // todo: this will occur if projection is Vector3.Zero. what to do then?
                             if (float.IsInfinity(newVelocity.X))
                             {
                                 Console.WriteLine("newvelocity: " + newVelocity);
@@ -346,7 +347,7 @@ namespace ProjectMagma.Simulation
                         island.SetVector3("repositioning_velocity", slidingVelocity);
                     }
                     else
-                        CollisionHandler(simTime, island, other, contact);
+                        CollisionHandler(simTime, island, other, contact, ref normal);
                 }
             }
         }
@@ -398,7 +399,7 @@ namespace ProjectMagma.Simulation
         /// </summary>
         protected abstract Vector3 GetNearestPointOnPath(ref Vector3 position);
 
-        protected abstract void CollisionHandler(SimulationTime simTime, Entity island, Entity other, Contact co);
+        protected abstract void CollisionHandler(SimulationTime simTime, Entity island, Entity other, Contact co, ref Vector3 normal);
 
         protected virtual void OnRepulsionStart()
         {

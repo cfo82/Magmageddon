@@ -48,16 +48,16 @@ namespace ProjectMagma.Simulation
             this.entity = entity;
 
             // attach listener for management form
-            #if !XBOX
+#if !XBOX && DEBUG
             Game.Instance.ManagementForm.EntitySelectionChanged += OnEntitySelectionChanged;
-            #endif
+#endif
         }
 
         public void OnDetached(Entity entity)
         {
-            #if !XBOX
+#if !XBOX && DEBUG
             Game.Instance.ManagementForm.EntitySelectionChanged -= OnEntitySelectionChanged;
-            #endif
+#endif
             if (enabled)
             {
                 Game.Instance.Renderer.RemoveRenderable(renderable);
@@ -106,7 +106,7 @@ namespace ProjectMagma.Simulation
             renderable.Position = newValue;
         }
 
-#if !XBOX
+#if !XBOX && DEBUG
         private void OnEntitySelectionChanged(ManagementForm managementForm, Entity oldSelection, Entity newSelection)
         {
             if (enabled)

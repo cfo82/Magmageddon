@@ -58,8 +58,6 @@ namespace ProjectMagma
 
         private static Game instance;
 
-        BloomComponent bloom;
-
         StorageDevice device;
         bool storageAvailable = false;
         IAsyncResult storageSelectionResult;
@@ -79,9 +77,6 @@ namespace ProjectMagma
             Window.Title = "Project Magma";
             Content.RootDirectory = "Content";
 
-            bloom = new BloomComponent(this);
-            //Components.Add(bloom);
-        
             // needed to show Guide, which is needed for storage, which is needed for saving stuff
             this.Components.Add(new GamerServicesComponent(this));
         }
@@ -342,16 +337,10 @@ namespace ProjectMagma
             formCollection.Render();
 #endif
 
-            // TODO: small hack until dominik has added the bloom component...
-
             renderer.Render(gameTime);
-
-            Components.Remove(bloom); // prevent bloom here
 
             // will apply effect such as bloom
             base.Draw(gameTime);
-
-            //Components.Add(bloom); // add it again in order for updates...
 
             // draw stuff which should not be filtered
             menu.Draw(gameTime);

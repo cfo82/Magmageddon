@@ -9,19 +9,11 @@ namespace ProjectMagma.Renderer.ParticleSystem.Emitter
     public class CircleEmitter : ParticleEmitter
     {
         public NewParticle[] CreateParticles(
-            double dt
+            double lastFrameTime,
+            double currentFrameTime
         )
         {
-            elapsedTime += dt;
-
-            if (lastTime < 0)
-            {
-                lastTime = elapsedTime;
-            }
-
-            int numParticles = (int)(((elapsedTime - lastTime) / 0.02) * 25.0f);
-
-            lastTime = elapsedTime;
+            int numParticles = (int)(((currentFrameTime - lastFrameTime) / 0.02) * 25.0f);
 
             NewParticle[] particles = new NewParticle[numParticles];
             for (int i = 0; i < particles.Length; ++i)
@@ -63,8 +55,6 @@ namespace ProjectMagma.Renderer.ParticleSystem.Emitter
                 x * radius * (float)Math.Sin(circleAngle));
         }
 
-        private double lastTime = -20.0;
-        private double elapsedTime = 0.0;
         private Random random = new Random();
         private float circleAngle = 0.0f;
     }

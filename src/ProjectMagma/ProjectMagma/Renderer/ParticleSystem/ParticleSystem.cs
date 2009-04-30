@@ -10,7 +10,7 @@ namespace ProjectMagma.Renderer.ParticleSystem
     interface ParticleSystem
     {
         void AddEmitter(ParticleEmitter emitter);
-        void Update(GameTime gameTime);
+        void Update(double lastFrameTime, double currentFrameTime);
         void Render(Matrix viewMatrix, Matrix projectionMatrix);
     }
 }

@@ -8,6 +8,6 @@ namespace ProjectMagma.Renderer.ParticleSystem
 {
     public interface ParticleEmitter
     {
-        NewParticle[] CreateParticles(double dt);
+        NewParticle[] CreateParticles(double lastFrameTime, double currentFrameTime);
     }
 }

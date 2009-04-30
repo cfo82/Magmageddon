@@ -21,7 +21,8 @@ namespace ProjectMagma.Renderer
             this.position = position;
             this.direction = direction;
             this.dead = dead;
-            absoluteTime = 0.0;
+
+            lastFrameTime = currentFrameTime = 0.0;
 
             iceSpikeEffect = Game.Instance.Content.Load<Effect>("Effects/Sfx/IceSpike").Clone(Game.Instance.GraphicsDevice);
 
@@ -34,9 +35,10 @@ namespace ProjectMagma.Renderer
         public override void Update(Renderer renderer, GameTime gameTime)
         {
             // calculate the timestep to make
+            lastFrameTime = currentFrameTime;
             double dtMs = (double)gameTime.ElapsedGameTime.Ticks / 10000d;
             double dt = dtMs / 1000.0;
-            absoluteTime += dt;
+            currentFrameTime = lastFrameTime + dt;
 
             if (!dead && iceSpikeEmitter == null)
             {
@@ -52,12 +54,14 @@ namespace ProjectMagma.Renderer
 
             if (iceSpikeEmitter != null)
             {
-                iceSpikeEmitter.SetPoint(absoluteTime, position);
+                iceSpikeEmitter.SetPoint(currentFrameTime, position);
+                Debug.Assert(iceSpikeEmitter.Times[0] == lastFrameTime);
+                Debug.Assert(iceSpikeEmitter.Times[1] == currentFrameTime);
             }
             iceSpikeSystem.Position = position;
             iceSpikeSystem.Direction = direction;
             iceSpikeSystem.Dead = dead;
-            iceSpikeSystem.Update(gameTime);
+            iceSpikeSystem.Update(lastFrameTime, currentFrameTime);
         }
 
         public override bool NeedsUpdate
@@ -158,6 +162,8 @@ namespace ProjectMagma.Renderer
         Model iceSpikeModel;
         private Effect iceSpikeEffect;
         private Texture2D iceSpikeTexture;
-        private double absoluteTime;
+
+        private double lastFrameTime;
+        private double currentFrameTime;
     }
 }

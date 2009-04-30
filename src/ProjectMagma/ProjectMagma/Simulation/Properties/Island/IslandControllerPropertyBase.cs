@@ -253,8 +253,6 @@ namespace ProjectMagma.Simulation
                 else 
                 {
                     // only collision with objects which are not the player count
-                    hadCollision = true;
-
                     Vector3 normal = CalculatePseudoNormalIsland(island, other);
                     if (kind == "cave")
                         normal = contact[0].Normal;
@@ -299,7 +297,7 @@ namespace ProjectMagma.Simulation
                         }
 
                         // reflect for collision with pillar/island (if not already in direction away from it)
-                        //if (Vector3.Dot(attractionVelocity, normal) > 0)
+                        if (Vector3.Dot(attractionVelocity, normal) > 0)
                         {
                             Vector3 normXZ = normal;
                             normXZ.Y = 0;
@@ -352,6 +350,8 @@ namespace ProjectMagma.Simulation
                     }
                     else
                         CollisionHandler(simTime, island, other, contact, ref normal);
+
+                    hadCollision = true;
                 }
             }
         }

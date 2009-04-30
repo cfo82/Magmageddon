@@ -140,7 +140,7 @@ namespace ProjectMagma.Simulation
             Vector3 islandPos = island.GetVector3("position");
             Vector3 checkPos = islandPos + powerup.GetVector3("relative_position");
             Vector3 surfacePos;
-            Debug.Assert(Simulation.GetPositionOnSurface(ref checkPos, island, out surfacePos));
+            Simulation.GetPositionOnSurface(ref checkPos, island, out surfacePos);
             powerup.SetFloat("surface_offset", surfacePos.Y - islandPos.Y);
         }
 

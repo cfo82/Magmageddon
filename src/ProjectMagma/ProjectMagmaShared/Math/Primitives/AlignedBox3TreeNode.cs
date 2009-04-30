@@ -171,6 +171,46 @@ namespace ProjectMagma.Shared.Math.Primitives
             return numLeft;
         }
 
+        public Triangle3 GetTriangle(
+            Vector3[] positions,
+            int index
+        )
+        {
+            return new Triangle3(
+                positions[indices[baseIndex + index * 3 + 0]],
+                positions[indices[baseIndex + index * 3 + 1]],
+                positions[indices[baseIndex + index * 3 + 2]]
+            );
+        }
+
+        public double AverageNumTrianglesPerLeaf
+        {
+            get
+            {
+                int numLeafs = 0;
+                int numTriangles = 0;
+                CountLeafsAndTrianglesPerLeaf(ref numLeafs, ref numTriangles);
+                return (double)numTriangles / (double)numLeafs;
+            }
+        }
+
+        private void CountLeafsAndTrianglesPerLeaf(
+            ref int numLeafs,
+            ref int numTriangles
+        )
+        {
+            if (HasChildren)
+            {
+                left.CountLeafsAndTrianglesPerLeaf(ref numLeafs, ref numTriangles);
+                right.CountLeafsAndTrianglesPerLeaf(ref numLeafs, ref numTriangles);
+            }
+            else
+            {
+                ++numLeafs;
+                numTriangles += this.numTriangles;
+            }
+        }
+
         public bool HasChildren
         {
             get
@@ -178,15 +218,6 @@ namespace ProjectMagma.Shared.Math.Primitives
                 Debug.Assert((left == null && right == null) || (left != null && right != null));
                 return left != null;
             }
-        }
-
-        public Triangle3 GetTriangle(Vector3[] positions, int index)
-        {
-            return new Triangle3(
-                positions[indices[baseIndex + index * 3 + 0]],
-                positions[indices[baseIndex + index * 3 + 1]],
-                positions[indices[baseIndex + index * 3 + 2]]
-            );
         }
 
         public int NumTriangles

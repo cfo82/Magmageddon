@@ -521,7 +521,11 @@ namespace ProjectMagma.ContentPipeline.ModelProcessors
             for (int i = 0; i < indexList.Count; ++i)
                 { indices[i] = indexList[i]; }
             
-            return new AlignedBox3Tree(positions, indices);
+            AlignedBox3Tree tree = new AlignedBox3Tree(positions, indices);
+#if DEBUG
+            context.Logger.LogImportantMessage("  average number of triangles per leaf in collision mesh is {0}", tree.Root.AverageNumTrianglesPerLeaf);
+#endif
+            return tree;
         }
 
         private void CalculateAlignedBox3Tree(

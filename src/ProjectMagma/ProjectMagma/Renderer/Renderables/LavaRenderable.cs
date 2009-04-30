@@ -227,7 +227,7 @@ namespace ProjectMagma.Renderer
         int randomOffsetCount;
         EffectParameter randomOffsetParameter;
 
-        AlignedBox3 boundingBox;
+        //AlignedBox3 boundingBox;
 
         Random offsetRand;
     }

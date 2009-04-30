@@ -21,6 +21,7 @@ namespace ProjectMagma.Renderer
             this.position = position;
             this.direction = direction;
             this.dead = dead;
+            absoluteTime = 0.0;
 
             iceSpikeEffect = Game.Instance.Content.Load<Effect>("Effects/Sfx/IceSpike").Clone(Game.Instance.GraphicsDevice);
 
@@ -32,6 +33,11 @@ namespace ProjectMagma.Renderer
 
         public override void Update(Renderer renderer, GameTime gameTime)
         {
+            // calculate the timestep to make
+            double dtMs = (double)gameTime.ElapsedGameTime.Ticks / 10000d;
+            double dt = dtMs / 1000.0;
+            absoluteTime += dt;
+
             if (!dead && iceSpikeEmitter == null)
             {
                 iceSpikeEmitter = new PointEmitter(new Vector3(0, 25, 0), 2500.0f);
@@ -46,7 +52,7 @@ namespace ProjectMagma.Renderer
 
             if (iceSpikeEmitter != null)
             {
-                iceSpikeEmitter.Point = position;
+                iceSpikeEmitter.SetPoint(absoluteTime, position);
             }
             iceSpikeSystem.Position = position;
             iceSpikeSystem.Direction = direction;
@@ -152,5 +158,6 @@ namespace ProjectMagma.Renderer
         Model iceSpikeModel;
         private Effect iceSpikeEffect;
         private Texture2D iceSpikeTexture;
+        private double absoluteTime;
     }
 }

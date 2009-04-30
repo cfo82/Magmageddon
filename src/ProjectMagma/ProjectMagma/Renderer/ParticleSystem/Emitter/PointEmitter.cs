@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Diagnostics;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -10,7 +11,8 @@ namespace ProjectMagma.Renderer.ParticleSystem.Emitter
     {
         public PointEmitter(Vector3 point, float particlesPerSecond)
         {
-            this.point = point;
+            this.times[1] = 0;
+            this.points[1] = point;
             this.particlesPerSecond = particlesPerSecond;
         }
 
@@ -25,6 +27,10 @@ namespace ProjectMagma.Renderer.ParticleSystem.Emitter
                 lastTime = elapsedTime;
             }
 
+            double amount = elapsedTime - times[0];
+            double interval = times[1] - times[0];
+            double interpolation = amount / interval;
+            Vector3 point = points[0] + (points[1] - points[0]) * (float)interpolation;
 
             double exactNumParticles = (elapsedTime - lastTime) * particlesPerSecond + fragmentLost;
             double floorNumParticles = System.Math.Floor(exactNumParticles);
@@ -52,13 +58,17 @@ namespace ProjectMagma.Renderer.ParticleSystem.Emitter
             return particles;
         }
 
-        public Vector3 Point
+        public void SetPoint(double time, Vector3 point)
         {
-            get { return point; }
-            set { point = value; }
+            Debug.Assert(time > times[1]);
+            times[0] = times[1];
+            points[0] = points[1];
+            times[1] = time;
+            points[1] = point;
         }
 
-        private Vector3 point;
+        private double[] times = new double[2];
+        private Vector3[] points = new Vector3[2];
         private double particlesPerSecond;
         private double lastTime = -20.0;
         private double elapsedTime = 0.0;

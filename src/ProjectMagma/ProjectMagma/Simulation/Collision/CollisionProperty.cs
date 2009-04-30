@@ -19,8 +19,13 @@ namespace ProjectMagma.Simulation.Collision
         {
             bool needAllContacts = entity.HasBool("need_all_contacts") && entity.GetBool("need_all_contacts");
 
-            Model model = Game.Instance.Content.Load<Model>(entity.GetString("mesh"));
+            string modelName = entity.GetString("mesh");
+            Model model = Game.Instance.Content.Load<Model>(modelName);
             List<VolumeCollection> collisionVolumes = (List<VolumeCollection>)model.Tag;
+            if (collisionVolumes == null)
+            {
+                throw new Exception(string.Format("model {0} has no collision volumes!", modelName));
+            }
 
             if (entity.HasString("bv_type"))
             {

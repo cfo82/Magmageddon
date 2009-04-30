@@ -305,9 +305,9 @@ namespace ProjectMagma.Simulation
             // running attraction
             if (attractedIsland != null)
             {
-                // deactivate
+                // deactivate if button released
                 if(!controllerInput.attractionButtonHold
-                    || controllerInput.jetpackButtonPressed)
+                    || destinationIsland) // if we initiated jump, abort attraction
                 {
                     // start attraction stop (has timeout)
                     attractedIsland.SetBool("stop_attraction", true);

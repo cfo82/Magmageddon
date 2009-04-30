@@ -79,7 +79,7 @@ IceSpikeVertexShaderOutput IceSpikeVertexShader(
 float4 IceSpikePixelShader(IceSpikePixelShaderInput input) : COLOR
 {
     float4 color = tex2D(IceSpikeSampler, input.TextureCoordinates);
-    color.a *= input.MainAlpha;
+    color.a = min(color.a*input.MainAlpha, color.a);
     return color;
 }
 

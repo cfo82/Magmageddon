@@ -12,7 +12,7 @@ namespace ProjectMagma.Simulation
     public class PlayerControllerProperty : Property
     {
         #region button assignments
-        private const bool LeftStickSelection = true;
+        private static readonly bool LeftStickSelection = true;
 
         // gamepad buttons
         private static readonly Buttons[] AttractionButtons = { Buttons.RightTrigger, Buttons.B };

@@ -172,4 +172,11 @@
       <Attribute name="relative_position" template="float3" value="-20 10 -5"/>
     </Attributes>
   </Entity>
+
+  <Entity name="powerup3" extends="powerup_jumps">
+    <Attributes>
+      <Attribute name="island_reference" template="string" value="island11"/>
+      <Attribute name="relative_position" template="float3" value="20 10 10"/>
+    </Attributes>
+  </Entity>
 </Level>

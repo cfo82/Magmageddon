@@ -59,6 +59,10 @@ namespace ProjectMagma.Simulation
             {
                 entity.GetIntAttribute("frozen").ValueChanged += FrozenChanged;
             }
+            if (entity.HasInt("jumps"))
+            {
+                entity.GetIntAttribute("jumps").ValueChanged += JumpsChanged;
+            }
 
             renderable = new HUDRenderable(
                 entity.GetString("player_name"),
@@ -69,7 +73,8 @@ namespace ProjectMagma.Simulation
                 playerConstants.GetInt("max_energy"),
                 entity.GetInt("fuel"),
                 playerConstants.GetInt("max_fuel"),
-                entity.GetInt("frozen"));
+                entity.GetInt("frozen"),
+                entity.GetInt("jumps"));
 
             Game.Instance.Renderer.AddRenderable(renderable);
         }
@@ -115,6 +120,10 @@ namespace ProjectMagma.Simulation
             if (entity.HasInt("frozen"))
             {
                 entity.GetIntAttribute("frozen").ValueChanged -= FrozenChanged;
+            }
+            if (entity.HasInt("jumps"))
+            {
+                entity.GetIntAttribute("jumps").ValueChanged -= JumpsChanged;
             }
         }
 
@@ -197,6 +206,15 @@ namespace ProjectMagma.Simulation
         )
         {
             renderable.Frozen = newValue;
+        }
+
+        private void JumpsChanged(
+            IntAttribute sender,
+            int oldValue,
+            int newValue
+        )
+        {
+            renderable.Jumps = newValue;
         }
 
         private HUDRenderable renderable;

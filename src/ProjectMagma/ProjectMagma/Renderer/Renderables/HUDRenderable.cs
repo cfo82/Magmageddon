@@ -15,7 +15,8 @@ namespace ProjectMagma.Renderer
             int maxEnergy,
             int fuel,
             int maxFuel,
-            int frozen
+            int frozen,
+            int jumps
         )
         {
             // graphics resources
@@ -36,6 +37,7 @@ namespace ProjectMagma.Renderer
             this.fuel = fuel;
             this.maxFuel = maxFuel;
             this.frozen = frozen;
+            this.jumps = jumps;
         }
 
         public override void Draw(
@@ -57,8 +59,9 @@ namespace ProjectMagma.Renderer
             int fuelBarWidth = fuelBar.Width * fuel / maxFuel;
 
             double frozenSeconds = (double)this.frozen / 1000.0;
-            string frozenString = string.Format(" (frozen: {0:00.00})", frozenSeconds);
-            string nameString = this.playerName + frozenString;
+            string frozenString = string.Format("frozen: {0:00.00}", frozenSeconds);
+            string jumpsString = string.Format("jumps: {0:00}", jumps);
+            string nameString = this.playerName + " (" + frozenString + ", " +jumpsString+ ")";
 
             SpriteEffects effects;
             if (gamePadIndex == 0)
@@ -89,10 +92,6 @@ namespace ProjectMagma.Renderer
                 Color.White, 0f, Vector2.Zero, 1, effects, 0);
             spriteBatch.Draw(fuelBar, new Vector2(fuelX, 117), new Rectangle(0, 0, fuelBarWidth, fuelBar.Height),
                 Color.White, 0f, Vector2.Zero, 1, effects, 0);
-
-            //spriteBatch.DrawString(font, String.Format("{0:00.0} fps", (1000f / gameTime.ElapsedGameTime.TotalMilliseconds))
-            //    + " " + String.Format("{0:00.0} sps", (1000f / Game.Instance.Simulation.Time.DtMs)),
-            //  new Vector2(screenWidth / 2 - 20, 5), Color.Silver);
 
 #if DEBUG || XBOX
             numFrames++;
@@ -182,6 +181,11 @@ namespace ProjectMagma.Renderer
             set { frozen = value; }
         }
 
+        public int Jumps
+        {
+            set { jumps = value; }
+        }
+
         private SpriteFont font;
         private SpriteBatch spriteBatch;
 
@@ -199,5 +203,6 @@ namespace ProjectMagma.Renderer
         private int fuel;
         private int maxFuel;
         private int frozen;
+        private int jumps;
     }
 }

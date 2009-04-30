@@ -93,6 +93,8 @@ namespace ProjectMagma.Simulation
             player.AddIntAttribute("health", constants.GetInt("max_health"));
             player.AddIntAttribute("fuel", constants.GetInt("max_fuel"));
 
+            player.AddIntAttribute("jumps", 0);
+
             player.AddIntAttribute("kills", 0);
             player.AddIntAttribute("deaths", 0);
 
@@ -359,12 +361,13 @@ namespace ProjectMagma.Simulation
             if (controllerInput.jetpackButtonPressed
                 && selectedIsland != null
                 && destinationIsland == null
+                && player.GetInt("jumps") > 0
             )
             {
                 //if ((selectedIsland.GetVector3("position") - player.GetVector3("position")).Length()
                 //    > 300)
                 //    return;
-
+                player.SetInt("jumps", player.GetInt("jumps") - 1);
                 StartIslandJump(selectedIsland, ref playerPosition, ref playerVelocity);
             }
         }
@@ -1041,21 +1044,21 @@ namespace ProjectMagma.Simulation
             }
             else
             {
-                /*
-                // normal feedback
-                Vector3 dir = previousPosition - player.GetVector3("position");
-                dir.Y = 0;
-                Vector3 normal = otherPlayer.GetVector3("position") - player.GetVector3("position");
-                normal.Y = 0;
-                if (Vector3.Dot(dir, normal) > 0 // and only if normal faces right direction
-                    || dir == Vector3.Zero) 
+//                if(movedByStick)
                 {
-                    player.SetVector3("collision_pushback_velocity", player.GetVector3("collision_pushback_velocity")
-                        - normal * 5);
-                }
-                 */
-                if(movedByStick)
-                {
+                    // normal feedback
+                    Vector3 dir = previousPosition - player.GetVector3("position");
+                    dir.Y = 0;
+                    Vector3 normal = otherPlayer.GetVector3("position") - player.GetVector3("position");
+                    normal.Y = 0;
+//                    if (Vector3.Dot(dir, normal) > 0 // and only if normal faces right direction
+//                        || dir == Vector3.Zero)
+                    {
+                        player.SetVector3("collision_pushback_velocity", player.GetVector3("collision_pushback_velocity")
+                            - normal * 5);
+                    }
+
+                    /*
                     Vector3 position = otherPlayer.GetVector3("position");
 
                     // get distance of destination point to sliding plane
@@ -1066,8 +1069,10 @@ namespace ProjectMagma.Simulation
 
                     Vector3 slidingDir = Vector3.Normalize(cpos - c[0].Point);
                     Vector3 slidingVelocity = slidingDir * (previousPosition-player.GetVector3("position")).Length();
+                    slidingVelocity.Y = 0;
 
                     player.SetVector3("position", previousPosition + slidingVelocity);
+                     */
                 }
             }
         }

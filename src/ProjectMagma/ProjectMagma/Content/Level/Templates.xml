@@ -110,10 +110,20 @@
     <Attributes>
       <Attribute name="power" template="string" value="energy"/>
       <Attribute name="powerValue" template="int" value="100"/>
+      <Attribute name="diffuse_color" template="float3" value="0.5 0.5 0.9"/>
+      <Attribute name="emissive_color" template="float3" value="0.0 0.0 0.1"/>
+      <Attribute name="alpha" template="float" value="0.85"/>
+    </Attributes>
+  </Entity>
+
+  <Entity name="powerup_jumps" extends="powerup_base" abstract="true">
+    <Attributes>
+      <Attribute name="power" template="string" value="jumps"/>
+      <Attribute name="powerValue" template="int" value="10"/>
       <Attribute name="diffuse_color" template="float3" value="0.5 0.9 0.5"/>
       <Attribute name="emissive_color" template="float3" value="0.0 0.1 0.0"/>
       <Attribute name="alpha" template="float" value="0.85"/>
     </Attributes>
   </Entity>
-
+  
 </Level>

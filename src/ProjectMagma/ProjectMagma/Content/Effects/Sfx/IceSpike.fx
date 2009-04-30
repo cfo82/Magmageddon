@@ -66,7 +66,7 @@ IceSpikeVertexShaderOutput IceSpikeVertexShader(
 	float3 dir_to_cam = CameraPosition - world_position;
 	
 	output.ScreenPosition = screen_position;
-	output.MainAlpha = abs(dot(normalize(world_normal), dir_to_cam));
+	output.MainAlpha = abs(dot(normalize(world_normal), normalize(dir_to_cam)));
 	output.TextureCoordinates = input.TextureCoordinates;
 
 	return output;
@@ -79,7 +79,7 @@ IceSpikeVertexShaderOutput IceSpikeVertexShader(
 float4 IceSpikePixelShader(IceSpikePixelShaderInput input) : COLOR
 {
     float4 color = tex2D(IceSpikeSampler, input.TextureCoordinates);
-    color.a = min(color.a*input.MainAlpha, color.a);
+    color.a = color.a*input.MainAlpha;
     return color;
 }
 

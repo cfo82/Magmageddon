@@ -15,7 +15,7 @@ uniform const float3	EyePosition;
 
 
 
-float planeFraction;
+//float planeFraction;
 float flickerStrength;
 float StuccoCompression;
 float4 RenderChannelColor;

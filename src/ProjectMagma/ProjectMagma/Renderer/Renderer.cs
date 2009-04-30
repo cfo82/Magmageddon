@@ -83,26 +83,35 @@ namespace ProjectMagma.Renderer
         
         public void Render(GameTime gameTime)
         {
+            Game.Instance.Profiler.BeginSection("beginning_stuff");
             LightManager.Update(gameTime);
 
             device.Clear(Color.CornflowerBlue);
 
             // 1) Set the light's render target
             device.SetRenderTarget(0, lightRenderTarget);
+            Game.Instance.Profiler.EndSection("beginning_stuff");
 
             // 2) Render the scene from the perspective of the light
+            Game.Instance.Profiler.BeginSection("renderer_shadow");
             RenderShadow(gameTime);
+            Game.Instance.Profiler.EndSection("renderer_shadow");
 
             // 3) Set our render target back to the screen, and get the 
             //depth texture created by step 2
+            Game.Instance.Profiler.BeginSection("change_render_target");
             device.SetRenderTarget(0, null);
             lightResolve = lightRenderTarget.GetTexture();
+            Game.Instance.Profiler.EndSection("change_render_target");
 
             // 4) Render the scene from the view of the camera, 
             //and do depth comparisons in the shader to determine shadowing
+            Game.Instance.Profiler.BeginSection("renderer_scene");
             RenderScene(gameTime);
+            Game.Instance.Profiler.EndSection("renderer_scene");
 
             // 5) Bloom (later HDR etc)
+            Game.Instance.Profiler.BeginSection("components");
             foreach (GameComponent component in Game.Instance.Components)
             {
                 DrawableGameComponent drawableComponent = component as DrawableGameComponent;
@@ -111,22 +120,31 @@ namespace ProjectMagma.Renderer
                     drawableComponent.Draw(gameTime);
                 }
             }
+            Game.Instance.Profiler.EndSection("components");
 
             if (EnablePostProcessing)
             {
+                Game.Instance.Profiler.BeginSection("renderer_post");
                 RenderChannels = Target1.GetTexture();
                 glowPass.GeometryRender = GeometryRender;
+                Game.Instance.Profiler.BeginSection("renderer_post_glow");
                 glowPass.Render(gameTime);
+                Game.Instance.Profiler.EndSection("renderer_post_glow");
 
                 hdrCombinePass.GeometryRender = GeometryRender;
 
                 hdrCombinePass.BlurGeometryRender = glowPass.BlurGeometryRender;
                 hdrCombinePass.RenderChannelColor = glowPass.BlurRenderChannelColor;
+                Game.Instance.Profiler.BeginSection("renderer_post_hdr");
                 hdrCombinePass.Render(gameTime);
+                Game.Instance.Profiler.EndSection("renderer_post_hdr");
+                Game.Instance.Profiler.EndSection("renderer_post");
             }
 
             // 5) Render overlays
+            Game.Instance.Profiler.BeginSection("overlay");
             RenderOverlays(gameTime);
+            Game.Instance.Profiler.EndSection("overlay");
         }
 
         private void RenderShadow(GameTime gameTime)

@@ -1074,6 +1074,16 @@
       <Importer>FbxImporter</Importer>
       <Processor>CaveProcessor</Processor>
     </Compile>
+    <Compile Include="Models\Environment\lava6c.fbx">
+      <Name>lava6c</Name>
+      <Importer>FbxImporter</Importer>
+      <Processor>LavaProcessor</Processor>
+    </Compile>
+    <Compile Include="Models\Environment\lava6c_wrongdir.fbx">
+      <Name>lava6c_wrongdir</Name>
+      <Importer>FbxImporter</Importer>
+      <Processor>LavaProcessor</Processor>
+    </Compile>
     <None Include="Models\Islands\burnt1_col.fbx">
       <Name>burnt1_col</Name>
       <Importer>FbxImporter</Importer>

@@ -57,12 +57,21 @@ namespace ProjectMagma.Simulation
                 (Renderable as BasicRenderable).SquashParams = entity.GetVector2("persistent_squash");
                 (Renderable as BasicRenderable).PersistentSquash = true;
             }
-
         }
 
         public void Squash()
         {
             (Renderable as BasicRenderable).Squash();
+        }
+
+        public Vector2 SquashParams {
+            get { return (Renderable as BasicRenderable).SquashParams; }
+            set { (Renderable as BasicRenderable).SquashParams = value; }
+        }
+
+        public bool PersistentSquash {
+            get { return (Renderable as BasicRenderable).PersistentSquash;  }
+            set { (Renderable as BasicRenderable).PersistentSquash = value; }
         }
     }
 }

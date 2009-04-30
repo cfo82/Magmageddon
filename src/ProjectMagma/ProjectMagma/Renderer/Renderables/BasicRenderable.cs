@@ -39,6 +39,8 @@ namespace ProjectMagma.Renderer
                 ApplyCustomEffectParameters(effect, renderer, gameTime);
             }
             mesh.Draw();
+            //renderer.Device.DrawPrimitives(PrimitiveType.TriangleList, 0, )
+            //mesh.MeshParts[0].
         }
 
         private void ApplyWorldViewProjection(Effect effect, ModelMesh mesh)

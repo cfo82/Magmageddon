@@ -108,7 +108,7 @@ namespace ProjectMagma.Renderer
             effect.Parameters["StuccoCompression"].SetValue(0.5f);
 
             effect.Parameters["minPlaneY"].SetValue(-45.0f);
-            effect.Parameters["maxPlaneY"].SetValue(0.0f);
+            effect.Parameters["maxPlaneY"].SetValue(45.0f);
 
             effect.Parameters["FogEnabled"].SetValue(0.0f);
             effect.Parameters["FogStart"].SetValue(1000.0f);

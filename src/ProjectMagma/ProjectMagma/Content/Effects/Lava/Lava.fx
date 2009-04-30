@@ -161,10 +161,52 @@ PSOutput MultiPlanePS(PS_INPUT i) : COLOR0
 	
 	// compute composite RGBA color
 	float3 cResultColor_rgb = lerp(cResultColor.rgb,FogColor, i.pos.w);
-	float planeFraction = (i.pos.y - minPlaneY) / (maxPlaneY - minPlaneY);
+	//float planeFraction = (i.pos.y - minPlaneY) / (maxPlaneY - minPlaneY);
+	//float minPlaneYb = -45.0;
+	//float maxPlaneYb = 45.0;
+	//float minPlaneYb = minPlaneY;
+	//float maxPlaneYb = maxPlaneY;
+		float yy = i.pos.y;
+		outp.Color.r=yy/2;
+	float minPlaneYb = 45;
+	float maxPlaneYb = 0;
+
 	
+	////float planeFraction = ((-10.0f) - minPlaneYb) / (maxPlaneYb - minPlaneYb);
+	float planeFraction = (i.pos.y - minPlaneYb) / (maxPlaneYb - minPlaneYb);
+//	float planeFraction = ((0.0-10.0) - (0.0-45.0)) / (45.0 - (0.0-45.0));
+	//float planeFraction = (i.pos.y - (0.0-45.0)) / (45.0 - (0.0-45.0));
+	//float planeFraction = ((-10.0) - (-45.0)) / (45.0- (-45.0));
+	//float planeFraction = ((-10) - (-45)) / (45- (-45));
+	//float planeFraction = 0.35;
+	//
 	outp.Color = float4(cResultColor_rgb*0.7, alphaStucco >= planeFraction ? 1 : 0);
+//	outp.Color = float4(planeFraction,0,0,1);
+	outp.RenderChannelColor = RenderChannelColor;
+	return outp;	
 	
+	if(planeFraction<=0.0)
+		outp.Color = float4(1,0,0,1);
+	else if(planeFraction<=0.1)
+		outp.Color = float4(0,1,0,1);
+	else if(planeFraction<=0.2)
+		outp.Color = float4(0,0,1,1);
+	else if(planeFraction<=0.3)
+		outp.Color = float4(1,1,0,1);
+	else if(planeFraction<=0.4)
+		outp.Color = float4(1,0,1,1);
+	else if(planeFraction<=0.5)
+		outp.Color = float4(0,1,1,1);
+	else if(planeFraction<=0.6)
+		outp.Color = float4(1,1,1,1);
+	else if(planeFraction<=0.7)
+		outp.Color = float4(0.5,0,0,1);
+	else if(planeFraction<=0.8)
+		outp.Color = float4(0,0.5,0,1);
+	else if(planeFraction<=0.9)
+		outp.Color = float4(0,0,0.5,1);
+	else if(planeFraction<=1.0)
+		outp.Color = float4(0.5,0.5,0.5,1);
 	//outp.Color = float4(1,0,0,1);
 	//outp.Color = tex2D(TemperatureSampler, i.texCoord);
 	//outp.RenderChannelColor = float4(0,0,1,1);

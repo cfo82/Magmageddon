@@ -342,11 +342,13 @@ namespace ProjectMagma.Simulation
                         RemoveSelectionArrow();
                         */
 
-                        arrow.SetVector2("persistent_squash", new Vector2(100f, 1f));
+                        //arrow.SetVector2("persistent_squash", new Vector2(100f, 1f));
+                        (arrow.GetProperty("render") as BasicRenderProperty).SquashParams = new Vector2(100f, 1f);
                     }
                     else
                     {
-                        arrow.SetVector2("persistent_squash", new Vector2(1000f, 0.8f));
+                        //arrow.SetVector2("persistent_squash", new Vector2(1000f, 0.8f));
+                        (arrow.GetProperty("render") as BasicRenderProperty).SquashParams = new Vector2(1000f, 0.8f);
                     }
                 }
             }

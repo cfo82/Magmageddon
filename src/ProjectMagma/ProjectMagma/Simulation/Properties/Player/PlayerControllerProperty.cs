@@ -54,7 +54,6 @@ namespace ProjectMagma.Simulation
         private Entity destinationIsland = null;
         private Vector3 lastIslandDir = Vector3.Zero;
         private float islandJumpPerformedAt = 0;
-        private bool jumpButtonReleased = true;
         private Entity attractedIsland = null;
 
         Entity flame = null;
@@ -225,7 +224,6 @@ namespace ProjectMagma.Simulation
             PerformIslandRepulsionAction(at, ref fuel);
 
             // TODO: island selection with islands/player projected in screen-plane.
-            // TODO: island selection don't change island if stick has not been moved
 
             // island selection and attraction
             bool allowSelection = attractedIsland == null
@@ -360,7 +358,6 @@ namespace ProjectMagma.Simulation
             if (controllerInput.jetpackButtonPressed
                 && selectedIsland != null
                 && destinationIsland == null
-                && jumpButtonReleased // don't allow jumps by having the jump button pressed all the time
             )
             {
                 //if ((selectedIsland.GetVector3("position") - player.GetVector3("position")).Length()
@@ -526,16 +523,6 @@ namespace ProjectMagma.Simulation
                     // change rotation towards selected island
                     if (selectedIsland != null)
                     {
-                        /*
-                        Vector3 D = (selectedIsland.GetVector3("position") - playerPosition);
-                        Vector3 Right = Vector3.Cross(Vector3.UnitY, D);
-                        Vector3.Normalize(ref Right, out Right);
-                        Vector3 Backwards = Vector3.Cross(Right, Vector3.UnitY);
-                        Vector3.Normalize(ref Backwards, out Backwards);
-                        Vector3 Up = Vector3.Cross(Backwards, Right);
-                        Matrix rot = new Matrix(Right.X, Right.Y, Right.Z, 0, Up.X, Up.Y, Up.Z, 0, Backwards.X, Backwards.Y, Backwards.Z, 0, 0, 0, 0, 1);
-                         */
-
                         Vector3 tminusp = (selectedIsland.GetVector3("position") - playerPosition); 
                         Vector3 ominusp = Vector3.Backward;
                         tminusp.Normalize();
@@ -759,7 +746,6 @@ namespace ProjectMagma.Simulation
                     destinationIsland = null;
                     playerVelocity = Vector3.Zero;
                     islandJumpPerformedAt = at;
-                    jumpButtonReleased = false;
                 }
                 else
                 {
@@ -772,12 +758,6 @@ namespace ProjectMagma.Simulation
 
                     player.SetVector3("island_jump_velocity", Vector3.Normalize(islandDir) * constants.GetFloat("island_jump_speed"));
                 }
-            }
-            else
-            {
-                // jumpButtonReleased gets set to true as soon as the jump button is not pressed anymore
-                if (!controllerInput.jetpackButtonPressed)
-                    jumpButtonReleased = true;
             }
         }
 
@@ -1063,11 +1043,13 @@ namespace ProjectMagma.Simulation
             {
                 // normal feedback
                 Vector3 dir = previousPosition - player.GetVector3("position");
+                dir.Y = 0;
                 Vector3 normal = otherPlayer.GetVector3("position") - player.GetVector3("position");
+                normal.Y = 0;
                 if (Vector3.Dot(dir, normal) > 0) // and only if normal faces right direction
                 {
                     player.SetVector3("collision_pushback_velocity", player.GetVector3("collision_pushback_velocity")
-                        - normal * 10);
+                        - normal * 5);
                 }
             }
         }
@@ -1103,7 +1085,8 @@ namespace ProjectMagma.Simulation
         {
             if (entity.Name.Equals("flame" + "_" + player.Name))
             {
-                flameThrowerSoundInstance.Stop();
+                if(flameThrowerSoundInstance != null)
+                    flameThrowerSoundInstance.Stop();
                 flame = null;
                 return;
             }
@@ -1118,6 +1101,32 @@ namespace ProjectMagma.Simulation
             {
                 iceSpikeCount = 0;
                 iceSpikeRemovedCount = 0;
+            }
+
+            // check removed entity wasn't island we were using
+            if (entity == selectedIsland)
+            {
+                RemoveSelectionArrow();
+            }
+            if (entity == destinationIsland)
+            {
+                destinationIsland = null;
+            }
+            if (entity == activeIsland)
+            {
+                activeIsland = null;
+                player.SetString("active_island", "");
+
+                // disable attraction
+                if (attractedIsland != null)
+                {
+                    attractedIsland.SetString("attracted_by", "");
+                    attractedIsland = null;
+                }
+            }
+            if (entity == attractedIsland)
+            {
+                attractedIsland = null;
             }
         }
 
@@ -1137,7 +1146,6 @@ namespace ProjectMagma.Simulation
                 float dist = islandDir.Length();
                 islandDir.Y = 0;
                 float angle = (float)(Math.Acos(Vector3.Dot(dir, islandDir) / dist));
-//                float angle = (float)(Math.Acos(Vector3.Dot(dir, islandDir) / dist) / Math.PI * 180);
                 if (island != activeIsland
                     && (angle / Math.PI * 180) < constants.GetFloat("island_aim_angle")) 
                 {

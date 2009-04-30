@@ -28,8 +28,12 @@ namespace ProjectMagma.Simulation
             else
                 targetPlayer = null;
 
+            createdAt = Game.Instance.Simulation.Time.At;
+
             entity.Update += OnUpdate;
         }
+
+        private float createdAt;
 
         public void OnDetached(Entity entity)
         {
@@ -57,7 +61,8 @@ namespace ProjectMagma.Simulation
             // accumulate forces
             Vector3 a = constants.GetVector3("ice_spike_gravity_acceleration");
 
-            if (targetPlayer != null)
+            if (targetPlayer != null
+                && simTime.At > createdAt + constants.GetInt("ice_spike_cooldown"))
             {
                 // incorporate homing effect towards targeted player
                 Vector3 targetPlayerPos = targetPlayer.GetVector3("position");
@@ -113,8 +118,7 @@ namespace ProjectMagma.Simulation
             // remove spike
             Entity iceSpike = contact.EntityA;
             Entity other = contact.EntityB;
-            if (!(other.Name == iceSpike.Name) // dont collide with self
-                && !(other.Name == iceSpike.GetString("player"))) // dont collide with shooter
+            if (!(other.Name == iceSpike.GetString("player"))) // dont collide with shooter
             {
                 if (other.HasAttribute("kind") && other.GetString("kind") == "player")
                     IceSpikePlayerCollisionHandler(simTime, iceSpike, other);
@@ -134,14 +138,19 @@ namespace ProjectMagma.Simulation
 
             // todo: constant
             iceSpikeExplosion.AddIntAttribute("live_span", 2000);
+            iceSpikeExplosion.AddIntAttribute("damage", constants.GetInt("ice_spike_damage"));
+            iceSpikeExplosion.AddIntAttribute("freeze_time", constants.GetInt("ice_spike_freeze_time"));
 
             iceSpikeExplosion.AddVector3Attribute("position", iceSpike.GetVector3("position"));
 
             iceSpikeExplosion.AddStringAttribute("mesh", "Models/Sfx/icespike_explosion");
-            iceSpikeExplosion.AddVector3Attribute("scale", new Vector3(5, 5, 5));
+            iceSpikeExplosion.AddVector3Attribute("scale", new Vector3(20, 20, 20));
+
+            iceSpikeExplosion.AddStringAttribute("bv_type", "sphere");
 
             // todo: change this
             iceSpikeExplosion.AddProperty("render", new BasicRenderProperty());
+            iceSpikeExplosion.AddProperty("collision", new CollisionProperty());
             iceSpikeExplosion.AddProperty("controller", new ExplosionControllerProperty());
 
             Game.Instance.Simulation.EntityManager.AddDeferred(iceSpikeExplosion);
@@ -152,10 +161,6 @@ namespace ProjectMagma.Simulation
             // indicate hit
             SoundEffect soundEffect = Game.Instance.Content.Load<SoundEffect>("Sounds/sword-clash");
             soundEffect.Play(Game.Instance.EffectsVolume);
-
-            // buja
-            player.SetInt("health", player.GetInt("health") - constants.GetInt("ice_spike_damage"));
-            player.SetInt("frozen", player.GetInt("frozen") + constants.GetInt("ice_spike_freeze_time"));
         }
 
         private Vector3 GetPosition(Entity entity)

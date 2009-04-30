@@ -33,7 +33,7 @@
       <Attribute name="ice_spike_damage" template="int" value="10"/>
       <Attribute name="ice_spike_freeze_time" template="int" value="2500"/>
       <Attribute name="ice_spike_cooldown" template="int" value="500"/>
-      <Attribute name="ice_spike_initial_speed_multiplier" template="float3" value="140 300 140"/>
+      <Attribute name="ice_spike_initial_speed_multiplier" template="float3" value="0 300 0"/>
       <Attribute name="ice_spike_max_speed" template="float" value="440"/>
       <Attribute name="ice_spike_gravity_acceleration" template="float3" value="0 -200 0"/>
       <Attribute name="ice_spike_homing_acceleration" template="float" value="5000"/>
@@ -47,7 +47,7 @@
       <Attribute name="flamethrower_cooldown_time" template="int" value="400"/>
       <Attribute name="flamethrower_turn_flame_increase" template="float" value="1"/>
       <Attribute name="flamethrower_turn_scale" template="float" value="0.6"/>
-      <Attribute name="flamethrower_damage_per_second" template="int" value="10"/>
+      <Attribute name="flamethrower_damage_per_second" template="int" value="50"/>
 
       <Attribute name="hit_damage" template="int" value="20"/>
       <Attribute name="hit_cooldown" template="int" value="250"/>

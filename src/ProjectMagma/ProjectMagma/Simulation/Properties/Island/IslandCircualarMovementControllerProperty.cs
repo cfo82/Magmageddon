@@ -82,21 +82,22 @@ namespace ProjectMagma.Simulation
 
         protected override void CollisionHandler(SimulationTime simTime, Entity island, Entity other, Contact co, ref Vector3 normal)
         {
-            if ((other.GetString("kind") == "pillar"
-                || other.GetString("kind") == "island"))
             {
-                // collision with pillar or island -> change direction, 
-                // if not already in direction away from that object
-                
+                // change direction, if not already in direction away from that object
+
                 // calculate direction of movement
                 Vector3 oldPosition = island.GetVector3("position");
                 Vector3 newPosition = oldPosition;
                 CalculateNewPosition(island, ref newPosition, simTime.Dt);
                 Vector3 diff = newPosition - oldPosition;
+
+                // change dir
+                dir = -dir;
+
                 // check if normal is in opposite direction of theoretical velocity
                 if (Vector3.Dot(diff, normal) > 0)
                 {
-                    dir = -dir;
+//                    dir = -dir;
 
                     // always ensure we apply a bit of pushback out of other entity so we don't get stuck in there
                     if (!(other.GetString("kind") == "island"

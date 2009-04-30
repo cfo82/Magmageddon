@@ -244,7 +244,9 @@ namespace ProjectMagma.Simulation
             if(other.HasString("kind"))
             {
                 String kind = other.GetString("kind");
-                if (kind == "player")
+
+                if (kind == "player"
+                    || kind == "powerup")
                 {
                     // do nothing
                 }
@@ -254,6 +256,8 @@ namespace ProjectMagma.Simulation
                     hadCollision = true;
 
                     Vector3 normal = CalculatePseudoNormalIsland(island, other);
+                    if (kind == "cave")
+                        normal = contact[0].Normal;
 
                     // change direction of repulsion
                     Vector3 repulsionVelocity = island.GetVector3("repulsion_velocity");

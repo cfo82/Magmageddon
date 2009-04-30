@@ -67,8 +67,8 @@ namespace ProjectMagma
             graphics = new GraphicsDeviceManager(this);
             menu = Menu.Instance;
 
-            this.IsFixedTimeStep = true;
-            this.TargetElapsedTime = TimeSpan.FromSeconds(1.0 / 8.0);
+            this.IsFixedTimeStep = false;
+            //this.TargetElapsedTime = TimeSpan.FromSeconds(1.0 / 8.0);
             graphics.SynchronizeWithVerticalRetrace = false; 
             graphics.ApplyChanges();
             graphics.PreferredBackBufferWidth = 1280;

@@ -670,7 +670,7 @@ namespace ProjectMagma.Simulation
                     Vector3 isectPt;
                     if (Simulation.GetPositionOnSurface(ref playerPosition, activeIsland, out isectPt))
                     {
-                        Console.WriteLine("h-diff " + ( isectPt.Y - previousPosition.Y));
+//                        Console.WriteLine("h-diff " + ( isectPt.Y - previousPosition.Y));
                         // check angle
                         if (isectPt.Y - previousPosition.Y > 10)
                         {
@@ -740,7 +740,6 @@ namespace ProjectMagma.Simulation
             {
                 // apply from last jump
                 playerPosition += player.GetVector3("island_jump_velocity") * dt;
-                Console.WriteLine(playerPosition);
 
                 // check for arrival
                 Vector3 islandDir = destinationIsland.GetVector3("position") - playerPosition;

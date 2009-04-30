@@ -146,6 +146,7 @@
     <Compile Include="Simulation\Properties\Base\Property.cs" />
     <Compile Include="Simulation\Properties\Environment\ArrowController.cs" />
     <Compile Include="Simulation\Properties\Environment\CameraProperty.cs" />
+    <Compile Include="Simulation\Properties\Environment\ExplosionControllerProperty.cs" />
     <Compile Include="Simulation\Properties\Environment\PowerUpController.cs" />
     <Compile Include="Simulation\Properties\Island\IslandCircualarMovementControllerProperty.cs" />
     <Compile Include="Simulation\Properties\Island\IslandControllerPropertyBase.cs" />

@@ -1129,6 +1129,11 @@
       <Importer>FbxImporter</Importer>
       <Processor>ModelProcessor</Processor>
     </None>
+    <Compile Include="Models\Sfx\icespike_explosion.fbx">
+      <Name>icespike_explosion</Name>
+      <Importer>FbxImporter</Importer>
+      <Processor>ModelProcessor</Processor>
+    </Compile>
     <Compile Include="Models\Islands\all_rend_and_col.fbx">
       <Name>all_rend_and_col</Name>
       <Importer>FbxImporter</Importer>

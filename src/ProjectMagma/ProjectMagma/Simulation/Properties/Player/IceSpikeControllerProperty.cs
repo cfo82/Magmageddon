@@ -127,6 +127,24 @@ namespace ProjectMagma.Simulation
             diedAt = simTime.At;
             iceSpike.SetBool("dead", true);
             ((CollisionProperty)iceSpike.GetProperty("collision")).OnContact -= IceSpikeCollisionHandler;
+
+            // add explosion
+            Entity iceSpikeExplosion = new Entity(iceSpike.Name+"_explosion");
+            iceSpikeExplosion.AddStringAttribute("player", iceSpike.GetString("player"));
+
+            // todo: constant
+            iceSpikeExplosion.AddIntAttribute("live_span", 2000);
+
+            iceSpikeExplosion.AddVector3Attribute("position", iceSpike.GetVector3("position"));
+
+            iceSpikeExplosion.AddStringAttribute("mesh", "Models/Sfx/icespike_explosion");
+            iceSpikeExplosion.AddVector3Attribute("scale", new Vector3(5, 5, 5));
+
+            // todo: change this
+            iceSpikeExplosion.AddProperty("render", new BasicRenderProperty());
+            iceSpikeExplosion.AddProperty("controller", new ExplosionControllerProperty());
+
+            Game.Instance.Simulation.EntityManager.AddDeferred(iceSpikeExplosion);
         }
 
         private void IceSpikePlayerCollisionHandler(SimulationTime simTime, Entity iceSpike, Entity player)

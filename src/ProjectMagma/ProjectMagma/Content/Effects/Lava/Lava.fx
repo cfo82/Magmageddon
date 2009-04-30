@@ -95,9 +95,11 @@ VS_OUTPUT MultiPlaneVS(float4 inPositionOS  : POSITION,
                          float3 vInTangentOS  : TANGENT )
 {
     VS_OUTPUT Out;
-        
+    
+    float4x4 localWorld = mul(Local, World);
+    
     // Transform and output input position 
-    Out.position = mul( inPositionOS, WorldViewProjection );
+    Out.position = mul( inPositionOS, mul(Local, WorldViewProjection) );
     
     //Out.position.y += sin(inPositionOS.x/7)*40;
        
@@ -105,9 +107,9 @@ VS_OUTPUT MultiPlaneVS(float4 inPositionOS  : POSITION,
     Out.texCoord = inTexCoord;
 
     // Transform the normal, tangent and binormal vectors from object space to homogeneous projection space:
-    float3 vNormalWS   = mul( vInNormalOS,   (float3x3) World );
-    float3 vTangentWS  = mul( vInTangentOS,  (float3x3) World );
-    float3 vBinormalWS = mul( vInBinormalOS, (float3x3) World );
+    float3 vNormalWS   = mul( vInNormalOS,   (float3x3) localWorld );
+    float3 vTangentWS  = mul( vInTangentOS,  (float3x3) localWorld );
+    float3 vBinormalWS = mul( vInBinormalOS, (float3x3) localWorld );
     
     // Propagate the world space vertex normal through:   
     Out.vNormalWS = vNormalWS;
@@ -117,7 +119,7 @@ VS_OUTPUT MultiPlaneVS(float4 inPositionOS  : POSITION,
     vBinormalWS = normalize( vBinormalWS );
     
     // Compute position in world space:
-    float4 vPositionWS = mul( inPositionOS, World );
+    float4 vPositionWS = mul( inPositionOS, localWorld );
                  
     // Compute denormalized light vector in world space:
     float3 vLightWS = g_LightDir;

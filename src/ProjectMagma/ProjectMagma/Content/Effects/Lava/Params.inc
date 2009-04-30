@@ -33,7 +33,7 @@ float3 g_LightDir;                  // Light's direction in world space
 // Matrices:
 float4x4 World;                  // World matrix for object
 float4x4 WorldViewProjection;    // World * View * Projection matrix
-
+float4x4 Local;
 
 float4x4 View;                   // View matrix, not really used here
 float4x4 Projection; // not really used here

@@ -57,6 +57,7 @@ uniform const float3	DirLight2SpecularColor	: register(c19);
 // Matrices
 //-----------------------------------------------------------------------------
 
+uniform const float4x4	Local;
 uniform const float4x4	World		: register(vs, c20);	// 20 - 23
 uniform const float4x4	View		: register(vs, c24);	// 24 - 27
 uniform const float4x4	Projection	: register(vs, c28);	// 28 - 31

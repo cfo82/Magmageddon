@@ -29,7 +29,8 @@ PixelLightingVSOutput VSBasicPixelLightingNmSq
 {
 	PixelLightingVSOutput vout;
 	
-	float4 squashed_ws = mul(squashMatrix(), Position);
+	float4 pos_loc = mul(Position, Local);
+	float4 squashed_ws = mul(squashMatrix(), pos_loc);
 	float4 pos_ws = mul(squashed_ws, World);
 	float4 pos_vs = mul(pos_ws, View);
 	float4 pos_ps = mul(pos_vs, Projection);
@@ -55,7 +56,8 @@ PixelLightingVSOutputTx VSBasicPixelLightingNmTxSq
 {
 	PixelLightingVSOutputTx vout;
 	
-	float4 squashed_ws = mul(squashMatrix(), Position);
+	float4 pos_loc = mul(Position, Local);
+	float4 squashed_ws = mul(squashMatrix(), pos_loc);
 	float4 pos_ws = mul(squashed_ws, World);
 	float4 pos_vs = mul(pos_ws, View);
 	float4 pos_ps = mul(pos_vs, Projection);

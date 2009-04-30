@@ -45,7 +45,8 @@ namespace ProjectMagma.Renderer
 
         private void ApplyWorldViewProjection(Effect effect, ModelMesh mesh)
         {
-            effect.Parameters["World"].SetValue(BoneTransformMatrix(mesh) * World);
+            effect.Parameters["Local"].SetValue(BoneTransformMatrix(mesh));
+            effect.Parameters["World"].SetValue(World);
             effect.Parameters["View"].SetValue(Game.Instance.View);
             effect.Parameters["Projection"].SetValue(Game.Instance.Projection);
         }

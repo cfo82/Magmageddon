@@ -102,13 +102,15 @@ namespace ProjectMagma.Renderer.ParticleSystem.Stateful
             this.emitters.Remove(emitter);
         }
 
-        void CreateParticles(GameTime gameTime)
+        void CreateParticles(
+            double dt
+        )
         {
             Vector2 positionHalfPixel = new Vector2(1.0f / (2.0f * positionTextures[0].Width), 1.0f / (2.0f * positionTextures[0].Height));
 
             foreach (ParticleEmitter emitter in emitters)
             {
-                NewParticle[] list = emitter.CreateParticles(gameTime);
+                NewParticle[] list = emitter.CreateParticles(dt);
                 if (list.Length == 0)
                     { continue; }
 
@@ -165,45 +167,56 @@ namespace ProjectMagma.Renderer.ParticleSystem.Stateful
             GameTime gameTime
         )
         {
-            int nextTexture = (activeTexture + 1) % 2;
+            // calculate the timestep to make
+            double dtMs = (double)gameTime.ElapsedGameTime.Ticks / 10000d;
+            double dt = dtMs / 1000.0;
+            dt += remainingDt;
+            remainingDt = 0.0;
 
-            RenderTarget2D oldRenderTarget0 = (RenderTarget2D)device.GetRenderTarget(0);
-            RenderTarget2D oldRenderTarget1 = (RenderTarget2D)device.GetRenderTarget(1);
-            device.SetRenderTarget(0, positionTextures[nextTexture]);
-            device.SetRenderTarget(1, velocityTextures[nextTexture]);
+            while (dt > simulationStep)
+            {
+                dt -= simulationStep;
 
-            
+                int nextTexture = (activeTexture + 1) % 2;
 
-            particleUpdateParameters["UpdateParticlesPositionTexture"].SetValue(positionTextures[activeTexture].GetTexture());
-            particleUpdateParameters["UpdateParticlesVelocityTexture"].SetValue(velocityTextures[activeTexture].GetTexture());
-            particleUpdateParameters["Dt"].SetValue((float)gameTime.ElapsedGameTime.Milliseconds / 1000.0f);
-            SetUpdateParameters(particleUpdateParameters);
+                RenderTarget2D oldRenderTarget0 = (RenderTarget2D)device.GetRenderTarget(0);
+                RenderTarget2D oldRenderTarget1 = (RenderTarget2D)device.GetRenderTarget(1);
+                device.SetRenderTarget(0, positionTextures[nextTexture]);
+                device.SetRenderTarget(1, velocityTextures[nextTexture]);
 
-            Debug.Assert(particleUpdateEffect.CurrentTechnique.Passes.Count == 1);
-            EffectPass pass = particleUpdateEffect.CurrentTechnique.Passes[0];
 
-            Texture2D positionTexture = positionTextures[activeTexture].GetTexture();
 
-            spriteBatch.Begin(SpriteBlendMode.None, SpriteSortMode.Immediate, SaveStateMode.None);
+                particleUpdateParameters["UpdateParticlesPositionTexture"].SetValue(positionTextures[activeTexture].GetTexture());
+                particleUpdateParameters["UpdateParticlesVelocityTexture"].SetValue(velocityTextures[activeTexture].GetTexture());
+                particleUpdateParameters["Dt"].SetValue((float)simulationStep);
+                SetUpdateParameters(particleUpdateParameters);
 
-            particleUpdateEffect.Begin();
-            pass.Begin();
+                Debug.Assert(particleUpdateEffect.CurrentTechnique.Passes.Count == 1);
+                EffectPass pass = particleUpdateEffect.CurrentTechnique.Passes[0];
 
-            spriteBatch.Draw(positionTexture, new Rectangle(0, 0, positionTexture.Width, positionTexture.Height), Color.White);
+                Texture2D positionTexture = positionTextures[activeTexture].GetTexture();
 
-            spriteBatch.End();
-            
-            pass.End();
-            particleUpdateEffect.End();
+                spriteBatch.Begin(SpriteBlendMode.None, SpriteSortMode.Immediate, SaveStateMode.None);
 
-            CreateParticles(gameTime);
+                particleUpdateEffect.Begin();
+                pass.Begin();
 
-            device.SetRenderTarget(1, oldRenderTarget1);
-            device.SetRenderTarget(0, oldRenderTarget0);
+                spriteBatch.Draw(positionTexture, new Rectangle(0, 0, positionTexture.Width, positionTexture.Height), Color.White);
 
-            activeTexture = nextTexture;
+                spriteBatch.End();
 
-            //positionTextures[activeTexture].GetTexture().Save(string.Format("PositionMaps/{0:0000}.dds", fileindex++), ImageFileFormat.Dds);
+                pass.End();
+                particleUpdateEffect.End();
+
+                CreateParticles(simulationStep);
+
+                device.SetRenderTarget(1, oldRenderTarget1);
+                device.SetRenderTarget(0, oldRenderTarget0);
+
+                activeTexture = nextTexture;
+
+                //positionTextures[activeTexture].GetTexture().Save(string.Format("PositionMaps/{0:0000}.dds", fileindex++), ImageFileFormat.Dds);
+            }
         }
 
         public void Render(
@@ -300,6 +313,8 @@ namespace ProjectMagma.Renderer.ParticleSystem.Stateful
 
         private GraphicsDevice device;
 
+        private double remainingDt = 0.0;
+        private double simulationStep = 1.0 / 60.0;
 
         private int textureSize = 92;
         private int activeTexture;

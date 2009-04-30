@@ -14,9 +14,11 @@ namespace ProjectMagma.Renderer.ParticleSystem.Emitter
             this.particlesPerSecond = particlesPerSecond;
         }
 
-        public NewParticle[] CreateParticles(GameTime gameTime)
+        public NewParticle[] CreateParticles(
+            double dt
+        )
         {
-            elapsedTime += ((float)gameTime.ElapsedGameTime.Milliseconds / 1000.0f);
+            elapsedTime += dt;
 
             if (lastTime < 0)
             {
@@ -48,28 +50,6 @@ namespace ProjectMagma.Renderer.ParticleSystem.Emitter
             }
 
             return particles;
-        }
-
-        /// <summary>
-        /// Helper used by the UpdateFire method. Chooses a random location
-        /// around a circle, at which a fire particle will be created.
-        /// </summary>
-        private Vector3 RandomPointOnCircle(GameTime gameTime)
-        {
-            //circleAngle += ((float)gameTime.ElapsedGameTime.Milliseconds / 500000.0f);
-
-            const float radius = 30;
-            const float height = 40;
-
-            double angle = random.NextDouble() * Math.PI * 2;
-
-            float x = (float)Math.Cos(angle);
-            float y = (float)Math.Sin(angle);
-
-            return new Vector3(
-                x * radius * (float)Math.Cos(circleAngle),
-                y * radius + height,
-                x * radius * (float)Math.Sin(circleAngle));
         }
 
         public Vector3 Point

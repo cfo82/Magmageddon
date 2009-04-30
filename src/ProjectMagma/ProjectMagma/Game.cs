@@ -68,6 +68,7 @@ namespace ProjectMagma
             menu = Menu.Instance;
 
             this.IsFixedTimeStep = false;
+            //this.TargetElapsedTime = TimeSpan.FromSeconds(1.0 / 15.0);
             graphics.SynchronizeWithVerticalRetrace = true;
             graphics.ApplyChanges();
 

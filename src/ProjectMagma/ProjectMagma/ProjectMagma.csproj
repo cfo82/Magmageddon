@@ -182,6 +182,7 @@
     <Compile Include="Simulation\Attributes\Events\Vector2ChangeHandler.cs" />
     <Compile Include="Simulation\Attributes\Events\Vector3ChangeHandler.cs" />
     <Compile Include="Simulation\OrientationHelper.cs" />
+    <Compile Include="Simulation\Properties\Base\RendererUpdatableProperty.cs" />
     <Compile Include="Simulation\Properties\Environment\ArrowController.cs" />
     <Compile Include="Simulation\Properties\Environment\CameraProperty.cs" />
     <Compile Include="Simulation\Properties\Environment\ExplosionControllerProperty.cs" />

@@ -605,7 +605,8 @@ namespace ProjectMagma
                     }
                 }
 
-                Game.Instance.Simulation.AddPlayers(players.ToArray<Entity>());
+                ProjectMagma.Renderer.Interface.RendererUpdateQueue q = Game.Instance.Simulation.AddPlayers(players.ToArray<Entity>());
+                Game.Instance.Renderer.AddUpdateQueue(q);
 
                 menu.Close();
             }

@@ -8,18 +8,21 @@ using Microsoft.Xna.Framework.Graphics;
 
 using ProjectMagma.Simulation.Attributes;
 using ProjectMagma.Renderer;
+using ProjectMagma.Renderer.Interface;
 
 namespace ProjectMagma.Simulation
 {
-    public class HUDProperty : Property
+    public class HUDProperty : RendererUpdatableProperty
     {
         public HUDProperty()
         {
         }
 
-        public void OnAttached(Entity entity)
+        public override void OnAttached(Entity entity)
         {
             Debug.Assert(entity.HasAttribute("kind") && entity.GetString("kind") == "player");
+
+            base.OnAttached(entity);
 
             Entity playerConstants = Game.Instance.Simulation.EntityManager["player_constants"];
 
@@ -64,7 +67,14 @@ namespace ProjectMagma.Simulation
                 entity.GetIntAttribute("jumps").ValueChanged += JumpsChanged;
             }
 
-            renderable = new HUDRenderable(
+            Game.Instance.Simulation.CurrentUpdateQueue.updates.Add(new AddRenderableUpdate((Renderable)Updatable));
+        }
+
+        protected override ProjectMagma.Renderer.Interface.RendererUpdatable CreateUpdatable(Entity entity)
+        {
+            Entity playerConstants = Game.Instance.Simulation.EntityManager["player_constants"];
+
+            return new HUDRenderable(
                 entity.GetString("player_name"),
                 entity.GetInt("game_pad_index"),
                 entity.GetInt("health"),
@@ -75,13 +85,15 @@ namespace ProjectMagma.Simulation
                 playerConstants.GetInt("max_fuel"),
                 entity.GetInt("frozen"),
                 entity.GetInt("jumps"));
-
-            Game.Instance.Renderer.AddRenderable(renderable);
         }
 
-        public void OnDetached(Entity entity)
+        protected override void SetUpdatableParameters(Entity entity)
         {
-            Game.Instance.Renderer.RemoveRenderable(renderable);
+        }
+
+        public override void OnDetached(Entity entity)
+        {
+            Game.Instance.Simulation.CurrentUpdateQueue.updates.Add(new RemoveRenderableUpdate((Renderable)Updatable));
 
             Entity playerConstants = Game.Instance.Simulation.EntityManager["player_constants"];
 
@@ -125,6 +137,8 @@ namespace ProjectMagma.Simulation
             {
                 entity.GetIntAttribute("jumps").ValueChanged -= JumpsChanged;
             }
+
+            base.OnDetached(entity);
         }
 
         private void PlayerNameChanged(
@@ -133,7 +147,7 @@ namespace ProjectMagma.Simulation
             string newValue
         )
         {
-            renderable.PlayerName = newValue;
+            ChangeString("PlayerName", newValue);
         }
 
         private void GamePadIndexChanged(
@@ -142,7 +156,7 @@ namespace ProjectMagma.Simulation
             int newValue
         )
         {
-            renderable.GamePadIndex = newValue;
+            ChangeInt("GamePadIndex", newValue);
         }
 
         private void HealthChanged(
@@ -151,7 +165,7 @@ namespace ProjectMagma.Simulation
             int newValue
         )
         {
-            renderable.Health = newValue;
+            ChangeInt("Health", newValue);
         }
 
         private void MaxHealthChanged(
@@ -160,7 +174,7 @@ namespace ProjectMagma.Simulation
             int newValue
         )
         {
-            renderable.MaxHealth = newValue;
+            ChangeInt("MaxHealth", newValue);
         }
 
         private void EnergyChanged(
@@ -169,7 +183,7 @@ namespace ProjectMagma.Simulation
             int newValue
         )
         {
-            renderable.Energy = newValue;
+            ChangeInt("Energy", newValue);
         }
 
         private void MaxEnergyChanged(
@@ -178,7 +192,7 @@ namespace ProjectMagma.Simulation
             int newValue
         )
         {
-            renderable.MaxEnergy = newValue;
+            ChangeInt("MaxEnergy", newValue);
         }
 
         private void FuelChanged(
@@ -187,7 +201,7 @@ namespace ProjectMagma.Simulation
             int newValue
         )
         {
-            renderable.Fuel = newValue;
+            ChangeInt("Fuel", newValue);
         }
 
         private void MaxFuelChanged(
@@ -196,7 +210,7 @@ namespace ProjectMagma.Simulation
             int newValue
         )
         {
-            renderable.MaxFuel = newValue;
+            ChangeInt("MaxFuel", newValue);
         }
 
         private void FrozenChanged(
@@ -205,7 +219,7 @@ namespace ProjectMagma.Simulation
             int newValue
         )
         {
-            renderable.Frozen = newValue;
+            ChangeInt("Frozen", newValue);
         }
 
         private void JumpsChanged(
@@ -214,7 +228,7 @@ namespace ProjectMagma.Simulation
             int newValue
         )
         {
-            renderable.Jumps = newValue;
+            ChangeInt("Jumps", newValue);
         }
 
         private HUDRenderable renderable;

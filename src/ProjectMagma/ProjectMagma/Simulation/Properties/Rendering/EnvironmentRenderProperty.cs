@@ -19,9 +19,9 @@ namespace ProjectMagma.Simulation
             return new EnvironmentRenderable(scale, rotation, position, model);
         }
 
-        protected override void SetRenderableParameters(Entity entity)
+        protected override void SetUpdatableParameters(Entity entity)
         {
-            base.SetRenderableParameters(entity);
+            base.SetUpdatableParameters(entity);
 
             if (entity.HasFloat("env_ground_waves_amplitude"))
             {

@@ -73,10 +73,16 @@ namespace ProjectMagma.Simulation
             return returnValue;
         }
 
-        public void Close()
+        public RendererUpdateQueue Close()
         {
+            currentUpdateQueue = new RendererUpdateQueue();
+
             entityManager.Clear();
             collisionManager.Close();
+
+            RendererUpdateQueue returnValue = currentUpdateQueue;
+            currentUpdateQueue = null;
+            return returnValue;
         }
 
         public RendererUpdateQueue Update()

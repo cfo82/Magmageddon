@@ -107,6 +107,58 @@ namespace ProjectMagma.Renderer
             spriteBatch.End();
         }
 
+        public override void UpdateInt(string id, int value)
+        {
+            base.UpdateInt(id, value);
+
+            if (id == "GamePadIndex")
+            {
+                gamePadIndex = value;
+            }
+            else if (id == "Health")
+            {
+                health = value;
+            }
+            else if (id == "MaxHealth")
+            {
+                maxHealth = value;
+            }
+            else if (id == "Energy")
+            {
+                energy = value;
+            }
+            else if (id == "MaxEnergy")
+            {
+                maxEnergy = value;
+            }
+            else if (id == "Fuel")
+            {
+                fuel = value;
+            }
+            else if (id == "MaxFuel")
+            {
+                maxFuel = value;
+            }
+            else if (id == "Frozen")
+            {
+                frozen = value;
+            }
+            else if (id == "Jumps")
+            {
+                jumps = value;
+            }
+        }
+
+        public override void UpdateString(string id, string value)
+        {
+            base.UpdateString(id, value);
+
+            if (id == "PlayerName")
+            {
+                playerName = value;
+            }
+        }
+
         public override RenderMode RenderMode
         {
             get { return ProjectMagma.Renderer.RenderMode.RenderOverlays; }
@@ -121,51 +173,6 @@ namespace ProjectMagma.Renderer
         public string PlayerName
         {
             set { playerName = value; }
-        }
-
-        public int GamePadIndex
-        {
-            set { gamePadIndex = value; }
-        }
-
-        public int Health
-        {
-            set { health = value; }
-        }
-
-        public int MaxHealth
-        {
-            set { maxHealth = value; }
-        }
-
-        public int Energy
-        {
-            set { energy = value; }
-        }
-
-        public int MaxEnergy
-        {
-            set { maxEnergy = value; }
-        }
-
-        public int Fuel
-        {
-            set { fuel = value; }
-        }
-
-        public int MaxFuel
-        {
-            set { maxFuel = value; }
-        }
-
-        public int Frozen
-        {
-            set { frozen = value; }
-        }
-
-        public int Jumps
-        {
-            set { jumps = value; }
         }
 
         private SpriteFont font;

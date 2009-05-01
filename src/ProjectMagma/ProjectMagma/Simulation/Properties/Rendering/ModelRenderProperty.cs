@@ -13,49 +13,35 @@ using ProjectMagma.Renderer.Interface;
 
 namespace ProjectMagma.Simulation
 {
-    public abstract class ModelRenderProperty : Property
+    public abstract class ModelRenderProperty : RendererUpdatableProperty
     {
         public ModelRenderProperty()
         {
         }
 
-        public void OnAttached(Entity entity)
+        public override void OnAttached(Entity entity)
         {
-            Vector3 scale = Vector3.One;
-            Quaternion rotation = Quaternion.Identity;
-            Vector3 position = Vector3.Zero;
+            base.OnAttached(entity);
 
-            if (entity.HasVector3("scale"))
+            if (entity.HasVector3("position"))
             {
-                scale = entity.GetVector3("scale");
-                entity.GetVector3Attribute("scale").ValueChanged += ScaleChanged;
+                entity.GetVector3Attribute("position").ValueChanged += PositionChanged;
             }
             if (entity.HasQuaternion("rotation"))
             {
-                rotation = entity.GetQuaternion("rotation");
                 entity.GetQuaternionAttribute("rotation").ValueChanged += RotationChanged;
             }
-            if (entity.HasVector3("position"))
+            if (entity.HasVector3("scale"))
             {
-                position = entity.GetVector3("position");
-                entity.GetVector3Attribute("position").ValueChanged += PositionChanged;
+                entity.GetVector3Attribute("scale").ValueChanged += ScaleChanged;
             }
 
-            // load the model
-            string meshName = entity.GetString("mesh");
-            Model model = Game.Instance.Content.Load<Model>(meshName);
-
-            Renderable = CreateRenderable(scale, rotation, position, model);
-            Game.Instance.Simulation.CurrentUpdateQueue.updates.Add(new AddRenderableUpdate(Renderable));
-            SetRenderableParameters(entity);
+            Game.Instance.Simulation.CurrentUpdateQueue.updates.Add(new AddRenderableUpdate((Renderable)Updatable));
         }
 
-        public void OnDetached(Entity entity)
+        public override void OnDetached(Entity entity)
         {
-            if (Game.Instance.Simulation.CurrentUpdateQueue != null)
-            {
-                Game.Instance.Simulation.CurrentUpdateQueue.updates.Add(new RemoveRenderableUpdate(Renderable));
-            }
+            Game.Instance.Simulation.CurrentUpdateQueue.updates.Add(new RemoveRenderableUpdate((Renderable)Updatable));
 
             if (entity.HasVector3("position"))
             {
@@ -69,54 +55,37 @@ namespace ProjectMagma.Simulation
             {
                 entity.GetVector3Attribute("scale").ValueChanged -= ScaleChanged;
             }
+
+            base.OnDetached(entity);
+        }
+
+        protected override RendererUpdatable CreateUpdatable(Entity entity)
+        {
+            Vector3 scale = Vector3.One;
+            Quaternion rotation = Quaternion.Identity;
+            Vector3 position = Vector3.Zero;
+
+            if (entity.HasVector3("scale"))
+            {
+                scale = entity.GetVector3("scale");
+            }
+            if (entity.HasQuaternion("rotation"))
+            {
+                rotation = entity.GetQuaternion("rotation");
+            }
+            if (entity.HasVector3("position"))
+            {
+                position = entity.GetVector3("position");
+            }
+
+            // load the model
+            string meshName = entity.GetString("mesh");
+            Model model = Game.Instance.Content.Load<Model>(meshName);
+
+            return CreateRenderable(scale, rotation, position, model);
         }
 
         protected abstract ModelRenderable CreateRenderable(Vector3 scale, Quaternion rotation, Vector3 position, Model model);
-        protected abstract void SetRenderableParameters(Entity entity);
-
-        #region Protected Change Utility Methods
-
-        protected void ChangeBool(string id, bool value)
-        {
-            Game.Instance.Simulation.CurrentUpdateQueue.updates.Add(new BoolRendererUpdate(Renderable, id, value));
-        }
-
-        protected void ChangeFloat(string id, float value)
-        {
-            Game.Instance.Simulation.CurrentUpdateQueue.updates.Add(new FloatRendererUpdate(Renderable, id, value));
-        }
-
-        protected void ChangeInt(string id, int value)
-        {
-            Game.Instance.Simulation.CurrentUpdateQueue.updates.Add(new IntRendererUpdate(Renderable, id, value));
-        }
-
-        protected void ChangeMatrix(string id, Matrix value)
-        {
-            Game.Instance.Simulation.CurrentUpdateQueue.updates.Add(new MatrixRendererUpdate(Renderable, id, value));
-        }
-
-        protected void ChangeQuaternion(string id, Quaternion value)
-        {
-            Game.Instance.Simulation.CurrentUpdateQueue.updates.Add(new QuaternionRendererUpdate(Renderable, id, value));
-        }
-
-        protected void ChangeString(string id, string value)
-        {
-            Game.Instance.Simulation.CurrentUpdateQueue.updates.Add(new StringRendererUpdate(Renderable, id, value));
-        }
-
-        protected void ChangeVector2(string id, Vector2 value)
-        {
-            Game.Instance.Simulation.CurrentUpdateQueue.updates.Add(new Vector2RendererUpdate(Renderable, id, value));
-        }
-
-        protected void ChangeVector3(string id, Vector3 value)
-        {
-            Game.Instance.Simulation.CurrentUpdateQueue.updates.Add(new Vector3RendererUpdate(Renderable, id, value));
-        }
-
-        #endregion
 
         #region Private Change Listeners
 
@@ -126,7 +95,7 @@ namespace ProjectMagma.Simulation
             Vector3 newValue
         )
         {
-            Game.Instance.Simulation.CurrentUpdateQueue.updates.Add(new Vector3RendererUpdate(Renderable, "Scale", newValue));
+            ChangeVector3("Scale", newValue);
         }
 
         private void RotationChanged(
@@ -135,7 +104,7 @@ namespace ProjectMagma.Simulation
             Quaternion newValue
         )
         {
-            Game.Instance.Simulation.CurrentUpdateQueue.updates.Add(new QuaternionRendererUpdate(Renderable, "Rotation", newValue));
+            ChangeQuaternion("Rotation", newValue);
         }
 
         private void PositionChanged(
@@ -144,11 +113,9 @@ namespace ProjectMagma.Simulation
             Vector3 newValue
         )
         {
-            Game.Instance.Simulation.CurrentUpdateQueue.updates.Add(new Vector3RendererUpdate(Renderable, "Position", newValue));
+            ChangeVector3("Position", newValue);
         }
 
         #endregion
-
-        protected ModelRenderable Renderable;
     }
 }

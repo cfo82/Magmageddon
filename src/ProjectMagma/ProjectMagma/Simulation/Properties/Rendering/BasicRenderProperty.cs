@@ -19,7 +19,7 @@ namespace ProjectMagma.Simulation
             return new BasicRenderable(scale, rotation, position, model);
         }
 
-        protected override void SetRenderableParameters(Entity entity)
+        protected override void SetUpdatableParameters(Entity entity)
         {
             if (entity.HasFloat("lava_light_strength"))
             {

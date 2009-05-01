@@ -239,7 +239,8 @@ namespace ProjectMagma
             // reset old simulation
             if (simulation != null)
             {
-                simulation.Close();                
+                RendererUpdateQueue q1 = simulation.Close();
+                renderer.AddUpdateQueue(q1);
             }
             if (simulationThread != null)
             {
@@ -279,7 +280,8 @@ namespace ProjectMagma
         /// </summary>
         protected override void UnloadContent()
         {
-            simulation.Close();
+            RendererUpdateQueue q = simulation.Close();
+            renderer.AddUpdateQueue(q);
             simulationThread.Abort();
 
 #if !XBOX && DEBUG            

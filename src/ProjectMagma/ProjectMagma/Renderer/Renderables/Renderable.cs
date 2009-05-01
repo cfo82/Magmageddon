@@ -4,6 +4,14 @@ namespace ProjectMagma.Renderer
 {
     public abstract class Renderable
     {
+        public virtual void LoadResources()
+        {
+        }
+
+        public virtual void UnloadResources()
+        {
+        }
+
         public virtual void Update(Renderer renderer, GameTime gameTime)
         {
         }

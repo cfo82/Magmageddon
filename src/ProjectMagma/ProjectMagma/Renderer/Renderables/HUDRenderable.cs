@@ -19,14 +19,6 @@ namespace ProjectMagma.Renderer
             int jumps
         )
         {
-            // graphics resources
-            spriteBatch = new SpriteBatch(Game.Instance.GraphicsDevice);
-            font = Game.Instance.Content.Load<SpriteFont>("Sprites/HUD/HUDFont");
-            background = Game.Instance.Content.Load<Texture2D>("Sprites/HUD/background");
-            healthBar = Game.Instance.Content.Load<Texture2D>("Sprites/HUD/health");
-            energyBar = Game.Instance.Content.Load<Texture2D>("Sprites/HUD/energy");
-            fuelBar = Game.Instance.Content.Load<Texture2D>("Sprites/HUD/fuel");
-
             // initialize variables
             this.playerName = playerName;
             this.gamePadIndex = gamePadIndex;
@@ -38,6 +30,25 @@ namespace ProjectMagma.Renderer
             this.maxFuel = maxFuel;
             this.frozen = frozen;
             this.jumps = jumps;
+        }
+
+        public override void LoadResources()
+        {
+            base.LoadResources();
+
+            spriteBatch = new SpriteBatch(Game.Instance.GraphicsDevice);
+            font = Game.Instance.Content.Load<SpriteFont>("Sprites/HUD/HUDFont");
+            background = Game.Instance.Content.Load<Texture2D>("Sprites/HUD/background");
+            healthBar = Game.Instance.Content.Load<Texture2D>("Sprites/HUD/health");
+            energyBar = Game.Instance.Content.Load<Texture2D>("Sprites/HUD/energy");
+            fuelBar = Game.Instance.Content.Load<Texture2D>("Sprites/HUD/fuel");
+        }
+
+        public override void UnloadResources()
+        {
+            spriteBatch.Dispose();
+
+            base.UnloadResources();
         }
 
         public override void Draw(

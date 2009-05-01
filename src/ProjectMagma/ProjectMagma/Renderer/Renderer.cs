@@ -271,18 +271,23 @@ namespace ProjectMagma.Renderer
             Renderable renderable
         )
         {
-            if (renderable.NeedsUpdate)
-            {
-                updateRenderables.Add(renderable);
-            }
-
             List<Renderable> renderables = GetMatchingRenderableList(renderable);
 
-            if (renderables.Contains(renderable))
+            if (
+                renderables.Contains(renderable) ||
+                (renderable.NeedsUpdate && updateRenderables.Contains(renderable))
+                )
             {
                 throw new Exception("invalid addition of already registered renderable");
             }
 
+            renderable.LoadResources();
+
+            if (renderable.NeedsUpdate)
+            {
+                updateRenderables.Add(renderable);
+            }
+            
             renderables.Add(renderable);
         }
 
@@ -290,16 +295,21 @@ namespace ProjectMagma.Renderer
             Renderable renderable
         )
         {
+            List<Renderable> renderables = GetMatchingRenderableList(renderable);
+            
+            if (
+                !renderables.Contains(renderable) ||
+                (renderable.NeedsUpdate && !updateRenderables.Contains(renderable))
+                )
+            {
+                throw new Exception("renderer does not contain the given renderable!");
+            }
+
+            renderable.UnloadResources();
+
             if (updateRenderables.Contains(renderable))
             {
                 updateRenderables.Remove(renderable);
-            }
-
-            List<Renderable> renderables = GetMatchingRenderableList(renderable);
-            
-            if (!renderables.Contains(renderable))
-            {
-                throw new Exception("renderer does not contain the given renderable!");
             }
 
             renderables.Remove(renderable);

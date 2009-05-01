@@ -44,23 +44,23 @@ namespace ProjectMagma.Renderer.ParticleSystem.Stateful
         {
             // create texture maps
             activeTexture = 0;
-            HalfVector4[] array = new HalfVector4[textureSize * textureSize];
-            for (int i = 0; i < textureSize * textureSize; ++i)
-            {
-                array[i] = new HalfVector4(0, 0, 0, 0);
-            }
+
             positionTextures = new RenderTarget2D[2];
             positionTextures[0] = renderer.StatefulParticleResourceManager.AllocateStateTexture(systemSize);
             positionTextures[1] = renderer.StatefulParticleResourceManager.AllocateStateTexture(systemSize);
             velocityTextures = new RenderTarget2D[2];
             velocityTextures[0] = renderer.StatefulParticleResourceManager.AllocateStateTexture(systemSize);
             velocityTextures[1] = renderer.StatefulParticleResourceManager.AllocateStateTexture(systemSize);
+
+            // initialize the first two textures
+            RenderTarget2D currentRenderTarget0 = (RenderTarget2D)device.GetRenderTarget(0);
+            RenderTarget2D currentRenderTarget1 = (RenderTarget2D)device.GetRenderTarget(1);
             device.SetRenderTarget(0, positionTextures[0]);
-            device.SetRenderTarget(0, null);
-            device.SetRenderTarget(0, velocityTextures[0]);
-            device.SetRenderTarget(0, null);
-            positionTextures[0].GetTexture().SetData<HalfVector4>(array);
-            velocityTextures[0].GetTexture().SetData<HalfVector4>(array);
+            device.SetRenderTarget(1, velocityTextures[0]);
+            device.Clear(ClearOptions.Target, new Vector4(0, 0, 0, 0), 0, 0);
+            device.SetRenderTarget(0, currentRenderTarget0);
+            device.SetRenderTarget(1, currentRenderTarget1);
+
             //positionTextures[0].GetTexture().Save("PositionMaps/initial.dds", ImageFileFormat.Dds);
 
             // create effect

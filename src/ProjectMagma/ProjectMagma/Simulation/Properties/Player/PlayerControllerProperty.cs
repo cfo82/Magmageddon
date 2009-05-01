@@ -1302,7 +1302,6 @@ namespace ProjectMagma.Simulation
 
                 leftStickX = gamePadState.ThumbSticks.Left.X;
                 leftStickY = -gamePadState.ThumbSticks.Left.Y;
-                moveStickMoved = leftStickX != 0.0f || leftStickY != 0.0f;
                 if (PlayerControllerProperty.LeftStickSelection)
                 {
                     rightStickX = gamePadState.ThumbSticks.Left.X;
@@ -1313,7 +1312,6 @@ namespace ProjectMagma.Simulation
                     rightStickX = gamePadState.ThumbSticks.Right.X;
                     rightStickY = -gamePadState.ThumbSticks.Right.Y;
                 }
-                rightStickMoved = rightStickX != 0.0f || rightStickY != 0.0f;
                 rightStickPressed = gamePadState.Buttons.RightStick == ButtonState.Pressed;
 
                 dPadX = (gamePadState.DPad.Right == ButtonState.Pressed)? 1.0f : 0.0f
@@ -1338,13 +1336,13 @@ namespace ProjectMagma.Simulation
 
                     if (keyboardState.IsKeyDown(Keys.W))
                     {
-                        rightStickY = gamepadEmulationValue;
+                        leftStickY = gamepadEmulationValue;
                         moveStickMoved = true;
                     }
                     else
                         if (keyboardState.IsKeyDown(Keys.S))
                         {
-                            rightStickY = -gamepadEmulationValue;
+                            leftStickY = -gamepadEmulationValue;
                             moveStickMoved = true;
                         }
 
@@ -1372,6 +1370,9 @@ namespace ProjectMagma.Simulation
                             moveStickMoved = true;
                         }
                 }
+
+                moveStickMoved = leftStickX != 0.0f || leftStickY != 0.0f;
+                rightStickMoved = rightStickX != 0.0f || rightStickY != 0.0f;
 
                 #endregion
 

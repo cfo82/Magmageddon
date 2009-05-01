@@ -47,7 +47,7 @@ namespace ProjectMagma.Shared.Math.Primitives
 
             ComputeBoundingBox(positions);
 
-            if (numTriangles < 15)
+            if (numTriangles < 2)
             {
                 return;
             }

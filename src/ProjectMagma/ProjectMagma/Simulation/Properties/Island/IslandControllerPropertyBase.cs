@@ -197,13 +197,16 @@ namespace ProjectMagma.Simulation
                 if (lastState != IslandState.Repositioning)
                 {
                     repositioningPosition = GetNearestPointOnPath(ref position);
+                    Console.WriteLine("repositioning to: " + repositioningPosition);
                 }
 
                 // get direction of repositioning effort
                 Vector3 dir = Vector3.Normalize(repositioningPosition - position);
                 // if players are standing on island, we only reposition in xz
                 if (playersOnIsland > 0)
+                {
                     dir.Y = 0;
+                }
 
                 // calculate new position
                 Vector3 newPosition = position;
@@ -211,7 +214,9 @@ namespace ProjectMagma.Simulation
                 island.SetVector3("repositioning_velocity", dir * constants.GetFloat("repositioning_speed"));
 
                 // check if we are there yet (respectivly a bit further)
-                if (Vector3.Dot(repositioningPosition - newPosition, repositioningPosition - position) < 0)
+                if (Vector3.Dot(repositioningPosition - newPosition, repositioningPosition - position) < 0
+                    || (dir.X == 0 && dir.Z == 0 && playersOnIsland > 0)) 
+                    // if we only need to reposition horizontally, this is handled by sinking/raising
                 {
                     position = repositioningPosition;
                     state = IslandState.Normal;
@@ -251,7 +256,9 @@ namespace ProjectMagma.Simulation
                 String kind = other.GetString("kind");
 
                 if (kind == "player"
-                    || kind == "powerup")
+                    || kind == "powerup"
+                    || kind == "cave"
+                    )
                 {
                     // do nothing
                 }
@@ -260,7 +267,11 @@ namespace ProjectMagma.Simulation
                     // only collision with objects which are not the player count
                     Vector3 normal = CalculatePseudoNormalIsland(island, other);
                     if (kind == "cave")
-                        normal = contact[0].Normal;
+                    {
+                        normal = island.GetVector3("position");
+                        normal.Y = 0;
+                        normal.Normalize();
+                    }
 
                     // change direction of repulsion
                     Vector3 repulsionVelocity = island.GetVector3("repulsion_velocity");
@@ -440,7 +451,7 @@ namespace ProjectMagma.Simulation
         /// <param name="dir">the direction from the last position</param>
         protected virtual void OnRepositioningEnded(Vector3 dir)
         {
-
+            Console.WriteLine(" island " + island.Name + " back to normal state");
         }
 
         private float attractionEndTimoutStartedAt = 0;

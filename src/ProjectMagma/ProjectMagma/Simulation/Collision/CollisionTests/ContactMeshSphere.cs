@@ -26,7 +26,7 @@ namespace ProjectMagma.Simulation.Collision.CollisionTests
             Matrix identityMatrix = Matrix.Identity;
             Box3 box1 = node1.BoundingBox.CreateBox3(ref worldTransform1);
             Box3 box2 = sphere2.CreateBox3(ref identityMatrix);
-            if (!Intersection.IntersectBox3Box3(box1, box2))
+            if (!Intersection.IntersectBox3Box3(ref box1, ref box2))
             {
                 return;
             }

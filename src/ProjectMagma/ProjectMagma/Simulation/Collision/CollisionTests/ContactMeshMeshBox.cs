@@ -29,7 +29,7 @@ namespace ProjectMagma.Simulation.Collision.CollisionTests
         {
             Box3 box1 = node1.BoundingBox.CreateBox3(ref context.worldTransform1);
             Box3 box2 = node2.BoundingBox.CreateBox3(ref context.worldTransform2);
-            if (Intersection.IntersectBox3Box3(box1, box2))
+            if (Intersection.IntersectBox3Box3(ref box1, ref box2))
             {
                 /*
                 // "simple" tri<->tri test...
@@ -98,7 +98,7 @@ namespace ProjectMagma.Simulation.Collision.CollisionTests
         {
             Box3 box1 = node1.BoundingBox.CreateBox3(ref context.worldTransform1);
             Box3 box2 = node2.BoundingBox.CreateBox3(ref context.worldTransform2);
-            if (Intersection.IntersectBox3Box3(box1, box2))
+            if (Intersection.IntersectBox3Box3(ref box1, ref box2))
             {
                 // we know already that node2 is a leaf. this makes things simpler...
                 if (node1.Left.HasChildren)
@@ -130,7 +130,7 @@ namespace ProjectMagma.Simulation.Collision.CollisionTests
         {
             Box3 box1 = node1.BoundingBox.CreateBox3(ref context.worldTransform1);
             Box3 box2 = node2.BoundingBox.CreateBox3(ref context.worldTransform2);
-            if (Intersection.IntersectBox3Box3(box1, box2))
+            if (Intersection.IntersectBox3Box3(ref box1, ref box2))
             {
                 // we know already that node2 is a leaf. this makes things simpler...
                 if (node2.Left.HasChildren)
@@ -162,7 +162,7 @@ namespace ProjectMagma.Simulation.Collision.CollisionTests
         {
             Box3 box1 = node1.BoundingBox.CreateBox3(ref context.worldTransform1);
             Box3 box2 = node2.BoundingBox.CreateBox3(ref context.worldTransform2);
-            if (Intersection.IntersectBox3Box3(box1, box2))
+            if (Intersection.IntersectBox3Box3(ref box1, ref box2))
             {
                 if (node1.Left.HasChildren)
                 {
@@ -292,7 +292,7 @@ namespace ProjectMagma.Simulation.Collision.CollisionTests
                     // early exit if they do not intersect...
                     Box3 box1 = tree1.BoundingBox.CreateBox3(ref worldTransform1);
                     Box3 box2 = tree2.BoundingBox.CreateBox3(ref worldTransform2);
-                    if (!Intersection.IntersectBox3Box3(box1, box2))
+                    if (!Intersection.IntersectBox3Box3(ref box1, ref box2))
                     {
                         continue;
                     }

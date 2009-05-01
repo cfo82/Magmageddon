@@ -6,9 +6,71 @@ namespace ProjectMagma.Shared.Math
 {
     public partial class Intersection
     {
+        public struct TwoDimensionalHelper3
+        {
+            public float this[int i0, int i1]
+            {
+                get
+                {
+                    switch (i0)
+                    {
+                        case 0: return h0[i1];
+                        case 1: return h1[i1];
+                        case 2: return h2[i1];
+                        default: throw new System.Exception("index out of bounds");
+                    }
+                }
+                set
+                {
+                    switch (i0)
+                    {
+                        case 0: h0[i1] = value; break;
+                        case 1: h1[i1] = value; break;
+                        case 2: h2[i1] = value; break;
+                        default: throw new System.Exception("index out of bounds");
+                    }
+                }
+            }
+
+            OneDimensionalHelper3 h0;
+            OneDimensionalHelper3 h1;
+            OneDimensionalHelper3 h2;
+        };
+
+        public struct OneDimensionalHelper3
+        {
+            public float this[int index]
+            {
+                get
+                {
+                    switch (index)
+                    {
+                        case 0: return f0;
+                        case 1: return f1;
+                        case 2: return f2;
+                        default: throw new System.Exception("index out of bounds");
+                    }
+                }
+                set
+                {
+                    switch (index)
+                    {
+                        case 0: f0 = value; break;
+                        case 1: f1 = value; break;
+                        case 2: f2 = value; break;
+                        default: throw new System.Exception("index out of bounds");
+                    }
+                }
+            }
+
+            float f0;
+            float f1;
+            float f2;
+        };
+
         public static bool IntersectBox3Box3(
-            Box3 box0,
-            Box3 box1
+            ref Box3 box0,
+            ref Box3 box1
         )
         {
             // Cutoff for cosine of angles between box axes.  This is used to catch
@@ -20,17 +82,17 @@ namespace ProjectMagma.Shared.Math
             int i;
 
             // convenience variables
-            Vector3[] akA = box0.Axis;
-            Vector3[] akB = box1.Axis;
-            float[] afEA = box0.HalfDim;
-            float[] afEB = box1.HalfDim;
+            Box3.ContainedAxis akA = box0.Axis;
+            Box3.ContainedAxis akB = box1.Axis;
+            Box3.ContainedHalfDim afEA = box0.HalfDim;
+            Box3.ContainedHalfDim afEB = box1.HalfDim;
 
             // compute difference of box centers, D = C1-C0
             Vector3 kD = box1.Center - box0.Center;
 
-            float[,] aafC = new float[3, 3];     // matrix C = A^T B, c_{ij} = Dot(A_i,B_j)
-            float[,] aafAbsC = new float[3, 3];  // |c_{ij}|
-            float[] afAD = new float[3];        // Dot(A_i,D)
+            TwoDimensionalHelper3 aafC = new TwoDimensionalHelper3();     // matrix C = A^T B, c_{ij} = Dot(A_i,B_j)
+            TwoDimensionalHelper3 aafAbsC = new TwoDimensionalHelper3();  // |c_{ij}|
+            OneDimensionalHelper3 afAD = new OneDimensionalHelper3();        // Dot(A_i,D)
             float fR0, fR1, fR;   // interval radii and distance between centers
             float fR01;           // = R0 + R1
 

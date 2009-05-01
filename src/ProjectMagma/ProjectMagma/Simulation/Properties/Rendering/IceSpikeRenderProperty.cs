@@ -7,8 +7,8 @@ using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 
 using ProjectMagma.Simulation.Attributes;
-using ProjectMagma.Renderer.Interface;
 using ProjectMagma.Renderer;
+using ProjectMagma.Renderer.Interface;
 
 namespace ProjectMagma.Simulation
 {

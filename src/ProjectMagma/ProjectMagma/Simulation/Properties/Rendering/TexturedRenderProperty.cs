@@ -13,33 +13,34 @@ namespace ProjectMagma.Simulation
 {
     public class TexturedRenderProperty : BasicRenderProperty
     {
-        protected override ModelRenderable CreateRenderable(Vector3 scale, Quaternion rotation, Vector3 position, Model model)
+        protected override ModelRenderable CreateRenderable(Entity entity, Vector3 scale, Quaternion rotation, Vector3 position, Model model)
         {
-            return new TexturedRenderable(scale, rotation, position, model);
+            Texture2D diffuseTexture = null;
+            Texture2D specularTexture = null;
+            Texture2D normalTexture = null;
+
+            if (entity.HasString("diffuse_texture"))
+            {
+                string textureName = entity.GetString("diffuse_texture");
+                diffuseTexture = Game.Instance.Content.Load<Texture2D>(textureName);
+            }
+            if (entity.HasString("specular_texture"))
+            {
+                string textureName = entity.GetString("specular_texture");
+                specularTexture = Game.Instance.Content.Load<Texture2D>(textureName);
+            }
+            if (entity.HasString("normal_texture"))
+            {
+                string textureName = entity.GetString("normal_texture");
+                normalTexture = Game.Instance.Content.Load<Texture2D>(textureName);
+            }
+
+            return new TexturedRenderable(scale, rotation, position, model, diffuseTexture, specularTexture, normalTexture);
         }
 
         protected override void SetUpdatableParameters(Entity entity)
         {
             base.SetUpdatableParameters(entity);
-
-            if (entity.HasString("diffuse_texture"))
-            {
-                string textureName = entity.GetString("diffuse_texture");
-                Texture2D texture = Game.Instance.Content.Load<Texture2D>(textureName);
-                (Updatable as TexturedRenderable).DiffuseTexture = texture;
-            }
-            if (entity.HasString("specular_texture"))
-            {
-                string textureName = entity.GetString("specular_texture");
-                Texture2D texture = Game.Instance.Content.Load<Texture2D>(textureName);
-                (Updatable as TexturedRenderable).SpecularTexture = texture;
-            }
-            if (entity.HasString("normal_texture"))
-            {
-                string textureName = entity.GetString("normal_texture");
-                Texture2D texture = Game.Instance.Content.Load<Texture2D>(textureName);
-                (Updatable as TexturedRenderable).NormalTexture = texture;
-            }
         }
     }
 }

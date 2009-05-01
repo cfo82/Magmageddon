@@ -82,10 +82,10 @@ namespace ProjectMagma.Simulation
             string meshName = entity.GetString("mesh");
             Model model = Game.Instance.Content.Load<Model>(meshName);
 
-            return CreateRenderable(scale, rotation, position, model);
+            return CreateRenderable(entity, scale, rotation, position, model);
         }
 
-        protected abstract ModelRenderable CreateRenderable(Vector3 scale, Quaternion rotation, Vector3 position, Model model);
+        protected abstract ModelRenderable CreateRenderable(Entity entity, Vector3 scale, Quaternion rotation, Vector3 position, Model model);
 
         #region Private Change Listeners
 

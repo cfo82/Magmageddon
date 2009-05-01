@@ -5,9 +5,14 @@ namespace ProjectMagma.Renderer
 {
     public class TexturedRenderable : BasicRenderable
     {
-        public TexturedRenderable(Vector3 scale, Quaternion rotation, Vector3 position, Model model)
+        public TexturedRenderable(Vector3 scale, Quaternion rotation, Vector3 position, Model model,
+            Texture2D diffuseTexture, Texture2D specularTexture, Texture2D normalTexture)
             : base(scale, rotation, position, model)
-        { }
+        {
+            DiffuseTexture = diffuseTexture;
+            SpecularTexture = specularTexture;
+            NormalTexture = normalTexture;
+        }
 
         protected override void SetDefaultMaterialParameters()
         {

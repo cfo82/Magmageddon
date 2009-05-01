@@ -11,9 +11,8 @@ namespace ProjectMagma.Renderer
     public class IslandRenderable : TexturedRenderable
     {
         public IslandRenderable(Vector3 scale, Quaternion rotation, Vector3 position, Model model, Texture2D texture)
-            : base(scale, rotation, position, model)
+            : base(scale, rotation, position, model, texture, null, null)
         {
-            DiffuseTexture = texture;
             randomOffset = new DoublyIntegratedVector2
             (
                 Vector2.Zero, Vector2.Zero, 0.0f, 0.0f, -1.0f, 1.0f

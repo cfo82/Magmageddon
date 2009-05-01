@@ -11,7 +11,7 @@ namespace ProjectMagma.Renderer
     public class EnvironmentRenderable : TexturedRenderable
     {
         public EnvironmentRenderable(Vector3 scale, Quaternion rotation, Vector3 position, Model model)
-            : base(scale, rotation, position, model)
+            : base(scale, rotation, position, model, null, null, null)
         {
             randomOffset = new DoublyIntegratedVector2
             (

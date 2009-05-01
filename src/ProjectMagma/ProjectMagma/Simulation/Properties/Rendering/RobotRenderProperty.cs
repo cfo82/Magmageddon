@@ -13,7 +13,7 @@ namespace ProjectMagma.Simulation
 {
     public class RobotRenderProperty : BasicRenderProperty
     {
-        protected override ModelRenderable CreateRenderable(Vector3 scale, Quaternion rotation, Vector3 position, Model model)
+        protected override ModelRenderable CreateRenderable(Entity entity, Vector3 scale, Quaternion rotation, Vector3 position, Model model)
         {
             return new RobotRenderable(scale, rotation, position, model);
         }

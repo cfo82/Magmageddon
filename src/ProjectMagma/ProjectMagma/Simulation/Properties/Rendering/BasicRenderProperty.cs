@@ -14,7 +14,7 @@ namespace ProjectMagma.Simulation
 {
     public class BasicRenderProperty : ModelRenderProperty
     {
-        protected override ModelRenderable CreateRenderable(Vector3 scale, Quaternion rotation, Vector3 position, Model model)
+        protected override ModelRenderable CreateRenderable(Entity entity, Vector3 scale, Quaternion rotation, Vector3 position, Model model)
         {
             return new BasicRenderable(scale, rotation, position, model);
         }

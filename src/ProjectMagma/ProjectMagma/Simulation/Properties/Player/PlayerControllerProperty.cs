@@ -728,9 +728,16 @@ namespace ProjectMagma.Simulation
 
                 // calculate y position 
                 float r = 1 - (islandDir.Length() / destinationOrigDist);
-                Console.WriteLine("r: " + r);
-                float S = 300;
-                float y = (destinationOrigY - S - landingPos.Y) * r * r + S * r + destinationOrigY;
+                if (r < 0)
+                    r = 0;
+                if (r > 1)
+                    r = 1;
+                // todo: make constante
+                float S = 200;
+                float or = 1 - r;
+                float mid = Math.Max(destinationOrigY + S, landingPos.Y + S);
+                // bezier
+                float y = destinationOrigY * or * or + 2 * mid * or * r + landingPos.Y * r * r;
                 playerPosition.Y = y;
                 Console.WriteLine("y: "+y);
 
@@ -937,7 +944,7 @@ namespace ProjectMagma.Simulation
                     Vector3 slidingDir = Vector3.Normalize(cpos - contact[0].Point);
                     Vector3 slidingVelocity = slidingDir * constants.GetFloat("island_jump_speed");
 
-//                    Console.WriteLine("orignal velocity " + player.GetVector3("island_jump_velocity") + "; sliding velocity: " + slidingVelocity);
+                    Console.WriteLine("orignal velocity " + player.GetVector3("island_jump_velocity") + "; sliding velocity: " + slidingVelocity);
 
                     //                    slidingVelocity.Y = player.GetVector3("island_jump_velocity").Y;
 //                    slidingVelocity.Y = player.GetVector3("island_jump_velocity").Y;

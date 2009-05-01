@@ -50,19 +50,16 @@ namespace ProjectMagma.Renderer.ParticleSystem.Emitter
                 particles[i] = new NewParticle(point, velocity);
             }
 
-            updated = true;
             return particles;
         }
 
         public void SetPoint(double time, Vector3 point)
         {
-            Debug.Assert(updated);
             Debug.Assert(time > times[1]);
             times[0] = times[1];
             points[0] = points[1];
             times[1] = time;
             points[1] = point;
-            updated = false;
         }
 
         public double[] Times
@@ -75,6 +72,5 @@ namespace ProjectMagma.Renderer.ParticleSystem.Emitter
         private double particlesPerSecond;
         private double fragmentLost = 0.0;
         private Random random = new Random();
-        private bool updated = true;
     }
 }

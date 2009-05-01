@@ -675,7 +675,7 @@ namespace ProjectMagma
         public override void OnOpen()
         {
             // deactivate players who's gamepad was unplugged
-            for (int i = 0; i < 4; i++)
+            for (int i = 1; i < 4; i++)
             {
                 playerActive[i] = playerActive[i] && GamePad.GetCapabilities((PlayerIndex)i).IsConnected;
             }

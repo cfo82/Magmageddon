@@ -23,6 +23,9 @@ namespace ProjectMagma
         public KeyboardState lastKBState = Keyboard.GetState();
         public double elementSelectedAt = 0;
 
+        // are we waiting for b-button to be released
+        private bool waitForButtonRelease = false;
+
         private Menu()
         {
         }
@@ -62,8 +65,8 @@ namespace ProjectMagma
                         buttonPressedAt = at;
                     }
                     else
-                        if ((gamePadState.Buttons.X == ButtonState.Pressed
-                            && lastGPState.Buttons.X == ButtonState.Released)
+                        if ((gamePadState.Buttons.B == ButtonState.Pressed
+                            && lastGPState.Buttons.B == ButtonState.Released)
                             || (keyboardState.IsKeyDown(Keys.Back)
                             && lastKBState.IsKeyUp(Keys.Back)))
                         {
@@ -87,12 +90,16 @@ namespace ProjectMagma
                     buttonPressedAt = at;
                 }
                 else
+                {
                     // resume simulation as soon as x-button is released (so we don't accidentally fire)
                     if (Game.Instance.Paused
-                        && gamePadState.Buttons.X == ButtonState.Released)
+                        && waitForButtonRelease
+                        && gamePadState.Buttons.B == ButtonState.Released)
                     {
                         Game.Instance.Resume();
+                        waitForButtonRelease = false;
                     }
+                }
             }
 
             lastGPState = gamePadState;
@@ -153,7 +160,8 @@ namespace ProjectMagma
             active = false;
             screens.Clear();
 
-            // don't resume simulation yet, but only after x-button is released
+            // don't resume simulation yet, but only after a-button is released
+            waitForButtonRelease = true;
         }
 
         private bool active = false;

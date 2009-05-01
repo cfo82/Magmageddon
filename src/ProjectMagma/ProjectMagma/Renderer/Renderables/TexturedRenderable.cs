@@ -9,9 +9,18 @@ namespace ProjectMagma.Renderer
             Texture2D diffuseTexture, Texture2D specularTexture, Texture2D normalTexture)
             : base(scale, rotation, position, model)
         {
-            DiffuseTexture = diffuseTexture;
-            SpecularTexture = specularTexture;
-            NormalTexture = normalTexture;
+            if (diffuseTexture != null)
+            {
+                DiffuseTexture = diffuseTexture;
+            }
+            if (specularTexture != null)
+            {
+                SpecularTexture = specularTexture;
+            }
+            if (normalTexture != null)
+            {
+                NormalTexture = normalTexture;
+            }
         }
 
         protected override void SetDefaultMaterialParameters()

@@ -35,6 +35,13 @@ namespace ProjectMagma.Simulation
                 normalTexture = Game.Instance.Content.Load<Texture2D>(textureName);
             }
 
+            return CreateTexturedRenderable(entity, scale, rotation, position, model, diffuseTexture, specularTexture, normalTexture);
+        }
+
+        protected virtual TexturedRenderable CreateTexturedRenderable(
+            Entity entity, Vector3 scale, Quaternion rotation, Vector3 position, Model model,
+            Texture2D diffuseTexture, Texture2D specularTexture, Texture2D normalTexture)
+        {
             return new TexturedRenderable(scale, rotation, position, model, diffuseTexture, specularTexture, normalTexture);
         }
 

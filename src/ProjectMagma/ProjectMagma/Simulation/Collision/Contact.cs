@@ -1,4 +1,5 @@
-﻿using System.Collections;
+﻿using System.Diagnostics;
+using System.Collections;
 using System.Collections.Generic;
 using Microsoft.Xna.Framework;
 
@@ -13,7 +14,8 @@ namespace ProjectMagma.Simulation.Collision
         {
             this.entityA = entityA;
             this.entityB = entityB;
-            contactPoints = new List<ContactPoint>();
+            //contactPoints = new List<ContactPoint>();
+            cp = new ContactPoint();
         }
 
         public void Reverse()
@@ -22,21 +24,22 @@ namespace ProjectMagma.Simulation.Collision
             entityB = entityA;
             entityA = temp;
 
-            for (int i = 0; i < contactPoints.Count; ++i)
+            /*for (int i = 0; i < contactPoints.Count; ++i)
             {
                 contactPoints[i] = new ContactPoint(contactPoints[i].Point, -contactPoints[i].Normal);
-            }
+            }*/
+            cp = new ContactPoint(cp.Point, -cp.Normal);
         }
 
         public bool ContainsPoint(
             ref Vector3 p
         )
         {
-            for (int i = 0; i < contactPoints.Count; ++i)
+            /*for (int i = 0; i < contactPoints.Count; ++i)
             {
                 if (contactPoints[i].Point == p)
                     { return true; }
-            }
+            }*/
             return false;
         }
 
@@ -45,7 +48,9 @@ namespace ProjectMagma.Simulation.Collision
             ref Vector3 normal
         )
         {
-            contactPoints.Add(new ContactPoint(point, normal));
+            //contactPoints.Add(new ContactPoint(point, normal));
+            cp = new ContactPoint(point, normal);
+            hasContact = true;
         }
 
         public Entity EntityA
@@ -62,7 +67,7 @@ namespace ProjectMagma.Simulation.Collision
         {
             get
             {
-                return contactPoints.Count;
+                return hasContact?1:0;// return contactPoints.Count;
             }
         }
 
@@ -70,7 +75,9 @@ namespace ProjectMagma.Simulation.Collision
         {
             get
             {
-                return contactPoints[index];
+                Debug.Assert(index == 0);
+                return cp;
+                //return contactPoints[index];
             }
         }
 
@@ -133,6 +140,8 @@ namespace ProjectMagma.Simulation.Collision
 
         private Entity entityA;
         private Entity entityB;
-        private List<ContactPoint> contactPoints;
+        //private List<ContactPoint> contactPoints;
+        private ContactPoint cp;
+        private bool hasContact;
     }
 }

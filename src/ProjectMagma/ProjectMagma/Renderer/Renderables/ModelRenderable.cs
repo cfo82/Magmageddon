@@ -60,7 +60,7 @@ namespace ProjectMagma.Renderer
             foreach (ModelMesh mesh in Model.Meshes)
             {
                 DrawMesh(renderer, gameTime, mesh);
-                //DrawShadow(ref renderer, mesh);
+                DrawShadow(ref renderer, mesh);
             }
         }
 

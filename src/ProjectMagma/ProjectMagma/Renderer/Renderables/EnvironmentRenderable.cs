@@ -50,12 +50,34 @@ namespace ProjectMagma.Renderer
             effect.Parameters["DirLight1BottomAmpStrength"].SetValue(3);
             //effect.Parameters["EnvGroundWavesHardness"].SetValue(EnvGroundWavesHardness);
         }
+
+        public override void UpdateFloat(string id, float value)
+        {
+            base.UpdateFloat(id, value);
+
+            if (id == "EnvGroundWavesAmplitude")
+            {
+                EnvGroundWavesAmplitude = value;
+            }
+            else if (id == "EnvGroundWavesFrequency")
+            {
+                EnvGroundWavesFrequency = value;
+            }
+            else if (id == "EnvGroundWavesHardness")
+            {
+                EnvGroundWavesHardness = value;
+            }
+            else if (id == "EnvGroundWavesVelocity")
+            {
+                EnvGroundWavesVelocity = value;
+            }
+        }
         
         private DoublyIntegratedVector2 randomOffset;
 
-        public float EnvGroundWavesAmplitude { get; set; }
-        public float EnvGroundWavesFrequency { get; set; }
-        public float EnvGroundWavesHardness { get; set; }
-        public float EnvGroundWavesVelocity { get; set; }
+        private float EnvGroundWavesAmplitude { get; set; }
+        private float EnvGroundWavesFrequency { get; set; }
+        private float EnvGroundWavesHardness { get; set; }
+        private float EnvGroundWavesVelocity { get; set; }
     }
 }

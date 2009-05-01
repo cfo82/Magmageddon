@@ -13,6 +13,7 @@ using Microsoft.Xna.Framework.Content;
 using xWinFormsLib;
 #endif
 
+using ProjectMagma.Renderer.Interface;
 using ProjectMagma.Simulation;
 using ProjectMagma.Shared.LevelData;
 using ProjectMagma.Simulation.Attributes;
@@ -36,11 +37,13 @@ namespace ProjectMagma.Simulation
             collisionManager = new CollisionManager();
         }
 
-        public void Initialize(
+        public RendererUpdateQueue Initialize(
             ContentManager content,
             String level
         )
         {
+            currentUpdateQueue = new RendererUpdateQueue();
+
             paused = false;
 
             // load level data
@@ -48,16 +51,26 @@ namespace ProjectMagma.Simulation
             entityManager.Load(levelData);
 
             simTime = new SimulationTime();
+
+            RendererUpdateQueue returnValue = currentUpdateQueue;
+            currentUpdateQueue = null;
+            return returnValue;
         }
 
-        public void AddPlayers(Entity[] players)
+        public RendererUpdateQueue AddPlayers(Entity[] players)
         {
+            currentUpdateQueue = new RendererUpdateQueue();
+
             String[] models = new String[players.Length];
             for(int i = 0; i < models.Length; i++)
             {
                 models[i] = players[i].GetString("robot_entity");
             }
             entityManager.AddEntities(levelData, models, players);
+
+            RendererUpdateQueue returnValue = currentUpdateQueue;
+            currentUpdateQueue = null;
+            return returnValue;
         }
 
         public void Close()
@@ -66,9 +79,10 @@ namespace ProjectMagma.Simulation
             collisionManager.Close();
         }
 
-        public void Update(GameTime gameTime)
+        public RendererUpdateQueue Update()
         {
             Game.Instance.Profiler.BeginSection("simulation_update");
+            currentUpdateQueue = new RendererUpdateQueue();
 
             // pause simulation if explicitly paused or app changed
             if (!paused && Game.Instance.IsActive)
@@ -94,6 +108,10 @@ namespace ProjectMagma.Simulation
             }
 
             Game.Instance.Profiler.EndSection("simulation_update");
+
+            RendererUpdateQueue returnValue = currentUpdateQueue;
+            currentUpdateQueue = null;
+            return returnValue;
         }
 
         public EntityManager EntityManager
@@ -310,6 +328,14 @@ namespace ProjectMagma.Simulation
         }
         #endregion
 
+        public RendererUpdateQueue CurrentUpdateQueue
+        {
+            get
+            {
+                return currentUpdateQueue;
+            }
+        }
+
         private readonly EntityManager entityManager;
         private EntityKindManager pillarManager;
         private EntityKindManager islandManager;
@@ -320,90 +346,7 @@ namespace ProjectMagma.Simulation
 
         private SimulationTime simTime;
         private bool paused;
-    }
 
-    public class SimulationTime
-    {
-        private long lastTick = DateTime.Now.Ticks;
-
-        private int frame = 0;
-
-        private float at = 0;
-        private float last = 0;
-
-        private float dt = 0;
-        private float dtMs = 0;
-
-        /// <summary>
-        /// the how manieth frame this is since simulation start
-        /// </summary>
-        public int Frame
-        {
-            get { return frame; }
-        }
-
-        /// <summary>
-        /// current time in total milliseconds passed since simulation start
-        /// </summary>
-        public float At
-        {
-            get { return at; }
-        }
-
-        /// <summary>
-        /// last time in total milliseconds passed since simulation start
-        /// </summary>
-        public float Last
-        {
-            get { return last; }
-        }
-
-        /// <summary>
-        /// difference between last and current update in fraction of a second
-        /// </summary>
-        public float Dt
-        {
-            get { return dt; }
-        }
-
-        /// <summary>
-        /// difference between last and current update in milliseconds
-        /// </summary>
-        public float DtMs
-        {
-            get { return dtMs; }
-        }
-
-        internal void Update()
-        {
-            // reset last
-            last = at;
-
-            // dt in milliseconds
-            dtMs = (float)((DateTime.Now.Ticks - lastTick) / 10000d);
-
-            // dt in seconds
-            dt = dtMs / 1000f;
-
-            // at is in milliseconds
-            at += dtMs;
-
-            // increase frame counter
-            frame++;
-
-            // reset lastTick
-            lastTick = DateTime.Now.Ticks;
-        }
-
-        internal void Pause()
-        {
-            lastTick = DateTime.Now.Ticks;
-        }
-
-        public static float GetDt(float from, float to)
-        {
-            return (to - from) / 1000f;
-        }
-
+        private RendererUpdateQueue currentUpdateQueue;
     }
 }

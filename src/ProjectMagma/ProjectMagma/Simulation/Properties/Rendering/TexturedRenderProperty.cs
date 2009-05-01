@@ -13,12 +13,12 @@ namespace ProjectMagma.Simulation
 {
     public class TexturedRenderProperty : BasicRenderProperty
     {
-        public override void CreateRenderable(Vector3 scale, Quaternion rotation, Vector3 position, Model model)
+        protected override ModelRenderable CreateRenderable(Vector3 scale, Quaternion rotation, Vector3 position, Model model)
         {
-            Renderable = new TexturedRenderable(scale, rotation, position, model);
+            return new TexturedRenderable(scale, rotation, position, model);
         }
 
-        public override void SetRenderableParameters(Entity entity)
+        protected override void SetRenderableParameters(Entity entity)
         {
             base.SetRenderableParameters(entity);
 

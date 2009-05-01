@@ -130,9 +130,60 @@ namespace ProjectMagma.Renderer
             effect.Parameters["SpecularPower"].SetValue(SpecularPower);
         }
 
-        public void Squash()
+        public override void UpdateBool(string id, bool value)
         {
-            start_squash = true;
+            base.UpdateBool(id, value);
+
+            if (id == "Squash")
+            {
+                start_squash = value;
+            }
+            else if (id == "PersistentSquash")
+            {
+                PersistentSquash = value;
+            }
+        }
+
+        public override void UpdateFloat(string id, float value)
+        {
+            base.UpdateFloat(id, value);
+
+            if (id == "SpecularPower")
+            {
+                SpecularPower = value;
+            }
+            else if (id == "Alpha")
+            {
+                Alpha = value;
+            }
+        }
+
+        public override void UpdateVector2(string id, Vector2 value)
+        {
+            base.UpdateVector2(id, value);
+
+            if (id == "SquashParams")
+            {
+                SquashParams = value;
+            }
+        }
+
+        public override void UpdateVector3(string id, Vector3 value)
+        {
+            base.UpdateVector3(id, value);
+
+            if (id == "DiffuseColor")
+            {
+                DiffuseColor = value;
+            }
+            else if (id == "EmissiveColor")
+            {
+                EmissiveColor = value;
+            }
+            else if (id == "SpecularColor")
+            {
+                SpecularColor = value;
+            }
         }
 
         private bool start_squash;
@@ -140,17 +191,18 @@ namespace ProjectMagma.Renderer
 
         private float squash_wavelength;
         private float squash_amplitude;
-        public Vector2 SquashParams {
+        protected Vector2 SquashParams
+        {
             get { return new Vector2(squash_wavelength, squash_amplitude); }
             set { squash_wavelength = value.X; squash_amplitude = value.Y; }
         }
-        public bool PersistentSquash { get; set; }
+        protected bool PersistentSquash { get; set; }
 
-        public Vector3 DiffuseColor { get; set; }
-        public Vector3 EmissiveColor { get; set; }
-        public Vector3 SpecularColor { get; set; }
-        public float Alpha { get; set; }
-        public float SpecularPower { get; set; }
+        protected Vector3 DiffuseColor { get; set; }
+        protected Vector3 EmissiveColor { get; set; }
+        protected Vector3 SpecularColor { get; set; }
+        protected float Alpha { get; set; }
+        protected float SpecularPower { get; set; }
 
         protected bool UseLights { get; set; }
         protected bool UseMaterialParameters { get; set; }

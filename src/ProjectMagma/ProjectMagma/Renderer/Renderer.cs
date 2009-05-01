@@ -4,10 +4,11 @@ using System.Collections.Generic;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Graphics;
+using ProjectMagma.Renderer.Interface;
 
 namespace ProjectMagma.Renderer
 {
-    public class Renderer
+    public class Renderer : RendererInterface
     {
         public Renderer(
             ContentManager content,
@@ -73,10 +74,44 @@ namespace ProjectMagma.Renderer
             }
 
             statefulParticleResourceManager = new ProjectMagma.Renderer.ParticleSystem.Stateful.ResourceManager(content, device);
+
+            updateQueues = new List<RendererUpdateQueue>();
+        }
+
+        public void AddUpdateQueue(RendererUpdateQueue updateQueue)
+        {
+            lock (updateQueues)
+            {
+                updateQueues.Add(updateQueue);
+            }
+        }
+
+        private RendererUpdateQueue GetNextUpdateQueue()
+        {
+            lock (updateQueues)
+            {
+                if (updateQueues.Count == 0)
+                    { return null; }
+                
+                RendererUpdateQueue q = updateQueues[0];
+                updateQueues.RemoveAt(0);
+                return q;
+            }
         }
 
         public void Update(GameTime gameTime)
         {
+            RendererUpdateQueue q = GetNextUpdateQueue();
+            while (q != null)
+            {
+                foreach (RendererUpdate update in q.updates)
+                {
+                    update.Apply();
+                }
+
+                q = GetNextUpdateQueue();
+            }
+
             foreach (Renderable renderable in updateRenderables)
             {
                 renderable.Update(this, gameTime);
@@ -401,6 +436,10 @@ namespace ProjectMagma.Renderer
         private HdrCombinePass hdrCombinePass;
 
         private ParticleSystem.Stateful.ResourceManager statefulParticleResourceManager;
+        
         //private LightManager lightManager;
+
+        // ACCESS TO THIS LIST ONLY FOR SYNCHRONIZED THINGS!!
+        private List<RendererUpdateQueue> updateQueues;
     }
 }

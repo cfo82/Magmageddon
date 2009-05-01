@@ -7,6 +7,7 @@ using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 
 using ProjectMagma.Simulation.Attributes;
+using ProjectMagma.Renderer.Interface;
 using ProjectMagma.Renderer;
 
 namespace ProjectMagma.Simulation
@@ -40,13 +41,15 @@ namespace ProjectMagma.Simulation
             velocity.Normalize();
 
             renderable = new IceSpikeRenderable(position, velocity, dead);
-
-            Game.Instance.Renderer.AddRenderable(renderable);
+            Game.Instance.Simulation.CurrentUpdateQueue.updates.Add(new AddRenderableUpdate(renderable));
         }
 
         public void OnDetached(Entity entity)
         {
-            Game.Instance.Renderer.RemoveRenderable(renderable);
+            if (Game.Instance.Simulation.CurrentUpdateQueue != null)
+            {
+                Game.Instance.Simulation.CurrentUpdateQueue.updates.Add(new RemoveRenderableUpdate(renderable));
+            }
 
             if (entity.HasVector3("position"))
             {
@@ -64,7 +67,9 @@ namespace ProjectMagma.Simulation
             Vector3 newValue
         )
         {
-            renderable.Position = newValue;
+            Game.Instance.Simulation.CurrentUpdateQueue.updates.Add(
+                new Vector3RendererUpdate(renderable, "Position", newValue)
+            );
         }
 
         private void VelocityChanged(
@@ -73,9 +78,9 @@ namespace ProjectMagma.Simulation
             Vector3 newValue
         )
         {
-            Vector3 direction = newValue;
-            direction.Normalize();
-            renderable.Direction = direction;
+            Game.Instance.Simulation.CurrentUpdateQueue.updates.Add(
+                new Vector3RendererUpdate(renderable, "Direction", newValue)
+            );
         }
 
         private void DeadChanged(
@@ -84,7 +89,9 @@ namespace ProjectMagma.Simulation
             bool newValue
         )
         {
-            renderable.Dead = newValue;
+            Game.Instance.Simulation.CurrentUpdateQueue.updates.Add(
+                new BoolRendererUpdate(renderable, "Dead", newValue)
+            );
         }
 
         private IceSpikeRenderable renderable;

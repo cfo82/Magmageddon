@@ -14,6 +14,8 @@ using ProjectMagma.Simulation.Attributes;
 using ProjectMagma.Shared.LevelData;
 using ProjectMagma.Simulation.Collision;
 
+using ProjectMagma.Renderer.Interface;
+
 using Microsoft.Xna.Framework.Storage;
 using Microsoft.Xna.Framework.GamerServices;
 using System.IO;
@@ -69,6 +71,7 @@ namespace ProjectMagma
         private static int numFrames = 0;
         private static double totalMilliSeconds = 0;
 
+        private SimulationThread simulationThread;
 
         private Game()
         {
@@ -79,9 +82,8 @@ namespace ProjectMagma
             //this.TargetElapsedTime = TimeSpan.FromSeconds(1.0 / 15.0);
             graphics.SynchronizeWithVerticalRetrace = false; 
             graphics.ApplyChanges();
-            float res = 0.5f;
-            graphics.PreferredBackBufferWidth = (int) (1280.0f * res);
-            graphics.PreferredBackBufferHeight = (int) (720.0f * res);
+            graphics.PreferredBackBufferWidth = 1280;
+            graphics.PreferredBackBufferHeight = 720;
 
             Window.Title = "Project Magma";
             Content.RootDirectory = "Content";
@@ -105,7 +107,7 @@ namespace ProjectMagma
             // now we should keep to rendering on the main thread and move everything else to
             // the other cores.
 #if XBOX
-            System.Threading.Thread.CurrentThread.SetProcessorAffinity(new int[] { 4 });
+            System.Threading.Thread.CurrentThread.SetProcessorAffinity(4);
 #endif
 
             using (Game game = new Game())
@@ -184,7 +186,8 @@ namespace ProjectMagma
             player2.AddStringAttribute("robot_entity", robots[1].Entity);
             player2.AddStringAttribute("player_name", robots[1].Name);
 
-            simulation.AddPlayers(new Entity[] { player1, player2 });
+            RendererUpdateQueue q = simulation.AddPlayers(new Entity[] { player1, player2 });
+            renderer.AddUpdateQueue(q);
 #endif
 
 #if !XBOX && DEBUG
@@ -238,10 +241,16 @@ namespace ProjectMagma
             {
                 simulation.Close();                
             }
+            if (simulationThread != null)
+            {
+                simulationThread.Abort();
+            }
 
             // init simulation
             simulation = new ProjectMagma.Simulation.Simulation();
-            simulation.Initialize(Content, "Level/TestLevel");
+            RendererUpdateQueue q = simulation.Initialize(Content, "Level/TestLevel");
+            simulationThread = new SimulationThread(simulation, renderer);
+            renderer.AddUpdateQueue(q);
 
             // set camera
             currentCamera = simulation.EntityManager["camera1"];
@@ -251,7 +260,7 @@ namespace ProjectMagma
 
         void RecomputeLavaTemperature()
         {
-            List<Renderer.Renderable> pillars = new List<Renderer.Renderable>();
+            /*List<Renderer.Renderable> pillars = new List<Renderer.Renderable>();
             Renderer.Renderable lava;
 
             foreach (Entity entity in simulation.PillarManager)
@@ -260,7 +269,7 @@ namespace ProjectMagma
                     lava = (entity.GetProperty("render") as ModelRenderProperty).Renderable;
                 if (entity.HasString("type") && entity.GetString("type") == "pillar")
                     pillars.Add((entity.GetProperty("render") as ModelRenderProperty).Renderable);
-            }
+            }*/
             //System.Console.WriteLine("blah");
         }
 
@@ -271,6 +280,7 @@ namespace ProjectMagma
         protected override void UnloadContent()
         {
             simulation.Close();
+            simulationThread.Abort();
 
 #if !XBOX && DEBUG            
             formCollection.Dispose();
@@ -318,7 +328,12 @@ namespace ProjectMagma
                 formCollection.Update(gameTime);
             	profiler.EndSection("formcollection_update");
 #endif
-                simulation.Update(gameTime);
+                simulationThread.Start();
+
+                simulationThread.Join();
+                //simulation.Update();
+
+                
 
                 // update menu
                 menu.Update(gameTime);
@@ -395,7 +410,7 @@ namespace ProjectMagma
         public Vector3 CameraPosition
         {
             //get { return currentCamera.GetVector3("position"); }
-            get { return CameraPosition; } // very redundant
+            get { return EyePosition; } // very redundant
         }
 
         public Matrix View

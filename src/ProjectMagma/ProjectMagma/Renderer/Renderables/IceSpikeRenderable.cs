@@ -143,22 +143,34 @@ namespace ProjectMagma.Renderer
             device.RenderState.CullMode = saveCullMode;
         }
 
+        public override void UpdateBool(string id, bool value)
+        {
+            base.UpdateBool(id, value);
+
+            if (id == "Dead")
+            {
+                this.dead = value;
+            }
+        }
+
+        public override void UpdateVector3(string id, Vector3 value)
+        {
+            base.UpdateVector3(id, value);
+
+            if (id == "Position")
+            {
+                position = value;
+            }
+            else if (id == "Direction")
+            {
+                direction = value;
+            }
+        }
+
         public override Vector3 Position
         {
             get { return position; }
             set { position = value; }
-        }
-
-        public Vector3 Direction
-        {
-            get { return direction; }
-            set { direction = value; }
-        }
-
-        public bool Dead
-        {
-            get { return dead; }
-            set { dead = value; }
         }
 
         public override RenderMode RenderMode

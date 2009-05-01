@@ -185,6 +185,48 @@ namespace ProjectMagma.Renderer
 
         private Matrix[] boneTransforms;
 
+        public override void UpdateFloat(string id, float value)
+        {
+            base.UpdateFloat(id, value);
+
+            if (id == "LavaLightStrength")
+            {
+                LavaLightStrength = value;
+            }
+            else if (id == "SkyLightStrength")
+            {
+                SkyLightStrength = value;
+            }
+            else if (id == "SpotLightStrength")
+            {
+                SpotLightStrength = value;
+            }
+        }
+
+        public override void UpdateQuaternion(string id, Quaternion value)
+        {
+            base.UpdateQuaternion(id, value);
+
+            if (id == "Rotation")
+            {
+                Rotation = value;
+            }
+        }
+
+        public override void UpdateVector3(string id, Vector3 value)
+        {
+            base.UpdateVector3(id, value);
+
+            if (id == "Position")
+            {
+                Position = value;
+            }
+            else if (id == "Scale")
+            {
+                Scale = value;
+            }
+        }
+
         public Vector3 Scale { get; set; }
         public Quaternion Rotation { get; set; }
         public override Vector3 Position { get; set; }

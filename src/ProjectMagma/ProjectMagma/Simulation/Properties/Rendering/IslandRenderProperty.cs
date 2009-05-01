@@ -8,6 +8,7 @@ using Microsoft.Xna.Framework.Graphics;
 
 using ProjectMagma.Simulation.Attributes;
 using ProjectMagma.Renderer;
+using ProjectMagma.Renderer.Interface;
 
 // todo: this should inherit from basicrenderproperty
 namespace ProjectMagma.Simulation
@@ -16,10 +17,6 @@ namespace ProjectMagma.Simulation
     {
         public IslandRenderProperty()
         {
-        }
-        public void Squash()
-        {
-            renderable.Squash();
         }
 
         public void OnAttached(Entity entity)
@@ -74,6 +71,11 @@ namespace ProjectMagma.Simulation
             {
                 entity.GetVector3Attribute("scale").ValueChanged -= ScaleChanged;
             }
+        }
+
+        public void Squash()
+        {
+            Game.Instance.Simulation.CurrentUpdateQueue.updates.Add(new BoolRendererUpdate(renderable, "Squash", true));
         }
 
         private void ScaleChanged(

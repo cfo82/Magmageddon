@@ -1,8 +1,9 @@
 ﻿using Microsoft.Xna.Framework;
+using ProjectMagma.Renderer.Interface;
 
 namespace ProjectMagma.Renderer
 {
-    public abstract class Renderable
+    public abstract class Renderable : RendererUpdatable
     {
         public virtual void LoadResources()
         {

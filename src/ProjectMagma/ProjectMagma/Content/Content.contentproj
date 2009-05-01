@@ -1139,6 +1139,11 @@
       <Importer>FbxImporter</Importer>
       <Processor>ModelProcessor</Processor>
     </None>
+    <None Include="Models\Player\dwarf.x">
+      <Name>dwarf</Name>
+      <Importer>XImporter</Importer>
+      <Processor>PlayerProcessor</Processor>
+    </None>
     <Compile Include="Models\Sfx\icespike_explosion.fbx">
       <Name>icespike_explosion</Name>
       <Importer>FbxImporter</Importer>

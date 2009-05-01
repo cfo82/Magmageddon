@@ -79,8 +79,9 @@ namespace ProjectMagma
             //this.TargetElapsedTime = TimeSpan.FromSeconds(1.0 / 15.0);
             graphics.SynchronizeWithVerticalRetrace = false; 
             graphics.ApplyChanges();
-            graphics.PreferredBackBufferWidth = 1280;
-            graphics.PreferredBackBufferHeight = 720;
+            float res = 0.5f;
+            graphics.PreferredBackBufferWidth = (int) (1280.0f * res);
+            graphics.PreferredBackBufferHeight = (int) (720.0f * res);
 
             Window.Title = "Project Magma";
             Content.RootDirectory = "Content";
@@ -317,7 +318,6 @@ namespace ProjectMagma
                 formCollection.Update(gameTime);
             	profiler.EndSection("formcollection_update");
 #endif
-
                 simulation.Update(gameTime);
 
                 // update menu
@@ -394,25 +394,49 @@ namespace ProjectMagma
 
         public Vector3 CameraPosition
         {
-            get { return currentCamera.GetVector3("position"); }
+            //get { return currentCamera.GetVector3("position"); }
+            get { return CameraPosition; } // very redundant
         }
 
         public Matrix View
         {
-            get { return currentCamera.GetMatrix("view"); }
+            //get { return currentCamera.GetMatrix("view"); }
+            get
+            {
+                return Matrix.CreateLookAt(
+                    EyePosition,
+                    new Vector3(0, 180, 0),
+                    new Vector3(0, 1, 0)
+                );
+            }
         }
 
         public Matrix Projection
         {
-            get { return currentCamera.GetMatrix("projection"); }
+            //get { return currentCamera.GetMatrix("projection"); 
+            get
+            {
+                Viewport viewport = Game.Instance.GraphicsDevice.Viewport;
+                float aspectRatio = (float)viewport.Width / (float)viewport.Height;
+
+                // compute matrix
+                return Matrix.CreatePerspectiveFieldOfView
+                (
+                    MathHelper.ToRadians(33.0f),
+                    16.0f/9.0f,
+                    1,
+                    10000
+                );
+            }
         }
 
         public Vector3 EyePosition
         {
-            get
-            {
-                return currentCamera.GetVector3("position");
-            }
+            //get
+            //{
+            //    return currentCamera.GetVector3("position");
+            //}
+            get { return new Vector3(0, 420, 1065); }
         }
 
         public float EffectsVolume

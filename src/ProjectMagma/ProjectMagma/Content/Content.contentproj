@@ -33,6 +33,10 @@
     <Reference Include="Microsoft.Xna.Framework.Content.Pipeline.AudioImporters, Version=3.0.0.0, Culture=neutral, PublicKeyToken=6d5c3888ef60e27d, processorArchitecture=MSIL">
       <Private>False</Private>
     </Reference>
+    <Reference Include="Xclna.Xna.Animation.Content360, Version=1.0.2.0, Culture=neutral, processorArchitecture=x86">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>.\Xclna.Xna.Animation.Content360.dll</HintPath>
+    </Reference>
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Models\Primitives\island_primitive.fbx">
@@ -1139,11 +1143,11 @@
       <Importer>FbxImporter</Importer>
       <Processor>ModelProcessor</Processor>
     </None>
-    <None Include="Models\Player\dwarf.x">
+    <Compile Include="Models\Player\dwarf.x">
       <Name>dwarf</Name>
-      <Importer>XImporter</Importer>
-      <Processor>PlayerProcessor</Processor>
-    </None>
+      <Importer>XModelImporter</Importer>
+      <Processor>AnimatedModelProcessor</Processor>
+    </Compile>
     <Compile Include="Models\Sfx\icespike_explosion.fbx">
       <Name>icespike_explosion</Name>
       <Importer>FbxImporter</Importer>

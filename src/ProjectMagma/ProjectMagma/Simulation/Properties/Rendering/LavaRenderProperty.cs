@@ -8,16 +8,57 @@ using Microsoft.Xna.Framework.Graphics;
 
 using ProjectMagma.Simulation.Attributes;
 using ProjectMagma.Renderer;
+using ProjectMagma.Renderer.Interface;
 
 namespace ProjectMagma.Simulation
 {
-    public class LavaRenderProperty : Property
+    public class LavaRenderProperty : RendererUpdatableProperty
     {
         public LavaRenderProperty()
         {
         }
 
-        public void OnAttached(Entity entity)
+        public override void OnAttached(Entity entity)
+        {
+            base.OnAttached(entity);
+
+            if (entity.HasVector3("scale"))
+            {
+                entity.GetVector3Attribute("scale").ValueChanged += ScaleChanged;
+            }
+            if (entity.HasQuaternion("rotation"))
+            {
+                entity.GetQuaternionAttribute("rotation").ValueChanged += RotationChanged;
+            }
+            if (entity.HasVector3("position"))
+            {
+                entity.GetVector3Attribute("position").ValueChanged += PositionChanged;
+            }
+
+            Game.Instance.Simulation.CurrentUpdateQueue.updates.Add(new AddRenderableUpdate((Renderable)Updatable));
+        }
+
+        public override void OnDetached(Entity entity)
+        {
+            Game.Instance.Simulation.CurrentUpdateQueue.updates.Add(new RemoveRenderableUpdate((Renderable)Updatable));
+
+            if (entity.HasVector3("position"))
+            {
+                entity.GetVector3Attribute("position").ValueChanged -= PositionChanged;
+            }
+            if (entity.HasQuaternion("rotation"))
+            {
+                entity.GetQuaternionAttribute("rotation").ValueChanged -= RotationChanged;
+            }
+            if (entity.HasVector3("scale"))
+            {
+                entity.GetVector3Attribute("scale").ValueChanged -= ScaleChanged;
+            }
+
+            base.OnDetached(entity);
+        }
+
+        protected override ProjectMagma.Renderer.Interface.RendererUpdatable CreateUpdatable(Entity entity)
         {
             Vector3 scale = Vector3.One;
             Quaternion rotation = Quaternion.Identity;
@@ -26,17 +67,14 @@ namespace ProjectMagma.Simulation
             if (entity.HasVector3("scale"))
             {
                 scale = entity.GetVector3("scale");
-                entity.GetVector3Attribute("scale").ValueChanged += ScaleChanged;
             }
             if (entity.HasQuaternion("rotation"))
             {
                 rotation = entity.GetQuaternion("rotation");
-                entity.GetQuaternionAttribute("rotation").ValueChanged += RotationChanged;
             }
             if (entity.HasVector3("position"))
             {
                 position = entity.GetVector3("position");
-                entity.GetVector3Attribute("position").ValueChanged += PositionChanged;
             }
 
             // load the model
@@ -53,28 +91,12 @@ namespace ProjectMagma.Simulation
             Texture2D vectorCloudTexture = Game.Instance.Content.Load<Texture2D>(vectorCloudTextureName);
             Texture2D graniteTexture = Game.Instance.Content.Load<Texture2D>(graniteTextureName);
 
-            renderable = new LavaRenderable(scale, rotation, position, model);
-            renderable.SetTextures(sparseStuccoTexture, fireFractalTexture, vectorCloudTexture, graniteTexture);
-            
-            Game.Instance.Renderer.AddRenderable(renderable);
+            return new LavaRenderable(scale, rotation, position, model, 
+                sparseStuccoTexture, fireFractalTexture, vectorCloudTexture, graniteTexture);
         }
 
-        public void OnDetached(Entity entity)
+        protected override void SetUpdatableParameters(Entity entity)
         {
-            Game.Instance.Renderer.RemoveRenderable(renderable);
-
-            if (entity.HasVector3("position"))
-            {
-                entity.GetVector3Attribute("position").ValueChanged -= PositionChanged;
-            }
-            if (entity.HasQuaternion("rotation"))
-            {
-                entity.GetQuaternionAttribute("rotation").ValueChanged -= RotationChanged;
-            }
-            if (entity.HasVector3("scale"))
-            {
-                entity.GetVector3Attribute("scale").ValueChanged -= ScaleChanged;
-            }
         }
 
         private void ScaleChanged(
@@ -83,7 +105,7 @@ namespace ProjectMagma.Simulation
             Vector3 newValue
         )
         {
-            renderable.Scale = newValue;
+            ChangeVector3("Scale", newValue);
         }
 
         private void RotationChanged(
@@ -92,7 +114,7 @@ namespace ProjectMagma.Simulation
             Quaternion newValue
         )
         {
-            renderable.Rotation = newValue;
+            ChangeQuaternion("Rotation", newValue);
         }
 
         private void PositionChanged(
@@ -101,9 +123,7 @@ namespace ProjectMagma.Simulation
             Vector3 newValue
         )
         {
-            renderable.Position = newValue;
+            ChangeVector3("Position", newValue);
         }
-
-        private LavaRenderable renderable;
     }
 }

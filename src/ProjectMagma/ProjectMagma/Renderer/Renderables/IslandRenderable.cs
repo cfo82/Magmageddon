@@ -10,9 +10,10 @@ namespace ProjectMagma.Renderer
 {
     public class IslandRenderable : TexturedRenderable
     {
-        public IslandRenderable(Vector3 scale, Quaternion rotation, Vector3 position, Model model)
+        public IslandRenderable(Vector3 scale, Quaternion rotation, Vector3 position, Model model, Texture2D texture)
             : base(scale, rotation, position, model)
         {
+            DiffuseTexture = texture;
             randomOffset = new DoublyIntegratedVector2
             (
                 Vector2.Zero, Vector2.Zero, 0.0f, 0.0f, -1.0f, 1.0f
@@ -41,6 +42,16 @@ namespace ProjectMagma.Renderer
             effect.Parameters["Clouds"].SetValue(renderer.VectorCloudTexture);
             effect.Parameters["WindStrength"].SetValue(WindStrength);
             effect.Parameters["RandomOffset"].SetValue(randomOffset.Value);
+        }
+
+        public override void UpdateFloat(string id, float value)
+        {
+            base.UpdateFloat(id, value);
+
+            if (id == "WindStrength")
+            {
+                WindStrength = value;
+            }
         }
 
         public float WindStrength { get; set; }

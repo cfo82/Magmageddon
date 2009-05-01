@@ -12,44 +12,33 @@ using ProjectMagma.Renderer;
 
 namespace ProjectMagma.Simulation
 {
-    public class IceSpikeRenderProperty : Property
+    public class IceSpikeRenderProperty : RendererUpdatableProperty
     {
-        public void OnAttached(Entity entity)
+        public override void OnAttached(Entity entity)
         {
-            Vector3 position = Vector3.Zero;
-            Vector3 velocity = Vector3.UnitZ;
-            bool dead = false;
+            base.OnAttached(entity);
 
             if (entity.HasVector3("position"))
             {
-                position = entity.GetVector3("position");
                 entity.GetVector3Attribute("position").ValueChanged += PositionChanged;
             }
 
             if (entity.HasVector3("velocity"))
             {
-                velocity = entity.GetVector3("velocity");
                 entity.GetVector3Attribute("velocity").ValueChanged += VelocityChanged;
             }
 
             if (entity.HasBool("dead"))
             {
-                dead = entity.GetBool("dead");
                 entity.GetBoolAttribute("dead").ValueChanged += DeadChanged;
             }
 
-            velocity.Normalize();
-
-            renderable = new IceSpikeRenderable(position, velocity, dead);
-            Game.Instance.Simulation.CurrentUpdateQueue.updates.Add(new AddRenderableUpdate(renderable));
+            Game.Instance.Simulation.CurrentUpdateQueue.updates.Add(new AddRenderableUpdate((Renderable)Updatable));
         }
 
-        public void OnDetached(Entity entity)
+        public override void OnDetached(Entity entity)
         {
-            if (Game.Instance.Simulation.CurrentUpdateQueue != null)
-            {
-                Game.Instance.Simulation.CurrentUpdateQueue.updates.Add(new RemoveRenderableUpdate(renderable));
-            }
+            Game.Instance.Simulation.CurrentUpdateQueue.updates.Add(new RemoveRenderableUpdate((Renderable)Updatable));
 
             if (entity.HasVector3("position"))
             {
@@ -59,6 +48,38 @@ namespace ProjectMagma.Simulation
             {
                 entity.GetVector3Attribute("velocity").ValueChanged -= VelocityChanged;
             }
+
+            base.OnDetached(entity);
+        }
+
+        protected override RendererUpdatable CreateUpdatable(Entity entity)
+        {
+            Vector3 position = Vector3.Zero;
+            Vector3 velocity = Vector3.UnitZ;
+            bool dead = false;
+
+            if (entity.HasVector3("position"))
+            {
+                position = entity.GetVector3("position");
+            }
+
+            if (entity.HasVector3("velocity"))
+            {
+                velocity = entity.GetVector3("velocity");
+            }
+
+            if (entity.HasBool("dead"))
+            {
+                dead = entity.GetBool("dead");
+            }
+
+            velocity.Normalize();
+
+            return new IceSpikeRenderable(position, velocity, dead);
+        }
+
+        protected override void SetUpdatableParameters(Entity entity)
+        {
         }
 
         private void PositionChanged(
@@ -67,9 +88,7 @@ namespace ProjectMagma.Simulation
             Vector3 newValue
         )
         {
-            Game.Instance.Simulation.CurrentUpdateQueue.updates.Add(
-                new Vector3RendererUpdate(renderable, "Position", newValue)
-            );
+            ChangeVector3("Position", newValue);
         }
 
         private void VelocityChanged(
@@ -78,9 +97,7 @@ namespace ProjectMagma.Simulation
             Vector3 newValue
         )
         {
-            Game.Instance.Simulation.CurrentUpdateQueue.updates.Add(
-                new Vector3RendererUpdate(renderable, "Direction", newValue)
-            );
+            ChangeVector3("Direction", newValue);
         }
 
         private void DeadChanged(
@@ -89,11 +106,7 @@ namespace ProjectMagma.Simulation
             bool newValue
         )
         {
-            Game.Instance.Simulation.CurrentUpdateQueue.updates.Add(
-                new BoolRendererUpdate(renderable, "Dead", newValue)
-            );
+            ChangeBool("Dead", newValue);
         }
-
-        private IceSpikeRenderable renderable;
     }
 }

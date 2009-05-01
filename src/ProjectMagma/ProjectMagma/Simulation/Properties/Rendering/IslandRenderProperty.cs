@@ -13,51 +13,35 @@ using ProjectMagma.Renderer.Interface;
 // todo: this should inherit from basicrenderproperty
 namespace ProjectMagma.Simulation
 {
-    public class IslandRenderProperty : Property
+    public class IslandRenderProperty : RendererUpdatableProperty
     {
         public IslandRenderProperty()
         {
         }
 
-        public void OnAttached(Entity entity)
+        public override void OnAttached(Entity entity)
         {
-            Vector3 scale = Vector3.One;
-            Quaternion rotation = Quaternion.Identity;
-            Vector3 position = Vector3.Zero;
+            base.OnAttached(entity);
 
             if (entity.HasVector3("scale"))
             {
-                scale = entity.GetVector3("scale");
                 entity.GetVector3Attribute("scale").ValueChanged += ScaleChanged;
             }
             if (entity.HasQuaternion("rotation"))
             {
-                rotation = entity.GetQuaternion("rotation");
                 entity.GetQuaternionAttribute("rotation").ValueChanged += RotationChanged;
             }
             if (entity.HasVector3("position"))
             {
-                position = entity.GetVector3("position");
                 entity.GetVector3Attribute("position").ValueChanged += PositionChanged;
             }
 
-            // load the model
-            string meshName = entity.GetString("mesh");
-            Model model = Game.Instance.Content.Load<Model>(meshName);
-
-            string islandTextureName = entity.GetString("diffuse_texture");
-            Texture2D islandTexture = Game.Instance.Content.Load<Texture2D>(islandTextureName);
-
-            renderable = new IslandRenderable(scale, rotation, position, model);
-            renderable.WindStrength = entity.GetFloat("wind_strength");
-            renderable.DiffuseTexture = islandTexture;
-            
-            Game.Instance.Renderer.AddRenderable(renderable);
+            Game.Instance.Simulation.CurrentUpdateQueue.updates.Add(new AddRenderableUpdate((Renderable)Updatable));
         }
 
-        public void OnDetached(Entity entity)
+        public override void OnDetached(Entity entity)
         {
-            Game.Instance.Renderer.RemoveRenderable(renderable);
+            Game.Instance.Simulation.CurrentUpdateQueue.updates.Add(new RemoveRenderableUpdate((Renderable)Updatable));
 
             if (entity.HasVector3("position"))
             {
@@ -71,11 +55,47 @@ namespace ProjectMagma.Simulation
             {
                 entity.GetVector3Attribute("scale").ValueChanged -= ScaleChanged;
             }
+
+            base.OnDetached(entity);
+        }
+
+        protected override RendererUpdatable CreateUpdatable(Entity entity)
+        {
+            Vector3 scale = Vector3.One;
+            Quaternion rotation = Quaternion.Identity;
+            Vector3 position = Vector3.Zero;
+
+            if (entity.HasVector3("scale"))
+            {
+                scale = entity.GetVector3("scale");
+            }
+            if (entity.HasQuaternion("rotation"))
+            {
+                rotation = entity.GetQuaternion("rotation");
+            }
+            if (entity.HasVector3("position"))
+            {
+                position = entity.GetVector3("position");
+            }
+
+            // load the model
+            string meshName = entity.GetString("mesh");
+            Model model = Game.Instance.Content.Load<Model>(meshName);
+
+            string islandTextureName = entity.GetString("diffuse_texture");
+            Texture2D islandTexture = Game.Instance.Content.Load<Texture2D>(islandTextureName);
+
+            return new IslandRenderable(scale, rotation, position, model, islandTexture);
+        }
+
+        protected override void SetUpdatableParameters(Entity entity)
+        {
+            ChangeFloat("WindStrength", entity.GetFloat("wind_strength"));
         }
 
         public void Squash()
         {
-            Game.Instance.Simulation.CurrentUpdateQueue.updates.Add(new BoolRendererUpdate(renderable, "Squash", true));
+            ChangeBool("Squash", true);
         }
 
         private void ScaleChanged(
@@ -84,7 +104,7 @@ namespace ProjectMagma.Simulation
             Vector3 newValue
         )
         {
-            renderable.Scale = newValue;
+            ChangeVector3("Scale", newValue);
         }
 
         private void RotationChanged(
@@ -93,7 +113,7 @@ namespace ProjectMagma.Simulation
             Quaternion newValue
         )
         {
-            renderable.Rotation = newValue;
+            ChangeQuaternion("Rotation", newValue);
         }
 
         private void PositionChanged(
@@ -102,9 +122,7 @@ namespace ProjectMagma.Simulation
             Vector3 newValue
         )
         {
-            renderable.Position = newValue;
+            ChangeVector3("Position", newValue);
         }
-
-        private IslandRenderable renderable;
     }
 }

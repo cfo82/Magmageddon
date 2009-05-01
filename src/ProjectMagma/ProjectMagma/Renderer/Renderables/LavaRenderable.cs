@@ -10,7 +10,11 @@ namespace ProjectMagma.Renderer
 {
     public class LavaRenderable : BasicRenderable
     {
-        public LavaRenderable(Vector3 scale, Quaternion rotation, Vector3 position, Model model)
+        public LavaRenderable(Vector3 scale, Quaternion rotation, Vector3 position, Model model,
+            Texture2D sparseStuccoTexture,
+            Texture2D fireFractalTexture,
+            Texture2D vectorCloudTexture,
+            Texture2D graniteTexture)
             : base(scale, rotation, position, model)
         {
             effect = Game.Instance.Content.Load<Effect>("Effects/Lava/Lava");
@@ -21,6 +25,12 @@ namespace ProjectMagma.Renderer
             UseSquash = false;
 
             RenderChannel = RenderChannelType.Two;
+
+            this.sparseStuccoTexture = sparseStuccoTexture;
+            this.fireFractalTexture = fireFractalTexture;
+            this.vectorCloudTexture = vectorCloudTexture;
+            this.graniteTexture = graniteTexture;
+            this.temperatureTexture = Game.Instance.Content.Load<Texture2D>("Textures/lava/temperature");
         }
 
         protected override void ApplyEffectsToModel()
@@ -68,20 +78,6 @@ namespace ProjectMagma.Renderer
             }
 
             randomOffsetParameter.SetValue(randomOffset);
-        }
-
-        public void SetTextures(
-            Texture2D sparseStuccoTexture,
-            Texture2D fireFractalTexture,
-            Texture2D vectorCloudTexture,
-            Texture2D graniteTexture
-        )
-        {
-            this.sparseStuccoTexture = sparseStuccoTexture;
-            this.fireFractalTexture = fireFractalTexture;
-            this.vectorCloudTexture = vectorCloudTexture;
-            this.graniteTexture = graniteTexture;
-            this.temperatureTexture = Game.Instance.Content.Load<Texture2D>("Textures/lava/temperature");
         }
 
         private Texture2D temperatureTexture;        

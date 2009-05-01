@@ -76,6 +76,8 @@
     <Compile Include="Renderer\ParticleSystem\Stateful\CreateVertex.cs" />
     <Compile Include="Renderer\ParticleSystem\Stateful\IceSpike\IceSpike.cs" />
     <Compile Include="Renderer\ParticleSystem\Stateful\RenderVertex.cs" />
+    <Compile Include="Renderer\ParticleSystem\Stateful\ResourceManager.cs" />
+    <Compile Include="Renderer\ParticleSystem\Stateful\Size.cs" />
     <Compile Include="Renderer\ParticleSystem\Stateful\Smoke\Smoke.cs" />
     <Compile Include="Renderer\ParticleSystem\Stateful\StatefulParticleSystem.cs" />
     <Compile Include="Renderer\Renderables\BasicRenderable.cs" />

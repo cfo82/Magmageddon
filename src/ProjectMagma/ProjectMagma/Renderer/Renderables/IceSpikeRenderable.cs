@@ -27,7 +27,7 @@ namespace ProjectMagma.Renderer
             iceSpikeEffect = Game.Instance.Content.Load<Effect>("Effects/Sfx/IceSpike").Clone(Game.Instance.GraphicsDevice);
 
             iceSpikeEmitter = null;
-            iceSpikeSystem = new IceSpike(Game.Instance.Content, Game.Instance.GraphicsDevice);
+            iceSpikeSystem = new IceSpike(Game.Instance.Renderer, Game.Instance.Content, Game.Instance.GraphicsDevice);
             iceSpikeModel = Game.Instance.Content.Load<Model>("Models/Sfx/IceSpike");
             iceSpikeTexture = Game.Instance.Content.Load<Texture2D>("Textures/Sfx/IceSpikeHead");
         }

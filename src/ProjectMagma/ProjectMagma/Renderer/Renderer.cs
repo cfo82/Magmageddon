@@ -71,6 +71,8 @@ namespace ProjectMagma.Renderer
                 glowPass = new GlowPass(this, Target2, Target1);
                 hdrCombinePass = new HdrCombinePass(this, Target0, Target1);
             }
+
+            statefulParticleResourceManager = new ProjectMagma.Renderer.ParticleSystem.Stateful.ResourceManager(content, device);
         }
 
         public void Update(GameTime gameTime)
@@ -343,6 +345,11 @@ namespace ProjectMagma.Renderer
             get { return lightProjection; }
         }
 
+        public ParticleSystem.Stateful.ResourceManager StatefulParticleResourceManager
+        {
+            get { return statefulParticleResourceManager; }
+        }
+
         public LightManager LightManager { get; set; }
 
         private List<Renderable> updateRenderables;
@@ -383,6 +390,7 @@ namespace ProjectMagma.Renderer
         private GlowPass glowPass;
         private HdrCombinePass hdrCombinePass;
 
+        private ParticleSystem.Stateful.ResourceManager statefulParticleResourceManager;
         //private LightManager lightManager;
     }
 }

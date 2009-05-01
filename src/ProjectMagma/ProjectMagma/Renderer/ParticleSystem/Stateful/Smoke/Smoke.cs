@@ -11,12 +11,23 @@ namespace ProjectMagma.Renderer.ParticleSystem.Stateful.Smoke
     public class Smoke : StatefulParticleSystem
     {
         public Smoke(
+            Renderer renderer,
             ContentManager content,
             GraphicsDevice device
         )
-        :   base(content, device)
+        :   base(renderer, content, device)
         {
+        }
+        protected override void LoadResources(Renderer renderer, ContentManager content, GraphicsDevice device)
+        {
+            base.LoadResources(renderer, content, device);
             smokeTexture = content.Load<Texture2D>("smoke");
+        }
+
+        public override void UnloadResources()
+        {
+            // no need to release the smokeTexture since it is managed by the content manager
+            base.UnloadResources();
         }
 
         protected override Effect LoadCreateEffect(ContentManager content)

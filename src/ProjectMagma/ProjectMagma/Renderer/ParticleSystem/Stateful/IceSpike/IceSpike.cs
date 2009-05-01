@@ -13,12 +13,25 @@ namespace ProjectMagma.Renderer.ParticleSystem.Stateful.IceSpike
     public class IceSpike : StatefulParticleSystem
     {
         public IceSpike(
+            Renderer renderer,
             ContentManager content,
             GraphicsDevice device
         )
-        :   base(content, device)
+        :   base(renderer, content, device)
         {
+        }
+
+        protected override void LoadResources(Renderer renderer, ContentManager content, GraphicsDevice device)
+        {
+            base.LoadResources(renderer, content, device);
+
             trailSprite = content.Load<Texture2D>("Textures/Sfx/IceSpikeTrail");
+        }
+
+        public override void UnloadResources()
+        {
+            // no need to release the trailSprite since its managed by the resource manager!
+            base.UnloadResources();
         }
 
         protected override Effect LoadCreateEffect(ContentManager content)

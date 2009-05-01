@@ -13,15 +13,36 @@ namespace ProjectMagma.Renderer.ParticleSystem.Stateful
     public class StatefulParticleSystem : ParticleSystem
     {
         public StatefulParticleSystem(
+            Renderer renderer,
             ContentManager content,
             GraphicsDevice device
         )
         {
+            this.renderer = renderer;
             this.emitters = new List<ParticleEmitter>();
-
+            this.index = 0;
             this.device = device;
+            this.remainingDt = 0.0;
+            this.activeTexture = 0;
+            this.positionTextures = null;
+            this.velocityTextures = null;
+            this.createVertexBuffer = null;
+            this.createVertexDeclaration = null;
+            this.particleCreateEffect = null;
+            this.particleUpdateEffect = null;
+            this.particleRenderingEffect = null;
             spriteBatch = new SpriteBatch(device);
 
+            LoadResources(renderer, content, device);
+        }
+
+        protected virtual void LoadResources(
+            Renderer renderer,
+            ContentManager content,
+            GraphicsDevice device
+        )
+        {
+            // create texture maps
             activeTexture = 0;
             HalfVector4[] array = new HalfVector4[textureSize * textureSize];
             for (int i = 0; i < textureSize * textureSize; ++i)
@@ -29,11 +50,11 @@ namespace ProjectMagma.Renderer.ParticleSystem.Stateful
                 array[i] = new HalfVector4(0, 0, 0, 0);
             }
             positionTextures = new RenderTarget2D[2];
-            positionTextures[0] = new RenderTarget2D(device, textureSize, textureSize, 1, SurfaceFormat.HalfVector4);
-            positionTextures[1] = new RenderTarget2D(device, textureSize, textureSize, 1, SurfaceFormat.HalfVector4);
+            positionTextures[0] = renderer.StatefulParticleResourceManager.AllocateStateTexture(systemSize);
+            positionTextures[1] = renderer.StatefulParticleResourceManager.AllocateStateTexture(systemSize);
             velocityTextures = new RenderTarget2D[2];
-            velocityTextures[0] = new RenderTarget2D(device, textureSize, textureSize, 1, SurfaceFormat.HalfVector4);
-            velocityTextures[1] = new RenderTarget2D(device, textureSize, textureSize, 1, SurfaceFormat.HalfVector4);
+            velocityTextures[0] = renderer.StatefulParticleResourceManager.AllocateStateTexture(systemSize);
+            velocityTextures[1] = renderer.StatefulParticleResourceManager.AllocateStateTexture(systemSize);
             device.SetRenderTarget(0, positionTextures[0]);
             device.SetRenderTarget(0, null);
             device.SetRenderTarget(0, velocityTextures[0]);
@@ -46,36 +67,33 @@ namespace ProjectMagma.Renderer.ParticleSystem.Stateful
             createVertexBuffer = new VertexBuffer(device, CreateVertex.SizeInBytes * createVertexBufferSize, BufferUsage.WriteOnly);
             createVertexDeclaration = new VertexDeclaration(device, CreateVertex.VertexElements);
 
-            Effect createEffect = LoadCreateEffect(content);
-            particleCreateEffect = createEffect.Clone(device);
+            particleCreateEffect = LoadCreateEffect(content).Clone(device);
             particleCreateEffect.CurrentTechnique = particleCreateEffect.Techniques["CreateParticles"];
 
             // update effect
-            Effect updateEffect = LoadUpdateEffect(content);
-            particleUpdateEffect = updateEffect.Clone(device);
+            particleUpdateEffect = LoadUpdateEffect(content).Clone(device);
             particleUpdateEffect.CurrentTechnique = particleUpdateEffect.Techniques["UpdateParticles"];
-            particleUpdateParameters = particleUpdateEffect.Parameters;
 
             // rendering effect
-            Vector2 positionHalfPixel = new Vector2(1.0f / (2.0f * positionTextures[0].Width), 1.0f / (2.0f * positionTextures[0].Height));
-            RenderVertex[] vertices = new RenderVertex[textureSize * textureSize];
-            for (int x = 0; x < textureSize; ++x)
-            {
-                for (int y = 0; y < textureSize; ++y)
-                {
-                    vertices[y * textureSize + x].particleCoordinate = new Vector2(
-                        positionHalfPixel.X + 2 * x * positionHalfPixel.X,
-                        positionHalfPixel.Y + 2 * y * positionHalfPixel.Y);
-                }
-            }
-            renderingVertexBuffer = new VertexBuffer(device, RenderVertex.SizeInBytes * vertices.Length, BufferUsage.WriteOnly | BufferUsage.Points);
-            renderingVertexBuffer.SetData<RenderVertex>(vertices);
-            renderingVertexDeclaration = new VertexDeclaration(device, RenderVertex.VertexElements);
-
-            Effect renderingEffect = LoadRenderEffect(content);
-            particleRenderingEffect = renderingEffect.Clone(device);
+            particleRenderingEffect = LoadRenderEffect(content).Clone(device);
             particleRenderingEffect.CurrentTechnique = particleRenderingEffect.Techniques["RenderParticles"];
-            particleRenderingParameters = particleRenderingEffect.Parameters;
+        }
+
+        public virtual void UnloadResources()
+        {
+            // release texture maps
+            renderer.StatefulParticleResourceManager.FreeStateTexture(systemSize, positionTextures[0]);
+            renderer.StatefulParticleResourceManager.FreeStateTexture(systemSize, positionTextures[1]);
+            renderer.StatefulParticleResourceManager.FreeStateTexture(systemSize, velocityTextures[0]);
+            renderer.StatefulParticleResourceManager.FreeStateTexture(systemSize, velocityTextures[1]);
+
+            // release the other resources
+            spriteBatch.Dispose();
+            createVertexBuffer.Dispose();
+            createVertexDeclaration.Dispose();
+            particleCreateEffect.Dispose();
+            particleUpdateEffect.Dispose();
+            particleRenderingEffect.Dispose();
         }
 
         public void AddEmitter(
@@ -182,10 +200,10 @@ namespace ProjectMagma.Renderer.ParticleSystem.Stateful
                 device.SetRenderTarget(0, positionTextures[nextTexture]);
                 device.SetRenderTarget(1, velocityTextures[nextTexture]);
 
-                particleUpdateParameters["UpdateParticlesPositionTexture"].SetValue(positionTextures[activeTexture].GetTexture());
-                particleUpdateParameters["UpdateParticlesVelocityTexture"].SetValue(velocityTextures[activeTexture].GetTexture());
-                particleUpdateParameters["Dt"].SetValue((float)simulationStep);
-                SetUpdateParameters(particleUpdateParameters);
+                particleUpdateEffect.Parameters["UpdateParticlesPositionTexture"].SetValue(positionTextures[activeTexture].GetTexture());
+                particleUpdateEffect.Parameters["UpdateParticlesVelocityTexture"].SetValue(velocityTextures[activeTexture].GetTexture());
+                particleUpdateEffect.Parameters["Dt"].SetValue((float)simulationStep);
+                SetUpdateParameters(particleUpdateEffect.Parameters);
 
                 Debug.Assert(particleUpdateEffect.CurrentTechnique.Passes.Count == 1);
                 EffectPass pass = particleUpdateEffect.CurrentTechnique.Passes[0];
@@ -227,17 +245,20 @@ namespace ProjectMagma.Renderer.ParticleSystem.Stateful
         {
             SetParticleRenderStates(device.RenderState);
 
+            VertexBuffer renderingVertexBuffer = renderer.StatefulParticleResourceManager.GetRenderingVertexBuffer(systemSize);
+            VertexDeclaration renderingVertexDeclaration = renderer.StatefulParticleResourceManager.GetRenderingVertexDeclaration();
+
             device.Vertices[0].SetSource(renderingVertexBuffer, 0, RenderVertex.SizeInBytes);
             device.VertexDeclaration = renderingVertexDeclaration;
 
-            particleRenderingParameters["View"].SetValue(viewMatrix);
-            particleRenderingParameters["Projection"].SetValue(projectionMatrix);
-            particleRenderingParameters["RenderParticlesPositionTexture"].SetValue(positionTextures[activeTexture].GetTexture());
-            particleRenderingParameters["ViewportHeight"].SetValue(device.Viewport.Height);
-            particleRenderingParameters["StartSize"].SetValue(new Vector2(5.0f, 10.0f));
-            particleRenderingParameters["EndSize"].SetValue(new Vector2(50.0f, 200.0f));
+            particleRenderingEffect.Parameters["View"].SetValue(viewMatrix);
+            particleRenderingEffect.Parameters["Projection"].SetValue(projectionMatrix);
+            particleRenderingEffect.Parameters["RenderParticlesPositionTexture"].SetValue(positionTextures[activeTexture].GetTexture());
+            particleRenderingEffect.Parameters["ViewportHeight"].SetValue(device.Viewport.Height);
+            particleRenderingEffect.Parameters["StartSize"].SetValue(new Vector2(5.0f, 10.0f));
+            particleRenderingEffect.Parameters["EndSize"].SetValue(new Vector2(50.0f, 200.0f));
 
-            SetRenderingParameters(particleRenderingParameters);
+            SetRenderingParameters(particleRenderingEffect.Parameters);
 
             particleRenderingEffect.Begin();
 
@@ -285,6 +306,8 @@ namespace ProjectMagma.Renderer.ParticleSystem.Stateful
             renderState.DepthBufferWriteEnable = true;
         }
 
+        #region Configuration Parameters may be overwritten by subclasses to customize the behaviour!
+
         protected virtual Effect LoadCreateEffect(ContentManager content)
         {
             return content.Load<Effect>("Effects/ParticleSystem/Stateful/Default");
@@ -308,16 +331,18 @@ namespace ProjectMagma.Renderer.ParticleSystem.Stateful
         {
         }
 
+        #endregion
+
+        private Renderer renderer;
         private List<ParticleEmitter> emitters;
-
-        int index = 0;
-
+        private int index;
         private GraphicsDevice device;
 
-        private double remainingDt = 0.0;
-        private double simulationStep = 1.0 / 60.0;
+        private double remainingDt;
+        private static readonly double simulationStep = 1.0 / 60.0;
 
-        private int textureSize = 92;
+        private static readonly int textureSize = 96;
+        private static readonly Size systemSize = Size.Max9308;
         private int activeTexture;
         private RenderTarget2D[] positionTextures;
         private RenderTarget2D[] velocityTextures;
@@ -325,16 +350,11 @@ namespace ProjectMagma.Renderer.ParticleSystem.Stateful
         private VertexBuffer createVertexBuffer;
         private VertexDeclaration createVertexDeclaration;
         private Effect particleCreateEffect;
-        private int createVertexBufferSize = 2048;
+        private static readonly int createVertexBufferSize = 2048;
 
         private Effect particleUpdateEffect;
-        private EffectParameterCollection particleUpdateParameters;
-
-        private VertexBuffer renderingVertexBuffer;
-        private VertexDeclaration renderingVertexDeclaration;
 
         private Effect particleRenderingEffect;
-        private EffectParameterCollection particleRenderingParameters;
 
         private SpriteBatch spriteBatch;
     }

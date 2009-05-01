@@ -52,6 +52,8 @@ namespace ProjectMagma.Simulation
         private Vector3 lastStickDir = Vector3.Zero;
         private Entity selectedIsland = null;
         private Entity destinationIsland = null;
+        private float destinationOrigDist = 0;
+        private float destinationOrigY = 0;
         private Vector3 lastIslandDir = Vector3.Zero;
         private float islandJumpPerformedAt = 0;
         private Entity attractedIsland = null;
@@ -94,6 +96,9 @@ namespace ProjectMagma.Simulation
             player.AddIntAttribute("fuel", constants.GetInt("max_fuel"));
 
             player.AddIntAttribute("jumps", 0);
+#if DEBUG
+                player.SetInt("jumps", 100);
+#endif
 
             player.AddIntAttribute("kills", 0);
             player.AddIntAttribute("deaths", 0);
@@ -325,7 +330,9 @@ namespace ProjectMagma.Simulation
                 else
                 {
                     // check range
-                    if ((attractedIsland.GetVector3("position") - playerPosition).Length()
+                    Vector3 xzdist = attractedIsland.GetVector3("position") - playerPosition;
+                    xzdist.Y = 0;
+                    if ((xzdist).Length()
                         < constants.GetFloat("island_attraction_jump_range"))
                     {
                         /*
@@ -377,36 +384,16 @@ namespace ProjectMagma.Simulation
             destinationIsland = island;
 
             // calculate time to travel to island (in xz plane) using an iterative approach
-            float oldTime = 0;
-            float time = 0;
-            float maxTime = 0;
-            Vector3 islandDir;
-            Vector3 islandPos = destinationIsland.GetVector3("position");
-            int count = 0;
-            do
-            {
-                ((IslandControllerPropertyBase)destinationIsland.GetProperty("controller")).CalculateNewPosition(destinationIsland,
-                    ref islandPos, time);
-
-                islandDir = (islandPos - playerPosition);
-                Vector3 islandDir2D = islandDir;
-                float dist2D = islandDir2D.Length();
-
-                if (time > maxTime)
-                    maxTime = time;
-
-                oldTime = time;
-                time = dist2D / constants.GetFloat("island_jump_speed");
-
-                count++;
-            }
-            while ((Math.Abs(oldTime - time) > 1 / 1000f) && (count < 10));
-
+            Vector3 islandDir = GetLandingPosition(destinationIsland) - playerPosition;
+            islandDir.Y = 0;
             lastIslandDir = islandDir;
+            destinationOrigDist = islandDir.Length();
+            destinationOrigY = playerPosition.Y;
 
-            playerVelocity = -constants.GetVector3("gravity_acceleration") * maxTime
-                + Vector3.UnitY * constants.GetFloat("island_jump_arc_height") * maxTime;
-            player.SetVector3("island_jump_velocity", Vector3.Normalize(islandDir) * constants.GetFloat("island_jump_speed"));
+//            playerVelocity = -constants.GetVector3("gravity_acceleration") * maxTime;
+//                + Vector3.UnitY * constants.GetFloat("island_jump_arc_height") * maxTime;
+            player.SetVector3("island_jump_velocity", Vector3.Normalize(islandDir) 
+                * constants.GetFloat("island_jump_speed"));
 
             LeaveActiveIsland();
         }
@@ -713,7 +700,8 @@ namespace ProjectMagma.Simulation
 
         private void ApplyGravity(float dt, ref Vector3 playerPosition, ref Vector3 playerVelocity)
         {
-            if (activeIsland == null)
+            if (activeIsland == null
+                && destinationIsland == null)
             {
                 // gravity
                 if (playerVelocity.Length() <= constants.GetFloat("max_gravity_speed")
@@ -733,11 +721,24 @@ namespace ProjectMagma.Simulation
                 // apply from last jump
                 playerPosition += player.GetVector3("island_jump_velocity") * dt;
 
+                // get current
+                Vector3 landingPos = GetLandingPosition(destinationIsland);
+                Vector3 islandDir = landingPos - playerPosition;
+                islandDir.Y = 0;
+
+                // calculate y position 
+                float r = 1 - (islandDir.Length() / destinationOrigDist);
+                Console.WriteLine("r: " + r);
+                float S = 300;
+                float y = (destinationOrigY - S - landingPos.Y) * r * r + S * r + destinationOrigY;
+                playerPosition.Y = y;
+                Console.WriteLine("y: "+y);
+
                 // check for arrival
-                Vector3 islandDir = destinationIsland.GetVector3("position") - playerPosition;
                 Vector3 isectPt = Vector3.Zero;
                 Ray3 ray = new Ray3(playerPosition + 1000 * Vector3.UnitY, -Vector3.UnitY);
-                if (Vector3.Dot(islandDir, lastIslandDir) < 0 // oscillation?
+                if ((islandDir.Length() < 4 // near enough...
+                    || Vector3.Dot(islandDir, lastIslandDir) < 0) // or oscilation)
                    && Game.Instance.Simulation.CollisionManager.GetIntersectionPoint(ref ray, destinationIsland, out isectPt))
                 {
                     SetActiveIsland(destinationIsland);
@@ -759,7 +760,8 @@ namespace ProjectMagma.Simulation
 
                     lastIslandDir = islandDir;
 
-                    player.SetVector3("island_jump_velocity", Vector3.Normalize(islandDir) * constants.GetFloat("island_jump_speed"));
+                    player.SetVector3("island_jump_velocity", Vector3.Normalize(islandDir) 
+                        * constants.GetFloat("island_jump_speed"));
                 }
             }
         }
@@ -906,6 +908,12 @@ namespace ProjectMagma.Simulation
                 player.SetInt("fuel", constants.GetInt("max_fuel"));
         }
 
+        private Vector3 GetLandingPosition(Entity island)
+        {
+            Vector3 pos = island.GetVector3("position") + island.GetVector3("landing_offset");
+            return pos;
+        }
+
         private void PlayerCollisionHandler(SimulationTime simTime, Contact contact)
         {
             if (contact.EntityB.HasAttribute("kind"))
@@ -933,7 +941,7 @@ namespace ProjectMagma.Simulation
 
                     //                    slidingVelocity.Y = player.GetVector3("island_jump_velocity").Y;
 //                    slidingVelocity.Y = player.GetVector3("island_jump_velocity").Y;
-                    player.SetVector3("island_jump_velocity", slidingVelocity);
+//                    player.SetVector3("island_jump_velocity", slidingVelocity);
 
                     // also ensure we don't fall down yet
 //                    player.SetVector3("velocity", player.GetVector3("velocity") - constants.GetVector3("gravity_acceleration") * simTime.Dt);

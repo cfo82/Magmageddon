@@ -82,16 +82,16 @@ namespace ProjectMagma
                         || (keyboardState.IsKeyDown(Keys.Escape)
                         && lastKBState.IsKeyUp(Keys.Escape))))
                 {
-                    Game.Instance.Simulation.Pause();
+                    Game.Instance.Pause();
                     Open();
                     buttonPressedAt = at;
                 }
                 else
                     // resume simulation as soon as x-button is released (so we don't accidentally fire)
-                    if (Game.Instance.Simulation.Paused
+                    if (Game.Instance.Paused
                         && gamePadState.Buttons.X == ButtonState.Released)
                     {
-                        Game.Instance.Simulation.Resume();
+                        Game.Instance.Resume();
                     }
             }
 
@@ -605,8 +605,7 @@ namespace ProjectMagma
                     }
                 }
 
-                ProjectMagma.Renderer.Interface.RendererUpdateQueue q = Game.Instance.Simulation.AddPlayers(players.ToArray<Entity>());
-                Game.Instance.Renderer.AddUpdateQueue(q);
+                Game.Instance.AddPlayers(players.ToArray<Entity>());
 
                 menu.Close();
             }

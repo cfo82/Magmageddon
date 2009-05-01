@@ -28,6 +28,7 @@ namespace ProjectMagma.Simulation
 
         public void Start()
         {
+            joinRequested = false;
             startEvent.Set();
         }
 
@@ -42,8 +43,11 @@ namespace ProjectMagma.Simulation
                 {
                     startEvent.WaitOne();
 
-                    RendererUpdateQueue q = simulation.Update();
-                    renderer.AddUpdateQueue(q);
+                    while (!joinRequested)
+                    {
+                        RendererUpdateQueue q = simulation.Update();
+                        renderer.AddUpdateQueue(q);
+                    }
 
                     finishedEvent.Set();
                 }
@@ -60,6 +64,7 @@ namespace ProjectMagma.Simulation
 
         public void Join()
         {
+            joinRequested = true;
             finishedEvent.WaitOne();
         }
 
@@ -73,8 +78,9 @@ namespace ProjectMagma.Simulation
         private Renderer.Renderer renderer;
         private AutoResetEvent startEvent;
         private AutoResetEvent finishedEvent;
-        private bool aborted;
+        private volatile bool aborted;
         private static readonly int processor = 1;
         private Thread thread;
+        private volatile bool joinRequested;
     }
 }

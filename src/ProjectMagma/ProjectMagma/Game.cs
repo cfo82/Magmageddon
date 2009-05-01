@@ -228,6 +228,7 @@ namespace ProjectMagma
 #endif
 
             font = Game.Instance.Content.Load<SpriteFont>("Sprites/HUD/HUDFont");
+
         }
 
         /// <summary>
@@ -259,6 +260,7 @@ namespace ProjectMagma
             RecomputeLavaTemperature();
         }
 
+
         void RecomputeLavaTemperature()
         {
             /*List<Renderer.Renderable> pillars = new List<Renderer.Renderable>();
@@ -280,6 +282,8 @@ namespace ProjectMagma
         /// </summary>
         protected override void UnloadContent()
         {
+            //simulationThread.Join();
+
             RendererUpdateQueue q = simulation.Close();
             renderer.AddUpdateQueue(q);
             simulationThread.Abort();
@@ -291,6 +295,58 @@ namespace ProjectMagma
             MediaPlayer.Stop();
 
             profiler.Write(device, Window.Title, "profiling.txt");
+        }
+
+        bool paused = false;
+
+        public void Pause()
+        {
+            
+            paused = true;
+            simulation.Pause();
+        }
+
+        public bool Paused
+        {
+            get { return paused; }
+        }
+
+        public void Resume()
+        {
+            simulation.Resume();
+            paused = false;
+        }
+
+        protected override void OnActivated(object sender, EventArgs args)
+        {
+            base.OnActivated(sender, args);
+
+            // let's try and start... 
+            simulationThread.Start();
+        }
+
+
+        protected override void OnDeactivated(object sender, EventArgs args)
+        {
+            base.OnDeactivated(sender, args);
+
+            simulationThread.Join();
+        }
+        public void AddPlayers(Entity[] players)
+        {
+            if (!paused)
+            {
+                Pause();
+                ProjectMagma.Renderer.Interface.RendererUpdateQueue q = Game.Instance.Simulation.AddPlayers(players);
+                Game.Instance.Renderer.AddUpdateQueue(q);
+
+                Resume();
+            }
+            else
+            {
+                ProjectMagma.Renderer.Interface.RendererUpdateQueue q = Game.Instance.Simulation.AddPlayers(players);
+                Game.Instance.Renderer.AddUpdateQueue(q);
+            }
         }
 
         /// <summary>
@@ -330,12 +386,9 @@ namespace ProjectMagma
                 formCollection.Update(gameTime);
             	profiler.EndSection("formcollection_update");
 #endif
-                simulationThread.Start();
-
-                simulationThread.Join();
-                //simulation.Update();
 
                 
+                //simulationThread.Join();
 
                 // update menu
                 menu.Update(gameTime);

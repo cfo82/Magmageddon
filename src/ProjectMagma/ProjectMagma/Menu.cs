@@ -578,7 +578,14 @@ namespace ProjectMagma
             robotSprites = new Texture2D[Game.Instance.Robots.Count];
             for (int i = 0; i < Game.Instance.Robots.Count; i++)
             {
-                robotSprites[i] = Game.Instance.Content.Load<Texture2D>("Sprites/Menu/Robot/" + Game.Instance.Robots[i].Entity);
+                try
+                {
+                    robotSprites[i] = Game.Instance.Content.Load<Texture2D>("Sprites/Menu/Robot/" + Game.Instance.Robots[i].Entity);
+                }
+                catch (Exception)
+                {
+                    robotSprites[i] = Game.Instance.Content.Load<Texture2D>("Sprites/Menu/Robot/no_image");
+                }
             }
         }
         

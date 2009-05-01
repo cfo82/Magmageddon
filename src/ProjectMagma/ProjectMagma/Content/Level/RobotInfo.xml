@@ -4,14 +4,26 @@
 
   <Robot>
     <Name>Bender</Name>
-    <Description>A level to test!</Description>
-    <EntityName>green_robot</EntityName>
+    <Description>I have no description.</Description>
+    <EntityName>green_snowman</EntityName>
   </Robot>
 
   <Robot>
-    <Name>I, Robot</Name>
-    <Description>The same level, but pssst</Description>
-    <EntityName>yellow_robot</EntityName>
+    <Name>iRobot</Name>
+    <Description>Blah</Description>
+    <EntityName>yellow_snowman</EntityName>
+  </Robot>
+
+  <Robot>
+    <Name>Terminator</Name>
+    <Description>Foo, this is a description.</Description>
+    <EntityName>blue_snowman</EntityName>
+  </Robot>
+
+  <Robot>
+    <Name>HedonismBot</Name>
+    <Description>Gugus.</Description>
+    <EntityName>purple_snowman</EntityName>
   </Robot>
 
 </Robots>

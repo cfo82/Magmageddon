@@ -42,6 +42,11 @@ namespace ProjectMagma.Simulation
             String level
         )
         {
+            if (currentUpdateQueue != null)
+            {
+                throw new Exception("synchronisation error");
+            }
+
             currentUpdateQueue = new RendererUpdateQueue();
 
             paused = false;
@@ -59,6 +64,11 @@ namespace ProjectMagma.Simulation
 
         public RendererUpdateQueue AddPlayers(Entity[] players)
         {
+            if (currentUpdateQueue != null)
+            {
+                throw new Exception("synchronisation error");
+            }
+
             currentUpdateQueue = new RendererUpdateQueue();
 
             String[] models = new String[players.Length];
@@ -75,6 +85,11 @@ namespace ProjectMagma.Simulation
 
         public RendererUpdateQueue Close()
         {
+            if (currentUpdateQueue != null)
+            {
+                throw new Exception("synchronisation error");
+            }
+
             currentUpdateQueue = new RendererUpdateQueue();
 
             entityManager.Clear();
@@ -87,6 +102,11 @@ namespace ProjectMagma.Simulation
 
         public RendererUpdateQueue Update()
         {
+            if (currentUpdateQueue != null)
+            {
+                throw new Exception("synchronisation error");
+            }
+
             Game.Instance.Profiler.BeginSection("simulation_update");
             currentUpdateQueue = new RendererUpdateQueue();
 

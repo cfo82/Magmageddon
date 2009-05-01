@@ -8,6 +8,8 @@
       <Attribute name="position" template="float3" value="0 0 0"/>
       <Attribute name="scale" template="float3" value="15 15 15"/>
       <Attribute name="bv_type" template="string" value="alignedbox3tree"/>
+      <Attribute name="arrow_mesh" template="string" value="Models/Visualizations/arrow1"/>
+      <Attribute name="alpha" template="float" value="1.0"/>
     </Attributes>
     <Properties>
       <Property name="collision" type="ProjectMagma.Simulation.Collision.CollisionProperty"/>
@@ -18,10 +20,9 @@
     </Properties>
   </Entity>
 
-  <Entity name="green_robot" extends="robot_base" abstract="true" >
+  <Entity name="green_snowman" extends="robot_base" abstract="true" >
     <Attributes>
       <Attribute name="mesh" template="string" value="Models/Primitives/player1_primitive"/>
-      <Attribute name="arrow_mesh" template="string" value="Models/Visualizations/arrow1"/>
       <Attribute name="diffuse_color" template="float3" value="0 1 0"/>
     </Attributes>
     <Properties>
@@ -29,18 +30,36 @@
     </Properties>
   </Entity>
 
-  <Entity name="yellow_robot" extends="robot_base" abstract="true" >
+  <Entity name="yellow_snowman" extends="robot_base" abstract="true" >
     <Attributes>
       <Attribute name="mesh" template="string" value="Models/Primitives/player2_primitive"/>
-      <Attribute name="arrow_mesh" template="string" value="Models/Visualizations/arrow2"/>
       <Attribute name="diffuse_color" template="float3" value="1 1 0"/>
-      <Attribute name="alpha" template="float" value="1.0"/>
     </Attributes>
     <Properties>
       <Property name="render" type="ProjectMagma.Simulation.BasicRenderProperty"/>
     </Properties>
   </Entity>
 
+  <Entity name="blue_snowman" extends="robot_base" abstract="true" >
+    <Attributes>
+      <Attribute name="mesh" template="string" value="Models/Primitives/player2_primitive"/>
+      <Attribute name="diffuse_color" template="float3" value="1 1 0"/>
+    </Attributes>
+    <Properties>
+      <Property name="render" type="ProjectMagma.Simulation.BasicRenderProperty"/>
+    </Properties>
+  </Entity>
+
+  <Entity name="purple_snowman" extends="robot_base" abstract="true" >
+    <Attributes>
+      <Attribute name="mesh" template="string" value="Models/Primitives/player2_primitive"/>
+      <Attribute name="diffuse_color" template="float3" value="1 1 0"/>
+    </Attributes>
+    <Properties>
+      <Property name="render" type="ProjectMagma.Simulation.BasicRenderProperty"/>
+    </Properties>
+  </Entity>
+  
   <Entity name="green_animated_robot" extends="robot_base" abstract="true" >
     <Attributes>
       <Attribute name="mesh" template="string" value="Models/Player/RobBonesAnim"/>

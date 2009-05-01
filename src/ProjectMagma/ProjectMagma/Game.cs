@@ -1,3 +1,5 @@
+#define ALWAYS_FOUR_PLAYERS
+
 using System;
 using System.Collections.Generic;
 using Microsoft.Xna.Framework;
@@ -172,7 +174,7 @@ namespace ProjectMagma
 
             // initialize simulation
             LoadLevel(levels[0].FileName);
-
+             
 #if DEBUG
             // set default player
             Entity player1 = new Entity("player1");
@@ -185,9 +187,23 @@ namespace ProjectMagma
             player2.AddIntAttribute("game_pad_index", 1);
             player2.AddStringAttribute("robot_entity", robots[1].Entity);
             player2.AddStringAttribute("player_name", robots[1].Name);
+    #if ALWAYS_FOUR_PLAYERS
+            // set default player
+            Entity player3 = new Entity("player3");
+            player3.AddIntAttribute("game_pad_index", 2);
+            player3.AddStringAttribute("robot_entity", robots[2].Entity);
+            player3.AddStringAttribute("player_name", robots[2].Name);
+            
+            // set default player
+            Entity player4 = new Entity("player4");
+            player4.AddIntAttribute("game_pad_index", 3);
+            player4.AddStringAttribute("robot_entity", robots[3].Entity);
+            player4.AddStringAttribute("player_name", robots[3].Name);
 
-            RendererUpdateQueue q = simulation.AddPlayers(new Entity[] { player1, player2 });
-            renderer.AddUpdateQueue(q);
+            AddPlayers(new Entity[] { player1, player2, player3, player4 });
+    #else
+            AddPlayers(new Entity[] { player1, player2 });
+#endif
 #endif
 
 #if !XBOX && DEBUG
@@ -237,15 +253,17 @@ namespace ProjectMagma
         /// <param name="level"></param>
         public void LoadLevel(String level)
         {
+            if (simulationThread != null)
+            {
+                simulationThread.Join();
+                simulationThread.Abort();
+            }
+
             // reset old simulation
             if (simulation != null)
             {
                 RendererUpdateQueue q1 = simulation.Close();
                 renderer.AddUpdateQueue(q1);
-            }
-            if (simulationThread != null)
-            {
-                simulationThread.Abort();
             }
 
             // init simulation
@@ -258,6 +276,11 @@ namespace ProjectMagma
             currentCamera = simulation.EntityManager["camera1"];
 
             RecomputeLavaTemperature();
+
+            if (!paused)
+            {
+                simulationThread.Start();
+            }
         }
 
 
@@ -301,7 +324,7 @@ namespace ProjectMagma
 
         public void Pause()
         {
-            
+            simulationThread.Join();
             paused = true;
             simulation.Pause();
         }
@@ -315,6 +338,7 @@ namespace ProjectMagma
         {
             simulation.Resume();
             paused = false;
+            simulationThread.Start();
         }
 
         protected override void OnActivated(object sender, EventArgs args)
@@ -322,7 +346,10 @@ namespace ProjectMagma
             base.OnActivated(sender, args);
 
             // let's try and start... 
-            simulationThread.Start();
+            if (!paused)
+            {
+                simulationThread.Start();
+            }
         }
 
 
@@ -330,7 +357,10 @@ namespace ProjectMagma
         {
             base.OnDeactivated(sender, args);
 
-            simulationThread.Join();
+            if (!paused)
+            {
+                simulationThread.Join();
+            }
         }
         public void AddPlayers(Entity[] players)
         {
@@ -424,7 +454,9 @@ namespace ProjectMagma
                     String.Format("{0:000.0} fps", fps) + " " +
                     String.Format("{0:00.0} avg", (1000.0f * numFrames / totalMilliSeconds)) + " " +
                     String.Format("{0:00.0} min", minFPS) + " " +
-                    String.Format("{0:00.0} max", maxFPS),
+                    String.Format("{0:00.0} max", maxFPS) + " " +
+                    String.Format("{0:000.0} sps", (simulationThread != null ? simulationThread.Sps : 0)) + " " +
+                    String.Format("{0:00.0} avg sps", (simulationThread != null ? simulationThread.AvgSps : 0)) + " ",
                     new Vector2(GraphicsDevice.Viewport.Width / 2 - 150, 5), Color.Silver
                 );
             }

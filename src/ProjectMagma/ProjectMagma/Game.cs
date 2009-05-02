@@ -1,6 +1,7 @@
 #define ALWAYS_FOUR_PLAYERS
 
 using System;
+using System.Diagnostics;
 using System.Collections.Generic;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Audio;
@@ -273,6 +274,12 @@ namespace ProjectMagma
             // init simulation
             simulation = new ProjectMagma.Simulation.Simulation();
             RendererUpdateQueue q = simulation.Initialize(Content, "Level/TestLevel");
+
+            Debug.Assert(
+                simulationThread == null ||
+                simulationThread.Thread.ThreadState == System.Threading.ThreadState.Stopped
+                );
+
             simulationThread = new SimulationThread(simulation, renderer);
             renderer.AddUpdateQueue(q);
 
@@ -309,10 +316,7 @@ namespace ProjectMagma
         /// </summary>
         protected override void UnloadContent()
         {
-            if (!paused)
-            {
-                simulationThread.Join();
-            }
+            Debug.Assert(simulationThread.Thread.ThreadState == System.Threading.ThreadState.WaitSleepJoin);
 
             RendererUpdateQueue q = simulation.Close();
             renderer.AddUpdateQueue(q);
@@ -325,6 +329,8 @@ namespace ProjectMagma
             MediaPlayer.Stop();
 
             profiler.Write(device, Window.Title, "profiling.txt");
+
+            Debug.Assert(simulationThread.Thread.ThreadState == System.Threading.ThreadState.Stopped);
         }
 
         bool paused = true;
@@ -369,6 +375,7 @@ namespace ProjectMagma
                 simulationThread.Join();
             }
         }
+
         public void AddPlayers(Entity[] players)
         {
             if (!paused)
@@ -500,6 +507,9 @@ namespace ProjectMagma
             profiler.EndSection("draw");
             profiler.EndFrame();
         }
+
+        #region Stuff to be moved / changed by dominik and janick!
+        // TODO: move things to their place!!
 
         public Vector3 CameraPosition
         {
@@ -637,12 +647,11 @@ namespace ProjectMagma
             public float musicVolume = 0.1f;
         }
 
+        #endregion 
+
         public ProjectMagma.Profiler.Profiler Profiler
         {
             get { return profiler; }
         }
     }
-
-    public delegate void IntervalExecutionAction(int times);
-    public delegate void PushBackFinishedHandler();
 }

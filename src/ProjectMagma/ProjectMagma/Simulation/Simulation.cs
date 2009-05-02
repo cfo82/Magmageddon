@@ -22,6 +22,9 @@ using ProjectMagma.Shared.Math.Primitives;
 
 namespace ProjectMagma.Simulation
 {
+    public delegate void IntervalExecutionAction(int times);
+    public delegate void PushBackFinishedHandler();
+
     public class Simulation
     {
         private LevelData levelData;
@@ -111,7 +114,9 @@ namespace ProjectMagma.Simulation
             currentUpdateQueue = new RendererUpdateQueue();
 
             // pause simulation if explicitly paused or app changed
-            if (!paused && Game.Instance.IsActive)
+            // removed app-changed thing (Game.Instance.IsActive) since this should be already handled
+            // by the game class
+            if (!paused) 
             {
                 // update simulation time
                 simTime.Update();
@@ -131,12 +136,20 @@ namespace ProjectMagma.Simulation
             else
             {
                 simTime.Pause();
-            }
 
-            Game.Instance.Profiler.EndSection("simulation_update");
+                // safety measurement:
+                //   - first we should never enter this methode since we pause simulation and simulation thread simultaneously
+                //    => assert if we arrive here
+                //   - second take precautions and pause vor 10 milliseconds if we arrive here in a release build
+
+                Debug.Assert(false);
+                System.Threading.Thread.Sleep(10);
+            }
 
             RendererUpdateQueue returnValue = currentUpdateQueue;
             currentUpdateQueue = null;
+
+            Game.Instance.Profiler.EndSection("simulation_update");
             return returnValue;
         }
 

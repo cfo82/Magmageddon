@@ -106,6 +106,11 @@ namespace ProjectMagma.Simulation
             this.thread.Abort();
         }
 
+        public Thread Thread
+        {
+            get { return thread; }
+        }
+
         private Simulation simulation;
         private Renderer.Renderer renderer;
         private AutoResetEvent startEvent;

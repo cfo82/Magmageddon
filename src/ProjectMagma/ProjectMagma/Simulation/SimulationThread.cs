@@ -16,8 +16,8 @@ namespace ProjectMagma.Simulation
             this.finishedEvent = new AutoResetEvent(false);
             this.aborted = false;
 
-            this.contentManager = new ContentManager(Game.Instance.Services);
-            this.contentManager.RootDirectory = "Content";
+            //this.contentManager = new ContentManager(Game.Instance.Services);
+            //this.contentManager.RootDirectory = "Content";
 
             this.thread = null;
         }
@@ -123,11 +123,6 @@ namespace ProjectMagma.Simulation
             get { return thread; }
         }
 
-        public ContentManager Content
-        {
-            get { return contentManager; }
-        }
-
         private Simulation simulation;
         private Renderer.Renderer renderer;
         private AutoResetEvent startEvent;
@@ -136,6 +131,5 @@ namespace ProjectMagma.Simulation
         private static readonly int processor = 1;
         private Thread thread;
         private volatile bool joinRequested;
-        private ContentManager contentManager;
     }
 }

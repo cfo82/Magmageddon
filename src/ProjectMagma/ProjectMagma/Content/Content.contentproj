@@ -116,10 +116,6 @@
     </Compile>
   </ItemGroup>
   <ItemGroup>
-    <None Include="Fonts\Kootenay.ttf">
-      <Name>Kootenay</Name>
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
     <Compile Include="Fonts\kootenay9.spritefont">
       <Name>kootenay9</Name>
       <Importer>FontDescriptionImporter</Importer>
@@ -1014,6 +1010,11 @@
     </None>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Effects\Hud\Bars.fx">
+      <Name>Bars</Name>
+      <Importer>EffectImporter</Importer>
+      <Processor>EffectProcessor</Processor>
+    </Compile>
     <None Include="Effects\Basic\Lighting.inc.fx">
       <Name>Lighting.inc</Name>
       <Importer>EffectImporter</Importer>
@@ -1088,6 +1089,46 @@
       <Importer>FbxImporter</Importer>
       <Processor>LavaProcessor</Processor>
     </Compile>
+    <Compile Include="Fonts\hud_playername.spritefont">
+      <Name>hud_playername</Name>
+      <Importer>FontDescriptionImporter</Importer>
+      <Processor>FontDescriptionProcessor</Processor>
+    </Compile>
+    <Compile Include="Fonts\hud_powerup.spritefont">
+      <Name>hud_powerup</Name>
+      <Importer>FontDescriptionImporter</Importer>
+      <Processor>FontDescriptionProcessor</Processor>
+    </Compile>
+    <None Include="Fonts\MyriadPro-Bold.otf">
+      <Name>MyriadPro-Bold</Name>
+    </None>
+    <None Include="Fonts\MyriadPro-BoldCond.otf">
+      <Name>MyriadPro-BoldCond</Name>
+    </None>
+    <None Include="Fonts\MyriadPro-BoldCondIt.otf">
+      <Name>MyriadPro-BoldCondIt</Name>
+    </None>
+    <None Include="Fonts\MyriadPro-BoldIt.otf">
+      <Name>MyriadPro-BoldIt</Name>
+    </None>
+    <None Include="Fonts\MyriadPro-Cond.otf">
+      <Name>MyriadPro-Cond</Name>
+    </None>
+    <None Include="Fonts\MyriadPro-CondIt.otf">
+      <Name>MyriadPro-CondIt</Name>
+    </None>
+    <None Include="Fonts\MyriadPro-It.otf">
+      <Name>MyriadPro-It</Name>
+    </None>
+    <None Include="Fonts\MyriadPro-Regular.otf">
+      <Name>MyriadPro-Regular</Name>
+    </None>
+    <None Include="Fonts\MyriadPro-Semibold.otf">
+      <Name>MyriadPro-Semibold</Name>
+    </None>
+    <None Include="Fonts\MyriadPro-SemiboldIt.otf">
+      <Name>MyriadPro-SemiboldIt</Name>
+    </None>
     <None Include="Models\Islands\burnt1_col.fbx">
       <Name>burnt1_col</Name>
       <Importer>FbxImporter</Importer>
@@ -1143,6 +1184,16 @@
       <Importer>FbxImporter</Importer>
       <Processor>ModelProcessor</Processor>
     </None>
+    <Compile Include="Sprites\HUD\bar_background.tga">
+      <Name>bar_background</Name>
+      <Importer>TextureImporter</Importer>
+      <Processor>TextureProcessor</Processor>
+    </Compile>
+    <Compile Include="Sprites\HUD\bar_highlight.tga">
+      <Name>bar_highlight</Name>
+      <Importer>TextureImporter</Importer>
+      <Processor>TextureProcessor</Processor>
+    </Compile>
     <Compile Include="Models\Player\dwarf.x">
       <Name>dwarf</Name>
       <Importer>XModelImporter</Importer>
@@ -1237,6 +1288,9 @@
       <Importer>TextureImporter</Importer>
       <Processor>TextureProcessor</Processor>
     </Compile>
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="Fonts\MyriadPro\" />
   </ItemGroup>
   <Import Project="$(MSBuildExtensionsPath)\Microsoft\XNA Game Studio\v3.0\Microsoft.Xna.GameStudio.ContentPipeline.targets" />
   <ItemGroup>

@@ -46,6 +46,13 @@ namespace ProjectMagma
                     robotSprites[i] = Game.Instance.ContentManager.Load<Texture2D>("Sprites/Menu/Robot/no_image");
                 }
             }
+
+            // all active gamepads have a robot
+            for (int i = 1; i < 4; i++)
+            {
+                playerActive[i] = playerActive[i] && GamePad.GetCapabilities((PlayerIndex)i).IsConnected;
+                robotSelected[i] = i;
+            }
         }
 
         public override void Update(GameTime gameTime)

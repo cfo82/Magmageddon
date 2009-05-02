@@ -58,6 +58,7 @@
   <ItemGroup>
     <Compile Include="DoublyIntegratedFloat.cs" />
     <Compile Include="DoublyIntegratedVector2.cs" />
+    <Compile Include="Menu\HelpMenu.cs" />
     <Compile Include="Menu\ItemizedMenuScreen.cs" />
     <Compile Include="Menu\ItemSelectionHandler.cs" />
     <Compile Include="Menu\LevelMenu.cs" />

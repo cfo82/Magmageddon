@@ -7,6 +7,7 @@ namespace ProjectMagma
         readonly MenuItem[] menuItems;
         readonly MenuScreen levelMenu;
         readonly MenuScreen settingsMenu;
+        readonly MenuScreen helpMenu;
 
         public MainMenu(Menu menu)
             : base(menu, new Vector2(30, 650), 200)
@@ -20,6 +21,7 @@ namespace ProjectMagma
 
             levelMenu = new LevelMenu(menu);
             settingsMenu = new SettingsMenu(menu);
+            helpMenu = new HelpMenu(menu);
         }
 
         public override MenuItem[] MenuItems
@@ -39,6 +41,7 @@ namespace ProjectMagma
 
         private void HelpHandler(MenuItem sender)
         {
+            menu.OpenMenuScreen(helpMenu);
         }
 
         private void ExitGameHandler(MenuItem sender)

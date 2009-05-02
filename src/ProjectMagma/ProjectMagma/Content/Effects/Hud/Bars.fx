@@ -34,8 +34,8 @@ float2 Size;
 float HealthValue;
 float EnergyValue;
 
-float3 HealthColor1;// = float3(0.91, 0.08, 0.64);
-float3 HealthColor2;// = float3(0.77, 0.08, 0.86);
+float3 PlayerColor1;
+float3 PlayerColor2;
 const float3 EnergyColor1 = float3(0.87, 0.91, 0.97);
 const float3 EnergyColor2 = float3(0.84, 0.84, 0.86);
 
@@ -88,7 +88,7 @@ float4 PixelShader(float2 texCoord : TEXCOORD0) : COLOR0
 	float2 normalizeMultiplier = float2(Size.x/224.0f, Size.y/38.0f);
 	
 	// compute bar colors and return them
-	float4 healthBar = BarColor(healthBarCoord*normalizeMultiplier, HealthColor1, HealthColor2, HealthValue, HealthBlink);
+	float4 healthBar = BarColor(healthBarCoord*normalizeMultiplier, PlayerColor1, PlayerColor2, HealthValue, HealthBlink);
 	float4 energyBar = BarColor(energyBarCoord*normalizeMultiplier, EnergyColor1, EnergyColor2, EnergyValue, EnergyBlink);
     return healthBar + energyBar;
 }

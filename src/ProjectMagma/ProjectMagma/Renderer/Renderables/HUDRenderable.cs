@@ -16,7 +16,10 @@ namespace ProjectMagma.Renderer
             int fuel,
             int maxFuel,
             int frozen,
-            int jumps
+            int jumps,
+            int lives,
+            Vector3 color1,
+            Vector3 color2
         )
         {
             // initialize variables
@@ -30,6 +33,9 @@ namespace ProjectMagma.Renderer
             this.maxFuel = maxFuel;
             this.frozen = frozen;
             this.jumps = jumps;
+            this.lives = lives;
+            this.color1 = color1;
+            this.color2 = color2;
 
             displayedEnergy = energy;
             displayedHealth = health;
@@ -40,6 +46,10 @@ namespace ProjectMagma.Renderer
 
             ComputePositions();
         }
+
+        private int lives;
+        private Vector3 color1;
+        private Vector3 color2;
 
         private SpriteFont playerNameFont;
         private SpriteFont powerupFont;
@@ -138,8 +148,11 @@ namespace ProjectMagma.Renderer
             barEffect.Parameters["EnergyValue"].SetValue(displayedEnergy / maxEnergy);
             barEffect.Parameters["HealthBlink"].SetValue(healthBlink);
             barEffect.Parameters["EnergyBlink"].SetValue(energyBlink);
-            barEffect.Parameters["HealthColor1"].SetValue(new Vector3(0.91f, 0.08f, 0.64f));
-            barEffect.Parameters["HealthColor2"].SetValue(new Vector3(0.77f, 0.08f, 0.86f));
+            //barEffect.Parameters["Lives"].SetValue(lives);
+            barEffect.Parameters["PlayerColor1"].SetValue(color1);
+            barEffect.Parameters["PlayerColor2"].SetValue(color2);
+            //barEffect.Parameters["HealthColor1"].SetValue(new Vector3(0.91f, 0.08f, 0.64f));
+            //barEffect.Parameters["HealthColor2"].SetValue(new Vector3(0.77f, 0.08f, 0.86f));
             barEffect.Parameters["PlayerMirror"].SetValue(playerMirror);
         }
 

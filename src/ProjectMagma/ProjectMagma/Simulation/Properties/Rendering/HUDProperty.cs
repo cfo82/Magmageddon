@@ -84,7 +84,11 @@ namespace ProjectMagma.Simulation
                 entity.GetInt("fuel"),
                 playerConstants.GetInt("max_fuel"),
                 entity.GetInt("frozen"),
-                entity.GetInt("jumps"));
+                entity.GetInt("jumps"),
+                entity.GetInt("lives"),
+                entity.GetVector3("color1"),
+                entity.GetVector3("color2")
+            );
         }
 
         protected override void SetUpdatableParameters(Entity entity)

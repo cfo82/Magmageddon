@@ -3,27 +3,39 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading;
+using Microsoft.Xna.Framework.Content;
 using ProjectMagma.Renderer.Interface;
 
 namespace ProjectMagma.Simulation
 {
     public class SimulationThread
     {
-        public SimulationThread(
-            Simulation simulation,
-            Renderer.Renderer renderer
-            )
+        public SimulationThread()
         {
-            this.simulation = simulation;
-            this.renderer = renderer;
-
             this.startEvent = new AutoResetEvent(false);
             this.finishedEvent = new AutoResetEvent(false);
             this.aborted = false;
 
-            this.thread = new Thread(Run);
-            this.thread.Name = "SimulationThread" + processor;
-            this.thread.Start();
+            this.contentManager = new ContentManager(Game.Instance.Services);
+            this.contentManager.RootDirectory = "Content";
+
+            this.thread = null;
+        }
+
+        public void Reinitialize(
+            Simulation simulation,
+            Renderer.Renderer renderer
+        )
+        {
+            this.simulation = simulation;
+            this.renderer = renderer;
+
+            if (this.thread == null)
+            {
+                this.thread = new Thread(Run);
+                this.thread.Name = "SimulationThread" + processor;
+                this.thread.Start();
+            }
         }
 
         public void Start()
@@ -111,6 +123,11 @@ namespace ProjectMagma.Simulation
             get { return thread; }
         }
 
+        public ContentManager Content
+        {
+            get { return contentManager; }
+        }
+
         private Simulation simulation;
         private Renderer.Renderer renderer;
         private AutoResetEvent startEvent;
@@ -119,5 +136,6 @@ namespace ProjectMagma.Simulation
         private static readonly int processor = 1;
         private Thread thread;
         private volatile bool joinRequested;
+        private ContentManager contentManager;
     }
 }

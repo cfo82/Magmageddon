@@ -32,7 +32,7 @@ namespace ProjectMagma.Simulation.Collision.CollisionTests
             node2.BoundingBox.CreateBox3(ref context.worldTransform2, out box2);
             if (Intersection.IntersectBox3Box3(ref box1, ref box2))
             {
-                /*
+                
                 // "simple" tri<->tri test...
                 for (int i = 0; i < node1.NumTriangles; ++i)
                 {
@@ -75,8 +75,8 @@ namespace ProjectMagma.Simulation.Collision.CollisionTests
                         break;
                     }
                 }
-                 */
-
+                 
+                /*
 //                Contact c = new Contact(context.entity1, context.entity2);
 
                 Vector3 dir = Vector3.Normalize(box2.Center -  box1.Center);
@@ -86,9 +86,9 @@ namespace ProjectMagma.Simulation.Collision.CollisionTests
                 Vector3 p2 = context.entity2.GetVector3("position");
                 Vector3 dir = Vector3.Normalize(p2-p1);
                   Vector3 p = p2+p1/2;
-                 */
+                 /
 
-                context.contact.AddContactPoint(ref p, ref dir);
+                context.contact.AddContactPoint(ref p, ref dir);*/
                 //                return c;
             }
         }

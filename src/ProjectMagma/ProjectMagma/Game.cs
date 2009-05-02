@@ -177,7 +177,7 @@ namespace ProjectMagma
             robots = ContentManager.Load<List<RobotInfo>>("Level/RobotInfo");
 
             // initialize simulation
-            LoadLevel(levels[0].FileName);
+            LoadLevelFirst(levels[0].FileName);
              
 #if DEBUG
             // set default player
@@ -256,7 +256,7 @@ namespace ProjectMagma
         /// initializes a new simulation using the level provided
         /// </summary>
         /// <param name="level"></param>
-        public void LoadLevel(String level)
+        public void LoadLevelFirst(String level)
         {
             if (simulationThread != null)
             {
@@ -265,6 +265,11 @@ namespace ProjectMagma
                     simulationThread.Join();
                 }
                 simulationThread.Abort();
+            }
+
+            if (simulationThread == null)
+            {
+                simulationThread = new SimulationThread();
             }
 
             // reset old simulation
@@ -277,6 +282,7 @@ namespace ProjectMagma
             // init simulation
             simulation = new ProjectMagma.Simulation.Simulation();
             RendererUpdateQueue q = simulation.Initialize(ContentManager, "Level/TestLevel");
+            renderer.AddUpdateQueue(q);
 
 #if !XBOX
             Debug.Assert(
@@ -285,8 +291,59 @@ namespace ProjectMagma
                 );
 #endif
 
-            simulationThread = new SimulationThread(simulation, renderer);
+            simulationThread.Reinitialize(this.simulation, this.renderer);
+
+            // set camera
+            currentCamera = simulation.EntityManager["camera1"];
+
+            RecomputeLavaTemperature();
+
+            if (!paused)
+            {
+                simulationThread.Start();
+            }
+        }
+
+        /// <summary>
+        /// initializes a new simulation using the level provided
+        /// </summary>
+        /// <param name="level"></param>
+        public void LoadLevel(String level)
+        {
+            if (simulationThread != null)
+            {
+                if (!paused)
+                {
+                    simulationThread.Join();
+                }
+                simulationThread.Abort();
+            }
+
+            if (simulationThread == null)
+            {
+                simulationThread = new SimulationThread();
+            }
+
+            // reset old simulation
+            if (simulation != null)
+            {
+                RendererUpdateQueue q1 = simulation.Close();
+                renderer.AddUpdateQueue(q1);
+            }
+
+            // init simulation
+            simulation = new ProjectMagma.Simulation.Simulation();
+            RendererUpdateQueue q = simulation.Initialize(ContentManager, "Level/TestLevel");
             renderer.AddUpdateQueue(q);
+
+#if !XBOX
+            Debug.Assert(
+                simulationThread == null ||
+                simulationThread.Thread.ThreadState == System.Threading.ThreadState.Stopped
+                );
+#endif
+
+            simulationThread.Reinitialize(this.simulation, this.renderer);
 
             // set camera
             currentCamera = simulation.EntityManager["camera1"];
@@ -662,6 +719,12 @@ namespace ProjectMagma
         {
             get { return profiler; }
         }
+
+        public SimulationThread SimulationThread
+        {
+            get { return simulationThread; }
+        }
+
 
         public WrappedContentManager ContentManager
         {

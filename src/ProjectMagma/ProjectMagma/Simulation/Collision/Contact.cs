@@ -12,10 +12,19 @@ namespace ProjectMagma.Simulation.Collision
             Entity entityB
         )
         {
+            Recycle(entityA, entityB);
+        }
+
+        public void Recycle(
+            Entity entityA,
+            Entity entityB
+        )
+        {
             this.entityA = entityA;
             this.entityB = entityB;
             //contactPoints = new List<ContactPoint>();
             cp = new ContactPoint();
+            hasContact = false;
         }
 
         public void Reverse()

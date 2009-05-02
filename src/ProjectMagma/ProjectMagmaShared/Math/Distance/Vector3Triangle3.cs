@@ -24,12 +24,13 @@ namespace ProjectMagma.Shared.Math.Distance
             Vector3 ve1 = triangle.Vertex2 - triangle.Vertex0;
             Vector3 vd = vB - vP;
 
-            float a = Vector3.Dot(ve0, ve0);
-            float b = Vector3.Dot(ve0, ve1);
-            float c = Vector3.Dot(ve1, ve1);
-            float d = Vector3.Dot(vd, ve0);
-            float e = Vector3.Dot(vd, ve1);
-            float f = Vector3.Dot(vd, vd);
+            float a, b, c, d, e, f;
+            Vector3.Dot(ref ve0, ref ve0, out a);
+            Vector3.Dot(ref ve0, ref ve1, out b);
+            Vector3.Dot(ref ve1, ref ve1, out c);
+            Vector3.Dot(ref vd, ref ve0, out d);
+            Vector3.Dot(ref vd, ref ve1, out e);
+            Vector3.Dot(ref vd, ref vd, out f);
             float det = System.Math.Abs(a * c - b * b);
             float s = b * e - c * d;
             float t = b * d - a * e;

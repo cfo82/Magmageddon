@@ -9,7 +9,7 @@ namespace ProjectMagma.Simulation.Collision.CollisionTests
 {
     class ContactMeshMeshBox
     {
-        class Context
+        struct Context
         {
             public Entity entity1;
             public Vector3[] positions1;
@@ -27,8 +27,9 @@ namespace ProjectMagma.Simulation.Collision.CollisionTests
             ref Context context, AlignedBox3TreeNode node1, AlignedBox3TreeNode node2
         )
         {
-            Box3 box1 = node1.BoundingBox.CreateBox3(ref context.worldTransform1);
-            Box3 box2 = node2.BoundingBox.CreateBox3(ref context.worldTransform2);
+            Box3 box1, box2;
+            node1.BoundingBox.CreateBox3(ref context.worldTransform1, out box1);
+            node2.BoundingBox.CreateBox3(ref context.worldTransform2, out box2);
             if (Intersection.IntersectBox3Box3(ref box1, ref box2))
             {
                 /*
@@ -96,8 +97,9 @@ namespace ProjectMagma.Simulation.Collision.CollisionTests
             ref Context context, AlignedBox3TreeNode node1, AlignedBox3TreeNode node2
         )
         {
-            Box3 box1 = node1.BoundingBox.CreateBox3(ref context.worldTransform1);
-            Box3 box2 = node2.BoundingBox.CreateBox3(ref context.worldTransform2);
+            Box3 box1, box2;
+            node1.BoundingBox.CreateBox3(ref context.worldTransform1, out box1);
+            node2.BoundingBox.CreateBox3(ref context.worldTransform2, out box2);
             if (Intersection.IntersectBox3Box3(ref box1, ref box2))
             {
                 // we know already that node2 is a leaf. this makes things simpler...
@@ -128,8 +130,9 @@ namespace ProjectMagma.Simulation.Collision.CollisionTests
             ref Context context, AlignedBox3TreeNode node1, AlignedBox3TreeNode node2
         )
         {
-            Box3 box1 = node1.BoundingBox.CreateBox3(ref context.worldTransform1);
-            Box3 box2 = node2.BoundingBox.CreateBox3(ref context.worldTransform2);
+            Box3 box1, box2;
+            node1.BoundingBox.CreateBox3(ref context.worldTransform1, out box1);
+            node2.BoundingBox.CreateBox3(ref context.worldTransform2, out box2);
             if (Intersection.IntersectBox3Box3(ref box1, ref box2))
             {
                 // we know already that node2 is a leaf. this makes things simpler...
@@ -160,8 +163,9 @@ namespace ProjectMagma.Simulation.Collision.CollisionTests
             ref Context context, AlignedBox3TreeNode node1, AlignedBox3TreeNode node2
         )
         {
-            Box3 box1 = node1.BoundingBox.CreateBox3(ref context.worldTransform1);
-            Box3 box2 = node2.BoundingBox.CreateBox3(ref context.worldTransform2);
+            Box3 box1, box2;
+            node1.BoundingBox.CreateBox3(ref context.worldTransform1, out box1);
+            node2.BoundingBox.CreateBox3(ref context.worldTransform2, out box2);
             if (Intersection.IntersectBox3Box3(ref box1, ref box2))
             {
                 if (node1.Left.HasChildren)
@@ -282,16 +286,18 @@ namespace ProjectMagma.Simulation.Collision.CollisionTests
             bool needAllContacts, ref Contact contact
             )
         {
-            AlignedBox3Tree[] trees1 = (AlignedBox3Tree[])boundingVolumes1;
-            AlignedBox3Tree[] trees2 = (AlignedBox3Tree[])boundingVolumes2;
-
-            foreach (AlignedBox3Tree tree1 in trees1)
+            for (int i = 0; i < boundingVolumes1.Length; ++i)
             {
-                foreach (AlignedBox3Tree tree2 in trees2)
+                AlignedBox3Tree tree1 = (AlignedBox3Tree)boundingVolumes1[i];
+
+                for (int j = 0; j < boundingVolumes2.Length; ++j)
                 {
+                    AlignedBox3Tree tree2 = (AlignedBox3Tree)boundingVolumes2[j];
+
                     // early exit if they do not intersect...
-                    Box3 box1 = tree1.BoundingBox.CreateBox3(ref worldTransform1);
-                    Box3 box2 = tree2.BoundingBox.CreateBox3(ref worldTransform2);
+                    Box3 box1, box2;
+                    tree1.BoundingBox.CreateBox3(ref worldTransform1, out box1);
+                    tree2.BoundingBox.CreateBox3(ref worldTransform2, out box2);
                     if (!Intersection.IntersectBox3Box3(ref box1, ref box2))
                     {
                         continue;

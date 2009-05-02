@@ -7,36 +7,6 @@ namespace ProjectMagma.Simulation.Collision
         public CollisionEntity(
             Entity entity,
             CollisionProperty property,
-            Sphere3[] spheres,
-            bool needAllContacts
-        )
-        :   this(entity, property, VolumeType.Sphere3, spheres, needAllContacts)
-        {
-        }
-
-        public CollisionEntity(
-            Entity entity,
-            CollisionProperty property,
-            AlignedBox3Tree[] trees,
-            bool needAllContacts
-        )
-        :   this(entity, property, VolumeType.AlignedBox3Tree, trees, needAllContacts)
-        {
-        }
-
-        public CollisionEntity(
-            Entity entity, 
-            CollisionProperty property,
-            Cylinder3[] cylinders,
-            bool needAllContacts
-        )
-        :   this(entity, property, VolumeType.Cylinder3, cylinders, needAllContacts)
-        {
-        }
-
-        public CollisionEntity(
-            Entity entity,
-            CollisionProperty property,
             VolumeType volumeType,
             object[] volumes,
             bool needAllContacts

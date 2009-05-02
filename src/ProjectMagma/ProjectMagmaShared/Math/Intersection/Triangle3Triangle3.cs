@@ -331,8 +331,8 @@ namespace ProjectMagma.Shared.Math
             float d1, d2;
             float du0, du1, du2, dv0, dv1, dv2;
             Vector3 D;
-            float[] isect1 = new float[2];
-            float[] isect2 = new float[2];
+            float isect1_0, isect1_1;
+            float isect2_0, isect2_1;
             float du0du1, du0du2, dv0dv1, dv0dv2;
             short index;
             float vp0 = 0.0f, vp1 = 0.0f, vp2 = 0.0f;
@@ -498,17 +498,17 @@ namespace ProjectMagma.Shared.Math
             xxyy = xx * yy;
 
             tmp = a * xxyy;
-            isect1[0] = tmp + b * x1 * yy;
-            isect1[1] = tmp + c * x0 * yy;
+            isect1_0 = tmp + b * x1 * yy;
+            isect1_1 = tmp + c * x0 * yy;
 
             tmp = d * xxyy;
-            isect2[0] = tmp + e * xx * y1;
-            isect2[1] = tmp + f * xx * y0;
+            isect2_0 = tmp + e * xx * y1;
+            isect2_1 = tmp + f * xx * y0;
 
-            Sort(ref isect1[0], ref isect1[1]);
-            Sort(ref isect2[0], ref isect2[1]);
+            Sort(ref isect1_0, ref isect1_1);
+            Sort(ref isect2_0, ref isect2_1);
 
-            if (isect1[1] < isect2[0] || isect2[1] < isect1[0])
+            if (isect1_1 < isect2_0 || isect2_1 < isect1_0)
             { return false; }
 
             return true;
@@ -527,8 +527,8 @@ namespace ProjectMagma.Shared.Math
             float d1, d2;
             float du0, du1, du2, dv0, dv1, dv2;
             Vector3 D = Vector3.Zero;
-            float[] isect1 = new float[2];
-            float[] isect2 = new float[2];
+            float isect1_0, isect1_1;
+            float isect2_0, isect2_1;
             Vector3 isectpointA1 = Vector3.Zero;
             Vector3 isectpointA2 = Vector3.Zero;
             Vector3 isectpointB1 = Vector3.Zero;
@@ -538,7 +538,6 @@ namespace ProjectMagma.Shared.Math
             float vp0 = 0.0f, vp1 = 0.0f, vp2 = 0.0f;
             float up0 = 0.0f, up1 = 0.0f, up2 = 0.0f;
             float b, c, max;
-            float[] diff = new float[3];
             short smallest1, smallest2;
 
             /* compute plane equation of triangle(V0,V1,V2) */
@@ -644,7 +643,7 @@ namespace ProjectMagma.Shared.Math
 
             /* compute interval for triangle 1 */
             coplanar = ComputeIntervalsIsectline(ref V0, ref V1, ref V2, vp0, vp1, vp2, dv0, dv1, dv2,
-                                 dv0dv1, dv0dv2, out isect1[0], out isect1[1], out isectpointA1, out isectpointA2);
+                                 dv0dv1, dv0dv2, out isect1_0, out isect1_1, out isectpointA1, out isectpointA2);
             if (coplanar)
             {
                 isectpt1 = Vector3.Zero;
@@ -655,12 +654,12 @@ namespace ProjectMagma.Shared.Math
 
             /* compute interval for triangle 2 */
             ComputeIntervalsIsectline(ref U0, ref U1, ref U2, up0, up1, up2, du0, du1, du2,
-                            du0du1, du0du2, out isect2[0], out isect2[1], out isectpointB1, out isectpointB2);
+                            du0du1, du0du2, out isect2_0, out isect2_1, out isectpointB1, out isectpointB2);
 
-            Sort2(ref isect1[0], ref isect1[1], out smallest1);
-            Sort2(ref isect2[0], ref isect2[1], out smallest2);
+            Sort2(ref isect1_0, ref isect1_1, out smallest1);
+            Sort2(ref isect2_0, ref isect2_1, out smallest2);
 
-            if (isect1[1] < isect2[0] || isect2[1] < isect1[0])
+            if (isect1_1 < isect2_0 || isect2_1 < isect1_0)
             {
                 coplanar = false;
                 isectpt1 = Vector3.Zero;
@@ -669,12 +668,12 @@ namespace ProjectMagma.Shared.Math
             }
 
             /* at this point, we know that the triangles intersect */
-            if (isect2[0] < isect1[0])
+            if (isect2_0 < isect1_0)
             {
                 if (smallest1 == 0) { Set(out isectpt1, ref isectpointA1); }
                 else { Set(out isectpt1, ref isectpointA2); }
 
-                if (isect2[1] < isect1[1])
+                if (isect2_1 < isect1_1)
                 {
                     if (smallest2 == 0) { Set(out isectpt2, ref isectpointB2); }
                     else { Set(out isectpt2, ref isectpointB1); }
@@ -690,7 +689,7 @@ namespace ProjectMagma.Shared.Math
                 if (smallest2 == 0) { Set(out isectpt1, ref isectpointB1); }
                 else { Set(out isectpt1, ref isectpointB2); }
 
-                if (isect2[1] > isect1[1])
+                if (isect2_1 > isect1_1)
                 {
                     if (smallest1 == 0) { Set(out isectpt2, ref isectpointA2); }
                     else { Set(out isectpt2, ref isectpointA1); }

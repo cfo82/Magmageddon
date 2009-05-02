@@ -13,16 +13,17 @@ namespace ProjectMagma.Simulation.Collision.CollisionTests
             bool needAllContacts, ref Contact contact
             )
         {
-            Sphere3[] spheres1 = (Sphere3[])boundingVolumes1;
-            Sphere3[] spheres2 = (Sphere3[])boundingVolumes2;
-
             Debug.Assert(scale1.X == scale1.Y && scale1.Y == scale1.Z);
             Debug.Assert(scale2.X == scale2.Y && scale2.Y == scale2.Z);
 
-            foreach (Sphere3 sphere1 in spheres1)
+            for (int i = 0; i < boundingVolumes1.Length; ++i)
             {
-                foreach (Sphere3 sphere2 in spheres2)
+                Sphere3 sphere1 = (Sphere3)boundingVolumes1[i];
+
+                for (int j = 0; j < boundingVolumes2.Length; ++j)
                 {
+                    Sphere3 sphere2 = (Sphere3)boundingVolumes2[j];
+
                     Vector3 center1 = Vector3.Transform(sphere1.Center, worldTransform1);
                     float radius1 = scale1.X * sphere1.Radius;
                     Vector3 center2 = Vector3.Transform(sphere2.Center, worldTransform2);

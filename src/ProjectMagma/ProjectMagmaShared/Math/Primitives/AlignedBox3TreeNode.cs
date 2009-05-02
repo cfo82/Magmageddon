@@ -52,8 +52,6 @@ namespace ProjectMagma.Shared.Math.Primitives
                 return;
             }
 
-            //System.Diagnostics.Debugger.Launch();
-
             // split along the axis where we get triangles distributed the best...
             int halfNumTriangles = numTriangles / 2;
             int[] numLeft = new int[3] { Split(positions, Axis.AxisX), Split(positions, Axis.AxisY), Split(positions, Axis.AxisZ) };

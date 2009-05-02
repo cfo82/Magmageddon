@@ -2,13 +2,8 @@
 
 namespace ProjectMagma.Shared.Math.Primitives
 {
-    public class AlignedBox3 : Volume
+    public struct AlignedBox3 : Volume
     {
-        public AlignedBox3()
-        {
-            Min = Max = Vector3.Zero;
-        }
-
         public AlignedBox3(Vector3 min, Vector3 max)
         {
             this.Min = min;
@@ -32,8 +27,9 @@ namespace ProjectMagma.Shared.Math.Primitives
             sphere = new Sphere3(worldCenter, worldExtent.Length());
         }
 
-        public Box3 CreateBox3(
-            ref Matrix world
+        public void CreateBox3(
+            ref Matrix world,
+            out Box3 box
         )
         {
             Vector3[] corners = new Vector3[] {
@@ -64,7 +60,7 @@ namespace ProjectMagma.Shared.Math.Primitives
             Vector3 center = (corners[0] + corners[6]) / 2.0f;
             Vector3 halfDim = (corners[6] - corners[0]) / 2.0f;
 
-            Box3 box = new Box3();
+            box = new Box3();
             box.Center = center;
             box.Axis[0] = xAxis;
             box.Axis[1] = yAxis;
@@ -72,7 +68,6 @@ namespace ProjectMagma.Shared.Math.Primitives
             box.HalfDim[0] = System.Math.Abs(halfDim.X);
             box.HalfDim[1] = System.Math.Abs(halfDim.Y);
             box.HalfDim[2] = System.Math.Abs(halfDim.Z);
-            return box;
         }
 
         public override string ToString()

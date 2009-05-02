@@ -32,24 +32,24 @@ namespace ProjectMagma.Simulation.Collision
                 string bv_type = entity.GetString("bv_type");
                 if (bv_type == "cylinder")
                 {
-                    Cylinder3[] bvCylinders = new Cylinder3[collisionVolumes.Count];
+                    object[] bvCylinders = new object[collisionVolumes.Count];
                     for (int i = 0; i < collisionVolumes.Count; ++i)
-                    { bvCylinders[i] = (Cylinder3)collisionVolumes[i].GetVolume(VolumeType.Cylinder3); }
-                    Game.Instance.Simulation.CollisionManager.AddCollisionEntity(entity, this, bvCylinders, needAllContacts);
+                    { bvCylinders[i] = collisionVolumes[i].GetVolume(VolumeType.Cylinder3); }
+                    Game.Instance.Simulation.CollisionManager.AddCylinderCollisionEntity(entity, this, bvCylinders, needAllContacts);
                 }
                 else if (bv_type == "alignedbox3tree")
                 {
-                    AlignedBox3Tree[] bvTrees = new AlignedBox3Tree[collisionVolumes.Count];
+                    object[] bvTrees = new object[collisionVolumes.Count];
                     for (int i = 0; i < collisionVolumes.Count; ++i)
-                        { bvTrees[i] = (AlignedBox3Tree)collisionVolumes[i].GetVolume(VolumeType.AlignedBox3Tree); }
-                    Game.Instance.Simulation.CollisionManager.AddCollisionEntity(entity, this, bvTrees, needAllContacts);
+                        { bvTrees[i] = collisionVolumes[i].GetVolume(VolumeType.AlignedBox3Tree); }
+                    Game.Instance.Simulation.CollisionManager.AddAlignedBox3TreeCollisionEntity(entity, this, bvTrees, needAllContacts);
                 }
                 else if (bv_type == "sphere")
                 {
-                    Sphere3[] bvSpheres = new Sphere3[collisionVolumes.Count];
+                    object[] bvSpheres = new object[collisionVolumes.Count];
                     for (int i = 0; i < collisionVolumes.Count; ++i)
-                        { bvSpheres[i] = (Sphere3)collisionVolumes[i].GetVolume(VolumeType.Sphere3); }
-                    Game.Instance.Simulation.CollisionManager.AddCollisionEntity(entity, this, bvSpheres, needAllContacts);
+                        { bvSpheres[i] = collisionVolumes[i].GetVolume(VolumeType.Sphere3); }
+                    Game.Instance.Simulation.CollisionManager.AddSphereCollisionEntity(entity, this, bvSpheres, needAllContacts);
                 }
                 else if (bv_type == "alignedbox3")
                 {

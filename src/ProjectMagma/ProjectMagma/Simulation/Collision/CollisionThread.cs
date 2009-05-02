@@ -42,6 +42,7 @@ namespace ProjectMagma.Simulation.Collision
                 {
                     startEvent.WaitOne();
 
+                    Contact lastContact = null;
                     TestList.TestEntry entry = testList.GetNextCollisionEntry();
                     while (entry != null)
                     {
@@ -65,7 +66,17 @@ namespace ProjectMagma.Simulation.Collision
                         OrientationHelper.GetScale(entry.EntityB.Entity, out scale2);
                         OrientationHelper.CalculateWorldTransform(ref position2, ref rotation2, ref scale2, out worldTransform2);
 
-                        Contact contact = new Contact(entry.EntityA.Entity, entry.EntityB.Entity);
+                        // the xbox does not like too many allocations. so if possible we recycle the last contact
+                        // that we allocated but did not need because there was no collision...
+                        Contact contact = null;
+                        if (lastContact == null || lastContact.Count > 0)
+                        {
+                            contact = new Contact(entry.EntityA.Entity, entry.EntityB.Entity);
+                        }
+                        else
+                        {
+                            lastContact.Recycle(entry.EntityA.Entity, entry.EntityB.Entity);
+                        }
 
                         test(
                             entry.EntityA.Entity, entry.EntityA.Volumes, ref worldTransform1, ref position1, ref rotation1, ref scale1,

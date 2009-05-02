@@ -2,25 +2,27 @@
 
 namespace ProjectMagma.Shared.Math.Primitives
 {
-    public class Ray3
+    public struct Ray3
     {
         public Ray3(Vector3 origin, Vector3 direction)
         {
-            this.ray = new Ray(origin, direction);
+            this.origin = origin;
+            this.direction = direction;
         }
 
         public Vector3 Origin
         {
-            get { return ray.Position; }
-            set { ray.Position = value; }
+            get { return origin; }
+            set { origin = value; }
         }
 
         public Vector3 Direction
         {
-            get { return ray.Direction; }
-            set { ray.Direction = value; }
+            get { return direction; }
+            set { direction = value; }
         }
 
-        private Ray ray;
+        private Vector3 origin;
+        private Vector3 direction;
     }
 }

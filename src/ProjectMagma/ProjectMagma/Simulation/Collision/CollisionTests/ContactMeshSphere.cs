@@ -10,8 +10,8 @@ namespace ProjectMagma.Simulation.Collision.CollisionTests
     class ContactMeshSphere
     {
         private static void Test(
-            Entity entity1, AlignedBox3TreeNode node1, Vector3[] positions1, Matrix worldTransform1, Vector3 translation1, Quaternion rotation1, Vector3 scale1,
-            Entity entity2, Sphere3 sphere2, Matrix worldTransform2, Vector3 translation2, Quaternion rotation2, Vector3 scale2,
+            Entity entity1, AlignedBox3TreeNode node1, Vector3[] positions1, ref Matrix worldTransform1, ref Vector3 translation1, ref Quaternion rotation1, ref Vector3 scale1,
+            Entity entity2, ref Sphere3 sphere2, ref Matrix worldTransform2, ref Vector3 translation2, ref Quaternion rotation2, ref Vector3 scale2,
             bool needAllContacts, ref Contact contact
         )
         {
@@ -23,9 +23,10 @@ namespace ProjectMagma.Simulation.Collision.CollisionTests
                 return;
             }
             */
+            Box3 box1, box2;
             Matrix identityMatrix = Matrix.Identity;
-            Box3 box1 = node1.BoundingBox.CreateBox3(ref worldTransform1);
-            Box3 box2 = sphere2.CreateBox3(ref identityMatrix);
+            node1.BoundingBox.CreateBox3(ref worldTransform1, out box1);
+            sphere2.CreateBox3(ref identityMatrix, out box2);
             if (!Intersection.IntersectBox3Box3(ref box1, ref box2))
             {
                 return;
@@ -65,8 +66,8 @@ namespace ProjectMagma.Simulation.Collision.CollisionTests
             else
             {
                 Test(
-                    entity1, node1.Left, positions1, worldTransform1, translation1, rotation1, scale1,
-                    entity2, sphere2, worldTransform2, translation2, rotation2, scale2,
+                    entity1, node1.Left, positions1, ref worldTransform1, ref translation1, ref rotation1, ref scale1,
+                    entity2, ref sphere2, ref worldTransform2, ref translation2, ref rotation2, ref scale2,
                     needAllContacts, ref contact
                     );
 
@@ -76,8 +77,8 @@ namespace ProjectMagma.Simulation.Collision.CollisionTests
                 }
 
                 Test(
-                    entity1, node1.Right, positions1, worldTransform1, translation1, rotation1, scale1,
-                    entity2, sphere2, worldTransform2, translation2, rotation2, scale2,
+                    entity1, node1.Right, positions1, ref worldTransform1, ref translation1, ref rotation1, ref scale1,
+                    entity2, ref sphere2, ref worldTransform2, ref translation2, ref rotation2, ref scale2,
                     needAllContacts, ref contact
                     );
             }
@@ -89,18 +90,19 @@ namespace ProjectMagma.Simulation.Collision.CollisionTests
             bool needAllContacts, ref Contact contact
         )
         {
-            AlignedBox3Tree[] trees1 = (AlignedBox3Tree[])boundingVolumes1;
-            Sphere3[] spheres2 = (Sphere3[])boundingVolumes2;
-
-            foreach (AlignedBox3Tree tree1 in trees1)
+            for (int i = 0; i < boundingVolumes1.Length; ++i)
             {
-                foreach (Sphere3 sphere2 in spheres2)
+                AlignedBox3Tree tree1 = (AlignedBox3Tree)boundingVolumes1[i];
+
+                for (int j = 0; j < boundingVolumes2.Length; ++j)
                 {
+                    Sphere3 sphere2 = (Sphere3)boundingVolumes2[j];
+
                     Debug.Assert(scale2.X == scale2.Y && scale2.Y == scale2.Z);
                     Sphere3 transformedSphere2 = new Sphere3(Vector3.Transform(sphere2.Center, worldTransform2), sphere2.Radius * scale2.X);
 
-                    Test(entity1, tree1.Root, tree1.Positions, worldTransform1, translation1, rotation1, scale1,
-                        entity2, transformedSphere2, worldTransform2, translation2, rotation2, scale2,
+                    Test(entity1, tree1.Root, tree1.Positions, ref worldTransform1, ref translation1, ref rotation1, ref scale1,
+                        entity2, ref transformedSphere2, ref worldTransform2, ref translation2, ref rotation2, ref scale2,
                         needAllContacts, ref contact);
                 }
             }

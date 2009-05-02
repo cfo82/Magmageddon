@@ -34,19 +34,19 @@ namespace ProjectMagma.Simulation.Collision
 
         #region Manage colliding entities
 
-        public void AddCollisionEntity(Entity entity, CollisionProperty property, Cylinder3[] cylinders, bool needAllContacts)
+        public void AddCylinderCollisionEntity(Entity entity, CollisionProperty property, object[] cylinders, bool needAllContacts)
         {
-            testList.Add(new CollisionEntity(entity, property, cylinders, needAllContacts));
+            testList.Add(new CollisionEntity(entity, property, VolumeType.Cylinder3, cylinders, needAllContacts));
         }
 
-        public void AddCollisionEntity(Entity entity, CollisionProperty property, AlignedBox3Tree[] trees, bool needAllContacts)
+        public void AddAlignedBox3TreeCollisionEntity(Entity entity, CollisionProperty property, object[] trees, bool needAllContacts)
         {
-            testList.Add(new CollisionEntity(entity, property, trees, needAllContacts));
+            testList.Add(new CollisionEntity(entity, property, VolumeType.AlignedBox3Tree, trees, needAllContacts));
         }
 
-        public void AddCollisionEntity(Entity entity, CollisionProperty property, Sphere3[] spheres, bool needAllContacts)
+        public void AddSphereCollisionEntity(Entity entity, CollisionProperty property, object[] spheres, bool needAllContacts)
         {
-            testList.Add(new CollisionEntity(entity, property, spheres, needAllContacts));
+            testList.Add(new CollisionEntity(entity, property, VolumeType.Sphere3, spheres, needAllContacts));
         }
 
         public bool ContainsCollisionEntity(CollisionProperty property)
@@ -215,7 +215,7 @@ namespace ProjectMagma.Simulation.Collision
 
             // get world transform of from the given entity
             Matrix worldTransform;
-            AlignedBox3Tree[] tree = (AlignedBox3Tree[])collisionEntity.Volumes;
+            AlignedBox3Tree tree = (AlignedBox3Tree)collisionEntity.Volumes[0];
             OrientationHelper.CalculateWorldTransform(entity, out worldTransform);
 
             // transform the ray into the coordinate system of the entity
@@ -227,7 +227,7 @@ namespace ProjectMagma.Simulation.Collision
             Ray3 entitySpaceRay = new Ray3(entitySpaceRayOrigin, entitySpaceRayDirection);
 
             float t; // parameter on ray, outIsectPt = ray.Origin + t * ray.Direction;
-            bool intersection = GetIntersectionPoint(ref entitySpaceRay, tree[0].Root, tree[0].Positions, out t);
+            bool intersection = GetIntersectionPoint(ref entitySpaceRay, tree.Root, tree.Positions, out t);
             if (intersection)
             {
                 outIsectPt = Vector3.Transform(entitySpaceRay.Origin + t * entitySpaceRay.Direction, worldTransform);

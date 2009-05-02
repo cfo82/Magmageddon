@@ -2,28 +2,24 @@
 
 namespace ProjectMagma.Shared.Math.Primitives
 {
-    public class Sphere3 : Volume
+    public struct Sphere3 : Volume
     {
-        public Sphere3()
-        {
-            sphere = new BoundingSphere();
-        }
-
         public Sphere3(Vector3 center, float radius)
         {
-            sphere = new BoundingSphere(center, radius);
+            this.center = center;
+            this.radius = radius;
         }
 
         public Vector3 Center
         {
-            get { return sphere.Center;  }
-            set { sphere.Center = value; }
+            get { return center;  }
+            set { center = value; }
         }
 
         public float Radius
         {
-            get { return sphere.Radius; }
-            set { sphere.Radius = value; }
+            get { return radius; }
+            set { radius = value; }
         }
 
         public VolumeType Type
@@ -31,16 +27,17 @@ namespace ProjectMagma.Shared.Math.Primitives
             get { return VolumeType.Sphere3; }
         }
 
-        public Box3 CreateBox3(
-            ref Matrix world
+        public void CreateBox3(
+            ref Matrix world,
+            out Box3 box
         )
         {
             Vector3 worldCenter, worldMax;
-            worldCenter = Vector3.Transform(sphere.Center, world);
-            worldMax = Vector3.Transform(sphere.Center + new Vector3(sphere.Radius, sphere.Radius, sphere.Radius), world);
+            worldCenter = Vector3.Transform(center, world);
+            worldMax = Vector3.Transform(center + new Vector3(radius, radius, radius), world);
             Vector3 halfDim = worldMax - worldCenter;
 
-            Box3 box = new Box3();
+            box = new Box3();
             box.Center = worldCenter;
             box.Axis[0] = Vector3.UnitX;
             box.Axis[1] = Vector3.UnitY;
@@ -48,9 +45,9 @@ namespace ProjectMagma.Shared.Math.Primitives
             box.HalfDim[0] = halfDim.X;
             box.HalfDim[1] = halfDim.Y;
             box.HalfDim[2] = halfDim.Z;
-            return box;
         }
 
-        BoundingSphere sphere;
+        private Vector3 center;
+        private float radius;
     }
 }

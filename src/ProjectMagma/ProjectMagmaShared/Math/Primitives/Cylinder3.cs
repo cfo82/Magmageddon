@@ -2,12 +2,8 @@
 
 namespace ProjectMagma.Shared.Math.Primitives
 {
-    public class Cylinder3 : Volume
+    public struct Cylinder3 : Volume
     {
-        public Cylinder3()
-        {
-        }
-
         public Cylinder3(Vector3 c1, Vector3 c2, float radius)
         {
             this.c1 = c1;

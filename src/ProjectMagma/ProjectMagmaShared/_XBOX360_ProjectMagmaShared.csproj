@@ -155,12 +155,6 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\AnimationComponentLibrary\_XBOX360_AnimationComponentLibrary.csproj">
-      <Project>{DC886B6A-894D-4C25-9DC3-F9DC775D2776}</Project>
-      <Name>_XBOX360_AnimationComponentLibrary</Name>
-    </ProjectReference>
-  </ItemGroup>
-  <ItemGroup>
     <Folder Include="BoundingVolume\Serialization\" />
     <Folder Include="Math\BoundingVolume\Serialization\" />
     <Folder Include="Math\Integration\" />

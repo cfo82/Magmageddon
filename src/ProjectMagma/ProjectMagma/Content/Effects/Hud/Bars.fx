@@ -11,10 +11,10 @@ sampler2D BackgroundSampler = sampler_state
 	AddressV = Clamp;
 };
 
-texture HighlightTexture;
-sampler2D HighlightSampler = sampler_state
+texture ComponentTexture;
+sampler2D ComponentSampler = sampler_state
 {
-	Texture = <HighlightTexture>;
+	Texture = <ComponentTexture>;
 	MinFilter = Linear;
 	MagFilter = Linear;
 	MipFilter = Linear;
@@ -22,61 +22,68 @@ sampler2D HighlightSampler = sampler_state
 	AddressV = Clamp;
 };
 
-float2 TotalSize;
+
+const float3x3 mirrorXY = float3x3(
+	-1,  0,  1,
+	 0, -1,  1,
+	 0,  0,  1
+);
+
+float3x3 PlayerMirror;
+float2 Size;
 float HealthValue;
-float EnergyValue = 0.3;
+float EnergyValue;
 
-float3 HealthColor1 = float3(0.91, 0.08, 0.64);
-float3 HealthColor2 = float3(0.77, 0.08, 0.86);
-
+float3 HealthColor1;// = float3(0.91, 0.08, 0.64);
+float3 HealthColor2;// = float3(0.77, 0.08, 0.86);
+const float3 EnergyColor1 = float3(0.87, 0.91, 0.97);
+const float3 EnergyColor2 = float3(0.84, 0.84, 0.86);
 
 const float BevelStrength = 0.7;
+
+float4 BarColor(float2 texCoord, float3 beginColor, float3 endColor, float value)
+{
+	// load four-channel texture containing individual components in each channel
+	float4 components = tex2D(ComponentSampler, texCoord);
+	
+	// compute background color
+	float4 backgroundRgba = tex2D(BackgroundSampler, texCoord);
+	float3 background = backgroundRgba.rgb;	
+	
+	// compute content mask
+	float contentMask = components.b;
+	if(texCoord.x > 0.2)
+	{
+		float2 valueOffset = float2(value * 0.76, 0);
+		contentMask *= tex2D(ComponentSampler, texCoord + valueOffset).b;
+	}
+	
+	// compute content color
+	float3 color = lerp(beginColor, endColor, texCoord.x);
+	float highlight = components.r * BevelStrength;
+	float shadow = components.g * BevelStrength;
+	float3 contentColor = color + highlight - shadow;
+	
+	// compute final color
+	float notch = (components.a - 0.4) * 0.75;
+	float3 sum = lerp(background, contentColor, contentMask) + notch;	
+	return float4(sum, backgroundRgba.a);
+}
+
+
 float4 PixelShader(float2 texCoord : TEXCOORD0) : COLOR0
 {
-	float2 healthBarCoord = float2(
-		texCoord.x * TotalSize.x/224.0f,
-		texCoord.y * TotalSize.y/38.0f
-	);
+	// different players want their huds in different mirroring configurations
+	float2 healthBarCoord = mul(PlayerMirror, float3(texCoord,1)).xy;
+	float2 energyBarCoord = mul(PlayerMirror, mul(mirrorXY, float3(texCoord,1))).xy;
 	
-	float2 energyBarCoord = float2(
-		(1-texCoord.x) * TotalSize.x/224.0f,
-		(1-texCoord.y) * TotalSize.y/38.0f
-	);		
-
-	float4 healthBg = tex2D(BackgroundSampler, healthBarCoord);
-	float4 energyBg = tex2D(BackgroundSampler, energyBarCoord);
-	float4 healthHl = tex2D(HighlightSampler, healthBarCoord);
-	float4 energyHl = tex2D(HighlightSampler, energyBarCoord);
+	// normalize everything to [0,1]x[0,1] inside one bar
+	float2 normalizeMultiplier = float2(Size.x/224.0f, Size.y/38.0f);
 	
-	float3 healthCl = lerp(HealthColor1, HealthColor2, healthBarCoord.x);
-	float hl = healthHl.r*BevelStrength;
-	float sh = healthHl.g*BevelStrength;
-	float mask1 = healthHl.b;
-	float notch = healthHl.a;
-	float notchMask = abs(notch-0.5)*2;
-	float notchAdd = saturate(notch-0.5);
-	float notchSub = -saturate(0.5-notch);
-	
-	//float2 healthMaskCoord = float2(
-		//(1-texCoord.x) * TotalSize.x/224.0f,
-		//(1-texCoord.y) * TotalSize.y/38.0f
-	//);		
-	//
-	float mask2 = mask1 * tex2D(HighlightSampler, healthBarCoord + float2(HealthValue*0.75,0)).b;
-	float mask;
-	if(healthBarCoord.x<0.2)
-		mask = mask1;
-	else
-		mask = mask2;
-	
-	//float4 healthSum = healthBg;// + float4(float3(1,1,1) * healthHl.a, 0);
-	float3 healthSum = healthBg.rgb * (1-mask)     +       (healthCl + hl - sh)*(mask-notchMask)    +    (notchAdd-notchSub)*notchMask;
-	//float4 energySum = energyBg + energyHl.rgb * energyHl.a;
-	float4 energySum = 0;
-	//float4 highlight = tex2D(HighlightSampler, barCoord);
-	return float4(notchMask, notchMask, notchMask,1);
-    return float4(healthSum,healthBg.a) + energySum;// + float4(0.5,0,0,0.5);
-    //return float4(1,0,0,1);
+	// compute bar colors and return them
+	float4 healthBar = BarColor(healthBarCoord*normalizeMultiplier, HealthColor1, HealthColor2, HealthValue);
+	float4 energyBar = BarColor(energyBarCoord*normalizeMultiplier, EnergyColor1, EnergyColor2, EnergyValue);
+    return healthBar + energyBar;
 }
 
 
@@ -84,6 +91,6 @@ technique BloomCombine
 {
     pass Pass1
     {
-        PixelShader = compile ps_2_0 PixelShader();
+        PixelShader = compile ps_2_0 PixelShader();	
     }
 }

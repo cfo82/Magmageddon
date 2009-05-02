@@ -1,9 +1,5 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using Microsoft.Xna.Framework;
-using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Graphics;
 
 namespace ProjectMagma.Renderer
@@ -13,8 +9,8 @@ namespace ProjectMagma.Renderer
         public GlowPass(Renderer renderer, RenderTarget2D target0, RenderTarget2D target1)
             : base(renderer, target0, target1)
         {
-            originalBlurEffect = Game.Instance.Content.Load<Effect>("Effects/GaussianBlur");
-            gaussianBlurEffect = Game.Instance.Content.Load<Effect>("Effects/BlurModified");
+            originalBlurEffect = Game.Instance.ContentManager.Load<Effect>("Effects/GaussianBlur");
+            gaussianBlurEffect = Game.Instance.ContentManager.Load<Effect>("Effects/BlurModified");
         }
 
         public override void Render(GameTime gameTime)

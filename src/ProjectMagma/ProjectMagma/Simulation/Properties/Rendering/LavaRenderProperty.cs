@@ -79,17 +79,17 @@ namespace ProjectMagma.Simulation
 
             // load the model
             string meshName = entity.GetString("mesh");
-            Model model = Game.Instance.Content.Load<Model>(meshName);
+            Model model = Game.Instance.ContentManager.Load<Model>(meshName);
 
             string sparseStuccoTextureName = entity.GetString("sparsestucco_texture");
             string fireFractalTextureName = entity.GetString("firefractal_texture");
             string vectorCloudTextureName = entity.GetString("vectorcloud_texture");
             string graniteTextureName = entity.GetString("granite_texture");
 
-            Texture2D sparseStuccoTexture = Game.Instance.Content.Load<Texture2D>(sparseStuccoTextureName);
-            Texture2D fireFractalTexture = Game.Instance.Content.Load<Texture2D>(fireFractalTextureName);
-            Texture2D vectorCloudTexture = Game.Instance.Content.Load<Texture2D>(vectorCloudTextureName);
-            Texture2D graniteTexture = Game.Instance.Content.Load<Texture2D>(graniteTextureName);
+            Texture2D sparseStuccoTexture = Game.Instance.ContentManager.Load<Texture2D>(sparseStuccoTextureName);
+            Texture2D fireFractalTexture = Game.Instance.ContentManager.Load<Texture2D>(fireFractalTextureName);
+            Texture2D vectorCloudTexture = Game.Instance.ContentManager.Load<Texture2D>(vectorCloudTextureName);
+            Texture2D graniteTexture = Game.Instance.ContentManager.Load<Texture2D>(graniteTextureName);
 
             return new LavaRenderable(scale, rotation, position, model, 
                 sparseStuccoTexture, fireFractalTexture, vectorCloudTexture, graniteTexture);

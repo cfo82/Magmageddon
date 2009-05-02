@@ -49,6 +49,8 @@ namespace ProjectMagma
         private Simulation.Simulation simulation;
         private Renderer.Renderer renderer;
 
+        private WrappedContentManager wrappedContentManager;
+
         /// <summary>
         /// assuming that the base class class update->draw->update->draw etc. the
         /// profiler will begin a frame at the beginning of the udpate methode and
@@ -80,6 +82,7 @@ namespace ProjectMagma
         {
             graphics = new GraphicsDeviceManager(this);
             menu = Menu.Instance;
+            wrappedContentManager = new WrappedContentManager(Content);
 
             this.IsFixedTimeStep = false;
             //this.TargetElapsedTime = TimeSpan.FromSeconds(1.0 / 15.0);
@@ -89,7 +92,7 @@ namespace ProjectMagma
             graphics.PreferredBackBufferHeight = 720;
 
             Window.Title = "Project Magma";
-            Content.RootDirectory = "Content";
+            ContentManager.RootDirectory = "Content";
 
             // needed to show Guide, which is needed for storage, which is needed for saving stuff
             this.Components.Add(new GamerServicesComponent(this));
@@ -166,12 +169,12 @@ namespace ProjectMagma
             spriteBatch = new SpriteBatch(GraphicsDevice);
 
             // initialize renderer
-            renderer = new Renderer.Renderer(Content, GraphicsDevice);
+            renderer = new Renderer.Renderer(ContentManager, GraphicsDevice);
 
             // load level infos
-            levels = Content.Load<List<LevelInfo>>("Level/LevelInfo");
+            levels = ContentManager.Load<List<LevelInfo>>("Level/LevelInfo");
             // load list of available robots
-            robots = Content.Load<List<RobotInfo>>("Level/RobotInfo");
+            robots = ContentManager.Load<List<RobotInfo>>("Level/RobotInfo");
 
             // initialize simulation
             LoadLevel(levels[0].FileName);
@@ -215,18 +218,18 @@ namespace ProjectMagma
             menu.LoadContent();
 
             // preload sounds
-            Game.Instance.Content.Load<SoundEffect>("Sounds/gong1");
-            Game.Instance.Content.Load<SoundEffect>("Sounds/punch2");
-            Game.Instance.Content.Load<SoundEffect>("Sounds/hit2");
-            Game.Instance.Content.Load<SoundEffect>("Sounds/sword-clash");
-            Game.Instance.Content.Load<SoundEffect>("Sounds/death");
+            Game.Instance.ContentManager.Load<SoundEffect>("Sounds/gong1");
+            Game.Instance.ContentManager.Load<SoundEffect>("Sounds/punch2");
+            Game.Instance.ContentManager.Load<SoundEffect>("Sounds/hit2");
+            Game.Instance.ContentManager.Load<SoundEffect>("Sounds/sword-clash");
+            Game.Instance.ContentManager.Load<SoundEffect>("Sounds/death");
 
             Viewport viewport = graphics.GraphicsDevice.Viewport;
 
             float aspectRatio = (float)viewport.Width / (float)viewport.Height;
 
             // play that funky musik white boy
-            MediaPlayer.Play(Game.Instance.Content.Load<Song>("Sounds/music"));
+            MediaPlayer.Play(Game.Instance.ContentManager.Load<Song>("Sounds/music"));
             MediaPlayer.Volume = MusicVolume;
 
             MediaPlayer.IsMuted = true;
@@ -244,7 +247,7 @@ namespace ProjectMagma
             this.profiler = ProjectMagma.Profiler.Profiler.CreateProfiler("main_profiler");
 #endif
 
-            font = Game.Instance.Content.Load<SpriteFont>("Sprites/HUD/HUDFont");
+            font = Game.Instance.ContentManager.Load<SpriteFont>("Sprites/HUD/HUDFont");
 
             paused = false;
         }
@@ -273,12 +276,14 @@ namespace ProjectMagma
 
             // init simulation
             simulation = new ProjectMagma.Simulation.Simulation();
-            RendererUpdateQueue q = simulation.Initialize(Content, "Level/TestLevel");
+            RendererUpdateQueue q = simulation.Initialize(ContentManager, "Level/TestLevel");
 
+#if !XBOX
             Debug.Assert(
                 simulationThread == null ||
                 simulationThread.Thread.ThreadState == System.Threading.ThreadState.Stopped
                 );
+#endif
 
             simulationThread = new SimulationThread(simulation, renderer);
             renderer.AddUpdateQueue(q);
@@ -316,7 +321,9 @@ namespace ProjectMagma
         /// </summary>
         protected override void UnloadContent()
         {
+#if !XBOX
             Debug.Assert(simulationThread.Thread.ThreadState == System.Threading.ThreadState.WaitSleepJoin);
+#endif
 
             RendererUpdateQueue q = simulation.Close();
             renderer.AddUpdateQueue(q);
@@ -330,7 +337,9 @@ namespace ProjectMagma
 
             profiler.Write(device, Window.Title, "profiling.txt");
 
+#if !XBOX
             Debug.Assert(simulationThread.Thread.ThreadState == System.Threading.ThreadState.Stopped);
+#endif
         }
 
         bool paused = true;
@@ -652,6 +661,26 @@ namespace ProjectMagma
         public ProjectMagma.Profiler.Profiler Profiler
         {
             get { return profiler; }
+        }
+
+        public WrappedContentManager ContentManager
+        {
+            get { return wrappedContentManager; }
+        }
+
+        public new Microsoft.Xna.Framework.Content.ContentManager Content
+        {
+            get
+            {
+                if (wrappedContentManager != null)
+                {
+                    throw new Exception("FUCK OFF"); 
+                }
+                else
+                {
+                    return base.Content; 
+                }
+            }
         }
     }
 }

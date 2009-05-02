@@ -45,7 +45,7 @@ namespace ProjectMagma.Simulation
             ((CollisionProperty)entity.GetProperty("collision")).OnContact += PowerupCollisionHandler;
 
             // load sound
-            pickupSound = Game.Instance.Content.Load<SoundEffect>("Sounds/" + powerup.GetString("pickup_sound"));
+            pickupSound = Game.Instance.ContentManager.Load<SoundEffect>("Sounds/" + powerup.GetString("pickup_sound"));
 
             powerup.Update += OnUpdate;
         }

@@ -109,8 +109,8 @@ namespace ProjectMagma.Simulation
             Game.Instance.Simulation.EntityManager.EntityRemoved += EntityRemovedHandler;
             ((CollisionProperty)player.GetProperty("collision")).OnContact += PlayerCollisionHandler;
 
-            jetpackSound = Game.Instance.Content.Load<SoundEffect>("Sounds/jetpack");
-            flameThrowerSound = Game.Instance.Content.Load<SoundEffect>("Sounds/flamethrower");
+            jetpackSound = Game.Instance.ContentManager.Load<SoundEffect>("Sounds/jetpack");
+            flameThrowerSound = Game.Instance.ContentManager.Load<SoundEffect>("Sounds/flamethrower");
 
             arrow = new Entity("arrow" + "_" + player.Name);
             arrow.AddStringAttribute("player", player.Name);
@@ -545,7 +545,7 @@ namespace ProjectMagma.Simulation
                 && (at - iceSpikeFiredAt) > constants.GetInt("ice_spike_cooldown"))
             {
                 // indicate 
-                SoundEffect soundEffect = Game.Instance.Content.Load<SoundEffect>("Sounds/hit2");
+                SoundEffect soundEffect = Game.Instance.ContentManager.Load<SoundEffect>("Sounds/hit2");
                 soundEffect.Play(Game.Instance.EffectsVolume);
 
                 // todo: specify point in model
@@ -831,7 +831,7 @@ namespace ProjectMagma.Simulation
                     destinationIsland = null;
                     LeaveActiveIsland();
 
-                    Game.Instance.Content.Load<SoundEffect>("Sounds/death").Play(Game.Instance.EffectsVolume);
+                    Game.Instance.ContentManager.Load<SoundEffect>("Sounds/death").Play(Game.Instance.EffectsVolume);
                     player.SetInt("deaths", player.GetInt("deaths") + 1);
 
                     // deactivate
@@ -1046,7 +1046,7 @@ namespace ProjectMagma.Simulation
                 simTime.At > hitPerformedAt + constants.GetInt("hit_cooldown"))
             {
                 // indicate hit!
-                SoundEffect soundEffect = Game.Instance.Content.Load<SoundEffect>("Sounds/punch2");
+                SoundEffect soundEffect = Game.Instance.ContentManager.Load<SoundEffect>("Sounds/punch2");
                 soundEffect.Play(Game.Instance.EffectsVolume);
 
                 // deduct health

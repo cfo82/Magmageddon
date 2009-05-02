@@ -17,7 +17,7 @@ namespace ProjectMagma.Renderer
             Texture2D graniteTexture)
             : base(scale, rotation, position, model)
         {
-            effect = Game.Instance.Content.Load<Effect>("Effects/Lava/Lava");
+            effect = Game.Instance.ContentManager.Load<Effect>("Effects/Lava/Lava");
             InitializeRandomOffsets();
 
             UseLights = false;
@@ -30,12 +30,12 @@ namespace ProjectMagma.Renderer
             this.fireFractalTexture = fireFractalTexture;
             this.vectorCloudTexture = vectorCloudTexture;
             this.graniteTexture = graniteTexture;
-            this.temperatureTexture = Game.Instance.Content.Load<Texture2D>("Textures/lava/temperature");
+            this.temperatureTexture = Game.Instance.ContentManager.Load<Texture2D>("Textures/lava/temperature");
         }
 
         protected override void ApplyEffectsToModel()
         {
-            Effect effect = Game.Instance.Content.Load<Effect>("Effects/Lava/Lava");
+            Effect effect = Game.Instance.ContentManager.Load<Effect>("Effects/Lava/Lava");
             SetDefaultMaterialParameters();
             SetModelEffect(Model, effect);
         }

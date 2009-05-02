@@ -1,12 +1,8 @@
 ﻿using System;
 using System.Diagnostics;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using Microsoft.Xna.Framework;
-using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Graphics;
-using Microsoft.Xna.Framework.Graphics.PackedVector;
 
 namespace ProjectMagma.Renderer.ParticleSystem.Stateful
 {
@@ -14,7 +10,7 @@ namespace ProjectMagma.Renderer.ParticleSystem.Stateful
     {
         public StatefulParticleSystem(
             Renderer renderer,
-            ContentManager content,
+            WrappedContentManager wrappedContent,
             GraphicsDevice device
         )
         {
@@ -33,12 +29,12 @@ namespace ProjectMagma.Renderer.ParticleSystem.Stateful
             this.particleRenderingEffect = null;
             spriteBatch = new SpriteBatch(device);
 
-            LoadResources(renderer, content, device);
+            LoadResources(renderer, wrappedContent, device);
         }
 
         protected virtual void LoadResources(
             Renderer renderer,
-            ContentManager content,
+            WrappedContentManager wrappedContent,
             GraphicsDevice device
         )
         {
@@ -67,15 +63,15 @@ namespace ProjectMagma.Renderer.ParticleSystem.Stateful
             createVertexBuffer = new VertexBuffer(device, CreateVertex.SizeInBytes * createVertexBufferSize, BufferUsage.WriteOnly);
             createVertexDeclaration = new VertexDeclaration(device, CreateVertex.VertexElements);
 
-            particleCreateEffect = LoadCreateEffect(content).Clone(device);
+            particleCreateEffect = LoadCreateEffect(wrappedContent).Clone(device);
             particleCreateEffect.CurrentTechnique = particleCreateEffect.Techniques["CreateParticles"];
 
             // update effect
-            particleUpdateEffect = LoadUpdateEffect(content).Clone(device);
+            particleUpdateEffect = LoadUpdateEffect(wrappedContent).Clone(device);
             particleUpdateEffect.CurrentTechnique = particleUpdateEffect.Techniques["UpdateParticles"];
 
             // rendering effect
-            particleRenderingEffect = LoadRenderEffect(content).Clone(device);
+            particleRenderingEffect = LoadRenderEffect(wrappedContent).Clone(device);
             particleRenderingEffect.CurrentTechnique = particleRenderingEffect.Techniques["RenderParticles"];
         }
 
@@ -308,19 +304,19 @@ namespace ProjectMagma.Renderer.ParticleSystem.Stateful
 
         #region Configuration Parameters may be overwritten by subclasses to customize the behaviour!
 
-        protected virtual Effect LoadCreateEffect(ContentManager content)
+        protected virtual Effect LoadCreateEffect(WrappedContentManager wrappedContent)
         {
-            return content.Load<Effect>("Effects/ParticleSystem/Stateful/Default");
+            return wrappedContent.Load<Effect>("Effects/ParticleSystem/Stateful/Default");
         }
 
-        protected virtual Effect LoadUpdateEffect(ContentManager content)
+        protected virtual Effect LoadUpdateEffect(WrappedContentManager wrappedContent)
         {
-            return content.Load<Effect>("Effects/ParticleSystem/Stateful/Default");
+            return wrappedContent.Load<Effect>("Effects/ParticleSystem/Stateful/Default");
         }
 
-        protected virtual Effect LoadRenderEffect(ContentManager content)
+        protected virtual Effect LoadRenderEffect(WrappedContentManager wrappedContent)
         {
-            return content.Load<Effect>("Effects/ParticleSystem/Stateful/Default");
+            return wrappedContent.Load<Effect>("Effects/ParticleSystem/Stateful/Default");
         }
 
         protected virtual void SetUpdateParameters(EffectParameterCollection parameters)

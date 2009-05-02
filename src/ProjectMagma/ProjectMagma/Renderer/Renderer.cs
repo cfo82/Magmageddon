@@ -2,7 +2,6 @@
 using System.Diagnostics;
 using System.Collections.Generic;
 using Microsoft.Xna.Framework;
-using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Graphics;
 using ProjectMagma.Renderer.Interface;
 
@@ -11,7 +10,7 @@ namespace ProjectMagma.Renderer
     public class Renderer : RendererInterface
     {
         public Renderer(
-            ContentManager content,
+            WrappedContentManager wrappedContent,
             GraphicsDevice device
         )
         {
@@ -24,7 +23,7 @@ namespace ProjectMagma.Renderer
             transparentRenderables = new List<Renderable>();
             overlays = new List<Renderable>();
 
-            shadowEffect = content.Load<Effect>("Effects/ShadowEffect");
+            shadowEffect = wrappedContent.Load<Effect>("Effects/ShadowEffect");
 
             lightPosition = new Vector3(0, 10000, 0); // later: replace by orthographic light, not lookAt
             lightTarget = Vector3.Zero;
@@ -53,7 +52,7 @@ namespace ProjectMagma.Renderer
                         shadowMapSize,
                         device.DepthStencilBuffer.Format);
 
-            vectorCloudTexture = Game.Instance.Content.Load<Texture2D>("Textures/Lava/vectorclouds");
+            vectorCloudTexture = wrappedContent.Load<Texture2D>("Textures/Lava/vectorclouds");
             LightManager = new LightManager();
 
 
@@ -73,7 +72,7 @@ namespace ProjectMagma.Renderer
                 hdrCombinePass = new HdrCombinePass(this, Target0, Target1);
             }
 
-            statefulParticleResourceManager = new ProjectMagma.Renderer.ParticleSystem.Stateful.ResourceManager(content, device);
+            statefulParticleResourceManager = new ProjectMagma.Renderer.ParticleSystem.Stateful.ResourceManager(wrappedContent, device);
 
             updateQueues = new List<RendererUpdateQueue>();
         }

@@ -37,11 +37,11 @@ namespace ProjectMagma.Renderer
             base.LoadResources();
 
             spriteBatch = new SpriteBatch(Game.Instance.GraphicsDevice);
-            font = Game.Instance.Content.Load<SpriteFont>("Sprites/HUD/HUDFont");
-            background = Game.Instance.Content.Load<Texture2D>("Sprites/HUD/background");
-            healthBar = Game.Instance.Content.Load<Texture2D>("Sprites/HUD/health");
-            energyBar = Game.Instance.Content.Load<Texture2D>("Sprites/HUD/energy");
-            fuelBar = Game.Instance.Content.Load<Texture2D>("Sprites/HUD/fuel");
+            font = Game.Instance.ContentManager.Load<SpriteFont>("Sprites/HUD/HUDFont");
+            background = Game.Instance.ContentManager.Load<Texture2D>("Sprites/HUD/background");
+            healthBar = Game.Instance.ContentManager.Load<Texture2D>("Sprites/HUD/health");
+            energyBar = Game.Instance.ContentManager.Load<Texture2D>("Sprites/HUD/energy");
+            fuelBar = Game.Instance.ContentManager.Load<Texture2D>("Sprites/HUD/fuel");
         }
 
         public override void UnloadResources()

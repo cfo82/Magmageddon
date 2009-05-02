@@ -88,8 +88,6 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="BloomComponent.cs" />
-    <Compile Include="BloomSettings.cs" />
     <Compile Include="DoublyIntegratedVector2.cs" />
     <Compile Include="DoublyIntegratedFloat.cs" />
     <Compile Include="Profiler\FrameStatistics.cs" />
@@ -209,6 +207,7 @@
     <Compile Include="Simulation\Simulation.cs" />
     <Compile Include="Simulation\SimulationThread.cs" />
     <Compile Include="Simulation\SimulationTime.cs" />
+    <Compile Include="WrappedContentManager.cs" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="Game.ico" />

@@ -1,9 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
+﻿using System.Collections.Generic;
 using Microsoft.Xna.Framework;
-using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Graphics;
 
 namespace ProjectMagma.Renderer.ParticleSystem.Stateful
@@ -11,7 +7,7 @@ namespace ProjectMagma.Renderer.ParticleSystem.Stateful
     public class ResourceManager
     {
         public ResourceManager(
-            ContentManager content,
+            WrappedContentManager wrappedContent,
             GraphicsDevice device
         )
         {

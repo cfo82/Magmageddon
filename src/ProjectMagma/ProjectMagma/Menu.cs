@@ -39,7 +39,7 @@ namespace ProjectMagma
         {
             spriteBatch = new SpriteBatch(Game.Instance.GraphicsDevice);
 
-            background = Game.Instance.Content.Load<Texture2D>("Sprites/Menu/background");
+            background = Game.Instance.ContentManager.Load<Texture2D>("Sprites/Menu/background");
 
             mainMenu = new MainMenu(this);
         }
@@ -192,8 +192,8 @@ namespace ProjectMagma
         public MenuItem(String name, String sprite, ItemSelectionHandler itemSelected)
         {
             this.name = name;
-            this.sprite = Game.Instance.Content.Load<Texture2D>("Sprites/Menu/" + sprite);
-            this.selectedSprite = Game.Instance.Content.Load<Texture2D>("Sprites/Menu/" + sprite + "_selected");
+            this.sprite = Game.Instance.ContentManager.Load<Texture2D>("Sprites/Menu/" + sprite);
+            this.selectedSprite = Game.Instance.ContentManager.Load<Texture2D>("Sprites/Menu/" + sprite + "_selected");
             this.itemSelected = itemSelected;
         }
 
@@ -448,8 +448,8 @@ namespace ProjectMagma
                 new MenuItem("music_volume", "music_volume", new ItemSelectionHandler(DoNothing))
             };
 
-           volumeIndicator = Game.Instance.Content.Load<Texture2D>("Sprites/Menu/volume_indicator");
-           volumeIndicatorSelected = Game.Instance.Content.Load<Texture2D>("Sprites/Menu/volume_indicator_selected");
+           volumeIndicator = Game.Instance.ContentManager.Load<Texture2D>("Sprites/Menu/volume_indicator");
+           volumeIndicatorSelected = Game.Instance.ContentManager.Load<Texture2D>("Sprites/Menu/volume_indicator_selected");
         }
 
         public override MenuItem[] MenuItems
@@ -579,8 +579,8 @@ namespace ProjectMagma
         {
             this.levelMenu = levelMenu;
 
-            playerBackground = Game.Instance.Content.Load<Texture2D>("Sprites/Menu/robot_selection_background");
-            playerBackgroundInactive = Game.Instance.Content.Load<Texture2D>("Sprites/Menu/robot_selection_background_inactive");
+            playerBackground = Game.Instance.ContentManager.Load<Texture2D>("Sprites/Menu/robot_selection_background");
+            playerBackgroundInactive = Game.Instance.ContentManager.Load<Texture2D>("Sprites/Menu/robot_selection_background_inactive");
 
             // init robot sprites
             robotSprites = new Texture2D[Game.Instance.Robots.Count];
@@ -588,11 +588,11 @@ namespace ProjectMagma
             {
                 try
                 {
-                    robotSprites[i] = Game.Instance.Content.Load<Texture2D>("Sprites/Menu/Robot/" + Game.Instance.Robots[i].Entity);
+                    robotSprites[i] = Game.Instance.ContentManager.Load<Texture2D>("Sprites/Menu/Robot/" + Game.Instance.Robots[i].Entity);
                 }
                 catch (Exception)
                 {
-                    robotSprites[i] = Game.Instance.Content.Load<Texture2D>("Sprites/Menu/Robot/no_image");
+                    robotSprites[i] = Game.Instance.ContentManager.Load<Texture2D>("Sprites/Menu/Robot/no_image");
                 }
             }
         }

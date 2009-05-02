@@ -54,7 +54,7 @@ namespace ProjectMagma.Simulation
     //            dist.Y = 0;
     //            Vector3 pillarContribution;
 
-    //            /*BoundingBox pillarBox = (BoundingBox)Game.Instance.Content.Load<Model>("Models/pillar_primitive").Tag;
+    //            /*BoundingBox pillarBox = (BoundingBox)Game.Instance.ContentManager.Load<Model>("Models/pillar_primitive").Tag;
     //            float pillarScale = pillarBox.Max.X;
     //            if (pillar.HasVector3("scale"))
     //            {
@@ -63,7 +63,7 @@ namespace ProjectMagma.Simulation
     //                pillarScale *= scale.X;
     //            }*/
 
-    //            /*BoundingBox islandBox = (BoundingBox)Game.Instance.Content.Load<Model>("Models/island_primitive").Tag;
+    //            /*BoundingBox islandBox = (BoundingBox)Game.Instance.ContentManager.Load<Model>("Models/island_primitive").Tag;
     //            float islandScale = islandBox.Max.X;
     //            if (island.HasVector3("scale"))
     //            {

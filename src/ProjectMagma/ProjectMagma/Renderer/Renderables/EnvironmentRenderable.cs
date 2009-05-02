@@ -26,7 +26,7 @@ namespace ProjectMagma.Renderer
 
         //protected override void ApplyEffectsToModel()
         //{
-        //    Effect effect = Game.Instance.Content.Load<Effect>("Effects/Environment/Island");
+        //    Effect effect = Game.Instance.ContentManager.Load<Effect>("Effects/Environment/Island");
         //    SetDefaultMaterialParameters();
         //    SetModelEffect(Model, effect);
         //}

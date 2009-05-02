@@ -1,12 +1,5 @@
-﻿using System;
-using System.Diagnostics;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using Microsoft.Xna.Framework;
-using Microsoft.Xna.Framework.Content;
+﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
-using Microsoft.Xna.Framework.Graphics.PackedVector;
 
 namespace ProjectMagma.Renderer.ParticleSystem.Stateful.IceSpike
 {
@@ -14,18 +7,18 @@ namespace ProjectMagma.Renderer.ParticleSystem.Stateful.IceSpike
     {
         public IceSpike(
             Renderer renderer,
-            ContentManager content,
+            WrappedContentManager wrappedContent,
             GraphicsDevice device
         )
-        :   base(renderer, content, device)
+        :   base(renderer, wrappedContent, device)
         {
         }
 
-        protected override void LoadResources(Renderer renderer, ContentManager content, GraphicsDevice device)
+        protected override void LoadResources(Renderer renderer, WrappedContentManager wrappedContent, GraphicsDevice device)
         {
-            base.LoadResources(renderer, content, device);
+            base.LoadResources(renderer, wrappedContent, device);
 
-            trailSprite = content.Load<Texture2D>("Textures/Sfx/IceSpikeTrail");
+            trailSprite = Game.Instance.ContentManager.Load<Texture2D>("Textures/Sfx/IceSpikeTrail");
         }
 
         public override void UnloadResources()
@@ -34,19 +27,19 @@ namespace ProjectMagma.Renderer.ParticleSystem.Stateful.IceSpike
             base.UnloadResources();
         }
 
-        protected override Effect LoadCreateEffect(ContentManager content)
+        protected override Effect LoadCreateEffect(WrappedContentManager wrappedContent)
         {
-            return content.Load<Effect>("Effects/Sfx/ParticleSystem/Stateful/IceSpike/IceSpike");
+            return wrappedContent.Load<Effect>("Effects/Sfx/ParticleSystem/Stateful/IceSpike/IceSpike");
         }
 
-        protected override Effect LoadUpdateEffect(ContentManager content)
+        protected override Effect LoadUpdateEffect(WrappedContentManager wrappedContent)
         {
-            return content.Load<Effect>("Effects/Sfx/ParticleSystem/Stateful/IceSpike/IceSpike");
+            return wrappedContent.Load<Effect>("Effects/Sfx/ParticleSystem/Stateful/IceSpike/IceSpike");
         }
 
-        protected override Effect LoadRenderEffect(ContentManager content)
+        protected override Effect LoadRenderEffect(WrappedContentManager wrappedContent)
         {
-            return content.Load<Effect>("Effects/Sfx/ParticleSystem/Stateful/IceSpike/IceSpike");
+            return wrappedContent.Load<Effect>("Effects/Sfx/ParticleSystem/Stateful/IceSpike/IceSpike");
         }
 
         protected override void SetUpdateParameters(EffectParameterCollection parameters)

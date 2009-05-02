@@ -1,9 +1,5 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using Microsoft.Xna.Framework;
-using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Graphics;
 
 namespace ProjectMagma.Renderer.ParticleSystem.Stateful.Smoke
@@ -12,16 +8,16 @@ namespace ProjectMagma.Renderer.ParticleSystem.Stateful.Smoke
     {
         public Smoke(
             Renderer renderer,
-            ContentManager content,
+            WrappedContentManager wrappedContent,
             GraphicsDevice device
         )
-        :   base(renderer, content, device)
+            : base(renderer, wrappedContent, device)
         {
         }
-        protected override void LoadResources(Renderer renderer, ContentManager content, GraphicsDevice device)
+        protected override void LoadResources(Renderer renderer, WrappedContentManager wrappedContent, GraphicsDevice device)
         {
-            base.LoadResources(renderer, content, device);
-            smokeTexture = content.Load<Texture2D>("smoke");
+            base.LoadResources(renderer, wrappedContent, device);
+            smokeTexture = Game.Instance.ContentManager.Load<Texture2D>("smoke");
         }
 
         public override void UnloadResources()
@@ -30,19 +26,19 @@ namespace ProjectMagma.Renderer.ParticleSystem.Stateful.Smoke
             base.UnloadResources();
         }
 
-        protected override Effect LoadCreateEffect(ContentManager content)
+        protected override Effect LoadCreateEffect(WrappedContentManager wrappedContent)
         {
-            return content.Load<Effect>("Effects/ParticleSystem/Stateful/Smoke/Smoke");
+            return wrappedContent.Load<Effect>("Effects/ParticleSystem/Stateful/Smoke/Smoke");
         }
 
-        protected override Effect LoadUpdateEffect(ContentManager content)
+        protected override Effect LoadUpdateEffect(WrappedContentManager wrappedContent)
         {
-            return content.Load<Effect>("Effects/ParticleSystem/Stateful/Smoke/Smoke");
+            return wrappedContent.Load<Effect>("Effects/ParticleSystem/Stateful/Smoke/Smoke");
         }
 
-        protected override Effect LoadRenderEffect(ContentManager content)
+        protected override Effect LoadRenderEffect(WrappedContentManager wrappedContent)
         {
-            return content.Load<Effect>("Effects/ParticleSystem/Stateful/Smoke/Smoke");
+            return wrappedContent.Load<Effect>("Effects/ParticleSystem/Stateful/Smoke/Smoke");
         }
 
         protected override void SetUpdateParameters(EffectParameterCollection parameters)

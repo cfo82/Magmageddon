@@ -81,7 +81,7 @@ namespace ProjectMagma.Simulation
 
             // load the model
             string meshName = entity.GetString("mesh");
-            Model model = Game.Instance.Content.Load<Model>(meshName);
+            Model model = Game.Instance.ContentManager.Load<Model>(meshName);
 
             return new ShadowRenderable(scale, rotation, position, model);
         }

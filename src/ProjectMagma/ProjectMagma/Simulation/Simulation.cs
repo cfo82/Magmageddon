@@ -1,20 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using ProjectMagma.Simulation.Collision;
 using Microsoft.Xna.Framework;
-using Microsoft.Xna.Framework.Audio;
-using Microsoft.Xna.Framework.Graphics;
-using Microsoft.Xna.Framework.Input;
-using Microsoft.Xna.Framework.Media;
-using Microsoft.Xna.Framework.Content;
 #if !XBOX && DEBUG
 using xWinFormsLib;
 #endif
 
 using ProjectMagma.Renderer.Interface;
-using ProjectMagma.Simulation;
 using ProjectMagma.Shared.LevelData;
 using ProjectMagma.Simulation.Attributes;
 using System.Diagnostics;
@@ -41,7 +33,7 @@ namespace ProjectMagma.Simulation
         }
 
         public RendererUpdateQueue Initialize(
-            ContentManager content,
+            WrappedContentManager wrappedContent,
             String level
         )
         {
@@ -55,7 +47,7 @@ namespace ProjectMagma.Simulation
             paused = false;
 
             // load level data
-            levelData = content.Load<LevelData>(level);
+            levelData = wrappedContent.Load<LevelData>(level);
             entityManager.Load(levelData);
 
             simTime = new SimulationTime();

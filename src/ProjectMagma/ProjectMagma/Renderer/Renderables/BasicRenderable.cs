@@ -58,7 +58,7 @@ namespace ProjectMagma.Renderer
 
         protected override void ApplyEffectsToModel()
         {
-            Effect effect = Game.Instance.Content.Load<Effect>("Effects/Basic/Basic");
+            Effect effect = Game.Instance.ContentManager.Load<Effect>("Effects/Basic/Basic");
             SetDefaultMaterialParameters();
             SetModelEffect(Model, effect);
         }

@@ -1184,11 +1184,11 @@
       <Importer>FbxImporter</Importer>
       <Processor>ModelProcessor</Processor>
     </None>
-    <None Include="Models\Player\dwarf2.x">
+    <Compile Include="Models\Player\dwarf2.x">
       <Name>dwarf2</Name>
       <Importer>XModelImporter</Importer>
       <Processor>DwarfProcessor</Processor>
-    </None>
+    </Compile>
     <Compile Include="Sprites\HUD\bar_background.tga">
       <Name>bar_background</Name>
       <Importer>TextureImporter</Importer>

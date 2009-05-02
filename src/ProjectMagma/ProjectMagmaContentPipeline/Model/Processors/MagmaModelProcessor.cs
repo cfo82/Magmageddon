@@ -228,6 +228,9 @@ namespace ProjectMagma.ContentPipeline.ModelProcessors
                 throw new ArgumentException(string.Format("unable to find referenced child ({0})!", CurrentGroup));
             }
 
+            // copy the identity
+            currentGroupNode.Identity = input.Identity;
+
             // calculate bounds because changes are based on the bounding box
             AlignedBox3 bb = CalculateAlignedBox3(currentGroupNode, context, true);
 

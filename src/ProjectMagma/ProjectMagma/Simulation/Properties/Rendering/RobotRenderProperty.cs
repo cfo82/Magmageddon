@@ -11,9 +11,12 @@ using ProjectMagma.Renderer;
 
 namespace ProjectMagma.Simulation
 {
-    public class RobotRenderProperty : BasicRenderProperty
+    public class RobotRenderProperty : TexturedRenderProperty
     {
-        protected override ModelRenderable CreateRenderable(Entity entity, Vector3 scale, Quaternion rotation, Vector3 position, Model model)
+        protected override TexturedRenderable CreateTexturedRenderable(
+            Entity entity, Vector3 scale, Quaternion rotation, Vector3 position, Model model,
+            Texture2D diffuseTexture, Texture2D specularTexture, Texture2D normalTexture
+        )
         {
             Debug.Assert(entity.HasVector3("color1"));
             Vector3 color1 = entity.GetVector3("color1");
@@ -21,7 +24,9 @@ namespace ProjectMagma.Simulation
             Debug.Assert(entity.HasVector3("color2"));
             Vector3 color2 = entity.GetVector3("color2");
 
-            return new RobotRenderable(scale, rotation, position, model, color1, color2);
+            return new RobotRenderable(scale, rotation, position, model,
+                diffuseTexture, specularTexture, normalTexture,
+                color1, color2);
         }
     }
 }

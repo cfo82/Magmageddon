@@ -123,7 +123,7 @@ namespace ProjectMagma.Simulation
             arrow.AddStringAttribute("mesh", player.GetString("arrow_mesh"));
             arrow.AddVector3Attribute("scale", new Vector3(12, 12, 12));
 
-            arrow.AddVector3Attribute("diffuse_color", player.GetVector3("diffuse_color"));
+            arrow.AddVector3Attribute("diffuse_color", player.GetVector3("color2"));
             arrow.AddVector3Attribute("specular_color", Vector3.One);
             arrow.AddFloatAttribute("specular_power", 0.5f);
             arrow.AddVector2Attribute("persistent_squash", new Vector2(1000, 0.8f));

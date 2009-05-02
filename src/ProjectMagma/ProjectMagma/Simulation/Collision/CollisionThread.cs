@@ -31,6 +31,16 @@ namespace ProjectMagma.Simulation.Collision
             startEvent.Set();
         }
 
+        private double Now
+        {
+            get
+            {
+                double now = DateTime.Now.Ticks;
+                double ms = now / 10000d;
+                return ms;
+            }
+        }
+
         private void Run()
         {
 #if XBOX
@@ -42,9 +52,11 @@ namespace ProjectMagma.Simulation.Collision
                 {
                     startEvent.WaitOne();
 
+                    double startTime = Now;
+
                     Contact lastContact = null;
                     TestList.TestEntry entry = testList.GetNextCollisionEntry();
-                    while (entry != null)
+                    while (entry != null && (Now - startTime) < 2)
                     {
                         // do collision detection with this entry!
                         ContactTest test = CollisionManager.ContactTests[

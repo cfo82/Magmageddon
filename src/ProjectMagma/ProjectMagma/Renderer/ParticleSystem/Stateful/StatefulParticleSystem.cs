@@ -27,6 +27,7 @@ namespace ProjectMagma.Renderer.ParticleSystem.Stateful
             this.particleCreateEffect = null;
             this.particleUpdateEffect = null;
             this.particleRenderingEffect = null;
+            this.createVertexLists = new List<CreateVertex[]>(32);
             spriteBatch = new SpriteBatch(device);
 
             LoadResources(renderer, wrappedContent, device);
@@ -116,15 +117,41 @@ namespace ProjectMagma.Renderer.ParticleSystem.Stateful
             this.emitters.Remove(emitter);
         }
 
+        void FlushCreateParticles(int count)
+        {
+            device.Vertices[0].SetSource(createVertexBuffer, 0, CreateVertex.SizeInBytes);
+            device.VertexDeclaration = createVertexDeclaration;
+
+            device.RenderState.AlphaBlendEnable = false;
+
+            particleCreateEffect.Begin();
+
+            foreach (EffectPass pass in particleCreateEffect.CurrentTechnique.Passes)
+            {
+                pass.Begin();
+
+                device.DrawPrimitives(PrimitiveType.PointList, 0, count);
+
+                pass.End();
+            }
+
+            particleCreateEffect.End();
+
+            device.Vertices[0].SetSource(null, 0, 0);
+        }
+
         void CreateParticles(
             double lastFrameTime,
-            double currentFrameTime
+            double currentFrameTime,
+            bool render
         )
         {
             Vector2 positionHalfPixel = new Vector2(1.0f / (2.0f * positionTextures[0].Width), 1.0f / (2.0f * positionTextures[0].Height));
 
-            foreach (ParticleEmitter emitter in emitters)
+            for (int emitterIndex = 0; emitterIndex < emitters.Count; ++emitterIndex)
             {
+                ParticleEmitter emitter = emitters[emitterIndex];
+
                 NewParticle[] list = emitter.CreateParticles(lastFrameTime, currentFrameTime);
                 if (list.Length == 0)
                     { continue; }
@@ -148,32 +175,34 @@ namespace ProjectMagma.Renderer.ParticleSystem.Stateful
                     ++index;
                 }
 
-                for (int i = 0; i < vertices.Length; i += createVertexBufferSize)
+                createVertexLists.Add(vertices);
+            }
+
+            if (render)
+            {
+                for (int i = 0; i < createVertexLists.Count; ++i)
                 {
-                    int passVerticesCount = vertices.Length - i;
-                    if (passVerticesCount > createVertexBufferSize)
-                        { passVerticesCount = createVertexBufferSize; }
-                    createVertexBuffer.SetData<CreateVertex>(vertices, i, passVerticesCount);
+                    CreateVertex[] currentVertices = createVertexLists[i];
 
-                    device.Vertices[0].SetSource(createVertexBuffer, 0, CreateVertex.SizeInBytes);
-                    device.VertexDeclaration = createVertexDeclaration;
-
-                    device.RenderState.AlphaBlendEnable = false;
-
-                    particleCreateEffect.Begin();
-
-                    foreach (EffectPass pass in particleCreateEffect.CurrentTechnique.Passes)
+                    int verticesCopied = 0;
+                    while (verticesCopied < currentVertices.Length)
                     {
-                        pass.Begin();
+                        int passVerticesCount = currentVertices.Length - verticesCopied;
+                        if (passVerticesCount > createVertexBufferSize)
+                        { passVerticesCount = createVertexBufferSize; }
+                        createVertexBuffer.SetData<CreateVertex>(currentVertices, verticesCopied, passVerticesCount);
+                        verticesCopied += passVerticesCount;
 
-                        device.DrawPrimitives(PrimitiveType.PointList, 0, passVerticesCount);
-
-                        pass.End();
+                        if (verticesCopied >= createVertexBufferSize)
+                        {
+                            FlushCreateParticles(verticesCopied);
+                        }
                     }
 
-                    particleCreateEffect.End();
-
-                    device.Vertices[0].SetSource(null, 0, 0);
+                    if (verticesCopied > 0)
+                    {
+                        FlushCreateParticles(verticesCopied);
+                    }
                 }
             }
         }
@@ -183,6 +212,8 @@ namespace ProjectMagma.Renderer.ParticleSystem.Stateful
             double currentFrameTime
         )
         {
+            createVertexLists.Clear();
+
             // calculate the timestep to make
             double intermediateLastFrameTime = lastFrameTime - remainingDt;
             double intermediateCurrentFrameTime = intermediateLastFrameTime + simulationStep;
@@ -218,7 +249,7 @@ namespace ProjectMagma.Renderer.ParticleSystem.Stateful
                 pass.End();
                 particleUpdateEffect.End();
 
-                CreateParticles(intermediateLastFrameTime, intermediateCurrentFrameTime);
+                CreateParticles(intermediateLastFrameTime, intermediateCurrentFrameTime, (intermediateCurrentFrameTime + simulationStep) > currentFrameTime);
 
                 device.SetRenderTarget(1, oldRenderTarget1);
                 device.SetRenderTarget(0, oldRenderTarget0);
@@ -353,5 +384,6 @@ namespace ProjectMagma.Renderer.ParticleSystem.Stateful
         private Effect particleRenderingEffect;
 
         private SpriteBatch spriteBatch;
+        private List<CreateVertex[]> createVertexLists;
     }
 }

@@ -138,7 +138,10 @@ namespace ProjectMagma.Simulation.Collision
             Debug.Assert(inCollisionDetection == 0);
 
             Interlocked.Exchange(ref inCollisionDetection, 1);
-            Interlocked.Exchange(ref currentCollisionEntry, -1);
+            if (currentCollisionEntry >= collisionList.Count)
+            {
+                Interlocked.Exchange(ref currentCollisionEntry, -1);
+            }
         }
 
         public TestEntry GetNextCollisionEntry()

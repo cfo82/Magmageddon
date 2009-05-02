@@ -317,7 +317,6 @@ namespace ProjectMagma
                 {
                     simulationThread.Join();
                 }
-                simulationThread.Abort();
             }
 
             if (simulationThread == null)

@@ -30,7 +30,7 @@ namespace ProjectMagma
         private void LevelSelected(MenuItem sender)
         {
             Game.Instance.LoadLevel(Game.Instance.Levels[Selected].FileName);
-            //menu.OpenMenuScreen(playerMenu);
+            menu.OpenMenuScreen(playerMenu);
         }
     }
 }

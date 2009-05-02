@@ -245,6 +245,7 @@ namespace ProjectMagma
 
             font = Game.Instance.Content.Load<SpriteFont>("Sprites/HUD/HUDFont");
 
+            paused = false;
         }
 
         /// <summary>
@@ -255,7 +256,10 @@ namespace ProjectMagma
         {
             if (simulationThread != null)
             {
-                simulationThread.Join();
+                if (!paused)
+                {
+                    simulationThread.Join();
+                }
                 simulationThread.Abort();
             }
 
@@ -305,7 +309,10 @@ namespace ProjectMagma
         /// </summary>
         protected override void UnloadContent()
         {
-            //simulationThread.Join();
+            if (!paused)
+            {
+                simulationThread.Join();
+            }
 
             RendererUpdateQueue q = simulation.Close();
             renderer.AddUpdateQueue(q);
@@ -320,7 +327,7 @@ namespace ProjectMagma
             profiler.Write(device, Window.Title, "profiling.txt");
         }
 
-        bool paused = false;
+        bool paused = true;
 
         public void Pause()
         {

@@ -230,7 +230,5 @@ namespace ProjectMagma.Simulation
         {
             ChangeInt("Jumps", newValue);
         }
-
-        private HUDRenderable renderable;
     }
 }

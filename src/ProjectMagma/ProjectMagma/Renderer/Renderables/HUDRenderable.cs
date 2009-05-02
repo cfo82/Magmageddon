@@ -118,7 +118,6 @@ namespace ProjectMagma.Renderer
             barEffect.Parameters["BackgroundTexture"].SetValue(barBackgroundTexture);
             barEffect.Parameters["ComponentTexture"].SetValue(barComponentTexture);
             barEffect.Parameters["Size"].SetValue(BarAreaSize);
-            health = 80;
             barEffect.Parameters["HealthValue"].SetValue(((float)health) / maxHealth);
             barEffect.Parameters["EnergyValue"].SetValue(((float)energy) / maxEnergy);
             Console.WriteLine("health: " + health + " " + maxHealth + " " + ((float)health) / maxHealth);

@@ -12,7 +12,7 @@ using ProjectMagma.Shared.Math.Primitives;
 namespace ProjectMagma.ContentPipeline.ModelProcessors
 {
     [ContentProcessor(DisplayName = "Magma - Lava Processor")]
-    public class LavaProcessor : MoveProcessor<ModelProcessor>
+    public class LavaProcessor : MagmaModelProcessor<ModelProcessor>
     {
 
         protected override Vector3 CalculateDiff(ref Vector3 origDiff, ref AlignedBox3 bb)

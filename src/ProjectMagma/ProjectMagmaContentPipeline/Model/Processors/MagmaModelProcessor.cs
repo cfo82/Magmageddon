@@ -13,7 +13,7 @@ using ProjectMagma.ContentPipeline.Model;
 
 namespace ProjectMagma.ContentPipeline.ModelProcessors
 {
-    public abstract class MoveProcessor<BaseClass> : ContentProcessor<NodeContent, MagmaModelContent> where BaseClass : ModelProcessor, new()
+    public abstract class MagmaModelProcessor<BaseClass> : ContentProcessor<NodeContent, MagmaModelContent> where BaseClass : ModelProcessor, new()
     {
         #region Main processing
 

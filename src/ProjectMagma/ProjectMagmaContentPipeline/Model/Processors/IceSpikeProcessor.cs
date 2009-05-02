@@ -7,16 +7,15 @@ using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Content.Pipeline;
 using Microsoft.Xna.Framework.Content.Pipeline.Graphics;
 using Microsoft.Xna.Framework.Content.Pipeline.Processors;
-using ProjectMagma.Shared.Math.Primitives;
 
 namespace ProjectMagma.ContentPipeline.ModelProcessors
 {
-    [ContentProcessor(DisplayName = "Magma - PowerUp")]
-    public class PowerUpProcessor : MoveProcessor<ModelProcessor>
+    [ContentProcessor(DisplayName = "Magma - Ice Spike Processor")]
+    public class IceSpikeProcessor : MagmaModelProcessor<ModelProcessor>
     {
-        protected override Vector3 CalculateDiff(ref Vector3 origDiff, ref AlignedBox3 bb)
+        protected override Vector3 CalculateDiff(ref Vector3 origDiff, ref ProjectMagma.Shared.Math.Primitives.AlignedBox3 bb)
         {
-            return new Vector3(0, 0.0f - bb.Min.Y, 0);
+            return new Vector3(-bb.Max.X, 0, 0);
         }
     }
 }

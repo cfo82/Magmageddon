@@ -11,8 +11,8 @@ using ProjectMagma.Shared.Math.Primitives;
 
 namespace ProjectMagma.ContentPipeline.ModelProcessors
 {
-    [ContentProcessor(DisplayName = "Magma - Cave Processor")]
-    public class CaveProcessor : MoveProcessor<ModelProcessor>
+    [ContentProcessor(DisplayName = "Magma - Island Processor")]
+    public class IslandProcessor : MagmaModelProcessor<ModelProcessor>
     {
         protected override Vector3 CalculateDiff(ref Vector3 origDiff, ref AlignedBox3 bb)
         {

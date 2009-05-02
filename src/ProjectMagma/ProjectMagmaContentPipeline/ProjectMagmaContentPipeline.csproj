@@ -118,18 +118,18 @@
     <Compile Include="Math\Primitives\Serialization\Cylinder3Writer.cs" />
     <Compile Include="Math\Primitives\Serialization\VolumeWriter.cs" />
     <Compile Include="Math\Primitives\Serialization\VolumeCollectionWriter.cs" />
-    <Compile Include="ModelProcessors\CaveProcessor.cs" />
-    <Compile Include="ModelProcessors\DefaultProcessor.cs" />
-    <Compile Include="ModelProcessors\DwarfProcessor.cs" />
-    <Compile Include="ModelProcessors\ExplosionProcessor.cs" />
-    <Compile Include="ModelProcessors\FlameProcessor.cs" />
-    <Compile Include="ModelProcessors\PowerUpProcessor.cs" />
-    <Compile Include="ModelProcessors\IceSpikeProcessor.cs" />
-    <Compile Include="ModelProcessors\IslandProcessor.cs" />
-    <Compile Include="ModelProcessors\LavaProcessor.cs" />
-    <Compile Include="ModelProcessors\MoveProcessor.cs" />
-    <Compile Include="ModelProcessors\PillarProcessor.cs" />
-    <Compile Include="ModelProcessors\PlayerProcessor.cs" />
+    <Compile Include="Model\Processors\CaveProcessor.cs" />
+    <Compile Include="Model\Processors\DefaultProcessor.cs" />
+    <Compile Include="Model\Processors\DwarfProcessor.cs" />
+    <Compile Include="Model\Processors\ExplosionProcessor.cs" />
+    <Compile Include="Model\Processors\FlameProcessor.cs" />
+    <Compile Include="Model\Processors\PowerUpProcessor.cs" />
+    <Compile Include="Model\Processors\IceSpikeProcessor.cs" />
+    <Compile Include="Model\Processors\IslandProcessor.cs" />
+    <Compile Include="Model\Processors\LavaProcessor.cs" />
+    <Compile Include="Model\Processors\MagmaModelProcessor.cs" />
+    <Compile Include="Model\Processors\PillarProcessor.cs" />
+    <Compile Include="Model\Processors\PlayerProcessor.cs" />
     <Compile Include="Model\MagmaModelContent.cs" />
     <Compile Include="Model\Serialization\MagmaModelContentWriter.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
@@ -148,9 +148,6 @@
       <Project>{68FEE9A0-EA37-4321-B485-3D5B1DED238D}</Project>
       <Name>ProjectMagmaShared</Name>
     </ProjectReference>
-  </ItemGroup>
-  <ItemGroup>
-    <Folder Include="Model\Processors\" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <Import Project="$(MSBuildExtensionsPath)\Microsoft\XNA Game Studio\Microsoft.Xna.GameStudio.ContentPipelineExtensions.targets" />

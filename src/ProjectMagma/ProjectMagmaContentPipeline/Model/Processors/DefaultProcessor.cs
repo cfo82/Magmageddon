@@ -11,12 +11,8 @@ using ProjectMagma.Shared.Math.Primitives;
 
 namespace ProjectMagma.ContentPipeline.ModelProcessors
 {
-    [ContentProcessor(DisplayName = "Magma - Pillar Processor")]
-    public class PillarProcessor : MoveProcessor<ModelProcessor>
+    [ContentProcessor(DisplayName = "Magma - Default Processor")]
+    public class Default : MagmaModelProcessor<ModelProcessor>
     {
-        protected override Vector3 CalculateDiff(ref Vector3 origDiff, ref AlignedBox3 bb)
-        {
-            return new Vector3(0, 0.0f - bb.Min.Y, 0);
-        }
     }
 }

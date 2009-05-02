@@ -5,7 +5,7 @@ using ProjectMagma.Shared.Math.Primitives;
 namespace ProjectMagma.ContentPipeline.ModelProcessors
 {
     [ContentProcessor(DisplayName = "Magma - Dwarf Processor")]
-    public class DwarfProcessor : MoveProcessor<Xclna.Xna.Animation.Content.AnimatedModelProcessor>
+    public class DwarfProcessor : MagmaModelProcessor<Xclna.Xna.Animation.Content.AnimatedModelProcessor>
     {
         protected override Vector3 CalculateDiff(ref Vector3 origDiff, ref AlignedBox3 bb)
         {

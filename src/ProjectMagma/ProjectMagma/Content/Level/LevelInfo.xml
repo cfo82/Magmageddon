@@ -8,10 +8,4 @@
     <FileName>Level\TestLevel</FileName>
   </Level>
 
-  <Level>
-    <Name>TestLevel2</Name>
-    <Description>The same level, but pssst</Description>
-    <FileName>Level\TestLevel</FileName>
-  </Level>
-
 </Levels>

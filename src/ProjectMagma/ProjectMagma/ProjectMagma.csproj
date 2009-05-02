@@ -82,10 +82,6 @@
       <RequiredTargetFramework>3.5</RequiredTargetFramework>
       <Private>False</Private>
     </Reference>
-    <Reference Include="Xclna.Xna.Animationx86, Version=1.0.2.0, Culture=neutral, processorArchitecture=x86">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>.\Xclna.Xna.Animationx86.dll</HintPath>
-    </Reference>
   </ItemGroup>
   <ItemGroup>
     <Compile Include="DoublyIntegratedVector2.cs" />
@@ -271,6 +267,10 @@
     </BootstrapperPackage>
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\AnimationComponentLibrary\AnimationComponentLibrary.csproj">
+      <Project>{1C4B7EEC-2AC6-4026-A53E-A254BDB79F3D}</Project>
+      <Name>AnimationComponentLibrary</Name>
+    </ProjectReference>
     <ProjectReference Include="..\ProjectMagmaShared\ProjectMagmaShared.csproj">
       <Project>{68FEE9A0-EA37-4321-B485-3D5B1DED238D}</Project>
       <Name>ProjectMagmaShared</Name>

@@ -261,12 +261,12 @@
       <Private>False</Private>
       <RequiredTargetFramework>3.5</RequiredTargetFramework>
     </Reference>
-    <Reference Include="Xclna.Xna.Animation360, Version=1.0.2.0, Culture=neutral, processorArchitecture=x86">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>.\Xclna.Xna.Animation360.dll</HintPath>
-    </Reference>
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\AnimationComponentLibrary\_XBOX360_AnimationComponentLibrary.csproj">
+      <Project>{DC886B6A-894D-4C25-9DC3-F9DC775D2776}</Project>
+      <Name>_XBOX360_AnimationComponentLibrary</Name>
+    </ProjectReference>
     <ProjectReference Include="..\ProjectMagmaContentPipeline\ProjectMagmaContentPipeline.csproj">
       <Project>{41D8590B-0AD9-4E4A-B1ED-9E6E571364A2}</Project>
       <Name>ProjectMagmaContentPipeline</Name>

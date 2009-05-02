@@ -127,8 +127,6 @@ namespace ProjectMagma.Simulation
             }
             else
             {
-                simTime.Pause();
-
                 // safety measurement:
                 //   - first we should never enter this methode since we pause simulation and simulation thread simultaneously
                 //    => assert if we arrive here
@@ -206,11 +204,13 @@ namespace ProjectMagma.Simulation
         public void Pause()
         {
             paused = true;
+            simTime.Pause();
         }
 
         public void Resume()
         {
             paused = false;
+            simTime.Resume();
         }
 
         #region interval execution functionality

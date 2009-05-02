@@ -80,6 +80,11 @@ namespace ProjectMagma.Simulation
 
         internal void Pause()
         {
+
+        }
+
+        internal void Resume()
+        {
             lastTick = DateTime.Now.Ticks;
         }
 

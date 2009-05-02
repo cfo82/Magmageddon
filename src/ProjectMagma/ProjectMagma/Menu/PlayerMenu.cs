@@ -50,7 +50,7 @@ namespace ProjectMagma
             // all active gamepads have a robot
             for (int i = 1; i < 4; i++)
             {
-                playerActive[i] = playerActive[i] && GamePad.GetCapabilities((PlayerIndex)i).IsConnected;
+                playerActive[i] = GamePad.GetCapabilities((PlayerIndex)i).IsConnected;
                 robotSelected[i] = i;
             }
         }

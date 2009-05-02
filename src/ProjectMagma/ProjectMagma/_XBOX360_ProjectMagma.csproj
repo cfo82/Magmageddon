@@ -58,7 +58,15 @@
   <ItemGroup>
     <Compile Include="DoublyIntegratedFloat.cs" />
     <Compile Include="DoublyIntegratedVector2.cs" />
-    <Compile Include="Menu.cs" />
+    <Compile Include="Menu\ItemizedMenuScreen.cs" />
+    <Compile Include="Menu\ItemSelectionHandler.cs" />
+    <Compile Include="Menu\LevelMenu.cs" />
+    <Compile Include="Menu\MainMenu.cs" />
+    <Compile Include="Menu\Menu.cs" />
+    <Compile Include="Menu\MenuItem.cs" />
+    <Compile Include="Menu\MenuScreen.cs" />
+    <Compile Include="Menu\PlayerMenu.cs" />
+    <Compile Include="Menu\SettingsMenu.cs" />
     <Compile Include="Profiler\FrameStatistics.cs" />
     <Compile Include="Profiler\Profiler.cs" />
     <Compile Include="Profiler\Section.cs" />

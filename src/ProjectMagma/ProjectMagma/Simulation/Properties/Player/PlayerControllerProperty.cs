@@ -11,12 +11,15 @@ namespace ProjectMagma.Simulation
 {
     public class PlayerControllerProperty : Property
     {
-        #region button assignments
+        #region flags
         private static readonly bool LeftStickSelection = true;
+        private static readonly bool DeselectOnRelease = false;
+        #endregion
 
+        #region button assignments
         // gamepad buttons
-        private static readonly Buttons[] AttractionButtons = { Buttons.RightTrigger, Buttons.B };
-        private static readonly Buttons[] JetpackButtons = { Buttons.LeftTrigger, Buttons.A };
+        private static readonly Buttons[] AttractionButtons = { Buttons.A };
+        private static readonly Buttons[] JetpackButtons = { Buttons.A };
         private static readonly Buttons[] IceSpikeButtons = { Buttons.X };
         private static readonly Buttons[] FlamethrowerButtons = { Buttons.Y };
         private static readonly Buttons[] HitButtons = { Buttons.RightShoulder };
@@ -49,8 +52,9 @@ namespace ProjectMagma.Simulation
         private float islandRepulsionStoppedAt = 0;
 
         private float islandSelectedAt = 0;
-        private Vector3 lastStickDir = Vector3.Zero;
         private Entity selectedIsland = null;
+        private bool selectedIslandInFreeJumpRange = false;
+        private Vector3 lastStickDir = Vector3.Zero;
         private Entity destinationIsland = null;
         private float destinationOrigDist = 0;
         private float destinationOrigY = 0;
@@ -96,9 +100,6 @@ namespace ProjectMagma.Simulation
             player.AddIntAttribute("fuel", constants.GetInt("max_fuel"));
 
             player.AddIntAttribute("jumps", 0);
-#if DEBUG
-                player.SetInt("jumps", 100);
-#endif
 
             player.AddIntAttribute("kills", 0);
             player.AddIntAttribute("deaths", 0);
@@ -234,9 +235,8 @@ namespace ProjectMagma.Simulation
             // TODO: island selection with islands/player projected in screen-plane.
 
             // island selection and attraction
-            bool allowSelection = attractedIsland == null
-                && destinationIsland == null;
-            PerformIslandSelectionAction(at, allowSelection);
+            bool allowSelection = attractedIsland == null && destinationIsland == null;
+            PerformIslandSelectionAction(at, allowSelection, ref playerPosition);
             PerformIslandJumpAction(ref playerPosition, ref playerVelocity);
             PerformIslandAttractionAction(player, allowSelection, ref playerPosition, ref playerVelocity);
             #endregion
@@ -318,46 +318,13 @@ namespace ProjectMagma.Simulation
                     attractedIsland.SetBool("stop_attraction", true);
 
                     // initiate jump
-                    if ((attractedIsland.GetVector3("position") - player.GetVector3("position")).Length()
-                        < constants.GetFloat("island_attraction_jump_range"))
+                    if (selectedIslandInFreeJumpRange)
                     {
                         StartIslandJump(attractedIsland, ref playerPosition, ref playerVelocity);
                     }
 
                     // remove selection
                     RemoveSelectionArrow();
-                }
-                else
-                {
-                    // check range
-                    Vector3 xzdist = attractedIsland.GetVector3("position") - playerPosition;
-                    xzdist.Y = 0;
-                    if ((xzdist).Length()
-                        < constants.GetFloat("island_attraction_jump_range"))
-                    {
-                        /*
-                        // start attraction stop (has timeout)
-                        attractedIsland.SetBool("stop_attraction", true);
-
-                        // initiate jump
-                        if ((attractedIsland.GetVector3("position") - player.GetVector3("position")).Length()
-                            < constants.GetFloat("island_attraction_jump_range"))
-                        {
-                            StartIslandJump(attractedIsland, ref playerPosition, ref playerVelocity);
-                        }
-
-                        // remove selection
-                        RemoveSelectionArrow();
-                        */
-
-                        //arrow.SetVector2("persistent_squash", new Vector2(100f, 1f));
-                        (arrow.GetProperty("render") as BasicRenderProperty).SquashParams = new Vector2(100f, 1f);
-                    }
-                    else
-                    {
-                        //arrow.SetVector2("persistent_squash", new Vector2(1000f, 0.8f));
-                        (arrow.GetProperty("render") as BasicRenderProperty).SquashParams = new Vector2(1000f, 0.8f);
-                    }
                 }
             }
         }
@@ -368,13 +335,12 @@ namespace ProjectMagma.Simulation
             if (controllerInput.jetpackButtonPressed
                 && selectedIsland != null
                 && destinationIsland == null
-                && player.GetInt("jumps") > 0
+                && (player.GetInt("jumps") > 0 // far ranged jumps avail?
+                || selectedIslandInFreeJumpRange) // or only near jump?
             )
             {
-                //if ((selectedIsland.GetVector3("position") - player.GetVector3("position")).Length()
-                //    > 300)
-                //    return;
-                player.SetInt("jumps", player.GetInt("jumps") - 1);
+                if(!selectedIslandInFreeJumpRange)
+                    player.SetInt("jumps", player.GetInt("jumps") - 1);
                 StartIslandJump(selectedIsland, ref playerPosition, ref playerVelocity);
             }
         }
@@ -390,15 +356,10 @@ namespace ProjectMagma.Simulation
             destinationOrigDist = islandDir.Length();
             destinationOrigY = playerPosition.Y;
 
-//            playerVelocity = -constants.GetVector3("gravity_acceleration") * maxTime;
-//                + Vector3.UnitY * constants.GetFloat("island_jump_arc_height") * maxTime;
-            player.SetVector3("island_jump_velocity", Vector3.Normalize(islandDir) 
-                * constants.GetFloat("island_jump_speed"));
-
             LeaveActiveIsland();
         }
 
-        private void PerformIslandSelectionAction(float at, bool allowSelection)
+        private void PerformIslandSelectionAction(float at, bool allowSelection, ref Vector3 playerPosition)
         {
             if (allowSelection)
             {
@@ -420,6 +381,7 @@ namespace ProjectMagma.Simulation
                         lastStickDir = stickDir;
                         selectedIsland = SelectBestIsland(stickDir);
 
+                        // new island selected
                         if (selectedIsland != null)
                         {
                             islandSelectedAt = at;
@@ -430,6 +392,9 @@ namespace ProjectMagma.Simulation
                                 arrow.AddProperty("render", new BasicRenderProperty());
                                 arrow.AddProperty("shadow_cast", new ShadowCastProperty());
                             }
+                            
+                            // reset in range indicator
+                            selectedIslandInFreeJumpRange = false;
                         }
                     }
                 }
@@ -437,10 +402,29 @@ namespace ProjectMagma.Simulation
                 {
                     // deselect after timeout
                     if (selectedIsland != null
-                        && at > islandSelectedAt + constants.GetFloat("island_deselection_timeout"))
+                        && at > islandSelectedAt + constants.GetFloat("island_deselection_timeout")
+                        && DeselectOnRelease)
                     {
                         RemoveSelectionArrow();
                     }
+                }
+            }
+
+            if (selectedIsland != null)
+            {
+                // check range
+                Vector3 xzdist = selectedIsland.GetVector3("position") - playerPosition;
+                xzdist.Y = 0;
+                if ((xzdist).Length() < constants.GetFloat("island_jump_free_range"))
+                {
+                    //arrow.SetVector2("persistent_squash", new Vector2(100f, 1f));
+                    (arrow.GetProperty("render") as BasicRenderProperty).SquashParams = new Vector2(100f, 1f);
+                    selectedIslandInFreeJumpRange = true;
+                }
+                else
+                {
+                    //arrow.SetVector2("persistent_squash", new Vector2(1000f, 0.8f));
+                    (arrow.GetProperty("render") as BasicRenderProperty).SquashParams = new Vector2(1000f, 0.8f);
                 }
             }
         }
@@ -451,6 +435,7 @@ namespace ProjectMagma.Simulation
             arrow.RemoveProperty("render");
             arrow.RemoveProperty("shadow_cast");
             arrow.SetVector2("persistent_squash", new Vector2(1000f, 0.8f));
+            lastStickDir = Vector3.Zero;
             islandSelectedAt = 0;
         }
 
@@ -733,13 +718,13 @@ namespace ProjectMagma.Simulation
                 if (r > 1)
                     r = 1;
                 // todo: make constante
-                float S = 200;
+                float S = constants.GetFloat("island_jump_arc_height");
                 float or = 1 - r;
                 float mid = Math.Max(destinationOrigY + S, landingPos.Y + S);
                 // bezier
                 float y = destinationOrigY * or * or + 2 * mid * or * r + landingPos.Y * r * r;
                 playerPosition.Y = y;
-                Console.WriteLine("y: "+y);
+                // Console.WriteLine("y: "+y);
 
                 // check for arrival
                 Vector3 isectPt = Vector3.Zero;
@@ -767,8 +752,8 @@ namespace ProjectMagma.Simulation
 
                     lastIslandDir = islandDir;
 
-                    player.SetVector3("island_jump_velocity", Vector3.Normalize(islandDir) 
-                        * constants.GetFloat("island_jump_speed"));
+                    player.SetVector3("island_jump_velocity", Vector3.Normalize(islandDir)
+                        /** constants.GetFloat("island_jump_speed")*/ * destinationOrigDist * 3);
                 }
             }
         }
@@ -843,6 +828,13 @@ namespace ProjectMagma.Simulation
                     {
                         arrow.RemoveProperty("render");
                         arrow.RemoveProperty("shadow_cast");
+                    }
+
+                    if (flame != null)
+                    {
+                        // remove flamethrower flame
+                        Game.Instance.Simulation.EntityManager.RemoveDeferred(flame);
+                        flame = null;
                     }
 
                     // dead
@@ -1268,6 +1260,10 @@ namespace ProjectMagma.Simulation
                     attractedIsland.SetString("attracted_by", "");
                     attractedIsland = null;
                 }
+
+                // disable selection
+                if (selectedIsland != null)
+                    RemoveSelectionArrow();
             }
         }
 

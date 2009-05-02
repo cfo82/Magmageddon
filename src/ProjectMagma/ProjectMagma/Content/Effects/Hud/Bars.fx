@@ -54,7 +54,7 @@ float4 BarColor(float2 texCoord, float3 beginColor, float3 endColor, float value
 	float contentMask = components.b;
 	if(texCoord.x > 0.2)
 	{
-		float2 valueOffset = float2(value * 0.76, 0);
+		float2 valueOffset = float2((1-value) * 0.76, 0);
 		contentMask *= tex2D(ComponentSampler, texCoord + valueOffset).b;
 	}
 	

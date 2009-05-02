@@ -118,8 +118,10 @@ namespace ProjectMagma.Renderer
             barEffect.Parameters["BackgroundTexture"].SetValue(barBackgroundTexture);
             barEffect.Parameters["ComponentTexture"].SetValue(barComponentTexture);
             barEffect.Parameters["Size"].SetValue(BarAreaSize);
+            health = 80;
             barEffect.Parameters["HealthValue"].SetValue(((float)health) / maxHealth);
             barEffect.Parameters["EnergyValue"].SetValue(((float)energy) / maxEnergy);
+            Console.WriteLine("health: " + health + " " + maxHealth + " " + ((float)health) / maxHealth);
             barEffect.Parameters["HealthColor1"].SetValue(new Vector3(0.91f, 0.08f, 0.64f));
             barEffect.Parameters["HealthColor2"].SetValue(new Vector3(0.77f, 0.08f, 0.86f));
             barEffect.Parameters["PlayerMirror"].SetValue(playerMirror);

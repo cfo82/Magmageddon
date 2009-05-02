@@ -62,6 +62,7 @@ namespace ProjectMagma
             if (at > menu.buttonPressedAt + Menu.ButtonRepeatTimeout
                && ((GamePad.GetState(PlayerIndex.One).Buttons.A == ButtonState.Pressed
                 && menu.lastGPState.Buttons.A == ButtonState.Released)
+                || GamePad.GetState(PlayerIndex.One).Buttons.Start == ButtonState.Pressed
                 || (Keyboard.GetState().IsKeyDown(Keys.Enter)
                     && menu.lastKBState.IsKeyUp(Keys.Enter))))
             {
@@ -81,6 +82,7 @@ namespace ProjectMagma
                 Game.Instance.AddPlayers(players.ToArray<Entity>());
 
                 menu.Close();
+                return;
             }
 
             for (int i = 0; i < 4; i++)

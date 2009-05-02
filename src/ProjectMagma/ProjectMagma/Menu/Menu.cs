@@ -49,6 +49,8 @@ namespace ProjectMagma
 
             if (active)
             {
+                activeScreen.Update(gameTime);
+
                 if (at > buttonPressedAt + Menu.ButtonRepeatTimeout)
                 {
                     if ((gamePadState.Buttons.Start == ButtonState.Pressed
@@ -69,8 +71,6 @@ namespace ProjectMagma
                             buttonPressedAt = at;
                         }
                 }
-
-                activeScreen.Update(gameTime);
             }
             else
             {

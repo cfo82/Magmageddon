@@ -85,11 +85,11 @@
       <Attribute name="bv_type" template="string" value="sphere"/>
       <Attribute name="diffuse_color" template="float3" value="1.0 1.0 1.0"/>
       <Attribute name="emissive_color" template="float3" value="0.0 0.0 0.0"/>
+      <Attribute name="alpha" template="float" value="0.85"/>
       <Attribute name="persistent_squash" template="float2" value="1400.0 1.0"/>
     </Attributes>
     <Properties>
       <Property name="collision" type="ProjectMagma.Simulation.Collision.CollisionProperty"/>
-      <Property name="controller" type="ProjectMagma.Simulation.PowerUpController"/>
       <Property name="shadow_cast" type="ProjectMagma.Simulation.ShadowCastProperty"/>
       <Property name="render" type="ProjectMagma.Simulation.BasicRenderProperty"/>
       <Property name="render_highlight" type="ProjectMagma.Simulation.RenderHighlightProperty"/>
@@ -98,32 +98,46 @@
 
   <Entity name="powerup_health" extends="powerup_base" abstract="true">
     <Attributes>
-      <Attribute name="power" template="string" value="health"/>
-      <Attribute name="powerValue" template="int" value="100"/>
+      <Attribute name="value" template="int" value="100"/>
       <Attribute name="diffuse_color" template="float3" value="0.9 0.5 0.5"/>
       <Attribute name="emissive_color" template="float3" value="0.1 0.0 0.0"/>
-      <Attribute name="alpha" template="float" value="0.85"/>
-    </Attributes>    
+    </Attributes>
+    <Properties>
+      <Property name="controller" type="ProjectMagma.Simulation.PowerUpControllerHealth"/>
+    </Properties>
   </Entity>
 
   <Entity name="powerup_energy" extends="powerup_base" abstract="true">
     <Attributes>
-      <Attribute name="power" template="string" value="energy"/>
-      <Attribute name="powerValue" template="int" value="100"/>
+      <Attribute name="value" template="int" value="100"/>
       <Attribute name="diffuse_color" template="float3" value="0.5 0.5 0.9"/>
       <Attribute name="emissive_color" template="float3" value="0.0 0.0 0.1"/>
-      <Attribute name="alpha" template="float" value="0.85"/>
     </Attributes>
+    <Properties>
+      <Property name="controller" type="ProjectMagma.Simulation.PowerUpControllerEnergy"/>
+    </Properties>
   </Entity>
 
   <Entity name="powerup_jumps" extends="powerup_base" abstract="true">
     <Attributes>
-      <Attribute name="power" template="string" value="jumps"/>
-      <Attribute name="powerValue" template="int" value="10"/>
+      <Attribute name="value" template="int" value="10"/>
       <Attribute name="diffuse_color" template="float3" value="0.5 0.9 0.5"/>
       <Attribute name="emissive_color" template="float3" value="0.0 0.1 0.0"/>
-      <Attribute name="alpha" template="float" value="0.85"/>
     </Attributes>
+    <Properties>
+      <Property name="controller" type="ProjectMagma.Simulation.PowerUpControllerJumps"/>
+    </Properties>
   </Entity>
-  
+
+  <Entity name="powerup_repulsion" extends="powerup_base" abstract="true">
+    <Attributes>
+      <Attribute name="value" template="float" value="6"/>
+      <Attribute name="diffuse_color" template="float3" value="0.9 0.9 0.5"/>
+      <Attribute name="emissive_color" template="float3" value="0.1 0.1 0.0"/>
+    </Attributes>
+    <Properties>
+      <Property name="controller" type="ProjectMagma.Simulation.PowerUpControllerRepulsion"/>
+    </Properties>
+  </Entity>
+
 </Level>

@@ -100,6 +100,7 @@ namespace ProjectMagma.Simulation
             player.AddIntAttribute("fuel", constants.GetInt("max_fuel"));
 
             player.AddIntAttribute("jumps", 0);
+            player.AddFloatAttribute("repulsion_seconds", 0);
 
             player.AddIntAttribute("kills", 0);
             player.AddIntAttribute("deaths", 0);
@@ -883,7 +884,7 @@ namespace ProjectMagma.Simulation
             return false;
         }
 
-        private void CheckPlayerAttributeRanges(Entity player)
+        public void CheckPlayerAttributeRanges(Entity player)
         {
             int health = player.GetInt("health");
             if(health < 0)
@@ -905,6 +906,11 @@ namespace ProjectMagma.Simulation
             else
             if (fuel > constants.GetInt("max_fuel"))
                 player.SetInt("fuel", constants.GetInt("max_fuel"));
+
+            if (player.GetInt("jumps") < 0)
+                player.SetInt("jumps", 0);
+            if (player.GetFloat("repulsion_seconds") < 0)
+                player.SetFloat("repulsion_seconds", 0);
         }
 
         private Vector3 GetLandingPosition(Entity island)

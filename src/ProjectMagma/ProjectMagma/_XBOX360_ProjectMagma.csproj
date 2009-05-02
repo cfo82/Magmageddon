@@ -161,7 +161,11 @@
     <Compile Include="Simulation\Properties\Environment\ArrowController.cs" />
     <Compile Include="Simulation\Properties\Environment\CameraProperty.cs" />
     <Compile Include="Simulation\Properties\Environment\ExplosionControllerProperty.cs" />
-    <Compile Include="Simulation\Properties\Environment\PowerUpController.cs" />
+    <Compile Include="Simulation\Properties\Environment\PowerUpControllerBase.cs" />
+    <Compile Include="Simulation\Properties\Environment\PowerUpControllerEnergy.cs" />
+    <Compile Include="Simulation\Properties\Environment\PowerUpControllerHealth.cs" />
+    <Compile Include="Simulation\Properties\Environment\PowerUpControllerJumps.cs" />
+    <Compile Include="Simulation\Properties\Environment\PowerUpControllerRepulsion.cs" />
     <Compile Include="Simulation\Properties\Island\IslandCircualarMovementControllerProperty.cs" />
     <Compile Include="Simulation\Properties\Island\IslandControllerPropertyBase.cs" />
     <Compile Include="Simulation\Properties\Island\IslandPhysicalMovementControllerProperty.cs" />

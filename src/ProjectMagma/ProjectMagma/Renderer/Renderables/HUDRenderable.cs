@@ -75,7 +75,7 @@ namespace ProjectMagma.Renderer
             base.UnloadResources();
         }
 
-        private Vector2 BarAreaSize;
+        private Vector2 barAreaSize;
         private Vector2 multiplier, invMultiplier;
         private Matrix spriteScale, playerMirror;
         private int xStart, yStart;
@@ -85,8 +85,8 @@ namespace ProjectMagma.Renderer
             Viewport viewport = Game.Instance.GraphicsDevice.Viewport;
             float screenScale = (float)viewport.Width / 1280f;
             spriteScale = Matrix.CreateScale(screenScale, screenScale, 1);
-            BarAreaSize = new Vector2(271, 52);
-            Vector2 TotalSize = BarAreaSize + new Vector2(0, 50);
+            barAreaSize = new Vector2(271, 52);
+            Vector2 TotalSize = barAreaSize + new Vector2(0, 50);
             int horOff = 100, vertOff = 50;
 
             playerMirror = Matrix.Identity;
@@ -143,16 +143,13 @@ namespace ProjectMagma.Renderer
 
             barEffect.Parameters["BackgroundTexture"].SetValue(barBackgroundTexture);
             barEffect.Parameters["ComponentTexture"].SetValue(barComponentTexture);
-            barEffect.Parameters["Size"].SetValue(BarAreaSize);
+            barEffect.Parameters["Size"].SetValue(barAreaSize);
             barEffect.Parameters["HealthValue"].SetValue(displayedHealth / maxHealth);
             barEffect.Parameters["EnergyValue"].SetValue(displayedEnergy / maxEnergy);
             barEffect.Parameters["HealthBlink"].SetValue(healthBlink);
             barEffect.Parameters["EnergyBlink"].SetValue(energyBlink);
-            //barEffect.Parameters["Lives"].SetValue(lives);
             barEffect.Parameters["PlayerColor1"].SetValue(color1);
             barEffect.Parameters["PlayerColor2"].SetValue(color2);
-            //barEffect.Parameters["HealthColor1"].SetValue(new Vector3(0.91f, 0.08f, 0.64f));
-            //barEffect.Parameters["HealthColor2"].SetValue(new Vector3(0.77f, 0.08f, 0.86f));
             barEffect.Parameters["PlayerMirror"].SetValue(playerMirror);
         }
 
@@ -182,22 +179,23 @@ namespace ProjectMagma.Renderer
 
             // begin of first sprite batch - no effects, just strings
             spriteBatch.Begin(SpriteBlendMode.AlphaBlend, SpriteSortMode.Immediate, SaveStateMode.None, spriteScale);
+            Vector3 textColor = defaultTextColor * (1-frozenColorStrength) + frozenTextColor * frozenColorStrength;
 
-            // draw the player name 
+            // draw the player name
             Vector2 playerNameSize = playerNameFont.MeasureString(playerName.ToUpper());
             Vector2 playerNamePos = new Vector2(xStart + 50, yStart) + multiplier * (new Vector2(170, 117) - playerNameSize);
-            Vector2 playerNameShadowPos = playerNamePos + new Vector2(2, 2);
+            Vector2 playerNameShadowPos = playerNamePos + textShadowOffset;
             spriteBatch.DrawString(playerNameFont, playerName.ToUpper(), playerNameShadowPos, Color.DimGray);
-            spriteBatch.DrawString(playerNameFont, playerName.ToUpper(), playerNamePos, Color.White);
+            spriteBatch.DrawString(playerNameFont, playerName.ToUpper(), playerNamePos, new Color(textColor));
 
             // draw the current powerup status, if any
             string powerupString = PowerupString();
             Vector2 powerupStringSize = playerNameFont.MeasureString(powerupString);
             Vector2 powerupPos = new Vector2(xStart + 52, yStart + 20) + invMultiplier * (powerupStringSize -(new Vector2(120, 5)));
             //Vector2 powerupPos = new Vector2(xStart + 52, yStart + 20) + invMultiplier * (new Vector2(209, 97) - powerupStringSize);
-            Vector2 powerupShadowPos = powerupPos + new Vector2(2, 2);
+            Vector2 powerupShadowPos = powerupPos + textShadowOffset;
             spriteBatch.DrawString(powerupFont, powerupString, powerupShadowPos, Color.DimGray);
-            spriteBatch.DrawString(powerupFont, powerupString, powerupPos, Color.White);            
+            spriteBatch.DrawString(powerupFont, powerupString, powerupPos, new Color(textColor));
             
             // we're done with all strings
             spriteBatch.End();
@@ -205,7 +203,7 @@ namespace ProjectMagma.Renderer
             ApplyBarEffectParameters();
 
             // draw bar
-            Rectangle barRect = new Rectangle(xStart, yStart + 30, (int)BarAreaSize.X, (int)BarAreaSize.Y);
+            Rectangle barRect = new Rectangle(xStart, yStart + 30, (int)barAreaSize.X, (int)barAreaSize.Y);
             spriteBatch.Begin(SpriteBlendMode.AlphaBlend, SpriteSortMode.Immediate, SaveStateMode.None, spriteScale);
             barEffect.Begin();
             barEffect.CurrentTechnique.Passes[0].Begin();
@@ -216,6 +214,8 @@ namespace ProjectMagma.Renderer
 
             #endregion
         }
+
+        private static readonly Vector2 textShadowOffset = new Vector2(2, 2);
 
         private string PowerupString()
         {
@@ -314,11 +314,14 @@ namespace ProjectMagma.Renderer
 
         private float displayedHealth, displayedEnergy;
 
+        private float frozenColorStrength;
+
         private Effect barEffect;
 
         private Texture2D barBackgroundTexture;
         private Texture2D barComponentTexture;
 
-
+        private static readonly Vector3 frozenTextColor = new Vector3(0, 156, 255) / 255;
+        private static readonly Vector3 defaultTextColor = new Vector3(255, 255, 255) / 255;
     }
 }

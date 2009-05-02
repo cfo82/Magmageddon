@@ -15,7 +15,13 @@ namespace ProjectMagma.Simulation
     {
         protected override ModelRenderable CreateRenderable(Entity entity, Vector3 scale, Quaternion rotation, Vector3 position, Model model)
         {
-            return new RobotRenderable(scale, rotation, position, model);
+            Debug.Assert(entity.HasVector3("color1"));
+            Vector3 color1 = entity.GetVector3("color1");
+
+            Debug.Assert(entity.HasVector3("color2"));
+            Vector3 color2 = entity.GetVector3("color2");
+
+            return new RobotRenderable(scale, rotation, position, model, color1, color2);
         }
     }
 }

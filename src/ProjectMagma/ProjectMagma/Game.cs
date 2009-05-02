@@ -339,7 +339,7 @@ namespace ProjectMagma
 #if !XBOX
             Debug.Assert(
                 simulationThread == null ||
-                simulationThread.Thread.ThreadState == System.Threading.ThreadState.Stopped
+                simulationThread.Thread.ThreadState == System.Threading.ThreadState.WaitSleepJoin
                 );
 #endif
 

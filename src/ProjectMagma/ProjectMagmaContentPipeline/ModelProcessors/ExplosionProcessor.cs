@@ -11,7 +11,7 @@ using Microsoft.Xna.Framework.Content.Pipeline.Processors;
 namespace ProjectMagma.ContentPipeline.ModelProcessors
 {
     [ContentProcessor(DisplayName = "Magma - Explosion Processor")]
-    public class ExplosionProcessor : MoveProcessor
+    public class ExplosionProcessor : MoveProcessor<ModelProcessor>
     {
     }
 }

@@ -7,7 +7,7 @@
       <Attribute name="kind" template="string" value="player"/>
       <Attribute name="position" template="float3" value="0 0 0"/>
       <Attribute name="scale" template="float3" value="15 15 15"/>
-      <Attribute name="bv_type" template="string" value="alignedbox3tree"/>
+      <Attribute name="bv_type" template="string" value="sphere"/>
       <Attribute name="arrow_mesh" template="string" value="Models/Visualizations/arrow1"/>
       <Attribute name="alpha" template="float" value="1.0"/>
     </Attributes>
@@ -22,7 +22,7 @@
 
   <Entity name="green_snowman" extends="robot_base" abstract="true" >
     <Attributes>
-      <Attribute name="mesh" template="string" value="Models/Primitives/player1_primitive"/>
+      <Attribute name="mesh" template="string" value="Models/Player/dwarf"/>
       <Attribute name="diffuse_color" template="float3" value="0 1 0"/>
     </Attributes>
     <Properties>
@@ -32,7 +32,7 @@
 
   <Entity name="yellow_snowman" extends="robot_base" abstract="true" >
     <Attributes>
-      <Attribute name="mesh" template="string" value="Models/Primitives/player2_primitive"/>
+      <Attribute name="mesh" template="string" value="Models/Player/dwarf"/>
       <Attribute name="diffuse_color" template="float3" value="1 1 0"/>
     </Attributes>
     <Properties>

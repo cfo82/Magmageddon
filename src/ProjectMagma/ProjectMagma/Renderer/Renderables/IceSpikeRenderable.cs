@@ -5,6 +5,7 @@ using System.Text;
 using System.Diagnostics;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
+using ProjectMagma.Shared.Model;
 using ProjectMagma.Renderer.ParticleSystem.Emitter;
 using ProjectMagma.Renderer.ParticleSystem.Stateful.IceSpike;
 
@@ -32,7 +33,7 @@ namespace ProjectMagma.Renderer
             base.LoadResources();
 
             iceSpikeSystem = new IceSpike(Game.Instance.Renderer, Game.Instance.ContentManager, Game.Instance.GraphicsDevice);
-            iceSpikeModel = Game.Instance.ContentManager.Load<Model>("Models/Sfx/IceSpike");
+            iceSpikeModel = Game.Instance.ContentManager.Load<MagmaModel>("Models/Sfx/IceSpike").XnaModel;
             iceSpikeTexture = Game.Instance.ContentManager.Load<Texture2D>("Textures/Sfx/IceSpikeHead");
 
             iceSpikeEffect = Game.Instance.ContentManager.Load<Effect>("Effects/Sfx/IceSpike").Clone(Game.Instance.GraphicsDevice);

@@ -11,7 +11,7 @@ using Microsoft.Xna.Framework.Content.Pipeline.Processors;
 namespace ProjectMagma.ContentPipeline.ModelProcessors
 {
     [ContentProcessor(DisplayName = "Magma - Ice Spike Processor")]
-    public class IceSpikeProcessor : MoveProcessor
+    public class IceSpikeProcessor : MoveProcessor<ModelProcessor>
     {
         protected override Vector3 CalculateDiff(ref Vector3 origDiff, ref ProjectMagma.Shared.Math.Primitives.AlignedBox3 bb)
         {

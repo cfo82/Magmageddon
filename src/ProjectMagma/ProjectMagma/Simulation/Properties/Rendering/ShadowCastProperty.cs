@@ -3,10 +3,9 @@ using System.Diagnostics;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
-
+using ProjectMagma.Shared.Model;
 using ProjectMagma.Simulation.Attributes;
 using ProjectMagma.Renderer;
 using ProjectMagma.Renderer.Interface;
@@ -81,7 +80,7 @@ namespace ProjectMagma.Simulation
 
             // load the model
             string meshName = entity.GetString("mesh");
-            Model model = Game.Instance.ContentManager.Load<Model>(meshName);
+            Model model = Game.Instance.ContentManager.Load<MagmaModel>(meshName).XnaModel;
 
             return new ShadowRenderable(scale, rotation, position, model);
         }

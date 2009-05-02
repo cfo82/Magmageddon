@@ -1,6 +1,6 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 10.00
-# Visual Studio 2008
+# Visual C# Express 2008
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ProjectMagma", "ProjectMagma\ProjectMagma.csproj", "{37D28D35-F31F-4A83-9DB4-94D3E8461A77}"
 	ProjectSection(ProjectDependencies) = postProject
 		{41D8590B-0AD9-4E4A-B1ED-9E6E571364A2} = {41D8590B-0AD9-4E4A-B1ED-9E6E571364A2}

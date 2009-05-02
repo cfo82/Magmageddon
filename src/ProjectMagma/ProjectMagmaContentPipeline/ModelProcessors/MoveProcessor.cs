@@ -9,10 +9,11 @@ using Microsoft.Xna.Framework.Content.Pipeline;
 using Microsoft.Xna.Framework.Content.Pipeline.Graphics;
 using Microsoft.Xna.Framework.Content.Pipeline.Processors;
 using ProjectMagma.Shared.Math.Primitives;
+using ProjectMagma.ContentPipeline.Model;
 
 namespace ProjectMagma.ContentPipeline.ModelProcessors
 {
-    public abstract class MoveProcessor : ModelProcessor
+    public abstract class MoveProcessor<BaseClass> : ContentProcessor<NodeContent, MagmaModelContent> where BaseClass : ModelProcessor, new()
     {
         #region Main processing
 
@@ -21,7 +22,7 @@ namespace ProjectMagma.ContentPipeline.ModelProcessors
         /// <param name="input"></param>
         /// <param name="context"></param>
         /// <returns></returns>
-        public override ModelContent Process(NodeContent input, ContentProcessorContext context)
+        public override MagmaModelContent Process(NodeContent input, ContentProcessorContext context)
         {
             ApplyParameters(context);
 
@@ -111,6 +112,9 @@ namespace ProjectMagma.ContentPipeline.ModelProcessors
             NodeContent input
         )
         {
+            if (input == null)
+            { return false; }
+
             if (IsCollisionNode(input))
                 { return true; }
 
@@ -123,7 +127,7 @@ namespace ProjectMagma.ContentPipeline.ModelProcessors
             return false;
         }
 
-        private ModelContent ProcessFileWithSeparateCollisionMesh(
+        private MagmaModelContent ProcessFileWithSeparateCollisionMesh(
             NodeContent input,
             ContentProcessorContext context,
             string collisionMeshFilename
@@ -143,15 +147,15 @@ namespace ProjectMagma.ContentPipeline.ModelProcessors
             TransformMeshes(new NodeContent[] { input, collisionMeshContent }, context, ref boundingBox);
 
             // let the base class process the model
-            ModelContent modelContent = base.Process(input, context);
+            MagmaModelContent modelContent = BaseProcessing(input, context);
 
             // add bounding volumes to the model
-            modelContent.Tag = CalculateCollisionVolumes(new NodeContent[] { collisionMeshContent }, context);
+            modelContent.VolumeCollection = CalculateCollisionVolumes(new NodeContent[] { collisionMeshContent }, context);
 
             return modelContent;
         }
 
-        private ModelContent ProcessLegacyFile(
+        private MagmaModelContent ProcessLegacyFile(
             NodeContent input,
             ContentProcessorContext context
         )
@@ -164,15 +168,15 @@ namespace ProjectMagma.ContentPipeline.ModelProcessors
             TransformMeshes(new NodeContent[] { input }, context, ref bb);
 
             // let the base class process the model
-            ModelContent modelContent = base.Process(input, context);
+            MagmaModelContent modelContent = BaseProcessing(input, context);
 
             // add bounding volumes to the model
-            modelContent.Tag = CalculateCollisionVolumes(new NodeContent[] { input }, context);
+            modelContent.VolumeCollection = CalculateCollisionVolumes(new NodeContent[] { input }, context);
 
             return modelContent;
         }
 
-        private ModelContent ProcessContainerFile(
+        private MagmaModelContent ProcessContainerFile(
             NodeContent input,
             ContentProcessorContext context
         )
@@ -197,15 +201,17 @@ namespace ProjectMagma.ContentPipeline.ModelProcessors
 
                 dictionary["CurrentGroup"] = child.Name;
 
-                context.BuildAsset<NodeContent, ModelContent>(
+                context.BuildAsset<NodeContent, MagmaModelContent>(
                     new ExternalReference<NodeContent>(input.Identity.SourceFilename),
-                    this.GetType().Name, dictionary, null, dir + child.Name);
+                    this.GetType().Name, dictionary, GetContainerGroupImporter(), dir + child.Name);
             }
 
-            return base.Process(input, context);
+            RemoveTextureReferences(input, context);
+
+            return BaseProcessing(input, context);
         }
 
-        private ModelContent ProcessContainerGroup(
+        private MagmaModelContent ProcessContainerGroup(
             NodeContent input,
             ContentProcessorContext context
         )
@@ -246,7 +252,7 @@ namespace ProjectMagma.ContentPipeline.ModelProcessors
             }
 
             // let the base class process the graphical model
-            ModelContent modelContent = base.Process(currentGroupNode, context);
+            MagmaModelContent modelContent = BaseProcessing(currentGroupNode, context);
 
             // now we process our collision meshes... 
             // TODO: take all collision meshes not only the first one!
@@ -255,17 +261,35 @@ namespace ProjectMagma.ContentPipeline.ModelProcessors
             if (collisionNodes.Count == 0)
             {
                 context.Logger.LogWarning(null, input.Identity, "unable to find a collision mesh in group {0}", CurrentGroup);
-                modelContent.Tag = CalculateCollisionVolumes(new NodeContent[] { currentGroupNode }, context);
+                modelContent.VolumeCollection = CalculateCollisionVolumes(new NodeContent[] { currentGroupNode }, context);
             }
             else
             {
                 NodeContent[] collisionNodesArray = new NodeContent[collisionNodes.Count];
                 for (int i = 0; i < collisionNodes.Count; ++i)
                     { collisionNodesArray[i] = collisionNodes[i]; }
-                modelContent.Tag = CalculateCollisionVolumes(collisionNodesArray, context);
+                modelContent.VolumeCollection = CalculateCollisionVolumes(collisionNodesArray, context);
             }
 
             return modelContent;
+        }
+
+        private MagmaModelContent BaseProcessing(
+            NodeContent input, 
+            ContentProcessorContext context
+        )
+        {
+            BaseClass baseClass = new BaseClass();
+
+            MagmaModelContent content = new MagmaModelContent();
+            content.XnaModel = baseClass.Process(input, context);
+
+            return content;
+        }
+
+        protected virtual string GetContainerGroupImporter()
+        {
+            return null;
         }
 
         #endregion
@@ -399,7 +423,7 @@ namespace ProjectMagma.ContentPipeline.ModelProcessors
 
         #region Volume Calculations
 
-        private List<VolumeCollection> CalculateCollisionVolumes(
+        private VolumeCollection[] CalculateCollisionVolumes(
             NodeContent[] collisionNodes,
             ContentProcessorContext context
         )
@@ -414,47 +438,7 @@ namespace ProjectMagma.ContentPipeline.ModelProcessors
                 collection.AddVolume(CalculateSphere3(currentNode, context, false));
                 collectionList.Add(collection);
             }
-            return collectionList;
-            /*if (collisionNodes.Length == 1)
-            {
-                VolumeCollection collection = new VolumeCollection();
-                collection.AddVolume(CalculateAlignedBox3(collisionNodes[0], context, false));
-                collection.AddVolume(CalculateAlignedBox3Tree(collisionNodes[0], context, false));
-                collection.AddVolume(CalculateCylinder3(collisionNodes[0], context, false));
-                collection.AddVolume(CalculateSphere3(collisionNodes[0], context, false));
-                collectionList.Add(collection);
-            }
-            else
-            {
-                MultiVolume alignedBox3Container = new MultiVolume();
-                foreach (NodeContent currentNode in collisionNodes)
-                {
-                    alignedBox3Container.Add(CalculateAlignedBox3(currentNode, context, false));
-                }
-                collection.AddVolume(alignedBox3Container);
-
-                MultiVolume alignedBox3TreeContainer = new MultiVolume();
-                foreach (NodeContent currentNode in collisionNodes)
-                {
-                    alignedBox3TreeContainer.Add(CalculateAlignedBox3Tree(currentNode, context, false));
-                }
-                collection.AddVolume(alignedBox3TreeContainer);
-
-                MultiVolume cylinder3Container = new MultiVolume();
-                foreach (NodeContent currentNode in collisionNodes)
-                {
-                    cylinder3Container.Add(CalculateCylinder3(currentNode, context, false));
-                }
-                collection.AddVolume(cylinder3Container);
-
-                MultiVolume sphere3Container = new MultiVolume();
-                foreach (NodeContent currentNode in collisionNodes)
-                {
-                    sphere3Container.Add(CalculateSphere3(currentNode, context, false));
-                }
-                collection.AddVolume(sphere3Container);
-            }
-            return collection;*/
+            return collectionList.ToArray();
         }
 
         private AlignedBox3 CalculateAlignedBox3(
@@ -648,7 +632,7 @@ namespace ProjectMagma.ContentPipeline.ModelProcessors
             NodeContent node
         )
         {
-            return node.Name.EndsWith("_col");
+            return node.Name != null && node.Name.EndsWith("_col");
         }
 
         private NodeContent GetChild(

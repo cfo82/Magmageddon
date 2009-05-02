@@ -41,7 +41,10 @@ const float3 EnergyColor2 = float3(0.84, 0.84, 0.86);
 
 const float BevelStrength = 0.7;
 
-float4 BarColor(float2 texCoord, float3 beginColor, float3 endColor, float value)
+bool HealthBlink;
+bool EnergyBlink;
+
+float4 BarColor(float2 texCoord, float3 beginColor, float3 endColor, float value, bool blink)
 {
 	// load four-channel texture containing individual components in each channel
 	float4 components = tex2D(ComponentSampler, texCoord);
@@ -63,6 +66,10 @@ float4 BarColor(float2 texCoord, float3 beginColor, float3 endColor, float value
 	float highlight = components.r * BevelStrength;
 	float shadow = components.g * BevelStrength;
 	float3 contentColor = color + highlight - shadow;
+	if(blink)
+	{
+		contentColor = lerp(contentColor, float3(1, 1, 1), 0.7);
+	}
 	
 	// compute final color
 	float notch = (components.a - 0.4) * 0.75;
@@ -81,8 +88,8 @@ float4 PixelShader(float2 texCoord : TEXCOORD0) : COLOR0
 	float2 normalizeMultiplier = float2(Size.x/224.0f, Size.y/38.0f);
 	
 	// compute bar colors and return them
-	float4 healthBar = BarColor(healthBarCoord*normalizeMultiplier, HealthColor1, HealthColor2, HealthValue);
-	float4 energyBar = BarColor(energyBarCoord*normalizeMultiplier, EnergyColor1, EnergyColor2, EnergyValue);
+	float4 healthBar = BarColor(healthBarCoord*normalizeMultiplier, HealthColor1, HealthColor2, HealthValue, HealthBlink);
+	float4 energyBar = BarColor(energyBarCoord*normalizeMultiplier, EnergyColor1, EnergyColor2, EnergyValue, EnergyBlink);
     return healthBar + energyBar;
 }
 

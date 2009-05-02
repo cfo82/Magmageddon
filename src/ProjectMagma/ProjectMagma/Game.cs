@@ -113,7 +113,7 @@ namespace ProjectMagma
             // now we should keep to rendering on the main thread and move everything else to
             // the other cores.
 #if XBOX
-            System.Threading.Thread.CurrentThread.SetProcessorAffinity(ThreadDistribution.RenderThread);
+            System.Threading.Thread.CurrentThread.SetProcessorAffinity(4);
 #endif
 
             using (Game game = new Game())
@@ -317,6 +317,7 @@ namespace ProjectMagma
                 {
                     simulationThread.Join();
                 }
+                simulationThread.Abort();
             }
 
             if (simulationThread == null)
@@ -339,7 +340,7 @@ namespace ProjectMagma
 #if !XBOX
             Debug.Assert(
                 simulationThread == null ||
-                simulationThread.Thread.ThreadState == System.Threading.ThreadState.WaitSleepJoin
+                simulationThread.Thread.ThreadState == System.Threading.ThreadState.Stopped
                 );
 #endif
 

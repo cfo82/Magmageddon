@@ -31,6 +31,9 @@ namespace ProjectMagma.Renderer
             this.frozen = frozen;
             this.jumps = jumps;
 
+            displayedEnergy = energy;
+            displayedHealth = health;
+
             barEffect = Game.Instance.ContentManager.Load<Effect>("Effects/Hud/Bars");
             barBackgroundTexture = Game.Instance.ContentManager.Load<Texture2D>("Sprites/Hud/bar_background");
             barComponentTexture = Game.Instance.ContentManager.Load<Texture2D>("Sprites/Hud/bar_highlight");
@@ -112,15 +115,29 @@ namespace ProjectMagma.Renderer
             invMultiplier = new Vector2(1, 1) - multiplier;
         }
 
+        private bool healthBlink, energyBlink;
 
         private void ApplyBarEffectParameters()
         {
+            float c = 0.15f;
+            displayedHealth = MathHelper.Lerp(displayedHealth, (float) health, c);
+            displayedEnergy = MathHelper.Lerp(displayedEnergy, (float) energy, c);
+            if (displayedHealth - health > 0.01)
+                healthBlink = !healthBlink;
+            else
+                healthBlink = false;
+            if (displayedEnergy - energy > 0.01)
+                energyBlink = !energyBlink;
+            else
+                energyBlink = false;
+
             barEffect.Parameters["BackgroundTexture"].SetValue(barBackgroundTexture);
             barEffect.Parameters["ComponentTexture"].SetValue(barComponentTexture);
             barEffect.Parameters["Size"].SetValue(BarAreaSize);
-            barEffect.Parameters["HealthValue"].SetValue(((float)health) / maxHealth);
-            barEffect.Parameters["EnergyValue"].SetValue(((float)energy) / maxEnergy);
-            Console.WriteLine("health: " + health + " " + maxHealth + " " + ((float)health) / maxHealth);
+            barEffect.Parameters["HealthValue"].SetValue(displayedHealth / maxHealth);
+            barEffect.Parameters["EnergyValue"].SetValue(displayedEnergy / maxEnergy);
+            barEffect.Parameters["HealthBlink"].SetValue(healthBlink);
+            barEffect.Parameters["EnergyBlink"].SetValue(energyBlink);
             barEffect.Parameters["HealthColor1"].SetValue(new Vector3(0.91f, 0.08f, 0.64f));
             barEffect.Parameters["HealthColor2"].SetValue(new Vector3(0.77f, 0.08f, 0.86f));
             barEffect.Parameters["PlayerMirror"].SetValue(playerMirror);
@@ -192,7 +209,7 @@ namespace ProjectMagma.Renderer
             if (jumps > 0)
                 return "JUMPS: " + jumps;
             else
-                return "";
+                return "asdfsadfdsfds";
         }
 
         public override void UpdateInt(string id, int value)
@@ -281,6 +298,8 @@ namespace ProjectMagma.Renderer
         private int maxFuel;
         private int frozen;
         private int jumps;
+
+        private float displayedHealth, displayedEnergy;
 
         private Effect barEffect;
 

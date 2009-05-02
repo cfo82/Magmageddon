@@ -107,13 +107,13 @@ namespace ProjectMagma.Renderer
 
             CullMode saveCullMode = device.RenderState.CullMode;
 
-            device.RenderState.AlphaBlendEnable = true;
-            device.RenderState.AlphaSourceBlend = Blend.SourceAlpha;
-            device.RenderState.DestinationBlend = Blend.InverseSourceAlpha;
-            device.RenderState.BlendFunction = BlendFunction.Add;
-            device.RenderState.AlphaTestEnable = false;
-            device.RenderState.DepthBufferEnable = false;
-            device.RenderState.CullMode = CullMode.None;
+            //device.RenderState.AlphaBlendEnable = true;
+            //device.RenderState.AlphaSourceBlend = Blend.SourceAlpha;
+            //device.RenderState.DestinationBlend = Blend.InverseSourceAlpha;
+            //device.RenderState.BlendFunction = BlendFunction.Add;
+            //device.RenderState.AlphaTestEnable = false;
+            //device.RenderState.DepthBufferEnable = false;
+            //device.RenderState.CullMode = CullMode.None;
 
             Matrix[] transforms = new Matrix[iceSpikeModel.Bones.Count];
             float aspectRatio = device.Viewport.Width / device.Viewport.Height;

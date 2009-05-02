@@ -7,6 +7,11 @@ float4x4 View;
 float4x4 Projection;
 float3 CameraPosition;
 
+struct PSOutput
+{
+	float4 Color              : COLOR0;
+	float4 RenderChannelColor : COLOR1;
+};
 
 
 
@@ -15,9 +20,9 @@ sampler IceSpikeSampler = sampler_state
 {
     Texture = (IceSpikeTexture);
     
-    MinFilter = Point;
-    MagFilter = Point;
-    MipFilter = Point;
+    MinFilter = Linear;
+    MagFilter = Linear;
+    MipFilter = Linear;
     
     AddressU = Clamp;
     AddressV = Clamp;
@@ -76,11 +81,15 @@ IceSpikeVertexShaderOutput IceSpikeVertexShader(
 
 
 //-----------------------------------------------------------------------------------------------------------
-float4 IceSpikePixelShader(IceSpikePixelShaderInput input) : COLOR
+PSOutput IceSpikePixelShader(IceSpikePixelShaderInput input)
 {
+	PSOutput result;
     float4 color = tex2D(IceSpikeSampler, input.TextureCoordinates);
-    color.a = color.a*input.MainAlpha;
-    return color;
+    color.a = color.a;//*clamp(input.MainAlpha, 0, 1);
+    
+    result.Color = color;
+    result.RenderChannelColor = float4(0,0,1,0);
+    return result;
 }
 
 
@@ -91,6 +100,17 @@ Technique IceSpikeEffect
 {
 	Pass
 	{
+        AlphaBlendEnable = true;
+        SrcBlend = SrcAlpha;
+        DestBlend = InvSrcAlpha;
+        BlendOp = Add;
+        AlphaTestEnable = true;
+        AlphaFunc = Greater;
+        AlphaRef = 0.5;
+        ZEnable = false;
+        ZWriteEnable = false;
+        CullMode = None;
+
 		VertexShader = compile vs_3_0 IceSpikeVertexShader();
 		PixelShader	= compile ps_3_0 IceSpikePixelShader();
 	}

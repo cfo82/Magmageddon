@@ -22,6 +22,7 @@ namespace ProjectMagma.Renderer.ParticleSystem.Stateful
             this.activeTexture = 0;
             this.positionTextures = null;
             this.velocityTextures = null;
+            this.localCreateVertices = null;
             this.createVertexBuffer = null;
             this.createVertexDeclaration = null;
             this.particleCreateEffect = null;
@@ -61,7 +62,8 @@ namespace ProjectMagma.Renderer.ParticleSystem.Stateful
             //positionTextures[0].GetTexture().Save("PositionMaps/initial.dds", ImageFileFormat.Dds);
 
             // create effect
-            createVertexBuffer = new VertexBuffer(device, CreateVertex.SizeInBytes * createVertexBufferSize, BufferUsage.WriteOnly);
+            localCreateVertices = new CreateVertex[createVertexBufferSize];
+            createVertexBuffer = new DynamicVertexBuffer(device, CreateVertex.SizeInBytes * createVertexBufferSize, BufferUsage.Points | BufferUsage.WriteOnly);
             createVertexDeclaration = new VertexDeclaration(device, CreateVertex.VertexElements);
 
             particleCreateEffect = LoadCreateEffect(wrappedContent).Clone(device);
@@ -119,6 +121,8 @@ namespace ProjectMagma.Renderer.ParticleSystem.Stateful
 
         void FlushCreateParticles(int count)
         {
+            createVertexBuffer.SetData<CreateVertex>(localCreateVertices, 0, count);
+
             device.Vertices[0].SetSource(createVertexBuffer, 0, CreateVertex.SizeInBytes);
             device.VertexDeclaration = createVertexDeclaration;
 
@@ -180,6 +184,7 @@ namespace ProjectMagma.Renderer.ParticleSystem.Stateful
 
             if (render)
             {
+                int localCreateVerticesIndex = 0;
                 for (int i = 0; i < createVertexLists.Count; ++i)
                 {
                     CreateVertex[] currentVertices = createVertexLists[i];
@@ -188,21 +193,31 @@ namespace ProjectMagma.Renderer.ParticleSystem.Stateful
                     while (verticesCopied < currentVertices.Length)
                     {
                         int passVerticesCount = currentVertices.Length - verticesCopied;
-                        if (passVerticesCount > createVertexBufferSize)
-                        { passVerticesCount = createVertexBufferSize; }
-                        createVertexBuffer.SetData<CreateVertex>(currentVertices, verticesCopied, passVerticesCount);
-                        verticesCopied += passVerticesCount;
+                        int passVerticesAvailable = createVertexBufferSize - localCreateVerticesIndex;
+                        if (passVerticesCount > passVerticesAvailable)
+                        {
+                            passVerticesCount = passVerticesAvailable;
+                        }
 
-                        if (verticesCopied >= createVertexBufferSize)
+                        for (int j = 0; j < passVerticesCount; ++j)
+                        {
+                            localCreateVertices[localCreateVerticesIndex + j] = currentVertices[verticesCopied + j];
+                        }
+
+                        verticesCopied += passVerticesCount;
+                        localCreateVerticesIndex += passVerticesCount;
+
+                        if (localCreateVerticesIndex >= createVertexBufferSize)
                         {
                             FlushCreateParticles(verticesCopied);
+                            localCreateVerticesIndex = 0;
                         }
                     }
+                }
 
-                    if (verticesCopied > 0)
-                    {
-                        FlushCreateParticles(verticesCopied);
-                    }
+                if (localCreateVerticesIndex > 0)
+                {
+                    FlushCreateParticles(localCreateVerticesIndex);
                 }
             }
         }
@@ -374,10 +389,11 @@ namespace ProjectMagma.Renderer.ParticleSystem.Stateful
         private RenderTarget2D[] positionTextures;
         private RenderTarget2D[] velocityTextures;
 
-        private VertexBuffer createVertexBuffer;
+        private CreateVertex[] localCreateVertices;
+        private DynamicVertexBuffer createVertexBuffer;
         private VertexDeclaration createVertexDeclaration;
         private Effect particleCreateEffect;
-        private static readonly int createVertexBufferSize = 2048;
+        private static readonly int createVertexBufferSize = 256;
 
         private Effect particleUpdateEffect;
 

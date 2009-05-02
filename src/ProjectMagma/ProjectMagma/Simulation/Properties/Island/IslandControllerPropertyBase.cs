@@ -305,13 +305,12 @@ namespace ProjectMagma.Simulation
                             // push the other island away (if contact normal is opposed)
                             if (Vector3.Dot(attractionVelocity, normal) > 0)
                             {
-                                Vector3 velocity = island.GetVector3("attraction_velocity")
-                                    * constants.GetFloat("collision_damping");
+                                Vector3 velocity = island.GetVector3("attraction_velocity") * constants.GetFloat("collision_damping");
                                 velocity.Y = 0; // only in xz plane
                                 other.SetVector3("repulsion_velocity", velocity + other.GetVector3("repulsion_velocity"));
                             }
                         }
-
+                        else
                         // reflect for collision with pillar/island (if not already in direction away from it)
                         if (Vector3.Dot(attractionVelocity, normal) > 0)
                         {
@@ -327,17 +326,19 @@ namespace ProjectMagma.Simulation
                             Vector3 projection = Vector3.Dot(velocityXZ, normXZ) * normXZ;
 
                             // compute orthogonal repulsion
-                            Vector3 newVelocity = Vector3.Normalize(projection - velocityXZ);
+                            Vector3 newVelocity = -Vector3.Normalize(projection - velocityXZ);
                             newVelocity.Y = 0; // -contact[0].Normal.Y * attractionVelocity.Y;
+                            //newVelocity *= 600;
+                            newVelocity *= attractionVelocity.Length();
 
                             // repulse in direction of normal too
                             if (Vector3.Dot(attractionVelocity, normal) > 0)
                             {
-                                newVelocity += -normal;
+                                newVelocity += -normal * attractionVelocity.Length();
                                 if (other.GetString("kind") == "pillar")
                                     newVelocity.Y = 0;
                             }
-                            newVelocity *= attractionVelocity.Length(); // *constants.GetFloat("collision_damping");
+//                            newVelocity *= attractionVelocity.Length(); // *constants.GetFloat("collision_damping");
 
                             // todo: this will occur if projection is Vector3.Zero. what to do then?
                             if (float.IsInfinity(newVelocity.X))

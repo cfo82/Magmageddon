@@ -100,7 +100,7 @@
       <Attribute name="scale_health_multiplier" template="float" value="1.8"/>
 
       <Attribute name="repulsion_deacceleration" template="float" value="900"/>
-      <Attribute name="collision_damping" template="float" value="0.8"/>
+      <Attribute name="collision_damping" template="float" value="0.9"/>
 
       <Attribute name="attraction_acceleration" template="float" value="400"/>
       <Attribute name="attraction_max_speed" template="float" value="200"/>

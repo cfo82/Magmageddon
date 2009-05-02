@@ -213,17 +213,17 @@ namespace ProjectMagma.Renderer
             Vector3 r1Diff = cameraPosition - r1.Position;
             Vector3 r2Diff = cameraPosition - r2.Position;
 
-            if (r1Diff.LengthSquared() > r2Diff.LengthSquared())
+            if (System.Math.Abs(r1Diff.LengthSquared() - r2Diff.LengthSquared()) < 1e-05)
+            {
+                return 0;
+            }
+            else if (r1Diff.LengthSquared() > r2Diff.LengthSquared())
             {
                 return -1;
             }
-            else if (r1Diff.LengthSquared() < r2Diff.LengthSquared())
-            {
-                return 1;
-            }
             else
             {
-                return 0;
+                return 1;
             }
         }
 

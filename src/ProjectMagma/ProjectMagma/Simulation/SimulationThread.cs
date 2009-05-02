@@ -60,7 +60,7 @@ namespace ProjectMagma.Simulation
         private void Run()
         {
 #if XBOX
-            this.thread.SetProcessorAffinity(processor);
+            this.thread.SetProcessorAffinity(ThreadDistribution.SimulationThread);
 #endif
             try
             {

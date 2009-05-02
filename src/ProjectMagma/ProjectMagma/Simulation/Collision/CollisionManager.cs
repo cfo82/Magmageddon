@@ -15,10 +15,10 @@ namespace ProjectMagma.Simulation.Collision
         {
             this.testList = new TestList();
 
-            threads = new CollisionThread[threadAffinities.Length];
-            for (int i = 0; i < threadAffinities.Length; ++i)
+            threads = new CollisionThread[ThreadDistribution.CollisionThreads.Length];
+            for (int i = 0; i < ThreadDistribution.CollisionThreads.Length; ++i)
             {
-                threads[i] = new CollisionThread(threadAffinities[i], testList);
+                threads[i] = new CollisionThread(ThreadDistribution.CollisionThreads[i], testList);
             }
         }
 
@@ -318,7 +318,6 @@ namespace ProjectMagma.Simulation.Collision
 
         #region Member Variables
 
-        private readonly int[] threadAffinities = new int[] { 1, 3 };
         private TestList testList;
         private CollisionThread[] threads;
 

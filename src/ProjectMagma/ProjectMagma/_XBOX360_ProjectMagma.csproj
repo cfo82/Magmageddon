@@ -182,6 +182,7 @@
     <Compile Include="Simulation\Simulation.cs" />
     <Compile Include="Simulation\SimulationThread.cs" />
     <Compile Include="Simulation\SimulationTime.cs" />
+    <Compile Include="ThreadDistribution.cs" />
     <Compile Include="WrappedContentManager.cs" />
   </ItemGroup>
   <ItemGroup>

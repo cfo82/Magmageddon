@@ -6,6 +6,7 @@ using Microsoft.Xna.Framework.Audio;
 using ProjectMagma.Simulation.Collision;
 using ProjectMagma.Simulation.Attributes;
 using ProjectMagma.Shared.Math.Primitives;
+using System.Diagnostics;
 
 namespace ProjectMagma.Simulation
 {
@@ -813,6 +814,13 @@ namespace ProjectMagma.Simulation
         {
             if (player.GetInt("health") <= 0)
             {
+                // any lives left
+                if (player.GetInt("lives") <= 0)
+                {
+                    Game.Instance.Simulation.EntityManager.Remove(player);
+                    return true;
+                }
+
                 if (respawnStartedAt == 0)
                 {
                     respawnStartedAt = at;
@@ -1232,8 +1240,10 @@ namespace ProjectMagma.Simulation
         /// </summary>
         private void PositionOnRandomIsland()
         {
-            Entity island;
-            for(;;)
+            int cnt = Game.Instance.Simulation.IslandManager.Count;
+            Entity island = Game.Instance.Simulation.IslandManager[0];
+            // try at most count*2 times
+            for(int i = 0; i < cnt*2; i++)
             {
                 int islandNo = rand.Next(Game.Instance.Simulation.IslandManager.Count - 1);
                 island = Game.Instance.Simulation.IslandManager[islandNo];

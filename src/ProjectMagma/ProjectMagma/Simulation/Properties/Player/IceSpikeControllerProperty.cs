@@ -28,6 +28,8 @@ namespace ProjectMagma.Simulation
             else
                 targetPlayer = null;
 
+            shootingPlayer = Game.Instance.Simulation.EntityManager[entity.GetString("player")];
+
             createdAt = Game.Instance.Simulation.Time.At;
 
             entity.Update += OnUpdate;
@@ -77,20 +79,26 @@ namespace ProjectMagma.Simulation
                 {
                     // get acceleration to direction
                     Vector3 dir = Vector3.Normalize(targetPlayerPos - pos);
-                    a += dir * constants.GetFloat("ice_spike_homing_acceleration");// *(1 - factor);
+                    float acc = constants.GetFloat("ice_spike_homing_acceleration");
+                    a += dir * acc;
                     a.Y *= 0.6f; // don't accelerate as fast on y axis
 
                     // and add forces for islands
+                    float pillarForceRadius = constants.GetFloat("ice_spike_pillar_force_radius");
                     foreach (Entity island in Game.Instance.Simulation.IslandManager)
                     {
+                        // island target player is standing on has no force
+                        if (targetPlayer.GetString("active_island") == island.Name)
+                            continue;
+
                         Vector3 idir = island.GetVector3("position") - pos;
                         float dist = idir.Length();
                         idir.Normalize();
-                        // todo: extract constant
-                        Vector3 ia = -idir * (1000 / dist / dist);
+                        Vector3 ia = -idir * acc * (pillarForceRadius * pillarForceRadius / dist / dist);
                         a += ia;
                     }
                     // and pillars
+                    float islandForceRadius = constants.GetFloat("ice_spike_island_force_radius");
                     foreach (Entity island in Game.Instance.Simulation.PillarManager)
                     {
                         Vector3 idir = island.GetVector3("position") - pos;
@@ -98,7 +106,7 @@ namespace ProjectMagma.Simulation
                         float dist = idir.Length();
                         idir.Normalize();
                         // todo: extract constant
-                        Vector3 ia = -idir * (10000 / dist / dist);
+                        Vector3 ia = -idir * acc * (islandForceRadius * islandForceRadius / dist / dist);
                         a += ia;
                     }
                 }
@@ -129,10 +137,17 @@ namespace ProjectMagma.Simulation
 
         private void IceSpikeCollisionHandler(SimulationTime simTime, Contact contact)
         {
-            // remove spike
             Entity iceSpike = contact.EntityA;
             Entity other = contact.EntityB;
-            if (!(other.Name == iceSpike.GetString("player"))) // dont collide with shooter
+            // ignore collision with island player is standing on during warmup phae
+            if (simTime.At < createdAt + constants.GetInt("ice_spike_cooldown")
+                && other.Name == shootingPlayer.GetString("active_island"))
+            {
+                return;
+            }
+
+            // remove spike
+            if (other != shootingPlayer) // dont collide with shooter
             {
                 if (other.HasAttribute("kind") && other.GetString("kind") == "player")
                     IceSpikePlayerCollisionHandler(simTime, iceSpike, other);
@@ -206,6 +221,7 @@ namespace ProjectMagma.Simulation
             }
         }
 
+        private Entity shootingPlayer;
         private Entity targetPlayer;
         private double diedAt = 0;
     }

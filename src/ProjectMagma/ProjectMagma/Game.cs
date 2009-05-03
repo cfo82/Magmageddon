@@ -426,7 +426,7 @@ namespace ProjectMagma
         {
             base.OnActivated(sender, args);
 
-            if (paused)
+            if (paused && !menu.Active)
             {
                 Resume();
             }

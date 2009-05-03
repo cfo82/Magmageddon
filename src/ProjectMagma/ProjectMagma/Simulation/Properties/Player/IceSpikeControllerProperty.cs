@@ -105,7 +105,6 @@ namespace ProjectMagma.Simulation
                         idir.Y = 0;
                         float dist = idir.Length();
                         idir.Normalize();
-                        // todo: extract constant
                         Vector3 ia = -idir * acc * (islandForceRadius * islandForceRadius / dist / dist);
                         a += ia;
                     }

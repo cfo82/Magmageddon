@@ -7,10 +7,10 @@ namespace ProjectMagma.Renderer.Interface
 {
     public class RendererUpdateQueue
     {
-        public RendererUpdateQueue()
+        public RendererUpdateQueue(double timestamp)
         {
             updates = new List<RendererUpdate>();
-            timestamp = 0;
+            this.timestamp = timestamp;
         }
 
         public void AddUpdate(RendererUpdate update)

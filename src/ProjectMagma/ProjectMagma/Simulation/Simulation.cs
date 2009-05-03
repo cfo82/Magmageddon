@@ -37,12 +37,9 @@ namespace ProjectMagma.Simulation
             String level
         )
         {
-            if (currentUpdateQueue != null)
-            {
-                throw new Exception("synchronisation error");
-            }
+            simTime = new SimulationTime();
 
-            currentUpdateQueue = new RendererUpdateQueue();
+            StartOperation(); // needs a valid simTime!
 
             paused = false;
 
@@ -50,21 +47,12 @@ namespace ProjectMagma.Simulation
             levelData = wrappedContent.Load<LevelData>(level);
             entityManager.Load(levelData);
 
-            simTime = new SimulationTime();
-
-            RendererUpdateQueue returnValue = currentUpdateQueue;
-            currentUpdateQueue = null;
-            return returnValue;
+            return EndOperation();
         }
 
         public RendererUpdateQueue AddPlayers(Entity[] players)
         {
-            if (currentUpdateQueue != null)
-            {
-                throw new Exception("synchronisation error");
-            }
-
-            currentUpdateQueue = new RendererUpdateQueue();
+            StartOperation();
 
             String[] models = new String[players.Length];
             for(int i = 0; i < models.Length; i++)
@@ -79,9 +67,7 @@ namespace ProjectMagma.Simulation
             }
             entityManager.AddEntities(levelData, models, players);
 
-            RendererUpdateQueue returnValue = currentUpdateQueue;
-            currentUpdateQueue = null;
-            return returnValue;
+            return EndOperation();
         }
 
         public RendererUpdateQueue Close()
@@ -91,25 +77,18 @@ namespace ProjectMagma.Simulation
                 throw new Exception("synchronisation error");
             }
 
-            currentUpdateQueue = new RendererUpdateQueue();
+            currentUpdateQueue = new RendererUpdateQueue(simTime.At);
 
             entityManager.Clear();
             collisionManager.Close();
 
-            RendererUpdateQueue returnValue = currentUpdateQueue;
-            currentUpdateQueue = null;
-            return returnValue;
+            return EndOperation();
         }
 
         public RendererUpdateQueue Update()
         {
-            if (currentUpdateQueue != null)
-            {
-                throw new Exception("synchronisation error");
-            }
-
             Game.Instance.Profiler.BeginSection("simulation_update");
-            currentUpdateQueue = new RendererUpdateQueue();
+            StartOperation();            
 
             // pause simulation if explicitly paused or app changed
             // removed app-changed thing (Game.Instance.IsActive) since this should be already handled
@@ -142,10 +121,25 @@ namespace ProjectMagma.Simulation
                 System.Threading.Thread.Sleep(10);
             }
 
+            RendererUpdateQueue returnValue = EndOperation();
+            Game.Instance.Profiler.EndSection("simulation_update");
+            return returnValue;
+        }
+
+        private void StartOperation()
+        {
+            if (currentUpdateQueue != null)
+            {
+                throw new Exception("synchronisation error");
+            }
+
+            currentUpdateQueue = new RendererUpdateQueue(simTime.At);
+        }
+
+        private RendererUpdateQueue EndOperation()
+        {
             RendererUpdateQueue returnValue = currentUpdateQueue;
             currentUpdateQueue = null;
-
-            Game.Instance.Profiler.EndSection("simulation_update");
             return returnValue;
         }
 

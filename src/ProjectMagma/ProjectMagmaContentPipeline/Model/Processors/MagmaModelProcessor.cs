@@ -228,14 +228,17 @@ namespace ProjectMagma.ContentPipeline.ModelProcessors
                 throw new ArgumentException(string.Format("unable to find referenced child ({0})!", CurrentGroup));
             }
 
+            input.Children.Clear();
+            input.Children.Add(currentGroupNode);
+
             // copy the identity
-            currentGroupNode.Identity = input.Identity;
+            //currentGroupNode.Identity = input.Identity;
 
             // calculate bounds because changes are based on the bounding box
-            AlignedBox3 bb = CalculateAlignedBox3(currentGroupNode, context, true);
+            AlignedBox3 bb = CalculateAlignedBox3(input, context, true);
 
             // transform the graphical mesh and the collision meshes in one step!
-            TransformMeshes(new NodeContent[] { currentGroupNode }, context, ref bb);
+            TransformMeshes(new NodeContent[] { input }, context, ref bb);
 
             // extract all collision meshes
             List<NodeContent> collisionNodes = new List<NodeContent>();
@@ -255,7 +258,7 @@ namespace ProjectMagma.ContentPipeline.ModelProcessors
             }
 
             // let the base class process the graphical model
-            MagmaModelContent modelContent = BaseProcessing(currentGroupNode, context);
+            MagmaModelContent modelContent = BaseProcessing(input, context);
 
             // now we process our collision meshes... 
             // TODO: take all collision meshes not only the first one!
@@ -264,7 +267,7 @@ namespace ProjectMagma.ContentPipeline.ModelProcessors
             if (collisionNodes.Count == 0)
             {
                 context.Logger.LogWarning(null, input.Identity, "unable to find a collision mesh in group {0}", CurrentGroup);
-                modelContent.VolumeCollection = CalculateCollisionVolumes(new NodeContent[] { currentGroupNode }, context);
+                modelContent.VolumeCollection = CalculateCollisionVolumes(new NodeContent[] { input }, context);
             }
             else
             {

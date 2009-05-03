@@ -6,20 +6,14 @@ namespace ProjectMagma.Renderer
 {
     public class HUDRenderable : Renderable
     {
+        #region constructor and resource loading/unloading
+
         public HUDRenderable(
-            string playerName,
-            int gamePadIndex,
-            int health,
-            int maxHealth,
-            int energy,
-            int maxEnergy,
-            int fuel,
-            int maxFuel,
-            int frozen,
-            int jumps,
-            int lives,
-            Vector3 color1,
-            Vector3 color2
+            string playerName, int gamePadIndex,                     // player identification
+            int health, int maxHealth, int energy, int maxEnergy,    // displayed in bars
+            int lives, int frozen,                                   // displayed as text
+            int jumps, int repulsion_seconds,                        // displayed as powerup text          
+            Vector3 color1, Vector3 color2                           // player color specifices
         )
         {
             // initialize variables
@@ -36,6 +30,7 @@ namespace ProjectMagma.Renderer
             this.lives = lives;
             this.color1 = color1;
             this.color2 = color2;
+            this.repulsion_seconds = repulsion_seconds;
 
             displayedEnergy = energy;
             displayedHealth = health;
@@ -46,13 +41,6 @@ namespace ProjectMagma.Renderer
 
             ComputePositions();
         }
-
-        private int lives;
-        private Vector3 color1;
-        private Vector3 color2;
-
-        private SpriteFont playerNameFont;
-        private SpriteFont powerupFont;
 
         public override void LoadResources()
         {
@@ -71,14 +59,165 @@ namespace ProjectMagma.Renderer
         public override void UnloadResources()
         {
             spriteBatch.Dispose();
-
             base.UnloadResources();
         }
 
-        private Vector2 barAreaSize;
-        private Vector2 multiplier, invMultiplier;
-        private Matrix spriteScale, playerMirror;
-        private int xStart, yStart;
+
+        #endregion constructor
+
+        #region external value updates
+
+        public override void UpdateInt(string id, int value)
+        {
+            base.UpdateInt(id, value);
+
+            if (id == "GamePadIndex")
+            {
+                gamePadIndex = value;
+            }
+            else if (id == "Health")
+            {
+                health = value;
+            }
+            else if (id == "MaxHealth")
+            {
+                maxHealth = value;
+            }
+            else if (id == "Energy")
+            {
+                energy = value;
+            }
+            else if (id == "MaxEnergy")
+            {
+                maxEnergy = value;
+            }
+            else if (id == "Fuel")
+            {
+                fuel = value;
+            }
+            else if (id == "MaxFuel")
+            {
+                maxFuel = value;
+            }
+            else if (id == "Frozen")
+            {
+                frozen = value;
+            }
+            else if (id == "Jumps")
+            {
+                jumps = value;
+            }
+            else if (id == "Lives")
+            {
+                lives = value;
+            }
+        }
+
+        public override void UpdateString(string id, string value)
+        {
+            base.UpdateString(id, value);
+
+            if (id == "PlayerName")
+            {
+                playerName = value;
+            }
+        }
+
+        #endregion
+
+        public override void Draw(
+            Renderer renderer,
+            GameTime gameTime
+        )
+        {
+            // TESTHACK
+            //health += maxHealth/30;
+            //if (health > maxHealth) health = 0;
+            // /TESTHACK
+
+            // TODO: ADD FROZEN INDICATION. OLD CODE:
+            //double frozenSeconds = (double)this.frozen / 1000.0;
+            //string frozenString = string.Format("frozen: {0:00.00}", frozenSeconds);
+
+            // TODO: ADD LIVES DISPLAY
+
+            // TODO: ADD EVEN MORE BLINKI-BLINKI ON LOW HEALTH!!!!!!1!!
+
+            // TODO: FIX REPULSION SECONDS
+
+            UpdateDisplayedValues();
+            ApplyBarEffectParameters();
+            DrawStrings();
+            DrawBars();
+        }
+
+        private void UpdateDisplayedValues()
+        {
+            const float c = 0.15f;
+            displayedHealth = MathHelper.Lerp(displayedHealth, (float)health, c);
+            displayedEnergy = MathHelper.Lerp(displayedEnergy, (float)energy, c);
+            if (displayedHealth - health > 0.01)
+                healthBlink = !healthBlink;
+            else
+                healthBlink = false;
+            if (displayedEnergy - energy > 0.01)
+                energyBlink = !energyBlink;
+            else
+                energyBlink = false;
+        }
+
+        private string PowerupString()
+        {
+            if (jumps > 0)
+            {
+                return "JUMPS: " + jumps;
+            }
+            else if (repulsion_seconds > 0)
+            {
+                return "REPULSION: " + repulsion_seconds + "SEC";
+            }
+            else
+            {
+                return "TEMP DUMMY TEXT :P";
+            }
+        }
+
+        private void DrawBars()
+        {
+            Rectangle barRect = new Rectangle(xStart, yStart + 30, (int)barAreaSize.X, (int)barAreaSize.Y);
+            spriteBatch.Begin(SpriteBlendMode.AlphaBlend, SpriteSortMode.Immediate, SaveStateMode.None, spriteScale);
+            barEffect.Begin();
+            barEffect.CurrentTechnique.Passes[0].Begin();
+            spriteBatch.Draw(barBackgroundTexture, barRect, Color.White);
+            barEffect.CurrentTechnique.Passes[0].End();
+            barEffect.End();
+            spriteBatch.End();
+        }
+
+        private void DrawStrings()
+        {
+            spriteBatch.Begin(SpriteBlendMode.AlphaBlend, SpriteSortMode.Immediate, SaveStateMode.None, spriteScale);
+            Vector3 textColor = defaultTextColor * (1 - frozenColorStrength) + frozenTextColor * frozenColorStrength;
+
+            // draw the player name
+            Vector2 playerNameSize = playerNameFont.MeasureString(playerName.ToUpper());
+            Vector2 playerNamePos = new Vector2(xStart + 50, yStart) + multiplier * (new Vector2(170, 117) - playerNameSize);
+            Vector2 playerNameShadowPos = playerNamePos + textShadowOffset;
+            spriteBatch.DrawString(playerNameFont, playerName.ToUpper(), playerNameShadowPos, Color.DimGray);
+            spriteBatch.DrawString(playerNameFont, playerName.ToUpper(), playerNamePos, new Color(textColor));
+
+            // draw the current powerup status, if any
+            string powerupString = PowerupString();
+            Vector2 powerupStringSize = playerNameFont.MeasureString(powerupString);
+            Vector2 powerupPos = new Vector2(xStart + 52, yStart + 20) + invMultiplier * (powerupStringSize - (new Vector2(120, 5)));
+            //Vector2 powerupPos = new Vector2(xStart + 52, yStart + 20) + invMultiplier * (new Vector2(209, 97) - powerupStringSize);
+            Vector2 powerupShadowPos = powerupPos + textShadowOffset;
+            spriteBatch.DrawString(powerupFont, powerupString, powerupShadowPos, Color.DimGray);
+            spriteBatch.DrawString(powerupFont, powerupString, powerupPos, new Color(textColor));
+
+            // done
+            spriteBatch.End();
+        }
 
         private void ComputePositions()
         {
@@ -125,22 +264,8 @@ namespace ProjectMagma.Renderer
             invMultiplier = new Vector2(1, 1) - multiplier;
         }
 
-        private bool healthBlink, energyBlink;
-
         private void ApplyBarEffectParameters()
         {
-            float c = 0.15f;
-            displayedHealth = MathHelper.Lerp(displayedHealth, (float) health, c);
-            displayedEnergy = MathHelper.Lerp(displayedEnergy, (float) energy, c);
-            if (displayedHealth - health > 0.01)
-                healthBlink = !healthBlink;
-            else
-                healthBlink = false;
-            if (displayedEnergy - energy > 0.01)
-                energyBlink = !energyBlink;
-            else
-                energyBlink = false;
-
             barEffect.Parameters["BackgroundTexture"].SetValue(barBackgroundTexture);
             barEffect.Parameters["ComponentTexture"].SetValue(barComponentTexture);
             barEffect.Parameters["Size"].SetValue(barAreaSize);
@@ -151,130 +276,6 @@ namespace ProjectMagma.Renderer
             barEffect.Parameters["PlayerColor1"].SetValue(color1);
             barEffect.Parameters["PlayerColor2"].SetValue(color2);
             barEffect.Parameters["PlayerMirror"].SetValue(playerMirror);
-        }
-
-
-        public override void Draw(
-            Renderer renderer,
-            GameTime gameTime
-        )
-        {
-
-            // TESTHACK
-            //health += maxHealth/30;
-            //if (health > maxHealth) health = 0;
-            // /TESTHACK
-
-            // set effect parameters
-
-
-            //double frozenSeconds = (double)this.frozen / 1000.0;
-            //string frozenString = string.Format("frozen: {0:00.00}", frozenSeconds);
-            //string jumpsString = string.Format("jumps: {0:00}", jumps);
-            //string nameString = this.playerName + " (" + frozenString + ", " + jumpsString + ")";
-            //Vector4 a = Vector4.Transform(new Vector4(1, 1, 1, 0), playerMirror);
-            //Vector2 t = (new Vector2(1, 1)) - a;
-
-            #region draw strings and bars
-
-            // begin of first sprite batch - no effects, just strings
-            spriteBatch.Begin(SpriteBlendMode.AlphaBlend, SpriteSortMode.Immediate, SaveStateMode.None, spriteScale);
-            Vector3 textColor = defaultTextColor * (1-frozenColorStrength) + frozenTextColor * frozenColorStrength;
-
-            // draw the player name
-            Vector2 playerNameSize = playerNameFont.MeasureString(playerName.ToUpper());
-            Vector2 playerNamePos = new Vector2(xStart + 50, yStart) + multiplier * (new Vector2(170, 117) - playerNameSize);
-            Vector2 playerNameShadowPos = playerNamePos + textShadowOffset;
-            spriteBatch.DrawString(playerNameFont, playerName.ToUpper(), playerNameShadowPos, Color.DimGray);
-            spriteBatch.DrawString(playerNameFont, playerName.ToUpper(), playerNamePos, new Color(textColor));
-
-            // draw the current powerup status, if any
-            string powerupString = PowerupString();
-            Vector2 powerupStringSize = playerNameFont.MeasureString(powerupString);
-            Vector2 powerupPos = new Vector2(xStart + 52, yStart + 20) + invMultiplier * (powerupStringSize -(new Vector2(120, 5)));
-            //Vector2 powerupPos = new Vector2(xStart + 52, yStart + 20) + invMultiplier * (new Vector2(209, 97) - powerupStringSize);
-            Vector2 powerupShadowPos = powerupPos + textShadowOffset;
-            spriteBatch.DrawString(powerupFont, powerupString, powerupShadowPos, Color.DimGray);
-            spriteBatch.DrawString(powerupFont, powerupString, powerupPos, new Color(textColor));
-            
-            // we're done with all strings
-            spriteBatch.End();
-
-            ApplyBarEffectParameters();
-
-            // draw bar
-            Rectangle barRect = new Rectangle(xStart, yStart + 30, (int)barAreaSize.X, (int)barAreaSize.Y);
-            spriteBatch.Begin(SpriteBlendMode.AlphaBlend, SpriteSortMode.Immediate, SaveStateMode.None, spriteScale);
-            barEffect.Begin();
-            barEffect.CurrentTechnique.Passes[0].Begin();
-            spriteBatch.Draw(barBackgroundTexture, barRect, Color.White);
-            barEffect.CurrentTechnique.Passes[0].End();
-            barEffect.End();
-            spriteBatch.End();
-
-            #endregion
-        }
-
-        private static readonly Vector2 textShadowOffset = new Vector2(2, 2);
-
-        private string PowerupString()
-        {
-            if (jumps > 0)
-                return "JUMPS: " + jumps;
-            else
-                return "asdfsadfdsfds";
-        }
-
-        public override void UpdateInt(string id, int value)
-        {
-            base.UpdateInt(id, value);
-
-            if (id == "GamePadIndex")
-            {
-                gamePadIndex = value;
-            }
-            else if (id == "Health")
-            {
-                health = value;
-            }
-            else if (id == "MaxHealth")
-            {
-                maxHealth = value;
-            }
-            else if (id == "Energy")
-            {
-                energy = value;
-            }
-            else if (id == "MaxEnergy")
-            {
-                maxEnergy = value;
-            }
-            else if (id == "Fuel")
-            {
-                fuel = value;
-            }
-            else if (id == "MaxFuel")
-            {
-                maxFuel = value;
-            }
-            else if (id == "Frozen")
-            {
-                frozen = value;
-            }
-            else if (id == "Jumps")
-            {
-                jumps = value;
-            }
-        }
-
-        public override void UpdateString(string id, string value)
-        {
-            base.UpdateString(id, value);
-
-            if (id == "PlayerName")
-            {
-                playerName = value;
-            }
         }
 
         public override RenderMode RenderMode
@@ -311,6 +312,7 @@ namespace ProjectMagma.Renderer
         private int maxFuel;
         private int frozen;
         private int jumps;
+        private int lives;
 
         private float displayedHealth, displayedEnergy;
 
@@ -318,10 +320,29 @@ namespace ProjectMagma.Renderer
 
         private Effect barEffect;
 
+        private bool healthBlink, energyBlink;
+
+
         private Texture2D barBackgroundTexture;
         private Texture2D barComponentTexture;
 
         private static readonly Vector3 frozenTextColor = new Vector3(0, 156, 255) / 255;
         private static readonly Vector3 defaultTextColor = new Vector3(255, 255, 255) / 255;
+
+        private int repulsion_seconds;
+
+        private Vector3 color1;
+        private Vector3 color2;
+
+        private SpriteFont playerNameFont;
+        private SpriteFont powerupFont;
+
+        private Vector2 barAreaSize;
+        private Vector2 multiplier, invMultiplier;
+        private Matrix spriteScale, playerMirror;
+        private int xStart, yStart;
+
+        private static readonly Vector2 textShadowOffset = new Vector2(2, 2);
+
     }
 }

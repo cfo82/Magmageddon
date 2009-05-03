@@ -75,19 +75,12 @@ namespace ProjectMagma.Simulation
             Entity playerConstants = Game.Instance.Simulation.EntityManager["player_constants"];
 
             return new HUDRenderable(
-                entity.GetString("player_name"),
-                entity.GetInt("game_pad_index"),
-                entity.GetInt("health"),
-                playerConstants.GetInt("max_health"),
-                entity.GetInt("energy"),
-                playerConstants.GetInt("max_energy"),
-                entity.GetInt("fuel"),
-                playerConstants.GetInt("max_fuel"),
-                entity.GetInt("frozen"),
-                entity.GetInt("jumps"),
-                entity.GetInt("lives"),
-                entity.GetVector3("color1"),
-                entity.GetVector3("color2")
+                entity.GetString("player_name"), entity.GetInt("game_pad_index"),
+                entity.GetInt("health"), playerConstants.GetInt("max_health"),
+                entity.GetInt("energy"), playerConstants.GetInt("max_energy"),
+                entity.GetInt("lives"), entity.GetInt("frozen"),
+                entity.GetInt("jumps"), 0, // HACK: entity.GetFloat("repulsion_seconds"),
+                entity.GetVector3("color1"), entity.GetVector3("color2")
             );
         }
 

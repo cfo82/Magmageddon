@@ -807,7 +807,7 @@ namespace ProjectMagma.Simulation
         }
 
         /// <summary>
-        /// checks if player's health has fallen below 0, then perform respawn
+        /// checks if player's health has fallen below 0, then perform respawn (if he has any lifes left)
         /// </summary>
         /// <returns>wheter the player is currently dead or not</returns>
         private bool CheckAndPerformDeath(Entity player, float at)
@@ -817,7 +817,7 @@ namespace ProjectMagma.Simulation
                 // any lives left
                 if (player.GetInt("lives") <= 0)
                 {
-                    Game.Instance.Simulation.EntityManager.Remove(player);
+                    Game.Instance.Simulation.EntityManager.RemoveDeferred(player);
                     return true;
                 }
 

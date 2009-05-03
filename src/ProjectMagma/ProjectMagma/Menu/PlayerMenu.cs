@@ -73,6 +73,7 @@ namespace ProjectMagma
                     {
                         Entity player = new Entity("player" + (players.Count + 1));
                         player.AddIntAttribute("game_pad_index", i);
+                        player.AddIntAttribute("lifes", 5);
                         player.AddStringAttribute("robot_entity", Game.Instance.Robots[robotSelected[i]].Entity);
                         player.AddStringAttribute("player_name", Game.Instance.Robots[robotSelected[i]].Name);
                         players.Add(player);

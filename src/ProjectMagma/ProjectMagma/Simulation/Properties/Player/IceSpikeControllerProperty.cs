@@ -79,6 +79,28 @@ namespace ProjectMagma.Simulation
                     Vector3 dir = Vector3.Normalize(targetPlayerPos - pos);
                     a += dir * constants.GetFloat("ice_spike_homing_acceleration");// *(1 - factor);
                     a.Y *= 0.6f; // don't accelerate as fast on y axis
+
+                    // and add forces for islands
+                    foreach (Entity island in Game.Instance.Simulation.IslandManager)
+                    {
+                        Vector3 idir = island.GetVector3("position") - pos;
+                        float dist = idir.Length();
+                        idir.Normalize();
+                        // todo: extract constant
+                        Vector3 ia = -idir * (1000 / dist / dist);
+                        a += ia;
+                    }
+                    // and pillars
+                    foreach (Entity island in Game.Instance.Simulation.PillarManager)
+                    {
+                        Vector3 idir = island.GetVector3("position") - pos;
+                        idir.Y = 0;
+                        float dist = idir.Length();
+                        idir.Normalize();
+                        // todo: extract constant
+                        Vector3 ia = -idir * (10000 / dist / dist);
+                        a += ia;
+                    }
                 }
             }
 

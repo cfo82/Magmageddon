@@ -61,6 +61,7 @@ namespace ProjectMagma.Simulation
             // accumulate forces
             Vector3 a = constants.GetVector3("ice_spike_gravity_acceleration");
 
+            // in targeting mode (yet)?
             if (targetPlayer != null
                 && simTime.At > createdAt + constants.GetInt("ice_spike_cooldown"))
             {
@@ -79,15 +80,6 @@ namespace ProjectMagma.Simulation
                     a += dir * constants.GetFloat("ice_spike_homing_acceleration");// *(1 - factor);
                     a.Y *= 0.6f; // don't accelerate as fast on y axis
                 }
-            }
-            else
-            {
-                /*
-                // incorporate uniform acceleration
-                Vector3 a_uniform = v;
-                a_uniform.Normalize();
-                a += a_uniform * constants.GetFloat("ice_spike_uniform_acceleration");
-                 */
             }
 
             // integrate

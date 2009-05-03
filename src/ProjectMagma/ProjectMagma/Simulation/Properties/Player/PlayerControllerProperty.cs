@@ -536,7 +536,7 @@ namespace ProjectMagma.Simulation
                 soundEffect.Play(Game.Instance.EffectsVolume);
 
                 // todo: specify point in model
-                Vector3 pos = new Vector3(playerPosition.X, playerPosition.Y + 15, playerPosition.Z);
+                Vector3 pos = new Vector3(playerPosition.X, playerPosition.Y + player.GetVector3("scale").Y, playerPosition.Z);
                 Vector3 viewVector = Vector3.Transform(new Vector3(0, 0, 1), GetRotation(player));
 
                 #region search next player in range
@@ -859,7 +859,6 @@ namespace ProjectMagma.Simulation
                         // activate
                         player.AddProperty("collision", new CollisionProperty());
                         // TODO: Janick: Verwend wider das RenderProperty woner vorher gha hät (sprich das wo im File deklariert isch!)
-                        // Frage: Verlürt er au sus all properties? Das isch nöd guet...
                         player.AddProperty("render", new RobotRenderProperty());
                         player.AddProperty("shadow_cast", new ShadowCastProperty());
                         ((CollisionProperty)player.GetProperty("collision")).OnContact += PlayerCollisionHandler;
@@ -1027,8 +1026,20 @@ namespace ProjectMagma.Simulation
             else
             {
                 Vector3 pos = player.GetVector3("position");
-                Vector3 velocity = -contact[0].Normal * (pos - previousPosition).Length() / simTime.Dt;
-                player.SetVector3("collision_pushback_velocity", player.GetVector3("collision_pushback_velocity") + velocity);
+                if (activeIsland != null)
+                {
+                    // calculate pseudo normal
+                    Vector3 normal = island.GetVector3("position") - pos;
+                    normal.Y = 0;
+                    Vector3 velocity = -normal * 100;
+                    player.SetVector3("collision_pushback_velocity", player.GetVector3("collision_pushback_velocity") + velocity);
+                }
+                else
+                {
+                    // jetpacking
+                    Vector3 velocity = -contact[0].Normal * (pos - previousPosition).Length() / simTime.Dt;
+                    player.SetVector3("collision_pushback_velocity", player.GetVector3("collision_pushback_velocity") + velocity);
+                }
             }
         }
 

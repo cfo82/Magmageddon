@@ -72,11 +72,7 @@ namespace ProjectMagma.Simulation
             {
                 if (playersOnIsland > 0)
                 {
-                    if (state == IslandState.Normal)
-                    {
-                        state = IslandState.Influenced;
-                    }
-                    position += dt * constants.GetFloat("sinking_speed") * playersOnIsland * (-Vector3.UnitY);
+                    position -= dt * constants.GetFloat("sinking_speed") * playersOnIsland * (Vector3.UnitY);
                     playerLeftAt = 0;
                 }
                 else
@@ -85,9 +81,12 @@ namespace ProjectMagma.Simulation
                         playerLeftAt = simTime.At;
                     if (simTime.At > playerLeftAt + constants.GetInt("rising_delay"))
                     {
+                        state = IslandState.Repositioning;
+                        playerLeftAt = double.MaxValue;
+/*
                         if (position.Y < originalPosition.Y)
                         {
-                            position += dt * constants.GetFloat("sinking_speed") * (Vector3.UnitY);
+                            position += dt * constants.GetFloat("rising_speed") * (Vector3.UnitY);
                         }
                         else
                         {
@@ -96,6 +95,7 @@ namespace ProjectMagma.Simulation
                                 state = IslandState.Normal;
                             }
                         }
+ */ 
                     }
                 }
             }
@@ -216,7 +216,7 @@ namespace ProjectMagma.Simulation
                 // check if we are there yet (respectivly a bit further)
                 if (Vector3.Dot(repositioningPosition - newPosition, repositioningPosition - position) < 0
                     || (dir.X == 0 && dir.Z == 0 && playersOnIsland > 0)) 
-                    // if we only need to reposition horizontally, this is handled by sinking/raising
+                    // if we only need to reposition horizontally, this is handled by sinking/rising
                 {
                     position = repositioningPosition;
                     state = IslandState.Normal;
@@ -233,7 +233,7 @@ namespace ProjectMagma.Simulation
             if (!hadCollision)
             {
                 // normal movement
-                if (state != IslandState.InfluencedNoMovement)
+                if (state != IslandState.Influenced)
                 {
                     // calculate new postion in subclass
                     CalculateNewPosition(island, ref position, dt);
@@ -287,6 +287,8 @@ namespace ProjectMagma.Simulation
                         }
                     }
 
+                    // if other is island, set players_on_island
+
                     // attraction?
                     if (island.GetString("attracted_by") != "")
                     {
@@ -305,7 +307,9 @@ namespace ProjectMagma.Simulation
                             // push the other island away (if contact normal is opposed)
                             if (Vector3.Dot(attractionVelocity, normal) > 0)
                             {
-                                Vector3 velocity = island.GetVector3("attraction_velocity") * constants.GetFloat("collision_damping");
+                                Vector3 velocity = attractionVelocity * constants.GetFloat("collision_damping")
+                                    // resulting velocity depends on angle
+                                    * Vector3.Dot(normal, Vector3.Normalize(attractionVelocity));
                                 velocity.Y = 0; // only in xz plane
                                 other.SetVector3("repulsion_velocity", velocity + other.GetVector3("repulsion_velocity"));
                             }
@@ -429,7 +433,7 @@ namespace ProjectMagma.Simulation
 
         protected virtual void OnAttractionStart()
         {
-            state = IslandState.InfluencedNoMovement;
+            state = IslandState.Influenced;
         }
 
         protected virtual void OnRepulsionEnd()
@@ -463,12 +467,11 @@ namespace ProjectMagma.Simulation
 
         protected Entity constants;
         protected Entity island;
-        private double playerLeftAt;
+        private double playerLeftAt = double.MaxValue;
 
         protected enum IslandState
         {
-            Influenced,             // island's track is influensed by the outside
-            InfluencedNoMovement,   // island's track is influensed by the outside, normal movement is prohibited
+            Influenced,             // island's track is influensed by the outside, normal movement is prohibited
             Repositioning,          // island is hovering back to original position
             Normal                  // normal movement
         }

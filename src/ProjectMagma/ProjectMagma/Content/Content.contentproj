@@ -1099,6 +1099,11 @@
       <Importer>FontDescriptionImporter</Importer>
       <Processor>FontDescriptionProcessor</Processor>
     </Compile>
+    <Compile Include="Fonts\hud_lives.spritefont">
+      <Name>hud_lives</Name>
+      <Importer>FontDescriptionImporter</Importer>
+      <Processor>FontDescriptionProcessor</Processor>
+    </Compile>
     <None Include="Fonts\MyriadPro-Bold.otf">
       <Name>MyriadPro-Bold</Name>
     </None>

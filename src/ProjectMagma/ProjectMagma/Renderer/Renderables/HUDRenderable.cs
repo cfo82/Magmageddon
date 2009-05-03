@@ -1,6 +1,7 @@
 ﻿using System;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
+using ProjectMagma.MathHelpers;
 
 namespace ProjectMagma.Renderer
 {
@@ -23,8 +24,6 @@ namespace ProjectMagma.Renderer
             this.maxHealth = maxHealth;
             this.energy = energy;
             this.maxEnergy = maxEnergy;
-            this.fuel = fuel;
-            this.maxFuel = maxFuel;
             this.frozen = frozen;
             this.jumps = jumps;
             this.lives = lives;
@@ -34,21 +33,24 @@ namespace ProjectMagma.Renderer
 
             displayedEnergy = energy;
             displayedHealth = health;
+            
+            spriteBatch = new SpriteBatch(Game.Instance.GraphicsDevice);
 
-            barEffect = Game.Instance.ContentManager.Load<Effect>("Effects/Hud/Bars");
-            barBackgroundTexture = Game.Instance.ContentManager.Load<Texture2D>("Sprites/Hud/bar_background");
-            barComponentTexture = Game.Instance.ContentManager.Load<Texture2D>("Sprites/Hud/bar_highlight");
-
+            frozenColorStrength = new SineFloat(0.0f, 0.85f, 5.0f);
             ComputePositions();
         }
 
+        
         public override void LoadResources()
         {
             base.LoadResources();
 
-            spriteBatch = new SpriteBatch(Game.Instance.GraphicsDevice);
+            barEffect = Game.Instance.ContentManager.Load<Effect>("Effects/Hud/Bars");
+            barBackgroundTexture = Game.Instance.ContentManager.Load<Texture2D>("Sprites/Hud/bar_background");
+            barComponentTexture = Game.Instance.ContentManager.Load<Texture2D>("Sprites/Hud/bar_highlight");
             playerNameFont = Game.Instance.ContentManager.Load<SpriteFont>("Fonts/hud_playername");
             powerupFont = Game.Instance.ContentManager.Load<SpriteFont>("Fonts/hud_powerup");
+            livesFont = Game.Instance.ContentManager.Load<SpriteFont>("Fonts/hud_lives");
             font = Game.Instance.ContentManager.Load<SpriteFont>("Sprites/HUD/HUDFont");
             background = Game.Instance.ContentManager.Load<Texture2D>("Sprites/HUD/background");
             healthBar = Game.Instance.ContentManager.Load<Texture2D>("Sprites/HUD/health");
@@ -91,14 +93,6 @@ namespace ProjectMagma.Renderer
             {
                 maxEnergy = value;
             }
-            else if (id == "Fuel")
-            {
-                fuel = value;
-            }
-            else if (id == "MaxFuel")
-            {
-                maxFuel = value;
-            }
             else if (id == "Frozen")
             {
                 frozen = value;
@@ -130,28 +124,25 @@ namespace ProjectMagma.Renderer
             GameTime gameTime
         )
         {
+            if(!frozenColorStrength.Running)
+                frozenColorStrength.Start(gameTime);
+
             // TESTHACK
-            //health += maxHealth/30;
-            //if (health > maxHealth) health = 0;
-            // /TESTHACK
-
-            // TODO: ADD FROZEN INDICATION. OLD CODE:
-            //double frozenSeconds = (double)this.frozen / 1000.0;
-            //string frozenString = string.Format("frozen: {0:00.00}", frozenSeconds);
-
-            // TODO: ADD LIVES DISPLAY
+            //lives += 1;
+            //if (lives > 25) lives = 0;
+            //TESTHACK
 
             // TODO: ADD EVEN MORE BLINKI-BLINKI ON LOW HEALTH!!!!!!1!!
 
             // TODO: FIX REPULSION SECONDS
 
-            UpdateDisplayedValues();
+            UpdateDisplayedValues(gameTime);
             ApplyBarEffectParameters();
-            DrawStrings();
             DrawBars();
+            DrawStrings();
         }
 
-        private void UpdateDisplayedValues()
+        private void UpdateDisplayedValues(GameTime gameTime)
         {
             const float c = 0.15f;
             displayedHealth = MathHelper.Lerp(displayedHealth, (float)health, c);
@@ -164,6 +155,8 @@ namespace ProjectMagma.Renderer
                 energyBlink = !energyBlink;
             else
                 energyBlink = false;
+
+            frozenColorStrength.Update(gameTime);
         }
 
         private string PowerupString()
@@ -197,7 +190,7 @@ namespace ProjectMagma.Renderer
         private void DrawStrings()
         {
             spriteBatch.Begin(SpriteBlendMode.AlphaBlend, SpriteSortMode.Immediate, SaveStateMode.None, spriteScale);
-            Vector3 textColor = defaultTextColor * (1 - frozenColorStrength) + frozenTextColor * frozenColorStrength;
+            Vector3 textColor = defaultTextColor * (1 - frozenColorStrength.Value) + frozenTextColor * frozenColorStrength.Value;
 
             // draw the player name
             Vector2 playerNameSize = playerNameFont.MeasureString(playerName.ToUpper());
@@ -206,17 +199,26 @@ namespace ProjectMagma.Renderer
             spriteBatch.DrawString(playerNameFont, playerName.ToUpper(), playerNameShadowPos, Color.DimGray);
             spriteBatch.DrawString(playerNameFont, playerName.ToUpper(), playerNamePos, new Color(textColor));
 
-            // draw the current powerup status, if any
+            // draw the current powerup status, if any            
             string powerupString = PowerupString();
-            Vector2 powerupStringSize = playerNameFont.MeasureString(powerupString);
-            Vector2 powerupPos = new Vector2(xStart + 52, yStart + 20) + invMultiplier * (powerupStringSize - (new Vector2(120, 5)));
-            //Vector2 powerupPos = new Vector2(xStart + 52, yStart + 20) + invMultiplier * (new Vector2(209, 97) - powerupStringSize);
+            Vector2 powerupStringSize = powerupFont.MeasureString(powerupString);
+            Vector2 powerupPos = new Vector2(xStart + 52, yStart + 21) + invMultiplier * (new Vector2(165, 71) - powerupStringSize);
             Vector2 powerupShadowPos = powerupPos + textShadowOffset;
             spriteBatch.DrawString(powerupFont, powerupString, powerupShadowPos, Color.DimGray);
             spriteBatch.DrawString(powerupFont, powerupString, powerupPos, new Color(textColor));
 
+            // draw the number of lives
+            string livesString = lives.ToString();
+            Vector2 livesStringSize = powerupFont.MeasureString(livesString);
+            Vector2 livesCenterOffset = new Vector2((int) livesStringSize.X / 2, (int) livesStringSize.Y / 2);
+            Vector2 livesPos = new Vector2(xStart + 19, yStart + 50) + multiplier * (new Vector2(236, 21) - livesStringSize * 0.25f) - livesCenterOffset;
+            Vector2 livesShadowPos = livesPos + textShadowOffset/2;
+            spriteBatch.DrawString(livesFont, livesString, livesPos, new Color(Color.White, 0.85f));
+
             // done
             spriteBatch.End();
+
+            Console.WriteLine("" + frozenColorStrength.Value);
         }
 
         private void ComputePositions()
@@ -308,15 +310,13 @@ namespace ProjectMagma.Renderer
         private int maxHealth;
         private int energy;
         private int maxEnergy;
-        private int fuel;
-        private int maxFuel;
-        private int frozen;
+        private int frozen; // remaining time in milliseconds
         private int jumps;
         private int lives;
 
         private float displayedHealth, displayedEnergy;
 
-        private float frozenColorStrength;
+        private SineFloat frozenColorStrength;
 
         private Effect barEffect;
 
@@ -327,6 +327,7 @@ namespace ProjectMagma.Renderer
         private Texture2D barComponentTexture;
 
         private static readonly Vector3 frozenTextColor = new Vector3(0, 156, 255) / 255;
+        //private static readonly Vector3 frozenTextColor = new Vector3(128, 200, 255) / 255;
         private static readonly Vector3 defaultTextColor = new Vector3(255, 255, 255) / 255;
 
         private int repulsion_seconds;
@@ -336,6 +337,7 @@ namespace ProjectMagma.Renderer
 
         private SpriteFont playerNameFont;
         private SpriteFont powerupFont;
+        private SpriteFont livesFont;
 
         private Vector2 barAreaSize;
         private Vector2 multiplier, invMultiplier;

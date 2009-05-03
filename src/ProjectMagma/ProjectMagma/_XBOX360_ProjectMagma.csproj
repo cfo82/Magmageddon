@@ -56,8 +56,10 @@
     <XnaCompressContent>true</XnaCompressContent>
   </PropertyGroup>
   <ItemGroup>
-    <Compile Include="DoublyIntegratedFloat.cs" />
-    <Compile Include="DoublyIntegratedVector2.cs" />
+    <Compile Include="MathHelpers\DoublyIntegratedFloat.cs" />
+    <Compile Include="MathHelpers\DoublyIntegratedVector2.cs" />
+    <Compile Include="MathHelpers\EaseFloat.cs" />
+    <Compile Include="MathHelpers\SineFloat.cs" />
     <Compile Include="Menu\HelpMenu.cs" />
     <Compile Include="Menu\ItemizedMenuScreen.cs" />
     <Compile Include="Menu\ItemSelectionHandler.cs" />

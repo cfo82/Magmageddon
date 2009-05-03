@@ -1024,7 +1024,6 @@ namespace ProjectMagma.Simulation
 
                 // position
                 Vector3 isectPt;
-                Vector3 playerPosition = player.GetVector3("position");
                 if (Simulation.GetPositionOnSurface(ref playerPosition, island, out isectPt))
                 {
                     // set position to contact point
@@ -1244,13 +1243,15 @@ namespace ProjectMagma.Simulation
                     if (island.Name == powerup.GetString("island_reference"))
                         continue; // select again
                 }
-                // check island is far enough away of other players
+                // check island is far enough away from other players
                 foreach (Entity p in Game.Instance.Simulation.PlayerManager)
                 {
-                    if ((island.GetVector3("position") - p.GetVector3("position")).Length() > constants.GetFloat("respawn_min_distance_to_players"))
+                    Vector3 dist = island.GetVector3("position") - p.GetVector3("position");
+                    dist.Y = 0; // ignore y component
+                    if (dist.Length() < constants.GetFloat("respawn_min_distance_to_players"))
                         continue; // select again
                 }
-                // no powerup on selected island -> break;
+                // current island seems ok -> break;
                 break; 
             }
             SetActiveIsland(island);

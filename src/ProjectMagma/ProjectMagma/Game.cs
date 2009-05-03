@@ -248,8 +248,6 @@ namespace ProjectMagma
 #endif
 
             font = Game.Instance.ContentManager.Load<SpriteFont>("Sprites/HUD/HUDFont");
-
-            paused = false;
         }
 
         /// <summary>
@@ -424,11 +422,7 @@ namespace ProjectMagma
         {
             base.OnActivated(sender, args);
 
-            // let's try and start... 
-            if (!paused)
-            {
-                simulationThread.Start();
-            }
+            Resume();
         }
 
 
@@ -436,10 +430,7 @@ namespace ProjectMagma
         {
             base.OnDeactivated(sender, args);
 
-            if (!paused)
-            {
-                simulationThread.Join();
-            }
+            Pause();
         }
 
         public void AddPlayers(Entity[] players)

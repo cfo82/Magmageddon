@@ -24,7 +24,6 @@ namespace ProjectMagma.Simulation
             InActive, Warmup, Active, Cooldown
         }
 
-
         public FlamethrowerControllerProperty()
         {
         }
@@ -150,12 +149,10 @@ namespace ProjectMagma.Simulation
         {
             Entity other = contact.EntityB;
 
-            if (other.HasAttribute("health"))
+            if (other.HasProperty("burnable")
+                && other != player) // don't burn self
             {
-                Game.Instance.Simulation.ApplyPerSecondSubstraction(flame, other.Name + "_flamethrower_damage", constants.GetInt("flamethrower_damage_per_second"),
-                    other.GetIntAttribute("health"));
-                if (other.GetString("kind") == "player")
-                    player.SetInt("frozen", 0);
+                other.SetFloat("burnt_at", simTime.At);                
             }
         }
 

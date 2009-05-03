@@ -17,7 +17,7 @@
     <Properties>
       <Property name="collision" type="ProjectMagma.Simulation.Collision.CollisionProperty"/>
       <Property name="controller" type="ProjectMagma.Simulation.IslandCircualarMovementControllerProperty"/>
-      <Property name="death" type="ProjectMagma.Simulation.DeathProperty"/>
+      <!--<Property name="death" type="ProjectMagma.Simulation.DeathProperty"/>-->
       <Property name="shadow_cast" type="ProjectMagma.Simulation.ShadowCastProperty"/>
       <Property name="render" type="ProjectMagma.Simulation.IslandRenderProperty"/>
       <!--Property name="render" type="ProjectMagma.Simulation.BasicRenderProperty"/-->

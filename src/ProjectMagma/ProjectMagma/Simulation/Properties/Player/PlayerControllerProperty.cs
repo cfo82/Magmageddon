@@ -125,6 +125,7 @@ namespace ProjectMagma.Simulation
 
             arrow.AddVector3Attribute("diffuse_color", player.GetVector3("color2"));
             arrow.AddVector3Attribute("specular_color", Vector3.One);
+            arrow.AddFloatAttribute("alpha", 0.8f);
             arrow.AddFloatAttribute("specular_power", 0.5f);
             arrow.AddVector2Attribute("persistent_squash", new Vector2(1000, 0.8f));
 
@@ -231,7 +232,7 @@ namespace ProjectMagma.Simulation
 
             PerformFlamethrowerAction(player, playerPosition);
 
-            PerformIslandRepulsionAction(at, ref fuel);
+            PerformIslandRepulsionAction(simTime, ref fuel);
 
             // TODO: island selection with islands/player projected in screen-plane.
 
@@ -440,20 +441,20 @@ namespace ProjectMagma.Simulation
             islandSelectedAt = 0;
         }
 
-        private void PerformIslandRepulsionAction(float at, ref int fuel)
+        private void PerformIslandRepulsionAction(SimulationTime simTime, ref int fuel)
         {
             // island repulsion
             if (controllerInput.dPadPressed
                 && activeIsland != null
-                && fuel > constants.GetInt("island_repulsion_fuel_cost"))
+                && player.GetFloat("repulsion_seconds") > 0)
             {
                 float velocityMultiplier = constants.GetFloat("island_repulsion_velocity_multiplier");
                 Vector3 velocity = new Vector3(controllerInput.dPadX * velocityMultiplier, 0, controllerInput.dPadY * velocityMultiplier);
                 activeIsland.SetVector3("repulsion_velocity", activeIsland.GetVector3("repulsion_velocity") + velocity);
 
-                fuel -= constants.GetInt("island_repulsion_fuel_cost");
+                player.SetFloat("repulsion_seconds", player.GetFloat("repulsion_seconds") - simTime.Dt);
 
-                islandRepulsionStoppedAt = at;
+                islandRepulsionStoppedAt = simTime.At;
             }
         }
 
@@ -615,6 +616,12 @@ namespace ProjectMagma.Simulation
 
         private void PerformStickMovement(Entity player, float dt, ref Vector3 playerPosition, int fuel)
         {
+            if (destinationIsland != null)
+            {
+                // no movement during jump
+                return;
+            }
+
             if (controllerInput.moveStickMoved)
             {
                 //movedByStick = true;
@@ -777,7 +784,7 @@ namespace ProjectMagma.Simulation
                 }
 
                 // todo: add constant that can modify this
-                fuel -= (int)simTime.DtMs;
+//                fuel -= (int)simTime.DtMs;
                 playerVelocity += constants.GetVector3("jetpack_acceleration") * dt;
 
                 if (playerVelocity.Length() > constants.GetFloat("max_jetpack_speed"))
@@ -1225,7 +1232,7 @@ namespace ProjectMagma.Simulation
                 break; 
             }
             SetActiveIsland(island);
-            player.SetVector3("position", island.GetVector3("position"));
+            player.SetVector3("position", GetLandingPosition(island));
         }
 
         /// <summary>

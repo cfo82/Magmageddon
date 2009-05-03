@@ -63,9 +63,9 @@
       <Attribute name="island_jump_arc_height" template="float" value="220"/>
       <Attribute name="island_jump_speed" template="float" value="20"/>
       <Attribute name="island_jump_destination_radius" template="float" value=".1"/>
-      <Attribute name="island_jump_free_range" template="float" value="200"/>
+      <Attribute name="island_jump_free_range" template="float" value="140"/>
 
-      <Attribute name="island_repulsion_velocity_multiplier" template="float" value="50"/>
+      <Attribute name="island_repulsion_velocity_multiplier" template="float" value="5"/>
       <Attribute name="island_repulsion_fuel_cost" template="int" value="80"/>
       <Attribute name="island_repulsion_recharge_delay" template="float" value="1800"/>
 

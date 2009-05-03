@@ -79,7 +79,7 @@
       <Attribute name="kind" template="string" value="powerup"/>
       <Attribute name="position" template="float3" value="0 0 0"/>
       <Attribute name="mesh" template="string" value="Models/Primitives/powerup"/>
-      <Attribute name="scale" template="float3" value="16 16 16"/>
+      <Attribute name="scale" template="float3" value="12 12 12"/>
       <Attribute name="relative_position" template="float3" value="15 0 15"/>
       <Attribute name="pickup_sound" template="string" value="excellent"/>
       <Attribute name="bv_type" template="string" value="sphere"/>

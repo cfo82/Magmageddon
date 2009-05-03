@@ -307,7 +307,7 @@ namespace ProjectMagma.Simulation
                             // push the other island away (if contact normal is opposed)
                             if (Vector3.Dot(attractionVelocity, normal) > 0)
                             {
-                                Vector3 velocity = attractionVelocity * constants.GetFloat("collision_damping")
+                                Vector3 velocity = normal * attractionVelocity.Length() * constants.GetFloat("collision_damping")
                                     // resulting velocity depends on angle
                                     * Vector3.Dot(normal, Vector3.Normalize(attractionVelocity));
                                 velocity.Y = 0; // only in xz plane

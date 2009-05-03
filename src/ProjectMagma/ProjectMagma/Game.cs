@@ -426,7 +426,10 @@ namespace ProjectMagma
         {
             base.OnActivated(sender, args);
 
-            Resume();
+            if (paused)
+            {
+                Resume();
+            }
         }
 
 
@@ -434,7 +437,10 @@ namespace ProjectMagma
         {
             base.OnDeactivated(sender, args);
 
-            Pause();
+            if (!paused)
+            {
+                Pause();
+            }
         }
 
         public void AddPlayers(Entity[] players)

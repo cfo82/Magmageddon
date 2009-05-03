@@ -776,7 +776,7 @@ namespace ProjectMagma.Simulation
                 && destinationIsland == null
                 && flame == null
                 && fuel > 0
-                && player.GetFloat("frozen") <= 0
+                && player.GetInt("frozen") <= 0
             )
             {
                 if (!jetpackActive)
@@ -992,8 +992,14 @@ namespace ProjectMagma.Simulation
                 return;
             }
 
+            // get theoretical position on island
+            Vector3 playerPosition = player.GetVector3("position");
+            Vector3 surfacePosition;
+            Simulation.GetPositionOnSurface(ref playerPosition, island, out surfacePosition);
+
             // on top?
-            if ((Vector3.Dot(-Vector3.UnitY, contact[0].Normal) > 0.25
+            // todo: extract constant
+            if ((surfacePosition.Y - 5 < playerPosition.Y
                 && activeIsland == null) // don't allow switching of islands
                 || island == attractedIsland)
             {

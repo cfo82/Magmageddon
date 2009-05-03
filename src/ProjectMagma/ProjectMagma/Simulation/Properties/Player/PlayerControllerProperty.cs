@@ -858,7 +858,9 @@ namespace ProjectMagma.Simulation
                     {
                         // activate
                         player.AddProperty("collision", new CollisionProperty());
-                        player.AddProperty("render", new BasicRenderProperty());
+                        // TODO: Janick: Verwend wider das RenderProperty woner vorher gha hät (sprich das wo im File deklariert isch!)
+                        // Frage: Verlürt er au sus all properties? Das isch nöd guet...
+                        player.AddProperty("render", new RobotRenderProperty());
                         player.AddProperty("shadow_cast", new ShadowCastProperty());
                         ((CollisionProperty)player.GetProperty("collision")).OnContact += PlayerCollisionHandler;
 

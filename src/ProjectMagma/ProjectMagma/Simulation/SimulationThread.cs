@@ -68,29 +68,13 @@ namespace ProjectMagma.Simulation
                 {
                     startEvent.WaitOne();
 
-                    double numFrames = 0;
-                    double time = 0;
-                    double current = Now;
                     while (!joinRequested)
                     {
                         RendererUpdateQueue q = simulation.Update();
                         renderer.AddUpdateQueue(q);
 
-                        double now = Now;
-                        double dt = now - current;
-
-                        time += dt;
-                        if (dt > 0)
-                        {
-                            Sps = (float)(1000f / dt);
-                        }
-                        if (time > 0)
-                        {
-                            AvgSps = (1000.0 * numFrames / time);
-                        }
-
-                        current = now;
-                        ++numFrames;
+                        Sps = 1000f / simulation.Time.DtMs;
+                        AvgSps = 1000f * simulation.Time.Frame / simulation.Time.At;
                     }
 
                     finishedEvent.Set();

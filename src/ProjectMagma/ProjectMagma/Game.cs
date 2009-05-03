@@ -15,6 +15,7 @@ using xWinFormsLib;
 using ProjectMagma.Simulation;
 using ProjectMagma.Simulation.Attributes;
 using ProjectMagma.Shared.LevelData;
+using ProjectMagma.Shared.Model;
 using ProjectMagma.Simulation.Collision;
 
 using ProjectMagma.Renderer.Interface;
@@ -220,6 +221,12 @@ namespace ProjectMagma
 
             // load menu
             menu.LoadContent();
+
+            // preload effects data
+            Game.Instance.ContentManager.Load<Texture2D>("Textures/Sfx/IceSpikeTrail");
+            Game.Instance.ContentManager.Load<Texture2D>("Textures/Sfx/IceSpikeHead");
+            Game.Instance.ContentManager.Load<Effect>("Effects/Sfx/IceSpike");
+            Game.Instance.ContentManager.Load<MagmaModel>("Models/Sfx/IceSpike");
 
             // preload sounds
             Game.Instance.ContentManager.Load<SoundEffect>("Sounds/gong1");

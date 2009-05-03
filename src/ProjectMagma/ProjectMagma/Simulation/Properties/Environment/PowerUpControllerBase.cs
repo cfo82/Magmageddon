@@ -120,15 +120,20 @@ namespace ProjectMagma.Simulation
 
         private void SelectNewIsland()
         {
-            Entity island;
-            for (; ; )
+            int cnt = Game.Instance.Simulation.IslandManager.Count;
+            Entity island = Game.Instance.Simulation.IslandManager[0];
+            for (int i = 0; i < cnt*2; i++)
             {
                 int islandNo = rand.Next(Game.Instance.Simulation.IslandManager.Count - 1);
                 island = Game.Instance.Simulation.IslandManager[islandNo];
+
+                // no players on it
+                if (island.GetInt("players_on_island") > 0)
+                    continue;                
                 // check island is far enough away from players
                 foreach (Entity p in Game.Instance.Simulation.PlayerManager)
                 {
-                    if ((island.GetVector3("position") - p.GetVector3("position")).Length() > constants.GetFloat("respawn_min_distance_to_players"))
+                    if ((island.GetVector3("position") - p.GetVector3("position")).Length() < constants.GetFloat("respawn_min_distance_to_players"))
                         continue; // select again
                 }
                 // no powerup on selected island -> break;

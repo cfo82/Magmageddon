@@ -13,13 +13,15 @@ namespace ProjectMagma.Renderer
         {
             this.color1 = color1;
             this.color2 = color2;
+
+            DiffuseColor = color1;
         }
 
         protected override void SetDefaultMaterialParameters()
         {
             Alpha = 1.0f;
             SpecularPower = 10.0f;
-            DiffuseColor = color1;
+            DiffuseColor = Vector3.One * 0.5f;
             SpecularColor = Vector3.One * 0.2f;
             EmissiveColor = Vector3.One * 0.0f;
         }

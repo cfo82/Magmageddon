@@ -983,12 +983,14 @@ namespace ProjectMagma.Simulation
         private void PlayerIslandCollisionHandler(SimulationTime simTime, Entity player, Entity island, Contact contact)
         {
             float dt = simTime.Dt;
+            /*
             if (activeIsland != null)
             {
                 // don't do any collision reaction if we are standing on an island
                 // this is handled in island's collision reaction
                 return;
             }
+            */
 
             // on top?
             if (Vector3.Dot(-Vector3.UnitY, contact[0].Normal) > 0.25

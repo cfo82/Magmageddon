@@ -103,9 +103,9 @@ namespace ProjectMagma.Renderer
             RendererUpdateQueue q = GetNextUpdateQueue();
             while (q != null)
             {
-                foreach (RendererUpdate update in q.updates)
+                for (int i = 0; i < q.Count; ++i)
                 {
-                    update.Apply();
+                    q[i].Apply();
                 }
 
                 q = GetNextUpdateQueue();

@@ -10,8 +10,30 @@ namespace ProjectMagma.Renderer.Interface
         public RendererUpdateQueue()
         {
             updates = new List<RendererUpdate>();
+            timestamp = 0;
         }
 
-        public List<RendererUpdate> updates;
+        public void AddUpdate(RendererUpdate update)
+        {
+            updates.Add(update);
+        }
+
+        public int Count
+        {
+            get { return updates.Count; }
+        }
+
+        public RendererUpdate this[int index]
+        {
+            get { return updates[index]; }
+        }
+
+        public double Timestamp
+        {
+            get { return timestamp; }
+        }
+
+        private List<RendererUpdate> updates;
+        private double timestamp;
     }
 }

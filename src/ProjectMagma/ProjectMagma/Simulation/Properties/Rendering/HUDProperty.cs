@@ -68,7 +68,7 @@ namespace ProjectMagma.Simulation
             }
             entity.GetIntAttribute("lives").ValueChanged += LivesChanged;
 
-            Game.Instance.Simulation.CurrentUpdateQueue.updates.Add(new AddRenderableUpdate((Renderable)Updatable));
+            Game.Instance.Simulation.CurrentUpdateQueue.AddUpdate(new AddRenderableUpdate((Renderable)Updatable));
         }
 
         protected override ProjectMagma.Renderer.Interface.RendererUpdatable CreateUpdatable(Entity entity)
@@ -91,7 +91,7 @@ namespace ProjectMagma.Simulation
 
         public override void OnDetached(Entity entity)
         {
-            Game.Instance.Simulation.CurrentUpdateQueue.updates.Add(new RemoveRenderableUpdate((Renderable)Updatable));
+            Game.Instance.Simulation.CurrentUpdateQueue.AddUpdate(new RemoveRenderableUpdate((Renderable)Updatable));
 
             Entity playerConstants = Game.Instance.Simulation.EntityManager["player_constants"];
 

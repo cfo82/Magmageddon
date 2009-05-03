@@ -33,12 +33,12 @@ namespace ProjectMagma.Simulation
                 entity.GetBoolAttribute("dead").ValueChanged += DeadChanged;
             }
 
-            Game.Instance.Simulation.CurrentUpdateQueue.updates.Add(new AddRenderableUpdate((Renderable)Updatable));
+            Game.Instance.Simulation.CurrentUpdateQueue.AddUpdate(new AddRenderableUpdate((Renderable)Updatable));
         }
 
         public override void OnDetached(Entity entity)
         {
-            Game.Instance.Simulation.CurrentUpdateQueue.updates.Add(new RemoveRenderableUpdate((Renderable)Updatable));
+            Game.Instance.Simulation.CurrentUpdateQueue.AddUpdate(new RemoveRenderableUpdate((Renderable)Updatable));
 
             if (entity.HasVector3("position"))
             {

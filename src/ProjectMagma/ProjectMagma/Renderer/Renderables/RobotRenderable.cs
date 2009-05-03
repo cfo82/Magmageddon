@@ -15,6 +15,7 @@ namespace ProjectMagma.Renderer
             this.color2 = color2;
 
             DiffuseColor = color1;
+            RenderChannel = RenderChannelType.One;
         }
 
         protected override void SetDefaultMaterialParameters()

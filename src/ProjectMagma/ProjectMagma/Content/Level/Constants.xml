@@ -103,8 +103,8 @@
       <Attribute name="repulsion_deacceleration" template="float" value="900"/>
       <Attribute name="collision_damping" template="float" value="0.9"/>
 
-      <Attribute name="attraction_acceleration" template="float" value="400"/>
-      <Attribute name="attraction_max_speed" template="float" value="200"/>
+      <Attribute name="attraction_acceleration" template="float" value="600"/>
+      <Attribute name="attraction_max_speed" template="float" value="300"/>
       <Attribute name="attraction_timeout" template="float" value="2000"/>
     </Attributes>
   </Entity>

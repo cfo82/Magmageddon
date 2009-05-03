@@ -105,6 +105,10 @@ namespace ProjectMagma.Renderer
             {
                 lives = value;
             }
+            else if (id == "RepulsionSeconds")
+            {
+                repulsion_seconds = value;
+            }
         }
 
         public override void UpdateString(string id, string value)

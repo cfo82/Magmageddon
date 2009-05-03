@@ -140,7 +140,7 @@ namespace ProjectMagma.Simulation
                     {
                         Vector3 velocity = island.GetVector3("attraction_velocity");
                         float maxSpeed = constants.GetFloat("attraction_max_speed");
-                        if (dist < 200) // todo: make constant
+                        if (dist < 200) // todo: extract constant
                             maxSpeed *= dist / 400;
 
                         // don't allow being faster than max-speed
@@ -200,13 +200,15 @@ namespace ProjectMagma.Simulation
                     Console.WriteLine("repositioning to: " + repositioningPosition);
                 }
 
-                // get direction of repositioning effort
-                Vector3 dir = Vector3.Normalize(repositioningPosition - position);
                 // if players are standing on island, we only reposition in xz
                 if (playersOnIsland > 0)
                 {
-                    dir.Y = 0;
+                    // stay on y
+                    repositioningPosition.Y = position.Y;
                 }
+
+                // get direction of repositioning effort
+                Vector3 dir = Vector3.Normalize(repositioningPosition - position);
 
                 // calculate new position
                 Vector3 newPosition = position;
@@ -214,9 +216,7 @@ namespace ProjectMagma.Simulation
                 island.SetVector3("repositioning_velocity", dir * constants.GetFloat("repositioning_speed"));
 
                 // check if we are there yet (respectivly a bit further)
-                if (Vector3.Dot(repositioningPosition - newPosition, repositioningPosition - position) < 0
-                    || (dir.X == 0 && dir.Z == 0 && playersOnIsland > 0)) 
-                    // if we only need to reposition horizontally, this is handled by sinking/rising
+                if (Vector3.Dot(repositioningPosition - newPosition, repositioningPosition - position) < 0)
                 {
                     position = repositioningPosition;
                     state = IslandState.Normal;

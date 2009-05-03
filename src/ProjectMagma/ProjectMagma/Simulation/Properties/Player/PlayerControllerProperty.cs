@@ -498,8 +498,9 @@ namespace ProjectMagma.Simulation
                 }
                 else
                 {
-                    // change rotation towards selected island
-                    if (selectedIsland != null)
+                    // change rotation towards selected island, if it has a player standing on
+                    if (selectedIsland != null
+                        && selectedIsland.GetInt("players_on_island") > 0)
                     {
                         Vector3 tminusp = (selectedIsland.GetVector3("position") - playerPosition); 
                         Vector3 ominusp = Vector3.Backward;
@@ -775,6 +776,7 @@ namespace ProjectMagma.Simulation
                 && destinationIsland == null
                 && flame == null
                 && fuel > 0
+                && player.GetFloat("frozen") <= 0
             )
             {
                 if (!jetpackActive)
@@ -826,6 +828,7 @@ namespace ProjectMagma.Simulation
 
                     Game.Instance.ContentManager.Load<SoundEffect>("Sounds/death").Play(Game.Instance.EffectsVolume);
                     player.SetInt("deaths", player.GetInt("deaths") + 1);
+                    player.SetInt("lives", player.GetInt("lives") - 1);
 
                     // deactivate
                     player.RemoveProperty("render");
@@ -983,17 +986,15 @@ namespace ProjectMagma.Simulation
         private void PlayerIslandCollisionHandler(SimulationTime simTime, Entity player, Entity island, Contact contact)
         {
             float dt = simTime.Dt;
-            /*
-            if (activeIsland != null)
+            if (island == activeIsland)
             {
-                // don't do any collision reaction if we are standing on an island
-                // this is handled in island's collision reaction
+                // don't do any collision reaction with island we are standing on
                 return;
             }
-            */
 
             // on top?
-            if (Vector3.Dot(-Vector3.UnitY, contact[0].Normal) > 0.25
+            if ((Vector3.Dot(-Vector3.UnitY, contact[0].Normal) > 0.25
+                && activeIsland == null) // don't allow switching of islands
                 || island == attractedIsland)
             {
 //                Console.WriteLine(player.Name + " collidet with " + island.Name);

@@ -66,6 +66,7 @@ namespace ProjectMagma.Simulation
             {
                 entity.GetIntAttribute("jumps").ValueChanged += JumpsChanged;
             }
+            entity.GetIntAttribute("lives").ValueChanged += LivesChanged;
 
             Game.Instance.Simulation.CurrentUpdateQueue.updates.Add(new AddRenderableUpdate((Renderable)Updatable));
         }
@@ -79,7 +80,7 @@ namespace ProjectMagma.Simulation
                 entity.GetInt("health"), playerConstants.GetInt("max_health"),
                 entity.GetInt("energy"), playerConstants.GetInt("max_energy"),
                 entity.GetInt("lives"), entity.GetInt("frozen"),
-                entity.GetInt("jumps"), 0, // HACK: entity.GetFloat("repulsion_seconds"),
+                entity.GetInt("jumps"), (int) entity.GetFloat("repulsion_seconds"),
                 entity.GetVector3("color1"), entity.GetVector3("color2")
             );
         }
@@ -134,6 +135,8 @@ namespace ProjectMagma.Simulation
             {
                 entity.GetIntAttribute("jumps").ValueChanged -= JumpsChanged;
             }
+            entity.GetIntAttribute("lives").ValueChanged -= LivesChanged;
+
 
             base.OnDetached(entity);
         }
@@ -227,5 +230,24 @@ namespace ProjectMagma.Simulation
         {
             ChangeInt("Jumps", newValue);
         }
+
+        private void LivesChanged(
+            IntAttribute sender,
+            int oldValue,
+            int newValue
+        )
+        {
+            ChangeInt("Lives", newValue);
+        }
+
+        private void ReplusionSecondsChanged(
+            IntAttribute sender,
+            float oldValue,
+            float newValue
+        )
+        {
+            ChangeInt("RepulsionSeconds", (int)newValue);
+        }
+
     }
 }

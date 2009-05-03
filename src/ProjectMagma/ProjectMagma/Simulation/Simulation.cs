@@ -69,7 +69,13 @@ namespace ProjectMagma.Simulation
             String[] models = new String[players.Length];
             for(int i = 0; i < models.Length; i++)
             {
-                models[i] = players[i].GetString("robot_entity");
+                Entity player = players[i];
+                Debug.Assert(player.HasInt("game_pad_index"));
+                Debug.Assert(player.HasInt("lives"));
+                Debug.Assert(player.HasString("robot_entity"));
+                Debug.Assert(player.HasString("player_name"));
+
+                models[i] = player.GetString("robot_entity");
             }
             entityManager.AddEntities(levelData, models, players);
 

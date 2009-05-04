@@ -74,6 +74,12 @@ namespace ProjectMagma.Renderer
 
             statefulParticleResourceManager = new ProjectMagma.Renderer.ParticleSystem.Stateful.ResourceManager(wrappedContent, device);
 
+            explosionSystem = new ProjectMagma.Renderer.ParticleSystem.Stateful.Explosion.Explosion(this, Game.Instance.ContentManager, device);
+            for (int i = 0; i < 50; ++i)
+            {
+                explosionSystem.AddEmitter(new ProjectMagma.Renderer.ParticleSystem.Emitter.ExplosionEmitter());
+            }
+
             updateQueues = new List<RendererUpdateQueue>();
         }
 
@@ -98,8 +104,16 @@ namespace ProjectMagma.Renderer
             }
         }
 
+        private double lastFrameTime = 0;
+        private double currentFrameTime = 0;
+
         public void Update(GameTime gameTime)
         {
+            lastFrameTime = currentFrameTime;
+            double dtMs = (double)gameTime.ElapsedGameTime.Ticks / 10000d;
+            double dt = dtMs / 1000.0;
+            currentFrameTime = lastFrameTime + dt;
+
             RendererUpdateQueue q = GetNextUpdateQueue();
             while (q != null)
             {
@@ -115,6 +129,8 @@ namespace ProjectMagma.Renderer
             {
                 renderable.Update(this, gameTime);
             }
+
+            explosionSystem.Update(lastFrameTime, currentFrameTime);
         }
         
         public void Render(GameTime gameTime)
@@ -249,6 +265,7 @@ namespace ProjectMagma.Renderer
             // need to sort transparent renderables by position and render them (back to front!!)
             // TODO: validate sorting... 
             transparentRenderables.Sort(TransparentRenderableComparison);
+            explosionSystem.Render(Game.Instance.View, Game.Instance.Projection);
 
             foreach (Renderable renderable in transparentRenderables)
             {
@@ -433,6 +450,9 @@ namespace ProjectMagma.Renderer
 
         private GlowPass glowPass;
         private HdrCombinePass hdrCombinePass;
+
+        private ParticleSystem.Stateful.Explosion.Explosion explosionSystem;
+        private ParticleSystem.Emitter.ExplosionEmitter explosionEmitter;
 
         private ParticleSystem.Stateful.ResourceManager statefulParticleResourceManager;
         

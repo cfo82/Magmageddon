@@ -290,7 +290,7 @@ namespace ProjectMagma
 
             // init simulation
             simulation = new ProjectMagma.Simulation.Simulation();
-            RendererUpdateQueue q = simulation.Initialize(ContentManager, "Level/TestLevel");
+            RendererUpdateQueue q = simulation.Initialize(ContentManager, "Level/TestLevel", 0);
             renderer.AddUpdateQueue(q);
 
 #if !XBOX
@@ -342,7 +342,7 @@ namespace ProjectMagma
 
             // init simulation
             simulation = new ProjectMagma.Simulation.Simulation();
-            RendererUpdateQueue q = simulation.Initialize(ContentManager, "Level/TestLevel");
+            RendererUpdateQueue q = simulation.Initialize(ContentManager, "Level/TestLevel", 300);
             renderer.AddUpdateQueue(q);
 
 #if !XBOX

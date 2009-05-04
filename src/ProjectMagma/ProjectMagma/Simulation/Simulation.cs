@@ -34,10 +34,11 @@ namespace ProjectMagma.Simulation
 
         public RendererUpdateQueue Initialize(
             WrappedContentManager wrappedContent,
-            String level
+            String level,
+            double startTime
         )
         {
-            simTime = new SimulationTime();
+            simTime = new SimulationTime(startTime);
 
             StartOperation(); // needs a valid simTime!
 

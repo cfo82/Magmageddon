@@ -17,6 +17,11 @@ namespace ProjectMagma.Simulation
         private float dt = 0;
         private float dtMs = 0;
 
+        public SimulationTime(double at)
+        {
+            this.at = (float)at;
+        }
+
         /// <summary>
         /// the how manieth frame this is since simulation start
         /// </summary>

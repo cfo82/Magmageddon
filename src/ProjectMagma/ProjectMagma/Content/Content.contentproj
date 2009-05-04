@@ -1326,8 +1326,20 @@
       <Importer>EffectImporter</Importer>
       <Processor>EffectProcessor</Processor>
     </None>
+    <Compile Include="Effects\Sfx\ParticleSystem\Stateful\Explosion\Explosion.fx">
+      <Name>Explosion</Name>
+      <Importer>EffectImporter</Importer>
+      <Processor>EffectProcessor</Processor>
+    </Compile>
     <Compile Include="Textures\Player\dwarf.tga">
       <Name>dwarf</Name>
+      <Importer>TextureImporter</Importer>
+      <Processor>TextureProcessor</Processor>
+    </Compile>
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="Textures\Sfx\Explode.bmp">
+      <Name>Explode</Name>
       <Importer>TextureImporter</Importer>
       <Processor>TextureProcessor</Processor>
     </Compile>

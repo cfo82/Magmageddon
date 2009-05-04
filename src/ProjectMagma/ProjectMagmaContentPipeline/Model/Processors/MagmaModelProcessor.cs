@@ -308,6 +308,11 @@ namespace ProjectMagma.ContentPipeline.ModelProcessors
             ref AlignedBox3 boundingBox
         )
         {
+            if (!TransformMeshesAllowed)
+            {
+                return;
+            }
+
             foreach (NodeContent input in inputNodes)
             {
                 RemoveTextureReferences(input, context);
@@ -418,6 +423,11 @@ namespace ProjectMagma.ContentPipeline.ModelProcessors
             {
                 ScaleModel(child, context, scaleFactor);
             }
+        }
+
+        protected virtual bool TransformMeshesAllowed
+        {
+            get { return true; }
         }
 
         protected virtual Vector3 CalculateDiff(ref Vector3 origDiff, ref AlignedBox3 bb)

@@ -49,7 +49,7 @@ namespace ProjectMagma.Simulation
                 other.SetInt("health", other.GetInt("health") - explosion.GetInt("damage"));
                 if(explosion.HasAttribute("freeze_time"))
                 {
-                    other.SetInt("frozen", other.GetInt("frozen") + explosion.GetInt("freeze_time"));
+                    other.SetInt("frozen", explosion.GetInt("freeze_time"));
                 }
             }
             hadCollision = true;

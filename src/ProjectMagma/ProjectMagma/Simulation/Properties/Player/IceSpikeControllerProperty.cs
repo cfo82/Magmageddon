@@ -65,7 +65,7 @@ namespace ProjectMagma.Simulation
 
             // in targeting mode (yet)?
             if (targetPlayer != null
-                && simTime.At > createdAt + constants.GetInt("ice_spike_cooldown"))
+                && simTime.At > createdAt + constants.GetInt("ice_spike_rising_time"))
             {
                 // incorporate homing effect towards targeted player
                 Vector3 targetPlayerPos = targetPlayer.GetVector3("position");
@@ -139,7 +139,7 @@ namespace ProjectMagma.Simulation
             Entity iceSpike = contact.EntityA;
             Entity other = contact.EntityB;
             // ignore collision with island player is standing on during warmup phae
-            if (simTime.At < createdAt + constants.GetInt("ice_spike_cooldown")
+            if (simTime.At < createdAt + constants.GetInt("ice_spike_rising_time")
                 && other.Name == shootingPlayer.GetString("active_island"))
             {
                 return;

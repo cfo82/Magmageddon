@@ -24,7 +24,7 @@ namespace ProjectMagma.Simulation
         private static readonly Buttons[] JetpackButtons = { Buttons.A };
         private static readonly Buttons[] IceSpikeButtons = { Buttons.X };
         private static readonly Buttons[] FlamethrowerButtons = { Buttons.Y };
-        private static readonly Buttons[] HitButtons = { Buttons.RightShoulder };
+        private static readonly Buttons[] HitButtons = { Buttons.B };
 
         // keyboard keys
         private static readonly Keys JetpackKey = Keys.Space;
@@ -612,7 +612,8 @@ namespace ProjectMagma.Simulation
         {
             if (player.GetInt("frozen") > 0)
             {
-                playerPosition = (previousPosition + playerPosition) / 2;
+                Vector3 add = playerPosition - previousPosition;
+                playerPosition = previousPosition + add / constants.GetFloat("frozen_slowdown_divisor");
                 player.SetInt("frozen", player.GetInt("frozen") - (int)simTime.DtMs);
                 if (player.GetInt("frozen") < 0)
                     player.SetInt("frozen", 0);
@@ -1120,6 +1121,8 @@ namespace ProjectMagma.Simulation
                     float delta = or + pr - dist;
 
                     Console.WriteLine("putout delta: " + delta);
+                    if (delta < 0)
+                        delta = 0;
 
                     player.SetVector3("position", player.GetVector3("position") - normal * delta);
                 }

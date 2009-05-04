@@ -29,10 +29,11 @@
       <Attribute name="jetpack_acceleration" template="float3" value="0 1600 0"/>
 
       <Attribute name="ice_spike_aim_angle" template="float" value="90"/>
-      <Attribute name="ice_spike_energy_cost" template="int" value="14"/>
-      <Attribute name="ice_spike_damage" template="int" value="10"/>
+      <Attribute name="ice_spike_energy_cost" template="int" value="35"/>
+      <Attribute name="ice_spike_damage" template="int" value="25"/>
       <Attribute name="ice_spike_freeze_time" template="int" value="2500"/>
-      <Attribute name="ice_spike_cooldown" template="int" value="500"/>
+      <Attribute name="ice_spike_cooldown" template="int" value="1200"/>
+      <Attribute name="ice_spike_rising_time" template="int" value="500"/>
       <Attribute name="ice_spike_initial_speed_multiplier" template="float3" value="0 300 0"/>
       <Attribute name="ice_spike_max_speed" template="float" value="440"/>
       <Attribute name="ice_spike_gravity_acceleration" template="float3" value="0 -200 0"/>
@@ -41,6 +42,7 @@
       <Attribute name="ice_spike_island_force_radius" template="float" value="40"/>
       <Attribute name="ice_spike_lifetime" template="int" value="6000"/>
       <Attribute name="ice_spike_death_timeout" template="int" value="3500"/>
+      <Attribute name="frozen_slowdown_divisor" template="float" value="6"/>
 
       <Attribute name="flamethrower_warmup_time" template="int" value="600"/>
       <Attribute name="flamethrower_warmup_energy_cost" template="int" value="20"/>
@@ -56,10 +58,10 @@
       <Attribute name="player_pushback_deacceleration" template="float" value="600"/>
       <Attribute name="player_pushback_velocity_multiplier" template="float" value="120"/>
 
-      <Attribute name="island_aim_angle_eps" template="float" value="0.2"/>
+      <Attribute name="island_aim_angle_eps" template="float" value="0.4"/>
       <Attribute name="island_aim_angle" template="float" value="180"/>
       <Attribute name="island_reselection_max_value" template="float" value="0.9"/>
-      <Attribute name="island_reselection_timeout" template="float" value="60"/>
+      <Attribute name="island_reselection_timeout" template="float" value="100"/>
       <Attribute name="island_deselection_timeout" template="float" value="200"/>
       <Attribute name="island_jump_arc_height" template="float" value="220"/>
       <Attribute name="island_jump_speed" template="float" value="20"/>

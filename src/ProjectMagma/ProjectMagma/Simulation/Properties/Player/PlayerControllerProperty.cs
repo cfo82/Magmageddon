@@ -15,6 +15,7 @@ namespace ProjectMagma.Simulation
         #region flags
         private static readonly bool LeftStickSelection = true;
         private static readonly bool DeselectOnRelease = false;
+        public static readonly bool ImuneToIslandPush = true;
         #endregion
 
         #region button assignments
@@ -122,7 +123,7 @@ namespace ProjectMagma.Simulation
             arrow.AddStringAttribute("island", "");
 
             arrow.AddStringAttribute("mesh", player.GetString("arrow_mesh"));
-            arrow.AddVector3Attribute("scale", new Vector3(12, 12, 12));
+            arrow.AddVector3Attribute("scale", new Vector3(16, 16, 16));
 
             arrow.AddVector3Attribute("diffuse_color", player.GetVector3("color2"));
             arrow.AddVector3Attribute("specular_color", Vector3.One);
@@ -814,7 +815,7 @@ namespace ProjectMagma.Simulation
         {
             if (player.GetInt("health") <= 0)
             {
-                // any lives left
+                // any lives left?
                 if (player.GetInt("lives") <= 0)
                 {
                     Game.Instance.Simulation.EntityManager.RemoveDeferred(player);
@@ -1000,6 +1001,13 @@ namespace ProjectMagma.Simulation
                 return;
             }
 
+            // no collision response at all
+            if (ImuneToIslandPush
+                && activeIsland != null)
+            {
+                return;
+            }
+
             // get theoretical position on island
             Vector3 playerPosition = player.GetVector3("position");
             Vector3 surfacePosition;
@@ -1044,16 +1052,16 @@ namespace ProjectMagma.Simulation
                 Vector3 pos = player.GetVector3("position");
                 if (activeIsland != null)
                 {
-                    // calculate pseudo normal
+                    // on island -> calculate pseudo normal in xz
                     Vector3 normal = island.GetVector3("position") - pos;
                     normal.Y = 0;
-                    Vector3 velocity = -normal * 100;
+                    Vector3 velocity = -normal * 100; // todo: extract constant
                     player.SetVector3("collision_pushback_velocity", player.GetVector3("collision_pushback_velocity") + velocity);
                 }
                 else
                 {
-                    // jetpacking
-                    Vector3 velocity = -contact[0].Normal * (pos - previousPosition).Length() / simTime.Dt;
+                    // in air --> pushback
+                    Vector3 velocity = -contact[0].Normal * 50; // todo: extract constant
                     player.SetVector3("collision_pushback_velocity", player.GetVector3("collision_pushback_velocity") + velocity);
                 }
             }
@@ -1074,7 +1082,9 @@ namespace ProjectMagma.Simulation
 
         private void PlayerPlayerCollisionHandler(SimulationTime simTime, Entity player, Entity otherPlayer, Contact c)
         {
-            //Console.WriteLine(player.Name + " collided with " + otherPlayer.Name);
+            Vector3 normal = otherPlayer.GetVector3("position") - player.GetVector3("position");
+            normal.Y = 0;
+
             // and hit?
             if (simTime.At < controllerInput.hitButtonPressedAt + 500 && // todo: make constant
                 simTime.At > hitPerformedAt + constants.GetInt("hit_cooldown"))
@@ -1088,7 +1098,7 @@ namespace ProjectMagma.Simulation
                 CheckPlayerAttributeRanges(otherPlayer);
 
                 // set values
-                otherPlayer.SetVector3("hit_pushback_velocity", c[0].Normal * constants.GetFloat("hit_pushback_velocity_multiplier"));
+                otherPlayer.SetVector3("hit_pushback_velocity", normal * constants.GetFloat("hit_pushback_velocity_multiplier"));
                 hitPerformedAt = simTime.At;
             }
             else
@@ -1098,13 +1108,11 @@ namespace ProjectMagma.Simulation
                     // normal feedback
                     Vector3 dir = previousPosition - player.GetVector3("position");
                     dir.Y = 0;
-                    Vector3 normal = otherPlayer.GetVector3("position") - player.GetVector3("position");
-                    normal.Y = 0;
 //                    if (Vector3.Dot(dir, normal) > 0 // and only if normal faces right direction
 //                        || dir == Vector3.Zero)
                     {
                         player.SetVector3("collision_pushback_velocity", player.GetVector3("collision_pushback_velocity")
-                            - normal * 5);
+                            - normal * 15);
                     }
 
                     /*

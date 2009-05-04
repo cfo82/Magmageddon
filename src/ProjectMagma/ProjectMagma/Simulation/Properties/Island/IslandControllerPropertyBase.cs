@@ -255,7 +255,8 @@ namespace ProjectMagma.Simulation
             {
                 String kind = other.GetString("kind");
 
-                if (kind == "player"
+                if ((kind == "player"
+                    && !PlayerControllerProperty.ImuneToIslandPush)
                     || kind == "powerup"
                     || kind == "cave"
                     )
@@ -347,7 +348,7 @@ namespace ProjectMagma.Simulation
                             // todo: this will occur if projection is Vector3.Zero. what to do then?
                             if (float.IsInfinity(newVelocity.X))
                             {
-                                //Console.WriteLine("newvelocity: " + newVelocity);
+                                Console.WriteLine("newvelocity: " + newVelocity);
                             }
 
                             island.SetVector3("attraction_velocity", newVelocity);

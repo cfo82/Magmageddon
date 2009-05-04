@@ -139,7 +139,7 @@ namespace ProjectMagma.Simulation
                 // check we are far enough away from other powerups
                 foreach (Entity p in Game.Instance.Simulation.PowerupManager)
                 {
-                    if ((p.GetVector3("position") - powerup.GetVector3("position")).Length()
+                    if ((p.GetVector3("position") - island.GetVector3("position")).Length()
                         < constants.GetFloat("respawn_min_distance_to_others"))
                     {
                         // select again

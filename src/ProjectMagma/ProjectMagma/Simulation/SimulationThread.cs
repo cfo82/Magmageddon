@@ -44,8 +44,8 @@ namespace ProjectMagma.Simulation
             startEvent.Set();
         }
 
-        public volatile double Sps;
-        public volatile double AvgSps;
+        public double Sps;
+        public double AvgSps;
 
         private void Run()
         {

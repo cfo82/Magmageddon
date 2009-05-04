@@ -67,8 +67,7 @@
       <Attribute name="island_jump_free_range" template="float" value="220"/>
 
       <Attribute name="island_repulsion_velocity_multiplier" template="float" value="9"/>
-      <Attribute name="island_repulsion_fuel_cost" template="int" value="80"/>
-      <Attribute name="island_repulsion_recharge_delay" template="float" value="1800"/>
+      <Attribute name="island_repulsion_start_velocity_multiplier" template="float" value="50"/>
 
       <Attribute name="x_axis_movement_multiplier" template="float" value="140"/>
       <Attribute name="z_axis_movement_multiplier" template="float" value="140"/>

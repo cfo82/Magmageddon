@@ -263,16 +263,7 @@ namespace ProjectMagma.Simulation
                 else
                 {
                     // faster recharge standing on island, but only if jetpack was not used for repulsion
-                    if (at > islandRepulsionStoppedAt + constants.GetFloat("island_repulsion_recharge_delay"))
-                    {
-                        fuel += (int)(simTime.DtMs * constants.GetFloat("fuel_recharge_multiplier_island"));
-                    }
-                    else
-                    {
-                        double diff = at - islandRepulsionStoppedAt;
-                        fuel += (int)(simTime.DtMs * constants.GetFloat("fuel_recharge_multiplier_island")
-                            * diff / constants.GetFloat("island_repulsion_recharge_delay"));
-                    }
+                    fuel += (int)(simTime.DtMs * constants.GetFloat("fuel_recharge_multiplier_island"));
                 }
             }
             #endregion
@@ -419,12 +410,13 @@ namespace ProjectMagma.Simulation
                 // check range
                 Vector3 xzdist = selectedIsland.GetVector3("position") - playerPosition;
                 xzdist.Y = 0;
-                if ((xzdist).Length() < constants.GetFloat("island_jump_free_range")
+                if (xzdist.Length() < constants.GetFloat("island_jump_free_range")
                     || player.GetInt("jumps") > 0) // arrow indicates jump 
                 {
                     //arrow.SetVector2("persistent_squash", new Vector2(100f, 1f));
                     (arrow.GetProperty("render") as ArrowRenderProperty).SquashParams = new Vector2(100f, 1f);
-                    selectedIslandInFreeJumpRange = true;
+                    if(xzdist.Length() < constants.GetFloat("island_jump_free_range"))
+                        selectedIslandInFreeJumpRange = true;
                 }
                 else
                 {
@@ -449,14 +441,18 @@ namespace ProjectMagma.Simulation
             // island repulsion
             if (controllerInput.dPadPressed
                 && activeIsland != null
-                /*&& player.GetFloat("repulsion_seconds") > 0*/)
+                && player.GetFloat("repulsion_seconds") > 0)
             {
-                float velocityMultiplier = constants.GetFloat("island_repulsion_velocity_multiplier");
-                Vector3 velocity = new Vector3(controllerInput.dPadX * velocityMultiplier, 0, controllerInput.dPadY * velocityMultiplier);
-                activeIsland.SetVector3("repulsion_velocity", activeIsland.GetVector3("repulsion_velocity") + velocity);
+                Vector3 velocity = new Vector3(controllerInput.dPadX, 0, controllerInput.dPadY);
+                Vector3 currentVelocity = activeIsland.GetVector3("repulsion_velocity");
+                if (currentVelocity == Vector3.Zero)
+                    velocity *= constants.GetFloat("island_repulsion_start_velocity_multiplier");
+                else
+                    velocity *= constants.GetFloat("island_repulsion_velocity_multiplier");
+                activeIsland.SetVector3("repulsion_velocity", currentVelocity + velocity);
 
                 player.SetFloat("repulsion_seconds", player.GetFloat("repulsion_seconds") - 
-                    simTime.DtMs * 1000);
+                    simTime.DtMs / 1000);
 
                 islandRepulsionStoppedAt = simTime.At;
             }

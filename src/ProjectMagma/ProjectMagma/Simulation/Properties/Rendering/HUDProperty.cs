@@ -81,7 +81,7 @@ namespace ProjectMagma.Simulation
                 entity.GetInt("health"), playerConstants.GetInt("max_health"),
                 entity.GetInt("energy"), playerConstants.GetInt("max_energy"),
                 entity.GetInt("lives"), entity.GetInt("frozen"),
-                entity.GetInt("jumps"), (int) entity.GetFloat("repulsion_seconds"),
+                entity.GetInt("jumps"), entity.GetFloat("repulsion_seconds"),
                 entity.GetVector3("color1"), entity.GetVector3("color2")
             );
         }
@@ -247,7 +247,7 @@ namespace ProjectMagma.Simulation
             float newValue
         )
         {
-            ChangeInt("RepulsionSeconds", (int)newValue);
+            ChangeFloat("RepulsionSeconds", newValue);
         }
 
     }

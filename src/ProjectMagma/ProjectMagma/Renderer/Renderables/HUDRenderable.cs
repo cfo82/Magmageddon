@@ -13,7 +13,7 @@ namespace ProjectMagma.Renderer
             string playerName, int gamePadIndex,                     // player identification
             int health, int maxHealth, int energy, int maxEnergy,    // displayed in bars
             int lives, int frozen,                                   // displayed as text
-            int jumps, int repulsion_seconds,                        // displayed as powerup text          
+            int jumps, float repulsion_seconds,                        // displayed as powerup text          
             Vector3 color1, Vector3 color2                           // player color specifices
         )
         {
@@ -105,10 +105,6 @@ namespace ProjectMagma.Renderer
             {
                 lives = value;
             }
-            else if (id == "RepulsionSeconds")
-            {
-                repulsion_seconds = value;
-            }
         }
 
         public override void UpdateString(string id, string value)
@@ -118,6 +114,16 @@ namespace ProjectMagma.Renderer
             if (id == "PlayerName")
             {
                 playerName = value;
+            }
+        }
+
+        public override void UpdateFloat(string id, float value)
+        {
+            base.UpdateFloat(id, value);
+
+            if (id == "RepulsionSeconds")
+            {
+                repulsion_seconds = value;
             }
         }
 
@@ -169,11 +175,11 @@ namespace ProjectMagma.Renderer
         {
             if (jumps > 0)
             {
-                return "FAR JUMPS: " + jumps;
+                return String.Format("FAR JUMPS: {0}", jumps);
             }
             else if (repulsion_seconds > 0)
             {
-                return "REPULSION: " + repulsion_seconds + " S";
+                return String.Format("REPULSION: {0:0.0}S", repulsion_seconds);
             }
             else
             {
@@ -337,7 +343,7 @@ namespace ProjectMagma.Renderer
         //private static readonly Vector3 frozenTextColor = new Vector3(128, 200, 255) / 255;
         private static readonly Vector3 defaultTextColor = new Vector3(255, 255, 255) / 255;
 
-        private int repulsion_seconds;
+        private float repulsion_seconds;
 
         private Vector3 color1;
         private Vector3 color2;

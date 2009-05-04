@@ -183,7 +183,7 @@ namespace ProjectMagma.Renderer
         private Vector3 direction;
         private bool dead;
 
-        private float iceSpikeModelScale = 135;
+        private float iceSpikeModelScale = 60;
         private PointEmitter iceSpikeEmitter;
         private IceSpike iceSpikeSystem;
         Model iceSpikeModel;

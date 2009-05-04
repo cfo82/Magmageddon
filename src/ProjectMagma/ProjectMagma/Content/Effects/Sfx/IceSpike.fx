@@ -85,10 +85,10 @@ PSOutput IceSpikePixelShader(IceSpikePixelShaderInput input)
 {
 	PSOutput result;
     float4 color = tex2D(IceSpikeSampler, input.TextureCoordinates);
-    color.a = color.a;//*clamp(input.MainAlpha, 0, 1);
+    color.a = color.a * clamp(input.MainAlpha, 0, 1);
     
     result.Color = color;
-    result.RenderChannelColor = float4(0,0,1,0);
+    result.RenderChannelColor = float4(0,0,1,color.a);
     return result;
 }
 

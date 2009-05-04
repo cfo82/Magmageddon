@@ -1,6 +1,7 @@
 ﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Xclna.Xna.Animation;
+using System.Collections.Generic;
 
 namespace ProjectMagma.Renderer
 {
@@ -15,8 +16,6 @@ namespace ProjectMagma.Renderer
             this.color1 = color1;
             this.color2 = color2;
 
-            //DiffuseColor = color1;
-//            DiffuseColor = 
             RenderChannel = RenderChannelType.One;
         }
 
@@ -31,12 +30,21 @@ namespace ProjectMagma.Renderer
 
             // create all the individual animation controllers as defined in the xml file
             // accompanying the player model
-            idle = new AnimationController(Game.Instance, animator.Animations["idle0"]);
-            walk = new AnimationController(Game.Instance, animator.Animations["walk"]);
+            //idle = new AnimationController(Game.Instance, animator.Animations["idle0"]);
+            //walk = new AnimationController(Game.Instance, animator.Animations["walk"]);
+            //nod = new AnimationController(Game.Instance, animator.Animations["nodHead"]);
+
+            controllers = new Dictionary<string, AnimationController>();
+            foreach(string key in animator.Animations.Keys)
+            {
+                controllers.Add(key, new AnimationController(Game.Instance, animator.Animations[key]));
+            }
 
             // set the first default controller
-            RunController(idle);
+            RunController("idle0");
         }
+
+        private Dictionary<string, AnimationController> controllers;
 
         protected override void ApplyCustomEffectParameters(Effect effect, Renderer renderer, GameTime gameTime)
         {
@@ -50,7 +58,14 @@ namespace ProjectMagma.Renderer
             base.Update(renderer, gameTime);
 
             animator.Update(gameTime);
+
+            BonePose head = animator.BonePoses["head"];
+            head.CurrentController = controllers["nodHead"];
+            head.CurrentBlendController = null;
         }
+
+        // activatepermanentstate: idle, walk, jump, die
+        // activatesinglestate: attack
 
         public override bool NeedsUpdate
         {
@@ -77,19 +92,30 @@ namespace ProjectMagma.Renderer
             EmissiveColor = Vector3.One * 0.0f;
         }
 
-        private void RunController(AnimationController controller)
+        private void RunController(string name)
         {
             foreach(BonePose p in animator.BonePoses)
             {
-                p.CurrentController = controller;
+                p.CurrentController = controllers[name];
                 p.CurrentBlendController = null;
             }
         }
 
+        private void RunController(string name1, string name2, float blendFactor)
+        {
+            foreach (BonePose p in animator.BonePoses)
+            {
+                p.CurrentController = controllers[name1];
+                p.CurrentBlendController = controllers[name2];
+                p.BlendFactor = blendFactor;
+            }
+        }
+
         private ModelAnimator animator;
-        AnimationController idle, walk, jump;
-        AnimationController attack1, attack2, attack3, attack4;
-        AnimationController die;
+        //AnimationController idle, walk, jump;
+        //AnimationController attack1, attack2, attack3, attack4;
+        //AnimationController die;
+        //AnimationController nod;
         float blendFactor;
         string state = "idle";
 

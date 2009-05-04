@@ -74,7 +74,7 @@ namespace ProjectMagma.Simulation
 
         // values which get reset on each update
         private bool collisionOccured = false;
-        //private bool movedByStick;
+        private bool movedByStick;
         Vector3 previousPosition;
 
         public PlayerControllerProperty()
@@ -192,7 +192,7 @@ namespace ProjectMagma.Simulation
 
             // reset some stuff
             previousPosition = playerPosition;
-            //movedByStick = false;
+            movedByStick = false;
 
             // get input
             controllerInput.Update(playerIndex, simTime);
@@ -1084,6 +1084,7 @@ namespace ProjectMagma.Simulation
         {
             Vector3 normal = otherPlayer.GetVector3("position") - player.GetVector3("position");
             normal.Y = 0;
+            normal.Normalize();
 
             // and hit?
             if (simTime.At < controllerInput.hitButtonPressedAt + 500 && // todo: make constant
@@ -1103,16 +1104,21 @@ namespace ProjectMagma.Simulation
             }
             else
             {
-//                if(movedByStick)
+                if (movedByStick && activeIsland != null)
+                {
+                    player.SetVector3("position", previousPosition);
+                    player.SetVector3("collision_pushback_velocity", player.GetVector3("collision_pushback_velocity")
+                        - normal * 100);
+                }
+                else
+                if (movedByStick || activeIsland == null)
                 {
                     // normal feedback
-                    Vector3 dir = previousPosition - player.GetVector3("position");
-                    dir.Y = 0;
-//                    if (Vector3.Dot(dir, normal) > 0 // and only if normal faces right direction
+                    //                    if (Vector3.Dot(dir, normal) > 0 // and only if normal faces right direction
 //                        || dir == Vector3.Zero)
                     {
                         player.SetVector3("collision_pushback_velocity", player.GetVector3("collision_pushback_velocity")
-                            - normal * 15);
+                            - normal * 100);
                     }
 
                     /*

@@ -176,6 +176,7 @@
     <Compile Include="Simulation\Properties\Player\FlamethrowerControllerProperty.cs" />
     <Compile Include="Simulation\Properties\Player\IceSpikeControllerProperty.cs" />
     <Compile Include="Simulation\Properties\Player\PlayerControllerProperty.cs" />
+    <Compile Include="Simulation\Properties\Rendering\ArrowRenderProperty.cs" />
     <Compile Include="Simulation\Properties\Rendering\BasicRenderProperty.cs" />
     <Compile Include="Simulation\Properties\Rendering\EnvironmentRenderProperty.cs" />
     <Compile Include="Simulation\Properties\Rendering\IceSpikeRenderProperty.cs" />

@@ -169,11 +169,11 @@ namespace ProjectMagma.Renderer
         {
             if (jumps > 0)
             {
-                return "JUMPS: " + jumps;
+                return "FAR JUMPS: " + jumps;
             }
             else if (repulsion_seconds > 0)
             {
-                return "REPULSION: " + repulsion_seconds + "SEC";
+                return "REPULSION: " + repulsion_seconds + " S";
             }
             else
             {

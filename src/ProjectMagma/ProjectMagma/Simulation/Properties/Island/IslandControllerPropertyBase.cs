@@ -150,7 +150,8 @@ namespace ProjectMagma.Simulation
                             maxSpeed *= dist / 400;
 
                         // don't allow being faster than max-speed
-                        if (velocity.Length() > maxSpeed)
+                        if (velocity.Length() > maxSpeed
+                            && maxSpeed > 0)
                         {
                             velocity = Vector3.Normalize(velocity) * maxSpeed;
                         }
@@ -266,7 +267,7 @@ namespace ProjectMagma.Simulation
                 if ((kind == "player"
                     && !PlayerControllerProperty.ImuneToIslandPush)
                     || kind == "powerup"
-                    || kind == "cave"
+/*                    || kind == "cave"*/
                     )
                 {
                     // do nothing

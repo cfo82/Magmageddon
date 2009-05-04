@@ -53,7 +53,7 @@
       <Attribute name="hit_damage" template="int" value="20"/>
       <Attribute name="hit_cooldown" template="int" value="250"/>
       <Attribute name="hit_pushback_velocity_multiplier" template="float" value="300"/>
-      <Attribute name="player_pushback_deacceleration" template="float" value="300"/>
+      <Attribute name="player_pushback_deacceleration" template="float" value="600"/>
       <Attribute name="player_pushback_velocity_multiplier" template="float" value="120"/>
 
       <Attribute name="island_aim_angle_eps" template="float" value="0.2"/>
@@ -66,7 +66,7 @@
       <Attribute name="island_jump_destination_radius" template="float" value=".1"/>
       <Attribute name="island_jump_free_range" template="float" value="220"/>
 
-      <Attribute name="island_repulsion_velocity_multiplier" template="float" value="5"/>
+      <Attribute name="island_repulsion_velocity_multiplier" template="float" value="10"/>
       <Attribute name="island_repulsion_fuel_cost" template="int" value="80"/>
       <Attribute name="island_repulsion_recharge_delay" template="float" value="1800"/>
 

@@ -123,12 +123,12 @@ namespace ProjectMagma.Simulation
             arrow.AddStringAttribute("island", "");
 
             arrow.AddStringAttribute("mesh", player.GetString("arrow_mesh"));
-            arrow.AddVector3Attribute("scale", new Vector3(16, 16, 16));
+            arrow.AddVector3Attribute("scale", new Vector3(20, 20, 20));
 
             arrow.AddVector3Attribute("diffuse_color", player.GetVector3("color2"));
             arrow.AddVector3Attribute("specular_color", Vector3.One);
-            arrow.AddFloatAttribute("alpha", 0.8f);
-            arrow.AddFloatAttribute("specular_power", 0.5f);
+            arrow.AddFloatAttribute("alpha", 0.6f);
+            arrow.AddFloatAttribute("specular_power", 0.3f);
             arrow.AddVector2Attribute("persistent_squash", new Vector2(1000, 0.8f));
 
             arrow.AddProperty("arrow_controller_property", new ArrowControllerProperty());
@@ -393,7 +393,7 @@ namespace ProjectMagma.Simulation
 
                             if (!arrow.HasProperty("render"))
                             {
-                                arrow.AddProperty("render", new BasicRenderProperty());
+                                arrow.AddProperty("render", new ArrowRenderProperty());
                                 arrow.AddProperty("shadow_cast", new ShadowCastProperty());
                             }
                             
@@ -419,7 +419,8 @@ namespace ProjectMagma.Simulation
                 // check range
                 Vector3 xzdist = selectedIsland.GetVector3("position") - playerPosition;
                 xzdist.Y = 0;
-                if ((xzdist).Length() < constants.GetFloat("island_jump_free_range"))
+                if ((xzdist).Length() < constants.GetFloat("island_jump_free_range")
+                    || player.GetInt("jumps") > 0) // arrow indicates jump 
                 {
                     //arrow.SetVector2("persistent_squash", new Vector2(100f, 1f));
                     (arrow.GetProperty("render") as BasicRenderProperty).SquashParams = new Vector2(100f, 1f);
@@ -454,7 +455,8 @@ namespace ProjectMagma.Simulation
                 Vector3 velocity = new Vector3(controllerInput.dPadX * velocityMultiplier, 0, controllerInput.dPadY * velocityMultiplier);
                 activeIsland.SetVector3("repulsion_velocity", activeIsland.GetVector3("repulsion_velocity") + velocity);
 
-                player.SetFloat("repulsion_seconds", player.GetFloat("repulsion_seconds") - simTime.Dt);
+                player.SetFloat("repulsion_seconds", player.GetFloat("repulsion_seconds") - 
+                    simTime.DtMs * 1000);
 
                 islandRepulsionStoppedAt = simTime.At;
             }
@@ -765,8 +767,11 @@ namespace ProjectMagma.Simulation
 
                     lastIslandDir = islandDir;
 
+                    float speed = destinationOrigDist * 2.2f;
+                    if (speed < 200)
+                        speed = 200;
                     player.SetVector3("island_jump_velocity", Vector3.Normalize(islandDir)
-                        /** constants.GetFloat("island_jump_speed")*/ * destinationOrigDist * 3);
+                        /** constants.GetFloat("island_jump_speed")*/ * speed);
                 }
             }
         }

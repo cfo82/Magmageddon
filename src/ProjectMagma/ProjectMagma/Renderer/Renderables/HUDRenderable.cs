@@ -224,7 +224,7 @@ namespace ProjectMagma.Renderer
             // done
             spriteBatch.End();
 
-            Console.WriteLine("" + frozenColorStrength.Value);
+//            Console.WriteLine("" + frozenColorStrength.Value);
         }
 
         private void ComputePositions()

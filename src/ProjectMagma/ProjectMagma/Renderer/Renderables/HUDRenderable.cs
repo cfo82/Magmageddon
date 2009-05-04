@@ -177,7 +177,7 @@ namespace ProjectMagma.Renderer
             }
             else
             {
-                return "TEMP :P";
+                return "";
             }
         }
 

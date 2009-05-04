@@ -506,11 +506,13 @@ namespace ProjectMagma.Simulation
                     {
                         Vector3 tminusp = (selectedIsland.GetVector3("position") - playerPosition); 
                         Vector3 ominusp = Vector3.Backward;
-                        tminusp.Normalize();
+                        if(tminusp != Vector3.Zero)
+                            tminusp.Normalize();
                         float theta = (float)System.Math.Acos(Vector3.Dot(tminusp, ominusp));
                         Vector3 cross = Vector3.Cross(ominusp, tminusp);
 
-                        cross.Normalize();
+                        if (cross != Vector3.Zero)
+                            cross.Normalize();
 
                         Quaternion targetQ = Quaternion.CreateFromAxisAngle(cross, theta);
 
@@ -1084,7 +1086,8 @@ namespace ProjectMagma.Simulation
         {
             Vector3 normal = otherPlayer.GetVector3("position") - player.GetVector3("position");
             normal.Y = 0;
-            normal.Normalize();
+            if(normal != Vector3.Zero)
+                normal.Normalize();
 
             // and hit?
             if (simTime.At < controllerInput.hitButtonPressedAt + 500 && // todo: make constant
@@ -1107,7 +1110,7 @@ namespace ProjectMagma.Simulation
                 // apply collision response to moving player
 //                if (movedByStick || destinationIsland != null)
                 {
-                    // calculat pseudo-radi
+                    // calculate pseudo-radi
                     float pr = (player.GetVector3("scale") * new Vector3(1, 0, 1)).Length();
                     float or = (otherPlayer.GetVector3("scale") * new Vector3(1, 0, 1)).Length();
                     float dist = ((player.GetVector3("position") - otherPlayer.GetVector3("position")) * new Vector3(1, 0, 1)).Length();
@@ -1271,17 +1274,20 @@ namespace ProjectMagma.Simulation
             int cnt = Game.Instance.Simulation.IslandManager.Count;
             Entity island = Game.Instance.Simulation.IslandManager[0];
             // try at most count*2 times
-            for(int i = 0; i < cnt*2; i++)
+            for(int i = 0; i < cnt*4; i++)
             {
                 int islandNo = rand.Next(Game.Instance.Simulation.IslandManager.Count - 1);
                 island = Game.Instance.Simulation.IslandManager[islandNo];
+                // check no players on island
+                if (island.GetInt("players_on_island") > 0)
+                    continue;
                 // check no powerup on island
                 foreach(Entity powerup in Game.Instance.Simulation.PowerupManager)
                 {
                     if (island.Name == powerup.GetString("island_reference"))
                         continue; // select again
                 }
-                // check island is far enough away from other players
+                // check island is far enough away from other players,
                 foreach (Entity p in Game.Instance.Simulation.PlayerManager)
                 {
                     Vector3 dist = island.GetVector3("position") - p.GetVector3("position");

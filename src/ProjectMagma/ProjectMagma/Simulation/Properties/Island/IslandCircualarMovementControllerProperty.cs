@@ -64,8 +64,10 @@ namespace ProjectMagma.Simulation
             // get direction of pillar
             Vector3 pillarPos = pillar.GetVector3("position");
             Vector3 dir = position - pillarPos;
+            Debug.Assert(dir != Vector3.Zero);
             dir.Y = 0; // y is ignored
-            dir.Normalize();
+            if(dir != Vector3.Zero)
+                dir.Normalize();
             Vector3 nearest = pillarPos + dir * radius; // get point on circular path
             nearest.Y = originalPosition.Y; // set height
             return nearest;
@@ -94,7 +96,6 @@ namespace ProjectMagma.Simulation
                 // did we have collision last time too?
                 if (hadCollision)
                 {
-                    Vector3 dir = island.GetVector3("pushback_velocity");
                     Vector3 pushback = -normal * (island.GetVector3("position") - other.GetVector3("position")).Length();
                     pushback.Y = 0; // only in xz plane
                     // same direction already?

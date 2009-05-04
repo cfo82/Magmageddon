@@ -65,6 +65,11 @@ namespace ProjectMagma.Simulation
 
             // get position
             Vector3 position = island.GetVector3("position");
+            if (float.IsInfinity(position.X)
+                || float.IsNaN(position.X))
+            {
+                Console.WriteLine("nan");
+            }
 
             // implement sinking and rising islands
             int playersOnIsland = island.GetInt("players_on_island");
@@ -123,7 +128,8 @@ namespace ProjectMagma.Simulation
                 Vector3 destinationPos = playerIsland.GetVector3("position");
                 Vector3 dir = destinationPos - position;
                 float dist = dir.Length();
-                dir.Normalize();
+                if(dir != Vector3.Zero)
+                    dir.Normalize();
 
                 bool inRadius = (position - destinationPos).Length()
                         < island.GetFloat("radius") + playerIsland.GetFloat("radius");
@@ -208,7 +214,9 @@ namespace ProjectMagma.Simulation
                 }
 
                 // get direction of repositioning effort
-                Vector3 dir = Vector3.Normalize(repositioningPosition - position);
+                Vector3 dir = repositioningPosition - position;
+                if (dir != Vector3.Zero)
+                    dir.Normalize();
 
                 // calculate new position
                 Vector3 newPosition = position;
@@ -271,7 +279,8 @@ namespace ProjectMagma.Simulation
                     {
                         normal = island.GetVector3("position");
                         normal.Y = 0;
-                        normal.Normalize();
+                        if(normal != Vector3.Zero)
+                            normal.Normalize();
                     }
 
                     // change direction of repulsion
@@ -321,7 +330,8 @@ namespace ProjectMagma.Simulation
                         {
                             Vector3 normXZ = normal;
                             normXZ.Y = 0;
-                            normXZ.Normalize();
+                            if(normXZ != Vector3.Zero)
+                                normXZ.Normalize();
 
                             // compute only on x/z plane for now
                             Vector3 velocityXZ = attractionVelocity;
@@ -331,7 +341,9 @@ namespace ProjectMagma.Simulation
                             Vector3 projection = Vector3.Dot(velocityXZ, normXZ) * normXZ;
 
                             // compute orthogonal repulsion
-                            Vector3 newVelocity = -Vector3.Normalize(projection - velocityXZ);
+                            Vector3 newVelocity = -(projection - velocityXZ);
+                            if (newVelocity != Vector3.Zero)
+                                newVelocity.Normalize();
                             newVelocity.Y = 0; // -contact[0].Normal.Y * attractionVelocity.Y;
                             //newVelocity *= 600;
                             newVelocity *= attractionVelocity.Length();
@@ -365,7 +377,9 @@ namespace ProjectMagma.Simulation
                         Vector3 cpos = repositioningPosition - contact[0].Normal * distance;
 
                         // get sliding velocity
-                        Vector3 slidingDir = Vector3.Normalize(cpos - contact[0].Point);
+                        Vector3 slidingDir = (cpos - contact[0].Point);
+                        if (slidingDir != Vector3.Zero)
+                            slidingDir.Normalize();
                         Vector3 slidingVelocity = slidingDir * constants.GetFloat("repositioning_speed");
 
                         island.SetVector3("repositioning_velocity", slidingVelocity);
@@ -385,13 +399,13 @@ namespace ProjectMagma.Simulation
             {
                 normal = entityB.GetVector3("position")-entityA.GetVector3("position");
                 normal.Y = 0;
-                normal.Normalize();
             }
             else
             {
                 normal = entityB.GetVector3("position")-entityA.GetVector3("position");
-                normal.Normalize();
             }
+            if (normal != Vector3.Zero)
+                normal.Normalize();
             return normal;
         }
 

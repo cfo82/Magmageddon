@@ -1389,8 +1389,8 @@ namespace ProjectMagma.Simulation
                 leftStickY = -gamePadState.ThumbSticks.Left.Y;
                 if (PlayerControllerProperty.LeftStickSelection)
                 {
-                    rightStickX = gamePadState.ThumbSticks.Left.X;
-                    rightStickY = -gamePadState.ThumbSticks.Left.Y;
+                    rightStickX = leftStickX;
+                    rightStickY = leftStickY;
                 }
                 else
                 {
@@ -1405,56 +1405,45 @@ namespace ProjectMagma.Simulation
                     - ((gamePadState.DPad.Up == ButtonState.Pressed) ? 1.0f : 0.0f);
                 dPadPressed = dPadX != 0 || dPadY != 0;
 
-                if (!moveStickMoved)
+                if (keyboardState.IsKeyDown(Keys.A))
                 {
-                    if (keyboardState.IsKeyDown(Keys.A))
-                    {
-                        leftStickX = gamepadEmulationValue;
-                        moveStickMoved = true;
-                    }
-                    else
-                        if (keyboardState.IsKeyDown(Keys.D))
-                        {
-                            leftStickX = -gamepadEmulationValue;
-                            moveStickMoved = true;
-                        }
-
-                    if (keyboardState.IsKeyDown(Keys.W))
-                    {
-                        leftStickY = gamepadEmulationValue;
-                        moveStickMoved = true;
-                    }
-                    else
-                        if (keyboardState.IsKeyDown(Keys.S))
-                        {
-                            leftStickY = -gamepadEmulationValue;
-                            moveStickMoved = true;
-                        }
-
-                    if (keyboardState.IsKeyDown(Keys.Left))
-                        {
-                            rightStickX = gamepadEmulationValue;
-                            moveStickMoved = true;
-                        }
-                        else
-                            if (keyboardState.IsKeyDown(Keys.Right))
-                            {
-                                rightStickX = -gamepadEmulationValue;
-                                moveStickMoved = true;
-                            }
-
-                    if (keyboardState.IsKeyDown(Keys.Up))
-                    {
-                        rightStickY = -gamepadEmulationValue;
-                        moveStickMoved = true;
-                    }
-                    else
-                        if (keyboardState.IsKeyDown(Keys.Down))
-                        {
-                            rightStickY = gamepadEmulationValue;
-                            moveStickMoved = true;
-                        }
+                    leftStickX = gamepadEmulationValue;
                 }
+                else
+                    if (keyboardState.IsKeyDown(Keys.D))
+                    {
+                        leftStickX = -gamepadEmulationValue;
+                    }
+
+                if (keyboardState.IsKeyDown(Keys.W))
+                {
+                    leftStickY = gamepadEmulationValue;
+                }
+                else
+                    if (keyboardState.IsKeyDown(Keys.S))
+                    {
+                        leftStickY = -gamepadEmulationValue;
+                    }
+
+                if (keyboardState.IsKeyDown(Keys.Left))
+                {
+                    rightStickX = gamepadEmulationValue;
+                }
+                else
+                    if (keyboardState.IsKeyDown(Keys.Right))
+                    {
+                        rightStickX = -gamepadEmulationValue;
+                    }
+
+                if (keyboardState.IsKeyDown(Keys.Up))
+                {
+                    rightStickY = -gamepadEmulationValue;
+                }
+                else
+                    if (keyboardState.IsKeyDown(Keys.Down))
+                    {
+                        rightStickY = gamepadEmulationValue;
+                    }
 
                 moveStickMoved = leftStickX != 0.0f || leftStickY != 0.0f;
                 rightStickMoved = rightStickX != 0.0f || rightStickY != 0.0f;

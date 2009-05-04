@@ -645,26 +645,33 @@ namespace ProjectMagma.Simulation
                     playerPosition.X += controllerInput.leftStickX * dt * constants.GetFloat("x_axis_movement_multiplier");
                     playerPosition.Z += controllerInput.leftStickY * dt * constants.GetFloat("z_axis_movement_multiplier");
 
-                    // position on island surface
+                    // check position a bit further in walking direction to be still on island
+                    Vector3 checkPos = playerPosition + new Vector3(controllerInput.leftStickX * 20,
+                        0, controllerInput.leftStickY * 20);
+
                     Vector3 isectPt;
-                    if (Simulation.GetPositionOnSurface(ref playerPosition, activeIsland, out isectPt))
+                    if (!Simulation.GetPositionOnSurface(ref playerPosition, activeIsland, out isectPt))
                     {
-//                        Console.WriteLine("h-diff " + ( isectPt.Y - previousPosition.Y));
-                        // check height difference
-                        if (isectPt.Y - previousPosition.Y > 10)
-                        {
-                            playerPosition = previousPosition;
-                        }
-                        else
-                        {
-                            // set position to contact point
-                            playerPosition.Y = isectPt.Y + 1; // todo: make constant?
-                        }
+                        // check point outside of island -> prohibit movement
+                        playerPosition = previousPosition;
                     }
                     else
-                    // not over island anymore -> don't allow movement
                     {
-                        playerPosition = previousPosition;
+                        // position on island surface
+                        if (Simulation.GetPositionOnSurface(ref playerPosition, activeIsland, out isectPt))
+                        {
+    //                        Console.WriteLine("h-diff " + ( isectPt.Y - previousPosition.Y));
+                            // check height difference
+                            if (isectPt.Y - previousPosition.Y > 10)
+                            {
+                                playerPosition = previousPosition;
+                            }
+                            else
+                            {
+                                // set position to contact point
+                                playerPosition.Y = isectPt.Y + 1; // todo: make constant?
+                            }
+                        }
                     }
                 }
 

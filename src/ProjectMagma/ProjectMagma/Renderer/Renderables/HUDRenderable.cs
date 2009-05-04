@@ -165,7 +165,7 @@ namespace ProjectMagma.Renderer
 
             if (frozen > 0 && !frozenColorStrength.Running)
                 frozenColorStrength.Start(gameTime);
-            else if (frozen == 0 && frozenColorStrength.Running)
+            else if (frozen <= 0 && frozenColorStrength.Running)
                 frozenColorStrength.StopAfterCurrentPhase();
 
             frozenColorStrength.Update(gameTime);

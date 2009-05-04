@@ -639,7 +639,8 @@ namespace ProjectMagma.Simulation
                     playerPosition.X += controllerInput.leftStickX * dt * constants.GetFloat("x_axis_jetpack_multiplier");
                     playerPosition.Z += controllerInput.leftStickY * dt * constants.GetFloat("z_axis_jetpack_multiplier");
                 }
-                else
+                else // don't allow positioning on island if hit
+                if(player.GetVector3("hit_pushback_velocity") == Vector3.Zero)
                 {
                     // on island ground
                     playerPosition.X += controllerInput.leftStickX * dt * constants.GetFloat("x_axis_movement_multiplier");
@@ -650,28 +651,10 @@ namespace ProjectMagma.Simulation
                         0, controllerInput.leftStickY * 20);
 
                     Vector3 isectPt;
-                    if (!Simulation.GetPositionOnSurface(ref playerPosition, activeIsland, out isectPt))
+                    if (!Simulation.GetPositionOnSurface(ref checkPos, activeIsland, out isectPt))
                     {
                         // check point outside of island -> prohibit movement
                         playerPosition = previousPosition;
-                    }
-                    else
-                    {
-                        // position on island surface
-                        if (Simulation.GetPositionOnSurface(ref playerPosition, activeIsland, out isectPt))
-                        {
-    //                        Console.WriteLine("h-diff " + ( isectPt.Y - previousPosition.Y));
-                            // check height difference
-                            if (isectPt.Y - previousPosition.Y > 10)
-                            {
-                                playerPosition = previousPosition;
-                            }
-                            else
-                            {
-                                // set position to contact point
-                                playerPosition.Y = isectPt.Y + 1; // todo: make constant?
-                            }
-                        }
                     }
                 }
 
@@ -683,23 +666,29 @@ namespace ProjectMagma.Simulation
                     player.SetQuaternion("rotation", Quaternion.CreateFromRotationMatrix(rotationMatrix));
                 }
             }
-            else
+
+            if (activeIsland != null)
             {
-                if (activeIsland != null)
+                // position on island surface
+                Vector3 isectPt = Vector3.Zero;
+                if (Simulation.GetPositionOnSurface(ref playerPosition, activeIsland, out isectPt))
                 {
-                    // position on island surface
-                    Vector3 isectPt = Vector3.Zero;
-                    if (Simulation.GetPositionOnSurface(ref playerPosition, activeIsland, out isectPt))
+                    // check height difference
+                    if (isectPt.Y - previousPosition.Y > 10)
                     {
-                        // set position to contact point
-                        playerPosition.Y = isectPt.Y + 1; // todo: make constant?
-                        player.SetVector3("position", playerPosition);
+                        playerPosition = previousPosition;
                     }
                     else
-                    // not over island anymore
-                    {
-                        LeaveActiveIsland();
-                    }
+                        if (player.GetVector3("hit_pushback_velocity") == Vector3.Zero)
+                        {
+                            // set position to contact point
+                            playerPosition.Y = isectPt.Y + 1; // todo: make constant?
+                        }
+                }
+                else
+                // not over island anymore
+                {
+                    LeaveActiveIsland();
                 }
             }
         }
@@ -756,6 +745,7 @@ namespace ProjectMagma.Simulation
                 {
                     SetActiveIsland(destinationIsland);
 
+                    (player.GetProperty("render") as BasicRenderProperty).Squash();
                     (destinationIsland.GetProperty("render") as IslandRenderProperty).Squash();
 
                     playerPosition = isectPt;
@@ -1113,8 +1103,14 @@ namespace ProjectMagma.Simulation
                 CheckPlayerAttributeRanges(otherPlayer);
 
                 // set values
-                otherPlayer.SetVector3("hit_pushback_velocity", normal * constants.GetFloat("hit_pushback_velocity_multiplier"));
+                Vector3 velocity = normal * constants.GetFloat("hit_pushback_velocity_multiplier")
+                    + Vector3.UnitY * 200;
+                otherPlayer.SetVector3("hit_pushback_velocity", velocity);
+                otherPlayer.SetVector3("position", otherPlayer.GetVector3("position") + velocity * simTime.Dt);
                 hitPerformedAt = simTime.At;
+
+                // leave island
+                LeaveActiveIsland();
             }
             else
             {
@@ -1259,8 +1255,8 @@ namespace ProjectMagma.Simulation
             foreach (Entity island in Game.Instance.Simulation.IslandManager)
             {
                 Vector3 islandDir = island.GetVector3("position") - player.GetVector3("position");
-                float dist = islandDir.Length();
                 islandDir.Y = 0;
+                float dist = islandDir.Length();
                 float angle = (float)(Math.Acos(Vector3.Dot(dir, islandDir) / dist));
                 if (island != activeIsland
                     && (angle / Math.PI * 180) < constants.GetFloat("island_aim_angle")) 
@@ -1567,3 +1563,4 @@ namespace ProjectMagma.Simulation
 
 
 }
+

@@ -12,17 +12,17 @@ float EnvGroundWavesHardness;
 float4x4 MatrixPalette[56];
 
 float3 ToneColor;
-
+	
 //-----------------------------------------------------------------------------
 // Fog settings
 //-----------------------------------------------------------------------------
 
-uniform const float		FogEnabled		: register(c0);
-uniform const float		FogStart		: register(c1);
-uniform const float		FogEnd			: register(c2);
-uniform const float3	FogColor		: register(c3);
+uniform const float		FogEnabled;	//	: register(c0);
+uniform const float		FogStart;	//	: register(c1);
+uniform const float		FogEnd;		//	: register(c2);
+uniform const float3	FogColor;	//	: register(c3);
 
-uniform const float3	EyePosition		: register(c4);		// in world space
+uniform const float3	EyePosition;//		: register(c4);		// in world space
 
 
 //-----------------------------------------------------------------------------
@@ -41,19 +41,19 @@ uniform const float		SpecularPower	: register(c9) = 16;
 // All directions and positions are in world space and must be unit vectors
 //-----------------------------------------------------------------------------
 
-uniform const float3	AmbientLightColor		: register(c10);
+uniform const float3	AmbientLightColor;		//: register(c10);
 
-uniform const float3	DirLight0Direction		: register(c11);
-uniform const float3	DirLight0DiffuseColor	: register(c12);
-uniform const float3	DirLight0SpecularColor	: register(c13);
+uniform const float3	DirLight0Direction;		//: register(c11);
+uniform const float3	DirLight0DiffuseColor;	//: register(c12);
+uniform const float3	DirLight0SpecularColor;	//: register(c13);
 
-uniform const float3	DirLight1Direction		: register(c14);
-uniform const float3	DirLight1DiffuseColor	: register(c15);
-uniform const float3	DirLight1SpecularColor	: register(c16);
+uniform const float3	DirLight1Direction;		//: register(c14);
+uniform const float3	DirLight1DiffuseColor;	//: register(c15);
+uniform const float3	DirLight1SpecularColor;	//: register(c16);
 
-uniform const float3	DirLight2Direction		: register(c17);
-uniform const float3	DirLight2DiffuseColor	: register(c18);
-uniform const float3	DirLight2SpecularColor	: register(c19);
+uniform const float3	DirLight2Direction;		//: register(c17);
+uniform const float3	DirLight2DiffuseColor;	//: register(c18);
+uniform const float3	DirLight2SpecularColor;	//: register(c19);
 
 
 //-----------------------------------------------------------------------------

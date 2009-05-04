@@ -224,7 +224,6 @@
     <Compile Include="WrappedContentManager.cs" />
   </ItemGroup>
   <ItemGroup>
-    <Content Include="dwarf_grpanimation.xml" />
     <Content Include="Game.ico" />
     <Content Include="GameThumbnail.png" />
   </ItemGroup>

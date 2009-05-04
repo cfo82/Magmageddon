@@ -68,8 +68,8 @@
       <Attribute name="island_jump_destination_radius" template="float" value=".1"/>
       <Attribute name="island_jump_free_range" template="float" value="220"/>
 
-      <Attribute name="island_repulsion_velocity_multiplier" template="float" value="9"/>
-      <Attribute name="island_repulsion_start_velocity_multiplier" template="float" value="50"/>
+      <Attribute name="island_repulsion_velocity_multiplier" template="float" value="10"/>
+      <Attribute name="island_repulsion_start_velocity_multiplier" template="float" value="80"/>
 
       <Attribute name="x_axis_movement_multiplier" template="float" value="140"/>
       <Attribute name="z_axis_movement_multiplier" template="float" value="140"/>
@@ -101,7 +101,7 @@
 
       <Attribute name="scale_health_multiplier" template="float" value="1.8"/>
 
-      <Attribute name="repulsion_deacceleration" template="float" value="600"/>
+      <Attribute name="repulsion_deacceleration" template="float" value="800"/>
       <Attribute name="collision_damping" template="float" value="0.9"/>
 
       <Attribute name="attraction_acceleration" template="float" value="600"/>

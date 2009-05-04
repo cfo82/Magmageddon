@@ -15,7 +15,6 @@ namespace ProjectMagma.Simulation
 
         public PowerUpControllerBase()
         {
-            rand = new Random(234234);
         }
 
         public void OnAttached(
@@ -25,6 +24,8 @@ namespace ProjectMagma.Simulation
             this.powerup = entity;
             this.constants = Game.Instance.Simulation.EntityManager["powerup_constants"];
             this.island = Game.Instance.Simulation.EntityManager[entity.GetString("island_reference")];
+
+            rand = new Random(island.GetHashCode());
 
             // initialize properties
             Debug.Assert(this.powerup.HasVector3("relative_position"), "must have a relative translation attribute");
@@ -67,6 +68,8 @@ namespace ProjectMagma.Simulation
                 powerup.RemoveProperty("render");
                 powerup.RemoveProperty("shadow_cast");
 
+                island.GetVector3Attribute("position").ValueChanged -= OnIslandPositionChanged;
+
                 respawnAt = (float)(simTime.At + rand.NextDouble() * constants.GetFloat("respawn_random_time") + constants.GetFloat("respawn_min_time"));
             }
             else
@@ -78,6 +81,8 @@ namespace ProjectMagma.Simulation
                 powerup.AddProperty("collision", new CollisionProperty());
                 powerup.AddProperty("render", new BasicRenderProperty());
                 powerup.AddProperty("shadow_cast", new ShadowCastProperty());
+
+                this.island.GetVector3Attribute("position").ValueChanged += OnIslandPositionChanged;
                 ((CollisionProperty)powerup.GetProperty("collision")).OnContact += PowerupCollisionHandler;
 
                 respawnAt = 0;
@@ -130,13 +135,19 @@ namespace ProjectMagma.Simulation
                 // no players on it
                 if (island.GetInt("players_on_island") > 0)
                     continue;                
-                // check island is far enough away from players
-                foreach (Entity p in Game.Instance.Simulation.PlayerManager)
+
+                // check we are far enough away from other powerups
+                foreach (Entity p in Game.Instance.Simulation.PowerupManager)
                 {
-                    if ((island.GetVector3("position") - p.GetVector3("position")).Length() < constants.GetFloat("respawn_min_distance_to_players"))
-                        continue; // select again
+                    if ((p.GetVector3("position") - powerup.GetVector3("position")).Length()
+                        < constants.GetFloat("respawn_min_distance_to_others"))
+                    {
+                        // select again
+                        continue;
+                    }
                 }
-                // no powerup on selected island -> break;
+
+                // no players on selected island -> break;
                 break;
             }
             this.island = island;

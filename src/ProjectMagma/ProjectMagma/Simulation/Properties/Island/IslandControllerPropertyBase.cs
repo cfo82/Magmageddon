@@ -160,7 +160,7 @@ namespace ProjectMagma.Simulation
 //                            if (simTime.At > collisionAt + 1000)
                             {
                                 velocity += dir * constants.GetFloat("attraction_acceleration") * dt;
-                                velocity.Y += dir.Y * constants.GetFloat("attraction_acceleration") * dt; // faster acceleration on y axis
+//                                velocity.Y += dir.Y * constants.GetFloat("attraction_acceleration") * dt; // faster acceleration on y axis
                             }
                         }
                         else

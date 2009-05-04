@@ -449,7 +449,7 @@ namespace ProjectMagma.Simulation
             // island repulsion
             if (controllerInput.dPadPressed
                 && activeIsland != null
-                && player.GetFloat("repulsion_seconds") > 0)
+                /*&& player.GetFloat("repulsion_seconds") > 0*/)
             {
                 float velocityMultiplier = constants.GetFloat("island_repulsion_velocity_multiplier");
                 Vector3 velocity = new Vector3(controllerInput.dPadX * velocityMultiplier, 0, controllerInput.dPadY * velocityMultiplier);

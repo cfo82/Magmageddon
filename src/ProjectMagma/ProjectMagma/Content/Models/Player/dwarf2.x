@@ -78,6 +78,10 @@ template MeshMaterialList {
  [Material]
 }
 
+AnimTicksPerSecond {
+15; 
+}
+
 template MeshNormals {
  <F6F23F43-7686-11cf-8F52-0040333594A3>
  DWORD nNormals;
@@ -163,9 +167,9 @@ template SkinWeights {
 }
 Frame dwarf_grp {
    FrameTransformMatrix {
-1.000000,0.000000,0.000000,0.000000,
+-1.000000,0.000000,0.000000,0.000000,
 0.000000,1.000000,0.000000,0.000000,
-0.000000,0.000000,1.000000,0.000000,
+0.000000,0.000000,-1.000000,0.000000,
 0.000000,0.000000,0.000000,1.000000;;
  }
 Frame base {
@@ -14235,7 +14239,7 @@ MeshTextureCoords {
 }
  }
  }
-AnimationSet {
+AnimationSet AnimationSet0 {
  Animation {
   {base}
   AnimationKey {

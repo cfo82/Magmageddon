@@ -20,7 +20,7 @@ namespace ProjectMagma.Renderer
         }
 
 
-        protected override void DrawMesh(Renderer renderer, GameTime gameTime, ModelMesh mesh)
+        protected override void PrepareMeshEffects(Renderer renderer, GameTime gameTime, ModelMesh mesh)
         {
             if(start_squash)
             {
@@ -38,9 +38,6 @@ namespace ProjectMagma.Renderer
                 if (UseSquash) ApplySquashParameters(effect, gameTime);
                 ApplyCustomEffectParameters(effect, renderer, gameTime);
             }
-            mesh.Draw();
-            //renderer.Device.DrawPrimitives(PrimitiveType.TriangleList, 0, )
-            //mesh.MeshParts[0].
         }
 
         private void ApplyWorldViewProjection(Effect effect, ModelMesh mesh)
@@ -121,7 +118,7 @@ namespace ProjectMagma.Renderer
             }
         }
 
-        private void ApplyMaterialParameters(Effect effect)
+        protected void ApplyMaterialParameters(Effect effect)
         {
             effect.Parameters["DiffuseColor"].SetValue(DiffuseColor);
             effect.Parameters["EmissiveColor"].SetValue(EmissiveColor);

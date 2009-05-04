@@ -128,9 +128,6 @@ namespace ProjectMagma.Renderer
             GameTime gameTime
         )
         {
-            if(!frozenColorStrength.Running)
-                frozenColorStrength.Start(gameTime);
-
             // TESTHACK
             //lives += 1;
             //if (lives > 25) lives = 0;
@@ -159,6 +156,11 @@ namespace ProjectMagma.Renderer
                 energyBlink = !energyBlink;
             else
                 energyBlink = false;
+
+            if (frozen > 0 && !frozenColorStrength.Running)
+                frozenColorStrength.Start(gameTime);
+            else if (frozen == 0 && frozenColorStrength.Running)
+                frozenColorStrength.StopAfterCurrentPhase();
 
             frozenColorStrength.Update(gameTime);
         }

@@ -139,9 +139,17 @@ namespace Xclna.Xna.Animation
             // Find total number of effects used by the model
             numEffects = 0;
             foreach (ModelMesh mesh in model.Meshes)
-                foreach (Effect effect in mesh.Effects)
+                //foreach (Effect effect in mesh.Effects)
+                //    numEffects++;
+                foreach (ModelMeshPart part in mesh.MeshParts)
                     numEffects++;
 
+            foreach(ModelMesh mesh in model.Meshes)
+            {
+                System.Console.WriteLine("numeffects:"+ numEffects);
+                System.Console.WriteLine("effects:" +mesh.Effects.Count);
+                foreach(Effect effect in mesh.Effects) System.Console.WriteLine(effect.GetHashCode());
+            }
 
             // Initialize the arrays that store effect parameters
             modelEffects = new Effect[numEffects];
@@ -352,7 +360,7 @@ namespace Xclna.Xna.Animation
                             index++;
                         }
                     }
-                    int numParts = mesh.MeshParts.Count;
+                    int numParts = mesh.MeshParts.Count-2; // HACK: -1 added
                     GraphicsDevice device = mesh.VertexBuffer.GraphicsDevice;
                     device.Indices = mesh.IndexBuffer;
                     for (int j = 0; j < numParts; j++ )

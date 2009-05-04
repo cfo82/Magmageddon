@@ -39,3 +39,32 @@ void PerturbIslandGroundAlpha(inout float alpha, in float4 position)
 		alpha = saturate((position.y-17)*0.8);
 	}
 }
+
+
+//-----------------------------------------------------------------------------
+//
+//-----------------------------------------------------------------------------
+
+inline void ComputeDiffuseTxTo(out float4 diffuse, in float2 texCoord, in ColorPair lightResult, in float3 tone)
+{
+	float4 texDiffuseColorRGBA = tex2D(DiffuseSampler, texCoord);
+	float3 texDiffuseColor = texDiffuseColorRGBA.rgb;
+	float texDiffuseBrightness = dot(texDiffuseColor, float3(0.3, 0.59, 0.11));
+	float weight = saturate(abs(texDiffuseBrightness - 0.5) * 2);
+	float3 tonedDiffuseColor = lerp(tone, float3(texDiffuseBrightness,texDiffuseBrightness,texDiffuseBrightness), weight);
+	float3 finalColor = lerp(texDiffuseColor, tonedDiffuseColor, texDiffuseColorRGBA.a);
+	float4 uniDiffuseColor = float4(lightResult.Diffuse * DiffuseColor, Alpha);
+	diffuse = float4(finalColor,1.0) * uniDiffuseColor;
+}
+
+
+inline void ComputeDiffSpecColorTxTo(
+	out float4 color, in float2 texCoord, in ColorPair lightResult, in float fogFactor, in float3 tone
+)
+{
+	float4 diffuse, specular;
+	ComputeDiffuseTxTo(diffuse, texCoord, lightResult, tone);
+	ComputeSpecularTx(specular, texCoord, lightResult);	
+	color = diffuse + float4(specular.rgb, 0);
+	color.rgb = lerp(color.rgb, FogColor, fogFactor);
+}

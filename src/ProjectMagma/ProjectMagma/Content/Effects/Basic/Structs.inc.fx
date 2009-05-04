@@ -18,6 +18,29 @@ struct ColorPair
 // float4	Color		: COLOR;
 
 
+struct SkinVsInput
+{
+	float4 position : POSITION;
+	float3 normal : NORMAL0;
+	float2 texcoord : TEXCOORD0;
+
+	// These are the indices (4 of them) that index the bones that affect
+	// this vertex.  The indices refer to the MatrixPalette.
+	half4 indices : BLENDINDICES0;
+
+	// These are the weights (4 of them) that determine how much each bone
+	// affects this vertex.
+	float4 weights : BLENDWEIGHT0;
+};
+
+
+struct PositionAndNormal
+{
+    float4 position;
+    float4 normal;
+};
+    
+    
 //-----------------------------------------------------------------------------
 // Vertex shader outputs
 //-----------------------------------------------------------------------------

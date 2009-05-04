@@ -70,6 +70,7 @@ namespace Xclna.Xna.Animation.Content
         /// <returns>A model with animation data on its tag</returns>
         public override ModelContent Process(NodeContent input, ContentProcessorContext context)
         {
+            context.Logger.LogImportantMessage("starting acl processing");
             ModelSplitter splitter;
             if (context.TargetPlatform != TargetPlatform.Xbox360)
             {
@@ -567,6 +568,7 @@ namespace Xclna.Xna.Animation.Content
             fileName += System.IO.Path.GetFileNameWithoutExtension(filePath)
                 + "animation.xml";
             bool animXMLExists = File.Exists(fileName);
+            context.Logger.LogImportantMessage("looking for XML file " + fileName + " | found: " + animXMLExists.ToString());
             if (animXMLExists)
             {
                 doc = new XmlDocument();

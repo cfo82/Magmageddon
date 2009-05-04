@@ -61,3 +61,15 @@ PSOutput PSEnvironment(PixelLightingPSInputTx pin) : COLOR
 	PerturbEnvGroundWavesAlpha(Output.Color.a, Output.RenderChannelColor, pin.PositionWS);
 	return Output;
 }
+
+//-----------------------------------------------------------------------------
+// Toned Textured Pixel Shader: used for colorizing players
+//-----------------------------------------------------------------------------
+PSOutput PSBasicPixelLightingTxTo(PixelLightingPSInputTx pin) : COLOR
+{
+	PS_START
+	float2 texCoord = pin.TexCoord;
+	ComputeLighting(lightResult, normal, pin.PositionWS, pin.NormalWS);	
+	ComputeDiffSpecColorTxTo(Output.Color, texCoord, lightResult, pin.PositionWS.w, ToneColor);
+	return Output;
+}

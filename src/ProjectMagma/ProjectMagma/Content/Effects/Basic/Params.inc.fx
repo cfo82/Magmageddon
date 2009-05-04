@@ -9,6 +9,9 @@ float EnvGroundWavesAmplitude;
 float EnvGroundWavesFrequency;
 float EnvGroundWavesHardness;
 
+float4x4 MatrixPalette[56];
+
+float3 ToneColor;
 
 //-----------------------------------------------------------------------------
 // Fog settings

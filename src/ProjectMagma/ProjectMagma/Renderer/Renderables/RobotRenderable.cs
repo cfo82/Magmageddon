@@ -1,5 +1,6 @@
 ﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
+using Xclna.Xna.Animation;
 
 namespace ProjectMagma.Renderer
 {
@@ -14,18 +15,83 @@ namespace ProjectMagma.Renderer
             this.color1 = color1;
             this.color2 = color2;
 
-            DiffuseColor = color1;
+            //DiffuseColor = color1;
+//            DiffuseColor = 
             RenderChannel = RenderChannelType.One;
+        }
+
+        protected override void ApplyEffectsToModel()
+        {
+            base.ApplyEffectsToModel();
+            
+            // create animation component. however, it will register itself in the main 
+            // game class as a drawable component. we do not like that and remove it again.
+            animator = new ModelAnimator(Game.Instance, Model);
+            Game.Instance.Components.RemoveAt(Game.Instance.Components.Count - 1);
+
+            // create all the individual animation controllers as defined in the xml file
+            // accompanying the player model
+            idle = new AnimationController(Game.Instance, animator.Animations["idle0"]);
+            walk = new AnimationController(Game.Instance, animator.Animations["walk"]);
+
+            // set the first default controller
+            RunController(idle);
+        }
+
+        protected override void ApplyCustomEffectParameters(Effect effect, Renderer renderer, GameTime gameTime)
+        {
+            base.ApplyCustomEffectParameters(effect, renderer, gameTime);
+
+            effect.Parameters["ToneColor"].SetValue(color1);
+        }
+
+        public override void Update(Renderer renderer, GameTime gameTime)
+        {
+            base.Update(renderer, gameTime);
+
+            animator.Update(gameTime);
+        }
+
+        public override bool NeedsUpdate
+        {
+            get { return true; }
+        }
+
+        protected override void DrawMesh(Renderer renderer, GameTime gameTime, ModelMesh mesh)
+        {
+            animator.World = World;
+            animator.Draw(gameTime);
+        }
+
+        protected override void ApplyTechnique(Effect effect)
+        {
+            effect.CurrentTechnique = effect.Techniques["AnimatedPlayer"];
         }
 
         protected override void SetDefaultMaterialParameters()
         {
             Alpha = 1.0f;
-            SpecularPower = 10.0f;
-            DiffuseColor = Vector3.One * 0.5f;
-            SpecularColor = Vector3.One * 0.2f;
+            SpecularPower = 16.0f;
+            DiffuseColor = Vector3.One * 0.8f;
+            SpecularColor = Vector3.One * 0.25f;
             EmissiveColor = Vector3.One * 0.0f;
         }
+
+        private void RunController(AnimationController controller)
+        {
+            foreach(BonePose p in animator.BonePoses)
+            {
+                p.CurrentController = controller;
+                p.CurrentBlendController = null;
+            }
+        }
+
+        private ModelAnimator animator;
+        AnimationController idle, walk, jump;
+        AnimationController attack1, attack2, attack3, attack4;
+        AnimationController die;
+        float blendFactor;
+        string state = "idle";
 
         private Vector3 color1;
         private Vector3 color2;

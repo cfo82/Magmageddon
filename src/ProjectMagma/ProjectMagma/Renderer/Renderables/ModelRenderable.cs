@@ -5,6 +5,7 @@ using System.Text;
 using System.Diagnostics;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
+using Xclna.Xna.Animation;
 
 namespace ProjectMagma.Renderer
 {
@@ -59,9 +60,15 @@ namespace ProjectMagma.Renderer
             RecomputeBoneTransforms();
             foreach (ModelMesh mesh in Model.Meshes)
             {
+                PrepareMeshEffects(renderer, gameTime, mesh);
                 DrawMesh(renderer, gameTime, mesh);
                 DrawShadow(ref renderer, mesh);
             }
+        }
+
+        protected virtual void DrawMesh(Renderer renderer, GameTime gameTime, ModelMesh mesh)
+        {
+            mesh.Draw();
         }
 
         protected sealed class PartEffectMapping : Dictionary<ModelMeshPart, Effect> { }
@@ -104,7 +111,12 @@ namespace ProjectMagma.Renderer
         {
             foreach (ModelMeshPart meshPart in mesh.MeshParts)
             {
-                meshPart.Effect = effect;
+                if (meshPart.Effect is BasicPaletteEffect || meshPart.Effect is BasicEffect)
+                {
+                    Effect oldEffect = meshPart.Effect;
+                    meshPart.Effect = effect.Clone(oldEffect.GraphicsDevice);
+                    oldEffect.Dispose();
+                }
             }
         }
 
@@ -130,7 +142,7 @@ namespace ProjectMagma.Renderer
             }
         }
 
-        protected abstract void DrawMesh(Renderer renderer, GameTime gameTime, ModelMesh mesh);
+        protected abstract void PrepareMeshEffects(Renderer renderer, GameTime gameTime, ModelMesh mesh);
 
         private void DrawShadow(ref Renderer renderer, ModelMesh mesh)
         {

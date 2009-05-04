@@ -1104,6 +1104,11 @@
       <Importer>FontDescriptionImporter</Importer>
       <Processor>FontDescriptionProcessor</Processor>
     </Compile>
+    <Compile Include="Effects\skinFX.fx">
+      <Name>skinFX</Name>
+      <Importer>EffectImporter</Importer>
+      <Processor>EffectProcessor</Processor>
+    </Compile>
     <None Include="Fonts\MyriadPro-Bold.otf">
       <Name>MyriadPro-Bold</Name>
     </None>
@@ -1203,11 +1208,6 @@
       <Name>bar_highlight</Name>
       <Importer>TextureImporter</Importer>
       <Processor>TextureProcessor</Processor>
-    </Compile>
-    <Compile Include="Models\Player\dwarf.x">
-      <Name>dwarf</Name>
-      <Importer>XModelImporter</Importer>
-      <Processor>DwarfProcessor</Processor>
     </Compile>
     <Compile Include="Models\Sfx\icespike_explosion.fbx">
       <Name>icespike_explosion</Name>
@@ -1312,7 +1312,26 @@
       <Importer>TextureImporter</Importer>
       <Processor>TextureProcessor</Processor>
     </Compile>
-    <Compile Include="Textures\Player\dwarf.jpg">
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Models\Player\dwarf2animation.xml">
+      <Name>dwarf2animation</Name>
+      <Importer>XmlImporter</Importer>
+      <Processor>PassThroughProcessor</Processor>
+    </None>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Effects\Basic\Skinning.inc.fx">
+      <Name>Skinning.inc</Name>
+      <Importer>EffectImporter</Importer>
+      <Processor>EffectProcessor</Processor>
+    </None>
+    <None Include="Models\Player\dwarfanimation.xml">
+      <Name>dwarfanimation</Name>
+      <Importer>XmlImporter</Importer>
+      <Processor>PassThroughProcessor</Processor>
+    </None>
+    <Compile Include="Textures\Player\dwarf.tga">
       <Name>dwarf</Name>
       <Importer>TextureImporter</Importer>
       <Processor>TextureProcessor</Processor>

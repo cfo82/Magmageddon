@@ -4,6 +4,7 @@
 // - Tx: TexCoords are supplied (to allow for any texturing)
 // - Fm: Frame is supplied (to allow normal mapping)
 // - Sq: Squash is supported
+// - Sk: Skinning is used (for bone animated models)
 //-----------------------------------------------------------------------------
 
 
@@ -18,6 +19,9 @@ float4x4 squashMatrix()
 	);
 }
 
+
+
+    
 //-----------------------------------------------------------------------------
 //
 //-----------------------------------------------------------------------------
@@ -69,4 +73,41 @@ PixelLightingVSOutputTx VSBasicPixelLightingNmTxSq
 	vout.TexCoord		= TexCoord;
 
 	return vout;
+}
+
+
+//-----------------------------------------------------------------------------
+//
+//-----------------------------------------------------------------------------
+PixelLightingVSOutputTx VSBasicPixelLightingNmTxSqSk
+(
+	SkinVsInput input
+)
+{
+	PixelLightingVSOutputTx vout;
+
+	// Calculate the skinned position
+	PositionAndNormal skinned_input = Skin4(input);
+    
+    float4 pos_ws = mul(skinned_input.position, World);
+    float4 pos_vs = mul(pos_ws, View);
+    float4 pos_ps = mul(pos_vs, Projection);
+    
+    vout.PositionPS		= pos_ps;
+    vout.PositionWS.xyz = pos_ws.xyz;
+	vout.PositionWS.w	= ComputeFogFactor(length(EyePosition - pos_ws));
+	vout.NormalWS		= normalize(mul(skinned_input.normal, World));
+	vout.TexCoord		= input.texcoord;
+    //
+    //// This is the final position of the vertex, and where it will be drawn on the screen
+    ////float4x4 WorldViewProjection = mul(World,mul(View,Projection));
+    ////vout.PositionPS = mul(input.position, WorldViewProjection);
+    //// This is not used by is included to demonstrate how to get the normal in world space
+    ////float4 transformedNormal = mul(skin.normal, WorldViewProjection);
+    //vout.TexCoord = input.texcoord;
+    //
+    //vout.NormalWS = normalize(mul(skin.normal, World));   //float3(0,1,0);
+    //vout.PositionWS = mul(skin.position, World);
+    //
+    return vout;
 }

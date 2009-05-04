@@ -423,13 +423,13 @@ namespace ProjectMagma.Simulation
                     || player.GetInt("jumps") > 0) // arrow indicates jump 
                 {
                     //arrow.SetVector2("persistent_squash", new Vector2(100f, 1f));
-                    (arrow.GetProperty("render") as BasicRenderProperty).SquashParams = new Vector2(100f, 1f);
+                    (arrow.GetProperty("render") as ArrowRenderProperty).SquashParams = new Vector2(100f, 1f);
                     selectedIslandInFreeJumpRange = true;
                 }
                 else
                 {
                     //arrow.SetVector2("persistent_squash", new Vector2(1000f, 0.8f));
-                    (arrow.GetProperty("render") as BasicRenderProperty).SquashParams = new Vector2(1000f, 0.8f);
+                    (arrow.GetProperty("render") as ArrowRenderProperty).SquashParams = new Vector2(1000f, 0.8f);
                 }
             }
         }

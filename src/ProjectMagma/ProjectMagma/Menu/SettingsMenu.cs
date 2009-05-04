@@ -38,7 +38,8 @@ namespace ProjectMagma
             float dt = gameTime.ElapsedGameTime.Milliseconds / 1000f;
             GamePadState gamePadState = GamePad.GetState(PlayerIndex.One);
 
-            if (Vector2.Dot(gamePadState.ThumbSticks.Left, Vector2.UnitX) > Menu.StickDirectionSelectionMin)
+            if (Vector2.Dot(gamePadState.ThumbSticks.Left, Vector2.UnitX) > Menu.StickDirectionSelectionMin
+                || gamePadState.DPad.Right == ButtonState.Pressed)
             {
                 if (SelectedItem.Name == "music_volume")
                     Game.Instance.MusicVolume += dt;
@@ -47,7 +48,8 @@ namespace ProjectMagma
                         Game.Instance.EffectsVolume += dt;
             }
             else
-                if (Vector2.Dot(gamePadState.ThumbSticks.Left, Vector2.UnitX) < -Menu.StickDirectionSelectionMin)
+                if (Vector2.Dot(gamePadState.ThumbSticks.Left, Vector2.UnitX) < -Menu.StickDirectionSelectionMin
+                    || gamePadState.DPad.Left == ButtonState.Pressed)
                 {
                     if (SelectedItem.Name == "music_volume")
                         Game.Instance.MusicVolume -= dt;

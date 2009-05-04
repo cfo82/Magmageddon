@@ -44,18 +44,8 @@ namespace ProjectMagma.Simulation
             startEvent.Set();
         }
 
-        private double Now
-        {
-            get
-            {
-                double now = DateTime.Now.Ticks;
-                double ms = now / 10000d;
-                return ms;
-            }
-        }
-
-        public double Sps;
-        public double AvgSps;
+        public volatile double Sps;
+        public volatile double AvgSps;
 
         private void Run()
         {

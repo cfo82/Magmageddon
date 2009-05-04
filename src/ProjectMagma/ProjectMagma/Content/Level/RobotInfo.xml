@@ -3,25 +3,25 @@
 <Robots>
 
   <Robot>
-    <Name>Bender</Name>
+    <Name>Givayo</Name>
     <Description>I have no description.</Description>
     <EntityName>green_snowman</EntityName>
   </Robot>
 
   <Robot>
-    <Name>I, Robot</Name>
+    <Name>Famar</Name>
     <Description>Blah</Description>
     <EntityName>yellow_snowman</EntityName>
   </Robot>
 
   <Robot>
-    <Name>Terminator</Name>
+    <Name>Tunira</Name>
     <Description>Foo, this is a description.</Description>
     <EntityName>blue_snowman</EntityName>
   </Robot>
 
   <Robot>
-    <Name>HedonismBot</Name>
+    <Name>Yrogr</Name>
     <Description>Gugus.</Description>
     <EntityName>purple_snowman</EntityName>
   </Robot>

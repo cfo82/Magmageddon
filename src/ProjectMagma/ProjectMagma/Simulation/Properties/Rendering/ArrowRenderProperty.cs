@@ -20,36 +20,44 @@ namespace ProjectMagma.Simulation
         }
 
         protected override void SetUpdatableParameters(Entity entity)
-        {            
-            if (entity.HasFloat("player_color"))
-            {
-                ChangeFloat("DiffuseColor", entity.GetFloat("alpha"));
-            }
+        {
+            base.SetUpdatableParameters(entity);
+
+            Debug.Assert(entity.HasVector3("color1"));
+            Debug.Assert(entity.HasVector3("color2"));
+            ChangeVector3("DiffuseColor", entity.GetVector3("color1")*1.5f);
+            ChangeVector3("SpecularColor", entity.GetVector3("color2")*2.0f);
+            ChangeVector3("EmissiveColor", new Vector3(0.3f, 0.3f, 0.3f));
+            ChangeFloat("SpecularPower", 16.0f);
+            
+            //}
             //if (entity.HasVector2("persistent_squash"))
             //{
             //    ChangeVector2("SquashParams", entity.GetVector2("persistent_squash"));
             //    ChangeBool("PersistentSquash", true);
             //}
+
+            //arrow.AddVector3Attribute("diffuse_color", player.GetVector3("color2"));
+            //arrow.AddVector3Attribute("specular_color", Vector3.One);
+            //arrow.AddFloatAttribute("alpha", 0.6f);
+            //arrow.AddFloatAttribute("specular_power", 0.3f);
+            //arrow.AddVector2Attribute("persistent_squash", new Vector2(1000, 0.8f));
+            ChangeFloat("Alpha", 0.8f);
+            PersistentSquash = true;
+            JumpPossible = false;
         }
 
-        public void Squash()
+        public bool JumpPossible
         {
-            ChangeBool("Squash", true);
-        }
-
-        public Vector2 SquashParams 
-        {
-            set
-            {
-                ChangeVector2("SquashParams", value);
-            }
-        }
-
-        public bool PersistentSquash
-        {
-            set
-            {
-                ChangeBool("PersistentSquash", value);
+            set {
+                if(value==true)
+                {
+                    SquashParams = new Vector2(100f, 1f);
+                }
+                else
+                {
+                    SquashParams = new Vector2(1000f, 0.8f);
+                }
             }
         }
     }

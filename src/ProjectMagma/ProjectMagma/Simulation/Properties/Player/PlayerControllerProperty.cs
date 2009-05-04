@@ -125,11 +125,13 @@ namespace ProjectMagma.Simulation
             arrow.AddStringAttribute("mesh", player.GetString("arrow_mesh"));
             arrow.AddVector3Attribute("scale", new Vector3(20, 20, 20));
 
-            arrow.AddVector3Attribute("diffuse_color", player.GetVector3("color2"));
-            arrow.AddVector3Attribute("specular_color", Vector3.One);
-            arrow.AddFloatAttribute("alpha", 0.6f);
-            arrow.AddFloatAttribute("specular_power", 0.3f);
-            arrow.AddVector2Attribute("persistent_squash", new Vector2(1000, 0.8f));
+            //arrow.AddVector3Attribute("diffuse_color", player.GetVector3("color2"));
+            //arrow.AddVector3Attribute("specular_color", Vector3.One);
+            //arrow.AddFloatAttribute("alpha", 0.6f);
+            //arrow.AddFloatAttribute("specular_power", 0.3f);
+            //arrow.AddVector2Attribute("persistent_squash", new Vector2(1000, 0.8f));
+            arrow.AddVector3Attribute("color1", player.GetVector3("color1"));
+            arrow.AddVector3Attribute("color2", player.GetVector3("color2"));
 
             arrow.AddProperty("arrow_controller_property", new ArrowControllerProperty());
 
@@ -431,7 +433,7 @@ namespace ProjectMagma.Simulation
             selectedIsland = null;
             arrow.RemoveProperty("render");
             arrow.RemoveProperty("shadow_cast");
-            arrow.SetVector2("persistent_squash", new Vector2(1000f, 0.8f));
+            //arrow.SetVector2("persistent_squash", new Vector2(1000f, 0.8f));
             lastStickDir = Vector3.Zero;
             islandSelectedAt = 0;
         }

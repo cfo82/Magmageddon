@@ -197,7 +197,7 @@ namespace ProjectMagma.Simulation
                 if (lastState != IslandState.Repositioning)
                 {
                     repositioningPosition = GetNearestPointOnPath(ref position);
-                    Console.WriteLine("repositioning to: " + repositioningPosition);
+//                    Console.WriteLine("repositioning to: " + repositioningPosition);
                 }
 
                 // if players are standing on island, we only reposition in xz

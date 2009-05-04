@@ -962,7 +962,7 @@ namespace ProjectMagma.Simulation
                     Vector3 slidingDir = Vector3.Normalize(cpos - contact[0].Point);
                     Vector3 slidingVelocity = slidingDir * constants.GetFloat("island_jump_speed");
 
-                    Console.WriteLine("orignal velocity " + player.GetVector3("island_jump_velocity") + "; sliding velocity: " + slidingVelocity);
+//                    Console.WriteLine("orignal velocity " + player.GetVector3("island_jump_velocity") + "; sliding velocity: " + slidingVelocity);
 
                     //                    slidingVelocity.Y = player.GetVector3("island_jump_velocity").Y;
 //                    slidingVelocity.Y = player.GetVector3("island_jump_velocity").Y;
@@ -1104,39 +1104,53 @@ namespace ProjectMagma.Simulation
             }
             else
             {
-                if (movedByStick && activeIsland != null)
+                // apply collision response to moving player
+//                if (movedByStick || destinationIsland != null)
                 {
-                    player.SetVector3("position", previousPosition);
-                    player.SetVector3("collision_pushback_velocity", player.GetVector3("collision_pushback_velocity")
-                        - normal * 100);
+                    // calculat pseudo-radi
+                    float pr = (player.GetVector3("scale") * new Vector3(1, 0, 1)).Length();
+                    float or = (otherPlayer.GetVector3("scale") * new Vector3(1, 0, 1)).Length();
+                    float dist = ((player.GetVector3("position") - otherPlayer.GetVector3("position")) * new Vector3(1, 0, 1)).Length();
+                    float delta = or + pr - dist;
+
+                    Console.WriteLine("putout delta: " + delta);
+
+                    player.SetVector3("position", player.GetVector3("position") - normal * delta);
                 }
-                else
-                if (movedByStick || activeIsland == null)
-                {
-                    // normal feedback
-                    //                    if (Vector3.Dot(dir, normal) > 0 // and only if normal faces right direction
-//                        || dir == Vector3.Zero)
-                    {
-                        player.SetVector3("collision_pushback_velocity", player.GetVector3("collision_pushback_velocity")
-                            - normal * 100);
-                    }
 
-                    /*
-                    Vector3 position = otherPlayer.GetVector3("position");
+//                if (movedByStick && activeIsland != null)
+//                {
+//                    player.SetVector3("position", previousPosition);
+//                    player.SetVector3("collision_pushback_velocity", player.GetVector3("collision_pushback_velocity")
+//                        - normal * 100);
+//                }
+//                else
+//                if (movedByStick || activeIsland == null)
+//                {
+//                    // normal feedback
+//                    //                    if (Vector3.Dot(dir, normal) > 0 // and only if normal faces right direction
+////                        || dir == Vector3.Zero)
+//                    {
+//                        player.SetVector3("collision_pushback_velocity", player.GetVector3("collision_pushback_velocity")
+//                            - normal * 100);
+//                    }
 
-                    // get distance of destination point to sliding plane
-                    float distance = Vector3.Dot(c[0].Normal, position - c[0].Point);
+//                    /*
+//                    Vector3 position = otherPlayer.GetVector3("position");
 
-                    // calculate point on plane
-                    Vector3 cpos = position - c[0].Normal * distance;
+//                    // get distance of destination point to sliding plane
+//                    float distance = Vector3.Dot(c[0].Normal, position - c[0].Point);
 
-                    Vector3 slidingDir = Vector3.Normalize(cpos - c[0].Point);
-                    Vector3 slidingVelocity = slidingDir * (previousPosition-player.GetVector3("position")).Length();
-                    slidingVelocity.Y = 0;
+//                    // calculate point on plane
+//                    Vector3 cpos = position - c[0].Normal * distance;
 
-                    player.SetVector3("position", previousPosition + slidingVelocity);
-                     */
-                }
+//                    Vector3 slidingDir = Vector3.Normalize(cpos - c[0].Point);
+//                    Vector3 slidingVelocity = slidingDir * (previousPosition-player.GetVector3("position")).Length();
+//                    slidingVelocity.Y = 0;
+
+//                    player.SetVector3("position", previousPosition + slidingVelocity);
+//                     */
+//                }
             }
         }
 

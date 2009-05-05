@@ -5,7 +5,7 @@
 
 
 //-----------------------------------------------------------------------------------------------------------
-float ExplosionParticleLifetime = 2.6;
+float ExplosionParticleLifetime = 0.6;
 float ExplosionVelocityDamping = 0.5;
 
 
@@ -99,7 +99,7 @@ RenderParticlesVertexShaderOutput RenderExplosionVertexShader(
 		float normalized_age = 1.0 - time_to_life/ExplosionParticleLifetime;
 	    
 		output.Position = mul(view_position, Projection);
-		output.Size = 40*pow(normalized_time_to_death,4);
+		output.Size = 100;
 		output.Color = float4(1,1,1,1.0-normalized_age);
 	}
 	else
@@ -126,7 +126,7 @@ float4 RenderExplosionPixelShader(
 ) : COLOR0
 {
     float4 color = input.Color*tex2D(RenderParticlesSpriteSampler, particleCoordinate/4);
-    color.rgb *= dot(float3(0.025, 0.025, 0.025), color.rgb) * input.Color.a;
+    color.rgb *= dot(float3(0.1, 0.1, 0.1), color.rgb) * input.Color.a;
     return color;
 }
 

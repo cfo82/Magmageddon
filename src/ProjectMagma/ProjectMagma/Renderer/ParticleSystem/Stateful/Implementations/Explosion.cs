@@ -8,7 +8,7 @@ using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Graphics.PackedVector;
 
-namespace ProjectMagma.Renderer.ParticleSystem.Stateful.Explosion
+namespace ProjectMagma.Renderer.ParticleSystem.Stateful.Implementations
 {
     public class Explosion : StatefulParticleSystem
     {
@@ -26,6 +26,7 @@ namespace ProjectMagma.Renderer.ParticleSystem.Stateful.Explosion
         )
         :   base(renderer, wrappedContent, device)
         {
+            this.type = type;
             switch (type)
             {
                 case ExplosionType.Fire: explosionSprite = wrappedContent.Load<Texture2D>("Textures/Sfx/FireExplode"); break;
@@ -34,19 +35,29 @@ namespace ProjectMagma.Renderer.ParticleSystem.Stateful.Explosion
             }
         }
 
+        private Effect LoadEffect(WrappedContentManager wrappedContent)
+        {
+            switch (type)
+            {
+                case ExplosionType.Fire: return wrappedContent.Load<Effect>("Effects/Sfx/ParticleSystem/Stateful/Implementations/FireExplosion");
+                case ExplosionType.Ice: return wrappedContent.Load<Effect>("Effects/Sfx/ParticleSystem/Stateful/Implementations/IceExplosion");
+                default: throw new ArgumentException("invalid type parameter");
+            }
+        }
+
         protected override Effect LoadCreateEffect(WrappedContentManager wrappedContent)
         {
-            return wrappedContent.Load<Effect>("Effects/Sfx/ParticleSystem/Stateful/Explosion/Explosion");
+            return LoadEffect(wrappedContent);
         }
 
         protected override Effect LoadUpdateEffect(WrappedContentManager wrappedContent)
         {
-            return wrappedContent.Load<Effect>("Effects/Sfx/ParticleSystem/Stateful/Explosion/Explosion");
+            return LoadEffect(wrappedContent);
         }
 
         protected override Effect LoadRenderEffect(WrappedContentManager wrappedContent)
         {
-            return wrappedContent.Load<Effect>("Effects/Sfx/ParticleSystem/Stateful/Explosion/Explosion");
+            return LoadEffect(wrappedContent);
         }
 
         protected override void SetUpdateParameters(EffectParameterCollection parameters)
@@ -62,5 +73,6 @@ namespace ProjectMagma.Renderer.ParticleSystem.Stateful.Explosion
         }
 
         private Texture2D explosionSprite;
+        private ExplosionType type;
     }
 }

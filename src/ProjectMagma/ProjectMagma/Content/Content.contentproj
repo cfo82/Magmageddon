@@ -1054,7 +1054,7 @@
       <Importer>EffectImporter</Importer>
       <Processor>EffectProcessor</Processor>
     </Compile>
-    <Compile Include="Effects\Sfx\ParticleSystem\Stateful\IceSpike\IceSpike.fx">
+    <Compile Include="Effects\Sfx\ParticleSystem\Stateful\Implementations\IceSpike.fx">
       <Name>IceSpike</Name>
       <Importer>EffectImporter</Importer>
       <Processor>EffectProcessor</Processor>
@@ -1064,7 +1064,7 @@
       <Importer>EffectImporter</Importer>
       <Processor>EffectProcessor</Processor>
     </None>
-    <Compile Include="Effects\Sfx\ParticleSystem\Stateful\Smoke\Smoke.fx">
+    <Compile Include="Effects\Sfx\ParticleSystem\Stateful\Implementations\Smoke.fx">
       <Name>Smoke</Name>
       <Importer>EffectImporter</Importer>
       <Processor>EffectProcessor</Processor>
@@ -1326,8 +1326,13 @@
       <Importer>EffectImporter</Importer>
       <Processor>EffectProcessor</Processor>
     </None>
-    <Compile Include="Effects\Sfx\ParticleSystem\Stateful\Explosion\Explosion.fx">
-      <Name>Explosion</Name>
+    <Compile Include="Effects\Sfx\ParticleSystem\Stateful\Implementations\IceExplosion.fx">
+      <Name>IceExplosion</Name>
+      <Importer>EffectImporter</Importer>
+      <Processor>EffectProcessor</Processor>
+    </Compile>
+    <Compile Include="Effects\Sfx\ParticleSystem\Stateful\Implementations\FireExplosion.fx">
+      <Name>FireExplosion</Name>
       <Importer>EffectImporter</Importer>
       <Processor>EffectProcessor</Processor>
     </Compile>

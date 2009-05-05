@@ -2,7 +2,7 @@
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 
-namespace ProjectMagma.Renderer.ParticleSystem.Stateful.Smoke
+namespace ProjectMagma.Renderer.ParticleSystem.Stateful.Implementations
 {
     public class Smoke : StatefulParticleSystem
     {
@@ -28,17 +28,17 @@ namespace ProjectMagma.Renderer.ParticleSystem.Stateful.Smoke
 
         protected override Effect LoadCreateEffect(WrappedContentManager wrappedContent)
         {
-            return wrappedContent.Load<Effect>("Effects/ParticleSystem/Stateful/Smoke/Smoke");
+            return wrappedContent.Load<Effect>("Effects/ParticleSystem/Stateful/Implementations/Smoke");
         }
 
         protected override Effect LoadUpdateEffect(WrappedContentManager wrappedContent)
         {
-            return wrappedContent.Load<Effect>("Effects/ParticleSystem/Stateful/Smoke/Smoke");
+            return wrappedContent.Load<Effect>("Effects/ParticleSystem/Stateful/Implementations/Smoke");
         }
 
         protected override Effect LoadRenderEffect(WrappedContentManager wrappedContent)
         {
-            return wrappedContent.Load<Effect>("Effects/ParticleSystem/Stateful/Smoke/Smoke");
+            return wrappedContent.Load<Effect>("Effects/ParticleSystem/Stateful/Implementations/Smoke");
         }
 
         protected override void SetUpdateParameters(EffectParameterCollection parameters)

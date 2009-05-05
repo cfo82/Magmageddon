@@ -1,7 +1,7 @@
 ﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 
-namespace ProjectMagma.Renderer.ParticleSystem.Stateful.IceSpike
+namespace ProjectMagma.Renderer.ParticleSystem.Stateful.Implementations
 {
     public class IceSpike : StatefulParticleSystem
     {
@@ -29,17 +29,17 @@ namespace ProjectMagma.Renderer.ParticleSystem.Stateful.IceSpike
 
         protected override Effect LoadCreateEffect(WrappedContentManager wrappedContent)
         {
-            return wrappedContent.Load<Effect>("Effects/Sfx/ParticleSystem/Stateful/IceSpike/IceSpike");
+            return wrappedContent.Load<Effect>("Effects/Sfx/ParticleSystem/Stateful/Implementations/IceSpike");
         }
 
         protected override Effect LoadUpdateEffect(WrappedContentManager wrappedContent)
         {
-            return wrappedContent.Load<Effect>("Effects/Sfx/ParticleSystem/Stateful/IceSpike/IceSpike");
+            return wrappedContent.Load<Effect>("Effects/Sfx/ParticleSystem/Stateful/Implementations/IceSpike");
         }
 
         protected override Effect LoadRenderEffect(WrappedContentManager wrappedContent)
         {
-            return wrappedContent.Load<Effect>("Effects/Sfx/ParticleSystem/Stateful/IceSpike/IceSpike");
+            return wrappedContent.Load<Effect>("Effects/Sfx/ParticleSystem/Stateful/Implementations/IceSpike");
         }
 
         protected override void SetUpdateParameters(EffectParameterCollection parameters)

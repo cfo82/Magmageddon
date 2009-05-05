@@ -7,7 +7,7 @@ using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using ProjectMagma.Shared.Model;
 using ProjectMagma.Renderer.ParticleSystem.Emitter;
-using ProjectMagma.Renderer.ParticleSystem.Stateful.IceSpike;
+using ProjectMagma.Renderer.ParticleSystem.Stateful.Implementations;
 
 namespace ProjectMagma.Renderer
 {
@@ -57,7 +57,7 @@ namespace ProjectMagma.Renderer
 
             if (!dead && iceSpikeEmitter == null)
             {
-                iceSpikeEmitter = new PointEmitter(new Vector3(0, 25, 0), 2500.0f);
+                iceSpikeEmitter = new PointEmitter(position, 2500.0f);
                 iceSpikeSystem.AddEmitter(iceSpikeEmitter);
             }
 

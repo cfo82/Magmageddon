@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using ProjectMagma.Renderer.Interface;
+using ProjectMagma.Renderer.ParticleSystem.Stateful.Implementations;
 
 namespace ProjectMagma.Renderer
 {
@@ -74,12 +75,10 @@ namespace ProjectMagma.Renderer
 
             statefulParticleResourceManager = new ProjectMagma.Renderer.ParticleSystem.Stateful.ResourceManager(wrappedContent, device);
 
-            explosionSystem = new ProjectMagma.Renderer.ParticleSystem.Stateful.Explosion.Explosion(
-                this, Game.Instance.ContentManager, device, ProjectMagma.Renderer.ParticleSystem.Stateful.Explosion.Explosion.ExplosionType.Fire
-                );
+            explosionSystem = new Explosion(this, Game.Instance.ContentManager, device, Explosion.ExplosionType.Fire);
             for (int i = 0; i < 50; ++i)
             {
-                explosionSystem.AddEmitter(new ProjectMagma.Renderer.ParticleSystem.Emitter.ExplosionEmitter());
+                explosionSystem.AddEmitter(new ProjectMagma.Renderer.ParticleSystem.Emitter.FireExplosionEmitter());
             }
 
             updateQueues = new List<RendererUpdateQueue>();
@@ -453,8 +452,7 @@ namespace ProjectMagma.Renderer
         private GlowPass glowPass;
         private HdrCombinePass hdrCombinePass;
 
-        private ParticleSystem.Stateful.Explosion.Explosion explosionSystem;
-        private ParticleSystem.Emitter.ExplosionEmitter explosionEmitter;
+        private ParticleSystem.Stateful.Implementations.Explosion explosionSystem;
 
         private ParticleSystem.Stateful.ResourceManager statefulParticleResourceManager;
         

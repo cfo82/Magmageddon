@@ -30,9 +30,17 @@ using Microsoft.Xna.Framework;
 
 namespace Xclna.Xna.Animation.Content
 {
-
+    /// <summary>
+    /// 
+    /// </summary>
     public class SkinInfoCollectionReader : ContentTypeReader<SkinInfoCollection>
     {
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="input"></param>
+        /// <param name="existingInstance"></param>
+        /// <returns></returns>
         protected override SkinInfoCollection Read(ContentReader input, SkinInfoCollection existingInstance)
         {
             int count = input.ReadInt32();

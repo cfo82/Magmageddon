@@ -131,7 +131,10 @@ namespace ProjectMagma.Renderer
                 renderable.Update(this, gameTime);
             }
 
-            explosionSystem.Update(lastFrameTime, currentFrameTime);
+            if (explosionSystem != null)
+            {
+                explosionSystem.Update(lastFrameTime, currentFrameTime);
+            }
         }
         
         public void Render(GameTime gameTime)
@@ -266,7 +269,10 @@ namespace ProjectMagma.Renderer
             // need to sort transparent renderables by position and render them (back to front!!)
             // TODO: validate sorting... 
             //transparentRenderables.Sort(TransparentRenderableComparison);
-            explosionSystem.Render(Game.Instance.View, Game.Instance.Projection);
+            if (explosionSystem != null)
+            {
+                explosionSystem.Render(Game.Instance.View, Game.Instance.Projection);
+            }
 
             foreach (Renderable renderable in transparentRenderables)
             {

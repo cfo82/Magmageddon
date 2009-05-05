@@ -173,7 +173,7 @@ namespace ProjectMagma.Simulation
             Entity iceSpikeExplosion = new Entity(iceSpike.Name+"_explosion");
             iceSpikeExplosion.AddStringAttribute("player", iceSpike.GetString("player"));
 
-            // todo: constant
+            // todo: extract constant
             iceSpikeExplosion.AddIntAttribute("live_span", 2000);
             iceSpikeExplosion.AddIntAttribute("damage", constants.GetInt("ice_spike_damage"));
             iceSpikeExplosion.AddIntAttribute("freeze_time", constants.GetInt("ice_spike_freeze_time"));
@@ -181,7 +181,8 @@ namespace ProjectMagma.Simulation
             iceSpikeExplosion.AddVector3Attribute("position", iceSpike.GetVector3("position"));
 
             iceSpikeExplosion.AddStringAttribute("mesh", "Models/Sfx/icespike_explosion");
-            iceSpikeExplosion.AddVector3Attribute("scale", new Vector3(20, 20, 20));
+            // todo: extract constant
+            iceSpikeExplosion.AddVector3Attribute("scale", new Vector3(30, 30, 30));
 
             iceSpikeExplosion.AddStringAttribute("bv_type", "sphere");
 

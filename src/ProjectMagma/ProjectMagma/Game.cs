@@ -177,10 +177,11 @@ namespace ProjectMagma
             // load list of available robots
             robots = ContentManager.Load<List<RobotInfo>>("Level/RobotInfo");
 
-            // initialize simulation
-            LoadLevelFirst(levels[0].FileName);
              
 #if DEBUG
+            // initialize simulation
+            LoadLevelFirst(levels[0].FileName);
+
             // set default player
             Entity player1 = new Entity("player1");
             player1.AddIntAttribute("game_pad_index", 0);
@@ -212,7 +213,10 @@ namespace ProjectMagma
             AddPlayers(new Entity[] { player1, player2, player3, player4 });
     #else
             AddPlayers(new Entity[] { player1, player2 });
-#endif
+    #endif
+#else
+            // initialize simulation
+            LoadLevelFirst("Level/MenuLevel");
 #endif
 
 #if !XBOX && DEBUG
@@ -290,7 +294,7 @@ namespace ProjectMagma
 
             // init simulation
             simulation = new ProjectMagma.Simulation.Simulation();
-            RendererUpdateQueue q = simulation.Initialize(ContentManager, "Level/TestLevel", 0);
+            RendererUpdateQueue q = simulation.Initialize(ContentManager, level, 0);
             renderer.AddUpdateQueue(q);
 
 #if !XBOX
@@ -342,7 +346,7 @@ namespace ProjectMagma
 
             // init simulation
             simulation = new ProjectMagma.Simulation.Simulation();
-            RendererUpdateQueue q = simulation.Initialize(ContentManager, "Level/TestLevel", 300);
+            RendererUpdateQueue q = simulation.Initialize(ContentManager, level, 300);
             renderer.AddUpdateQueue(q);
 
 #if !XBOX

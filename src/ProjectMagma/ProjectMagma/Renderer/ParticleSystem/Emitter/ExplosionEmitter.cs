@@ -22,7 +22,7 @@ namespace ProjectMagma.Renderer.ParticleSystem.Emitter
                 lastExplosion = currentFrameTime;
                 currentPoint = RandomPoint();
                 numParticles += 20 + random.Next(0, 10);
-                untilNextExplosion = 1.0f + (float)random.NextDouble() * 10.0f;
+                untilNextExplosion = 2.0f + (float)random.NextDouble() * 1;
             }
 
             double diff = (currentFrameTime - lastExplosion) / (0.6);
@@ -72,7 +72,7 @@ namespace ProjectMagma.Renderer.ParticleSystem.Emitter
                 (float)(System.Math.Sin(horizontalAngle) * System.Math.Cos(verticalAngle) * (random.NextDouble() * speed)));
         }
 
-        private float untilNextExplosion = 0.0f;
+        private float untilNextExplosion = (float)random.NextDouble() * 3.0f;
         private double lastExplosion = 0.0;
         private static Random random = new Random();
         private Vector3 currentPoint;

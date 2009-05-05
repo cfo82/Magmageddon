@@ -19,7 +19,7 @@ namespace ProjectMagma.Renderer.ParticleSystem.Emitter
             this.particlesPerSecond = particlesPerSecond;
         }
 
-        public NewParticle[] CreateParticles(
+        public int CalculateParticleCount(
             double lastFrameTime,
             double currentFrameTime
         )
@@ -34,9 +34,24 @@ namespace ProjectMagma.Renderer.ParticleSystem.Emitter
             double floorNumParticles = System.Math.Floor(exactNumParticles);
             fragmentLost = exactNumParticles - floorNumParticles;
             int numParticles = (int)floorNumParticles;
+            return numParticles;
+        }
 
-            NewParticle[] particles = new NewParticle[numParticles];
-            for (int i = 0; i < particles.Length; ++i)
+        public void CreateParticles(
+            double lastFrameTime,
+            double currentFrameTime,
+            CreateVertex[] array,
+            int start,
+            int length
+        )
+        {
+            Debug.Assert(currentFrameTime > times[0]);
+            double amount = currentFrameTime - times[0];
+            double interval = times[1] - times[0];
+            double interpolation = amount / interval;
+            Vector3 point = points[0] + (points[1] - points[0]) * (float)interpolation;
+
+            for (int i = 0; i < length; ++i)
             {
                 double horizontalAngle = random.NextDouble() * MathHelper.Pi * 2.0;
                 double verticalAngle = random.NextDouble() * MathHelper.Pi * 2.0;
@@ -47,13 +62,15 @@ namespace ProjectMagma.Renderer.ParticleSystem.Emitter
                     (float)(System.Math.Sin(horizontalAngle) * System.Math.Cos(verticalAngle)));
                 velocity = velocity * 75;
 
-                particles[i] = new NewParticle(point, velocity);
+                array[start+i].ParticlePosition = point;
+                array[start+i].ParticleVelocity = velocity;
             }
-
-            return particles;
         }
 
-        public void SetPoint(double time, Vector3 point)
+        public void SetPoint(
+            double time,
+            Vector3 point
+        )
         {
             Debug.Assert(time > times[1]);
             times[0] = times[1];

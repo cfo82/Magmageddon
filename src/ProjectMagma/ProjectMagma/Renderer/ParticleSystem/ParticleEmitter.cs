@@ -8,6 +8,8 @@ namespace ProjectMagma.Renderer.ParticleSystem
 {
     public interface ParticleEmitter
     {
-        NewParticle[] CreateParticles(double lastFrameTime, double currentFrameTime);
+        int CalculateParticleCount(double lastFrameTime, double currentFrameTime);
+        //NewParticle[] CreateParticles(double lastFrameTime, double currentFrameTime);
+        void CreateParticles(double lastFrameTime, double currentFrameTime, CreateVertex[] array, int start, int length);
     }
 }

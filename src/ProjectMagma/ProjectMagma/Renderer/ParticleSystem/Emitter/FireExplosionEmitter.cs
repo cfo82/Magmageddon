@@ -13,7 +13,10 @@ namespace ProjectMagma.Renderer.ParticleSystem.Emitter
             currentPoint = RandomPoint();
         }
 
-        public NewParticle[] CreateParticles(double lastFrameTime, double currentFrameTime)
+        public int CalculateParticleCount(
+            double lastFrameTime,
+            double currentFrameTime
+        )
         {
             int numParticles = 0;
 
@@ -27,15 +30,24 @@ namespace ProjectMagma.Renderer.ParticleSystem.Emitter
 
             double diff = (currentFrameTime - lastExplosion) / (2.0);
             if (diff > 1.0) { diff = 1.0; }
-            numParticles += (int) ((15 + random.Next(0, 10)) * (1.0 - diff)); 
+            numParticles += (int)((15 + random.Next(0, 10)) * (1.0 - diff));
 
-            NewParticle[] particles = new NewParticle[numParticles];
-            for (int i = 0; i < particles.Length; ++i)
+            return numParticles;
+        }
+
+        public void CreateParticles(
+            double lastFrameTime,
+            double currentFrameTime,
+            CreateVertex[] array,
+            int start,
+            int length
+        )
+        {
+            for (int i = 0; i < length; ++i)
             {
-                particles[i] = new NewParticle(currentPoint + RandomOffset(), RandomVelocity());
+                array[start + i].ParticlePosition = currentPoint + RandomOffset();
+                array[start + i].ParticleVelocity = RandomVelocity();
             }
-
-            return particles;
         }
 
         /// <summary>

@@ -152,35 +152,44 @@ namespace ProjectMagma.Renderer.ParticleSystem.Stateful
         {
             Vector2 positionHalfPixel = new Vector2(1.0f / (2.0f * positionTextures[0].Width), 1.0f / (2.0f * positionTextures[0].Height));
 
+            int[] particleCount = new int[emitters.Count];
+
+            int sumParticleCount = 0;
             for (int emitterIndex = 0; emitterIndex < emitters.Count; ++emitterIndex)
             {
                 ParticleEmitter emitter = emitters[emitterIndex];
+                particleCount[emitterIndex] = emitter.CalculateParticleCount(lastFrameTime, currentFrameTime);
+                sumParticleCount += particleCount[emitterIndex];
+            }
 
-                NewParticle[] list = emitter.CreateParticles(lastFrameTime, currentFrameTime);
-                if (list.Length == 0)
-                    { continue; }
-
-                CreateVertex[] vertices = new CreateVertex[list.Length];
-                for (int i = 0; i < list.Length; ++i)
+            CreateVertex[] vertices = new CreateVertex[sumParticleCount];
+            for (int i = 0; i < vertices.Length; ++i)
+            {
+                if (index >= positionTextures[0].Width * positionTextures[0].Height)
                 {
-                    if (index >= positionTextures[0].Width * positionTextures[0].Height)
-                    {
-                        index = 0;
-                    }
-
-                    int x = index % textureSize;
-                    int y = index / textureSize;
-
-                    vertices[i] = new CreateVertex(list[i].Position, list[i].Velocity, new Vector2(
-                        -1.0f + 2.0f * positionHalfPixel.X + 2.0f * 2.0f * x * positionHalfPixel.X,
-                        -1.0f + 2.0f * positionHalfPixel.Y + 2.0f * 2.0f * y * positionHalfPixel.Y)
-                    );
-
-                    ++index;
+                    index = 0;
                 }
 
-                createVertexLists.Add(vertices);
+                int x = index % textureSize;
+                int y = index / textureSize;
+
+                vertices[i] = new CreateVertex(Vector3.Zero, Vector3.Zero, new Vector2(
+                    -1.0f + 2.0f * positionHalfPixel.X + 2.0f * 2.0f * x * positionHalfPixel.X,
+                    -1.0f + 2.0f * positionHalfPixel.Y + 2.0f * 2.0f * y * positionHalfPixel.Y)
+                );
+
+                ++index;
             }
+
+            int vertexIndex = 0;
+            for (int emitterIndex = 0; emitterIndex < emitters.Count; ++emitterIndex)
+            {
+                ParticleEmitter emitter = emitters[emitterIndex];
+                emitter.CreateParticles(lastFrameTime, currentFrameTime, vertices, vertexIndex, particleCount[emitterIndex]);
+                vertexIndex += particleCount[emitterIndex];
+            }
+
+            createVertexLists.Add(vertices);
 
             if (render)
             {

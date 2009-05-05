@@ -104,14 +104,13 @@
     <Compile Include="Renderer\Interface\RendererInterface.cs" />
     <Compile Include="Renderer\LightManager.cs" />
     <Compile Include="Renderer\ParallelLight.cs" />
-    <Compile Include="Renderer\ParticleSystem\Emitter\CircleEmitter.cs" />
     <Compile Include="Renderer\ParticleSystem\Emitter\IceExplosionEmitter.cs" />
     <Compile Include="Renderer\ParticleSystem\Emitter\FireExplosionEmitter.cs" />
     <Compile Include="Renderer\ParticleSystem\Emitter\PointEmitter.cs" />
     <Compile Include="Renderer\ParticleSystem\NewParticle.cs" />
     <Compile Include="Renderer\ParticleSystem\ParticleEmitter.cs" />
     <Compile Include="Renderer\ParticleSystem\ParticleSystem.cs" />
-    <Compile Include="Renderer\ParticleSystem\Stateful\CreateVertex.cs" />
+    <Compile Include="Renderer\ParticleSystem\CreateVertex.cs" />
     <Compile Include="Renderer\ParticleSystem\Stateful\Implementations\Explosion.cs" />
     <Compile Include="Renderer\ParticleSystem\Stateful\Implementations\IceSpike.cs" />
     <Compile Include="Renderer\ParticleSystem\Stateful\RenderVertex.cs" />

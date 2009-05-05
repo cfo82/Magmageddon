@@ -65,11 +65,6 @@ namespace ProjectMagma.Simulation
 
             // get position
             Vector3 position = island.GetVector3("position");
-            if (float.IsInfinity(position.X)
-                || float.IsNaN(position.X))
-            {
-                Console.WriteLine("nan");
-            }
 
             // implement sinking and rising islands
             int playersOnIsland = island.GetInt("players_on_island");

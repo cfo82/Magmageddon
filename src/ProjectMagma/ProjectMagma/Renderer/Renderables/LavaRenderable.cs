@@ -17,9 +17,6 @@ namespace ProjectMagma.Renderer
             Texture2D graniteTexture)
             : base(scale, rotation, position, model)
         {
-            effect = Game.Instance.ContentManager.Load<Effect>("Effects/Lava/Lava");
-            InitializeRandomOffsets();
-
             UseLights = false;
             UseMaterialParameters = false;
             UseSquash = false;
@@ -35,9 +32,12 @@ namespace ProjectMagma.Renderer
 
         protected override void ApplyEffectsToModel()
         {
+//            effect = Game.Instance.ContentManager.Load<Effect>("Effects/Lava/Lava");
+
             Effect effect = Game.Instance.ContentManager.Load<Effect>("Effects/Lava/Lava");
+            ReplaceBasicEffect(Model, effect);
             SetDefaultMaterialParameters();
-            SetModelEffect(Model, effect);
+            InitializeRandomOffsets(effect);
         }
 
         protected override void ApplyTechnique(Effect effect)
@@ -45,10 +45,10 @@ namespace ProjectMagma.Renderer
             effect.CurrentTechnique = effect.Techniques["MultiPlaneLava"];
         }
 
-        private void InitializeRandomOffsets()
+        private void InitializeRandomOffsets(Effect effect)
         {
-            randomOffsetParameter = effect.Parameters["RandomOffset"];
-            randomOffsetCount = randomOffsetParameter.Elements.Count;
+            //randomOffsetParameter = ;
+            randomOffsetCount = effect.Parameters["RandomOffset"].Elements.Count;
             randomOffset = new Vector2[randomOffsetCount];
             d_randomOffset = new Vector2[randomOffsetCount];
             dd_randomOffset = new Vector2[randomOffsetCount];
@@ -61,7 +61,7 @@ namespace ProjectMagma.Renderer
             offsetRand = new Random(1234);
         }
 
-        private void UpdateRandomOffsets()
+        private void UpdateRandomOffsets(Effect effect)
         {
             for (int i = 0; i < randomOffsetCount; ++i)
             {
@@ -76,7 +76,10 @@ namespace ProjectMagma.Renderer
                 randomOffset[i] += d_randomOffset[i] * 0.001f;
             }
 
-            randomOffsetParameter.SetValue(randomOffset);
+            effect.Parameters["RandomOffset"].SetValue(randomOffset);
+            //effect.Parameters["RandomOffsetX"].SetValue((float) offsetRand.NextDouble());
+
+            //Console.WriteLine("off: "+randomOffset[1].ToString());
         }
 
         private Texture2D temperatureTexture;        
@@ -111,7 +114,7 @@ namespace ProjectMagma.Renderer
             effect.Parameters["FogColor"].SetValue(Vector3.One);
             effect.Parameters["EyePosition"].SetValue(Game.Instance.EyePosition);
 
-            UpdateRandomOffsets();
+            UpdateRandomOffsets(effect);
         }
 
         //public void Draw(
@@ -216,11 +219,11 @@ namespace ProjectMagma.Renderer
         private Texture2D vectorCloudTexture;
         private Texture2D graniteTexture;
 
-        private Effect effect;
+        //private Effect effect;
 
         Vector2[] randomOffset, d_randomOffset, dd_randomOffset;
         int randomOffsetCount;
-        EffectParameter randomOffsetParameter;
+//        EffectParameter randomOffsetParameter;
 
         //AlignedBox3 boundingBox;
 

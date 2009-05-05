@@ -57,7 +57,7 @@ namespace ProjectMagma.Renderer
         {
             Effect effect = Game.Instance.ContentManager.Load<Effect>("Effects/Basic/Basic");
             SetDefaultMaterialParameters();
-            SetModelEffect(Model, effect);
+            ReplaceBasicEffect(Model, effect);
         }
 
         protected virtual void SetDefaultMaterialParameters()

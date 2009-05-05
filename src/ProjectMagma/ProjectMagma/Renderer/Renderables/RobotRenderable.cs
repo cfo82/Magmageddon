@@ -149,6 +149,8 @@ namespace ProjectMagma.Renderer
         {
             animator.World = World;
             animator.Draw(gameTime);
+            
+            base.DrawMesh(renderer, gameTime, mesh);
         }
 
         protected override void ApplyTechnique(Effect effect)

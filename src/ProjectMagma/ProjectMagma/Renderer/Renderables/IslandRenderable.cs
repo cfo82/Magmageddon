@@ -24,7 +24,7 @@ namespace ProjectMagma.Renderer
         {
             Effect effect = Game.Instance.ContentManager.Load<Effect>("Effects/Environment/Island");
             SetDefaultMaterialParameters();
-            SetModelEffect(Model, effect);
+            ReplaceBasicEffect(Model, effect);
         }
 
         protected override void ApplyTechnique(Effect effect)

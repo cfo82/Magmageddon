@@ -15,7 +15,8 @@ float4 getfirefractal(float2 texCoord)
 
 float gettemperature(float2 texCoord)
 {
-	return tex2D(TemperatureSampler, texCoord).x;
+	float2 mirroredTexCoord = float2(1-texCoord.x-.015, texCoord.y);
+	return pow(tex2D(TemperatureSampler, mirroredTexCoord).x,5); // mirror hack
 }
 
 float ComputeFogFactor(float d)
@@ -144,9 +145,17 @@ VS_OUTPUT MultiPlaneVS(float4 inPositionOS  : POSITION,
 //------------------------------------------------------------
 //                      PIXEL SHADER
 //------------------------------------------------------------
+//float RandomOffsetX;
+
 PSOutput MultiPlanePS(PS_INPUT i) : COLOR0
 {
 	PSOutput outp;
+
+//	outp.RenderChannelColor = float4(1,0,0,1);
+//	outp.Color = float4(RandomOffset[0].x, RandomOffset[1].y, RandomOffset[2].x, 1);
+//	outp.Color = float4(RandomOffsetX, 0,0, 1);
+//	outp.Color = float4(0.5, 0,0, 1);
+//	return outp;
 
 	// compute perturbed texture coordinates
     float4 clouds = tex2D(CloudsSampler, i.texCoord + RandomOffset[0]);

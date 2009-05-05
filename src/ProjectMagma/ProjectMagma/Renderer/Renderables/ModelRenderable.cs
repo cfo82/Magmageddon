@@ -98,16 +98,16 @@ namespace ProjectMagma.Renderer
         }
 
 
-        protected void SetModelEffect(Model model, Effect effect)
+        protected void ReplaceBasicEffect(Model model, Effect effect)
         {
             foreach (ModelMesh mesh in model.Meshes)
             {
-                SetMeshEffect(mesh, effect);
+                ReplaceBasicEffect(mesh, effect);
             }
         }
-        
 
-        protected void SetMeshEffect(ModelMesh mesh, Effect effect)
+
+        protected void ReplaceBasicEffect(ModelMesh mesh, Effect effect)
         {
             foreach (ModelMeshPart meshPart in mesh.MeshParts)
             {
@@ -117,6 +117,24 @@ namespace ProjectMagma.Renderer
                     meshPart.Effect = effect.Clone(oldEffect.GraphicsDevice);
                     oldEffect.Dispose();
                 }
+            }
+        }
+
+        protected void SetEffect(Model model, Effect effect)
+        {
+            foreach (ModelMesh mesh in model.Meshes)
+            {
+                SetEffect(mesh, effect);
+            }
+        }
+        
+        protected void SetEffect(ModelMesh mesh, Effect effect)
+        {
+            foreach (ModelMeshPart meshPart in mesh.MeshParts)
+            {
+                //Effect oldEffect = meshPart.Effect;
+                meshPart.Effect = effect;//.Clone(oldEffect.GraphicsDevice);
+                //oldEffect.Dispose();
             }
         }
 
@@ -160,7 +178,8 @@ namespace ProjectMagma.Renderer
             shadowEffect.Parameters["WorldLightViewProjection"].SetValue(
                 world_offset * renderer.LightView * renderer.LightProjection);
 
-            SetMeshEffect(mesh, shadowEffect);
+            //ReplaceBasicEffect(mesh, shadowEffect);
+            SetEffect(mesh, shadowEffect);
             mesh.Draw();
             RestorePartEffectMapping(defaultEffectMapping);
         }

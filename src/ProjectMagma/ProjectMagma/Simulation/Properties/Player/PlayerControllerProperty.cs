@@ -13,12 +13,16 @@ namespace ProjectMagma.Simulation
     public class PlayerControllerProperty : Property
     {
         #region flags
+        private static readonly bool RightStickFlame = true;
         private static readonly bool LeftStickSelection = true;
         private static readonly bool DeselectOnRelease = false;
         public static readonly bool ImuneToIslandPush = true;
         #endregion
 
         #region button assignments
+        // eps for registering move
+        private static readonly float StickMovementEps = 0.1f;
+        
         // gamepad buttons
         private static readonly Buttons[] AttractionButtons = { Buttons.A };
         private static readonly Buttons[] JetpackButtons = { Buttons.A };
@@ -234,7 +238,7 @@ namespace ProjectMagma.Simulation
 
             PerformIceSpikeAction(player, at, playerPosition);
 
-            PerformFlamethrowerAction(player, playerPosition);
+            PerformFlamethrowerAction(player, ref playerPosition);
 
             PerformIslandRepulsionAction(simTime, ref fuel);
 
@@ -386,7 +390,7 @@ namespace ProjectMagma.Simulation
 
                         // select closest island in direction of stick
                         lastStickDir = stickDir;
-                        selectedIsland = SelectBestIsland(stickDir);
+                        selectedIsland = SelectBestIslandInDirection(ref stickDir);
 
                         // new island selected
                         if (selectedIsland != null)
@@ -470,11 +474,12 @@ namespace ProjectMagma.Simulation
             }
         }
 
-        private void PerformFlamethrowerAction(Entity player, Vector3 playerPosition)
+        private void PerformFlamethrowerAction(Entity player, ref Vector3 playerPosition)
         {
             // flamethrower
             if ((controllerInput.flamethrowerButtonPressed
                 || controllerInput.flamethrowerButtonHold)
+                || controllerInput.flameStickMoved
                 && activeIsland != null) // only allowed on ground
             {
                 if (flame == null)
@@ -510,13 +515,22 @@ namespace ProjectMagma.Simulation
                 }
                 else
                 {
-                    // change rotation towards selected island, if it has a player standing on
-                    if (selectedIsland != null
-                        && selectedIsland.GetInt("players_on_island") > 0)
+                    if (RightStickFlame)
                     {
-                        Vector3 tminusp = (selectedIsland.GetVector3("position") - playerPosition); 
+                        // change y rotation towards player in range
+                        Vector3 aimVector;
+                        Vector3 direction = new Vector3(controllerInput.flameStickX, 0, controllerInput.flameStickY);
+                        direction.Normalize();
+                        Entity targetPlayer = SelectBestPlayerInDirection(ref playerPosition, ref direction, out aimVector);
+                        if (targetPlayer != null)
+                        {
+                            // only aim towards  player in y, x and z are from controller direction
+                            aimVector.X = direction.X;
+                            aimVector.Z = direction.Z;
+                        }
+                        Vector3 tminusp = aimVector;
                         Vector3 ominusp = Vector3.Backward;
-                        if(tminusp != Vector3.Zero)
+                        if (tminusp != Vector3.Zero)
                             tminusp.Normalize();
                         float theta = (float)System.Math.Acos(Vector3.Dot(tminusp, ominusp));
                         Vector3 cross = Vector3.Cross(ominusp, tminusp);
@@ -527,6 +541,27 @@ namespace ProjectMagma.Simulation
                         Quaternion targetQ = Quaternion.CreateFromAxisAngle(cross, theta);
 
                         flame.SetQuaternion("rotation", targetQ);
+                    }
+                    else
+                    {
+                        // change rotation towards selected island, if it has a player standing on
+                        if (selectedIsland != null
+                            && selectedIsland.GetInt("players_on_island") > 0)
+                        {
+                            Vector3 tminusp = (selectedIsland.GetVector3("position") - playerPosition);
+                            Vector3 ominusp = Vector3.Backward;
+                            if (tminusp != Vector3.Zero)
+                                tminusp.Normalize();
+                            float theta = (float)System.Math.Acos(Vector3.Dot(tminusp, ominusp));
+                            Vector3 cross = Vector3.Cross(ominusp, tminusp);
+
+                            if (cross != Vector3.Zero)
+                                cross.Normalize();
+
+                            Quaternion targetQ = Quaternion.CreateFromAxisAngle(cross, theta);
+
+                            flame.SetQuaternion("rotation", targetQ);
+                        }
                     }
 
                     if (player.GetInt("energy") <= 0)
@@ -552,54 +587,25 @@ namespace ProjectMagma.Simulation
 
                 // todo: specify point in model
                 Vector3 pos = new Vector3(playerPosition.X, playerPosition.Y + player.GetVector3("scale").Y, playerPosition.Z);
+
+                Vector3 aimVector;
                 Vector3 viewVector = Vector3.Transform(new Vector3(0, 0, 1), GetRotation(player));
-
-                #region search next player in range
-
-                float angle = constants.GetFloat("ice_spike_aim_angle");
-                float minAngle = float.PositiveInfinity;
-                Entity targetPlayer = null;
-                Vector3 distVector = Vector3.Zero;
-                foreach (Entity p in Game.Instance.Simulation.PlayerManager)
-                {
-                    if (p != player)
-                    {
-                        Vector3 pp = p.GetVector3("position");
-                        Vector3 pdir = pp - playerPosition;
-                        float a = (float)(Math.Acos(Vector3.Dot(pdir, viewVector) / pdir.Length() / viewVector.Length()) / Math.PI * 180);
-                        if (a < angle)
-                        {
-                            if (a < minAngle)
-                            {
-                                targetPlayer = p;
-                                distVector = pdir;
-                                minAngle = a;
-                            }
-                        }
-                    }
-                }
+                Entity targetPlayer = SelectBestPlayerInDirection(ref playerPosition, ref viewVector, out aimVector);
                 String targetPlayerName = targetPlayer != null ? targetPlayer.Name : "";
-                //Console.WriteLine("targetPlayer: " + targetPlayerName);
-
-                #endregion
-
-                Vector3 aimVector = viewVector;
-                if (targetPlayer != null)
-                {
-                    aimVector = Vector3.Normalize(distVector);
-                }
-                aimVector.Y = 1;
-                aimVector *= constants.GetVector3("ice_spike_initial_speed_multiplier");
 
                 Entity iceSpike = new Entity("icespike" + (++iceSpikeCount) + "_" + player.Name);
                 iceSpike.AddStringAttribute("player", player.Name);
                 iceSpike.AddStringAttribute("target_player", targetPlayerName);
                 if (targetPlayer == null)
-                    iceSpike.AddVector3Attribute("target_direction", viewVector);
+                    iceSpike.AddVector3Attribute("target_direction", aimVector);
                 iceSpike.AddIntAttribute("creation_time", (int)at);
                 iceSpike.AddBoolAttribute("dead", false);
 
-                iceSpike.AddVector3Attribute("velocity", aimVector);
+                Vector3 initVelocity = aimVector;
+                initVelocity.Y = 1;
+                initVelocity *= constants.GetVector3("ice_spike_initial_speed_multiplier");
+
+                iceSpike.AddVector3Attribute("velocity", initVelocity);
                 iceSpike.AddVector3Attribute("position", pos);
 
                 iceSpike.AddStringAttribute("mesh", "Models/Visualizations/icespike_primitive");
@@ -619,7 +625,7 @@ namespace ProjectMagma.Simulation
             }
         }
 
-        private void PerformFrozenSlowdown(Entity player, SimulationTime simTime, ref Vector3 playerPosition)
+            private void PerformFrozenSlowdown(Entity player, SimulationTime simTime, ref Vector3 playerPosition)
         {
             if (player.GetInt("frozen") > 0
                 && activeIsland != null) // only when on island...
@@ -1264,8 +1270,9 @@ namespace ProjectMagma.Simulation
         /// </summary>
         /// <param name="dir">direction to select</param>
         /// <returns>an island entity or null</returns>
-        private Entity SelectBestIsland(Vector3 dir)
+        private Entity SelectBestIslandInDirection(ref Vector3 dir)
         {
+            float maxAngle = constants.GetFloat("island_aim_angle");
             float closestAngle = float.MaxValue;
             float distance = float.MaxValue;
             Entity selectedIsland = null;
@@ -1274,9 +1281,9 @@ namespace ProjectMagma.Simulation
                 Vector3 islandDir = island.GetVector3("position") - player.GetVector3("position");
                 islandDir.Y = 0;
                 float dist = islandDir.Length();
-                float angle = (float)(Math.Acos(Vector3.Dot(dir, islandDir) / dist));
+                float angle = (float)(Math.Acos(Vector3.Dot(dir, islandDir) / dist) / Math.PI * 180);
                 if (island != activeIsland
-                    && (angle / Math.PI * 180) < constants.GetFloat("island_aim_angle")) 
+                    && angle < maxAngle) 
                 {
                     if(angle < closestAngle
                         || (Math.Abs(angle-closestAngle) < constants.GetFloat("island_aim_angle_eps")
@@ -1291,6 +1298,41 @@ namespace ProjectMagma.Simulation
 
             return selectedIsland;
         }
+
+        /// <summary>
+        /// selects the player best fitting direction given
+        /// </summary>
+        private Entity SelectBestPlayerInDirection(ref Vector3 playerPosition, ref Vector3 direction, out Vector3 aimVector)
+        {
+            float maxAngle = constants.GetFloat("ice_spike_aim_angle");
+            float minAngle = float.PositiveInfinity;
+            Entity targetPlayer = null;
+            aimVector = direction;
+            foreach (Entity p in Game.Instance.Simulation.PlayerManager)
+            {
+                if (p != player)
+                {
+                    Vector3 pp = p.GetVector3("position");
+                    Vector3 pdir = pp - playerPosition;
+                    float a = (float)(Math.Acos(Vector3.Dot(pdir, direction) / pdir.Length()) / Math.PI * 180);
+                    if (a < maxAngle)
+                    {
+                        if (a < minAngle)
+                        {
+                            targetPlayer = p;
+                            aimVector = pdir;
+                            minAngle = a;
+                        }
+                    }
+                }
+            }
+
+            if (aimVector != Vector3.Zero)
+                aimVector.Normalize();
+
+            return targetPlayer;
+        }
+
 
         /// <summary>
         /// positions the player randomly on an island
@@ -1433,6 +1475,9 @@ namespace ProjectMagma.Simulation
                 }
                 rightStickPressed = gamePadState.Buttons.RightStick == ButtonState.Pressed;
 
+                flameStickX = gamePadState.ThumbSticks.Right.X;
+                flameStickY = -gamePadState.ThumbSticks.Right.Y;
+
                 dPadX = (gamePadState.DPad.Right == ButtonState.Pressed)? 1.0f : 0.0f
                     - ((gamePadState.DPad.Left == ButtonState.Pressed) ? 1.0f : 0.0f);
                 dPadY = (gamePadState.DPad.Down == ButtonState.Pressed) ? 1.0f : 0.0f
@@ -1479,8 +1524,12 @@ namespace ProjectMagma.Simulation
                         rightStickY = gamepadEmulationValue;
                     }
 
-                moveStickMoved = leftStickX != 0.0f || leftStickY != 0.0f;
-                rightStickMoved = rightStickX != 0.0f || rightStickY != 0.0f;
+                moveStickMoved = leftStickX > StickMovementEps || leftStickX < -StickMovementEps
+                    || leftStickY > StickMovementEps || leftStickY < -StickMovementEps;
+                rightStickMoved = rightStickX > StickMovementEps || rightStickX < -StickMovementEps
+                    || rightStickY > StickMovementEps || rightStickY < -StickMovementEps;
+                flameStickMoved = flameStickX > StickMovementEps || flameStickX < -StickMovementEps
+                    || flameStickY > StickMovementEps || flameStickY < -StickMovementEps;
 
                 #endregion
 
@@ -1567,6 +1616,8 @@ namespace ProjectMagma.Simulation
             public bool moveStickMoved;
             public float rightStickX, rightStickY;
             public bool rightStickMoved, rightStickPressed;
+            public float flameStickX, flameStickY;
+            public bool flameStickMoved;
             public bool dPadPressed;
             public float dPadX, dPadY;
 

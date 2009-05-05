@@ -100,6 +100,8 @@ namespace ProjectMagma.Simulation
 
             // apply repulsion from players 
             Vector3 repulsionVelocity = island.GetVector3("repulsion_velocity");
+            if (repulsionVelocity.Length() > constants.GetFloat("repulsion_max_speed"))
+                repulsionVelocity = Vector3.Normalize(repulsionVelocity) * constants.GetFloat("repulsion_max_speed");
             Simulation.ApplyPushback(ref position, ref repulsionVelocity, constants.GetFloat("repulsion_deacceleration"),
                     OnRepulsionEnd);
             island.SetVector3("repulsion_velocity", repulsionVelocity);
@@ -252,8 +254,10 @@ namespace ProjectMagma.Simulation
             {
                 String kind = other.GetString("kind");
 
-                if ((kind == "player"
+                if ((kind == "player" // don't do any collision response with player if set so
                     && !PlayerControllerProperty.ImuneToIslandPush)
+                    // never do collision response with player who is standing on island
+                    || (other.HasString("active_island") && other.GetString("active_island") == island.Name)
                     || kind == "powerup"
 /*                    || kind == "cave"*/
                     )
@@ -470,7 +474,7 @@ namespace ProjectMagma.Simulation
         protected float collisionAt;
 
         // todo: extract constant
-        protected static readonly float CollisionTimeout = 500;
+        protected static readonly float CollisionTimeout = 100;
         protected bool HadCollision(SimulationTime simTime)
         {
             return simTime.At < collisionAt + CollisionTimeout;

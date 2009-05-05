@@ -164,16 +164,16 @@ namespace ProjectMagma.Renderer
             Game.Instance.Profiler.EndSection("renderer_scene");
 
             // 5) Bloom (later HDR etc) -- commented out, we have no components anymore anyway
-            //Game.Instance.Profiler.BeginSection("components");
-            //foreach (GameComponent component in Game.Instance.Components)
-            //{
-            //    DrawableGameComponent drawableComponent = component as DrawableGameComponent;
-            //    if (drawableComponent != null)
-            //    {
-            //        drawableComponent.Draw(gameTime);
-            //    }
-            //}
-            //Game.Instance.Profiler.EndSection("components");
+            Game.Instance.Profiler.BeginSection("components");
+            foreach (GameComponent component in Game.Instance.Components)
+            {
+                DrawableGameComponent drawableComponent = component as DrawableGameComponent;
+                if (drawableComponent != null)
+                {
+                    drawableComponent.Draw(gameTime);
+                }
+            }
+            Game.Instance.Profiler.EndSection("components");
 
             if (EnablePostProcessing)
             {

@@ -2,6 +2,7 @@
 using Microsoft.Xna.Framework.Graphics;
 using Xclna.Xna.Animation;
 using System.Collections.Generic;
+using System;
 
 namespace ProjectMagma.Renderer
 {
@@ -42,6 +43,8 @@ namespace ProjectMagma.Renderer
 
             // set the first default controller
             RunController("idle0");
+            animationMode = AnimationMode.Permanent;
+            permanentState = "idle0";
         }
 
         private Dictionary<string, AnimationController> controllers;
@@ -59,13 +62,83 @@ namespace ProjectMagma.Renderer
 
             animator.Update(gameTime);
 
+            if (blendFactor > 0.0f)
+            {
+                blendFactor += blendIncrement;
+                //currentController.ElapsedTime = 0; // test
+            }
+            if (blendFactor >= 1.0f)
+            {
+                blendFactor = 0.0f;
+                state = destState;
+                destState = null;
+                RunController(state);
+                if(animationMode == AnimationMode.PermanentToOnce)
+                    animationMode = AnimationMode.Once;
+                if(animationMode == AnimationMode.OnceToPermanent)
+                    animationMode = AnimationMode.Permanent;
+            }
+
             BonePose head = animator.BonePoses["head"];
             head.CurrentController = controllers["nodHead"];
             head.CurrentBlendController = null;
+            Console.WriteLine("elapsed time: " + currentController.ElapsedTime);
+        }
+
+        public void onceAnimEndedHandler(object sender, EventArgs args)
+        {
+            animationMode = AnimationMode.OnceToPermanent;
+            blendFactor = blendIncrement;
+            destState = permanentState;
+            RunController(state, destState);
+        }
+
+
+        //public string NextPermanentState
+        //{
+        //    set { ActivateOneTimeState(value); }
+        //}
+
+        //public string NextOneTimeState {
+        //    set { ActivateOneTimeState(value); }
+        //}
+
+        public override void UpdateString(string id, string value)
+        {
+            base.UpdateString(id, value);
+
+            if(id=="NextOneTimeState")
+            {
+                ActivateOneTimeState(value);
+            }
         }
 
         // activatepermanentstate: idle, walk, jump, die
         // activatesinglestate: attack
+        public void ActivateOneTimeState(string target)
+        {
+            //Console.WriteLine("activateonetimestate call");
+            if(target=="hit") {
+                Random r = new Random();
+                target = "attack" + r.Next(0,4);
+            }
+            blendFactor = blendIncrement;
+            RunController(state, target);
+            currentController.IsLooping = false;
+            currentController.ElapsedTime = 0;
+            currentController.AnimationEnded += onceAnimEndedHandler;
+            animationMode = AnimationMode.PermanentToOnce;
+        }
+
+        public void ActivatePermanentState(string target)
+        {
+            blendFactor = blendIncrement;
+            RunController(state, target);
+            animationMode = AnimationMode.OnceToPermanent;
+            permanentState = target;
+        }
+
+        private readonly float blendIncrement = 0.2f;
 
         public override bool NeedsUpdate
         {
@@ -94,18 +167,27 @@ namespace ProjectMagma.Renderer
 
         private void RunController(string name)
         {
+            state = name;
+            currentController = controllers[name];
             foreach(BonePose p in animator.BonePoses)
             {
-                p.CurrentController = controllers[name];
+                p.CurrentController = currentController;
                 p.CurrentBlendController = null;
+                p.BlendFactor = 0.0f;
             }
+            Console.WriteLine("Running controller " + name);
+                //animationController
         }
 
-        private void RunController(string name1, string name2, float blendFactor)
+        private void RunController(string name1, string name2)
         {
+            state = name1;
+            destState = name2;
+            currentController = controllers[name1];
+            Console.WriteLine("Running controller " + name1 + " to " + name2);
             foreach (BonePose p in animator.BonePoses)
             {
-                p.CurrentController = controllers[name1];
+                p.CurrentController = currentController;
                 p.CurrentBlendController = controllers[name2];
                 p.BlendFactor = blendFactor;
             }
@@ -116,10 +198,17 @@ namespace ProjectMagma.Renderer
         //AnimationController attack1, attack2, attack3, attack4;
         //AnimationController die;
         //AnimationController nod;
+        private AnimationController currentController;
         float blendFactor;
-        string state = "idle";
+        string state, destState, permanentState;//= "idle";
 
         private Vector3 color1;
         private Vector3 color2;
+
+        private enum AnimationMode
+        {
+            Permanent, PermanentToPermanent, PermanentToOnce, Once, OnceToOnce, OnceToPermanent
+        }
+        private AnimationMode animationMode;
     }
 }

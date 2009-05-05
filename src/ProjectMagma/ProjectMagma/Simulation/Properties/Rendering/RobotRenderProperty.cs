@@ -28,5 +28,21 @@ namespace ProjectMagma.Simulation
                 diffuseTexture, specularTexture, normalTexture,
                 color1, color2);
         }
+
+        public string NextOneTimeState
+        {
+            set
+            {
+                ChangeString("NextOneTimeState", value);
+            }
+        }
+
+        public string NextPermanentState
+        {
+            set
+            {
+                ChangeString("NextPermanentState", value);
+            }
+        }
     }
 }

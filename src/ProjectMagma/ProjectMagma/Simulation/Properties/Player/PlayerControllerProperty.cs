@@ -288,6 +288,16 @@ namespace ProjectMagma.Simulation
             Entity lava = Game.Instance.Simulation.EntityManager["lava"];
             if (playerPosition.Y < lava.GetVector3("position").Y)
                 PlayerLavaCollisionHandler(simTime, player, lava);
+
+            #region update animations
+
+            if(controllerInput.StartHitAnimation)
+            {
+                controllerInput.StartHitAnimation = false;
+                (player.GetProperty("render") as RobotRenderProperty).NextOneTimeState = "hit";
+            }
+
+            #endregion
         }
 
         private void PerformIslandAttractionAction(Entity player, bool allowSelection,
@@ -1393,6 +1403,8 @@ namespace ProjectMagma.Simulation
             private GamePadState gamePadState;
             private KeyboardState keyboardState;
 
+            public bool StartHitAnimation { set; get; }
+
             public void Update(PlayerIndex playerIndex, SimulationTime simTime)
             {
                 gamePadState = GamePad.GetState(playerIndex);
@@ -1476,11 +1488,15 @@ namespace ProjectMagma.Simulation
                 #endregion
 
                 if (hitButtonPressed)
+                {
                     hitButtonPressedAt = simTime.At;
+                    StartHitAnimation = true;
+                }
 
                 oldGPState = gamePadState;
                 oldKBState = keyboardState;
             }
+
 
             private void SetStates(Buttons[] buttons, Keys key,
                 out bool pressedIndicator,

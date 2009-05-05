@@ -74,7 +74,6 @@ namespace ProjectMagma.Renderer
                 d_randomOffset[i].Normalize();
 
                 randomOffset[i] += d_randomOffset[i] * 0.001f;
-
             }
 
             randomOffsetParameter.SetValue(randomOffset);

@@ -14,7 +14,7 @@
       <Attribute name="position" template="float3" value="230 0 260"/>
       <Attribute name="scale" template="float3" value="200 200 200"/>
       <Attribute name="bv_type" template="string" value="alignedbox3tree"/>
-      <Attribute name="diffuse_texture" template="string" value="Textures/Environment/environ_diffuse_v003"/>
+      <Attribute name="diffuse_texture" template="string" value="Textures/Environment/environ_diffuse"/>
       <Attribute name="lava_light_strength" template="float" value="1.0"/>
       <Attribute name="diffuse_color" template="float3" value="1.0 1.0 1.0"/>
       <Attribute name="specular_color" template="float3" value="0.05 0.05 0.05"/>

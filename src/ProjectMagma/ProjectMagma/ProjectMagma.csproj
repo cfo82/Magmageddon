@@ -101,6 +101,7 @@
     <Compile Include="Profiler\FrameStatistics.cs" />
     <Compile Include="Profiler\Profiler.cs" />
     <Compile Include="Profiler\Section.cs" />
+    <Compile Include="Renderer\Camera.cs" />
     <Compile Include="Renderer\Interface\RendererInterface.cs" />
     <Compile Include="Renderer\LightManager.cs" />
     <Compile Include="Renderer\ParallelLight.cs" />

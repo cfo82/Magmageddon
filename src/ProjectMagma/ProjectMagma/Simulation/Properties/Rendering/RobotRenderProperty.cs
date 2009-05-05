@@ -29,20 +29,30 @@ namespace ProjectMagma.Simulation
                 color1, color2);
         }
 
-        public string NextOneTimeState
+        public string NextOnceState
         {
             set
             {
-                ChangeString("NextOneTimeState", value);
+                ChangeString("NextOnceState", value);
             }
         }
 
         public string NextPermanentState
         {
+            get
+            {
+                return nextPermanentState;
+            }
             set
             {
-                ChangeString("NextPermanentState", value);
+                if(nextPermanentState!=value)
+                {
+                    ChangeString("NextPermanentState", value);
+                    nextPermanentState = value;
+                }
             }
         }
+
+        private string nextPermanentState;
     }
 }

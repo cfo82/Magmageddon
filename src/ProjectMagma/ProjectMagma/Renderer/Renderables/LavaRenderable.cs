@@ -27,6 +27,12 @@ namespace ProjectMagma.Renderer
             this.fireFractalTexture = fireFractalTexture;
             this.vectorCloudTexture = vectorCloudTexture;
             this.graniteTexture = graniteTexture;
+        }
+
+        public override void LoadResources()
+        {
+            base.LoadResources();
+
             this.temperatureTexture = Game.Instance.ContentManager.Load<Texture2D>("Textures/lava/temperature");
         }
 

@@ -19,7 +19,6 @@ namespace ProjectMagma.Renderer
             if (PersistentSquash) start_squash = true;
         }
 
-
         protected override void PrepareMeshEffects(Renderer renderer, GameTime gameTime, ModelMesh mesh)
         {
             if(start_squash)
@@ -31,7 +30,7 @@ namespace ProjectMagma.Renderer
             {
                 // set shader parameters
                 ApplyRenderChannel(effect);
-                ApplyWorldViewProjection(effect, mesh);
+                ApplyWorldViewProjection(renderer, effect, mesh);
                 ApplyTechnique(effect);
                 if (UseLights) ApplyLights(effect, renderer.LightManager);
                 if (UseMaterialParameters) ApplyMaterialParameters(effect);
@@ -40,12 +39,12 @@ namespace ProjectMagma.Renderer
             }
         }
 
-        private void ApplyWorldViewProjection(Effect effect, ModelMesh mesh)
+        private void ApplyWorldViewProjection(Renderer renderer, Effect effect, ModelMesh mesh)
         {
             effect.Parameters["Local"].SetValue(BoneTransformMatrix(mesh));
             effect.Parameters["World"].SetValue(World);
-            effect.Parameters["View"].SetValue(Game.Instance.View);
-            effect.Parameters["Projection"].SetValue(Game.Instance.Projection);
+            effect.Parameters["View"].SetValue(renderer.Camera.View);
+            effect.Parameters["Projection"].SetValue(renderer.Camera.Projection);
         }
         
         protected virtual void ApplyTechnique(Effect effect)

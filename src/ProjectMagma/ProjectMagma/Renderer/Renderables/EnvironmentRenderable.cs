@@ -17,19 +17,9 @@ namespace ProjectMagma.Renderer
             (
                 Vector2.Zero, new Vector2(0.0002f, 0.0002f), 0.0f, 0.0f, -0.0004f, 0.0004f
             );
-            //EnvGroundWavesAmplitude = 15.0f;
-            //EnvGroundWavesFrequency = 0.002f;
-            //EnvGroundWavesHardness = 5.5f;
-            //EnvGroundWavesVelocity = 0.003f;
             RenderChannel = RenderChannelType.One;
         }
 
-        //protected override void ApplyEffectsToModel()
-        //{
-        //    Effect effect = Game.Instance.ContentManager.Load<Effect>("Effects/Environment/Island");
-        //    SetDefaultMaterialParameters();
-        //    SetModelEffect(Model, effect);
-        //}
         protected override void ApplyTechnique(Effect effect)
         {
             effect.CurrentTechnique = effect.Techniques["Environment"];
@@ -48,7 +38,6 @@ namespace ProjectMagma.Renderer
 
             effect.Parameters["DirLight1BottomAmpMaxY"].SetValue(300);
             effect.Parameters["DirLight1BottomAmpStrength"].SetValue(3);
-            //effect.Parameters["EnvGroundWavesHardness"].SetValue(EnvGroundWavesHardness);
         }
 
         public override void UpdateFloat(string id, float value)

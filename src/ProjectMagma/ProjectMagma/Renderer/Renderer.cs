@@ -26,6 +26,8 @@ namespace ProjectMagma.Renderer
 
             shadowEffect = wrappedContent.Load<Effect>("Effects/ShadowEffect");
 
+            Camera = new Camera(this);
+
             lightPosition = new Vector3(0, 10000, 0); // later: replace by orthographic light, not lookAt
             lightTarget = Vector3.Zero;
             lightProjection = Matrix.CreateOrthographic(1500, 1500, 0.0f, 10000.0f);
@@ -115,6 +117,7 @@ namespace ProjectMagma.Renderer
             double dt = dtMs / 1000.0;
             currentFrameTime = lastFrameTime + dt;
 
+            Camera.Update(gameTime);
             RendererUpdateQueue q = GetNextUpdateQueue();
             while (q != null)
             {
@@ -271,7 +274,7 @@ namespace ProjectMagma.Renderer
             //transparentRenderables.Sort(TransparentRenderableComparison);
             if (explosionSystem != null)
             {
-                explosionSystem.Render(Game.Instance.View, Game.Instance.Projection);
+                explosionSystem.Render(Camera.View, Camera.Projection);
             }
 
             foreach (Renderable renderable in transparentRenderables)
@@ -373,6 +376,25 @@ namespace ProjectMagma.Renderer
             renderables.Remove(renderable);
         }
 
+        public Vector3 CenterOfMass
+        {
+            get
+            {
+                Vector3 result = Vector3.Zero;
+                int n = 0;
+                foreach(Renderable renderable in updateRenderables)
+                {
+                    if(renderable is RobotRenderable)
+                    {
+                        result += renderable.Position;
+                        n++;
+                    }
+                }
+                return result / n;
+            }
+        }
+
+
         public GraphicsDevice Device
         {
             get { return device; }
@@ -445,6 +467,8 @@ namespace ProjectMagma.Renderer
         {
             get { return vectorCloudTexture; }
         }
+
+        public Camera Camera { get; set; }
 
         private RenderTarget2D Target0 { get; set; }
         private RenderTarget2D Target1 { get; set; }

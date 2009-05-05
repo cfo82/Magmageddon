@@ -49,8 +49,8 @@ namespace ProjectMagma.Renderer
                     diffuseColors[i] = effectx.DiffuseColor;
                     effectx.DiffuseColor = new Vector3(1.0f, 1.0f, 0.0f);
                     effectx.EnableDefaultLighting();
-                    effectx.View = Game.Instance.View;
-                    effectx.Projection = Game.Instance.Projection;
+                    effectx.View = renderer.Camera.View;
+                    effectx.Projection = renderer.Camera.Projection;
                     effectx.World = transforms[mesh.ParentBone.Index] * world;
                     ++i;
                 }

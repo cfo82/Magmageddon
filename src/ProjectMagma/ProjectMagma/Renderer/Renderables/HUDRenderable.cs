@@ -34,10 +34,7 @@ namespace ProjectMagma.Renderer
             displayedEnergy = energy;
             displayedHealth = health;
             
-            spriteBatch = new SpriteBatch(Game.Instance.GraphicsDevice);
-
             frozenColorStrength = new SineFloat(0.0f, 0.85f, 5.0f);
-            ComputePositions();
         }
 
         
@@ -56,6 +53,9 @@ namespace ProjectMagma.Renderer
             healthBar = Game.Instance.ContentManager.Load<Texture2D>("Sprites/HUD/health");
             energyBar = Game.Instance.ContentManager.Load<Texture2D>("Sprites/HUD/energy");
             fuelBar = Game.Instance.ContentManager.Load<Texture2D>("Sprites/HUD/fuel");
+            
+            spriteBatch = new SpriteBatch(Game.Instance.GraphicsDevice);
+            ComputePositions();
         }
 
         public override void UnloadResources()

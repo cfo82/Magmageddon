@@ -144,12 +144,12 @@ namespace Xclna.Xna.Animation
                 foreach (ModelMeshPart part in mesh.MeshParts)
                     numEffects++;
 
-            foreach(ModelMesh mesh in model.Meshes)
-            {
-                System.Console.WriteLine("numeffects:"+ numEffects);
-                System.Console.WriteLine("effects:" +mesh.Effects.Count);
-                foreach(Effect effect in mesh.Effects) System.Console.WriteLine(effect.GetHashCode());
-            }
+            //foreach(ModelMesh mesh in model.Meshes)
+            //{
+            //    System.Console.WriteLine("numeffects:"+ numEffects);
+            //    System.Console.WriteLine("effects:" +mesh.Effects.Count);
+            //    foreach(Effect effect in mesh.Effects) System.Console.WriteLine(effect.GetHashCode());
+            //}
 
             // Initialize the arrays that store effect parameters
             modelEffects = new Effect[numEffects];

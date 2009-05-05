@@ -75,6 +75,7 @@
     <Compile Include="Profiler\Section.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Game.cs" />
+    <Compile Include="Renderer\Camera.cs" />
     <Compile Include="Renderer\Interface\RendererInterface.cs" />
     <Compile Include="Renderer\Interface\RendererUpdatable.cs" />
     <Compile Include="Renderer\Interface\RendererUpdate.cs" />

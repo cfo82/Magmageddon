@@ -298,7 +298,7 @@ namespace ProjectMagma.Simulation
             if(controllerInput.StartHitAnimation)
             {
                 controllerInput.StartHitAnimation = false;
-                (player.GetProperty("render") as RobotRenderProperty).NextOneTimeState = "hit";
+                (player.GetProperty("render") as RobotRenderProperty).NextOnceState = "hit";
             }
 
             #endregion
@@ -661,6 +661,8 @@ namespace ProjectMagma.Simulation
                 else // don't allow positioning on island if hit
                 if(player.GetVector3("hit_pushback_velocity") == Vector3.Zero)
                 {
+                    (player.GetProperty("render") as RobotRenderProperty).NextPermanentState = "walk";
+
                     // on island ground
                     playerPosition.X += controllerInput.leftStickX * dt * constants.GetFloat("x_axis_movement_multiplier");
                     playerPosition.Z += controllerInput.leftStickY * dt * constants.GetFloat("z_axis_movement_multiplier");
@@ -676,13 +678,20 @@ namespace ProjectMagma.Simulation
                         playerPosition = previousPosition;
                     }
                 }
-
+                
                 // rotation
                 if (destinationIsland == null)
                 {
                     float yRotation = (float)Math.Atan2(controllerInput.leftStickX, controllerInput.leftStickY);
                     Matrix rotationMatrix = Matrix.CreateRotationY(yRotation);
                     player.SetQuaternion("rotation", Quaternion.CreateFromRotationMatrix(rotationMatrix));
+                }
+            }
+            else
+            {
+                if((player.GetProperty("render") as RobotRenderProperty).NextPermanentState != "idle")
+                {
+                    (player.GetProperty("render") as RobotRenderProperty).NextPermanentState = "idle";
                 }
             }
 

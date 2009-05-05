@@ -25,12 +25,19 @@ namespace ProjectMagma.Renderer
             this.Position = position;
             this.Model = model;
             this.boneTransforms = new Matrix[Model.Bones.Count];
-            ApplyEffectsToModel();
-            defaultEffectMapping = CurrentPartEffectMapping();
             SkyLightStrength = 1.0f;
             LavaLightStrength = 1.0f;
             SpotLightStrength = 1.0f;
             RenderChannel = RenderChannelType.One;
+            ApplyEffectsToModel();
+            defaultEffectMapping = CurrentPartEffectMapping();
+        }
+
+        public override void LoadResources()
+        {
+            base.LoadResources();
+
+            // ..
         }
 
         #endregion
@@ -172,7 +179,7 @@ namespace ProjectMagma.Renderer
             shadowEffect.CurrentTechnique = shadowEffect.Techniques["Scene"];
             shadowEffect.Parameters["ShadowMap"].SetValue(renderer.LightResolve);
             shadowEffect.Parameters["WorldCameraViewProjection"].SetValue(
-                world_offset * Game.Instance.View * Game.Instance.Projection);
+                world_offset * renderer.Camera.View * renderer.Camera.Projection);
             shadowEffect.Parameters["World"].SetValue(world_offset);
 
             shadowEffect.Parameters["WorldLightViewProjection"].SetValue(

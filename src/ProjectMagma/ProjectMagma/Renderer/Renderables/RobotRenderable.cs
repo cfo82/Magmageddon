@@ -3,6 +3,7 @@ using Microsoft.Xna.Framework.Graphics;
 using Xclna.Xna.Animation;
 using System.Collections.Generic;
 using System;
+using System.Diagnostics;
 
 namespace ProjectMagma.Renderer
 {
@@ -107,35 +108,63 @@ namespace ProjectMagma.Renderer
         {
             base.UpdateString(id, value);
 
-            if(id=="NextOneTimeState")
+            if(id=="NextOnceState")
             {
-                ActivateOneTimeState(value);
+                ActivateOnceState(value);
+            }
+            if(id=="NextPermanentState")
+            {
+                ActivatePermanentState(value);
             }
         }
 
         // activatepermanentstate: idle, walk, jump, die
         // activatesinglestate: attack
-        public void ActivateOneTimeState(string target)
+        public void ActivateOnceState(string stateRequestString)
         {
+            // update animation
             //Console.WriteLine("activateonetimestate call");
-            if(target=="hit") {
+            if(stateRequestString=="hit") {
                 Random r = new Random();
-                target = "attack" + r.Next(0,4);
+                destState = "attack" + r.Next(0,4);
             }
             blendFactor = blendIncrement;
-            RunController(state, target);
+            RunController(state, destState);
             currentController.IsLooping = false;
             currentController.ElapsedTime = 0;
             currentController.AnimationEnded += onceAnimEndedHandler;
+
+            // update mode
             animationMode = AnimationMode.PermanentToOnce;
         }
 
-        public void ActivatePermanentState(string target)
+        public void ActivatePermanentState(string stateRequestString)
         {
-            blendFactor = blendIncrement;
-            RunController(state, target);
-            animationMode = AnimationMode.OnceToPermanent;
-            permanentState = target;
+            string requestedState = "";
+            if (stateRequestString == "idle")
+            {
+                requestedState = "idle0";
+            }
+            if (stateRequestString == "walk")
+            {
+                requestedState = "walk";
+            }
+            Debug.Assert(requestedState != "");
+
+            // update animation
+            if(animationMode==AnimationMode.Permanent ||
+                animationMode==AnimationMode.OnceToPermanent ||
+                animationMode==AnimationMode.PermanentToPermanent)
+            {
+                blendFactor = blendIncrement;
+                RunController(state, requestedState);
+                if (animationMode == AnimationMode.Permanent)
+                    animationMode = AnimationMode.PermanentToPermanent;
+            }
+
+            // update mode
+            //animationMode = AnimationMode.OnceToPermanent;
+            permanentState = requestedState;
         }
 
         private readonly float blendIncrement = 0.2f;

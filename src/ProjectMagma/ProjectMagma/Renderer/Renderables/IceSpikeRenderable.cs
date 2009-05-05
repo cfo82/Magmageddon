@@ -97,9 +97,9 @@ namespace ProjectMagma.Renderer
                 Matrix position = Matrix.CreateWorld(iceSpikeSystem.Position, right, up);
                 Matrix world = Matrix.Multiply(scale, position);
 
-                DrawIceSpike(renderer, world, Game.Instance.View, Game.Instance.Projection);
+                DrawIceSpike(renderer, world, renderer.Camera.View, renderer.Camera.Projection);
             }
-            iceSpikeSystem.Render(Game.Instance.View, Game.Instance.Projection);
+            iceSpikeSystem.Render(renderer.Camera.View, renderer.Camera.Projection);
         }
 
         private void DrawIceSpike(Renderer renderer, Matrix world, Matrix view, Matrix projection)

@@ -111,7 +111,8 @@
     <Compile Include="Renderer\ParticleSystem\ParticleEmitter.cs" />
     <Compile Include="Renderer\ParticleSystem\ParticleSystem.cs" />
     <Compile Include="Renderer\ParticleSystem\CreateVertex.cs" />
-    <Compile Include="Renderer\ParticleSystem\Stateful\Implementations\Explosion.cs" />
+    <Compile Include="Renderer\ParticleSystem\Stateful\Implementations\IceExplosion.cs" />
+    <Compile Include="Renderer\ParticleSystem\Stateful\Implementations\FireExplosion.cs" />
     <Compile Include="Renderer\ParticleSystem\Stateful\Implementations\IceSpike.cs" />
     <Compile Include="Renderer\ParticleSystem\Stateful\RenderVertex.cs" />
     <Compile Include="Renderer\ParticleSystem\Stateful\Size.cs" />

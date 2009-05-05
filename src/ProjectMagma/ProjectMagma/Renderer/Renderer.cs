@@ -75,7 +75,7 @@ namespace ProjectMagma.Renderer
 
             statefulParticleResourceManager = new ProjectMagma.Renderer.ParticleSystem.Stateful.ResourceManager(wrappedContent, device);
 
-            explosionSystem = new Explosion(this, Game.Instance.ContentManager, device, Explosion.ExplosionType.Fire);
+            explosionSystem = new FireExplosion(this, Game.Instance.ContentManager, device);
             for (int i = 0; i < 50; ++i)
             {
                 explosionSystem.AddEmitter(new ProjectMagma.Renderer.ParticleSystem.Emitter.FireExplosionEmitter());
@@ -167,16 +167,16 @@ namespace ProjectMagma.Renderer
             Game.Instance.Profiler.EndSection("renderer_scene");
 
             // 5) Bloom (later HDR etc) -- commented out, we have no components anymore anyway
-            Game.Instance.Profiler.BeginSection("components");
-            foreach (GameComponent component in Game.Instance.Components)
-            {
-                DrawableGameComponent drawableComponent = component as DrawableGameComponent;
-                if (drawableComponent != null)
-                {
-                    drawableComponent.Draw(gameTime);
-                }
-            }
-            Game.Instance.Profiler.EndSection("components");
+            //Game.Instance.Profiler.BeginSection("components");
+            //foreach (GameComponent component in Game.Instance.Components)
+            //{
+            //    DrawableGameComponent drawableComponent = component as DrawableGameComponent;
+            //    if (drawableComponent != null)
+            //    {
+            //        drawableComponent.Draw(gameTime);
+            //    }
+            //}
+            //Game.Instance.Profiler.EndSection("components");
 
             if (EnablePostProcessing)
             {
@@ -458,7 +458,7 @@ namespace ProjectMagma.Renderer
         private GlowPass glowPass;
         private HdrCombinePass hdrCombinePass;
 
-        private ParticleSystem.Stateful.Implementations.Explosion explosionSystem;
+        private ParticleSystem.Stateful.Implementations.FireExplosion explosionSystem;
 
         private ParticleSystem.Stateful.ResourceManager statefulParticleResourceManager;
         

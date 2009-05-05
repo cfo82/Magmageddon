@@ -28,7 +28,7 @@ namespace ProjectMagma.Renderer
         {
             base.LoadResources();
 
-            explosionSystem = new Explosion(Game.Instance.Renderer, Game.Instance.ContentManager, Game.Instance.GraphicsDevice, Explosion.ExplosionType.Ice);
+            explosionSystem = new IceExplosion(Game.Instance.Renderer, Game.Instance.ContentManager, Game.Instance.GraphicsDevice);
         }
 
         public override void UnloadResources()
@@ -89,7 +89,7 @@ namespace ProjectMagma.Renderer
         private Vector3 position;
 
         private IceExplosionEmitter explosionEmitter;
-        private Explosion explosionSystem;
+        private IceExplosion explosionSystem;
 
         private double lastFrameTime;
         private double currentFrameTime;

@@ -27,13 +27,13 @@ namespace ProjectMagma.Renderer.ParticleSystem.Emitter
 
             if (initial)
             {
-                numParticles += 20 + random.Next(0, 10);
+                numParticles += 10 + random.Next(0, 10);
                 initial = false;
             }
 
             double diff = (currentFrameTime - explosionTime) / (0.6);
             if (diff > 1.0) { diff = 1.0; }
-            numParticles += (int)((5 + random.Next(0, 20)) * (1.0 - diff));
+            numParticles += (int)((5 + random.Next(0, 10)) * (1.0 - diff));
 
             return numParticles;
         }

@@ -99,7 +99,7 @@ RenderParticlesVertexShaderOutput RenderExplosionVertexShader(
 		float normalized_age = 1.0 - time_to_life/ExplosionParticleLifetime;
 	    
 		output.Position = mul(view_position, Projection);
-		output.Size = 100;
+		output.Size = 50;
 		output.Color = float4(1,1,1,1.0-normalized_age);
 	}
 	else

@@ -782,8 +782,8 @@ namespace ProjectMagma.Simulation
                     lastIslandDir = islandDir;
 
                     float speed = destinationOrigDist * 2.2f;
-                    if (speed < 200)
-                        speed = 200;
+                    if (speed < 300)
+                        speed = 300;
                     player.SetVector3("island_jump_velocity", Vector3.Normalize(islandDir)
                         /** constants.GetFloat("island_jump_speed")*/ * speed);
                 }

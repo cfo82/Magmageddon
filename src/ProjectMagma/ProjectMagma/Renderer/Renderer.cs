@@ -265,7 +265,7 @@ namespace ProjectMagma.Renderer
 
             // need to sort transparent renderables by position and render them (back to front!!)
             // TODO: validate sorting... 
-            transparentRenderables.Sort(TransparentRenderableComparison);
+            //transparentRenderables.Sort(TransparentRenderableComparison);
             explosionSystem.Render(Game.Instance.View, Game.Instance.Projection);
 
             foreach (Renderable renderable in transparentRenderables)

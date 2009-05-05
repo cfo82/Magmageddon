@@ -82,20 +82,7 @@ namespace Xclna.Xna.Animation.Content
         /// <returns>The string that describes the reader used for a ModelInfo object</returns>
         public override string GetRuntimeReader(TargetPlatform targetPlatform)
         {
-            if (targetPlatform == TargetPlatform.Xbox360)
-            {
-                return "Xclna.Xna.Animation.Content.AnimationReader, "
-                    + "Xclna.Xna.Animation360, "
-                    + "Version="+ContentUtil.VERSION+", Culture=neutral, PublicKeyToken=null";
-            }
-            else
-            {
-                return "Xclna.Xna.Animation.Content.AnimationReader, "
-                    + "Xclna.Xna.Animationx86, "
-                    + "Version="+ContentUtil.VERSION+", Culture=neutral, PublicKeyToken=null";
-            }
-            
-
+            return typeof(Xclna.Xna.Animation.Content.AnimationReader).AssemblyQualifiedName;
         }
         
         /// <summary>
@@ -107,20 +94,7 @@ namespace Xclna.Xna.Animation.Content
         /// the stream</returns>
         public override string GetRuntimeType(TargetPlatform targetPlatform)
         {
-            if (targetPlatform == TargetPlatform.Xbox360)
-            {
-                return "Xclna.Xna.Animation.AnimationInfoCollection, "
-                    + "Xclna.Xna.Animation360, "
-                    + "Version="+ContentUtil.VERSION+", Culture=neutral, PublicKeyToken=null";
-            }
-            else
-            {
-                return "Xclna.Xna.Animation.AnimationInfoCollection, "
-                    + "Xclna.Xna.Animationx86, "
-                    + "Version="+ContentUtil.VERSION+", Culture=neutral, PublicKeyToken=null";
-            }
-
-
+            return typeof(Xclna.Xna.Animation.AnimationInfoCollection).AssemblyQualifiedName;
 
         }
     }

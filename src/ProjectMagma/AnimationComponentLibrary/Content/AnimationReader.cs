@@ -34,7 +34,10 @@ namespace Xclna.Xna.Animation.Content
 
 
     // Reads in processed animation info written in the pipeline
-    internal sealed class AnimationReader : ContentTypeReader<AnimationInfoCollection>
+    /// <summary>
+    /// 
+    /// </summary>
+    public class AnimationReader : ContentTypeReader<AnimationInfoCollection>
     {
         /// <summary>
         /// Reads in an XNB stream and converts it to a ModelInfo object

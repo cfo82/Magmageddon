@@ -49,34 +49,12 @@ namespace Xclna.Xna.Animation.Content
 
         public override string GetRuntimeReader(TargetPlatform targetPlatform)
         {
-            if (targetPlatform == TargetPlatform.Xbox360)
-            {
-                return "Xclna.Xna.Animation.Content.SkinInfoCollectionReader, "
-                    + "Xclna.Xna.Animation360, "
-                    + "Version=" + ContentUtil.VERSION + ", Culture=neutral, PublicKeyToken=null";
-            }
-            else
-            {
-                return "Xclna.Xna.Animation.Content.SkinInfoCollectionReader, "
-                    + "Xclna.Xna.Animationx86, "
-                    + "Version=" + ContentUtil.VERSION + ", Culture=neutral, PublicKeyToken=null";
-            }
-
+            return typeof(Xclna.Xna.Animation.Content.SkinInfoCollectionReader).AssemblyQualifiedName;
         }
 
         public override string GetRuntimeType(TargetPlatform targetPlatform)
         {
-
-            if (targetPlatform == TargetPlatform.Xbox360)
-            {
-                return "Xclna.Xna.Animation.SkinInfoCollection, Xclna.Xna.Animation360, "
-                    + "Version=" + ContentUtil.VERSION + ", Culture=neutral, PublicKeyToken=null";
-            }
-            else
-            {
-                return "Xclna.Xna.Animation.SkinInfoCollection, Xclna.Xna.Animationx86, "
-                    + "Version=" + ContentUtil.VERSION + ", Culture=neutral, PublicKeyToken=null";
-            }
+            return typeof(Xclna.Xna.Animation.SkinInfoCollection).AssemblyQualifiedName;
         }
 
     }

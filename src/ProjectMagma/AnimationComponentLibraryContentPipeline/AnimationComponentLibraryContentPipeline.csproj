@@ -119,6 +119,12 @@
       <Install>false</Install>
     </BootstrapperPackage>
   </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\AnimationComponentLibrary\AnimationComponentLibrary.csproj">
+      <Project>{1C4B7EEC-2AC6-4026-A53E-A254BDB79F3D}</Project>
+      <Name>AnimationComponentLibrary</Name>
+    </ProjectReference>
+  </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
      Other similar extension points exist, see Microsoft.Common.targets.

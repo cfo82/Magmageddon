@@ -70,34 +70,12 @@ namespace Xclna.Xna.Animation.Content
 
         public override string GetRuntimeReader(TargetPlatform targetPlatform)
         {
-            if (targetPlatform == TargetPlatform.Xbox360)
-            {
-                return "Xclna.Xna.Animation.Content.PaletteEffectReader, "
-                    + "Xclna.Xna.Animation360, "
-                    + "Version="+ContentUtil.VERSION+", Culture=neutral, PublicKeyToken=null";
-            }
-            else
-            {
-                return "Xclna.Xna.Animation.Content.PaletteEffectReader, "
-                    + "Xclna.Xna.Animationx86, "
-                    + "Version="+ContentUtil.VERSION+", Culture=neutral, PublicKeyToken=null";
-            }
-            
+            return typeof(Xclna.Xna.Animation.Content.PaletteEffectReader).AssemblyQualifiedName;
         }
 
         public override string GetRuntimeType(TargetPlatform targetPlatform)
         {
-
-            if (targetPlatform == TargetPlatform.Xbox360)
-            {
-                return "Xclna.Xna.Animation.BasicPaletteEffect, Xclna.Xna.Animation360, "
-                    + "Version="+ContentUtil.VERSION+", Culture=neutral, PublicKeyToken=null";
-            }
-            else
-            {
-                return "Xclna.Xna.Animation.BasicPaletteEffect, Xclna.Xna.Animationx86, "
-                    + "Version="+ContentUtil.VERSION+", Culture=neutral, PublicKeyToken=null";
-            }
+            return typeof(Xclna.Xna.Animation.BasicPaletteEffect).AssemblyQualifiedName;
         }
     }
 

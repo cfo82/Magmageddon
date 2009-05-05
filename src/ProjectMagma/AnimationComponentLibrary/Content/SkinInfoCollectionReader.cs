@@ -31,7 +31,7 @@ using Microsoft.Xna.Framework;
 namespace Xclna.Xna.Animation.Content
 {
 
-    internal class SkinInfoCollectionReader : ContentTypeReader<SkinInfoCollection>
+    public class SkinInfoCollectionReader : ContentTypeReader<SkinInfoCollection>
     {
         protected override SkinInfoCollection Read(ContentReader input, SkinInfoCollection existingInstance)
         {

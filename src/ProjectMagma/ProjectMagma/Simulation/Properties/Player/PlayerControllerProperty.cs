@@ -794,7 +794,7 @@ namespace ProjectMagma.Simulation
         {
             if ((controllerInput.rightStickPressed
                 || controllerInput.jetpackButtonHold)
-                //&& activeIsland == null // only in air
+                && activeIsland == null // only in air
                 && destinationIsland == null // not while jump
                 && flame == null // not in combination with flame
                 && fuel > 0 // we need fuel
@@ -1169,7 +1169,7 @@ namespace ProjectMagma.Simulation
                     float dist = ((player.GetVector3("position") - otherPlayer.GetVector3("position")) * new Vector3(1, 0, 1)).Length();
                     float delta = or + pr - dist;
 
-                    Console.WriteLine("putout delta: " + delta);
+                    // Console.WriteLine("putout delta: " + delta);
                     if (delta < 0)
                         delta = 0;
 

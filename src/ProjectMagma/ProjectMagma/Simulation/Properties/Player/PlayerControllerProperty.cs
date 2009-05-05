@@ -77,7 +77,7 @@ namespace ProjectMagma.Simulation
         private SoundEffectInstance flameThrowerSoundInstance;
 
         // values which get reset on each update
-        private bool collisionOccured = false;
+        private float collisionAt = float.MinValue;
         private bool movedByStick;
         Vector3 previousPosition;
 
@@ -181,7 +181,7 @@ namespace ProjectMagma.Simulation
 
             #region collision reaction
             // reset collision response
-            if (!collisionOccured)
+            if (simTime.At > collisionAt + 500) // todo: extract constant
             {
                 player.SetVector3("collision_pushback_velocity", Vector3.Zero);
             }
@@ -286,7 +286,7 @@ namespace ProjectMagma.Simulation
             CheckPlayerAttributeRanges(player);
 
             // reset stuff
-            collisionOccured = false;
+            collisionAt = float.MinValue;
 
             // check collision with lava
             Entity lava = Game.Instance.Simulation.EntityManager["lava"];
@@ -794,13 +794,15 @@ namespace ProjectMagma.Simulation
         {
             if ((controllerInput.rightStickPressed
                 || controllerInput.jetpackButtonHold)
-                && activeIsland == null // only in air
+                //&& activeIsland == null // only in air
                 && destinationIsland == null // not while jump
                 && flame == null // not in combination with flame
                 && fuel > 0 // we need fuel
                 && player.GetInt("frozen") <= 0 // jetpack doesn't work when frozen
             )
             {
+                LeaveActiveIsland();
+
                 if (!jetpackActive)
                 {
                     jetpackSoundInstance = jetpackSound.Play(0.4f * Game.Instance.EffectsVolume, 1, 0, true);
@@ -811,10 +813,13 @@ namespace ProjectMagma.Simulation
                 playerVelocity += constants.GetVector3("jetpack_acceleration") * dt;
 
                 // deaccelerate the higher we get
-                // todo: extract constants (450 & 5)
-                float dist = 450 - player.GetVector3("position").Y;
-                Vector3 deacceleration = constants.GetVector3("jetpack_acceleration") * 5 / dist;
-                playerVelocity -= deacceleration * dt;
+                // todo: extract constants (450 & 5 & 10)
+                float dist = 480 - player.GetVector3("position").Y;
+                Vector3 deacceleration = constants.GetVector3("jetpack_acceleration") * 6 / dist;
+                if (dist < 10)
+                    playerVelocity = Vector3.Zero;
+                else
+                    playerVelocity -= deacceleration * dt;
 
                 // ensure we're not to fast
                 if (playerVelocity.Length() > constants.GetFloat("max_jetpack_speed"))
@@ -1009,12 +1014,15 @@ namespace ProjectMagma.Simulation
                     case "pillar":
                         PlayerPillarCollisionHandler(simTime, contact.EntityA, contact.EntityB, contact);
                         break;
+                    case "cave":
+                        PlayerCaveCollisionHandler(simTime, contact.EntityA, contact.EntityB, contact);
+                        break;
                     case "player":
                         PlayerPlayerCollisionHandler(simTime, contact.EntityA, contact.EntityB, contact);
                         break;
                 }
                 CheckPlayerAttributeRanges(player);
-                collisionOccured = true;
+                collisionAt = simTime.At;
             }
         }
 
@@ -1087,7 +1095,9 @@ namespace ProjectMagma.Simulation
                 else
                 {
                     // in air --> pushback
-                    Vector3 velocity = -contact[0].Normal * 50; // todo: extract constant
+                    Vector3 velocity = -contact[0].Normal * 1000; // todo: extract constant
+                    if (velocity.Y > 0) // hack: never push upwards
+                        velocity.Y = -velocity.Y;
                     player.SetVector3("collision_pushback_velocity", player.GetVector3("collision_pushback_velocity") + velocity);
                 }
             }
@@ -1095,8 +1105,21 @@ namespace ProjectMagma.Simulation
 
         private void PlayerPillarCollisionHandler(SimulationTime simTime, Entity player, Entity pillar, Contact co)
         {
+            Vector3 normal = pillar.GetVector3("position") - player.GetVector3("position");
+            normal.Y = 0;
+            if(normal != Vector3.Zero)
+                normal.Normalize();
+            // todo: extract constant
+            Vector3 velocity = -normal * 1000;
+            player.SetVector3("collision_pushback_velocity", player.GetVector3("collision_pushback_velocity") + velocity);
+        }
+
+        private void PlayerCaveCollisionHandler(SimulationTime simTime, Entity player, Entity pillar, Contact co)
+        {
             Vector3 pos = player.GetVector3("position");
-            Vector3 velocity = -co[0].Normal * (pos - previousPosition).Length() / simTime.Dt;
+            // todo: extract constants
+            Vector3 velocity = (-Vector3.Normalize(pos) - Vector3.UnitY / 10) * 2000;
+            velocity.Y = 0;
             player.SetVector3("collision_pushback_velocity", player.GetVector3("collision_pushback_velocity") + velocity);
         }
 

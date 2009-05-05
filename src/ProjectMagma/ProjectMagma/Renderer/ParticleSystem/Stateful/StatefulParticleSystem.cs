@@ -121,9 +121,9 @@ namespace ProjectMagma.Renderer.ParticleSystem.Stateful
 
         void FlushCreateParticles(int count)
         {
-            createVertexBuffer.SetData<CreateVertex>(localCreateVertices, 0, count);
+            createVertexBuffer.SetData<CreateVertex>(createVertexBufferIndex * CreateVertex.SizeInBytes, localCreateVertices, 0, count, CreateVertex.SizeInBytes, SetDataOptions.NoOverwrite);
 
-            device.Vertices[0].SetSource(createVertexBuffer, 0, CreateVertex.SizeInBytes);
+            device.Vertices[0].SetSource(createVertexBuffer, createVertexBufferIndex * CreateVertex.SizeInBytes, CreateVertex.SizeInBytes);
             device.VertexDeclaration = createVertexDeclaration;
 
             device.RenderState.AlphaBlendEnable = false;
@@ -216,10 +216,11 @@ namespace ProjectMagma.Renderer.ParticleSystem.Stateful
                         verticesCopied += passVerticesCount;
                         localCreateVerticesIndex += passVerticesCount;
 
-                        if (localCreateVerticesIndex >= createVertexBufferSize)
+                        if (localCreateVerticesIndex >= createVertexBufferSize - createVertexBufferIndex)
                         {
                             FlushCreateParticles(verticesCopied);
                             localCreateVerticesIndex = 0;
+                            createVertexBufferIndex = 0;
                         }
                     }
                 }
@@ -402,7 +403,8 @@ namespace ProjectMagma.Renderer.ParticleSystem.Stateful
         private DynamicVertexBuffer createVertexBuffer;
         private VertexDeclaration createVertexDeclaration;
         private Effect particleCreateEffect;
-        private static readonly int createVertexBufferSize = 4096;
+        private static readonly int createVertexBufferSize = 20000;
+        private int createVertexBufferIndex = 0;
 
         private Effect particleUpdateEffect;
 

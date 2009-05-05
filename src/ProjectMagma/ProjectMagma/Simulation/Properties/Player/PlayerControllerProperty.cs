@@ -621,7 +621,8 @@ namespace ProjectMagma.Simulation
 
         private void PerformFrozenSlowdown(Entity player, SimulationTime simTime, ref Vector3 playerPosition)
         {
-            if (player.GetInt("frozen") > 0)
+            if (player.GetInt("frozen") > 0
+                && activeIsland != null) // only when on island...
             {
                 Vector3 add = playerPosition - previousPosition;
                 playerPosition = previousPosition + add / constants.GetFloat("frozen_slowdown_divisor");
@@ -787,12 +788,11 @@ namespace ProjectMagma.Simulation
         {
             if ((controllerInput.rightStickPressed
                 || controllerInput.jetpackButtonHold)
-                && activeIsland == null
-                && selectedIsland == null
-                && destinationIsland == null
-                && flame == null
-                && fuel > 0
-                && player.GetInt("frozen") <= 0
+                && activeIsland == null // only in air
+                && destinationIsland == null // not while jump
+                && flame == null // not in combination with flame
+                && fuel > 0 // we need fuel
+                && player.GetInt("frozen") <= 0 // jetpack doesn't work when frozen
             )
             {
                 if (!jetpackActive)

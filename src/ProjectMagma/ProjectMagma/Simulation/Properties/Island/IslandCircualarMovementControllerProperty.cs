@@ -94,7 +94,7 @@ namespace ProjectMagma.Simulation
                 Vector3 diff = newPosition - oldPosition;
 
                 // did we have collision last time too?
-                if (hadCollision)
+                if (HadCollision(simTime))
                 {
                     Vector3 pushback = -normal * (island.GetVector3("position") - other.GetVector3("position")).Length();
                     pushback.Y = 0; // only in xz plane

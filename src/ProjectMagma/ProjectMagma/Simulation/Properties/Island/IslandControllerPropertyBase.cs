@@ -57,8 +57,6 @@ namespace ProjectMagma.Simulation
             ((StringAttribute)entity.GetAttribute("attracted_by")).ValueChanged -= AttracedByChangeHandler;
         }
 
-        private double collisionAt = 0;
-
         protected virtual void OnUpdate(Entity island, SimulationTime simTime)
         {
             float dt = simTime.Dt;
@@ -68,7 +66,7 @@ namespace ProjectMagma.Simulation
 
             // implement sinking and rising islands
             int playersOnIsland = island.GetInt("players_on_island");
-            if (!hadCollision)
+            if (!HadCollision(simTime))
             {
                 if (playersOnIsland > 0)
                 {
@@ -107,7 +105,7 @@ namespace ProjectMagma.Simulation
             island.SetVector3("repulsion_velocity", repulsionVelocity);
 
             // apply pushback from other objects as long as there is a collision
-            if (hadCollision)
+            if (HadCollision(simTime))
             {
                 position += island.GetVector3("pushback_velocity") * dt;
             }
@@ -150,17 +148,13 @@ namespace ProjectMagma.Simulation
                         {
                             velocity = Vector3.Normalize(velocity) * maxSpeed;
                         }
-                        if (!hadCollision)
+                        if (!HadCollision(simTime))
                         {
 //                            if (simTime.At > collisionAt + 1000)
                             {
                                 velocity += dir * constants.GetFloat("attraction_acceleration") * dt;
 //                                velocity.Y += dir.Y * constants.GetFloat("attraction_acceleration") * dt; // faster acceleration on y axis
                             }
-                        }
-                        else
-                        {
-                            collisionAt = simTime.At;
                         }
                         island.SetVector3("attraction_velocity", velocity);
 
@@ -234,7 +228,7 @@ namespace ProjectMagma.Simulation
             }
             else
             // apply movement only if no collision
-            if (!hadCollision)
+                if (!HadCollision(simTime))
             {
                 // normal movement
                 if (state != IslandState.Influenced)
@@ -246,7 +240,6 @@ namespace ProjectMagma.Simulation
 
             island.SetVector3("position", position);
 
-            hadCollision = false;
             collisionWithDestination = false;
             lastState = state;
         }
@@ -383,7 +376,7 @@ namespace ProjectMagma.Simulation
                     else
                         CollisionHandler(simTime, island, other, contact, ref normal);
 
-                    hadCollision = true;
+                    collisionAt = simTime.At;
                 }
             }
         }
@@ -474,7 +467,14 @@ namespace ProjectMagma.Simulation
 
         protected bool attractionAtDestination = false;
         protected bool collisionWithDestination;
-        protected bool hadCollision;
+        protected float collisionAt;
+
+        // todo: extract constant
+        protected static readonly float CollisionTimeout = 500;
+        protected bool HadCollision(SimulationTime simTime)
+        {
+            return simTime.At < collisionAt + CollisionTimeout;
+        }
 
         protected Entity constants;
         protected Entity island;

@@ -50,14 +50,14 @@ namespace ProjectMagma
         {
             selected++;
             if (selected == MenuItems.Length)
-                selected = MenuItems.Length - 1;
+                selected = 0;
         }
 
         public void SelectPrevious()
         {
             selected--;
             if (selected < 0)
-                selected = 0;
+                selected = MenuItems.Length - 1;
         }
 
         public abstract MenuItem[] MenuItems

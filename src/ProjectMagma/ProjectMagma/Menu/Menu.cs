@@ -8,7 +8,7 @@ namespace ProjectMagma
     class Menu
     {
         public const float ButtonRepeatTimeout = 100;
-        public const float StickRepeatTimeout = 200;
+        public const float StickRepeatTimeout = 250;
         public const float StickDirectionSelectionMin = 0.6f;
 
         private static Menu instance = new Menu();

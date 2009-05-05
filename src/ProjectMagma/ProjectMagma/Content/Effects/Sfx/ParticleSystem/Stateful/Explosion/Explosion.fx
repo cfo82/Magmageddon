@@ -95,11 +95,12 @@ RenderParticlesVertexShaderOutput RenderExplosionVertexShader(
 		float4 view_position = mul(world_position, View);
 	    
 	    float time_to_life = position_sampler_value.w;
-		float normalizedAge = 1.0 - time_to_life/ExplosionParticleLifetime;
+	    float normalized_time_to_death = time_to_life/ExplosionParticleLifetime;
+		float normalized_age = 1.0 - time_to_life/ExplosionParticleLifetime;
 	    
 		output.Position = mul(view_position, Projection);
-		output.Size = 40;
-		output.Color = float4(1,1,1,1.0-normalizedAge);
+		output.Size = 40*pow(normalized_time_to_death,4);
+		output.Color = float4(1,1,1,1.0-normalized_age);
 	}
 	else
 	{

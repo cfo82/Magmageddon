@@ -393,7 +393,7 @@ namespace ProjectMagma.Renderer.ParticleSystem.Stateful
         private DynamicVertexBuffer createVertexBuffer;
         private VertexDeclaration createVertexDeclaration;
         private Effect particleCreateEffect;
-        private static readonly int createVertexBufferSize = 2048;
+        private static readonly int createVertexBufferSize = 4096;
 
         private Effect particleUpdateEffect;
 

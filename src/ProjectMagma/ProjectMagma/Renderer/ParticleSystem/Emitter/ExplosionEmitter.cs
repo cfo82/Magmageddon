@@ -27,7 +27,7 @@ namespace ProjectMagma.Renderer.ParticleSystem.Emitter
 
             double diff = (currentFrameTime - lastExplosion) / (2.0);
             if (diff > 1.0) { diff = 1.0; }
-            numParticles += (int) ((4 + random.Next(0, 10)) * (1.0 - diff)); 
+            numParticles += (int) ((15 + random.Next(0, 10)) * (1.0 - diff)); 
 
             NewParticle[] particles = new NewParticle[numParticles];
             for (int i = 0; i < particles.Length; ++i)

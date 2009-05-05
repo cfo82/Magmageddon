@@ -557,7 +557,7 @@ namespace ProjectMagma.Simulation
                 #region search next player in range
 
                 float angle = constants.GetFloat("ice_spike_aim_angle");
-                float aimDistance = float.PositiveInfinity;
+                float minAngle = float.PositiveInfinity;
                 Entity targetPlayer = null;
                 Vector3 distVector = Vector3.Zero;
                 foreach (Entity p in Game.Instance.Simulation.PlayerManager)
@@ -569,12 +569,11 @@ namespace ProjectMagma.Simulation
                         float a = (float)(Math.Acos(Vector3.Dot(pdir, viewVector) / pdir.Length() / viewVector.Length()) / Math.PI * 180);
                         if (a < angle)
                         {
-                            float ad = pdir.Length();
-                            if (ad < aimDistance)
+                            if (a < minAngle)
                             {
                                 targetPlayer = p;
                                 distVector = pdir;
-                                aimDistance = ad;
+                                minAngle = a;
                             }
                         }
                     }

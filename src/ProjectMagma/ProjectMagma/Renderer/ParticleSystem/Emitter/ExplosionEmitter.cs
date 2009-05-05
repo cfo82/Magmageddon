@@ -22,12 +22,12 @@ namespace ProjectMagma.Renderer.ParticleSystem.Emitter
                 lastExplosion = currentFrameTime;
                 currentPoint = RandomPoint();
                 numParticles += 20 + random.Next(0, 10);
-                untilNextExplosion = 2.0f + (float)random.NextDouble() * 1;
+                untilNextExplosion = 3.0f + (float)random.NextDouble() * 3;
             }
 
-            double diff = (currentFrameTime - lastExplosion) / (0.6);
+            double diff = (currentFrameTime - lastExplosion) / (2.0);
             if (diff > 1.0) { diff = 1.0; }
-            numParticles += (int) ((20 + random.Next(0, 10)) * (1.0 - diff)); 
+            numParticles += (int) ((4 + random.Next(0, 10)) * (1.0 - diff)); 
 
             NewParticle[] particles = new NewParticle[numParticles];
             for (int i = 0; i < particles.Length; ++i)

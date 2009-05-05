@@ -5,8 +5,8 @@
 
 
 //-----------------------------------------------------------------------------------------------------------
-float ExplosionParticleLifetime = 0.6;
-float ExplosionVelocityDamping = 0.2;
+float ExplosionParticleLifetime = 2.6;
+float ExplosionVelocityDamping = 0.5;
 
 
 

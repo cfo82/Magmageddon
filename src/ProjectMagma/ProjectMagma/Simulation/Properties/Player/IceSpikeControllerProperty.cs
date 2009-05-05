@@ -64,11 +64,20 @@ namespace ProjectMagma.Simulation
             Vector3 a = constants.GetVector3("ice_spike_gravity_acceleration");
 
             // in targeting mode (yet)?
-            if (targetPlayer != null
-                && simTime.At > createdAt + constants.GetInt("ice_spike_rising_time"))
+            if (simTime.At > createdAt + constants.GetInt("ice_spike_rising_time"))
             {
-                // incorporate homing effect towards targeted player
-                Vector3 targetPlayerPos = targetPlayer.GetVector3("position");
+                Vector3 dir;
+                if (targetPlayer != null)
+                {
+                    // incorporate homing effect towards targeted player
+                    Vector3 targetPlayerPos = targetPlayer.GetVector3("position");
+                    dir = Vector3.Normalize(targetPlayerPos - pos);
+                }
+                else
+                {
+                    // just accelerate in targeting direction
+                    dir = iceSpike.GetVector3("target_direction");
+                }
 
                 // deaccelerate a bit if too fast
                 if (v.Length() > constants.GetFloat("ice_spike_max_speed"))
@@ -78,7 +87,6 @@ namespace ProjectMagma.Simulation
                 else
                 {
                     // get acceleration to direction
-                    Vector3 dir = Vector3.Normalize(targetPlayerPos - pos);
                     float acc = constants.GetFloat("ice_spike_homing_acceleration");
                     a += dir * acc;
                     a.Y *= 0.6f; // don't accelerate as fast on y axis
@@ -88,7 +96,8 @@ namespace ProjectMagma.Simulation
                     foreach (Entity island in Game.Instance.Simulation.IslandManager)
                     {
                         // island target player is standing on has no force
-                        if (targetPlayer.GetString("active_island") == island.Name)
+                        if (targetPlayer != null
+                            && targetPlayer.GetString("active_island") == island.Name)
                             continue;
 
                         Vector3 idir = island.GetVector3("position") - pos;

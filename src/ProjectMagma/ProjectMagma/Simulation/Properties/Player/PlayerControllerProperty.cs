@@ -594,6 +594,8 @@ namespace ProjectMagma.Simulation
                 Entity iceSpike = new Entity("icespike" + (++iceSpikeCount) + "_" + player.Name);
                 iceSpike.AddStringAttribute("player", player.Name);
                 iceSpike.AddStringAttribute("target_player", targetPlayerName);
+                if (targetPlayer == null)
+                    iceSpike.AddVector3Attribute("target_direction", viewVector);
                 iceSpike.AddIntAttribute("creation_time", (int)at);
                 iceSpike.AddBoolAttribute("dead", false);
 
@@ -785,7 +787,7 @@ namespace ProjectMagma.Simulation
         {
             if ((controllerInput.rightStickPressed
                 || controllerInput.jetpackButtonHold)
-             //   && activeIsland == null
+                && activeIsland == null
                 && selectedIsland == null
                 && destinationIsland == null
                 && flame == null
@@ -793,13 +795,11 @@ namespace ProjectMagma.Simulation
                 && player.GetInt("frozen") <= 0
             )
             {
-                LeaveActiveIsland();
                 if (!jetpackActive)
                 {
                     jetpackSoundInstance = jetpackSound.Play(0.4f * Game.Instance.EffectsVolume, 1, 0, true);
                     jetpackActive = true;
                 }
-
 
                 //                fuel -= (int)simTime.DtMs; // todo: add constant that can modify this
                 playerVelocity += constants.GetVector3("jetpack_acceleration") * dt;

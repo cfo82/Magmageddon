@@ -12,14 +12,26 @@ namespace ProjectMagma.Renderer.ParticleSystem.Stateful.Explosion
 {
     public class Explosion : StatefulParticleSystem
     {
+        public enum ExplosionType
+        {
+            Fire,
+            Ice
+        }
+
         public Explosion(
             Renderer renderer,
             WrappedContentManager wrappedContent,
-            GraphicsDevice device
+            GraphicsDevice device,
+            ExplosionType type
         )
         :   base(renderer, wrappedContent, device)
         {
-            explosionSprite = wrappedContent.Load<Texture2D>("Textures/Sfx/Explode");
+            switch (type)
+            {
+                case ExplosionType.Fire: explosionSprite = wrappedContent.Load<Texture2D>("Textures/Sfx/FireExplode"); break;
+                case ExplosionType.Ice: explosionSprite = wrappedContent.Load<Texture2D>("Textures/Sfx/IceExplode"); break;
+                default: throw new ArgumentException("invalid type parameter");
+            }
         }
 
         protected override Effect LoadCreateEffect(WrappedContentManager wrappedContent)

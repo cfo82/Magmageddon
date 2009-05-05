@@ -74,7 +74,9 @@ namespace ProjectMagma.Renderer
 
             statefulParticleResourceManager = new ProjectMagma.Renderer.ParticleSystem.Stateful.ResourceManager(wrappedContent, device);
 
-            explosionSystem = new ProjectMagma.Renderer.ParticleSystem.Stateful.Explosion.Explosion(this, Game.Instance.ContentManager, device);
+            explosionSystem = new ProjectMagma.Renderer.ParticleSystem.Stateful.Explosion.Explosion(
+                this, Game.Instance.ContentManager, device, ProjectMagma.Renderer.ParticleSystem.Stateful.Explosion.Explosion.ExplosionType.Fire
+                );
             for (int i = 0; i < 50; ++i)
             {
                 explosionSystem.AddEmitter(new ProjectMagma.Renderer.ParticleSystem.Emitter.ExplosionEmitter());

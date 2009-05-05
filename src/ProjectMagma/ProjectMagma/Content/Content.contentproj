@@ -1338,8 +1338,15 @@
     </Compile>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Textures\Sfx\Explode.bmp">
-      <Name>Explode</Name>
+    <Compile Include="Textures\Sfx\FireExplode.bmp">
+      <Name>FireExplode</Name>
+      <Importer>TextureImporter</Importer>
+      <Processor>TextureProcessor</Processor>
+    </Compile>
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="Textures\Sfx\IceExplode.bmp">
+      <Name>IceExplode</Name>
       <Importer>TextureImporter</Importer>
       <Processor>TextureProcessor</Processor>
     </Compile>

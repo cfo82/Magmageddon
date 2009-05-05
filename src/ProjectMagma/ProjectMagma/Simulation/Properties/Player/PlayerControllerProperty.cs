@@ -477,9 +477,10 @@ namespace ProjectMagma.Simulation
         private void PerformFlamethrowerAction(Entity player, ref Vector3 playerPosition)
         {
             // flamethrower
-            if ((controllerInput.flamethrowerButtonPressed
+            if (((controllerInput.flamethrowerButtonPressed
                 || controllerInput.flamethrowerButtonHold)
-                || controllerInput.flameStickMoved
+                && !RightStickFlame)
+                || (controllerInput.flameStickMoved && RightStickFlame)
                 && activeIsland != null) // only allowed on ground
             {
                 if (flame == null)

@@ -784,9 +784,9 @@ namespace ProjectMagma.Simulation
 
         private void PerformJetpackMovement(SimulationTime simTime, float dt, ref Vector3 playerVelocity, ref int fuel)
         {
-            if ((controllerInput.jetpackButtonPressed
+            if ((controllerInput.rightStickPressed
                 || controllerInput.jetpackButtonHold)
-                && activeIsland == null
+             //   && activeIsland == null
                 && selectedIsland == null
                 && destinationIsland == null
                 && flame == null
@@ -794,16 +794,24 @@ namespace ProjectMagma.Simulation
                 && player.GetInt("frozen") <= 0
             )
             {
+                LeaveActiveIsland();
                 if (!jetpackActive)
                 {
                     jetpackSoundInstance = jetpackSound.Play(0.4f * Game.Instance.EffectsVolume, 1, 0, true);
                     jetpackActive = true;
                 }
 
-                // todo: add constant that can modify this
-//                fuel -= (int)simTime.DtMs;
+
+                //                fuel -= (int)simTime.DtMs; // todo: add constant that can modify this
                 playerVelocity += constants.GetVector3("jetpack_acceleration") * dt;
 
+                // deaccelerate the higher we get
+                // todo: extract constants (450 & 5)
+                float dist = 450 - player.GetVector3("position").Y;
+                Vector3 deacceleration = constants.GetVector3("jetpack_acceleration") * 5 / dist;
+                playerVelocity -= deacceleration * dt;
+
+                // ensure we're not to fast
                 if (playerVelocity.Length() > constants.GetFloat("max_jetpack_speed"))
                 {
                     playerVelocity.Normalize();

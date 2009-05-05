@@ -50,7 +50,7 @@
   
   <!-- masses of game elements... -->
   
-  <Entity name="cave1" extends="cave">
+  <Entity name="cave" extends="cave_base">
     <!-- don't mess with the cave, there is nothing to change here. -->
     <!-- if you know what you are doing, do it in the template. -->
   </Entity>

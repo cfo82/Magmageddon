@@ -82,7 +82,7 @@ namespace ProjectMagma.Renderer
             BonePose head = animator.BonePoses["head"];
             head.CurrentController = controllers["nodHead"];
             head.CurrentBlendController = null;
-            Console.WriteLine("elapsed time: " + currentController.ElapsedTime);
+//            Console.WriteLine("elapsed time: " + currentController.ElapsedTime);
         }
 
         public void onceAnimEndedHandler(object sender, EventArgs args)

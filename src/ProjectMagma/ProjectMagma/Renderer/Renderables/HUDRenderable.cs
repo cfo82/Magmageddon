@@ -152,14 +152,7 @@ namespace ProjectMagma.Renderer
             GameTime gameTime
         )
         {
-            // TESTHACK
-            //lives += 1;
-            //if (lives > 25) lives = 0;
-            //TESTHACK
-
-            // TODO: ADD EVEN MORE BLINKI-BLINKI ON LOW HEALTH!!!!!!1!!
-
-            // TODO: FIX REPULSION SECONDS
+            // TODO: ADD EVEN MORE BLINKI-BLINKI ON LOW HEALTH?
 
             UpdateDisplayedValues(gameTime);
             ApplyBarEffectParameters();
@@ -243,7 +236,6 @@ namespace ProjectMagma.Renderer
             Vector2 livesStringSize = powerupStatusFont.MeasureString(livesString);
             Vector2 livesCenterOffset = new Vector2((int) livesStringSize.X / 2, (int) livesStringSize.Y / 2);
             Vector2 livesPos = new Vector2(xStart + 19, yStart + 50) + multiplier * (new Vector2(236, 21) - livesStringSize * 0.25f) - livesCenterOffset;
-//            Vector2 livesShadowPos = livesPos + textShadowOffset/2;
             spriteBatch.DrawString(livesFont, livesString, livesPos, new Color(Color.White, 0.85f));
 
             for(int i = powerupPickupDetails.Count-1; i >= 0; i--)
@@ -252,57 +244,40 @@ namespace ProjectMagma.Renderer
                 string detailsString = details.Notification;
                 Vector2 detailsStringSize = powerupStatusFont.MeasureString(detailsString);
                 Vector2 detailsCenterOffset = new Vector2((int)detailsStringSize.X / 2, (int)detailsStringSize.Y / 2);
-                //Vector2 detailsPos = new Vector2(xStart + 19, yStart + 50) + multiplier * (new Vector2(236, 21) - livesStringSize * 0.25f) - livesCenterOffset;
 
                 // compute projected position
-                Vector3 tmp = Vector3.Transform(details.Position, renderer.Camera.View * renderer.Camera.Projection);
-                Vector2 detailsPos = new Vector2(tmp.X / tmp.Z, tmp.Y / tmp.Z);
-                Console.WriteLine(detailsPos.ToString());
-                detailsPos = detailsPos / 2 + new Vector2(0.5f, 9.0f/16.0f * 0.5f);
-                detailsPos.Y = 9.0f/16.0f - detailsPos.Y;
+                Vector3 projection = Vector3.Transform(details.Position, renderer.Camera.View * renderer.Camera.Projection);
+                Vector2 detailsPos = new Vector2(projection.X / projection.Z, projection.Y / projection.Z);
+                detailsPos = detailsPos / 2 + new Vector2(0.5f, 0.5f / renderer.Camera.AspectRatio);
+                detailsPos.Y = 1.0f / renderer.Camera.AspectRatio - detailsPos.Y;
                 detailsPos *= Game.Instance.GraphicsDevice.Viewport.Width;
+                
+                // apply age effect
                 detailsPos.Y -= PowerupNotificationFadeoutVerticalSpeed * details.Age;
                 details.Age += PowerupNotificationAgeStep;
 
-                Vector2 detailsShadowPos = detailsPos + textShadowOffset;
-
                 // draw it 
-                spriteBatch.DrawString(powerupCollectFont, detailsString, detailsShadowPos, new Color(Color.DimGray, 1.0f-details.Age));
+                Vector2 detailsShadowPos = detailsPos + textShadowOffset;
+                spriteBatch.DrawString(powerupCollectFont, detailsString, detailsShadowPos, new Color(Color.DimGray, 1.0f - details.Age));
                 spriteBatch.DrawString(powerupCollectFont, detailsString, detailsPos, new Color(Color.White, 1.0f - details.Age));
 
-                if(details.Age>=1)
+                if(details.Age >= 1.0f)
                 {
                     powerupPickupDetails.RemoveAt(i);
                 }
             }
 
             spriteBatch.End();
-
-//            Console.WriteLine("" + frozenColorStrength.Value);
         }
 
         void OnPowerupPickup(Vector3 nextPowerupPickupPosition, String notification)
         {
-            //Console.WriteLine("collected powerup " + notification + " at " + nextPowerupPickupPosition.ToString());
             PowerupPickupDetails details = new PowerupPickupDetails();
             details.Position = nextPowerupPickupPosition;
             details.Notification = notification;
             details.Age = 0;
             powerupPickupDetails.Add(details);
         }
-
-        private static readonly float PowerupNotificationAgeStep = 0.05f;
-        private static readonly float PowerupNotificationFadeoutVerticalSpeed = 60.0f;
-
-        class PowerupPickupDetails
-        {
-            public Vector3 Position { get; set; }
-            public String Notification { get; set; }
-            public float Age { get; set; }
-        }
-
-        private List<PowerupPickupDetails> powerupPickupDetails;
-
 
         private void ComputePositions()
         {
@@ -431,6 +406,19 @@ namespace ProjectMagma.Renderer
 
         private Vector3 nextPowerupPickupPosition;
 
+        class PowerupPickupDetails
+        {
+            public Vector3 Position { get; set; }
+            public String Notification { get; set; }
+            public float Age { get; set; }
+        }
+
+
+        private static readonly float PowerupNotificationAgeStep = 0.05f;
+        private static readonly float PowerupNotificationFadeoutVerticalSpeed = 60.0f;
+
+
+        private List<PowerupPickupDetails> powerupPickupDetails;
 
     }
 }

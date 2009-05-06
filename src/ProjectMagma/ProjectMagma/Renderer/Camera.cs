@@ -21,7 +21,7 @@ namespace ProjectMagma.Renderer
 
             centerPosition = Position;
             Viewport viewport = Game.Instance.GraphicsDevice.Viewport;
-            aspectRatio = (float)viewport.Width / (float)viewport.Height;
+            AspectRatio = (float)viewport.Width / (float)viewport.Height;
             this.renderer = renderer;
         }
 
@@ -35,13 +35,12 @@ namespace ProjectMagma.Renderer
             
             // compute view and projection matrices
             View = Matrix.CreateLookAt(Position, Target, Up);
-            Projection = Matrix.CreatePerspectiveFieldOfView(FovRadians, aspectRatio, NearClip, FarClip);
+            Projection = Matrix.CreatePerspectiveFieldOfView(FovRadians, AspectRatio, NearClip, FarClip);
         }
 
 
         private Renderer renderer;
         private Vector3 centerPosition;
-        private float aspectRatio;
 
         public Vector3 Position { get; set; }
         public Vector3 Target { get; set; }
@@ -49,6 +48,7 @@ namespace ProjectMagma.Renderer
         public float NearClip { get; set; }
         public float FarClip { get; set; }
         public float FovRadians { get; set; }
+        public float AspectRatio;
 
         public Matrix View { get; set; }
         public Matrix Projection { get; set; }

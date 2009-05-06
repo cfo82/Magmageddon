@@ -312,6 +312,7 @@ namespace ProjectMagma.Renderer.ParticleSystem.Stateful
             particleRenderingEffect.Parameters["ViewportHeight"].SetValue(device.Viewport.Height);
             particleRenderingEffect.Parameters["StartSize"].SetValue(new Vector2(5.0f, 10.0f));
             particleRenderingEffect.Parameters["EndSize"].SetValue(new Vector2(50.0f, 200.0f));
+            particleRenderingEffect.Parameters["Time"].SetValue((float)currentFrameTime);
 
             SetRenderingParameters(particleRenderingEffect.Parameters);
 

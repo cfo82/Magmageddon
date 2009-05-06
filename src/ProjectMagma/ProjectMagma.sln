@@ -1,6 +1,6 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 10.00
-# Visual Studio 2008
+# Visual C# Express 2008
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ProjectMagma", "ProjectMagma\ProjectMagma.csproj", "{37D28D35-F31F-4A83-9DB4-94D3E8461A77}"
 	ProjectSection(ProjectDependencies) = postProject
 		{70808508-17E8-421C-B29A-F7F310FA2171} = {70808508-17E8-421C-B29A-F7F310FA2171}
@@ -36,7 +36,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "_XBOX360_ProjectMagmaShared
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AnimationComponentLibrary", "AnimationComponentLibrary\AnimationComponentLibrary.csproj", "{1C4B7EEC-2AC6-4026-A53E-A254BDB79F3D}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AnimationComponentLibraryContentPipeline", "AnimationComponentLibraryContentPipeline\AnimationComponentLibraryContentPipeline.csproj", "{70808508-17E8-421C-B29A-F7F310FA2171}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AnimationComponentLibraryContent", "AnimationComponentLibraryContentPipeline\AnimationComponentLibraryContent.csproj", "{70808508-17E8-421C-B29A-F7F310FA2171}"
 	ProjectSection(ProjectDependencies) = postProject
 		{7358AC46-F593-429F-AD44-E4475FFC8058} = {7358AC46-F593-429F-AD44-E4475FFC8058}
 	EndProjectSection
@@ -44,10 +44,6 @@ EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "_XBOX360_AnimationComponentLibrary", "AnimationComponentLibrary\_XBOX360_AnimationComponentLibrary.csproj", "{7358AC46-F593-429F-AD44-E4475FFC8058}"
 EndProject
 Global
-	GlobalSection(SubversionScc) = preSolution
-		Svn-Managed = True
-		Manager = AnkhSVN - Subversion Support for Visual Studio
-	EndGlobalSection
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Mixed Platforms = Debug|Mixed Platforms
 		Debug|x86 = Debug|x86
@@ -180,14 +176,6 @@ Global
 		{7358AC46-F593-429F-AD44-E4475FFC8058}.Release|Xbox 360.ActiveCfg = Release|Xbox 360
 		{7358AC46-F593-429F-AD44-E4475FFC8058}.Release|Xbox 360.Build.0 = Release|Xbox 360
 		{7358AC46-F593-429F-AD44-E4475FFC8058}.Release|Zune.ActiveCfg = Release|Xbox 360
-		{40E4CAF0-0F79-43C3-85F2-3A79D2038879}.Debug|Mixed Platforms.ActiveCfg = Debug|x86
-		{40E4CAF0-0F79-43C3-85F2-3A79D2038879}.Debug|x86.ActiveCfg = Debug|x86
-		{40E4CAF0-0F79-43C3-85F2-3A79D2038879}.Debug|Xbox 360.ActiveCfg = Debug|x86
-		{40E4CAF0-0F79-43C3-85F2-3A79D2038879}.Debug|Zune.ActiveCfg = Debug|x86
-		{40E4CAF0-0F79-43C3-85F2-3A79D2038879}.Release|Mixed Platforms.ActiveCfg = Release|x86
-		{40E4CAF0-0F79-43C3-85F2-3A79D2038879}.Release|x86.ActiveCfg = Release|x86
-		{40E4CAF0-0F79-43C3-85F2-3A79D2038879}.Release|Xbox 360.ActiveCfg = Release|x86
-		{40E4CAF0-0F79-43C3-85F2-3A79D2038879}.Release|Zune.ActiveCfg = Release|x86
 		{BEB6EA29-91F8-4460-B52C-FC9C19B6541B}.Debug|Mixed Platforms.ActiveCfg = Debug|Xbox 360
 		{BEB6EA29-91F8-4460-B52C-FC9C19B6541B}.Debug|x86.ActiveCfg = Debug|x86
 		{BEB6EA29-91F8-4460-B52C-FC9C19B6541B}.Debug|Xbox 360.ActiveCfg = Debug|Xbox 360
@@ -196,8 +184,20 @@ Global
 		{BEB6EA29-91F8-4460-B52C-FC9C19B6541B}.Release|x86.ActiveCfg = Release|x86
 		{BEB6EA29-91F8-4460-B52C-FC9C19B6541B}.Release|Xbox 360.ActiveCfg = Release|Xbox 360
 		{BEB6EA29-91F8-4460-B52C-FC9C19B6541B}.Release|Zune.ActiveCfg = Release|Xbox 360
+		{40E4CAF0-0F79-43C3-85F2-3A79D2038879}.Debug|Mixed Platforms.ActiveCfg = Debug|x86
+		{40E4CAF0-0F79-43C3-85F2-3A79D2038879}.Debug|x86.ActiveCfg = Debug|x86
+		{40E4CAF0-0F79-43C3-85F2-3A79D2038879}.Debug|Xbox 360.ActiveCfg = Debug|x86
+		{40E4CAF0-0F79-43C3-85F2-3A79D2038879}.Debug|Zune.ActiveCfg = Debug|x86
+		{40E4CAF0-0F79-43C3-85F2-3A79D2038879}.Release|Mixed Platforms.ActiveCfg = Release|x86
+		{40E4CAF0-0F79-43C3-85F2-3A79D2038879}.Release|x86.ActiveCfg = Release|x86
+		{40E4CAF0-0F79-43C3-85F2-3A79D2038879}.Release|Xbox 360.ActiveCfg = Release|x86
+		{40E4CAF0-0F79-43C3-85F2-3A79D2038879}.Release|Zune.ActiveCfg = Release|x86
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(SubversionScc) = preSolution
+		Svn-Managed = True
+		Manager = AnkhSVN - Subversion Support for Visual Studio
 	EndGlobalSection
 EndGlobal

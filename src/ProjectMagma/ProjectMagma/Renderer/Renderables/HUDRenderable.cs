@@ -37,7 +37,7 @@ namespace ProjectMagma.Renderer
             displayedHealth = health;
             
             frozenColorStrength = new SineFloat(0.0f, 0.85f, 5.0f);
-            powerupPickupDetails = new LinkedList<PowerupPickupDetails>();
+            powerupPickupDetails = new List<PowerupPickupDetails>();
         }
 
         
@@ -246,14 +246,9 @@ namespace ProjectMagma.Renderer
 //            Vector2 livesShadowPos = livesPos + textShadowOffset/2;
             spriteBatch.DrawString(livesFont, livesString, livesPos, new Color(Color.White, 0.85f));
 
-            // done
-
-            //PowerupPickupDetails details = powerupPickupDetails.First;
-            //while(details!=PowerupPickupDetails)
-            LinkedList<LinkedListNode<PowerupPickupDetails>> removedPowerupPickupDetails =
-                new LinkedList<LinkedListNode<PowerupPickupDetails>>();
-            foreach(PowerupPickupDetails details in powerupPickupDetails)
+            for(int i = powerupPickupDetails.Count-1; i >= 0; i--)
             {
+                PowerupPickupDetails details = powerupPickupDetails[i];
                 string detailsString = details.Notification;
                 Vector2 detailsStringSize = powerupStatusFont.MeasureString(detailsString);
                 Vector2 detailsCenterOffset = new Vector2((int)detailsStringSize.X / 2, (int)detailsStringSize.Y / 2);
@@ -273,12 +268,8 @@ namespace ProjectMagma.Renderer
                 spriteBatch.DrawString(powerupCollectFont, detailsString, detailsPos, new Color(Color.White, 1.0f - details.Age));
                 if(details.Age>=1)
                 {
-                    removedPowerupPickupDetails.AddLast(powerupPickupDetails.Find(details));
+                    powerupPickupDetails.RemoveAt(i);
                 }
-            }
-            foreach(LinkedListNode<PowerupPickupDetails> node in removedPowerupPickupDetails)
-            {
-                powerupPickupDetails.Remove(node);
             }
 
             spriteBatch.End();
@@ -293,7 +284,7 @@ namespace ProjectMagma.Renderer
             details.Position = nextPowerupPickupPosition;
             details.Notification = notification;
             details.Age = 0;
-            powerupPickupDetails.AddLast(details);
+            powerupPickupDetails.Add(details);
         }
 
         private static readonly float PowerupNotificationAgeStep = 0.05f;
@@ -306,7 +297,7 @@ namespace ProjectMagma.Renderer
             public float Age { get; set; }
         }
 
-        private LinkedList<PowerupPickupDetails> powerupPickupDetails;
+        private List<PowerupPickupDetails> powerupPickupDetails;
 
 
         private void ComputePositions()

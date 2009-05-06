@@ -136,7 +136,7 @@
     <Compile Include="Level\XmlDocumentImporter.cs" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\AnimationComponentLibraryContentPipeline\AnimationComponentLibraryContent.csproj">
+    <ProjectReference Include="..\AnimationComponentLibraryContentPipeline\AnimationComponentLibraryContentPipeline.csproj">
       <Project>{70808508-17E8-421C-B29A-F7F310FA2171}</Project>
       <Name>AnimationComponentLibraryContent</Name>
     </ProjectReference>

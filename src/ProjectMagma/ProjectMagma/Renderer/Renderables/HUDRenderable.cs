@@ -255,7 +255,7 @@ namespace ProjectMagma.Renderer
                 Vector2 detailsCenterOffset = new Vector2((int)detailsStringSize.X / 2, (int)detailsStringSize.Y / 2);
 
                 // compute projected position
-                Vector3 projection = Vector3.Transform(details.Position, renderer.Camera.View * renderer.Camera.Projection);
+                Vector3 projection = Vector3.Transform(details.Position, renderer.Camera.CenterView * renderer.Camera.Projection);
                 Vector2 detailsPos = new Vector2(projection.X / projection.Z, projection.Y / projection.Z);
                 detailsPos = detailsPos / 2 + new Vector2(0.5f, 0.5f / renderer.Camera.AspectRatio);
                 detailsPos.Y = 1.0f / renderer.Camera.AspectRatio - detailsPos.Y;

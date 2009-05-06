@@ -6,9 +6,11 @@ float2 EndSize;
 float4 MinColor = float4(1,1,1,1);
 float4 MaxColor = float4(1,1,1,1);
 float ViewportHeight;
+float Time;
 
 texture RenderParticlesPositionTexture;
 texture RenderParticlesSpriteTexture;
+texture RandomTexture;
 
 
 
@@ -24,6 +26,17 @@ sampler RenderParticlesPositionSampler = sampler_state
     
     AddressU = Clamp;
     AddressV = Clamp;
+};
+sampler2D RandomSampler = sampler_state
+{
+	Texture = (RandomTexture);
+	
+	MinFilter = Linear;
+	MagFilter = Linear;
+	MipFilter = Linear;
+	
+	AddressU = Wrap;
+	AddressV = Wrap;
 };
 sampler RenderParticlesSpriteSampler = sampler_state
 {

@@ -99,7 +99,7 @@ namespace ProjectMagma.Renderer
 
                 DrawIceSpike(renderer, world, renderer.Camera.View, renderer.Camera.Projection);
             }
-            iceSpikeSystem.Render(renderer.Camera.View, renderer.Camera.Projection);
+            iceSpikeSystem.Render(lastFrameTime, currentFrameTime, renderer.Camera.View, renderer.Camera.Projection);
         }
 
         private void DrawIceSpike(Renderer renderer, Matrix world, Matrix view, Matrix projection)

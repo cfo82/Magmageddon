@@ -274,7 +274,7 @@ namespace ProjectMagma.Renderer
             //transparentRenderables.Sort(TransparentRenderableComparison);
             if (explosionSystem != null)
             {
-                explosionSystem.Render(Camera.View, Camera.Projection);
+                explosionSystem.Render(lastFrameTime, currentFrameTime, Camera.View, Camera.Projection);
             }
 
             foreach (Renderable renderable in transparentRenderables)

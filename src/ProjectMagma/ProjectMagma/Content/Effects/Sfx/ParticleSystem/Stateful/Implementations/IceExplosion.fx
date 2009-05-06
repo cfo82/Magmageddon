@@ -88,8 +88,8 @@ RenderParticlesVertexShaderOutput RenderExplosionVertexShader(
 
 	if (position_sampler_value.w > 0)
 	{
-
 		float3 position = position_sampler_value.xyz;
+		float4 random_sampler_value = tex2Dlod(RandomSampler, float4(position.x + Time*3, position.y + Time*5, 0, 0));
 
 		float4 world_position = float4(position,1);
 		float4 view_position = mul(world_position, View);
@@ -99,7 +99,7 @@ RenderParticlesVertexShaderOutput RenderExplosionVertexShader(
 		float normalized_age = 1.0 - time_to_life/ExplosionParticleLifetime;
 	    
 		output.Position = mul(view_position, Projection);
-		output.Size = 30;
+		output.Size = 20 + random_sampler_value.x * 35;
 		output.Color = float4(1,1,1,1.0-normalized_age);
 	}
 	else

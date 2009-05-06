@@ -62,7 +62,7 @@ namespace ProjectMagma.Renderer
 
         public override void Draw(Renderer renderer, GameTime gameTime)
         {
-            explosionSystem.Render(renderer.Camera.View, renderer.Camera.Projection);
+            explosionSystem.Render(lastFrameTime, currentFrameTime, renderer.Camera.View, renderer.Camera.Projection);
         }
 
         public override void UpdateVector3(string id, Vector3 value)

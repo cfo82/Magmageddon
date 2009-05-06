@@ -32,6 +32,7 @@ namespace ProjectMagma.Renderer
             this.color1 = color1;
             this.color2 = color2;
             this.repulsion_seconds = repulsion_seconds;
+            lastFrameTime = currentFrameTime = 0.0;
 
             displayedEnergy = energy;
             displayedHealth = health;
@@ -154,6 +155,12 @@ namespace ProjectMagma.Renderer
         {
             // TODO: ADD EVEN MORE BLINKI-BLINKI ON LOW HEALTH?
 
+            // calculate the timestep to make
+            lastFrameTime = currentFrameTime;
+            double dtMs = (double)gameTime.ElapsedGameTime.Ticks / 10000d;
+            double dt = dtMs / 1000.0;
+            currentFrameTime = lastFrameTime + dt;
+
             UpdateDisplayedValues(gameTime);
             ApplyBarEffectParameters();
             DrawBars();
@@ -213,6 +220,8 @@ namespace ProjectMagma.Renderer
 
         private void DrawStrings(Renderer renderer)
         {
+            double dt = currentFrameTime - lastFrameTime;
+
             spriteBatch.Begin(SpriteBlendMode.AlphaBlend, SpriteSortMode.Immediate, SaveStateMode.None, spriteScale);
             Vector3 textColor = defaultTextColor * (1 - frozenColorStrength.Value) + frozenTextColor * frozenColorStrength.Value;
 
@@ -253,8 +262,8 @@ namespace ProjectMagma.Renderer
                 detailsPos *= Game.Instance.GraphicsDevice.Viewport.Width;
                 
                 // apply age effect
-                detailsPos.Y -= PowerupNotificationFadeoutVerticalSpeed * details.Age;
-                details.Age += PowerupNotificationAgeStep;
+                detailsPos.Y -= (float)dt * PowerupNotificationFadeoutVerticalSpeed * details.Age;
+                details.Age += (float)dt * PowerupNotificationAgeStep;
 
                 // draw it 
                 Vector2 detailsShadowPos = detailsPos + textShadowOffset;
@@ -414,8 +423,10 @@ namespace ProjectMagma.Renderer
         }
 
 
-        private static readonly float PowerupNotificationAgeStep = 0.05f;
-        private static readonly float PowerupNotificationFadeoutVerticalSpeed = 60.0f;
+        private double lastFrameTime;
+        private double currentFrameTime;
+        private static readonly float PowerupNotificationAgeStep = 1.0f;
+        private static readonly float PowerupNotificationFadeoutVerticalSpeed = 460.0f;
 
 
         private List<PowerupPickupDetails> powerupPickupDetails;

@@ -29,13 +29,14 @@ namespace ProjectMagma.Renderer
             LavaLightStrength = 1.0f;
             SpotLightStrength = 1.0f;
             RenderChannel = RenderChannelType.One;
-            ApplyEffectsToModel();
-            defaultEffectMapping = CurrentPartEffectMapping();
         }
 
         public override void LoadResources()
         {
             base.LoadResources();
+
+            ApplyEffectsToModel();
+            defaultEffectMapping = CurrentPartEffectMapping();
         }
 
         #endregion

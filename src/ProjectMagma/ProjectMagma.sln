@@ -1,6 +1,6 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 10.00
-# Visual Studio 2008
+# Visual C# Express 2008
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ProjectMagma", "ProjectMagma\ProjectMagma.csproj", "{37D28D35-F31F-4A83-9DB4-94D3E8461A77}"
 	ProjectSection(ProjectDependencies) = postProject
 		{70808508-17E8-421C-B29A-F7F310FA2171} = {70808508-17E8-421C-B29A-F7F310FA2171}
@@ -36,7 +36,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "_XBOX360_ProjectMagmaShared
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AnimationComponentLibrary", "AnimationComponentLibrary\AnimationComponentLibrary.csproj", "{1C4B7EEC-2AC6-4026-A53E-A254BDB79F3D}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AnimationComponentLibraryContentPipeline", "AnimationComponentLibraryContentPipeline\AnimationComponentLibraryContentPipeline.csproj", "{70808508-17E8-421C-B29A-F7F310FA2171}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AnimationComponentLibraryContent", "AnimationComponentLibraryContentPipeline\AnimationComponentLibraryContent.csproj", "{70808508-17E8-421C-B29A-F7F310FA2171}"
 	ProjectSection(ProjectDependencies) = postProject
 		{7358AC46-F593-429F-AD44-E4475FFC8058} = {7358AC46-F593-429F-AD44-E4475FFC8058}
 	EndProjectSection

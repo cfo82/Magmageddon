@@ -5,25 +5,25 @@
   <Robot>
     <Name>Givayo</Name>
     <Description>I have no description.</Description>
-    <EntityName>green_snowman</EntityName>
+    <EntityName>green_dwarf</EntityName>
   </Robot>
 
   <Robot>
     <Name>Famar</Name>
     <Description>Blah</Description>
-    <EntityName>yellow_snowman</EntityName>
+    <EntityName>orange_dwarf</EntityName>
   </Robot>
 
   <Robot>
     <Name>Tunira</Name>
     <Description>Foo, this is a description.</Description>
-    <EntityName>blue_snowman</EntityName>
+    <EntityName>blue_dwarf</EntityName>
   </Robot>
 
   <Robot>
     <Name>Yrogr</Name>
     <Description>Gugus.</Description>
-    <EntityName>purple_snowman</EntityName>
+    <EntityName>purple_dwarf</EntityName>
   </Robot>
 
 </Robots>

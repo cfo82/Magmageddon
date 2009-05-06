@@ -22,7 +22,7 @@
     </Properties>
   </Entity>
 
-  <Entity name="green_snowman" extends="robot_base" abstract="true" >
+  <Entity name="green_dwarf" extends="robot_base" abstract="true" >
     <Attributes>
       <Attribute name="mesh" template="string" value="Models/Player/dwarf_grp"/>
       <Attribute name="diffuse_texture" template="string" value="Textures/Player/dwarf"/>
@@ -34,7 +34,7 @@
     </Properties>
   </Entity>
 
-  <Entity name="yellow_snowman" extends="robot_base" abstract="true" >
+  <Entity name="orange_dwarf" extends="robot_base" abstract="true" >
     <Attributes>
       <Attribute name="mesh" template="string" value="Models/Player/dwarf_grp"/>
       <Attribute name="diffuse_texture" template="string" value="Textures/Player/dwarf"/>
@@ -46,7 +46,7 @@
     </Properties>
   </Entity>
 
-  <Entity name="blue_snowman" extends="robot_base" abstract="true" >
+  <Entity name="blue_dwarf" extends="robot_base" abstract="true" >
     <Attributes>
       <Attribute name="mesh" template="string" value="Models/Player/dwarf_grp"/>
       <Attribute name="diffuse_texture" template="string" value="Textures/Player/dwarf"/>
@@ -58,7 +58,7 @@
     </Properties>
   </Entity>
 
-  <Entity name="purple_snowman" extends="robot_base" abstract="true" >
+  <Entity name="purple_dwarf" extends="robot_base" abstract="true" >
     <Attributes>
       <Attribute name="mesh" template="string" value="Models/Player/dwarf_grp"/>
       <Attribute name="diffuse_texture" template="string" value="Textures/Player/dwarf"/>

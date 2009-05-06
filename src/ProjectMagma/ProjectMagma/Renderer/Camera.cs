@@ -20,6 +20,8 @@ namespace ProjectMagma.Renderer
             FovRadians = MathHelper.ToRadians(33.0f);
 
             centerPosition = Position;
+            CenterView = Matrix.CreateLookAt(centerPosition, Target, Up);
+
             Viewport viewport = Game.Instance.GraphicsDevice.Viewport;
             AspectRatio = (float)viewport.Width / (float)viewport.Height;
             this.renderer = renderer;
@@ -50,6 +52,7 @@ namespace ProjectMagma.Renderer
         public float FovRadians { get; set; }
         public float AspectRatio;
 
+        public Matrix CenterView { get; set; }
         public Matrix View { get; set; }
         public Matrix Projection { get; set; }
     }

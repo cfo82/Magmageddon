@@ -77,10 +77,10 @@ namespace ProjectMagma.Renderer
 
             statefulParticleResourceManager = new ProjectMagma.Renderer.ParticleSystem.Stateful.ResourceManager(wrappedContent, device);
 
-            explosionSystem = new FireExplosion(this, Game.Instance.ContentManager, device);
+            explosionSystem = new LavaExplosion(this, Game.Instance.ContentManager, device);
             for (int i = 0; i < 50; ++i)
             {
-                explosionSystem.AddEmitter(new ProjectMagma.Renderer.ParticleSystem.Emitter.FireExplosionEmitter());
+                explosionSystem.AddEmitter(new ProjectMagma.Renderer.ParticleSystem.Emitter.LavaExplosionEmitter());
             }
 
             updateQueues = new List<RendererUpdateQueue>();
@@ -482,7 +482,7 @@ namespace ProjectMagma.Renderer
         private GlowPass glowPass;
         private HdrCombinePass hdrCombinePass;
 
-        private ParticleSystem.Stateful.Implementations.FireExplosion explosionSystem;
+        private ParticleSystem.Stateful.Implementations.LavaExplosion explosionSystem;
 
         private ParticleSystem.Stateful.ResourceManager statefulParticleResourceManager;
         

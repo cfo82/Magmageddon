@@ -1321,6 +1321,11 @@
       <Importer>EffectImporter</Importer>
       <Processor>EffectProcessor</Processor>
     </None>
+    <Compile Include="Effects\Sfx\ParticleSystem\Stateful\Implementations\FireExplosion.fx">
+      <Name>FireExplosion</Name>
+      <Importer>EffectImporter</Importer>
+      <Processor>EffectProcessor</Processor>
+    </Compile>
     <Compile Include="Textures\Environment\environ_diffuse.tga">
       <Name>environ_diffuse</Name>
       <Importer>TextureImporter</Importer>
@@ -1331,8 +1336,8 @@
       <Importer>EffectImporter</Importer>
       <Processor>EffectProcessor</Processor>
     </Compile>
-    <Compile Include="Effects\Sfx\ParticleSystem\Stateful\Implementations\FireExplosion.fx">
-      <Name>FireExplosion</Name>
+    <Compile Include="Effects\Sfx\ParticleSystem\Stateful\Implementations\LavaExplosion.fx">
+      <Name>LavaExplosion</Name>
       <Importer>EffectImporter</Importer>
       <Processor>EffectProcessor</Processor>
     </Compile>
@@ -1343,15 +1348,15 @@
     </Compile>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Textures\Sfx\FireExplode.bmp">
-      <Name>FireExplode</Name>
+    <Compile Include="Textures\Sfx\LavaExplosion.bmp">
+      <Name>LavaExplosion</Name>
       <Importer>TextureImporter</Importer>
       <Processor>TextureProcessor</Processor>
     </Compile>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Textures\Sfx\IceExplode.bmp">
-      <Name>IceExplode</Name>
+    <Compile Include="Textures\Sfx\IceExplosion.bmp">
+      <Name>IceExplosion</Name>
       <Importer>TextureImporter</Importer>
       <Processor>TextureProcessor</Processor>
     </Compile>
@@ -1361,6 +1366,13 @@
       <Name>MenuLevel</Name>
       <Importer>LevelImporter</Importer>
       <Processor>LevelProcessor</Processor>
+    </Compile>
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="Textures\Sfx\FireExplosion.bmp">
+      <Name>FireExplosion</Name>
+      <Importer>TextureImporter</Importer>
+      <Processor>TextureProcessor</Processor>
     </Compile>
   </ItemGroup>
   <ItemGroup>

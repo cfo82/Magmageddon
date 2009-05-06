@@ -11,9 +11,9 @@ using ProjectMagma.Renderer.ParticleSystem.Stateful.Implementations;
 
 namespace ProjectMagma.Renderer
 {
-    public class IceExplosionRenderable : PointExplosionRenderable
+    public class FireExplosionRenderable : PointExplosionRenderable
     {
-        public IceExplosionRenderable(
+        public FireExplosionRenderable(
             Vector3 position
         )
         :   base(position)
@@ -22,12 +22,12 @@ namespace ProjectMagma.Renderer
 
         protected override PointExplosion CreateExplosionSystem()
         {
-            return new IceExplosion(Game.Instance.Renderer, Game.Instance.ContentManager, Game.Instance.GraphicsDevice);
+            return new FireExplosion(Game.Instance.Renderer, Game.Instance.ContentManager, Game.Instance.GraphicsDevice);
         }
 
         protected override PointExplosionEmitter CreateExplosionEmitter(Vector3 position, double currentFrameTime)
         {
-            return new IceExplosionEmitter(position, currentFrameTime);
+            return new FireExplosionEmitter(position, currentFrameTime);
         }
     }
 }

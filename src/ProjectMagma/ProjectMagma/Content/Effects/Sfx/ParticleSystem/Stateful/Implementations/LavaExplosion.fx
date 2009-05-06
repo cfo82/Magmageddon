@@ -5,8 +5,8 @@
 
 
 //-----------------------------------------------------------------------------------------------------------
-float ExplosionParticleLifetime = 0.6;
-float ExplosionVelocityDamping = 0.5;
+float ExplosionParticleLifetime = 2.6;
+float ExplosionVelocityDamping = 0.8;
 
 
 
@@ -88,9 +88,8 @@ RenderParticlesVertexShaderOutput RenderExplosionVertexShader(
 
 	if (position_sampler_value.w > 0)
 	{
+
 		float3 position = position_sampler_value.xyz;
-		//float4 random_sampler_value = tex2Dlod(RandomSampler, float4(position.x + Time*31, position.y + Time*57, 0, 0));
-		float4 random_sampler_value = tex2Dlod(RandomSampler, float4(position.x*31 + Time*17, position.y*57 + Time*43, 0, 0));
 
 		float4 world_position = float4(position,1);
 		float4 view_position = mul(world_position, View);
@@ -100,8 +99,7 @@ RenderParticlesVertexShaderOutput RenderExplosionVertexShader(
 		float normalized_age = 1.0 - time_to_life/ExplosionParticleLifetime;
 	    
 		output.Position = mul(view_position, Projection);
-		//output.Size = lerp(5, 500, random_sampler_value.x) * Projection._m11 / output.Position.w * ViewportHeight / 2;
-		output.Size = lerp(15, 225, random_sampler_value.x);// * Projection._m11 / output.Position.w * ViewportHeight / 2;
+		output.Size = 40*pow(normalized_time_to_death,4);
 		output.Color = float4(1,1,1,1.0-normalized_age);
 	}
 	else
@@ -128,7 +126,7 @@ float4 RenderExplosionPixelShader(
 ) : COLOR0
 {
     float4 color = input.Color*tex2D(RenderParticlesSpriteSampler, particleCoordinate/4);
-    color.rgb *= dot(float3(0.1, 0.1, 0.1), color.rgb) * input.Color.a;
+    color.rgb *= dot(float3(0.025, 0.025, 0.025), color.rgb) * input.Color.a/3;
     return color;
 }
 

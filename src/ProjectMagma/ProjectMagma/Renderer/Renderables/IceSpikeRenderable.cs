@@ -11,19 +11,17 @@ using ProjectMagma.Renderer.ParticleSystem.Stateful.Implementations;
 
 namespace ProjectMagma.Renderer
 {
-    public class IceSpikeRenderable : Renderable
+    public class IceSpikeRenderable : ParticleSystemRenderable
     {
         public IceSpikeRenderable(
             Vector3 position,
             Vector3 direction,
             bool dead
         )
+        :   base(position)
         {
-            this.position = position;
             this.direction = direction;
             this.dead = dead;
-
-            lastFrameTime = currentFrameTime = 0.0;
 
             iceSpikeEmitter = null;
         }
@@ -49,15 +47,11 @@ namespace ProjectMagma.Renderer
 
         public override void Update(Renderer renderer, GameTime gameTime)
         {
-            // calculate the timestep to make
-            lastFrameTime = currentFrameTime;
-            double dtMs = (double)gameTime.ElapsedGameTime.Ticks / 10000d;
-            double dt = dtMs / 1000.0;
-            currentFrameTime = lastFrameTime + dt;
+            base.Update(renderer, gameTime);
 
             if (!dead && iceSpikeEmitter == null)
             {
-                iceSpikeEmitter = new PointEmitter(position, 2500.0f);
+                iceSpikeEmitter = new PointEmitter(Position, 2500.0f);
                 iceSpikeSystem.AddEmitter(iceSpikeEmitter);
             }
 
@@ -69,19 +63,15 @@ namespace ProjectMagma.Renderer
 
             if (iceSpikeEmitter != null)
             {
-                iceSpikeEmitter.SetPoint(currentFrameTime, position);
-                Debug.Assert(iceSpikeEmitter.Times[0] == lastFrameTime);
-                Debug.Assert(iceSpikeEmitter.Times[1] == currentFrameTime);
+                iceSpikeEmitter.SetPoint(CurrentFrameTime, Position);
+                Debug.Assert(iceSpikeEmitter.Times[0] == LastFrameTime);
+                Debug.Assert(iceSpikeEmitter.Times[1] == CurrentFrameTime);
             }
-            iceSpikeSystem.Position = position;
+
+            iceSpikeSystem.Position = Position;
             iceSpikeSystem.Direction = direction;
             iceSpikeSystem.Dead = dead;
-            iceSpikeSystem.Update(lastFrameTime, currentFrameTime);
-        }
-
-        public override bool NeedsUpdate
-        {
-            get { return true; }
+            iceSpikeSystem.Update(LastFrameTime, CurrentFrameTime);
         }
 
         public override void Draw(Renderer renderer, GameTime gameTime)
@@ -99,7 +89,7 @@ namespace ProjectMagma.Renderer
 
                 DrawIceSpike(renderer, world, renderer.Camera.View, renderer.Camera.Projection);
             }
-            iceSpikeSystem.Render(lastFrameTime, currentFrameTime, renderer.Camera.View, renderer.Camera.Projection);
+            iceSpikeSystem.Render(LastFrameTime, CurrentFrameTime, renderer.Camera.View, renderer.Camera.Projection);
         }
 
         private void DrawIceSpike(Renderer renderer, Matrix world, Matrix view, Matrix projection)
@@ -108,18 +98,9 @@ namespace ProjectMagma.Renderer
 
             CullMode saveCullMode = device.RenderState.CullMode;
 
-            //device.RenderState.AlphaBlendEnable = true;
-            //device.RenderState.AlphaSourceBlend = Blend.SourceAlpha;
-            //device.RenderState.DestinationBlend = Blend.InverseSourceAlpha;
-            //device.RenderState.BlendFunction = BlendFunction.Add;
-            //device.RenderState.AlphaTestEnable = false;
-            //device.RenderState.DepthBufferEnable = false;
-            //device.RenderState.CullMode = CullMode.None;
-
             Matrix[] transforms = new Matrix[iceSpikeModel.Bones.Count];
             float aspectRatio = device.Viewport.Width / device.Viewport.Height;
             iceSpikeModel.CopyAbsoluteBoneTransformsTo(transforms);
-
 
             foreach (ModelMesh mesh in iceSpikeModel.Meshes)
             {
@@ -158,28 +139,12 @@ namespace ProjectMagma.Renderer
         {
             base.UpdateVector3(id, value);
 
-            if (id == "Position")
-            {
-                position = value;
-            }
-            else if (id == "Direction")
+            if (id == "Direction")
             {
                 direction = value;
             }
         }
 
-        public override Vector3 Position
-        {
-            get { return position; }
-            set { position = value; }
-        }
-
-        public override RenderMode RenderMode
-        {
-            get { return RenderMode.RenderToSceneAlpha; }
-        }
-
-        private Vector3 position;
         private Vector3 direction;
         private bool dead;
 
@@ -189,8 +154,5 @@ namespace ProjectMagma.Renderer
         Model iceSpikeModel;
         private Effect iceSpikeEffect;
         private Texture2D iceSpikeTexture;
-
-        private double lastFrameTime;
-        private double currentFrameTime;
     }
 }

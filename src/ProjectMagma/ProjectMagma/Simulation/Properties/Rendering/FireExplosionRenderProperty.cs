@@ -12,11 +12,11 @@ using ProjectMagma.Renderer.Interface;
 
 namespace ProjectMagma.Simulation
 {
-    public class IceExplosionRenderProperty : PointExplosionRenderProperty
+    public class FireExplosionRenderProperty : PointExplosionRenderProperty
     {
         protected override PointExplosionRenderable CreateExplosionRenderable(Entity entity, Vector3 position)
         {
-            return new IceExplosionRenderable(position);
+            return new FireExplosionRenderable(position);
         }
     }
 }

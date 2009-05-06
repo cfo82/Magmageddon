@@ -7,7 +7,7 @@ using Microsoft.Xna.Framework;
 
 namespace ProjectMagma.Renderer.ParticleSystem.Emitter
 {
-    public class IceExplosionEmitter : ParticleEmitter
+    public class IceExplosionEmitter : PointExplosionEmitter
     {
         private struct SecondaryEmitter
         {
@@ -30,7 +30,7 @@ namespace ProjectMagma.Renderer.ParticleSystem.Emitter
             }
         }
 
-        public int CalculateParticleCount(
+        public override int CalculateParticleCount(
             double lastFrameTime,
             double currentFrameTime
         )
@@ -74,7 +74,7 @@ namespace ProjectMagma.Renderer.ParticleSystem.Emitter
             return numParticles;
         }
 
-        public void CreateParticles(
+        public override void CreateParticles(
             double lastFrameTime,
             double currentFrameTime,
             CreateVertex[] array,

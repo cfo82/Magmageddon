@@ -10,50 +10,20 @@ using Microsoft.Xna.Framework.Graphics.PackedVector;
 
 namespace ProjectMagma.Renderer.ParticleSystem.Stateful.Implementations
 {
-    public class IceExplosion : StatefulParticleSystem
+    public class IceExplosion : PointExplosion
     {
         public IceExplosion(
             Renderer renderer,
             WrappedContentManager wrappedContent,
             GraphicsDevice device
         )
-        :   base(renderer, wrappedContent, device)
+        :   base(renderer, wrappedContent, device, "Textures/Sfx/IceExplosion")
         {
-            explosionSprite = wrappedContent.Load<Texture2D>("Textures/Sfx/IceExplode");
         }
 
-        private Effect LoadEffect(WrappedContentManager wrappedContent)
+        protected override Effect LoadEffect(WrappedContentManager wrappedContent)
         {
             return wrappedContent.Load<Effect>("Effects/Sfx/ParticleSystem/Stateful/Implementations/IceExplosion");
         }
-
-        protected override Effect LoadCreateEffect(WrappedContentManager wrappedContent)
-        {
-            return LoadEffect(wrappedContent);
-        }
-
-        protected override Effect LoadUpdateEffect(WrappedContentManager wrappedContent)
-        {
-            return LoadEffect(wrappedContent);
-        }
-
-        protected override Effect LoadRenderEffect(WrappedContentManager wrappedContent)
-        {
-            return LoadEffect(wrappedContent);
-        }
-
-        protected override void SetUpdateParameters(EffectParameterCollection parameters)
-        {
-            base.SetUpdateParameters(parameters);
-        }
-
-        protected override void SetRenderingParameters(EffectParameterCollection parameters)
-        {
-            base.SetRenderingParameters(parameters);
-
-            parameters["RenderParticlesSpriteTexture"].SetValue(explosionSprite);
-        }
-
-        private Texture2D explosionSprite;
     }
 }

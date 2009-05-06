@@ -910,7 +910,7 @@ namespace ProjectMagma.Simulation
                     deathExplosion.AddStringAttribute("bv_type", "sphere");
 
                     // todo: change this
-                    deathExplosion.AddProperty("render", new IceExplosionRenderProperty());
+                    deathExplosion.AddProperty("render", new FireExplosionRenderProperty());
                     deathExplosion.AddProperty("collision", new CollisionProperty());
                     deathExplosion.AddProperty("controller", new ExplosionControllerProperty());
 

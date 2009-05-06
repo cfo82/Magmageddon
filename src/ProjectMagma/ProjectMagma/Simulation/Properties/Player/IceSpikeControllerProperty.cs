@@ -186,7 +186,6 @@ namespace ProjectMagma.Simulation
 
             iceSpikeExplosion.AddStringAttribute("bv_type", "sphere");
 
-            // todo: change this
             iceSpikeExplosion.AddProperty("render", new IceExplosionRenderProperty());
             iceSpikeExplosion.AddProperty("collision", new CollisionProperty());
             iceSpikeExplosion.AddProperty("controller", new ExplosionControllerProperty());

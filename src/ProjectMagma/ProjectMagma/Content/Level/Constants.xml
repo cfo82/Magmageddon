@@ -20,7 +20,7 @@
       <Attribute name="max_energy" template="int" value="100"/>
       <Attribute name="max_fuel" template="int" value="2500"/>
 
-      <Attribute name="lava_damage_per_second" template="int" value="200"/>
+      <Attribute name="lava_damage_per_second" template="int" value="400"/>
       <Attribute name="energy_recharge_interval" template="int" value="200"/>
 
       <Attribute name="fuel_recharge_multiplier" template="float" value="1.2"/>

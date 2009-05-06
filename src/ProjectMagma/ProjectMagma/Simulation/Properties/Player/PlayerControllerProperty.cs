@@ -46,6 +46,7 @@ namespace ProjectMagma.Simulation
 
         private readonly Random rand = new Random(DateTime.Now.Millisecond);
         private double respawnStartedAt = 0;
+        private Entity deathExplosion = null;
 
         private bool jetpackActive = false;
 
@@ -855,13 +856,6 @@ namespace ProjectMagma.Simulation
         {
             if (player.GetInt("health") <= 0)
             {
-                // any lives left?
-                if (player.GetInt("lives") <= 0)
-                {
-                    Game.Instance.Simulation.EntityManager.RemoveDeferred(player);
-                    return true;
-                }
-
                 if (respawnStartedAt == 0)
                 {
                     respawnStartedAt = at;
@@ -895,6 +889,35 @@ namespace ProjectMagma.Simulation
                         // remove flamethrower flame
                         Game.Instance.Simulation.EntityManager.RemoveDeferred(flame);
                         flame = null;
+                    }
+
+                    // explode!
+                    // add explosion
+                    deathExplosion = new Entity(player.Name + "_explosion");
+                    deathExplosion.AddStringAttribute("player", player.Name);
+
+                    // todo: extract constant
+                    deathExplosion.AddIntAttribute("live_span", 2000);
+                    deathExplosion.AddIntAttribute("damage", constants.GetInt("ice_spike_damage"));
+                    deathExplosion.AddIntAttribute("freeze_time", constants.GetInt("ice_spike_freeze_time"));
+
+                    deathExplosion.AddVector3Attribute("position", player.GetVector3("position"));
+
+                    deathExplosion.AddStringAttribute("mesh", "Models/Sfx/icespike_explosion");
+                    // todo: extract constant
+                    deathExplosion.AddVector3Attribute("scale", new Vector3(30, 30, 30));
+
+                    deathExplosion.AddStringAttribute("bv_type", "sphere");
+
+                    // todo: change this
+                    deathExplosion.AddProperty("render", new IceExplosionRenderProperty());
+                    deathExplosion.AddProperty("collision", new CollisionProperty());
+                    deathExplosion.AddProperty("controller", new ExplosionControllerProperty());
+
+                    // any lives left?
+                    if (player.GetInt("lives") <= 0)
+                    {
+                        Game.Instance.Simulation.EntityManager.RemoveDeferred(player);
                     }
 
                     // dead

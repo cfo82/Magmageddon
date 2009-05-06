@@ -111,7 +111,7 @@ namespace ProjectMagma.Simulation
                 GivePower(other);
 
                 // notify hud
-                (other.GetProperty("hud") as HUDProperty).NotifyPowerupPickup(powerup.GetVector3("position"), "EXCELLENT");
+                (other.GetProperty("hud") as HUDProperty).NotifyPowerupPickup(powerup.GetVector3("position"), NotificationString);
 
                 // check ranges
                 ((PlayerControllerProperty)other.GetProperty("controller")).CheckPlayerAttributeRanges(other);
@@ -123,6 +123,8 @@ namespace ProjectMagma.Simulation
                 powerUsed = true;
             }
         }
+
+        protected abstract string NotificationString { get; }
 
         protected abstract void GivePower(Entity player);
 

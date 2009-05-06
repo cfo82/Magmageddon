@@ -17,5 +17,11 @@ namespace ProjectMagma.Simulation
             player.SetFloat("repulsion_seconds", 0);
         }
 
+
+        protected override string NotificationString
+        {
+            get { return "LONG JUMPS"; }
+        }
+
     }
 }

@@ -17,5 +17,10 @@ namespace ProjectMagma.Simulation
             player.SetInt("jumps", 0);
         }
 
+        protected override string NotificationString
+        {
+            get { return "REPULSION"; }
+        }
+
     }
 }

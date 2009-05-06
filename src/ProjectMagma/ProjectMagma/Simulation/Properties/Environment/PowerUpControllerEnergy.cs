@@ -16,5 +16,10 @@ namespace ProjectMagma.Simulation
             player.SetInt("energy", player.GetInt("energy") + powerup.GetInt("value"));
         }
 
+        protected override string NotificationString
+        {
+            get { return "ENERGY REFILL"; }
+        }
+
     }
 }

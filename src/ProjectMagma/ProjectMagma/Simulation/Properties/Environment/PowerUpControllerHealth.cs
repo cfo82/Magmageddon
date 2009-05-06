@@ -16,5 +16,11 @@ namespace ProjectMagma.Simulation
             player.SetInt("health", player.GetInt("health") + powerup.GetInt("value"));
         }
 
+
+        protected override string NotificationString
+        {
+            get { return "HEALTH REFILL"; }
+        }
+
     }
 }

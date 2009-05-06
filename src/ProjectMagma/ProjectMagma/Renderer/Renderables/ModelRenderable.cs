@@ -31,13 +31,11 @@ namespace ProjectMagma.Renderer
             RenderChannel = RenderChannelType.One;
         }
 
-        public override void LoadResources()
-        {
-            base.LoadResources();
+        //public override void LoadResources()
+        //{
+        //    base.LoadResources();
 
-            ApplyEffectsToModel();
-            defaultEffectMapping = CurrentPartEffectMapping();
-        }
+        //}
 
         #endregion
 
@@ -62,6 +60,9 @@ namespace ProjectMagma.Renderer
 
         public override void Draw(Renderer renderer, GameTime gameTime)
         {
+            ApplyEffectsToModel();
+            defaultEffectMapping = CurrentPartEffectMapping();
+
             RecomputeWorldMatrix();
             RecomputeBoneTransforms();
             foreach (ModelMesh mesh in Model.Meshes)

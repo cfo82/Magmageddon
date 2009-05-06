@@ -21,23 +21,36 @@ namespace ProjectMagma.Renderer
             RenderChannel = RenderChannelType.One;
         }
 
-        protected override void ApplyEffectsToModel()
-        {
-            base.ApplyEffectsToModel();
+        //protected override void ApplyEffectsToModel()
+        //{
+        //    base.ApplyEffectsToModel();
             
-            // create animation component. however, it will register itself in the main 
-            // game class as a drawable component. we do not like that and remove it again.
+        //    // create animation component. however, it will register itself in the main 
+        //    // game class as a drawable component. we do not like that and remove it again.
+
+        //    // create all the individual animation controllers as defined in the xml file
+        //    // accompanying the player model
+        //    //idle = new AnimationController(Game.Instance, animator.Animations["idle0"]);
+        //    //walk = new AnimationController(Game.Instance, animator.Animations["walk"]);
+        //    //nod = new AnimationController(Game.Instance, animator.Animations["nodHead"]);
+
+        //}
+
+        public override void LoadResources()
+        {
+            base.LoadResources();
+
+            ApplyEffectsToModel();
+            InitializeControllers();
+        }
+
+        private void InitializeControllers()
+        {
             animator = new ModelAnimator(Game.Instance, Model);
             Game.Instance.Components.RemoveAt(Game.Instance.Components.Count - 1);
 
-            // create all the individual animation controllers as defined in the xml file
-            // accompanying the player model
-            //idle = new AnimationController(Game.Instance, animator.Animations["idle0"]);
-            //walk = new AnimationController(Game.Instance, animator.Animations["walk"]);
-            //nod = new AnimationController(Game.Instance, animator.Animations["nodHead"]);
-
             controllers = new Dictionary<string, AnimationController>();
-            foreach(string key in animator.Animations.Keys)
+            foreach (string key in animator.Animations.Keys)
             {
                 controllers.Add(key, new AnimationController(Game.Instance, animator.Animations[key]));
             }
@@ -46,6 +59,7 @@ namespace ProjectMagma.Renderer
             RunController("idle0");
             animationMode = AnimationMode.Permanent;
             permanentState = "idle0";
+
         }
 
         private Dictionary<string, AnimationController> controllers;

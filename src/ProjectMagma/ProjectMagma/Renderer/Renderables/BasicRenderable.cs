@@ -17,6 +17,7 @@ namespace ProjectMagma.Renderer
             UseSquash = true;
             RenderChannel = RenderChannelType.Three;
             if (PersistentSquash) start_squash = true;
+            SetDefaultMaterialParameters();
         }
 
         protected override void PrepareMeshEffects(Renderer renderer, GameTime gameTime, ModelMesh mesh)
@@ -55,7 +56,6 @@ namespace ProjectMagma.Renderer
         protected override void ApplyEffectsToModel()
         {
             Effect effect = Game.Instance.ContentManager.Load<Effect>("Effects/Basic/Basic");
-            SetDefaultMaterialParameters();
             ReplaceBasicEffect(Model, effect);
         }
 

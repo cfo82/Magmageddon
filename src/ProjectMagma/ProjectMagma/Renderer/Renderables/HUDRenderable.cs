@@ -2,6 +2,8 @@
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using ProjectMagma.MathHelpers;
+using System.Diagnostics;
+using System.Collections.Generic;
 
 namespace ProjectMagma.Renderer
 {
@@ -35,6 +37,7 @@ namespace ProjectMagma.Renderer
             displayedHealth = health;
             
             frozenColorStrength = new SineFloat(0.0f, 0.85f, 5.0f);
+            powerupPickupDetails = new LinkedList<PowerupPickupDetails>();
         }
 
         
@@ -46,8 +49,9 @@ namespace ProjectMagma.Renderer
             barBackgroundTexture = Game.Instance.ContentManager.Load<Texture2D>("Sprites/Hud/bar_background");
             barComponentTexture = Game.Instance.ContentManager.Load<Texture2D>("Sprites/Hud/bar_highlight");
             playerNameFont = Game.Instance.ContentManager.Load<SpriteFont>("Fonts/hud_playername");
-            powerupFont = Game.Instance.ContentManager.Load<SpriteFont>("Fonts/hud_powerup");
+            powerupStatusFont = Game.Instance.ContentManager.Load<SpriteFont>("Fonts/hud_powerup_status");
             livesFont = Game.Instance.ContentManager.Load<SpriteFont>("Fonts/hud_lives");
+            powerupCollectFont = Game.Instance.ContentManager.Load<SpriteFont>("Fonts/hud_powerup_collect");
             font = Game.Instance.ContentManager.Load<SpriteFont>("Sprites/HUD/HUDFont");
             background = Game.Instance.ContentManager.Load<Texture2D>("Sprites/HUD/background");
             healthBar = Game.Instance.ContentManager.Load<Texture2D>("Sprites/HUD/health");
@@ -115,7 +119,20 @@ namespace ProjectMagma.Renderer
             {
                 playerName = value;
             }
-            if (id == "") ;
+            if (id == "NextPowerupNotification")
+            {
+                OnPowerupPickup(nextPowerupPickupPosition, value);
+            }
+        }
+
+        public override void UpdateVector3(string id, Vector3 value)
+        {
+            base.UpdateVector3(id, value);
+
+            if (id == "NextPowerupPickupPosition")
+            {
+                nextPowerupPickupPosition = value;
+            }
         }
 
         public override void UpdateFloat(string id, float value)
@@ -147,7 +164,7 @@ namespace ProjectMagma.Renderer
             UpdateDisplayedValues(gameTime);
             ApplyBarEffectParameters();
             DrawBars();
-            DrawStrings();
+            DrawStrings(renderer);
         }
 
         private void UpdateDisplayedValues(GameTime gameTime)
@@ -201,7 +218,7 @@ namespace ProjectMagma.Renderer
             spriteBatch.End();
         }
 
-        private void DrawStrings()
+        private void DrawStrings(Renderer renderer)
         {
             spriteBatch.Begin(SpriteBlendMode.AlphaBlend, SpriteSortMode.Immediate, SaveStateMode.None, spriteScale);
             Vector3 textColor = defaultTextColor * (1 - frozenColorStrength.Value) + frozenTextColor * frozenColorStrength.Value;
@@ -215,25 +232,82 @@ namespace ProjectMagma.Renderer
 
             // draw the current powerup status, if any            
             string powerupString = PowerupString();
-            Vector2 powerupStringSize = powerupFont.MeasureString(powerupString);
+            Vector2 powerupStringSize = powerupStatusFont.MeasureString(powerupString);
             Vector2 powerupPos = new Vector2(xStart + 52, yStart + 21) + invMultiplier * (new Vector2(165, 71) - powerupStringSize);
             Vector2 powerupShadowPos = powerupPos + textShadowOffset;
-            spriteBatch.DrawString(powerupFont, powerupString, powerupShadowPos, Color.DimGray);
-            spriteBatch.DrawString(powerupFont, powerupString, powerupPos, new Color(textColor));
+            spriteBatch.DrawString(powerupStatusFont, powerupString, powerupShadowPos, Color.DimGray);
+            spriteBatch.DrawString(powerupStatusFont, powerupString, powerupPos, new Color(textColor));
 
             // draw the number of lives
             string livesString = lives.ToString();
-            Vector2 livesStringSize = powerupFont.MeasureString(livesString);
+            Vector2 livesStringSize = powerupStatusFont.MeasureString(livesString);
             Vector2 livesCenterOffset = new Vector2((int) livesStringSize.X / 2, (int) livesStringSize.Y / 2);
             Vector2 livesPos = new Vector2(xStart + 19, yStart + 50) + multiplier * (new Vector2(236, 21) - livesStringSize * 0.25f) - livesCenterOffset;
-            Vector2 livesShadowPos = livesPos + textShadowOffset/2;
+//            Vector2 livesShadowPos = livesPos + textShadowOffset/2;
             spriteBatch.DrawString(livesFont, livesString, livesPos, new Color(Color.White, 0.85f));
 
             // done
+
+            //PowerupPickupDetails details = powerupPickupDetails.First;
+            //while(details!=PowerupPickupDetails)
+            LinkedList<LinkedListNode<PowerupPickupDetails>> removedPowerupPickupDetails =
+                new LinkedList<LinkedListNode<PowerupPickupDetails>>();
+            foreach(PowerupPickupDetails details in powerupPickupDetails)
+            {
+                string detailsString = details.Notification;
+                Vector2 detailsStringSize = powerupStatusFont.MeasureString(detailsString);
+                Vector2 detailsCenterOffset = new Vector2((int)detailsStringSize.X / 2, (int)detailsStringSize.Y / 2);
+                //Vector2 detailsPos = new Vector2(xStart + 19, yStart + 50) + multiplier * (new Vector2(236, 21) - livesStringSize * 0.25f) - livesCenterOffset;
+
+                // compute projected position
+                Vector3 tmp = Vector3.Transform(details.Position, renderer.Camera.View * renderer.Camera.Projection);
+                Vector2 detailsPos = new Vector2(tmp.X / tmp.Z, tmp.Y / tmp.Z);
+                Console.WriteLine(detailsPos.ToString());
+                detailsPos = detailsPos / 2 + new Vector2(0.5f, 9.0f/16.0f * 0.5f);
+                detailsPos.Y = 9.0f/16.0f - detailsPos.Y;
+                detailsPos *= Game.Instance.GraphicsDevice.Viewport.Width;
+                detailsPos.Y -= PowerupNotificationFadeoutVerticalSpeed * details.Age;
+                details.Age += PowerupNotificationAgeStep;
+
+                // draw it 
+                spriteBatch.DrawString(powerupCollectFont, detailsString, detailsPos, new Color(Color.White, 1.0f - details.Age));
+                if(details.Age>=1)
+                {
+                    removedPowerupPickupDetails.AddLast(powerupPickupDetails.Find(details));
+                }
+            }
+            foreach(LinkedListNode<PowerupPickupDetails> node in removedPowerupPickupDetails)
+            {
+                powerupPickupDetails.Remove(node);
+            }
+
             spriteBatch.End();
 
 //            Console.WriteLine("" + frozenColorStrength.Value);
         }
+
+        void OnPowerupPickup(Vector3 nextPowerupPickupPosition, String notification)
+        {
+            //Console.WriteLine("collected powerup " + notification + " at " + nextPowerupPickupPosition.ToString());
+            PowerupPickupDetails details = new PowerupPickupDetails();
+            details.Position = nextPowerupPickupPosition;
+            details.Notification = notification;
+            details.Age = 0;
+            powerupPickupDetails.AddLast(details);
+        }
+
+        private static readonly float PowerupNotificationAgeStep = 0.05f;
+        private static readonly float PowerupNotificationFadeoutVerticalSpeed = 60.0f;
+
+        class PowerupPickupDetails
+        {
+            public Vector3 Position { get; set; }
+            public String Notification { get; set; }
+            public float Age { get; set; }
+        }
+
+        private LinkedList<PowerupPickupDetails> powerupPickupDetails;
+
 
         private void ComputePositions()
         {
@@ -310,7 +384,7 @@ namespace ProjectMagma.Renderer
             set { playerName = value; }
         }
 
-        private SpriteFont font;
+        private SpriteFont font, powerupCollectFont;
         private SpriteBatch spriteBatch;
 
         private Texture2D background;
@@ -350,7 +424,7 @@ namespace ProjectMagma.Renderer
         private Vector3 color2;
 
         private SpriteFont playerNameFont;
-        private SpriteFont powerupFont;
+        private SpriteFont powerupStatusFont;
         private SpriteFont livesFont;
 
         private Vector2 barAreaSize;
@@ -359,6 +433,9 @@ namespace ProjectMagma.Renderer
         private int xStart, yStart;
 
         private static readonly Vector2 textShadowOffset = new Vector2(2, 2);
+
+        private Vector3 nextPowerupPickupPosition;
+
 
     }
 }

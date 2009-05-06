@@ -898,8 +898,8 @@ namespace ProjectMagma.Simulation
 
                     // todo: extract constant
                     deathExplosion.AddIntAttribute("live_span", 2000);
-                    deathExplosion.AddIntAttribute("damage", constants.GetInt("ice_spike_damage"));
-                    deathExplosion.AddIntAttribute("freeze_time", constants.GetInt("ice_spike_freeze_time"));
+                    // todo: extract constant
+                    deathExplosion.AddIntAttribute("damage", 20);
 
                     deathExplosion.AddVector3Attribute("position", player.GetVector3("position"));
 

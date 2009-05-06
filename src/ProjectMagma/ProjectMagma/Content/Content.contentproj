@@ -522,11 +522,11 @@
       <Processor>TextureProcessor</Processor>
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Include="Textures\flame.tga">
+    <Compile Include="Textures\flame.tga">
       <Name>flame</Name>
       <Importer>TextureImporter</Importer>
       <Processor>TextureProcessor</Processor>
-    </None>
+    </Compile>
     <Compile Include="Textures\xna_logo.png">
       <Name>xna_logo</Name>
       <Importer>TextureImporter</Importer>

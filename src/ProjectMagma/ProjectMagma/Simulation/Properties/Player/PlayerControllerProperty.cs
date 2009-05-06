@@ -507,7 +507,10 @@ namespace ProjectMagma.Simulation
 
                         flame.AddStringAttribute("bv_type", "sphere");
 
-                        flame.AddProperty("render", new BasicRenderProperty());
+                        flame.AddStringAttribute("diffuse_texture", "Textures/flame");
+                        flame.AddFloatAttribute("alpha", 0.75f);
+
+                        flame.AddProperty("render", new TexturedRenderProperty());
                         flame.AddProperty("collision", new CollisionProperty());
                         flame.AddProperty("controller", new FlamethrowerControllerProperty());
 
@@ -1276,7 +1279,8 @@ namespace ProjectMagma.Simulation
         {
             if (entity.Name.Equals("flame" + "_" + player.Name))
             {
-                if(flameThrowerSoundInstance != null)
+                if(flameThrowerSoundInstance != null
+                    && !flameThrowerSoundInstance.IsDisposed)
                     flameThrowerSoundInstance.Stop();
                 flame = null;
                 return;

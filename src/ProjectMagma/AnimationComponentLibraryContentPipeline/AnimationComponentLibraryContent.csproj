@@ -6,7 +6,7 @@
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>Xclna.Xna.Animation.Content</RootNamespace>
-    <AssemblyName>AnimationComponentLibraryContentPipeline</AssemblyName>
+    <AssemblyName>AnimationComponentLibraryContent</AssemblyName>
     <XnaFrameworkVersion>v3.0</XnaFrameworkVersion>
     <FileUpgradeFlags>
     </FileUpgradeFlags>

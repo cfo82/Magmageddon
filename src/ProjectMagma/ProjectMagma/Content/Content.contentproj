@@ -1381,28 +1381,6 @@
     </Compile>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Sprites\Menu\blue_dwarf.jpg">
-      <Name>blue_dwarf</Name>
-      <Importer>TextureImporter</Importer>
-      <Processor>TextureProcessor</Processor>
-    </Compile>
-    <Compile Include="Sprites\Menu\green_dwarf.jpg">
-      <Name>green_dwarf</Name>
-      <Importer>TextureImporter</Importer>
-      <Processor>TextureProcessor</Processor>
-    </Compile>
-    <Compile Include="Sprites\Menu\orange_dwarf.jpg">
-      <Name>orange_dwarf</Name>
-      <Importer>TextureImporter</Importer>
-      <Processor>TextureProcessor</Processor>
-    </Compile>
-    <Compile Include="Sprites\Menu\purple_dwarf.jpg">
-      <Name>purple_dwarf</Name>
-      <Importer>TextureImporter</Importer>
-      <Processor>TextureProcessor</Processor>
-    </Compile>
-  </ItemGroup>
-  <ItemGroup>
     <Compile Include="Sprites\Menu\Robot\blue_dwarf.jpg">
       <Name>blue_dwarf</Name>
       <Importer>TextureImporter</Importer>

@@ -90,6 +90,12 @@ namespace ProjectMagma.Simulation
         {
         }
 
+        public void NotifyPowerupPickup(Vector3 worldPosition, string notification)
+        {
+            ChangeVector3("NextPowerupPickupPosition", worldPosition);
+            ChangeString("NextPowerupNotification", notification);
+        }
+
         public override void OnDetached(Entity entity)
         {
             Game.Instance.Simulation.CurrentUpdateQueue.AddUpdate(new RemoveRenderableUpdate((Renderable)Updatable));

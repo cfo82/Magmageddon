@@ -106,7 +106,7 @@ namespace ProjectMagma.Renderer.ParticleSystem.Emitter
 
         private Vector3 RandomOffset()
         {
-            const float offset = 20;
+            const float offset = 5;
             return new Vector3(
                 (float)(random.NextDouble() - 0.5) * 2 * offset,
                 (float)(random.NextDouble() - 0.5) * 2 * offset,
@@ -115,7 +115,7 @@ namespace ProjectMagma.Renderer.ParticleSystem.Emitter
 
         private Vector3 SecondaryOffset()
         {
-            const float offset = 30;
+            const float offset = 25;
             return new Vector3(
                 (float)(random.NextDouble() - 0.5) * 2 * offset,
                 (float)(random.NextDouble() - 0.5) * 2 * offset,
@@ -124,7 +124,7 @@ namespace ProjectMagma.Renderer.ParticleSystem.Emitter
 
         private Vector3 RandomVelocity()
         {
-            const float speed = 150;
+            const float speed = 100;
 
             double horizontalAngle = random.NextDouble() * MathHelper.Pi * 2.0;
             double verticalAngle = random.NextDouble() * MathHelper.Pi * 2.0;

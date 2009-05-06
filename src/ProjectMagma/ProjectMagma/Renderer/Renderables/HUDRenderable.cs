@@ -115,6 +115,7 @@ namespace ProjectMagma.Renderer
             {
                 playerName = value;
             }
+            if (id == "") ;
         }
 
         public override void UpdateFloat(string id, float value)

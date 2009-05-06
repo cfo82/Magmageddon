@@ -110,6 +110,9 @@ namespace ProjectMagma.Simulation
                 // use the power
                 GivePower(other);
 
+                // notify hud
+                (other.GetProperty("hud") as HUDProperty).NotifyPowerupPickup(powerup.GetVector3("position"), "blah");
+
                 // check ranges
                 ((PlayerControllerProperty)other.GetProperty("controller")).CheckPlayerAttributeRanges(other);
 

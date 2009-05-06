@@ -35,7 +35,7 @@
 
   <Entity name="island_base_grass" extends="island_base" abstract="true">
     <Attributes>
-      <Attribute name="wind_strength" template="float" value="0.015"/>
+      <Attribute name="wind_strength" template="float" value="0.03"/>
     </Attributes>
   </Entity>
 

@@ -78,7 +78,7 @@ namespace ProjectMagma.Simulation
 
         // values which get reset on each update
         private float collisionAt = float.MinValue;
-        private bool movedByStick;
+        private float movedAt = float.MinValue;
         Vector3 previousPosition;
 
         public PlayerControllerProperty()
@@ -198,7 +198,6 @@ namespace ProjectMagma.Simulation
 
             // reset some stuff
             previousPosition = playerPosition;
-            movedByStick = false;
 
             // get input
             controllerInput.Update(playerIndex, simTime);
@@ -649,7 +648,7 @@ namespace ProjectMagma.Simulation
 
             if (controllerInput.moveStickMoved)
             {
-                //movedByStick = true;
+                movedAt = Game.Instance.Simulation.Time.At;
 
                 // XZ movement
                 if (activeIsland == null)
@@ -1171,7 +1170,8 @@ namespace ProjectMagma.Simulation
             else
             {
                 // apply collision response to moving player
-//                if (movedByStick || destinationIsland != null)
+                if (simTime.At < movedAt + 400 // todo: extract constants
+                    || simTime.At < islandJumpPerformedAt + 1000) 
                 {
                     // calculate pseudo-radi
                     float pr = (player.GetVector3("scale") * new Vector3(1, 0, 1)).Length();

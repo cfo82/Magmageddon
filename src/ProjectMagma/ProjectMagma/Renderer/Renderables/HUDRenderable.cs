@@ -264,8 +264,12 @@ namespace ProjectMagma.Renderer
                 detailsPos.Y -= PowerupNotificationFadeoutVerticalSpeed * details.Age;
                 details.Age += PowerupNotificationAgeStep;
 
+                Vector2 detailsShadowPos = detailsPos + textShadowOffset;
+
                 // draw it 
+                spriteBatch.DrawString(powerupCollectFont, detailsString, detailsShadowPos, new Color(Color.DimGray, 1.0f-details.Age));
                 spriteBatch.DrawString(powerupCollectFont, detailsString, detailsPos, new Color(Color.White, 1.0f - details.Age));
+
                 if(details.Age>=1)
                 {
                     powerupPickupDetails.RemoveAt(i);

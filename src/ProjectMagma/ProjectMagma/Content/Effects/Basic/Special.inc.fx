@@ -7,7 +7,7 @@ inline void PerturbIslandTexCoords(inout float2 texCoord, in float nY)
 	{
 		float4 clouds = tex2D(CloudsSampler, texCoord + RandomOffset);
 		float2 perturbation = clouds.gb * 2 * WindStrength - WindStrength;
-		texCoord.x += perturbation.x;
+		texCoord.y += perturbation.y;
 	}	
 }
 

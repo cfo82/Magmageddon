@@ -36,8 +36,6 @@ namespace ProjectMagma.Renderer
         public override void LoadResources()
         {
             base.LoadResources();
-
-            // ..
         }
 
         #endregion

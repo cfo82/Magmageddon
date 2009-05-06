@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Diagnostics;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -8,6 +9,12 @@ namespace ProjectMagma.Renderer.ParticleSystem.Emitter
 {
     public class IceExplosionEmitter : ParticleEmitter
     {
+        private struct SecondaryEmitter
+        {
+            public Vector3 point;
+            public int lastParticleCount;
+        }
+
         public IceExplosionEmitter(
             Vector3 point,
             double explosionTime 
@@ -16,8 +23,13 @@ namespace ProjectMagma.Renderer.ParticleSystem.Emitter
             currentPoint = point;
             this.explosionTime = explosionTime;
             initial = true;
+            secondaryEmitters = new SecondaryEmitter[random.Next(3, 5)];
+            for (int i = 0; i < secondaryEmitters.Length; ++i)
+            {
+                secondaryEmitters[i].point = currentPoint + SecondaryOffset();
+            }
         }
-        
+
         public int CalculateParticleCount(
             double lastFrameTime,
             double currentFrameTime
@@ -25,15 +37,39 @@ namespace ProjectMagma.Renderer.ParticleSystem.Emitter
         {
             int numParticles = 0;
 
-            if (initial)
-            {
-                numParticles += 10 + random.Next(0, 10);
-                initial = false;
+            { // primary
+                if (initial)
+                {
+                    numParticles += 10 + random.Next(0, 10);
+                }
+
+                double diff = (currentFrameTime - explosionTime) / (0.6);
+                if (diff > 1.0) { diff = 1.0; }
+                numParticles += (int)((5 + random.Next(0, 10)) * (1.0 - diff));
+
+                primaryParticleCount = numParticles;
             }
 
-            double diff = (currentFrameTime - explosionTime) / (0.6);
-            if (diff > 1.0) { diff = 1.0; }
-            numParticles += (int)((5 + random.Next(0, 10)) * (1.0 - diff));
+            for (int i = 0; i < secondaryEmitters.Length; ++i)
+            {
+                secondaryEmitters[i].lastParticleCount = 0;
+
+                if (initial)
+                {
+                    secondaryEmitters[i].lastParticleCount += 5 + random.Next(0, 5);
+                }
+
+                double diff = (currentFrameTime - explosionTime) / (0.6);
+                if (diff > 1.0) { diff = 1.0; }
+                secondaryEmitters[i].lastParticleCount += (int)((2 + random.Next(0, 3)) * (1.0 - diff));
+
+                numParticles += secondaryEmitters[i].lastParticleCount;
+            }
+
+            if (initial)
+            {
+                initial = false;
+            }
 
             return numParticles;
         }
@@ -46,18 +82,42 @@ namespace ProjectMagma.Renderer.ParticleSystem.Emitter
             int length
         )
         {
-            for (int i = 0; i < length; ++i)
+            int currentOffset = start;
+
+            for (int i = 0; i < primaryParticleCount; ++i)
             {
-                array[start + i].ParticlePosition = currentPoint + RandomOffset();
-                array[start + i].ParticleVelocity = RandomVelocity();
+                array[currentOffset].ParticlePosition = currentPoint + RandomOffset();
+                array[currentOffset].ParticleVelocity = RandomVelocity();
+                ++currentOffset;
             }
+
+            for (int i = 0; i < secondaryEmitters.Length; ++i)
+            {
+                for (int j = 0; j < secondaryEmitters[i].lastParticleCount; ++j)
+                {
+                    array[currentOffset].ParticlePosition = secondaryEmitters[i].point + RandomOffset();
+                    array[currentOffset].ParticleVelocity = RandomVelocity();
+                    ++currentOffset;
+                }
+            }
+
+            Debug.Assert(currentOffset - start == length);
         }
 
         private Vector3 RandomOffset()
         {
-            const float offset = 40;
+            const float offset = 20;
             return new Vector3(
-                (float)(random.NextDouble()-0.5) * 2 * offset,
+                (float)(random.NextDouble() - 0.5) * 2 * offset,
+                (float)(random.NextDouble() - 0.5) * 2 * offset,
+                (float)(random.NextDouble() - 0.5) * 2 * offset);
+        }
+
+        private Vector3 SecondaryOffset()
+        {
+            const float offset = 30;
+            return new Vector3(
+                (float)(random.NextDouble() - 0.5) * 2 * offset,
                 (float)(random.NextDouble() - 0.5) * 2 * offset,
                 (float)(random.NextDouble() - 0.5) * 2 * offset);
         }
@@ -79,5 +139,7 @@ namespace ProjectMagma.Renderer.ParticleSystem.Emitter
         private static Random random = new Random();
         private Vector3 currentPoint;
         private bool initial;
+        private int primaryParticleCount;
+        private SecondaryEmitter[] secondaryEmitters;
     }
 }

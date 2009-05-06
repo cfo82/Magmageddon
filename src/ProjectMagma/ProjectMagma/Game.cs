@@ -87,7 +87,7 @@ namespace ProjectMagma
 
             this.IsFixedTimeStep = false;
             //this.TargetElapsedTime = TimeSpan.FromSeconds(1.0 / 15.0);
-            graphics.SynchronizeWithVerticalRetrace = false; 
+            //graphics.SynchronizeWithVerticalRetrace = false; 
             graphics.ApplyChanges();
             graphics.PreferredBackBufferWidth = 1280;
             graphics.PreferredBackBufferHeight = 720;
@@ -580,7 +580,7 @@ namespace ProjectMagma
 #if !XBOX && DEBUG            
             formCollection.Draw();
 #endif
-            DrawFrameCounter(gameTime);
+            //DrawFrameCounter(gameTime);
 
             profiler.EndSection("draw");
             profiler.EndFrame();

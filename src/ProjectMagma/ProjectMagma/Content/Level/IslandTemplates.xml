@@ -50,6 +50,7 @@
   <Entity name="island_base_burnt1" extends="island_base_burnt" abstract="true">
     <Attributes>
       <Attribute name="mesh" template="string" value="Models/Islands/burnt1_grp"/>
+      <Attribute name="landing_offset" template="float3" value="30 70 0"/>
     </Attributes>
   </Entity>
 
@@ -82,12 +83,14 @@
   <Entity name="island_base_grass3" extends="island_base_grass" abstract="true">
     <Attributes>
       <Attribute name="mesh" template="string" value="Models/Islands/grass3_grp"/>
+      <Attribute name="landing_offset" template="float3" value="30 70 0"/>
     </Attributes>
   </Entity>
 
   <Entity name="island_base_grass4" extends="island_base_grass" abstract="true">
     <Attributes>
       <Attribute name="mesh" template="string" value="Models/Islands/grass4_grp"/>
+      <Attribute name="landing_offset" template="float3" value="30 70 0"/>
     </Attributes>
   </Entity>
 

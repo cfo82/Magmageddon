@@ -262,8 +262,12 @@ namespace ProjectMagma.Renderer
                 detailsPos *= Game.Instance.GraphicsDevice.Viewport.Width;
                 
                 // apply age effect
-                detailsPos.Y -= (float)dt * PowerupNotificationFadeoutVerticalSpeed * details.Age;
-                details.Age += (float)dt * PowerupNotificationAgeStep;
+                //detailsPos.Y -= (float)dt * PowerupNotificationFadeoutVerticalSpeed * details.Age;
+                //details.Age += (float)dt * PowerupNotificationAgeStep;
+
+
+                detailsPos.Y -= PowerupNotificationFadeoutVerticalSpeed * details.Age;
+                details.Age += PowerupNotificationAgeStep;
 
                 // draw it 
                 Vector2 detailsShadowPos = detailsPos + textShadowOffset;
@@ -425,9 +429,11 @@ namespace ProjectMagma.Renderer
 
         private double lastFrameTime;
         private double currentFrameTime;
-        private static readonly float PowerupNotificationAgeStep = 1.0f;
-        private static readonly float PowerupNotificationFadeoutVerticalSpeed = 2000.0f;
+        //private static readonly float PowerupNotificationAgeStep = 1.0f;
+        //private static readonly float PowerupNotificationFadeoutVerticalSpeed = 2000.0f;
 
+        private static readonly float PowerupNotificationAgeStep = 0.02f;
+        private static readonly float PowerupNotificationFadeoutVerticalSpeed = 20.0f;
 
         private List<PowerupPickupDetails> powerupPickupDetails;
 

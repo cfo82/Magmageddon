@@ -20,7 +20,7 @@ namespace ProjectMagma.Simulation
 
         protected override string NotificationString
         {
-            get { return "LONG JUMPS"; }
+            get { return "FAR JUMPS"; }
         }
 
     }

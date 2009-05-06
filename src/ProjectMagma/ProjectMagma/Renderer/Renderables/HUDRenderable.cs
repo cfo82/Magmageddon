@@ -426,7 +426,7 @@ namespace ProjectMagma.Renderer
         private double lastFrameTime;
         private double currentFrameTime;
         private static readonly float PowerupNotificationAgeStep = 1.0f;
-        private static readonly float PowerupNotificationFadeoutVerticalSpeed = 460.0f;
+        private static readonly float PowerupNotificationFadeoutVerticalSpeed = 2000.0f;
 
 
         private List<PowerupPickupDetails> powerupPickupDetails;

@@ -277,6 +277,8 @@ namespace ProjectMagma.Simulation
             // update player attributes
             player.SetInt("fuel", fuel);
 
+            // player.SetVector3("position", new Vector3(0, 300, 200));
+
             player.SetVector3("position", playerPosition);
             player.SetVector3("velocity", playerVelocity);
             player.SetVector3("collision_pushback_velocity", collisionPushbackVelocity);
@@ -1504,7 +1506,7 @@ namespace ProjectMagma.Simulation
             }
         }
 
-        struct ControllerInput
+        class ControllerInput
         {
             private GamePadState oldGPState;
             private KeyboardState oldKBState;
@@ -1687,12 +1689,12 @@ namespace ProjectMagma.Simulation
             public bool jetpackButtonHold, flamethrowerButtonHold, iceSpikeButtonHold, hitButtonHold, attractionButtonHold;
 
             // times
-            public float hitButtonPressedAt;
+            public float hitButtonPressedAt = float.NegativeInfinity;
 
             private static float gamepadEmulationValue = -1f;
         }
 
-        ControllerInput controllerInput;
+        private readonly ControllerInput controllerInput = new ControllerInput();
     }
 
 

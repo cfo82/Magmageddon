@@ -46,8 +46,7 @@ namespace ProjectMagma.Renderer
 
         private void InitializeControllers()
         {
-            animator = new ModelAnimator(Game.Instance, Model);
-            Game.Instance.Components.RemoveAt(Game.Instance.Components.Count - 1);
+            animator = new ModelAnimator(Model);
 
             controllers = new Dictionary<string, AnimationController>();
             foreach (string key in animator.Animations.Keys)
@@ -59,7 +58,6 @@ namespace ProjectMagma.Renderer
             RunController("idle0");
             animationMode = AnimationMode.Permanent;
             permanentState = "idle0";
-
         }
 
         private Dictionary<string, AnimationController> controllers;

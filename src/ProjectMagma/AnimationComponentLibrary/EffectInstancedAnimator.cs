@@ -38,10 +38,9 @@ namespace Xclna.Xna.Animation
         /// <summary>
         /// Creates a new EffectInstancedAnimator.
         /// </summary>
-        /// <param name="game">The game.</param>
         /// <param name="model">The model.</param>
-        public EffectInstancedAnimator(Game game, Model model)
-            : base(game, model)
+        public EffectInstancedAnimator(Model model)
+            : base(model)
         {
 
         }

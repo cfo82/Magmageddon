@@ -350,9 +350,9 @@ namespace Xclna.Xna.Animation
             this.model = model;
 
             // Create an init the new controller
-            animator = new ModelAnimator(Game, model);
-            animator.Enabled = true;
-            animator.Visible = true;
+            animator = new ModelAnimator(model);
+            //animator.Enabled = true;
+            //animator.Visible = true;
 
             InitializeEffects(model);
 

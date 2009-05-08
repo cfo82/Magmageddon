@@ -37,7 +37,7 @@ namespace Xclna.Xna.Animation
     /// <summary>
     /// Animates and draws a model that was processed with AnimatedModelProcessor
     /// </summary>
-    public  class ModelAnimator : DrawableGameComponent
+    public  class ModelAnimator
     {
 
 
@@ -126,9 +126,8 @@ namespace Xclna.Xna.Animation
         /// <summary>
         /// Creates a new instance of ModelAnimator.
         /// </summary>
-        /// <param name="game">The game to which this component will belong.</param>
         /// <param name="model">The model to be animated.</param>
-        public ModelAnimator(Game game, Model model) : base(game)
+        public ModelAnimator(Model model)
         {
             this.model = model;
 
@@ -175,9 +174,6 @@ namespace Xclna.Xna.Animation
                 else
                     palette[i] = null;
             }
-            // Update after AnimationController by default
-            base.UpdateOrder = 1;
-            game.Components.Add(this);
    
             // Test to see if model has too many bones
             for (int i = 0; i < model.Meshes.Count; i++ )
@@ -264,7 +260,7 @@ namespace Xclna.Xna.Animation
         /// Updates the animator by finding the current absolute transforms.
         /// </summary>
         /// <param name="gameTime">The GameTime.</param>
-        public override void Update(GameTime gameTime)
+        public void Update(GameTime gameTime)
         {
             bonePoses.CopyAbsoluteTransformsTo(pose);
             for (int i = 0; i < skinInfo.Length; i ++) 
@@ -330,7 +326,7 @@ namespace Xclna.Xna.Animation
         /// Draws the current frame
         /// </summary>
         /// <param name="gameTime">The game time</param>
-        public override void Draw(GameTime gameTime)
+        public void Draw(GameTime gameTime)
         {
             //try
             {

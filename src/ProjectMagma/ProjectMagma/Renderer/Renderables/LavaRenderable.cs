@@ -27,6 +27,10 @@ namespace ProjectMagma.Renderer
             this.fireFractalTexture = fireFractalTexture;
             this.vectorCloudTexture = vectorCloudTexture;
             this.graniteTexture = graniteTexture;
+            SetDefaultMaterialParameters();
+
+            Effect effect = Game.Instance.ContentManager.Load<Effect>("Effects/Lava/Lava");
+            InitializeRandomOffsets(effect);
         }
 
         public override void LoadResources()
@@ -38,12 +42,8 @@ namespace ProjectMagma.Renderer
 
         protected override void ApplyEffectsToModel()
         {
-//            effect = Game.Instance.ContentManager.Load<Effect>("Effects/Lava/Lava");
-
             Effect effect = Game.Instance.ContentManager.Load<Effect>("Effects/Lava/Lava");
             ReplaceBasicEffect(Model, effect);
-            SetDefaultMaterialParameters();
-            InitializeRandomOffsets(effect);
         }
 
         protected override void ApplyTechnique(Effect effect)
@@ -65,6 +65,8 @@ namespace ProjectMagma.Renderer
                 d_randomOffset[i] = new Vector2(0.5f, 0.5f);
             }
             offsetRand = new Random(1234);
+
+            Console.WriteLine("initializing rand");
         }
 
         private void UpdateRandomOffsets(Effect effect)
@@ -85,7 +87,7 @@ namespace ProjectMagma.Renderer
             effect.Parameters["RandomOffset"].SetValue(randomOffset);
             //effect.Parameters["RandomOffsetX"].SetValue((float) offsetRand.NextDouble());
 
-            //Console.WriteLine("off: "+randomOffset[1].ToString());
+            Console.WriteLine("off: "+randomOffset[1].ToString());
         }
 
         private Texture2D temperatureTexture;        

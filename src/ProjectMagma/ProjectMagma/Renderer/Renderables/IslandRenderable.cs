@@ -18,12 +18,12 @@ namespace ProjectMagma.Renderer
                 Vector2.Zero, Vector2.Zero, 0.0f, 0.0f, -1.0f, 1.0f
             );
             RenderChannel = RenderChannelType.Three;
+            SetDefaultMaterialParameters();
         }
 
         protected override void ApplyEffectsToModel()
         {
             Effect effect = Game.Instance.ContentManager.Load<Effect>("Effects/Environment/Island");
-            SetDefaultMaterialParameters();
             ReplaceBasicEffect(Model, effect);
         }
 

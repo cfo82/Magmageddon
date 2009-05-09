@@ -8,4 +8,10 @@
     <FileName>Level\TestLevel</FileName>
   </Level>
 
+  <Level>
+    <Name>4 vs 4</Name>
+    <Description>Hardcore Deathmatch</Description>
+    <FileName>Level\4vs4</FileName>
+  </Level>
+  
 </Levels>

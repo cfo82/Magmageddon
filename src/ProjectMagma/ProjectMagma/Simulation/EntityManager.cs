@@ -41,37 +41,38 @@ namespace ProjectMagma.Simulation
             }
         }
 
-        public void Load(LevelData levelData, String[] bases, Entity[] entities)
-        {
-            // load normally 
-            Load(levelData);
-
-            // create additional entities
-            AddEntities(levelData, bases, entities); 
-        }
-
         public void AddEntities(LevelData levelData, String[] bases, Entity[] entities)
         {
             Debug.Assert(bases.Length == entities.Length);
             for (int i = 0; i < bases.Length; i++)
             {
-                String baseEntity = bases[i];
+                String baseStr = bases[i];
                 Entity entity = entities[i];
-
-                List<AttributeData> attributes = levelData.entities[baseEntity].CollectAttributes(levelData);
-                List<PropertyData> properties = levelData.entities[baseEntity].CollectProperties(levelData);
-
-                foreach (AttributeData attributeData in attributes)
-                {
-                    if (!entity.HasAttribute(attributeData.name))
-                        entity.AddAttribute(attributeData.name, attributeData.template, attributeData.value);
-                }
-                foreach (PropertyData propertyData in properties)
-                {
-                    if (!entity.HasProperty(propertyData.name))
-                        entity.AddProperty(propertyData.name, propertyData.type);
-                }
+                CollectBaseData(entity, baseStr, levelData);
                 Add(entity);
+            }
+        }
+
+        public void Add(Entity entity, String baseStr, LevelData levelData)
+        {
+            CollectBaseData(entity, baseStr, levelData);
+            Add(entity);
+        }
+
+        private void CollectBaseData(Entity entity, String baseStr, LevelData levelData)
+        {
+            List<AttributeData> attributes = levelData.entities[baseStr].CollectAttributes(levelData);
+            List<PropertyData> properties = levelData.entities[baseStr].CollectProperties(levelData);
+
+            foreach (AttributeData attributeData in attributes)
+            {
+                if (!entity.HasAttribute(attributeData.name))
+                    entity.AddAttribute(attributeData.name, attributeData.template, attributeData.value);
+            }
+            foreach (PropertyData propertyData in properties)
+            {
+                if (!entity.HasProperty(propertyData.name))
+                    entity.AddProperty(propertyData.name, propertyData.type);
             }
         }
 
@@ -108,6 +109,12 @@ namespace ProjectMagma.Simulation
             this.entities.Remove(entity.Name);
             FireEntityRemoved(entity);
             entity.Destroy();
+        }
+
+        public void AddDeferred(Entity entity, String baseStr, LevelData levelData)
+        {
+            CollectBaseData(entity, baseStr, levelData);
+            AddDeferred(entity);
         }
 
         public void AddDeferred(Entity entity)

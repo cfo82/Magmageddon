@@ -7,6 +7,7 @@ using ProjectMagma.Simulation.Collision;
 using ProjectMagma.Simulation.Attributes;
 using ProjectMagma.Shared.Math.Primitives;
 using System.Diagnostics;
+using ProjectMagma.Shared.LevelData;
 
 namespace ProjectMagma.Simulation
 {
@@ -41,6 +42,7 @@ namespace ProjectMagma.Simulation
 
         private Entity player;
         private Entity constants;
+        private LevelData templates;
 
         private Entity activeIsland = null;
 
@@ -92,6 +94,7 @@ namespace ProjectMagma.Simulation
 
             this.player = player;
             this.constants = Game.Instance.Simulation.EntityManager["player_constants"];
+            this.templates = Game.Instance.ContentManager.Load<LevelData>("Level/DynamicTemplates");
 
             player.AddQuaternionAttribute("rotation", Quaternion.Identity);
             player.AddVector3Attribute("velocity", Vector3.Zero);
@@ -124,23 +127,11 @@ namespace ProjectMagma.Simulation
             arrow = new Entity("arrow" + "_" + player.Name);
             arrow.AddStringAttribute("player", player.Name);
 
-            arrow.AddVector3Attribute("position", Vector3.Zero);
-            arrow.AddStringAttribute("island", "");
-
             arrow.AddStringAttribute("mesh", player.GetString("arrow_mesh"));
-            arrow.AddVector3Attribute("scale", new Vector3(20, 20, 20));
-
-            //arrow.AddVector3Attribute("diffuse_color", player.GetVector3("color2"));
-            //arrow.AddVector3Attribute("specular_color", Vector3.One);
-            //arrow.AddFloatAttribute("alpha", 0.6f);
-            //arrow.AddFloatAttribute("specular_power", 0.3f);
-            //arrow.AddVector2Attribute("persistent_squash", new Vector2(1000, 0.8f));
             arrow.AddVector3Attribute("color1", player.GetVector3("color1"));
             arrow.AddVector3Attribute("color2", player.GetVector3("color2"));
 
-            arrow.AddProperty("arrow_controller_property", new ArrowControllerProperty());
-
-            Game.Instance.Simulation.EntityManager.AddDeferred(arrow);
+            Game.Instance.Simulation.EntityManager.AddDeferred(arrow, "arrow_base", templates);
 
             PositionOnRandomIsland();
 
@@ -910,7 +901,7 @@ namespace ProjectMagma.Simulation
 
                     deathExplosion.AddStringAttribute("mesh", "Models/Sfx/icespike_explosion");
                     // todo: extract constant
-                    deathExplosion.AddVector3Attribute("scale", new Vector3(30, 30, 30));
+                    deathExplosion.AddVector3Attribute("scale", new Vector3(35, 35, 35));
 
                     deathExplosion.AddStringAttribute("bv_type", "sphere");
 
@@ -918,6 +909,8 @@ namespace ProjectMagma.Simulation
                     deathExplosion.AddProperty("render", new FireExplosionRenderProperty());
                     deathExplosion.AddProperty("collision", new CollisionProperty());
                     deathExplosion.AddProperty("controller", new ExplosionControllerProperty());
+
+                    Game.Instance.Simulation.EntityManager.AddDeferred(deathExplosion);
 
                     // any lives left?
                     if (player.GetInt("lives") <= 0)

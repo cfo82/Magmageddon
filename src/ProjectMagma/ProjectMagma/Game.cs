@@ -586,55 +586,8 @@ namespace ProjectMagma
             profiler.EndFrame();
         }
 
-        #region Stuff to be moved / changed by dominik and janick!
+        #region Stuff to be moved by janick!
         // TODO: move things to their place!!
-
-        public Vector3 CameraPosition
-        {
-            //get { return currentCamera.GetVector3("position"); }
-            get { return EyePosition; } // very redundant
-        }
-
-        public Matrix View
-        {
-            //get { return currentCamera.GetMatrix("view"); }
-            get
-            {
-                return Matrix.CreateLookAt(
-                    EyePosition,
-                    new Vector3(0, 180, 0),
-                    new Vector3(0, 1, 0)
-                );
-            }
-        }
-
-        public Matrix Projection
-        {
-            //get { return currentCamera.GetMatrix("projection"); 
-            get
-            {
-                Viewport viewport = Game.Instance.GraphicsDevice.Viewport;
-                float aspectRatio = (float)viewport.Width / (float)viewport.Height;
-
-                // compute matrix
-                return Matrix.CreatePerspectiveFieldOfView
-                (
-                    MathHelper.ToRadians(33.0f),
-                    16.0f/9.0f,
-                    1,
-                    10000
-                );
-            }
-        }
-
-        public Vector3 EyePosition
-        {
-            //get
-            //{
-            //    return currentCamera.GetVector3("position");
-            //}
-            get { return new Vector3(0, 420, 1065); }
-        }
 
         public float EffectsVolume
         {

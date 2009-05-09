@@ -230,7 +230,7 @@ namespace ProjectMagma.Renderer
             Renderable r2
         )
         {
-            Vector3 cameraPosition = Game.Instance.CameraPosition;
+            Vector3 cameraPosition = Camera.Position;
 
             Vector3 r1Diff = cameraPosition - r1.Position;
             Vector3 r2Diff = cameraPosition - r2.Position;

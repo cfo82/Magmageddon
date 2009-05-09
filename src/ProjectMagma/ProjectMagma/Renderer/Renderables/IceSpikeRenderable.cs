@@ -116,7 +116,7 @@ namespace ProjectMagma.Renderer
                     iceSpikeEffect.Parameters["InverseTransposeWorld"].SetValue(localInvTransposeWorld);
                     iceSpikeEffect.Parameters["View"].SetValue(view);
                     iceSpikeEffect.Parameters["Projection"].SetValue(projection);
-                    iceSpikeEffect.Parameters["CameraPosition"].SetValue(Game.Instance.CameraPosition);
+                    iceSpikeEffect.Parameters["CameraPosition"].SetValue(renderer.Camera.Position);
                 }
 
                 mesh.Draw();

@@ -120,7 +120,7 @@ namespace ProjectMagma.Renderer
             effect.Parameters["FogStart"].SetValue(1000.0f);
             effect.Parameters["FogEnd"].SetValue(2000.0f);
             effect.Parameters["FogColor"].SetValue(Vector3.One);
-            effect.Parameters["EyePosition"].SetValue(Game.Instance.EyePosition);
+            effect.Parameters["EyePosition"].SetValue(renderer.Camera.Position);
 
             UpdateRandomOffsets(effect);
         }

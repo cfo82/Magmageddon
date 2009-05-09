@@ -132,15 +132,14 @@ namespace ProjectMagma.Simulation
 
         public void ExecuteDeferred()
         {
-            foreach (Entity entity in addDeferred)
-            {
-                Add(entity);
-            }
             foreach (Entity entity in removeDeferred)
             {
                 Remove(entity);
             }
-
+            foreach (Entity entity in addDeferred)
+            {
+                Add(entity);
+            }
             addDeferred.Clear();
             removeDeferred.Clear();
         }

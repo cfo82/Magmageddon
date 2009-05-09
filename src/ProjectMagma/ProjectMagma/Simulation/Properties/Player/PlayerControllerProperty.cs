@@ -232,8 +232,6 @@ namespace ProjectMagma.Simulation
 
             PerformIslandRepulsionAction(simTime, ref fuel);
 
-            // TODO: island selection with islands/player projected in screen-plane.
-
             // island selection and attraction
             bool allowSelection = attractedIsland == null && destinationIsland == null;
             PerformIslandSelectionAction(at, allowSelection, ref playerPosition);
@@ -567,7 +565,6 @@ namespace ProjectMagma.Simulation
                 SoundEffect soundEffect = Game.Instance.ContentManager.Load<SoundEffect>("Sounds/hit2");
                 soundEffect.Play(Game.Instance.EffectsVolume);
 
-                // todo: specify point in model
                 Vector3 pos = new Vector3(playerPosition.X, playerPosition.Y + player.GetVector3("scale").Y, playerPosition.Z);
 
                 Vector3 aimVector;
@@ -710,8 +707,6 @@ namespace ProjectMagma.Simulation
 
         private void PerformIslandJump(Entity player, float dt, float at, ref Vector3 playerPosition, ref Vector3 playerVelocity)
         {
-            // todo: maybe use this!? http://www.ziggyware.com/readarticle.php?article_id=92
-
             if (destinationIsland != null)
             {
                 // apply from last jump
@@ -728,7 +723,6 @@ namespace ProjectMagma.Simulation
                     r = 0;
                 if (r > 1)
                     r = 1;
-                // todo: make constante
                 float S = constants.GetFloat("island_jump_arc_height");
                 float or = 1 - r;
                 float mid = Math.Max(destinationOrigY + S, landingPos.Y + S);
@@ -900,7 +894,6 @@ namespace ProjectMagma.Simulation
                     {
                         // activate
                         player.AddProperty("collision", new CollisionProperty());
-                        // TODO: Janick: Verwend wider das RenderProperty woner vorher gha hät (sprich das wo im File deklariert isch!)
                         player.AddProperty("render", new RobotRenderProperty());
                         player.AddProperty("shadow_cast", new ShadowCastProperty());
                         ((CollisionProperty)player.GetProperty("collision")).OnContact += PlayerCollisionHandler;
@@ -1136,8 +1129,8 @@ namespace ProjectMagma.Simulation
                 normal.Normalize();
 
             // and hit?
-            if (simTime.At < controllerInput.hitButtonPressedAt + 500 && // todo: make constant
-                simTime.At > hitPerformedAt + constants.GetInt("hit_cooldown"))
+            if (simTime.At < controllerInput.hitButtonPressedAt + constants.GetFloat("hit_cooldown")
+                && simTime.At > hitPerformedAt + constants.GetInt("hit_cooldown"))
             {
                 // indicate hit!
                 SoundEffect soundEffect = Game.Instance.ContentManager.Load<SoundEffect>("Sounds/punch2");

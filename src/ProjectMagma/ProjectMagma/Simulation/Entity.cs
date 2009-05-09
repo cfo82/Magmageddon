@@ -72,6 +72,7 @@ namespace ProjectMagma.Simulation
                 case AttributeTypes.Vector3: attribute = new Vector3Attribute(name); break;
                 case AttributeTypes.Quaternion: attribute = new QuaternionAttribute(name); break;
                 case AttributeTypes.Matrix: attribute = new MatrixAttribute(name); break;
+                case AttributeTypes.Bool: attribute = new BoolAttribute(name); break;
                 default: throw new System.Exception("AttributeType '" + type + "' does not exist!");
             }
             attribute.Initialize(value);

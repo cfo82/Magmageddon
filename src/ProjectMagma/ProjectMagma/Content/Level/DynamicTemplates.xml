@@ -1,0 +1,87 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<!DOCTYPE Level SYSTEM "Levels.dtd">
+<Level>
+
+  <Entity name="arrow_base" abstract="true">
+    <Attributes>
+      <Attribute name="position" template="float3" value="0 0 0"/>
+      <Attribute name="island" template="string" value=""/>
+
+      <Attribute name="mesh" template="string" value="Models/Visualizations/arrow1"/>
+      <Attribute name="scale" template="float3" value="20 20 20"/>
+    </Attributes>
+    <Properties>
+      <Property name="controller" type="ProjectMagma.Simulation.ArrowControllerProperty"/>
+    </Properties>
+  </Entity>
+  
+  <Entity name="explosion_base" abstract="true">
+    <Attributes>
+      <Attribute name="live_span" template="string" value="1000"/>
+
+      <Attribute name="bv_type" template="string" value="sphere"/>
+    </Attributes>
+    <Properties>
+      <Property name="collision" type="ProjectMagma.Simulation.Collision.CollisionProperty"/>
+      <Property name="controller" type="ProjectMagma.Simulation.ExplosionControllerProperty"/>
+    </Properties>
+  </Entity>
+
+  <Entity name="player_explosion_base" abstract="true">
+    <Attributes>
+      <Attribute name="damage" template="string" value="20"/>
+      
+      <Attribute name="mesh" template="string" value="Models/Sfx/icespike_explosion"/>
+      <Attribute name="scale" template="float3" value="35 35 35"/>
+    </Attributes>
+    <Properties>
+      <Property name="render" type="ProjectMagma.Simulation.FireExplosionRenderProperty"/>
+    </Properties>
+  </Entity>
+
+  <Entity name="ice_spike_explosion_base" abstract="true">
+    <Attributes>
+      <Attribute name="mesh" template="string" value="Models/Sfx/icespike_explosion"/>
+      <Attribute name="scale" template="float3" value="30 30 30"/>
+    </Attributes>
+    <Properties>
+      <Property name="render" type="ProjectMagma.Simulation.IceExplosionRenderProperty"/>
+    </Properties>
+  </Entity>
+
+  <Entity name="flamethrower_base" abstract="true">
+    <Attributes>
+      <Attribute name="active" template="bool" value="true"/>
+      <Attribute name="scale" template="float3" value="0 0 0"/>
+      <Attribute name="full_scale" template="float3" value="120 120 120"/>
+
+      <Attribute name="mesh" template="string" value="Models/Visualizations/flame_primitive"/>
+      <Attribute name="diffuse_texture" template="string" value="Textures/flame"/>
+      <Attribute name="alpha" template="float" value="0.75"/>
+
+      <Attribute name="bv_type" template="string" value="sphere"/>
+    </Attributes>
+    <Properties>
+      <Property name="renderer" type="ProjectMagma.Simulation.TexturedRenderProperty"/>
+      <Property name="collision" type="ProjectMagma.Simulation.Collision.CollisionProperty"/>
+      <Property name="controller" type="ProjectMagma.Simulation.FlamethrowerControllerProperty"/>
+    </Properties>
+  </Entity>
+  
+  <Entity name="ice_spike_base" abstract="true">
+    <Attributes>
+      <Attribute name="dead" template="bool" value="false"/>
+
+      <Attribute name="mesh" template="string" value="Models/Visualizations/icespike_primitive"/>
+      <Attribute name="scale" template="float3" value="5 5 5"/>
+
+      <Attribute name="bv_type" template="string" value="sphere"/>
+    </Attributes>
+    <Properties>
+      <Property name="renderer" type="ProjectMagma.Simulation.IceSpikeRenderProperty"/>
+      <Property name="collision" type="ProjectMagma.Simulation.Collision.CollisionProperty"/>
+      <Property name="controller" type="ProjectMagma.Simulation.IceSpikeControllerProperty"/>
+    </Properties>
+  </Entity>
+
+</Level>

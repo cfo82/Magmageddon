@@ -16,7 +16,7 @@
 >
 <!ATTLIST Attribute
   name CDATA #REQUIRED
-  template (string|int|float|float2|float3|quaternion) #REQUIRED
+  template (string|int|float|float2|float3|quaternion|bool) #REQUIRED
   value CDATA #REQUIRED
 >
 <!ATTLIST Property

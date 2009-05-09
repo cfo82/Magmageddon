@@ -127,7 +127,6 @@ namespace ProjectMagma.Simulation
             arrow = new Entity("arrow" + "_" + player.Name);
             arrow.AddStringAttribute("player", player.Name);
 
-            arrow.AddStringAttribute("mesh", player.GetString("arrow_mesh"));
             arrow.AddVector3Attribute("color1", player.GetVector3("color1"));
             arrow.AddVector3Attribute("color2", player.GetVector3("color2"));
 
@@ -488,26 +487,12 @@ namespace ProjectMagma.Simulation
 
                         flame = new Entity("flame" + "_" + player.Name);
                         flame.AddStringAttribute("player", player.Name);
-                        flame.AddBoolAttribute("active", false);
 
                         flame.AddVector3Attribute("velocity", viewVector);
                         flame.AddVector3Attribute("position", pos);
-
-                        flame.AddStringAttribute("mesh", "Models/Visualizations/flame_primitive");
-                        flame.AddVector3Attribute("scale", new Vector3(0, 0, 0));
-                        flame.AddVector3Attribute("full_scale", new Vector3(120, 120, 120));
                         flame.AddQuaternionAttribute("rotation", GetRotation(player));
 
-                        flame.AddStringAttribute("bv_type", "sphere");
-
-                        flame.AddStringAttribute("diffuse_texture", "Textures/flame");
-                        flame.AddFloatAttribute("alpha", 0.75f);
-
-                        flame.AddProperty("render", new TexturedRenderProperty());
-                        flame.AddProperty("collision", new CollisionProperty());
-                        flame.AddProperty("controller", new FlamethrowerControllerProperty());
-
-                        Game.Instance.Simulation.EntityManager.AddDeferred(flame);
+                        Game.Instance.Simulation.EntityManager.AddDeferred(flame, "flamethrower_base", templates);
                     }
                 }
                 else
@@ -596,7 +581,6 @@ namespace ProjectMagma.Simulation
                 if (targetPlayer == null)
                     iceSpike.AddVector3Attribute("target_direction", aimVector);
                 iceSpike.AddIntAttribute("creation_time", (int)at);
-                iceSpike.AddBoolAttribute("dead", false);
 
                 Vector3 initVelocity = aimVector;
                 initVelocity.Y = 1;
@@ -605,16 +589,9 @@ namespace ProjectMagma.Simulation
                 iceSpike.AddVector3Attribute("velocity", initVelocity);
                 iceSpike.AddVector3Attribute("position", pos);
 
-                iceSpike.AddStringAttribute("mesh", "Models/Visualizations/icespike_primitive");
-                iceSpike.AddVector3Attribute("scale", new Vector3(5, 5, 5));
-
                 iceSpike.AddStringAttribute("bv_type", "sphere");
 
-                iceSpike.AddProperty("render", new IceSpikeRenderProperty());
-                iceSpike.AddProperty("collision", new CollisionProperty());
-                iceSpike.AddProperty("controller", new IceSpikeControllerProperty());
-
-                Game.Instance.Simulation.EntityManager.AddDeferred(iceSpike);
+                Game.Instance.Simulation.EntityManager.AddDeferred(iceSpike, "ice_spike_base", templates);
 
                 // update states
                 player.SetInt("energy", player.GetInt("energy") - constants.GetInt("ice_spike_energy_cost"));
@@ -888,29 +865,21 @@ namespace ProjectMagma.Simulation
                     }
 
                     // explode!
+
+                    // remove old explosion if still there
+                    if (deathExplosion != null
+                        && Game.Instance.Simulation.EntityManager.ContainsEntity(deathExplosion))
+                    {
+                        Game.Instance.Simulation.EntityManager.RemoveDeferred(deathExplosion);
+                    }
+
                     // add explosion
                     deathExplosion = new Entity(player.Name + "_explosion");
                     deathExplosion.AddStringAttribute("player", player.Name);
 
-                    // todo: extract constant
-                    deathExplosion.AddIntAttribute("live_span", 2000);
-                    // todo: extract constant
-                    deathExplosion.AddIntAttribute("damage", 20);
-
                     deathExplosion.AddVector3Attribute("position", player.GetVector3("position"));
 
-                    deathExplosion.AddStringAttribute("mesh", "Models/Sfx/icespike_explosion");
-                    // todo: extract constant
-                    deathExplosion.AddVector3Attribute("scale", new Vector3(35, 35, 35));
-
-                    deathExplosion.AddStringAttribute("bv_type", "sphere");
-
-                    // todo: change this
-                    deathExplosion.AddProperty("render", new FireExplosionRenderProperty());
-                    deathExplosion.AddProperty("collision", new CollisionProperty());
-                    deathExplosion.AddProperty("controller", new ExplosionControllerProperty());
-
-                    Game.Instance.Simulation.EntityManager.AddDeferred(deathExplosion);
+                    Game.Instance.Simulation.EntityManager.AddDeferred(deathExplosion, "player_explosion_base", templates);
 
                     // any lives left?
                     if (player.GetInt("lives") <= 0)

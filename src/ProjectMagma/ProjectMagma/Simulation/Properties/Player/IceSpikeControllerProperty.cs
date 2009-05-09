@@ -3,12 +3,14 @@ using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Audio;
 using ProjectMagma.Simulation.Collision;
 using System;
+using ProjectMagma.Shared.LevelData;
 
 namespace ProjectMagma.Simulation
 {
     public class IceSpikeControllerProperty : Property
     {
         private Entity constants;
+        private LevelData templates;
 
         public IceSpikeControllerProperty()
         {
@@ -17,6 +19,7 @@ namespace ProjectMagma.Simulation
         public void OnAttached(Entity entity)
         {
             this.constants = Game.Instance.Simulation.EntityManager["player_constants"];
+            this.templates = Game.Instance.ContentManager.Load<LevelData>("Level/DynamicTemplates");
 
             ((CollisionProperty)entity.GetProperty("collision")).OnContact += IceSpikeCollisionHandler;
 
@@ -173,24 +176,12 @@ namespace ProjectMagma.Simulation
             Entity iceSpikeExplosion = new Entity(iceSpike.Name+"_explosion");
             iceSpikeExplosion.AddStringAttribute("player", iceSpike.GetString("player"));
 
-            // todo: extract constant
-            iceSpikeExplosion.AddIntAttribute("live_span", 2000);
             iceSpikeExplosion.AddIntAttribute("damage", constants.GetInt("ice_spike_damage"));
             iceSpikeExplosion.AddIntAttribute("freeze_time", constants.GetInt("ice_spike_freeze_time"));
 
             iceSpikeExplosion.AddVector3Attribute("position", iceSpike.GetVector3("position"));
 
-            iceSpikeExplosion.AddStringAttribute("mesh", "Models/Sfx/icespike_explosion");
-            // todo: extract constant
-            iceSpikeExplosion.AddVector3Attribute("scale", new Vector3(30, 30, 30));
-
-            iceSpikeExplosion.AddStringAttribute("bv_type", "sphere");
-
-            iceSpikeExplosion.AddProperty("render", new IceExplosionRenderProperty());
-            iceSpikeExplosion.AddProperty("collision", new CollisionProperty());
-            iceSpikeExplosion.AddProperty("controller", new ExplosionControllerProperty());
-
-            Game.Instance.Simulation.EntityManager.AddDeferred(iceSpikeExplosion);
+            Game.Instance.Simulation.EntityManager.AddDeferred(iceSpikeExplosion, "ice_spike_explosion_base", templates);
         }
 
         private void IceSpikePlayerCollisionHandler(SimulationTime simTime, Entity iceSpike, Entity player)

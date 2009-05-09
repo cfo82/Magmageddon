@@ -8,7 +8,6 @@
       <Attribute name="position" template="float3" value="0 0 0"/>
       <Attribute name="scale" template="float3" value="10 10 10"/>
       <Attribute name="bv_type" template="string" value="alignedbox3tree"/>
-      <Attribute name="arrow_mesh" template="string" value="Models/Visualizations/arrow1"/>
       <Attribute name="emissive_color" template="float3" value="0.8 0.8 0.8"/>
       <Attribute name="alpha" template="float" value="1.0"/>
     </Attributes>

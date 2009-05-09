@@ -38,8 +38,7 @@ namespace ProjectMagma.Simulation
 
             if (!entity.HasAttribute("burn_time"))
             {
-                // todo: make constant
-                entity.AddIntAttribute("burn_time", 250);
+                entity.AddIntAttribute("burn_time", constants.GetInt("flamethrower_after_burn_time"));
             }
             entity.AddFloatAttribute("burnt_at", -entity.GetInt("burn_time"));
 

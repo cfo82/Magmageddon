@@ -50,16 +50,7 @@ namespace ProjectMagma.Simulation
             {
                 // register new island
                 island = Game.Instance.Simulation.EntityManager[newIsland];
-                island.GetVector3Attribute("position").ValueChanged += OnIslandPositionChanged;
-                /*
-                // calculate offset
-                Vector3 islandPos = island.GetVector3("position");
-                Vector3 landingPos = islandPos + island.GetVector3("landing_offset");
-                Vector3 surfacePos;
-                Simulation.GetPositionOnSurface(ref islandPos, island, out surfacePos);
-                // todo: 30 should be constant from xml
-                positionOffset = surfacePos.Y - islandPos.Y + 30;
-                 */
+                island.GetVector3Attribute("position").ValueChanged += OnIslandPositionChanged; 
                 positionOffset = island.GetVector3("landing_offset").Y;
             }
         }

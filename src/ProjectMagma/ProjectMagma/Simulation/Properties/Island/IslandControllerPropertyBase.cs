@@ -141,8 +141,8 @@ namespace ProjectMagma.Simulation
                     {
                         Vector3 velocity = island.GetVector3("attraction_velocity");
                         float maxSpeed = constants.GetFloat("attraction_max_speed");
-                        if (dist < 200) // todo: extract constant
-                            maxSpeed *= dist / 400;
+                        if (dist < constants.GetFloat("attraction_slowdown_distance"))
+                            maxSpeed *= dist / (2*constants.GetFloat("attraction_slowdown_distance"));
 
                         // don't allow being faster than max-speed
                         if (velocity.Length() > maxSpeed
@@ -348,13 +348,7 @@ namespace ProjectMagma.Simulation
                                 if (other.GetString("kind") == "pillar")
                                     newVelocity.Y = 0;
                             }
-//                            newVelocity *= attractionVelocity.Length(); // *constants.GetFloat("collision_damping");
-
-                            // todo: this will occur if projection is Vector3.Zero. what to do then?
-                            if (float.IsInfinity(newVelocity.X))
-                            {
-                                Console.WriteLine("newvelocity: " + newVelocity);
-                            }
+//                            newVelocity *= attractionVelocity.Length(); // *constants.GetFloat("collision_damping");      
 
                             island.SetVector3("attraction_velocity", newVelocity);
                         }

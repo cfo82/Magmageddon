@@ -51,6 +51,7 @@
       <Attribute name="flamethrower_turn_flame_increase" template="float" value="1"/>
       <Attribute name="flamethrower_turn_scale" template="float" value="0.6"/>
       <Attribute name="flamethrower_damage_per_second" template="int" value="50"/>
+      <Attribute name="flamethrower_after_burn_time" template="int" value="300"/>
 
       <Attribute name="hit_damage" template="int" value="20"/>
       <Attribute name="hit_cooldown" template="int" value="250"/>
@@ -108,6 +109,7 @@
       <Attribute name="attraction_acceleration" template="float" value="600"/>
       <Attribute name="attraction_max_speed" template="float" value="300"/>
       <Attribute name="attraction_timeout" template="float" value="2000"/>
+      <Attribute name="attraction_slowdown_distance" template="float" value="220"/>
     </Attributes>
   </Entity>
 

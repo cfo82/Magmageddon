@@ -59,7 +59,7 @@
       <Attribute name="diffuse_texture" template="string" value="Textures/flame"/>
       <Attribute name="alpha" template="float" value="0.75"/>
 
-      <Attribute name="bv_type" template="string" value="sphere"/>
+      <Attribute name="bv_type" template="string" value="alignedbox3tree"/>
     </Attributes>
     <Properties>
       <Property name="renderer" type="ProjectMagma.Simulation.TexturedRenderProperty"/>

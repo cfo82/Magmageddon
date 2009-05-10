@@ -29,6 +29,7 @@ namespace ProjectMagma.Simulation.Collision
 
         public void Start()
         {
+            contactPool.Clear();
             contactPool.AddRange(contactsAllocated);
             contacts.Clear();
             startEvent.Set();
@@ -158,8 +159,7 @@ namespace ProjectMagma.Simulation.Collision
         {
             return contacts[index];
         }
-
-
+        
         private AutoResetEvent startEvent;
         private AutoResetEvent finishedEvent;
         private bool aborted;

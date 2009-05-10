@@ -16,6 +16,7 @@ namespace ProjectMagma.Renderer
             this.rotation = rotation;
             this.position = position;
             this.model = model;
+            this.transforms = new Matrix[this.model.Bones.Count];
         }
 
         public override void Draw(
@@ -28,7 +29,6 @@ namespace ProjectMagma.Renderer
             world *= Matrix.CreateFromQuaternion(this.rotation);
             world *= Matrix.CreateTranslation(this.position);
 
-            Matrix[] transforms = new Matrix[model.Bones.Count];
             model.CopyAbsoluteBoneTransformsTo(transforms);
 
             // shadows should be floating a little above the receiving surface
@@ -119,5 +119,6 @@ namespace ProjectMagma.Renderer
         private Quaternion rotation;
         private Vector3 position;
         private Model model;
+        private Matrix[] transforms;
     }
 }

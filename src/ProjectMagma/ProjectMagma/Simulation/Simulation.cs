@@ -313,9 +313,11 @@ namespace ProjectMagma.Simulation
         {
         }
 
+        private static readonly PushBackFinishedHandler doNothingPushBackFinishedHandler = new PushBackFinishedHandler(DoNothingPushBackFinishedHandler);
+
         public static void ApplyPushback(ref Vector3 position, ref Vector3 pushbackVelocity, float deacceleration)
         {
-            ApplyPushback(ref position, ref pushbackVelocity, deacceleration, DoNothingPushBackFinishedHandler);
+            ApplyPushback(ref position, ref pushbackVelocity, deacceleration, doNothingPushBackFinishedHandler);
         }
 
         public static void ApplyPushback(ref Vector3 position, ref Vector3 pushbackVelocity, float deacceleration,

@@ -12,6 +12,7 @@ namespace ProjectMagma.Simulation
     {
         public IslandControllerPropertyBase()
         {
+            OnRepulsionEndAction = new PushBackFinishedHandler(OnRepulsionEnd);
         }
 
         public virtual void OnAttached(Entity entity)
@@ -92,7 +93,7 @@ namespace ProjectMagma.Simulation
             if (repulsionVelocity.Length() > constants.GetFloat("repulsion_max_speed"))
                 repulsionVelocity = Vector3.Normalize(repulsionVelocity) * constants.GetFloat("repulsion_max_speed");
             Simulation.ApplyPushback(ref position, ref repulsionVelocity, constants.GetFloat("repulsion_deacceleration"),
-                    OnRepulsionEnd);
+                    OnRepulsionEndAction);
             island.SetVector3("repulsion_velocity", repulsionVelocity);
 
             // apply pushback from other objects as long as there is a collision
@@ -425,6 +426,8 @@ namespace ProjectMagma.Simulation
         {
             state = IslandState.Influenced;
         }
+
+        private readonly PushBackFinishedHandler OnRepulsionEndAction;
 
         protected virtual void OnRepulsionEnd()
         {

@@ -14,7 +14,7 @@ namespace ProjectMagma
 
         private readonly double[] playerButtonPressedAt = new double[] { 0, 0, 0, 0 };
         private readonly bool[] playerActive = new bool[] { true, false, false, false };
-        private readonly int[] robotSelected = new int[] { 0, 0, 0, 0 };
+        private readonly int[] robotSelected = new int[] { 0, 1, 2, 3 };
 
         private readonly Texture2D[] robotSprites;
 
@@ -92,6 +92,7 @@ namespace ProjectMagma
                     playerButtonPressedAt[i] = at;
                 }
 
+                /*
                 if (at > menu.elementSelectedAt + Menu.StickRepeatTimeout)
                 {
                     if (Vector2.Dot(gamePadState.ThumbSticks.Left, Vector2.UnitY) > Menu.StickDirectionSelectionMin
@@ -100,7 +101,7 @@ namespace ProjectMagma
                         // select prev robot
                         robotSelected[i]--;
                         if (robotSelected[i] < 0)
-                            robotSelected[i] = 0;
+                            robotSelected[i] = Game.Instance.Robots.Count - 1;
                         menu.elementSelectedAt = at;
                     }
                     else
@@ -110,10 +111,11 @@ namespace ProjectMagma
                             // select next robot
                             robotSelected[i]++;
                             if (robotSelected[i] == Game.Instance.Robots.Count)
-                                robotSelected[i] = Game.Instance.Robots.Count - 1;
+                                robotSelected[i] = 0;
                             menu.elementSelectedAt = at;
                         }
                 }
+                */
 
                 previousState[i] = gamePadState;
             }

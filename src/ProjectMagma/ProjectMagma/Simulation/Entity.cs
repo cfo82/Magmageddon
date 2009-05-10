@@ -371,8 +371,8 @@ namespace ProjectMagma.Simulation
         public void AddProperty(string name, string typeName)
         {
             System.Type type = System.Type.GetType(typeName);
-            ConstructorInfo constructorInfo = type.GetConstructor(new System.Type[0]);
-            Property property = constructorInfo.Invoke(new object[0]) as Property;
+            ConstructorInfo constructorInfo = type.GetConstructor(Entity.zeroTypeArray);
+            Property property = constructorInfo.Invoke(Entity.zeroObjectArray) as Property;
             AddProperty(name, property);
         }
 
@@ -441,5 +441,7 @@ namespace ProjectMagma.Simulation
         private string name;
         private Dictionary<string, Attribute> attributes;
         private Dictionary<string, Property> properties;
+        private static readonly System.Type[] zeroTypeArray = new System.Type[0];
+        private static readonly object[] zeroObjectArray = new object[0];
     }
 }

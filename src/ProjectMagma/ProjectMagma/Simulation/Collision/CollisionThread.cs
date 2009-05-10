@@ -19,7 +19,7 @@ namespace ProjectMagma.Simulation.Collision
             this.processor = processor;
             this.testList = testList;
             this.contacts = new List<Contact>();
-            this.contactPool = new List<Contact>();
+            this.currentContactIndex = 0;
             this.contactsAllocated = new List<Contact>();
 
             this.thread = new Thread(Run);
@@ -29,8 +29,7 @@ namespace ProjectMagma.Simulation.Collision
 
         public void Start()
         {
-            contactPool.Clear();
-            contactPool.AddRange(contactsAllocated);
+            currentContactIndex = 0;
             contacts.Clear();
             startEvent.Set();
         }
@@ -124,17 +123,18 @@ namespace ProjectMagma.Simulation.Collision
 
         private Contact AllocateContact(Entity entityA, Entity entityB)
         {
-            if (contactPool.Count > 0)
+            if (currentContactIndex < contactsAllocated.Count)
             {
-                Contact c = contactPool[contactPool.Count - 1];
-                contactPool.RemoveAt(contactPool.Count - 1);
+                Contact c = contactsAllocated[currentContactIndex];
                 c.Recycle(entityA, entityB);
+                ++currentContactIndex;
                 return c;
             }
             else
             {
                 Contact c = new Contact(entityA, entityB);
                 contactsAllocated.Add(c);
+                ++currentContactIndex;
                 return c;
             }
         }
@@ -167,7 +167,7 @@ namespace ProjectMagma.Simulation.Collision
         private TestList testList;
         private Thread thread;
         private List<Contact> contacts;
-        private List<Contact> contactPool;
+        private int currentContactIndex;
         private List<Contact> contactsAllocated;
     }
 }

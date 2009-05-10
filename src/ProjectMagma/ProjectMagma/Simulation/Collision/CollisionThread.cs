@@ -18,9 +18,9 @@ namespace ProjectMagma.Simulation.Collision
             this.aborted = false;
             this.processor = processor;
             this.testList = testList;
-            this.contacts = new List<Contact>();
+            this.contacts = new List<Contact>(100);
             this.currentContactIndex = 0;
-            this.contactsAllocated = new List<Contact>();
+            this.contactsAllocated = new List<Contact>(100);
 
             this.thread = new Thread(Run);
             this.thread.Name = "CollisionThread" + processor;

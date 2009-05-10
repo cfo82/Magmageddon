@@ -62,9 +62,10 @@ namespace ProjectMagma.Simulation
 
         private void OnUpdate(Entity powerup, SimulationTime simTime)
         {
-            if (powerUsed
-                && respawnAt == 0)
+            if (powerUsed && respawnAt == 0)
             {
+                ((CollisionProperty)powerup.GetProperty("collision")).OnContact -= PowerupCollisionHandler;
+
                 powerup.RemoveProperty("collision");
                 powerup.RemoveProperty("render");
                 powerup.RemoveProperty("shadow_cast");

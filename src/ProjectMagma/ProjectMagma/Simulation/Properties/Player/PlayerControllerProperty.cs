@@ -1129,7 +1129,7 @@ namespace ProjectMagma.Simulation
                 normal.Normalize();
 
             // and hit?
-            if (simTime.At < controllerInput.hitButtonPressedAt + constants.GetFloat("hit_cooldown")
+            if (simTime.At < controllerInput.hitButtonPressedAt + constants.GetInt("hit_cooldown")
                 && simTime.At > hitPerformedAt + constants.GetInt("hit_cooldown"))
             {
                 // indicate hit!

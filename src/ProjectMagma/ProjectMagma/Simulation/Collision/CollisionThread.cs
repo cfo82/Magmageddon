@@ -19,6 +19,8 @@ namespace ProjectMagma.Simulation.Collision
             this.processor = processor;
             this.testList = testList;
             this.contacts = new List<Contact>();
+            this.contactPool = new List<Contact>();
+            this.contactsAllocated = new List<Contact>();
 
             this.thread = new Thread(Run);
             this.thread.Name = "CollisionThread" + processor;
@@ -27,6 +29,7 @@ namespace ProjectMagma.Simulation.Collision
 
         public void Start()
         {
+            contactPool.AddRange(contactsAllocated);
             contacts.Clear();
             startEvent.Set();
         }
@@ -83,7 +86,7 @@ namespace ProjectMagma.Simulation.Collision
                         Contact contact = null;
                         if (lastContact == null || lastContact.Count > 0)
                         {
-                            contact = new Contact(entry.EntityA.Entity, entry.EntityB.Entity);
+                            contact = AllocateContact(entry.EntityA.Entity, entry.EntityB.Entity);
                         }
                         else
                         {
@@ -118,6 +121,23 @@ namespace ProjectMagma.Simulation.Collision
             }
         }
 
+        private Contact AllocateContact(Entity entityA, Entity entityB)
+        {
+            if (contactPool.Count > 0)
+            {
+                Contact c = contactPool[contactPool.Count - 1];
+                contactPool.RemoveAt(contactPool.Count - 1);
+                c.Recycle(entityA, entityB);
+                return c;
+            }
+            else
+            {
+                Contact c = new Contact(entityA, entityB);
+                contactsAllocated.Add(c);
+                return c;
+            }
+        }
+
         public void Join()
         {
             finishedEvent.WaitOne();
@@ -147,5 +167,7 @@ namespace ProjectMagma.Simulation.Collision
         private TestList testList;
         private Thread thread;
         private List<Contact> contacts;
+        private List<Contact> contactPool;
+        private List<Contact> contactsAllocated;
     }
 }

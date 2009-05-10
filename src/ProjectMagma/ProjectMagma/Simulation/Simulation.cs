@@ -309,9 +309,13 @@ namespace ProjectMagma.Simulation
 
         #region collision pushback
 
+        private static void DoNothingPushBackFinishedHandler()
+        {
+        }
+
         public static void ApplyPushback(ref Vector3 position, ref Vector3 pushbackVelocity, float deacceleration)
         {
-            ApplyPushback(ref position, ref pushbackVelocity, deacceleration, delegate { });
+            ApplyPushback(ref position, ref pushbackVelocity, deacceleration, DoNothingPushBackFinishedHandler);
         }
 
         public static void ApplyPushback(ref Vector3 position, ref Vector3 pushbackVelocity, float deacceleration,

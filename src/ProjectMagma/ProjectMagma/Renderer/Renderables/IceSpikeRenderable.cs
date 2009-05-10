@@ -35,6 +35,8 @@ namespace ProjectMagma.Renderer
             iceSpikeTexture = Game.Instance.ContentManager.Load<Texture2D>("Textures/Sfx/IceSpikeHead");
 
             iceSpikeEffect = Game.Instance.ContentManager.Load<Effect>("Effects/Sfx/IceSpike").Clone(Game.Instance.GraphicsDevice);
+
+            this.transforms = new Matrix[iceSpikeModel.Bones.Count];
         }
 
         public override void UnloadResources()
@@ -98,7 +100,6 @@ namespace ProjectMagma.Renderer
 
             CullMode saveCullMode = device.RenderState.CullMode;
 
-            Matrix[] transforms = new Matrix[iceSpikeModel.Bones.Count];
             float aspectRatio = device.Viewport.Width / device.Viewport.Height;
             iceSpikeModel.CopyAbsoluteBoneTransformsTo(transforms);
 
@@ -154,5 +155,6 @@ namespace ProjectMagma.Renderer
         Model iceSpikeModel;
         private Effect iceSpikeEffect;
         private Texture2D iceSpikeTexture;
+        private Matrix[] transforms;
     }
 }

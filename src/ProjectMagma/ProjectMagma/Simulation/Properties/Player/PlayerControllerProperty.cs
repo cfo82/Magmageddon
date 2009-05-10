@@ -1142,8 +1142,7 @@ namespace ProjectMagma.Simulation
                 CheckPlayerAttributeRanges(otherPlayer);
 
                 // set values
-                Vector3 velocity = normal * constants.GetFloat("hit_pushback_velocity_multiplier")
-                    + Vector3.UnitY * 200;
+                Vector3 velocity = normal * constants.GetVector3("hit_pushback_velocity_multiplier");
                 otherPlayer.SetVector3("hit_pushback_velocity", velocity);
                 otherPlayer.SetVector3("position", otherPlayer.GetVector3("position") + velocity * simTime.Dt);
                 hitPerformedAt = simTime.At;

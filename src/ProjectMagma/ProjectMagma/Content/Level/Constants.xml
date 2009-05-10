@@ -55,7 +55,7 @@
 
       <Attribute name="hit_damage" template="int" value="20"/>
       <Attribute name="hit_cooldown" template="int" value="250"/>
-      <Attribute name="hit_pushback_velocity_multiplier" template="float" value="300"/>
+      <Attribute name="hit_pushback_velocity_multiplier" template="float3" value="400 500 400"/>
       <Attribute name="player_pushback_deacceleration" template="float" value="600"/>
       <Attribute name="player_pushback_velocity_multiplier" template="float" value="120"/>
 

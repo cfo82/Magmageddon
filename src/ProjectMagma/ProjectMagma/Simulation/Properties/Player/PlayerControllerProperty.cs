@@ -1129,8 +1129,9 @@ namespace ProjectMagma.Simulation
                 normal.Normalize();
 
             // and hit?
-            if (simTime.At < controllerInput.hitButtonPressedAt + constants.GetInt("hit_cooldown")
-                && simTime.At > hitPerformedAt + constants.GetInt("hit_cooldown"))
+            if (simTime.At < controllerInput.hitButtonPressedAt + constants.GetInt("hit_cooldown") // has button been pressed lately
+                && simTime.At > hitPerformedAt + constants.GetInt("hit_cooldown") // but no hit performed
+                && player.GetVector3("hit_pushback_velocity") == Vector3.Zero) // and we have not been hit oneself
             {
                 // indicate hit!
                 SoundEffect soundEffect = Game.Instance.ContentManager.Load<SoundEffect>("Sounds/punch2");

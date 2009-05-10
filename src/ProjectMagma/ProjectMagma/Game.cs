@@ -580,7 +580,7 @@ namespace ProjectMagma
 #if !XBOX && DEBUG            
             formCollection.Draw();
 #endif
-            //DrawFrameCounter(gameTime);
+            DrawFrameCounter(gameTime);
 
             profiler.EndSection("draw");
             profiler.EndFrame();

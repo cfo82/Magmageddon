@@ -32,33 +32,28 @@ namespace ProjectMagma.Shared.Math.Primitives
             out Box3 box
         )
         {
-            Vector3[] corners = new Vector3[] {
-                new Vector3(Min.X, Min.Y, Min.Z),
-                new Vector3(Max.X, Min.Y, Min.Z),
-                new Vector3(Max.X, Max.Y, Min.Z),
-                new Vector3(Min.X, Max.Y, Min.Z),
+            Vector3 corners0 = new Vector3(Min.X, Min.Y, Min.Z);
+            Vector3 corners1 = new Vector3(Max.X, Min.Y, Min.Z);
+            Vector3 corners3 = new Vector3(Min.X, Max.Y, Min.Z);
+            Vector3 corners4 = new Vector3(Min.X, Min.Y, Max.Z);
+            Vector3 corners6 = new Vector3(Max.X, Max.Y, Max.Z);
 
-                new Vector3(Min.X, Min.Y, Max.Z),
-                new Vector3(Max.X, Min.Y, Max.Z),
-                new Vector3(Max.X, Max.Y, Max.Z),
-                new Vector3(Min.X, Max.Y, Max.Z)
-            };
+            corners0 = Vector3.Transform(corners0, world);
+            corners1 = Vector3.Transform(corners1, world);
+            corners3 = Vector3.Transform(corners3, world);
+            corners4 = Vector3.Transform(corners4, world);
+            corners6 = Vector3.Transform(corners6, world);
 
-            for (int i = 0; i < 8; ++i)
-            {
-                corners[i] = Vector3.Transform(corners[i], world);
-            }
-
-            Vector3 xAxis = corners[1] - corners[0];
-            Vector3 yAxis = corners[3] - corners[0];
-            Vector3 zAxis = corners[4] - corners[0];
+            Vector3 xAxis = corners1 - corners0;
+            Vector3 yAxis = corners3 - corners0;
+            Vector3 zAxis = corners4 - corners0;
 
             xAxis.Normalize();
             yAxis.Normalize();
             zAxis.Normalize();
 
-            Vector3 center = (corners[0] + corners[6]) / 2.0f;
-            Vector3 halfDim = (corners[6] - corners[0]) / 2.0f;
+            Vector3 center = (corners0 + corners6) / 2.0f;
+            Vector3 halfDim = (corners6 - corners0) / 2.0f;
 
             box = new Box3();
             box.Center = center;

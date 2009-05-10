@@ -627,9 +627,11 @@ namespace ProjectMagma.ContentPipeline.ModelProcessors
             AlignedBox3 bb = CalculateAlignedBox3(input, context, ignoreCollisionNodes);
             Vector3 center = (bb.Min + bb.Max) / 2;
 
-            // calculate radius
-            //            float radius = (bb.Max-bb.Min).Length() / 2;
-            float radius = (bb.Max.Y - bb.Min.Y) / 2; // HACK: hack for player
+            float maxDist = bb.Max.X - bb.Min.X;
+            maxDist = System.Math.Max(maxDist, bb.Max.Y - bb.Min.Y);
+            maxDist = System.Math.Max(maxDist, bb.Max.Z - bb.Min.Z);
+
+            float radius = maxDist / 2;
 
             return new Sphere3(center, radius);
         }

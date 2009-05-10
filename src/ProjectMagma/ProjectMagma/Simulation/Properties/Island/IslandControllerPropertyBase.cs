@@ -55,6 +55,7 @@ namespace ProjectMagma.Simulation
             entity.Update -= OnUpdate;
             ((CollisionProperty)entity.GetProperty("collision")).OnContact -= CollisionHandler;
             ((StringAttribute)entity.GetAttribute("attracted_by")).ValueChanged -= AttracedByChangeHandler;
+            ((Vector3Attribute)entity.GetAttribute("repulsion_velocity")).ValueChanged -= RepulsionChangeHandler;
         }
 
         protected virtual void OnUpdate(Entity island, SimulationTime simTime)
@@ -79,21 +80,9 @@ namespace ProjectMagma.Simulation
                         playerLeftAt = simTime.At;
                     if (simTime.At > playerLeftAt + constants.GetInt("rising_delay"))
                     {
+                        // rising using normal repositioning
                         state = IslandState.Repositioning;
                         playerLeftAt = double.MaxValue;
-/*
-                        if (position.Y < originalPosition.Y)
-                        {
-                            position += dt * constants.GetFloat("rising_speed") * (Vector3.UnitY);
-                        }
-                        else
-                        {
-                            if (state == IslandState.Influenced)
-                            {
-                                state = IslandState.Normal;
-                            }
-                        }
- */ 
                     }
                 }
             }
@@ -259,7 +248,6 @@ namespace ProjectMagma.Simulation
                     // never do collision response with player who is standing on island
                     || (other.HasString("active_island") && other.GetString("active_island") == island.Name)
                     || kind == "powerup"
-/*                    || kind == "cave"*/
                     )
                 {
                     // do nothing
@@ -344,7 +332,7 @@ namespace ProjectMagma.Simulation
                             // repulse in direction of normal too
                             if (Vector3.Dot(attractionVelocity, normal) > 0)
                             {
-                                newVelocity += -normal * attractionVelocity.Length();
+                                newVelocity += -normal * attractionVelocity.Length() / 2;
                                 if (other.GetString("kind") == "pillar")
                                     newVelocity.Y = 0;
                             }

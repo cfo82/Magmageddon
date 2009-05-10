@@ -27,7 +27,6 @@ namespace ProjectMagma.Simulation
         public void OnDetached(Entity entity)
         {
             entity.Update -= OnUpdate;
-            // TODO: remove attributes!
         }
 
         private void OnUpdate(Entity entity, SimulationTime simTime)

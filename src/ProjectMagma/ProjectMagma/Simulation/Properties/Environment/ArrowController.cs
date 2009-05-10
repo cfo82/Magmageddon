@@ -31,6 +31,7 @@ namespace ProjectMagma.Simulation
         )
         {
             arrow.Update -= OnUpdate;
+
             if(island != null)
                 island.GetVector3Attribute("position").ValueChanged -= OnIslandPositionChanged;
         }

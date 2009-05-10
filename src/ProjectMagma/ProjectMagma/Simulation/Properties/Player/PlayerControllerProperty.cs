@@ -840,6 +840,8 @@ namespace ProjectMagma.Simulation
                     player.SetInt("deaths", player.GetInt("deaths") + 1);
                     player.SetInt("lives", player.GetInt("lives") - 1);
 
+                    ((CollisionProperty)player.GetProperty("collision")).OnContact -= PlayerCollisionHandler;
+
                     // deactivate
                     player.RemoveProperty("render");
                     player.RemoveProperty("shadow_cast");

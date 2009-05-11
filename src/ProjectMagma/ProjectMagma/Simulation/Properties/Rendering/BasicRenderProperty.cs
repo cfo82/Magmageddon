@@ -65,6 +65,11 @@ namespace ProjectMagma.Simulation
             ChangeBool("Squash", true);
         }
 
+        public void Blink()
+        {
+            ChangeBool("Blink", true);
+        }
+
         public Vector2 SquashParams 
         {
             set
@@ -80,5 +85,6 @@ namespace ProjectMagma.Simulation
                 ChangeBool("PersistentSquash", value);
             }
         }
+
     }
 }

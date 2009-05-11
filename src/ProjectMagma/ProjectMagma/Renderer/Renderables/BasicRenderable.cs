@@ -9,12 +9,15 @@ namespace ProjectMagma.Renderer
             : base(scale, rotation, position, model)
         {
             start_squash = false;
+            start_blinking = false;
             last_squash_start = -10000;
             squash_wavelength = 170;
             squash_amplitude = 0.2f;
+            BlinkingLength = 2000;
             UseLights = true;
             UseMaterialParameters = true;
             UseSquash = true;
+            UseBlinking = true;
             RenderChannel = RenderChannelType.Three;
             if (PersistentSquash) start_squash = true;
             SetDefaultMaterialParameters();
@@ -27,6 +30,11 @@ namespace ProjectMagma.Renderer
                 last_squash_start = gameTime.TotalRealTime.TotalMilliseconds;
                 start_squash = false;
             }
+            if (start_blinking)
+            {
+                last_blinking_start = gameTime.TotalRealTime.TotalMilliseconds;
+                start_blinking = false;
+            }
             foreach (Effect effect in mesh.Effects)
             {
                 // set shader parameters
@@ -36,6 +44,7 @@ namespace ProjectMagma.Renderer
                 if (UseLights) ApplyLights(effect, renderer.LightManager);
                 if (UseMaterialParameters) ApplyMaterialParameters(effect);
                 if (UseSquash) ApplySquashParameters(effect, gameTime);
+                if (UseSquash) ApplyBlinkingParameters(effect, gameTime);
                 ApplyCustomEffectParameters(effect, renderer, gameTime);
             }
         }
@@ -117,6 +126,20 @@ namespace ProjectMagma.Renderer
             }
         }
 
+        private void ApplyBlinkingParameters(Effect effect, GameTime gameTime)
+        {
+            double time_since_last_blinking = gameTime.TotalRealTime.TotalMilliseconds - last_blinking_start;
+            if (time_since_last_blinking > 0 && time_since_last_blinking <= BlinkingLength)
+            {
+                blinking_state = !blinking_state;
+                effect.Parameters["BlinkingState"].SetValue(blinking_state);
+            }
+            else
+            {
+                effect.Parameters["BlinkingState"].SetValue(false);
+            }
+        }
+
         protected void ApplyMaterialParameters(Effect effect)
         {
             effect.Parameters["DiffuseColor"].SetValue(DiffuseColor);
@@ -137,6 +160,10 @@ namespace ProjectMagma.Renderer
             else if (id == "PersistentSquash")
             {
                 PersistentSquash = value;
+            }
+            else if (id == "Blink")
+            {
+                start_blinking = value;
             }
         }
 
@@ -182,10 +209,12 @@ namespace ProjectMagma.Renderer
             }
         }
 
-        private bool start_squash;
-        private double last_squash_start;
+        private bool start_squash, start_blinking;
+        private double last_squash_start, last_blinking_start;
 
         private float squash_wavelength;
+        protected float BlinkingLength { get; set; }
+        private bool blinking_state;
         private float squash_amplitude;
         protected Vector2 SquashParams
         {

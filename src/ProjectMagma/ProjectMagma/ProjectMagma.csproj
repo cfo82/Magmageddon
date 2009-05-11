@@ -206,7 +206,7 @@
     <Compile Include="Simulation\Attributes\Events\Vector3ChangeHandler.cs" />
     <Compile Include="Simulation\OrientationHelper.cs" />
     <Compile Include="Simulation\Properties\Base\RendererUpdatableProperty.cs" />
-    <Compile Include="Simulation\Properties\Environment\ArrowController.cs" />
+    <Compile Include="Simulation\Properties\Player\ArrowController.cs" />
     <Compile Include="Simulation\Properties\Environment\CameraProperty.cs" />
     <Compile Include="Simulation\Properties\Environment\PowerUpControllerRepulsion.cs" />
     <Compile Include="Simulation\Properties\Environment\PowerUpControllerJumps.cs" />

@@ -153,10 +153,6 @@ namespace ProjectMagma
         /// </summary>
         protected override void LoadContent()
         {
-            ///
-            // TODO: load settings from storage, save at game close
-            // 
-
 //            GraphicsDevice.RenderState.MultiSampleAntiAlias = true;
             //            GraphicsDevice.PresentationParameters.MultiSampleType = MultiSampleType.FourSamples;
 
@@ -185,28 +181,28 @@ namespace ProjectMagma
             // set default player
             Entity player1 = new Entity("player1");
             player1.AddIntAttribute("game_pad_index", 0);
-            player1.AddIntAttribute("lives", 5);
+            player1.AddIntAttribute("lives", 500);
             player1.AddStringAttribute("robot_entity", robots[0].Entity);
             player1.AddStringAttribute("player_name", robots[0].Name);
 
             // set default player
             Entity player2 = new Entity("player2");
             player2.AddIntAttribute("game_pad_index", 1);
-            player2.AddIntAttribute("lives", 5);
+            player2.AddIntAttribute("lives", 500);
             player2.AddStringAttribute("robot_entity", robots[1].Entity);
             player2.AddStringAttribute("player_name", robots[1].Name);
     #if ALWAYS_FOUR_PLAYERS
             // set default player
             Entity player3 = new Entity("player3");
             player3.AddIntAttribute("game_pad_index", 2);
-            player3.AddIntAttribute("lives", 5);
+            player3.AddIntAttribute("lives", 500);
             player3.AddStringAttribute("robot_entity", robots[2].Entity);
             player3.AddStringAttribute("player_name", robots[2].Name);
             
             // set default player
             Entity player4 = new Entity("player4");
             player4.AddIntAttribute("game_pad_index", 3);
-            player4.AddIntAttribute("lives", 5);
+            player4.AddIntAttribute("lives", 500);
             player4.AddStringAttribute("robot_entity", robots[3].Entity);
             player4.AddStringAttribute("player_name", robots[3].Name);
 
@@ -447,11 +443,12 @@ namespace ProjectMagma
         protected override void OnDeactivated(object sender, EventArgs args)
         {
             base.OnDeactivated(sender, args);
-
+            /*
             if (!paused)
             {
                 Pause();
             }
+             */
         }
 
         public void AddPlayers(Entity[] players)

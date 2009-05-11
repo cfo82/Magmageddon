@@ -148,6 +148,7 @@ namespace ProjectMagma.Simulation.Collision
         {
             this.aborted = true;
             this.thread.Abort();
+            this.thread.Join();
         }
 
         public int ContactCount

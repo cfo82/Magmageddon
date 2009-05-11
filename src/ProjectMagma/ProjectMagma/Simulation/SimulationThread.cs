@@ -90,6 +90,7 @@ namespace ProjectMagma.Simulation
         {
             this.aborted = true;
             this.thread.Abort();
+            this.thread.Join();
         }
 
         public Thread Thread

@@ -18,10 +18,6 @@
     <XnaPlatform>Windows</XnaPlatform>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="AnimationComponentLibraryContent, Version=1.0.2.0, Culture=neutral, processorArchitecture=x86">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\AnimationComponentLibraryContentPipeline\bin\Xbox 360\Release\AnimationComponentLibraryContent.dll</HintPath>
-    </Reference>
     <Reference Include="Microsoft.Xna.Framework.Content.Pipeline.EffectImporter, Version=3.0.0.0, Culture=neutral, PublicKeyToken=6d5c3888ef60e27d, processorArchitecture=MSIL">
       <Private>False</Private>
     </Reference>
@@ -61,6 +57,10 @@
     </Compile>
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\..\AnimationComponentLibraryContentPipeline\AnimationComponentLibraryContentPipeline.csproj">
+      <Project>{70808508-17E8-421C-B29A-F7F310FA2171}</Project>
+      <Name>AnimationComponentLibraryContentPipeline</Name>
+    </ProjectReference>
     <ProjectReference Include="..\..\ProjectMagmaContentPipeline\ProjectMagmaContentPipeline.csproj">
       <Project>{41D8590B-0AD9-4E4A-B1ED-9E6E571364A2}</Project>
       <Name>ProjectMagmaContentPipeline</Name>

@@ -132,11 +132,11 @@ namespace ProjectMagma.Renderer
             if (time_since_last_blinking > 0 && time_since_last_blinking <= BlinkingLength)
             {
                 blinking_state = !blinking_state;
-                effect.Parameters["BlinkingState"].SetValue(blinking_state);
+                effect.Parameters["BlinkingState"].SetValue(blinking_state ? 1.0f : 0.0f);
             }
             else
             {
-                effect.Parameters["BlinkingState"].SetValue(false);
+                effect.Parameters["BlinkingState"].SetValue(0.0f);
             }
         }
 

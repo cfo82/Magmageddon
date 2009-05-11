@@ -4,6 +4,7 @@ float2 RandomOffset;
 float4 RenderChannelColor;
 float DirLight1BottomAmpMaxY = 0;// = 300;
 float DirLight1BottomAmpStrength = 1;//= 3;
+float3 BlinkingColor = float3(0.9, 0.9, 0.9);
 
 float EnvGroundWavesAmplitude;
 float EnvGroundWavesFrequency;
@@ -12,6 +13,7 @@ float EnvGroundWavesHardness;
 float4x4 MatrixPalette[56];
 
 float3 ToneColor;
+float BlinkingState;
 	
 //-----------------------------------------------------------------------------
 // Fog settings

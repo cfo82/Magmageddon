@@ -104,6 +104,8 @@ namespace ProjectMagma.Renderer
             blendFactor = blendIncrement;
             destState = permanentState;
             RunController(state, destState);
+
+            (sender as AnimationController).AnimationEnded -= OnceAnimEndedHandler;
         }
 
 

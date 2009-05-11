@@ -22,13 +22,22 @@ namespace ProjectMagma.Simulation
 
         public void Destroy()
         {
+            DetachAll();
+            Clear();
+        }
+
+        public void DetachAll()
+        {
             foreach (Property property in properties.Values)
             {
                 property.OnDetached(this);
             }
-            properties.Clear();
-
             // currently no recycling necessary for attributes
+        }
+
+        public void Clear()
+        {
+            properties.Clear();
             attributes.Clear();
         }
 

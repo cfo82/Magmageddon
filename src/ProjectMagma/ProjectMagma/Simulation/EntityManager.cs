@@ -146,10 +146,19 @@ namespace ProjectMagma.Simulation
 
         public void Clear()
         {
-            while(entities.Count > 0)
+            foreach (Entity e in entities.Values)
             {
-                Remove(entities.Values.Last<Entity>());
+                FireEntityRemoved(e);
             }
+            foreach (Entity e in entities.Values)
+            {
+                e.DetachAll();
+            }
+            foreach (Entity e in entities.Values)
+            {
+                e.Clear();
+            }
+            entities.Clear();
         }
 
         public IEnumerator<Entity> GetEnumerator()

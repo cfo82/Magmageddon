@@ -34,11 +34,11 @@ namespace ProjectMagma.Simulation
             this.flame = flame;
             this.player = Game.Instance.Simulation.EntityManager[flame.GetString("player")];
 
-            player.GetVector3Attribute("position").ValueChanged += playerPositionHandler;
-            player.GetQuaternionAttribute("rotation").ValueChanged += playerRotationHandler;
+            player.GetVector3Attribute("position").ValueChanged += PlayerPositionHandler;
+            player.GetQuaternionAttribute("rotation").ValueChanged += PlayerRotationHandler;
 
             flame.AddBoolAttribute("fueled", true);
-            flame.GetBoolAttribute("fueled").ValueChanged += flameFuelChangeHandler;
+            flame.GetBoolAttribute("fueled").ValueChanged += FlameFuelChangeHandler;
 
             ((CollisionProperty)flame.GetProperty("collision")).OnContact += FlamethrowerCollisionHandler;
 
@@ -49,9 +49,9 @@ namespace ProjectMagma.Simulation
         {
             flame.Update -= OnUpdate;
             ((CollisionProperty)flame.GetProperty("collision")).OnContact -= FlamethrowerCollisionHandler;
-            flame.GetBoolAttribute("fueled").ValueChanged -= flameFuelChangeHandler;
-            player.GetQuaternionAttribute("rotation").ValueChanged -= playerRotationHandler;
-            player.GetVector3Attribute("position").ValueChanged -= playerPositionHandler;
+            flame.GetBoolAttribute("fueled").ValueChanged -= FlameFuelChangeHandler;
+            player.GetQuaternionAttribute("rotation").ValueChanged -= PlayerRotationHandler;
+            player.GetVector3Attribute("position").ValueChanged -= PlayerPositionHandler;
         }
 
         private void OnUpdate(Entity flame, SimulationTime simTime)
@@ -121,7 +121,7 @@ namespace ProjectMagma.Simulation
             }
         }
 
-        private void playerPositionHandler(Vector3Attribute sender, Vector3 oldValue, Vector3 newValue)
+        private void PlayerPositionHandler(Vector3Attribute sender, Vector3 oldValue, Vector3 newValue)
         {
             Vector3 position = flame.GetVector3("position");
             Vector3 delta = newValue - oldValue;
@@ -129,7 +129,7 @@ namespace ProjectMagma.Simulation
             flame.SetVector3("position", position);
         }
 
-        private void playerRotationHandler(QuaternionAttribute sender, Quaternion oldValue, Quaternion newValue)
+        private void PlayerRotationHandler(QuaternionAttribute sender, Quaternion oldValue, Quaternion newValue)
         {
             flame.SetQuaternion("rotation", newValue);
 
@@ -137,7 +137,7 @@ namespace ProjectMagma.Simulation
 //                scaleFactor = constants.GetFloat("flamethrower_turn_scale");
         }
 
-        private void flameFuelChangeHandler(BoolAttribute sender, bool oldValue, bool newValue)
+        private void FlameFuelChangeHandler(BoolAttribute sender, bool oldValue, bool newValue)
         {
             // activate cooldown
             if (flameThrowerState == FlameThrowerState.Active)

@@ -2,9 +2,6 @@
 using System.Collections.Generic;
 using ProjectMagma.Simulation.Collision;
 using Microsoft.Xna.Framework;
-#if !XBOX && DEBUG
-using xWinFormsLib;
-#endif
 
 using ProjectMagma.Renderer.Interface;
 using ProjectMagma.Shared.LevelData;

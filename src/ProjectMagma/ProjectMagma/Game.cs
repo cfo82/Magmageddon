@@ -8,9 +8,6 @@ using Microsoft.Xna.Framework.Audio;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 using Microsoft.Xna.Framework.Media;
-#if !XBOX && DEBUG
-using xWinFormsLib;
-#endif
 
 using ProjectMagma.Simulation;
 using ProjectMagma.Simulation.Attributes;
@@ -58,11 +55,6 @@ namespace ProjectMagma
         /// end the frame at the end of the draw methode
         /// </summary>
         private Profiler.Profiler profiler;
-
-#if !XBOX && DEBUG
-        private FormCollection formCollection;
-        private ManagementForm managementForm;
-#endif
 
         private static Game instance;
 
@@ -156,12 +148,6 @@ namespace ProjectMagma
 //            GraphicsDevice.RenderState.MultiSampleAntiAlias = true;
             //            GraphicsDevice.PresentationParameters.MultiSampleType = MultiSampleType.FourSamples;
 
-#if !XBOX && DEBUG
-            // create the gui system
-            formCollection = new FormCollection(this.Window, Services, ref graphics);
-            managementForm = new ManagementForm(formCollection);
-#endif
-
             // Create a new SpriteBatch, which can be used to draw textures.
             spriteBatch = new SpriteBatch(GraphicsDevice);
 
@@ -213,10 +199,6 @@ namespace ProjectMagma
 #else
             // initialize simulation
             LoadLevelFirst("Level/MenuLevel");
-#endif
-
-#if !XBOX && DEBUG
-            managementForm.BuildForm();
 #endif
 
             // load menu
@@ -395,10 +377,6 @@ namespace ProjectMagma
             renderer.AddUpdateQueue(q);
             simulationThread.Abort();
 
-#if !XBOX && DEBUG            
-            formCollection.Dispose();
-#endif
-
             MediaPlayer.Stop();
 
             profiler.Write(device, Window.Title, "profiling.txt");
@@ -499,14 +477,6 @@ namespace ProjectMagma
                     graphics.ApplyChanges();
                 }
 
-#if !XBOX && DEBUG            	
-                profiler.BeginSection("formcollection_update");
-                // update the user interface
-                formCollection.Update(gameTime);
-            	profiler.EndSection("formcollection_update");
-#endif
-
-                
                 //simulationThread.Join();
 
                 // update menu
@@ -562,10 +532,6 @@ namespace ProjectMagma
             profiler.TryBeginFrame();
             profiler.BeginSection("draw");
 
-#if !XBOX && DEBUG            
-            formCollection.Render();
-#endif
-
             renderer.Render(gameTime);
 
             // will apply effect such as bloom
@@ -574,9 +540,6 @@ namespace ProjectMagma
             // draw stuff which should not be filtered
             menu.Draw(gameTime);
 
-#if !XBOX && DEBUG            
-            formCollection.Draw();
-#endif
             DrawFrameCounter(gameTime);
 
             profiler.EndSection("draw");
@@ -607,16 +570,6 @@ namespace ProjectMagma
         {
             get { return levels; }
         }
-
-#if !XBOX && DEBUG
-        public ManagementForm ManagementForm
-        {
-            get
-            {
-                return managementForm;
-            }
-        }
-#endif
 
         public ProjectMagma.Simulation.Simulation Simulation
         {

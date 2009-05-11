@@ -177,9 +177,6 @@
     <Compile Include="Simulation\Event\EntityAddedHandler.cs" />
     <Compile Include="Simulation\EntityKindManager.cs" />
     <Compile Include="Simulation\EntityManager.cs" />
-    <Compile Include="ManagementForm.cs">
-      <SubType>Code</SubType>
-    </Compile>
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Game.cs" />
     <Compile Include="Simulation\Attributes\Base\Attribute.cs" />
@@ -299,10 +296,6 @@
     <ProjectReference Include="..\ProjectMagmaShared\ProjectMagmaShared.csproj">
       <Project>{68FEE9A0-EA37-4321-B485-3D5B1DED238D}</Project>
       <Name>ProjectMagmaShared</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\xWinFormsLib\xWinFormsLib.csproj">
-      <Project>{32868301-A135-4BB5-AA3A-44A5DE60C081}</Project>
-      <Name>xWinFormsLib</Name>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>

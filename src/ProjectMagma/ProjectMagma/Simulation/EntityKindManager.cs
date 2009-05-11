@@ -16,6 +16,7 @@ namespace ProjectMagma.Simulation
             entities = new List<Entity>();
             entityManager.EntityAdded += OnEntityAdded;
             entityManager.EntityRemoved += OnEntityRemoved;
+            this.entityManager = entityManager;
         }
 
         public void Add(Entity entity)
@@ -29,6 +30,12 @@ namespace ProjectMagma.Simulation
         public void Remove(Entity entity)
         {
             this.entities.Remove(entity);
+        }
+
+        public void Close()
+        {
+            entityManager.EntityAdded -= OnEntityAdded;
+            entityManager.EntityRemoved -= OnEntityRemoved;
         }
 
         public int Count
@@ -68,9 +75,9 @@ namespace ProjectMagma.Simulation
 
         #region Implement IEnumerable interface
 
-        private class IceSpikeIterator : IEnumerator<Entity>
+        private class EntityKindIterator : IEnumerator<Entity>
         {
-            public IceSpikeIterator(EntityKindManager manager)
+            public EntityKindIterator(EntityKindManager manager)
             {
                 this.manager = manager;
                 this.index = -1;
@@ -113,17 +120,18 @@ namespace ProjectMagma.Simulation
 
         public IEnumerator<Entity> GetEnumerator()
         {
-            return new IceSpikeIterator(this);
+            return new EntityKindIterator(this);
         }
 
         IEnumerator IEnumerable.GetEnumerator()
         {
-            return new IceSpikeIterator(this);
+            return new EntityKindIterator(this);
         }
 
         #endregion
 
-        private string kind;
-        private List<Entity> entities;
+        private readonly string kind;
+        private readonly EntityManager entityManager;
+        private readonly List<Entity> entities;
     }
 }

@@ -28,7 +28,6 @@ namespace ProjectMagma.Simulation
             islandManager = new EntityKindManager(entityManager, "island");
             playerManager = new EntityKindManager(entityManager, "player");
             powerupManager = new EntityKindManager(entityManager, "powerup");
-            iceSpikeManager = new EntityKindManager(entityManager, "ice_spike");
             collisionManager = new CollisionManager();
         }
 
@@ -81,6 +80,10 @@ namespace ProjectMagma.Simulation
             currentUpdateQueue = new RendererUpdateQueue(simTime.At);
 
             entityManager.Clear();
+            pillarManager.Close();
+            islandManager.Close();
+            playerManager.Close();
+            powerupManager.Close();
             collisionManager.Close();
 
             return EndOperation();
@@ -379,7 +382,6 @@ namespace ProjectMagma.Simulation
         private EntityKindManager islandManager;
         private EntityKindManager playerManager;
         private EntityKindManager powerupManager;
-        private EntityKindManager iceSpikeManager;
         private CollisionManager collisionManager;
 
         private SimulationTime simTime;

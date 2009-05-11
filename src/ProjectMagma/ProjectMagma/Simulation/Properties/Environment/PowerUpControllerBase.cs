@@ -57,7 +57,8 @@ namespace ProjectMagma.Simulation
         {
             powerup.Update -= OnUpdate;
             this.island.GetVector3Attribute("position").ValueChanged -= OnIslandPositionChanged;
-            ((CollisionProperty)entity.GetProperty("collision")).OnContact -= PowerupCollisionHandler;
+            if(entity.HasProperty("collision"))
+                ((CollisionProperty)entity.GetProperty("collision")).OnContact -= PowerupCollisionHandler;
         }
 
         private void OnUpdate(Entity powerup, SimulationTime simTime)

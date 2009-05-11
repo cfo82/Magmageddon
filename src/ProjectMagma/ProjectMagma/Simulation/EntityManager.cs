@@ -146,17 +146,25 @@ namespace ProjectMagma.Simulation
 
         public void Clear()
         {
-            foreach (Entity e in entities.Values)
+            List<Entity> entityList = new List<Entity>();
+            entityList.AddRange(this.entities.Values);
+            for (int i = entityList.Count; i >= 0; --i)
             {
-                FireEntityRemoved(e);
+                if (i >= entityList.Count)
+                { i = entityList.Count - 1; }
+                FireEntityRemoved(entityList[i]);
             }
-            foreach (Entity e in entities.Values)
+            for (int i = entityList.Count; i >= 0; --i)
             {
-                e.DetachAll();
+                if (i >= entityList.Count)
+                { i = entityList.Count - 1; }
+                entityList[i].DetachAll();
             }
-            foreach (Entity e in entities.Values)
+            for (int i = entityList.Count; i >= 0; --i)
             {
-                e.Clear();
+                if (i >= entityList.Count)
+                { i = entityList.Count - 1; }
+                entityList[i].Clear();
             }
             entities.Clear();
         }

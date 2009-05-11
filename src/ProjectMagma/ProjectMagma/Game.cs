@@ -421,12 +421,10 @@ namespace ProjectMagma
         protected override void OnDeactivated(object sender, EventArgs args)
         {
             base.OnDeactivated(sender, args);
-            /*
             if (!paused)
             {
                 Pause();
             }
-             */
         }
 
         public void AddPlayers(Entity[] players)

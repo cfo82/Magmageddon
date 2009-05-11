@@ -449,7 +449,7 @@ namespace ProjectMagma.Simulation
         /// <param name="dir">the direction from the last position</param>
         protected virtual void OnRepositioningEnded(Vector3 dir)
         {
-            Console.WriteLine(" island " + island.Name + " back to normal state");
+            //Console.WriteLine(" island " + island.Name + " back to normal state");
         }
 
         private float attractionEndTimoutStartedAt = 0;

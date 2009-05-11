@@ -66,7 +66,7 @@ namespace ProjectMagma.Renderer
             }
             offsetRand = new Random(1234);
 
-            Console.WriteLine("initializing rand");
+            //Console.WriteLine("initializing rand");
         }
 
         private void UpdateRandomOffsets(Effect effect)
@@ -87,7 +87,7 @@ namespace ProjectMagma.Renderer
             effect.Parameters["RandomOffset"].SetValue(randomOffset);
             //effect.Parameters["RandomOffsetX"].SetValue((float) offsetRand.NextDouble());
 
-            Console.WriteLine("off: "+randomOffset[1].ToString());
+            //Console.WriteLine("off: "+randomOffset[1].ToString());
         }
 
         private Texture2D temperatureTexture;        

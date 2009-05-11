@@ -28,7 +28,7 @@ namespace ProjectMagma.Renderer.ParticleSystem.Stateful
             this.particleCreateEffect = null;
             this.particleUpdateEffect = null;
             this.particleRenderingEffect = null;
-            this.createVertexLists = new List<CreateVertex[]>(32);
+            this.createVertexLists = new List<CreateVertexArray>(32);
             spriteBatch = new SpriteBatch(device);
 
             LoadResources(renderer, wrappedContent, device);
@@ -162,8 +162,8 @@ namespace ProjectMagma.Renderer.ParticleSystem.Stateful
                 sumParticleCount += particleCount[emitterIndex];
             }
 
-            CreateVertex[] vertices = new CreateVertex[sumParticleCount];
-            for (int i = 0; i < vertices.Length; ++i)
+            CreateVertexArray vertices = renderer.StatefulParticleResourceManager.AllocateCreateVertexArray(sumParticleCount);
+            for (int i = 0; i < vertices.OccupiedSize; ++i)
             {
                 if (index >= positionTextures[0].Width * positionTextures[0].Height)
                 {
@@ -173,7 +173,7 @@ namespace ProjectMagma.Renderer.ParticleSystem.Stateful
                 int x = index % textureSize;
                 int y = index / textureSize;
 
-                vertices[i] = new CreateVertex(Vector3.Zero, Vector3.Zero, new Vector2(
+                vertices.Array[i] = new CreateVertex(Vector3.Zero, Vector3.Zero, new Vector2(
                     -1.0f + 2.0f * positionHalfPixel.X + 2.0f * 2.0f * x * positionHalfPixel.X,
                     -1.0f + 2.0f * positionHalfPixel.Y + 2.0f * 2.0f * y * positionHalfPixel.Y)
                 );
@@ -185,7 +185,7 @@ namespace ProjectMagma.Renderer.ParticleSystem.Stateful
             for (int emitterIndex = 0; emitterIndex < emitters.Count; ++emitterIndex)
             {
                 ParticleEmitter emitter = emitters[emitterIndex];
-                emitter.CreateParticles(lastFrameTime, currentFrameTime, vertices, vertexIndex, particleCount[emitterIndex]);
+                emitter.CreateParticles(lastFrameTime, currentFrameTime, vertices.Array, vertexIndex, particleCount[emitterIndex]);
                 vertexIndex += particleCount[emitterIndex];
             }
 
@@ -196,12 +196,12 @@ namespace ProjectMagma.Renderer.ParticleSystem.Stateful
                 int localCreateVerticesIndex = 0;
                 for (int i = 0; i < createVertexLists.Count; ++i)
                 {
-                    CreateVertex[] currentVertices = createVertexLists[i];
+                    CreateVertexArray currentVertices = createVertexLists[i];
 
                     int verticesCopied = 0;
-                    while (verticesCopied < currentVertices.Length)
+                    while (verticesCopied < currentVertices.OccupiedSize)
                     {
-                        int passVerticesCount = currentVertices.Length - verticesCopied;
+                        int passVerticesCount = currentVertices.OccupiedSize - verticesCopied;
                         int passVerticesAvailable = createVertexBufferSize - localCreateVerticesIndex;
                         if (passVerticesCount > passVerticesAvailable)
                         {
@@ -210,7 +210,7 @@ namespace ProjectMagma.Renderer.ParticleSystem.Stateful
 
                         for (int j = 0; j < passVerticesCount; ++j)
                         {
-                            localCreateVertices[localCreateVerticesIndex + j] = currentVertices[verticesCopied + j];
+                            localCreateVertices[localCreateVerticesIndex + j] = currentVertices.Array[verticesCopied + j];
                         }
 
                         verticesCopied += passVerticesCount;
@@ -237,6 +237,10 @@ namespace ProjectMagma.Renderer.ParticleSystem.Stateful
             double currentFrameTime
         )
         {
+            for (int i = 0; i < createVertexLists.Count; ++i)
+            {
+                renderer.StatefulParticleResourceManager.FreeCreateVertexArray(createVertexLists[i]);
+            }
             createVertexLists.Clear();
 
             // calculate the timestep to make
@@ -415,6 +419,6 @@ namespace ProjectMagma.Renderer.ParticleSystem.Stateful
         private Effect particleRenderingEffect;
 
         private SpriteBatch spriteBatch;
-        private List<CreateVertex[]> createVertexLists;
+        private List<CreateVertexArray> createVertexLists;
     }
 }

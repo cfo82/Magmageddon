@@ -83,6 +83,7 @@
     <Compile Include="Renderer\ParallelLight.cs" />
     <Compile Include="Renderer\LightManager.cs" />
     <Compile Include="Renderer\ParticleSystem\CreateVertex.cs" />
+    <Compile Include="Renderer\ParticleSystem\CreateVertexArray.cs" />
     <Compile Include="Renderer\ParticleSystem\Emitter\FireExplosionEmitter.cs" />
     <Compile Include="Renderer\ParticleSystem\Emitter\IceExplosionEmitter.cs" />
     <Compile Include="Renderer\ParticleSystem\Emitter\LavaExplosionEmitter.cs" />

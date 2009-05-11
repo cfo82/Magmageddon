@@ -41,6 +41,8 @@ namespace ProjectMagma.Renderer.ParticleSystem.Stateful
             {
                 stateMapLists[i] = new List<RenderTarget2D>();
             }
+
+            this.createVertexArrays = new List<CreateVertexArray>(CreateVertexArrayMaxPoolSize);
         }
 
         public VertexBuffer GetRenderingVertexBuffer(
@@ -82,6 +84,41 @@ namespace ProjectMagma.Renderer.ParticleSystem.Stateful
             list.Add(stateMap);
         }
 
+        public CreateVertexArray AllocateCreateVertexArray(int size)
+        {
+            // if the desired array is of a size not managed... return a new list which will never be
+            // managed and later automatically garbage collected
+            if (size > CreateVertexArraySize)
+            {
+                return new CreateVertexArray(size, size);
+            }
+
+            if (createVertexArrays.Count > 0)
+            {
+                CreateVertexArray array = createVertexArrays[createVertexArrays.Count - 1];
+                createVertexArrays.RemoveAt(createVertexArrays.Count - 1);
+                array.OccupiedSize = size;
+                return array;
+            }
+            else
+            {
+                return new CreateVertexArray(CreateVertexArraySize, size);
+            }
+        }
+
+        public void FreeCreateVertexArray(CreateVertexArray array)
+        {
+            if (array.Array.Length > CreateVertexArraySize)
+            {
+                return;
+            }
+
+            if (createVertexArrays.Count < CreateVertexArrayMaxPoolSize)
+            {
+                createVertexArrays.Add(array);
+            }
+        }
+
         private List<RenderTarget2D> GetStateMapList(
             Size size
         )
@@ -94,6 +131,8 @@ namespace ProjectMagma.Renderer.ParticleSystem.Stateful
         private VertexDeclaration renderingVertexDeclaration;
         private List<RenderTarget2D>[] stateMapLists;
         private static readonly int[] SizeMap = new int[] { 16, 32, 48, 64, 96, 128 };
-
+        private List<CreateVertexArray> createVertexArrays;
+        private static readonly int CreateVertexArraySize = 1000;
+        private static readonly int CreateVertexArrayMaxPoolSize = 100;
     }
 }

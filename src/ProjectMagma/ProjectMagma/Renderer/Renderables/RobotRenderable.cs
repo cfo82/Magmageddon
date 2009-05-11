@@ -218,7 +218,7 @@ namespace ProjectMagma.Renderer
                 p.CurrentBlendController = null;
                 p.BlendFactor = 0.0f;
             }
-            Console.WriteLine("Running controller " + name);
+            //Console.WriteLine("Running controller " + name);
                 //animationController
         }
 
@@ -227,7 +227,7 @@ namespace ProjectMagma.Renderer
             state = name1;
             destState = name2;
             currentController = controllers[name1];
-            Console.WriteLine("Running controller " + name1 + " to " + name2);
+            //Console.WriteLine("Running controller " + name1 + " to " + name2);
             foreach (BonePose p in animator.BonePoses)
             {
                 p.CurrentController = currentController;

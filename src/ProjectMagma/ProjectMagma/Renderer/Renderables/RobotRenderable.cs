@@ -98,7 +98,7 @@ namespace ProjectMagma.Renderer
 //            Console.WriteLine("elapsed time: " + currentController.ElapsedTime);
         }
 
-        public void onceAnimEndedHandler(object sender, EventArgs args)
+        public void OnceAnimEndedHandler(object sender, EventArgs args)
         {
             animationMode = AnimationMode.OnceToPermanent;
             blendFactor = blendIncrement;
@@ -144,7 +144,7 @@ namespace ProjectMagma.Renderer
             RunController(state, destState);
             currentController.IsLooping = false;
             currentController.ElapsedTime = 0;
-            currentController.AnimationEnded += onceAnimEndedHandler;
+            currentController.AnimationEnded += OnceAnimEndedHandler;
 
             // update mode
             animationMode = AnimationMode.PermanentToOnce;

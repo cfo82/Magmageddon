@@ -232,5 +232,6 @@ namespace ProjectMagma.Renderer
         protected bool UseLights { get; set; }
         protected bool UseMaterialParameters { get; set; }
         protected bool UseSquash { get; set; }
+        protected bool UseBlinking { get; set; }
     }
 }

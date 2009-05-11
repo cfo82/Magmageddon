@@ -20,7 +20,7 @@
   <ItemGroup>
     <Reference Include="AnimationComponentLibraryContent, Version=1.0.2.0, Culture=neutral, processorArchitecture=x86">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\AnimationComponentLibraryContentPipeline\bin\x86\Debug\AnimationComponentLibraryContent.dll</HintPath>
+      <HintPath>..\..\AnimationComponentLibraryContentPipeline\bin\Xbox 360\Release\AnimationComponentLibraryContent.dll</HintPath>
     </Reference>
     <Reference Include="Microsoft.Xna.Framework.Content.Pipeline.EffectImporter, Version=3.0.0.0, Culture=neutral, PublicKeyToken=6d5c3888ef60e27d, processorArchitecture=MSIL">
       <Private>False</Private>

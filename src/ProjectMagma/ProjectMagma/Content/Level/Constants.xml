@@ -21,7 +21,7 @@
       <Attribute name="max_fuel" template="int" value="2500"/>
 
       <Attribute name="lava_damage_per_second" template="int" value="200"/>
-      <Attribute name="energy_recharge_interval" template="int" value="400"/>
+      <Attribute name="energy_recharge_per_second" template="int" value="5"/>
 
       <Attribute name="fuel_recharge_multiplier" template="float" value="1.2"/>
       <Attribute name="fuel_recharge_multiplier_island" template="float" value="4"/>
@@ -71,6 +71,7 @@
 
       <Attribute name="island_repulsion_velocity_multiplier" template="float" value="10"/>
       <Attribute name="island_repulsion_start_velocity_multiplier" template="float" value="80"/>
+      <Attribute name="island_repulsion_energy_cost_per_second" template="int" value="15"/>
 
       <Attribute name="x_axis_movement_multiplier" template="float" value="140"/>
       <Attribute name="z_axis_movement_multiplier" template="float" value="140"/>

@@ -25,6 +25,7 @@ namespace ProjectMagma.Simulation
         private static readonly float StickMovementEps = 0.1f;
         
         // gamepad buttons
+        private static readonly Buttons[] RepulsionButtons = { Buttons.LeftTrigger };
         private static readonly Buttons[] AttractionButtons = { Buttons.A };
         private static readonly Buttons[] JetpackButtons = { Buttons.A };
         private static readonly Buttons[] IceSpikeButtons = { Buttons.X };
@@ -243,7 +244,7 @@ namespace ProjectMagma.Simulation
             // recharge energy
             if (flame == null)
             {
-                Game.Instance.Simulation.ApplyIntervalAddition(player, "energy_recharge", constants.GetInt("energy_recharge_interval"),
+                Game.Instance.Simulation.ApplyPerSecondAddition(player, "energy_recharge", constants.GetInt("energy_recharge_per_second"),
                     player.GetIntAttribute("energy"));
             }
 
@@ -445,11 +446,14 @@ namespace ProjectMagma.Simulation
         private void PerformIslandRepulsionAction(SimulationTime simTime, ref int fuel)
         {
             // island repulsion
-            if (controllerInput.dPadPressed
+            if ((controllerInput.repulsionButtonPressed
+                || controllerInput.repulsionButtonHold)
                 && activeIsland != null
-                && player.GetFloat("repulsion_seconds") > 0)
+//                && player.GetFloat("repulsion_seconds") > 0
+                && player.GetInt("energy") > 0
+                )
             {
-                Vector3 velocity = new Vector3(controllerInput.dPadX, 0, controllerInput.dPadY);
+                Vector3 velocity = new Vector3(controllerInput.leftStickX, 0, controllerInput.leftStickY);
                 Vector3 currentVelocity = activeIsland.GetVector3("repulsion_velocity");
                 if (currentVelocity == Vector3.Zero)
                     velocity *= constants.GetFloat("island_repulsion_start_velocity_multiplier");
@@ -459,6 +463,9 @@ namespace ProjectMagma.Simulation
 
                 player.SetFloat("repulsion_seconds", player.GetFloat("repulsion_seconds") - 
                     simTime.DtMs / 1000);
+
+                Game.Instance.Simulation.ApplyPerSecondSubstraction(player, "repulsion_energy_cost",
+                    constants.GetInt("island_repulsion_energy_cost_per_second"), player.GetIntAttribute("energy"));
 
                 islandRepulsionStoppedAt = simTime.At;
             }
@@ -1302,7 +1309,8 @@ namespace ProjectMagma.Simulation
                 float dist = islandDir.Length();
                 float angle = (float)(Math.Acos(Vector3.Dot(dir, islandDir) / dist) / Math.PI * 180);
                 if (island != activeIsland
-                    && angle < maxAngle) 
+                    && angle < maxAngle
+                    && dist < constants.GetFloat("island_jump_free_range")) 
                 {
                     if(angle < closestAngle
                         || (Math.Abs(angle-closestAngle) < constants.GetFloat("island_aim_angle_eps")
@@ -1554,6 +1562,7 @@ namespace ProjectMagma.Simulation
 
                 #region action buttons
 
+                SetStates(RepulsionButtons, JetpackKey, out repulsionButtonPressed, out repulsionButtonHold, out repulsionButtonReleased);
                 SetStates(JetpackButtons, JetpackKey, out jetpackButtonPressed, out jetpackButtonHold, out jetpackButtonReleased);
                 SetStates(IceSpikeButtons, IceSpikeKey, out iceSpikeButtonPressed, out iceSpikeButtonHold, out iceSpikeButtonReleased);
                 SetStates(HitButtons, HitKey, out hitButtonPressed, out hitButtonHold, out hitButtonReleased);
@@ -1641,9 +1650,9 @@ namespace ProjectMagma.Simulation
             public float dPadX, dPadY;
 
             // buttons
-            public bool jetpackButtonPressed, flamethrowerButtonPressed, iceSpikeButtonPressed, hitButtonPressed, attractionButtonPressed;
-            public bool jetpackButtonReleased, flamethrowerButtonReleased, iceSpikeButtonReleased, hitButtonReleased, attractionButtonReleased;
-            public bool jetpackButtonHold, flamethrowerButtonHold, iceSpikeButtonHold, hitButtonHold, attractionButtonHold;
+            public bool repulsionButtonPressed, jetpackButtonPressed, flamethrowerButtonPressed, iceSpikeButtonPressed, hitButtonPressed, attractionButtonPressed;
+            public bool repulsionButtonReleased, jetpackButtonReleased, flamethrowerButtonReleased, iceSpikeButtonReleased, hitButtonReleased, attractionButtonReleased;
+            public bool repulsionButtonHold, jetpackButtonHold, flamethrowerButtonHold, iceSpikeButtonHold, hitButtonHold, attractionButtonHold;
 
             // times
             public float hitButtonPressedAt = float.NegativeInfinity;

@@ -89,6 +89,8 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="MathHelpers\EaseVector3.cs" />
+    <Compile Include="MathHelpers\DoublyIntegratedVector3.cs" />
     <Compile Include="MathHelpers\DoublyIntegratedVector2.cs" />
     <Compile Include="MathHelpers\DoublyIntegratedFloat.cs" />
     <Compile Include="MathHelpers\EaseFloat.cs" />

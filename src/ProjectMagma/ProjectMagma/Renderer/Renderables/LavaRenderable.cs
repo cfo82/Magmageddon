@@ -10,11 +10,19 @@ namespace ProjectMagma.Renderer
 {
     public class LavaRenderable : BasicRenderable
     {
+        public struct PillarInfo
+        {
+            public Vector3 Position;
+            public Vector3 Scale;
+        }
+
         public LavaRenderable(Vector3 scale, Quaternion rotation, Vector3 position, Model model,
             Texture2D sparseStuccoTexture,
             Texture2D fireFractalTexture,
             Texture2D vectorCloudTexture,
-            Texture2D graniteTexture)
+            Texture2D graniteTexture,
+            PillarInfo[] pillarInfos
+            )
             : base(scale, rotation, position, model)
         {
             UseLights = false;

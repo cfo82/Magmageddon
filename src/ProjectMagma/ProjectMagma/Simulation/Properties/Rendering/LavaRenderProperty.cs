@@ -81,6 +81,7 @@ namespace ProjectMagma.Simulation
             string meshName = entity.GetString("mesh");
             Model model = Game.Instance.ContentManager.Load<MagmaModel>(meshName).XnaModel;
 
+            // load textures
             string sparseStuccoTextureName = entity.GetString("sparsestucco_texture");
             string fireFractalTextureName = entity.GetString("firefractal_texture");
             string vectorCloudTextureName = entity.GetString("vectorcloud_texture");
@@ -91,8 +92,18 @@ namespace ProjectMagma.Simulation
             Texture2D vectorCloudTexture = Game.Instance.ContentManager.Load<Texture2D>(vectorCloudTextureName);
             Texture2D graniteTexture = Game.Instance.ContentManager.Load<Texture2D>(graniteTextureName);
 
+            // collect pillars
+            LavaRenderable.PillarInfo[] pillarData = new LavaRenderable.PillarInfo[Game.Instance.Simulation.PillarManager.Count];
+            for (int i = 0; i < pillarData.Length; ++i)
+            {
+                Entity pillar = Game.Instance.Simulation.PillarManager[i];
+                pillarData[i].Position = pillar.HasVector3("position") ? pillar.GetVector3("position") : Vector3.Zero;
+                pillarData[i].Scale = pillar.HasVector3("scale") ? pillar.GetVector3("scale") : Vector3.One;
+            }
+
             return new LavaRenderable(scale, rotation, position, model, 
-                sparseStuccoTexture, fireFractalTexture, vectorCloudTexture, graniteTexture);
+                sparseStuccoTexture, fireFractalTexture, vectorCloudTexture, graniteTexture,
+                pillarData);
         }
 
         protected override void SetUpdatableParameters(Entity entity)

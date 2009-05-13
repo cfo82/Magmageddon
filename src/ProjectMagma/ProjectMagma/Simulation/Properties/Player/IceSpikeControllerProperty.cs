@@ -49,9 +49,9 @@ namespace ProjectMagma.Simulation
 
         private void OnUpdate(Entity iceSpike, SimulationTime simTime)
         {
-            if (diedAt > 0)
+            if (state == IceSpikeState.Exploded)
             {
-                if (simTime.At > diedAt + constants.GetInt("ice_spike_death_timeout"))
+                if (simTime.At > explodedAt + constants.GetInt("ice_spike_death_timeout"))
                 {
                     Game.Instance.Simulation.EntityManager.RemoveDeferred(iceSpike);
                 }
@@ -67,7 +67,14 @@ namespace ProjectMagma.Simulation
             Vector3 a = constants.GetVector3("ice_spike_gravity_acceleration");
 
             // in targeting mode (yet)?
-            if (simTime.At > createdAt + constants.GetInt("ice_spike_rising_time"))
+            if (state == IceSpikeState.Rising
+                && simTime.At > createdAt + constants.GetInt("ice_spike_rising_time"))
+            {
+                state = IceSpikeState.Targeting;
+            }
+
+            // perform targetting logic
+            if (state == IceSpikeState.Targeting)
             {
                 Vector3 dir;
                 if (targetPlayer != null)
@@ -128,7 +135,8 @@ namespace ProjectMagma.Simulation
             pos += v * dt;
 
             // check lifetime
-            if(iceSpike.GetInt("creation_time") + constants.GetInt("ice_spike_lifetime") < simTime.At)
+            if(state == IceSpikeState.Targeting
+                && iceSpike.GetInt("creation_time") + constants.GetInt("ice_spike_lifetime") < simTime.At)
             {
                 SetDead(iceSpike, simTime);
                 return;
@@ -158,9 +166,11 @@ namespace ProjectMagma.Simulation
             }
 
             // remove spike
-            if (other != shootingPlayer) // dont collide with shooter
+            if (other != shootingPlayer // dont collide with shooter
+                && !other.HasAttribute("dynamic") // don't collide with moving other spikes, explosions, etc.
+                ) // don't collide with other explosions
             {
-                if (other.HasAttribute("kind") && other.GetString("kind") == "player")
+                if (other.GetString("kind") == "player")
                     IceSpikePlayerCollisionHandler(simTime, iceSpike, other);
                 SetDead(iceSpike, simTime);
             }
@@ -168,7 +178,9 @@ namespace ProjectMagma.Simulation
 
         private void SetDead(Entity iceSpike, SimulationTime simTime)
         {
-            diedAt = simTime.At;
+            explodedAt = simTime.At;
+            state = IceSpikeState.Exploded;
+
             iceSpike.SetBool("dead", true);
             ((CollisionProperty)iceSpike.GetProperty("collision")).OnContact -= IceSpikeCollisionHandler;
 
@@ -222,6 +234,14 @@ namespace ProjectMagma.Simulation
 
         private Entity shootingPlayer;
         private Entity targetPlayer;
-        private double diedAt = 0;
+        private double explodedAt = 0;
+        private IceSpikeState state = IceSpikeState.Rising;
+
+        private enum IceSpikeState
+        {
+            Rising,
+            Targeting,
+            Exploded
+        }
     }
 }

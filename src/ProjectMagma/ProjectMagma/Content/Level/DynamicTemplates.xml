@@ -2,6 +2,12 @@
 <!DOCTYPE Level SYSTEM "Levels.dtd">
 <Level>
 
+  <Entity name="dynamic_entity" abstract="true">
+    <Attributes>
+      <Attribute name="dynamic" template="bool" value="true"/>
+    </Attributes>
+  </Entity>
+  
   <Entity name="arrow_base" abstract="true">
     <Attributes>
       <Attribute name="position" template="float3" value="0 0 0"/>

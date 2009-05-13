@@ -365,14 +365,17 @@ namespace ProjectMagma.Simulation
         {
             if (allowSelection)
             {
-                if (controllerInput.rightStickMoved
-                    && activeIsland != null
+                if (/*controllerInput.rightStickMoved
+                    &&*/ activeIsland != null
                     && selectedIsland != activeIsland) // must be standing on island
                 {
-                    Vector3 stickDir = new Vector3(controllerInput.rightStickX, 0, controllerInput.rightStickY);
-                    stickDir.Normalize();
+                    //    Vector3 selectionDirection = new Vector3(controllerInput.rightStickX, 0, controllerInput.rightStickY);
+                  //  stickDir.Normalize();
+                    Vector3 selectionDirection = Vector3.Transform(new Vector3(0, 0, 1), GetRotation(player));
+
                     // only allow reselection if stick moved slightly
-                    bool stickMoved = Vector3.Dot(lastStickDir, stickDir) < constants.GetFloat("island_reselection_max_value");
+                    //bool stickMoved = Vector3.Dot(lastStickDir, selectionDirection) < constants.GetFloat("island_reselection_max_value");
+                    bool stickMoved = true; // hack!
                     if ((selectedIsland == null || stickMoved)
                         && at > islandSelectedAt + constants.GetFloat("island_reselection_timeout"))
                     {
@@ -380,8 +383,8 @@ namespace ProjectMagma.Simulation
                         //                            Vector3.Dot(lastStickDir, stickDir));
 
                         // select closest island in direction of stick
-                        lastStickDir = stickDir;
-                        selectedIsland = SelectBestIslandInDirection(ref stickDir);
+                        lastStickDir = selectionDirection;
+                        selectedIsland = SelectBestIslandInDirection(ref selectionDirection);
 
                         // new island selected
                         if (selectedIsland != null)
@@ -405,7 +408,7 @@ namespace ProjectMagma.Simulation
                     // deselect after timeout
                     if (selectedIsland != null
                         && at > islandSelectedAt + constants.GetFloat("island_deselection_timeout")
-                        && DeselectOnRelease)
+                        /*&& DeselectOnRelease*/)
                     {
                         RemoveSelectionArrow();
                     }
@@ -1304,6 +1307,9 @@ namespace ProjectMagma.Simulation
             Entity selectedIsland = null;
             foreach (Entity island in Game.Instance.Simulation.IslandManager)
             {
+                if (island == activeIsland) // never select active island
+                    continue;
+
                 Vector3 islandDir = island.GetVector3("position") - player.GetVector3("position");
                 islandDir.Y = 0;
                 float dist = islandDir.Length();

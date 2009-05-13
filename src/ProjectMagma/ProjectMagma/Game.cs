@@ -148,7 +148,7 @@ namespace ProjectMagma
              
 #if DEBUG
             // initialize simulation
-            LoadLevelFirst(levels[0].FileName);
+            LoadLevel(levels[0].FileName);
 
             // set default player
             Entity player1 = new Entity("player1");

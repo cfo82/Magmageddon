@@ -505,56 +505,35 @@ namespace ProjectMagma.Simulation
                 }
                 else
                 {
+                    // change y rotation towards player in range
+                    Vector3 aimVector;
+                    Vector3 direction;
                     if (RightStickFlame)
-                    {
-                        // change y rotation towards player in range
-                        Vector3 aimVector;
-                        Vector3 direction = new Vector3(controllerInput.flameStickX, 0, controllerInput.flameStickY);
-                        direction.Normalize();
-                        Entity targetPlayer = SelectBestPlayerInDirection(ref playerPosition, ref direction, out aimVector);
-                        if (targetPlayer != null)
-                        {
-                            // only aim towards  player in y, x and z are from controller direction
-                            aimVector.X = direction.X;
-                            aimVector.Z = direction.Z;
-                        }
-                        Vector3 tminusp = aimVector;
-                        Vector3 ominusp = Vector3.Backward;
-                        if (tminusp != Vector3.Zero)
-                            tminusp.Normalize();
-                        float theta = (float)System.Math.Acos(Vector3.Dot(tminusp, ominusp));
-                        Vector3 cross = Vector3.Cross(ominusp, tminusp);
-
-                        if (cross != Vector3.Zero)
-                            cross.Normalize();
-
-                        Quaternion targetQ = Quaternion.CreateFromAxisAngle(cross, theta);
-
-                        flame.SetQuaternion("rotation", targetQ);
-                    }
+                        direction = new Vector3(controllerInput.flameStickX, 0, controllerInput.flameStickY);
                     else
+                        direction = Vector3.Transform(new Vector3(0, 0, 1), GetRotation(player));
+                    direction.Normalize();
+                    Entity targetPlayer = SelectBestPlayerInDirection(ref playerPosition, ref direction, out aimVector);
+                    if (targetPlayer != null)
                     {
-                        // change rotation towards selected island, if it has a player standing on
-                        if (selectedIsland != null
-                            && selectedIsland.GetInt("players_on_island") > 0)
-                        {
-                            Vector3 viewVector = Vector3.Transform(new Vector3(0, 0, 1), GetRotation(player));
-                            Vector3 tminusp = viewVector;
-                            tminusp.Y = Vector3.Normalize(GetLandingPosition(selectedIsland) - playerPosition).Y;
-                            Vector3 ominusp = Vector3.Backward;
-                            if (tminusp != Vector3.Zero)
-                                tminusp.Normalize();
-                            float theta = (float)System.Math.Acos(Vector3.Dot(tminusp, ominusp));
-                            Vector3 cross = Vector3.Cross(ominusp, tminusp);
-
-                            if (cross != Vector3.Zero)
-                                cross.Normalize();
-
-                            Quaternion targetQ = Quaternion.CreateFromAxisAngle(cross, theta);
-
-                            flame.SetQuaternion("rotation", targetQ);
-                        }
+                        // only aim towards  player in y, x and z are from controller direction
+                        aimVector.X = direction.X;
+                        aimVector.Z = direction.Z;
                     }
+                    Vector3 tminusp = aimVector;
+                    Vector3 ominusp = Vector3.Backward;
+                    if (tminusp != Vector3.Zero)
+                        tminusp.Normalize();
+                    float theta = (float)System.Math.Acos(Vector3.Dot(tminusp, ominusp));
+                    Vector3 cross = Vector3.Cross(ominusp, tminusp);
+
+                    if (cross != Vector3.Zero)
+                        cross.Normalize();
+
+                    Quaternion targetQ = Quaternion.CreateFromAxisAngle(cross, theta);
+
+                    flame.SetQuaternion("rotation", targetQ);
+                  
 
                     if (player.GetInt("energy") <= 0)
                     {

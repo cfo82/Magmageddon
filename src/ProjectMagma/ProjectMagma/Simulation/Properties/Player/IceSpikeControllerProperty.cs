@@ -158,6 +158,7 @@ namespace ProjectMagma.Simulation
         {
             Entity iceSpike = contact.EntityA;
             Entity other = contact.EntityB;
+       
             // ignore collision with island player is standing on during warmup phae
             if (simTime.At < createdAt + constants.GetInt("ice_spike_rising_time")
                 && other.Name == shootingPlayer.GetString("active_island"))
@@ -178,9 +179,6 @@ namespace ProjectMagma.Simulation
 
         private void SetDead(Entity iceSpike, SimulationTime simTime)
         {
-            explodedAt = simTime.At;
-            state = IceSpikeState.Exploded;
-
             iceSpike.SetBool("dead", true);
             ((CollisionProperty)iceSpike.GetProperty("collision")).OnContact -= IceSpikeCollisionHandler;
 
@@ -188,12 +186,19 @@ namespace ProjectMagma.Simulation
             Entity iceSpikeExplosion = new Entity(iceSpike.Name+"_explosion");
             iceSpikeExplosion.AddStringAttribute("player", iceSpike.GetString("player"));
 
-            iceSpikeExplosion.AddIntAttribute("damage", constants.GetInt("ice_spike_damage"));
-            iceSpikeExplosion.AddIntAttribute("freeze_time", constants.GetInt("ice_spike_freeze_time"));
+            // only do damage when in targeting mode
+            if (state == IceSpikeState.Targeting)
+            {
+                iceSpikeExplosion.AddIntAttribute("damage", constants.GetInt("ice_spike_damage"));
+                iceSpikeExplosion.AddIntAttribute("freeze_time", constants.GetInt("ice_spike_freeze_time"));
+            }
 
             iceSpikeExplosion.AddVector3Attribute("position", iceSpike.GetVector3("position"));
 
             Game.Instance.Simulation.EntityManager.AddDeferred(iceSpikeExplosion, "ice_spike_explosion_base", templates);
+
+            explodedAt = simTime.At;
+            state = IceSpikeState.Exploded;
         }
 
         private void IceSpikePlayerCollisionHandler(SimulationTime simTime, Entity iceSpike, Entity player)

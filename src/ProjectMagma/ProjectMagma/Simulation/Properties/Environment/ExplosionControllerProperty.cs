@@ -47,8 +47,11 @@ namespace ProjectMagma.Simulation
             Entity other = contact.EntityB;
             if (other.HasAttribute("kind") && other.GetString("kind") == "player")
             {
-                // buja
-                other.SetInt("health", other.GetInt("health") - explosion.GetInt("damage"));
+                // apply damage to player
+                if (explosion.HasAttribute("damage"))
+                {
+                    other.SetInt("health", other.GetInt("health") - explosion.GetInt("damage"));
+                }
                 if(explosion.HasAttribute("freeze_time"))
                 {
                     other.SetInt("frozen", explosion.GetInt("freeze_time"));

@@ -42,7 +42,7 @@ namespace ProjectMagma.Bugslayer
             spriteBatch.Begin();
             spriteBatch.DrawString(
                font,
-               "**** CRASH LOG ****",
+               "**** CRASH LOG (Please take a picture of this and send it to the developers!) ****",
                new Vector2(10f, 10f),
                Color.White);
             spriteBatch.DrawString(

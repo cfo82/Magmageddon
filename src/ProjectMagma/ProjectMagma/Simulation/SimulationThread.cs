@@ -70,12 +70,13 @@ namespace ProjectMagma.Simulation
                     finishedEvent.Set();
                 }
             }
-            catch (ThreadAbortException ex)
+            catch (Exception ex)
             {
                 if (!this.aborted)
                 {
-                    System.Console.WriteLine("unexpected ThreadAbortException {0}", ex);
-                    throw ex;
+                    System.Console.WriteLine("unexpected Exception {0}\n{1}\n{2}", ex.GetType().Name, ex.Message, ex.StackTrace);
+                    Game.Instance.ExceptionThrown = ex;
+                    finishedEvent.Set();
                 }
             }
         }

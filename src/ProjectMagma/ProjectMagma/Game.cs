@@ -71,6 +71,8 @@ namespace ProjectMagma
 
         private SimulationThread simulationThread;
 
+        private Exception exceptionThrown;
+
         private Game()
         {
             graphics = new GraphicsDeviceManager(this);
@@ -91,24 +93,16 @@ namespace ProjectMagma
             this.Components.Add(new GamerServicesComponent(this));
         }
 
-        /// <summary>
-        /// The main entry point for the application.
-        /// </summary>
-        static void Main(string[] args)
+        public static Game Instance
         {
-            // we can use hardware threads 1, 3, 4, 5
-            //  1 is running on core 1 alongside something reserved to xna
-            //  3 same thing on core 2
-            //  4, 5 run on core 3 and are freely available for us
+            get
+            {
+                return Game.instance;
+            }
+        }
 
-            // I am not sure if we have to do the rendering using the thread that created
-            // the direct3d device. This would be something to clarify in the future. As for
-            // now we should keep to rendering on the main thread and move everything else to
-            // the other cores.
-#if XBOX
-            System.Threading.Thread.CurrentThread.SetProcessorAffinity(ThreadDistribution.RenderThread);
-#endif
-
+        public static void RunInstance()
+        {
             using (Game game = new Game())
             {
                 Game.instance = game;
@@ -117,14 +111,6 @@ namespace ProjectMagma
             }
 
             Game.instance = null;
-        }
-
-        public static Game Instance
-        {
-            get
-            {
-                return Game.instance;
-            }
         }
 
         /// <summary>
@@ -198,7 +184,7 @@ namespace ProjectMagma
     #endif
 #else
             // initialize simulation
-            LoadLevelFirst("Level/MenuLevel");
+            LoadLevel("Level/MenuLevel");
 #endif
 
             // load menu
@@ -247,59 +233,6 @@ namespace ProjectMagma
         /// initializes a new simulation using the level provided
         /// </summary>
         /// <param name="level"></param>
-        public void LoadLevelFirst(String level)
-        {
-            if (simulationThread != null)
-            {
-                if (!paused)
-                {
-                    simulationThread.Join();
-                }
-                simulationThread.Abort();
-            }
-
-            if (simulationThread == null)
-            {
-                simulationThread = new SimulationThread();
-            }
-
-            // reset old simulation
-            if (simulation != null)
-            {
-                RendererUpdateQueue q1 = simulation.Close();
-                renderer.AddUpdateQueue(q1);
-            }
-
-            // init simulation
-            simulation = new ProjectMagma.Simulation.Simulation();
-            RendererUpdateQueue q = simulation.Initialize(ContentManager, level, 0);
-            renderer.AddUpdateQueue(q);
-
-#if !XBOX
-            Debug.Assert(
-                simulationThread == null ||
-                simulationThread.Thread == null ||
-                simulationThread.Thread.ThreadState == System.Threading.ThreadState.Stopped
-                );
-#endif
-
-            simulationThread.Reinitialize(this.simulation, this.renderer);
-
-            // set camera
-            currentCamera = simulation.EntityManager["camera1"];
-
-            RecomputeLavaTemperature();
-
-            if (!paused)
-            {
-                simulationThread.Start();
-            }
-        }
-
-        /// <summary>
-        /// initializes a new simulation using the level provided
-        /// </summary>
-        /// <param name="level"></param>
         public void LoadLevel(String level)
         {
             if (simulationThread != null)
@@ -339,28 +272,10 @@ namespace ProjectMagma
             // set camera
             currentCamera = simulation.EntityManager["camera1"];
 
-            RecomputeLavaTemperature();
-
             if (!paused)
             {
                 simulationThread.Start();
             }
-        }
-
-
-        void RecomputeLavaTemperature()
-        {
-            /*List<Renderer.Renderable> pillars = new List<Renderer.Renderable>();
-            Renderer.Renderable lava;
-
-            foreach (Entity entity in simulation.PillarManager)
-            {
-                if (entity.HasString("type") && entity.GetString("type") == "lava")
-                    lava = (entity.GetProperty("render") as ModelRenderProperty).Renderable;
-                if (entity.HasString("type") && entity.GetString("type") == "pillar")
-                    pillars.Add((entity.GetProperty("render") as ModelRenderProperty).Renderable);
-            }*/
-            //System.Console.WriteLine("blah");
         }
 
         /// <summary>
@@ -457,6 +372,11 @@ namespace ProjectMagma
                 device = Guide.EndShowStorageDeviceSelector(storageSelectionResult);
                 storageAvailable = true;
                 LoadSettings();
+            }
+
+            if (ExceptionThrown != null)
+            {
+                throw ExceptionThrown;
             }
 
             profiler.TryEndFrame();
@@ -655,6 +575,25 @@ namespace ProjectMagma
                 else
                 {
                     return base.Content; 
+                }
+            }
+        }
+
+        public Exception ExceptionThrown
+        {
+            set
+            {
+                lock (this)
+                {
+                    exceptionThrown = value;
+                }
+            }
+
+            get
+            {
+                lock (this)
+                {
+                    return exceptionThrown;
                 }
             }
         }

@@ -61,7 +61,7 @@ namespace ProjectMagma.Renderer
             if (renderables.Count == 0)
                 return;
 
-            Console.WriteLine("starting recomputing frame");
+            //Console.WriteLine("starting recomputing frame");
 
             //Vector2 min = new Vector2(float.PositiveInfinity);
             Vector2 maxAbs = new Vector2(float.NegativeInfinity);
@@ -104,14 +104,14 @@ namespace ProjectMagma.Renderer
 
                 #endregion
             }
-            Console.WriteLine("ending recomputing frame");
+            //Console.WriteLine("ending recomputing frame");
             float maxDeviation = Math.Max(maxAbs.X, maxAbs.Y) * 1.2f;
 
             Vector3 normal = Vector3.Normalize(Target - centerPosition.Value) * renderer.Device.Viewport.Width;
             GoTo(centerPosition.Value - normal * (maxDeviation - 1.0f));
 
-            Console.WriteLine(maxDeviation);
-            Console.WriteLine(centerPosition.TargetValue.ToString());
+            //Console.WriteLine(maxDeviation);
+            //Console.WriteLine(centerPosition.TargetValue.ToString());
         }
 
 

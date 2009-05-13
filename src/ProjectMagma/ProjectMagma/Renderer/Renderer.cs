@@ -120,7 +120,7 @@ namespace ProjectMagma.Renderer
             currentFrameTime = lastFrameTime + dt;
 
             Camera.Update(gameTime);
-            //Camera.RecomputeFrame(opaqueRenderables);
+            Camera.RecomputeFrame(opaqueRenderables);
             RendererUpdateQueue q = GetNextUpdateQueue();
             while (q != null)
             {

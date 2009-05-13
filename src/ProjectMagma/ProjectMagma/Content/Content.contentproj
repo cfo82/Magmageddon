@@ -1321,6 +1321,16 @@
       <Importer>EffectImporter</Importer>
       <Processor>EffectProcessor</Processor>
     </None>
+    <Compile Include="Effects\Sfx\ParticleSystem\Stateful\Implementations\Snow.fx">
+      <Name>Snow</Name>
+      <Importer>EffectImporter</Importer>
+      <Processor>EffectProcessor</Processor>
+    </Compile>
+    <Compile Include="Textures\Sfx\Snow.1.tga">
+      <Name>Snow.1</Name>
+      <Importer>TextureImporter</Importer>
+      <Processor>TextureProcessor</Processor>
+    </Compile>
     <Compile Include="Fonts\hud_powerup_collect.spritefont">
       <Name>hud_powerup_collect</Name>
       <Importer>FontDescriptionImporter</Importer>

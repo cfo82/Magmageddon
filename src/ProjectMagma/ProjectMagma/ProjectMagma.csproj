@@ -113,6 +113,7 @@
     <Compile Include="Renderer\LightManager.cs" />
     <Compile Include="Renderer\ParallelLight.cs" />
     <Compile Include="Renderer\ParticleSystem\CreateVertexArray.cs" />
+    <Compile Include="Renderer\ParticleSystem\Emitter\SnowEmitter.cs" />
     <Compile Include="Renderer\ParticleSystem\Emitter\PointExplosionEmitter.cs" />
     <Compile Include="Renderer\ParticleSystem\Emitter\FireExplosionEmitter.cs" />
     <Compile Include="Renderer\ParticleSystem\Emitter\IceExplosionEmitter.cs" />
@@ -122,6 +123,7 @@
     <Compile Include="Renderer\ParticleSystem\ParticleEmitter.cs" />
     <Compile Include="Renderer\ParticleSystem\ParticleSystem.cs" />
     <Compile Include="Renderer\ParticleSystem\CreateVertex.cs" />
+    <Compile Include="Renderer\ParticleSystem\Stateful\Implementations\Snow.cs" />
     <Compile Include="Renderer\ParticleSystem\Stateful\Implementations\PointExplosion.cs" />
     <Compile Include="Renderer\ParticleSystem\Stateful\Implementations\FireExplosion.cs" />
     <Compile Include="Renderer\ParticleSystem\Stateful\Implementations\IceExplosion.cs" />

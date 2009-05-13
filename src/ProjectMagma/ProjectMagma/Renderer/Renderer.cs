@@ -82,6 +82,8 @@ namespace ProjectMagma.Renderer
             {
                 explosionSystem.AddEmitter(new ProjectMagma.Renderer.ParticleSystem.Emitter.LavaExplosionEmitter());
             }
+            snowSystem = new Snow(this, Game.Instance.ContentManager, device);
+            snowSystem.AddEmitter(new ProjectMagma.Renderer.ParticleSystem.Emitter.SnowEmitter(0.5f));
 
             updateQueues = new List<RendererUpdateQueue>();
         }
@@ -118,7 +120,7 @@ namespace ProjectMagma.Renderer
             currentFrameTime = lastFrameTime + dt;
 
             Camera.Update(gameTime);
-            Camera.RecomputeFrame(opaqueRenderables);
+            //Camera.RecomputeFrame(opaqueRenderables);
             RendererUpdateQueue q = GetNextUpdateQueue();
             while (q != null)
             {
@@ -138,6 +140,10 @@ namespace ProjectMagma.Renderer
             if (explosionSystem != null)
             {
                 explosionSystem.Update(lastFrameTime, currentFrameTime);
+            }
+            if (snowSystem != null)
+            {
+                snowSystem.Update(lastFrameTime, currentFrameTime);
             }
         }
         
@@ -276,6 +282,10 @@ namespace ProjectMagma.Renderer
             if (explosionSystem != null)
             {
                 explosionSystem.Render(lastFrameTime, currentFrameTime, Camera.View, Camera.Projection);
+            }
+            if (snowSystem != null)
+            {
+                snowSystem.Render(lastFrameTime, currentFrameTime, Camera.View, Camera.Projection);
             }
 
             foreach (Renderable renderable in transparentRenderables)
@@ -484,7 +494,7 @@ namespace ProjectMagma.Renderer
         private HdrCombinePass hdrCombinePass;
 
         private ParticleSystem.Stateful.Implementations.LavaExplosion explosionSystem;
-
+        private ParticleSystem.Stateful.Implementations.Snow snowSystem;
         private ParticleSystem.Stateful.ResourceManager statefulParticleResourceManager;
         
         //private LightManager lightManager;

@@ -203,7 +203,6 @@ namespace ProjectMagma.Simulation
                 // calculate new position
                 Vector3 newPosition = position;
                 newPosition += island.GetVector3("repositioning_velocity") * dt;
-                island.SetVector3("repositioning_velocity", dir * constants.GetFloat("repositioning_speed"));
 
                 // check if we are there yet (respectivly a bit further)
                 if (Vector3.Dot(repositioningPosition - newPosition, repositioningPosition - position) < 0)
@@ -216,11 +215,17 @@ namespace ProjectMagma.Simulation
                 else
                 {
                     position = newPosition;
+
+                    // only update velocity if no collision
+                    if (!HadCollision(simTime))
+                    {
+                        island.SetVector3("repositioning_velocity", dir * constants.GetFloat("repositioning_speed"));
+                    }
                 }
             }
             else
             // apply movement only if no collision
-                if (!HadCollision(simTime))
+            if (!HadCollision(simTime))
             {
                 // normal movement
                 if (state != IslandState.Influenced)

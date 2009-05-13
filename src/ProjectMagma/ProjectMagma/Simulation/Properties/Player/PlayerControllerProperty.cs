@@ -14,7 +14,7 @@ namespace ProjectMagma.Simulation
     public class PlayerControllerProperty : Property
     {
         #region flags
-        private static readonly bool RightStickFlame = true;
+        private static readonly bool RightStickFlame = false;
         private static readonly bool LeftStickSelection = true;
         private static readonly bool DeselectOnRelease = false;
         public static readonly bool ImuneToIslandPush = true;
@@ -538,7 +538,9 @@ namespace ProjectMagma.Simulation
                         if (selectedIsland != null
                             && selectedIsland.GetInt("players_on_island") > 0)
                         {
-                            Vector3 tminusp = (selectedIsland.GetVector3("position") - playerPosition);
+                            Vector3 viewVector = Vector3.Transform(new Vector3(0, 0, 1), GetRotation(player));
+                            Vector3 tminusp = viewVector;
+                            tminusp.Y = Vector3.Normalize(GetLandingPosition(selectedIsland) - playerPosition).Y;
                             Vector3 ominusp = Vector3.Backward;
                             if (tminusp != Vector3.Zero)
                                 tminusp.Normalize();

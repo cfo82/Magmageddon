@@ -5,8 +5,8 @@ using System.Runtime.InteropServices;
 // General Information about an assembly is controlled through the following 
 // set of attributes. Change these attribute values to modify the information
 // associated with an assembly.
-[assembly: AssemblyTitle("ProjectMagma")]
-[assembly: AssemblyProduct("ProjectMagma")]
+[assembly: AssemblyTitle("ProjectMagmaTitle")]
+[assembly: AssemblyProduct("ProjectMagmaProduct")]
 [assembly: AssemblyDescription("")]
 [assembly: AssemblyCompany("Microsoft")]
 

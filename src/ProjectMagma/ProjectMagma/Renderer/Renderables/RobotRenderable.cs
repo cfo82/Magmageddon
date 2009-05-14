@@ -42,7 +42,7 @@ namespace ProjectMagma.Renderer
 
         //}
 
-        VertexPositionColor[] vpt;
+        VertexPositionTexture[] vpt;
         VertexDeclaration vd;
 
         public override void LoadResources(Renderer renderer)
@@ -52,26 +52,27 @@ namespace ProjectMagma.Renderer
             ApplyEffectsToModel();
             InitializeControllers();
 
-            vpt = new VertexPositionColor[6];
-            vpt[0].Position = new Vector3(-1, -1, -1);
-            vpt[0].Color = Color.Red;
-            vpt[1].Position = new Vector3(-1, -1, 1);
-            vpt[1].Color = Color.Green;
-            vpt[2].Position = new Vector3(1, -1, -1);
-            vpt[2].Color = Color.Yellow;
-            vpt[3].Position = new Vector3(-1, -1, -1);
-            vpt[3].Color = Color.Red;
-            vpt[5].Position = new Vector3(-1, -1, 1);
-            vpt[5].Color = Color.Green;
-            vpt[4].Position = new Vector3(1, -1, -1);
-            vpt[4].Color = Color.Yellow;
+            eff = new BasicEffect(renderer.Device, null);
+
+            vpt = new VertexPositionTexture[4];
+            Vector3 arrowDims = Scale * 0.4f;
+            vpt[0].Position = new Vector3(-arrowDims.X, 0, -arrowDims.Z);
+            vpt[0].TextureCoordinate = new Vector2(0, 0);
+            vpt[1].Position = new Vector3(-arrowDims.X, 0, arrowDims.Z);
+            vpt[1].TextureCoordinate = new Vector2(0, 1);
+            vpt[2].Position = new Vector3(arrowDims.X, 0, -arrowDims.Z);
+            vpt[2].TextureCoordinate = new Vector2(1, 0);
+            vpt[3].Position = new Vector3(arrowDims.X, 0, arrowDims.Z);
+            vpt[3].TextureCoordinate = new Vector2(1, 1);
 
             vd = new VertexDeclaration(renderer.Device, VertexPositionTexture.VertexElements);
 
             rect = Game.Instance.ContentManager.Load<MagmaModel>("Models/Primitives/lava_primitive").XnaModel;
+            playerArrowTexture = Game.Instance.ContentManager.Load<Texture2D>("Textures/Visualizations/player_arrow");
         }
 
         Model rect;
+        Texture2D playerArrowTexture;
 
         private void InitializeControllers()
         {
@@ -221,25 +222,35 @@ namespace ProjectMagma.Renderer
         }
 
 
+        BasicEffect eff;
 
         protected override void DrawMesh(Renderer renderer, GameTime gameTime, ModelMesh mesh)
         {
-            animator.World = World;
-         //   animator.Draw(gameTime);
 
-            BasicEffect eff = new BasicEffect(renderer.Device, null);
             eff.Begin();
             eff.CurrentTechnique.Passes[0].Begin();
-            eff.World = Matrix.Identity;
-            eff.View = Matrix.Identity;
-            eff.Projection = Matrix.Identity;
-            //renderer.Device.VertexDeclaration = vd;
-            //renderer.Device.DrawUserPrimitives(PrimitiveType.TriangleList, vpt, 0, 2);
+            eff.World = World;
+            eff.View = renderer.Camera.View;
+            eff.Projection = renderer.Camera.Projection;
+            eff.DiffuseColor = color1;
+            //eff.VertexColorEnabled = true;
+            eff.TextureEnabled = true;
+            eff.Texture = playerArrowTexture;
+
+            renderer.Device.VertexDeclaration = vd;
+            CullMode oldCullMode = renderer.Device.RenderState.CullMode;
+
+            renderer.Device.RenderState.CullMode = CullMode.None;
+            renderer.Device.RenderState.DepthBufferEnable = false;
+            renderer.Device.DrawUserPrimitives(PrimitiveType.TriangleStrip, vpt, 0, 2);
+            renderer.Device.RenderState.CullMode = oldCullMode;
             //rect.Meshes[0].Draw();
-            Model.Meshes[0].Draw();
+            //Model.Meshes[0].Draw();
             eff.CurrentTechnique.Passes[0].End();
             eff.End();
-            
+
+            animator.World = World;
+            animator.Draw(gameTime);
 
             base.DrawMesh(renderer, gameTime, mesh);
         }

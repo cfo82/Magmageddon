@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using System;
 using System.Diagnostics;
 using ProjectMagma.Shared.Model;
+using ProjectMagma.MathHelpers;
 
 namespace ProjectMagma.Renderer
 {
@@ -20,6 +21,7 @@ namespace ProjectMagma.Renderer
             this.color2 = color2;
 
             RenderChannel = RenderChannelType.One;
+            playerArrowColorBlend = new SineFloat(0.0f, 1.0f, 10.0f);
         }
 
         ~RobotRenderable()
@@ -42,6 +44,7 @@ namespace ProjectMagma.Renderer
 
         //}
 
+        SineFloat playerArrowColorBlend;
         VertexPositionTexture[] vpt;
         VertexDeclaration vd;
 
@@ -55,7 +58,7 @@ namespace ProjectMagma.Renderer
             eff = new BasicEffect(renderer.Device, null);
 
             vpt = new VertexPositionTexture[4];
-            Vector3 arrowDims = Scale * 0.4f;
+            Vector3 arrowDims = Scale * 0.6f;
             vpt[0].Position = new Vector3(-arrowDims.X, 0, -arrowDims.Z);
             vpt[0].TextureCoordinate = new Vector2(0, 0);
             vpt[1].Position = new Vector3(-arrowDims.X, 0, arrowDims.Z);
@@ -105,7 +108,8 @@ namespace ProjectMagma.Renderer
         public override void Update(Renderer renderer, GameTime gameTime)
         {
             base.Update(renderer, gameTime);
-
+            
+            playerArrowColorBlend.Update(gameTime);
             animator.Update(gameTime);
 
             if (blendFactor > 0.0f)
@@ -232,7 +236,7 @@ namespace ProjectMagma.Renderer
             eff.World = World;
             eff.View = renderer.Camera.View;
             eff.Projection = renderer.Camera.Projection;
-            eff.DiffuseColor = color1;
+            eff.DiffuseColor = color1 * playerArrowColorBlend.Value + color2 * (1-playerArrowColorBlend.Value);
             //eff.VertexColorEnabled = true;
             eff.TextureEnabled = true;
             eff.Texture = playerArrowTexture;

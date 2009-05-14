@@ -6,7 +6,7 @@
 
 //-----------------------------------------------------------------------------------------------------------
 float SnowParticleLifetime = 200;
-float SnowVelocityDamping = 0.05;
+float SnowVelocityDamping = 0.1;
 float SnowParticleMass = 0.01;
 float3 Gravity = float3(0,-9.81,0);
 float3 WindForce;
@@ -60,7 +60,7 @@ UpdateParticlesPixelShaderOutput UpdateSnowPixelShader(
 	
 	float3 force = Gravity + WindForce;
 	
-	float3 next_velocity = current_velocity - current_velocity*SnowVelocityDamping + Dt*force;
+	float3 next_velocity = current_velocity - Dt*current_velocity*SnowVelocityDamping + Dt*force;
 	float3 next_position = current_position + Dt*next_velocity;
 	float next_time_to_death = current_time_to_death + Dt*-1;
 	

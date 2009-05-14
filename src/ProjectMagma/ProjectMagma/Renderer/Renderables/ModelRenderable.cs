@@ -77,6 +77,13 @@ namespace ProjectMagma.Renderer
             mesh.Draw();
         }
 
+        protected void ApplyWorldViewProjection(Renderer renderer, Effect effect)
+        {
+            effect.Parameters["World"].SetValue(World);
+            effect.Parameters["View"].SetValue(renderer.Camera.View);
+            effect.Parameters["Projection"].SetValue(renderer.Camera.Projection);
+        }
+
         protected sealed class PartEffectMapping : Dictionary<ModelMeshPart, Effect> { }
 
         protected PartEffectMapping CurrentPartEffectMapping()
@@ -191,23 +198,23 @@ namespace ProjectMagma.Renderer
         }
 
 
-        protected void ApplyRenderChannel(Effect effect)
+        protected void ApplyRenderChannel(Effect effect, RenderChannelType renderChannel)
         {
-            Vector4 RenderChannelColor = Vector4.Zero;
-            switch(RenderChannel)
+            Vector4 renderChannelColor = Vector4.Zero;
+            switch(renderChannel)
             {
                 case RenderChannelType.One:
-                    RenderChannelColor = new Vector4(1.0f, 0.0f, 0.0f, 1.0f);
+                    renderChannelColor = new Vector4(1.0f, 0.0f, 0.0f, 1.0f);
                     break;
                 case RenderChannelType.Two:
-                    RenderChannelColor = new Vector4(0.0f, 1.0f, 0.0f, 1.0f);
+                    renderChannelColor = new Vector4(0.0f, 1.0f, 0.0f, 1.0f);
                     break;
                 case RenderChannelType.Three:
-                    RenderChannelColor = new Vector4(0.0f, 0.0f, 1.0f, 1.0f);
+                    renderChannelColor = new Vector4(0.0f, 0.0f, 1.0f, 1.0f);
                     break;                
             }
-            Debug.Assert(RenderChannelColor != Vector4.Zero);
-            effect.Parameters["RenderChannelColor"].SetValue(RenderChannelColor);
+            Debug.Assert(renderChannelColor != Vector4.Zero);
+            effect.Parameters["RenderChannelColor"].SetValue(renderChannelColor);
         }
 
         protected Matrix BoneTransformMatrix(ModelMesh mesh)

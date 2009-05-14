@@ -55,7 +55,8 @@ namespace ProjectMagma.Renderer
             ApplyEffectsToModel();
             InitializeControllers();
 
-            eff = new BasicEffect(renderer.Device, null);
+            //eff = new BasicEffect(renderer.Device, null);
+            eff = Game.Instance.ContentManager.Load<Effect>("Effects/Basic/Basic");
 
             vpt = new VertexPositionTexture[4];
             Vector3 arrowDims = Scale * 0.6f;
@@ -226,37 +227,49 @@ namespace ProjectMagma.Renderer
         }
 
 
-        BasicEffect eff;
+        Effect eff;
 
         protected override void DrawMesh(Renderer renderer, GameTime gameTime, ModelMesh mesh)
         {
-
-            eff.Begin();
-            eff.CurrentTechnique.Passes[0].Begin();
-            eff.World = World;
-            eff.View = renderer.Camera.View;
-            eff.Projection = renderer.Camera.Projection;
-            eff.DiffuseColor = color1 * playerArrowColorBlend.Value + color2 * (1-playerArrowColorBlend.Value);
-            //eff.VertexColorEnabled = true;
-            eff.TextureEnabled = true;
-            eff.Texture = playerArrowTexture;
-
-            renderer.Device.VertexDeclaration = vd;
-            CullMode oldCullMode = renderer.Device.RenderState.CullMode;
-
-            renderer.Device.RenderState.CullMode = CullMode.None;
-            renderer.Device.RenderState.DepthBufferEnable = false;
-            renderer.Device.DrawUserPrimitives(PrimitiveType.TriangleStrip, vpt, 0, 2);
-            renderer.Device.RenderState.CullMode = oldCullMode;
-            //rect.Meshes[0].Draw();
-            //Model.Meshes[0].Draw();
-            eff.CurrentTechnique.Passes[0].End();
-            eff.End();
+            DrawPlayerArrow(renderer);
 
             animator.World = World;
             animator.Draw(gameTime);
 
             base.DrawMesh(renderer, gameTime, mesh);
+        }
+
+        private void DrawPlayerArrow(Renderer renderer)
+        {
+            eff.CurrentTechnique = eff.Techniques["TexturedNoCullNoDepth"];
+
+            eff.Begin();
+            eff.CurrentTechnique.Passes[0].Begin();
+            //eff.Parameters["World"].SetValue(World);
+            //eff.View = renderer.Camera.View;
+            //eff.Projection = renderer.Camera.Projection;
+            ApplyWorldViewProjection(renderer, eff);
+            eff.Parameters["Local"].SetValue(Matrix.Identity);
+            eff.Parameters["AmbientLightColor"].SetValue(Vector3.One);
+            eff.Parameters["DiffuseColor"].SetValue(color1 * playerArrowColorBlend.Value + color2 * (1 - playerArrowColorBlend.Value));
+            //eff.VertexColorEnabled = true;
+            //eff.TextureEnabled = true;
+            eff.Parameters["DiffuseTexture"].SetValue(playerArrowTexture);
+            //eff.Parameters["RenderChannelColor"].SetValue(RenderChannelType.Three);
+            ApplyRenderChannel(eff, RenderChannelType.Three);
+
+            renderer.Device.VertexDeclaration = vd;
+            //CullMode oldCullMode = renderer.Device.RenderState.CullMode;
+            //bool oldDepthBufferEnable = renderer.Device.RenderState.DepthBufferEnable;
+            
+            //renderer.Device.RenderState.CullMode = CullMode.None;
+            //renderer.Device.RenderState.DepthBufferEnable = false;
+            renderer.Device.DrawUserPrimitives(PrimitiveType.TriangleStrip, vpt, 0, 2);
+            //renderer.Device.RenderState.CullMode = oldCullMode;
+            //rect.Meshes[0].Draw();
+            //Model.Meshes[0].Draw();
+            eff.CurrentTechnique.Passes[0].End();
+            eff.End();
         }
 
         protected override void ApplyTechnique(Effect effect)

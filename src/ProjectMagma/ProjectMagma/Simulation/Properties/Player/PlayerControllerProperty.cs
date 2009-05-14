@@ -426,7 +426,8 @@ namespace ProjectMagma.Simulation
                 {
                     //arrow.SetVector2("persistent_squash", new Vector2(100f, 1f));
                     (arrow.GetProperty("render") as ArrowRenderProperty).JumpPossible = true;//SquashParams = new Vector2(100f, 1f);
-                    if(xzdist.Length() < constants.GetFloat("island_jump_free_range"))
+                    // hack hack hack
+//                    if(xzdist.Length() < constants.GetFloat("island_jump_free_range"))
                         selectedIslandInFreeJumpRange = true;
                 }
                 else

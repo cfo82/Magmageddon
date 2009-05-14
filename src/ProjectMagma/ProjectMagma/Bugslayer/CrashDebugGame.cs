@@ -21,7 +21,7 @@ namespace ProjectMagma.Bugslayer
             Content.RootDirectory = "Content";
 
             message = string.Format(
-                "**** CRASH LOG (Please take a picture of this and send it to the developers!) ****\n" + 
+                "**** CRASH LOG (Please take a picture of this and send it to dpk@student.ethz.ch!) ****\n" + 
                 "Press Back to Exit\n" + 
                 "Exception: {0}\n" + 
                 "Stack Trace:\n{1}",

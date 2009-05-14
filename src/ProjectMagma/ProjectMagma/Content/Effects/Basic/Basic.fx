@@ -19,6 +19,7 @@ Technique Unicolored
 		AlphaBlendEnable = true;
 		SrcBlend = SrcAlpha;
 		DestBlend = InvSrcAlpha;
+		ZEnable = true;
 	}	
 }
 
@@ -28,6 +29,18 @@ Technique Textured
 	{
 		VertexShader = compile vs_3_0 VSBasicPixelLightingNmTxSq();
 		PixelShader	 = compile ps_3_0 PSBasicPixelLightingTx();
+		ZEnable = true;
+	}
+}
+
+Technique TexturedNoCullNoDepth
+{
+	Pass 
+	{
+		VertexShader = compile vs_3_0 VSBasicPixelLightingNmTxSq();
+		PixelShader	 = compile ps_3_0 PSBasicPixelLightingTx();
+		CullMode = None;
+		ZEnable = false;
 	}
 }
 
@@ -37,6 +50,7 @@ Technique Island
 	{
 		VertexShader = compile vs_3_0 VSBasicPixelLightingNmTxSq();
 		PixelShader	 = compile ps_3_0 PSIsland();
+		ZEnable = true;		
 	}
 }
 
@@ -46,6 +60,7 @@ Technique Environment
 	{
 		VertexShader = compile vs_3_0 VSBasicPixelLightingNmTxSq();
 		PixelShader	 = compile ps_3_0 PSEnvironment();
+		ZEnable = true;
 	}
 }
 
@@ -55,5 +70,6 @@ Technique AnimatedPlayer
 	{
 		VertexShader = compile vs_3_0 VSBasicPixelLightingNmTxSqSk();
 		PixelShader = compile ps_3_0 PSBasicPixelLightingTxTo();
+		ZEnable = true;		
 	}
 }

@@ -414,7 +414,6 @@ namespace ProjectMagma
             renderer.Update(gameTime);
         }
 
-        [Conditional("DEBUG")]
         private void DrawFrameCounter(GameTime gameTime)
         {
             spriteBatch.Begin();

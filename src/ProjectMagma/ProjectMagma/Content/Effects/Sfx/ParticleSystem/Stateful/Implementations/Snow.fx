@@ -104,7 +104,7 @@ RenderParticlesVertexShaderOutput RenderSnowVertexShader(
 		float normalizedAge = 1.0 - position_sampler_value.w/SnowParticleLifetime;
 	    
 		output.Position = mul(view_position, Projection);
-		output.Size = 12;
+		output.Size = 8;
 		output.Color = float4(1,1,1,1);
 	}
 	else

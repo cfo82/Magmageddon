@@ -30,7 +30,6 @@ namespace ProjectMagma
             {
 #endif
                 Game.RunInstance();
-
 #if XBOX
             }
             catch (Exception exception)

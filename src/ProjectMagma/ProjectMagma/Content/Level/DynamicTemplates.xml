@@ -33,7 +33,7 @@
     </Properties>
   </Entity>
 
-  <Entity name="player_explosion_base" abstract="true">
+  <Entity name="player_explosion_base" extends="explosion_base" abstract="true">
     <Attributes>
       <Attribute name="damage" template="string" value="20"/>
       
@@ -45,7 +45,7 @@
     </Properties>
   </Entity>
 
-  <Entity name="ice_spike_explosion_base" abstract="true">
+  <Entity name="ice_spike_explosion_base" extends="explosion_base" abstract="true">
     <Attributes>
       <Attribute name="mesh" template="string" value="Models/Sfx/icespike_explosion"/>
       <Attribute name="scale" template="float3" value="30 30 30"/>

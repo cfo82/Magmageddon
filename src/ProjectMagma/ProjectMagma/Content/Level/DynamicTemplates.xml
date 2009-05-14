@@ -13,7 +13,7 @@
       <Attribute name="position" template="float3" value="0 0 0"/>
       <Attribute name="island" template="string" value=""/>
 
-      <Attribute name="mesh" template="string" value="Models/Visualizations/arrow1"/>
+      <Attribute name="mesh" template="string" value="Models/Visualizations/arrow"/>
       <Attribute name="scale" template="float3" value="20 20 20"/>
     </Attributes>
     <Properties>

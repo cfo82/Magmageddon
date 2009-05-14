@@ -8,7 +8,7 @@
     </Attributes>
   </Entity>
   
-  <Entity name="arrow_base" abstract="true">
+  <Entity name="arrow_base" extends="dynamic_entity" abstract="true">
     <Attributes>
       <Attribute name="position" template="float3" value="0 0 0"/>
       <Attribute name="island" template="string" value=""/>
@@ -21,7 +21,7 @@
     </Properties>
   </Entity>
   
-  <Entity name="explosion_base" abstract="true">
+  <Entity name="explosion_base" extends="dynamic_entity" abstract="true">
     <Attributes>
       <Attribute name="live_span" template="int" value="1000"/>
 
@@ -55,7 +55,7 @@
     </Properties>
   </Entity>
 
-  <Entity name="flamethrower_base" abstract="true">
+  <Entity name="flamethrower_base" extends="dynamic_entity" abstract="true">
     <Attributes>
       <Attribute name="active" template="bool" value="true"/>
       <Attribute name="scale" template="float3" value="0 0 0"/>
@@ -74,7 +74,7 @@
     </Properties>
   </Entity>
   
-  <Entity name="ice_spike_base" abstract="true">
+  <Entity name="ice_spike_base" extends="dynamic_entity" abstract="true">
     <Attributes>
       <Attribute name="dead" template="bool" value="false"/>
 

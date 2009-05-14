@@ -91,6 +91,7 @@
   <ItemGroup>
     <Compile Include="Bugslayer\CrashDebugGame.cs" />
     <Compile Include="EntryPoint.cs" />
+    <Compile Include="GlobalClock.cs" />
     <Compile Include="Renderer\MathHelpers\EaseVector3.cs" />
     <Compile Include="Renderer\MathHelpers\DoublyIntegratedVector3.cs" />
     <Compile Include="Renderer\MathHelpers\DoublyIntegratedVector2.cs" />

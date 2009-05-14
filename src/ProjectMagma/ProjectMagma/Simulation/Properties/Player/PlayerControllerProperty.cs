@@ -238,7 +238,7 @@ namespace ProjectMagma.Simulation
             bool allowSelection = attractedIsland == null && destinationIsland == null;
             PerformIslandSelectionAction(at, allowSelection, ref playerPosition);
             PerformIslandJumpAction(ref playerPosition, ref playerVelocity);
-            PerformIslandAttractionAction(player, allowSelection, ref playerPosition, ref playerVelocity);
+//            PerformIslandAttractionAction(player, allowSelection, ref playerPosition, ref playerVelocity);
             #endregion
 
             #region recharge
@@ -285,15 +285,13 @@ namespace ProjectMagma.Simulation
             if (playerPosition.Y < lava.GetVector3("position").Y)
                 PlayerLavaCollisionHandler(simTime, player, lava);
 
-            #region update animations
-
             if(controllerInput.StartHitAnimation)
             {
                 controllerInput.StartHitAnimation = false;
                 (player.GetProperty("render") as RobotRenderProperty).NextOnceState = "hit";
             }
 
-            #endregion
+            Debug.Assert(!(selectedIsland == null) || !arrow.HasProperty("render"));
         }
 
         private void PerformIslandAttractionAction(Entity player, bool allowSelection,
@@ -367,29 +365,28 @@ namespace ProjectMagma.Simulation
             if (allowSelection)
             {
                 if (/*controllerInput.rightStickMoved
-                    &&*/ activeIsland != null
-                    && selectedIsland != activeIsland) // must be standing on island
+                    &&*/ activeIsland != null) // must be standing on island
                 {
                     //    Vector3 selectionDirection = new Vector3(controllerInput.rightStickX, 0, controllerInput.rightStickY);
                   //  stickDir.Normalize();
                     Vector3 selectionDirection = Vector3.Transform(new Vector3(0, 0, 1), GetRotation(player));
 
                     // only allow reselection if stick moved slightly
-                    //bool stickMoved = Vector3.Dot(lastStickDir, selectionDirection) < constants.GetFloat("island_reselection_max_value");
-                    bool stickMoved = true; // hack!
-                    if ((selectedIsland == null || stickMoved)
-                        && at > islandSelectedAt + constants.GetFloat("island_reselection_timeout"))
+                    bool stickMoved = Vector3.Dot(lastStickDir, selectionDirection) < constants.GetFloat("island_reselection_max_value");
+                    if (/*(selectedIsland == null || stickMoved)
+                        && */ at > islandSelectedAt + constants.GetFloat("island_reselection_timeout"))
                     {
                         //                        Console.WriteLine("new selection (old: " + ((selectedIsland != null) ? selectedIsland.Name : "") + "): " + lastStickDir + "." + stickDir + " = " +
                         //                            Vector3.Dot(lastStickDir, stickDir));
 
                         // select closest island in direction of stick
                         lastStickDir = selectionDirection;
-                        selectedIsland = SelectBestIslandInDirection(ref selectionDirection);
+                        Entity bestIsland = SelectBestIslandInDirection(ref selectionDirection);
 
                         // new island selected
-                        if (selectedIsland != null)
+                        if (bestIsland != null)
                         {
+                            selectedIsland = bestIsland;
                             islandSelectedAt = at;
                             arrow.SetString("island", selectedIsland.Name);
 
@@ -400,11 +397,13 @@ namespace ProjectMagma.Simulation
                             }
                             
                             // reset in range indicator
-                            selectedIslandInFreeJumpRange = false;
+                            //selectedIslandInFreeJumpRange = false;
+                            // hacky hack hack
+                            selectedIslandInFreeJumpRange = true;
                         }
                     }
                 }
-                else
+//                else
                 {
                     // deselect after timeout
                     if (selectedIsland != null
@@ -441,9 +440,11 @@ namespace ProjectMagma.Simulation
         private void RemoveSelectionArrow()
         {
             selectedIsland = null;
-            arrow.RemoveProperty("render");
-            arrow.RemoveProperty("shadow_cast");
-            //arrow.SetVector2("persistent_squash", new Vector2(1000f, 0.8f));
+            if(arrow.HasProperty("render"))
+                arrow.RemoveProperty("render");
+            if (arrow.HasProperty("shadow_cast"))
+                arrow.RemoveProperty("shadow_cast");
+            arrow.SetString("island", "");
             lastStickDir = Vector3.Zero;
             islandSelectedAt = 0;
         }
@@ -825,7 +826,6 @@ namespace ProjectMagma.Simulation
                     if (flameThrowerSoundInstance != null)
                         flameThrowerSoundInstance.Stop();
                     jetpackActive = false;
-                    selectedIsland = null;
                     destinationIsland = null;
                     LeaveActiveIsland();
 
@@ -840,10 +840,9 @@ namespace ProjectMagma.Simulation
                     player.RemoveProperty("shadow_cast");
                     player.RemoveProperty("collision");
 
-                    if (arrow.HasProperty("render"))
+                    if (selectedIsland != null)
                     {
-                        arrow.RemoveProperty("render");
-                        arrow.RemoveProperty("shadow_cast");
+                        RemoveSelectionArrow();
                     }
 
                     if (flame != null)

@@ -72,6 +72,8 @@ namespace ProjectMagma
         private SimulationThread simulationThread;
 
         private Exception exceptionThrown;
+        
+        private GlobalClock globalClock;
 
         private Game()
         {
@@ -91,6 +93,7 @@ namespace ProjectMagma
 
             // needed to show Guide, which is needed for storage, which is needed for saving stuff
             this.Components.Add(new GamerServicesComponent(this));
+            this.globalClock = new GlobalClock();
         }
 
         public static Game Instance
@@ -123,6 +126,8 @@ namespace ProjectMagma
         {
             // TODO: Add your initialization logic here
             base.Initialize();
+            
+            this.globalClock.Start();
         }
 
         /// <summary>
@@ -310,6 +315,7 @@ namespace ProjectMagma
         {
             simulationThread.Join();
             paused = true;
+            globalClock.Pause();
             simulation.Pause();
         }
 
@@ -322,6 +328,7 @@ namespace ProjectMagma
         {
             simulation.Resume();
             paused = false;
+            globalClock.Resume();
             simulationThread.Start();
         }
 
@@ -410,8 +417,6 @@ namespace ProjectMagma
                 
                 profiler.EndSection("update");
             }
-
-            renderer.Update(gameTime);
         }
 
         private void DrawFrameCounter(GameTime gameTime)
@@ -453,6 +458,7 @@ namespace ProjectMagma
             profiler.TryBeginFrame();
             profiler.BeginSection("draw");
 
+            renderer.Update(gameTime);
             renderer.Render(gameTime);
 
             // will apply effect such as bloom
@@ -599,6 +605,11 @@ namespace ProjectMagma
                     return exceptionThrown;
                 }
             }
+        }
+        
+        public GlobalClock GlobalClock
+        {
+        	get { return globalClock; }
         }
     }
 }

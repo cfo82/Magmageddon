@@ -7,19 +7,19 @@ namespace ProjectMagma.Simulation
 {
     public class SimulationTime
     {
-        private long lastTick = DateTime.Now.Ticks;
-
         private int frame = 0;
 
-        private float at = 0;
-        private float last = 0;
+        private double at = 0;
+        private double last = 0;
 
-        private float dt = 0;
-        private float dtMs = 0;
+        private double dt = 0;
+        private double dtMs = 0;
+        
+        private double adjustmentMs = 0;
 
         public SimulationTime(double at)
         {
-            this.at = (float)at;
+            this.last = this.at = at + adjustmentMs;
         }
 
         /// <summary>
@@ -35,7 +35,7 @@ namespace ProjectMagma.Simulation
         /// </summary>
         public float At
         {
-            get { return at; }
+            get { return (float)at; }
         }
 
         /// <summary>
@@ -43,7 +43,7 @@ namespace ProjectMagma.Simulation
         /// </summary>
         public float Last
         {
-            get { return last; }
+            get { return (float)last; }
         }
 
         /// <summary>
@@ -51,7 +51,7 @@ namespace ProjectMagma.Simulation
         /// </summary>
         public float Dt
         {
-            get { return dt; }
+            get { return (float)dt; }
         }
 
         /// <summary>
@@ -59,43 +59,24 @@ namespace ProjectMagma.Simulation
         /// </summary>
         public float DtMs
         {
-            get { return dtMs; }
+            get { return (float)dtMs; }
         }
 
         internal void Update()
         {
             // reset last
             last = at;
-
-            // dt in milliseconds
-            dtMs = (float)((DateTime.Now.Ticks - lastTick) / 10000d);
-
-            // dt in seconds
-            dt = dtMs / 1000f;
-
-            // at is in milliseconds
+            double millis = Game.Instance.GlobalClock.PausableMilliseconds;
+            dtMs = (millis + adjustmentMs) - last;
+            dt = dtMs / 1000d;
             at += dtMs;
-
             // increase frame counter
-            frame++;
-
-            // reset lastTick
-            lastTick = DateTime.Now.Ticks;
+            ++frame;
         }
 
-        internal void Pause()
+        public static double GetDt(double from, double to)
         {
-
-        }
-
-        internal void Resume()
-        {
-            lastTick = DateTime.Now.Ticks;
-        }
-
-        public static float GetDt(float from, float to)
-        {
-            return (to - from) / 1000f;
+            return (to - from) / 1000d;
         }
     }
 }

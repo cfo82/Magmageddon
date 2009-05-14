@@ -205,13 +205,11 @@ namespace ProjectMagma.Simulation
         public void Pause()
         {
             paused = true;
-            simTime.Pause();
         }
 
         public void Resume()
         {
             paused = false;
-            simTime.Resume();
         }
 
         #region interval execution functionality

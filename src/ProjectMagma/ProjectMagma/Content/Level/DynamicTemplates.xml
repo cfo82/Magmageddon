@@ -23,7 +23,7 @@
   
   <Entity name="explosion_base" abstract="true">
     <Attributes>
-      <Attribute name="live_span" template="string" value="1000"/>
+      <Attribute name="live_span" template="int" value="1000"/>
 
       <Attribute name="bv_type" template="string" value="sphere"/>
     </Attributes>
@@ -35,7 +35,7 @@
 
   <Entity name="player_explosion_base" extends="explosion_base" abstract="true">
     <Attributes>
-      <Attribute name="damage" template="string" value="20"/>
+      <Attribute name="damage" template="int" value="20"/>
       
       <Attribute name="mesh" template="string" value="Models/Sfx/icespike_explosion"/>
       <Attribute name="scale" template="float3" value="35 35 35"/>

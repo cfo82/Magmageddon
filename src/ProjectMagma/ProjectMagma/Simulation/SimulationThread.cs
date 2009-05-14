@@ -70,6 +70,7 @@ namespace ProjectMagma.Simulation
                     finishedEvent.Set();
                 }
             }
+            finally { }/*
             catch (Exception ex)
             {
                 if (!this.aborted)
@@ -78,7 +79,9 @@ namespace ProjectMagma.Simulation
                     Game.Instance.ExceptionThrown = ex;
                     finishedEvent.Set();
                 }
-            }
+              * 
+                throw ex;
+            }*/
         }
 
         public void Join()

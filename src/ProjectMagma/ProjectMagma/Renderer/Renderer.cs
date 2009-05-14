@@ -84,11 +84,10 @@ namespace ProjectMagma.Renderer
             }
             snowSystem = new Snow(this, Game.Instance.ContentManager, device);
             snowSystem.AddEmitter(new ProjectMagma.Renderer.ParticleSystem.Emitter.SnowEmitter(12f));
-            snowSystem.Update(-20, 0);
-            /*for (int i = 0; i < 1000; ++i)
+            for (int i = 0; i < 1000; ++i)
             {
-                snowSystem.Update(-5000.0 + i * 5, -5000.0 + i * 5 + 5);
-            }*/
+                snowSystem.Update(-20d/1000d + i * -20d/1000d, -20d/1000d + i * -20d/1000d + 20d/1000d);
+            }
 
             updateQueues = new List<RendererUpdateQueue>();
         }

@@ -81,6 +81,9 @@ namespace ProjectMagma.Renderer
             foreach (string key in animator.Animations.Keys)
             {
                 controllers.Add(key, new AnimationController(Game.Instance, animator.Animations[key]));
+
+                // each controller registers itself in the game. we don't like this.
+                Game.Instance.Components.RemoveAt(Game.Instance.Components.Count - 1);
             }
 
             // set the first default controller
@@ -230,7 +233,8 @@ namespace ProjectMagma.Renderer
             eff.Projection = Matrix.Identity;
             //renderer.Device.VertexDeclaration = vd;
             //renderer.Device.DrawUserPrimitives(PrimitiveType.TriangleList, vpt, 0, 2);
-            rect.Meshes[0].Draw();
+            //rect.Meshes[0].Draw();
+            Model.Meshes[0].Draw();
             eff.CurrentTechnique.Passes[0].End();
             eff.End();
             

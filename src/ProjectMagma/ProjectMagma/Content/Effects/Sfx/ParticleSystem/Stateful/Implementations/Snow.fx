@@ -130,7 +130,7 @@ float4 RenderSnowPixelShader(
 #endif
 ) : COLOR0
 {
-    return input.Color*tex2D(RenderParticlesSpriteSampler, particleCoordinate);
+    return input.Color*tex2D(RenderParticlesSpriteSampler, particleCoordinate/2);
 }
 
 

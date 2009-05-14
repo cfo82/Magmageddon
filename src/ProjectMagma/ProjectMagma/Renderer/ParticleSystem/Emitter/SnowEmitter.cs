@@ -44,11 +44,12 @@ namespace ProjectMagma.Renderer.ParticleSystem.Emitter
         public Vector3 RandomPoint()
         {
             float planeSizeX = 1400;
-            float planeSizeZ = 800;
+            float planeSizeY = 30;
+            float planeSizeZ = 1200;
 
             return new Vector3(
                 ((float)random.NextDouble() - 0.5f) * planeSizeX,
-                500.0f,
+                500.0f + ((float)random.NextDouble() - 0.5f) * planeSizeY,
                 ((float)random.NextDouble() - 0.5f) * planeSizeZ
                 );
         }

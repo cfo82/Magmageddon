@@ -46,7 +46,7 @@ namespace ProjectMagma.Renderer.ParticleSystem.Stateful.Implementations
         {
             windAngle += 0.5f * ((float)random.NextDouble() - 0.5f);
             parameters["WindForce"].SetValue(new Vector3(windForce * (float)Math.Cos(windAngle), 0, windForce * (float)Math.Sin(windAngle)));
-
+             
             base.SetUpdateParameters(parameters);
         }
 
@@ -58,7 +58,7 @@ namespace ProjectMagma.Renderer.ParticleSystem.Stateful.Implementations
         }
 
         private Texture2D snowSprite;
-        private float windForce = 20.0f;
+        private float windForce = 14.0f;
         private float windAngle = 0.0f;
         private static Random random = new Random();
     }

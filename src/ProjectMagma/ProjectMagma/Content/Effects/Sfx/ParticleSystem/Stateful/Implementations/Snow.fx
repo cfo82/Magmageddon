@@ -5,8 +5,8 @@
 
 
 //-----------------------------------------------------------------------------------------------------------
-float SnowParticleLifetime = 200;
-float SnowVelocityDamping = 0.1;
+float SnowParticleLifetime = 14;
+float SnowVelocityDamping = 0.2;
 float SnowParticleMass = 0.01;
 float3 Gravity = float3(0,-9.81,0);
 float3 WindForce;
@@ -105,7 +105,7 @@ RenderParticlesVertexShaderOutput RenderSnowVertexShader(
 	    
 		output.Position = mul(view_position, Projection);
 		output.Size = 9;
-		output.Color = float4(1,1,1,1);
+		output.Color = float4(1,1,1,min(0.6, 1-normalizedAge)*0.6);
 	}
 	else
 	{

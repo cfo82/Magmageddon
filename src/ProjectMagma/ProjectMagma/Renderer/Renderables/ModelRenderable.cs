@@ -31,11 +31,10 @@ namespace ProjectMagma.Renderer
             RenderChannel = RenderChannelType.One;
         }
 
-        //public override void LoadResources()
-        //{
-        //    base.LoadResources();
-
-        //}
+        public override void LoadResources(Renderer renderer)
+        {
+            base.LoadResources(renderer);
+        }
 
         #endregion
 

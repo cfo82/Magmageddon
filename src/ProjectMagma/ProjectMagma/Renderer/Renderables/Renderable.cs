@@ -5,7 +5,7 @@ namespace ProjectMagma.Renderer
 {
     public abstract class Renderable : RendererUpdatable
     {
-        public virtual void LoadResources()
+        public virtual void LoadResources(Renderer renderer)
         {
         }
 

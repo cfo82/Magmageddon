@@ -21,9 +21,9 @@ namespace ProjectMagma.Renderer
             lastFrameTime = currentFrameTime = 0.0;
         }
 
-        public override void LoadResources()
+        public override void LoadResources(Renderer renderer)
         {
-            base.LoadResources();
+            base.LoadResources(renderer);
         }
 
         public override void UnloadResources()

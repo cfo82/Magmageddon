@@ -353,7 +353,7 @@ namespace ProjectMagma.Renderer
                 throw new Exception("invalid addition of already registered renderable");
             }
 
-            renderable.LoadResources();
+            renderable.LoadResources(this);
 
             if (renderable.NeedsUpdate)
             {

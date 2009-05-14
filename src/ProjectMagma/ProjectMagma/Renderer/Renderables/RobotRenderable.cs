@@ -4,6 +4,7 @@ using Xclna.Xna.Animation;
 using System.Collections.Generic;
 using System;
 using System.Diagnostics;
+using ProjectMagma.Shared.Model;
 
 namespace ProjectMagma.Renderer
 {
@@ -21,6 +22,11 @@ namespace ProjectMagma.Renderer
             RenderChannel = RenderChannelType.One;
         }
 
+        ~RobotRenderable()
+        {
+            //Console.WriteLine("blah");
+        }
+
         //protected override void ApplyEffectsToModel()
         //{
         //    base.ApplyEffectsToModel();
@@ -36,13 +42,36 @@ namespace ProjectMagma.Renderer
 
         //}
 
-        public override void LoadResources()
+        VertexPositionColor[] vpt;
+        VertexDeclaration vd;
+
+        public override void LoadResources(Renderer renderer)
         {
-            base.LoadResources();
+            base.LoadResources(renderer);
 
             ApplyEffectsToModel();
             InitializeControllers();
+
+            vpt = new VertexPositionColor[6];
+            vpt[0].Position = new Vector3(-1, -1, -1);
+            vpt[0].Color = Color.Red;
+            vpt[1].Position = new Vector3(-1, -1, 1);
+            vpt[1].Color = Color.Green;
+            vpt[2].Position = new Vector3(1, -1, -1);
+            vpt[2].Color = Color.Yellow;
+            vpt[3].Position = new Vector3(-1, -1, -1);
+            vpt[3].Color = Color.Red;
+            vpt[5].Position = new Vector3(-1, -1, 1);
+            vpt[5].Color = Color.Green;
+            vpt[4].Position = new Vector3(1, -1, -1);
+            vpt[4].Color = Color.Yellow;
+
+            vd = new VertexDeclaration(renderer.Device, VertexPositionTexture.VertexElements);
+
+            rect = Game.Instance.ContentManager.Load<MagmaModel>("Models/Primitives/lava_primitive").XnaModel;
         }
+
+        Model rect;
 
         private void InitializeControllers()
         {
@@ -59,8 +88,6 @@ namespace ProjectMagma.Renderer
             animationMode = AnimationMode.Permanent;
             permanentState = "idle0";
         }
-
-        private Dictionary<string, AnimationController> controllers;
 
         protected override void ApplyCustomEffectParameters(Effect effect, Renderer renderer, GameTime gameTime)
         {
@@ -188,11 +215,26 @@ namespace ProjectMagma.Renderer
             get { return true; }
         }
 
+
+
         protected override void DrawMesh(Renderer renderer, GameTime gameTime, ModelMesh mesh)
         {
             animator.World = World;
             animator.Draw(gameTime);
+
+            BasicEffect eff = new BasicEffect(renderer.Device, null);
+            eff.Begin();
+            eff.CurrentTechnique.Passes[0].Begin();
+            eff.World = Matrix.Identity;
+            eff.View = Matrix.Identity;
+            eff.Projection = Matrix.Identity;
+            //renderer.Device.VertexDeclaration = vd;
+            //renderer.Device.DrawUserPrimitives(PrimitiveType.TriangleList, vpt, 0, 2);
+            rect.Meshes[0].Draw();
+            eff.CurrentTechnique.Passes[0].End();
+            eff.End();
             
+
             base.DrawMesh(renderer, gameTime, mesh);
         }
 
@@ -243,6 +285,8 @@ namespace ProjectMagma.Renderer
         //AnimationController attack1, attack2, attack3, attack4;
         //AnimationController die;
         //AnimationController nod;
+        private Dictionary<string, AnimationController> controllers;
+
         private AnimationController currentController;
         float blendFactor;
         string state, destState, permanentState;//= "idle";

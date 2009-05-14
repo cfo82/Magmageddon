@@ -23,6 +23,11 @@ namespace ProjectMagma.Renderer
             }
         }
 
+        public override void LoadResources(Renderer renderer)
+        {
+            base.LoadResources(renderer);
+        }
+
         protected override void SetDefaultMaterialParameters()
         {
             Alpha = 1.0f;

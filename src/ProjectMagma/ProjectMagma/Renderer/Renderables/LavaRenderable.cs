@@ -41,9 +41,9 @@ namespace ProjectMagma.Renderer
             InitializeRandomOffsets(effect);
         }
 
-        public override void LoadResources()
+        public override void LoadResources(Renderer renderer)
         {
-            base.LoadResources();
+            base.LoadResources(renderer);
 
             this.temperatureTexture = Game.Instance.ContentManager.Load<Texture2D>("Textures/lava/temperature");
         }

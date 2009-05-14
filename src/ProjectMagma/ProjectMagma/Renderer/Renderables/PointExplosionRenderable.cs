@@ -24,9 +24,9 @@ namespace ProjectMagma.Renderer
         protected abstract PointExplosion CreateExplosionSystem();
         protected abstract PointExplosionEmitter CreateExplosionEmitter(Vector3 position, double currentFrameTime);
 
-        public override void LoadResources()
+        public override void LoadResources(Renderer renderer)
         {
-            base.LoadResources();
+            base.LoadResources(renderer);
 
             explosionSystem = CreateExplosionSystem();
         }

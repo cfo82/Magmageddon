@@ -26,9 +26,9 @@ namespace ProjectMagma.Renderer
             iceSpikeEmitter = null;
         }
 
-        public override void LoadResources()
+        public override void LoadResources(Renderer renderer)
         {
-            base.LoadResources();
+            base.LoadResources(renderer);
 
             iceSpikeSystem = new IceSpike(Game.Instance.Renderer, Game.Instance.ContentManager, Game.Instance.GraphicsDevice);
             iceSpikeModel = Game.Instance.ContentManager.Load<MagmaModel>("Models/Sfx/IceSpike").XnaModel;

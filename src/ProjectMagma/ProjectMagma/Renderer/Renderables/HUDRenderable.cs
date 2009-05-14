@@ -41,10 +41,10 @@ namespace ProjectMagma.Renderer
             powerupPickupDetails = new List<PowerupPickupDetails>();
         }
 
-        
-        public override void LoadResources()
+
+        public override void LoadResources(Renderer renderer)
         {
-            base.LoadResources();
+            base.LoadResources(renderer);
 
             barEffect = Game.Instance.ContentManager.Load<Effect>("Effects/Hud/Bars");
             barBackgroundTexture = Game.Instance.ContentManager.Load<Texture2D>("Sprites/Hud/bar_background");

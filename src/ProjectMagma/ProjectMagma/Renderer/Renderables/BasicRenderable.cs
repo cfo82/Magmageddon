@@ -23,6 +23,11 @@ namespace ProjectMagma.Renderer
             SetDefaultMaterialParameters();
         }
 
+        public override void LoadResources(Renderer renderer)
+        {
+            base.LoadResources(renderer);
+        }
+
         protected override void PrepareMeshEffects(Renderer renderer, GameTime gameTime, ModelMesh mesh)
         {
             if(start_squash)

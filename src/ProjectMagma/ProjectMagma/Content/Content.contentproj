@@ -1314,7 +1314,7 @@
     <Compile Include="Models\Visualizations\arrow.fbx">
       <Name>arrow</Name>
       <Importer>FbxImporter</Importer>
-      <Processor>ModelProcessor</Processor>
+      <Processor>FlameProcessor</Processor>
     </Compile>
     <Compile Include="Textures\Visualizations\player_arrow.tga">
       <Name>player_arrow</Name>

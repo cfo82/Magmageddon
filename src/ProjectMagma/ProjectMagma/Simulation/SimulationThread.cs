@@ -63,8 +63,6 @@ namespace ProjectMagma.Simulation
                         RendererUpdateQueue q = simulation.Update();
                         renderer.AddUpdateQueue(q);
 
-                        throw new Exception("depp");
-
                         Sps = 1000f / simulation.Time.DtMs;
                         AvgSps = 1000f * simulation.Time.Frame / simulation.Time.At;
                     }

@@ -7,8 +7,8 @@ namespace ProjectMagma
 {
     public class ThreadDistribution
     {
-        public static readonly int RenderThread = 4;
-        public static readonly int SimulationThread = 1;
-        public static readonly int[] CollisionThreads = { 1, 3 };
+        public static readonly int RenderThread = 1;
+        public static readonly int SimulationThread = 3;
+        public static readonly int[] CollisionThreads = { 3, 4 };
     }
 }

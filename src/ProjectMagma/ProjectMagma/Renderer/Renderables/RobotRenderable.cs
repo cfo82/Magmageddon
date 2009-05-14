@@ -225,7 +225,7 @@ namespace ProjectMagma.Renderer
         protected override void DrawMesh(Renderer renderer, GameTime gameTime, ModelMesh mesh)
         {
             animator.World = World;
-            animator.Draw(gameTime);
+         //   animator.Draw(gameTime);
 
             BasicEffect eff = new BasicEffect(renderer.Device, null);
             eff.Begin();

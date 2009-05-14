@@ -19,7 +19,7 @@ namespace ProjectMagma.Renderer.ParticleSystem.Stateful.Implementations
         )
         :   base(renderer, wrappedContent, device)
         {
-            snowSprite = wrappedContent.Load<Texture2D>("Textures/Sfx/Snow.1");
+            snowSprite = wrappedContent.Load<Texture2D>("Textures/Sfx/Snow");
         }
 
         private Effect LoadEffect(WrappedContentManager wrappedContent)

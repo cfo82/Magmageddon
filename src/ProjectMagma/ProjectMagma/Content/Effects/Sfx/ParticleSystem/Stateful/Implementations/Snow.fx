@@ -104,7 +104,7 @@ RenderParticlesVertexShaderOutput RenderSnowVertexShader(
 		float normalizedAge = 1.0 - position_sampler_value.w/SnowParticleLifetime;
 	    
 		output.Position = mul(view_position, Projection);
-		output.Size = 30;
+		output.Size = 12;
 		output.Color = float4(1,1,1,1);
 	}
 	else
@@ -130,7 +130,7 @@ float4 RenderSnowPixelShader(
 #endif
 ) : COLOR0
 {
-    return input.Color*tex2D(RenderParticlesSpriteSampler, particleCoordinate).a;
+    return input.Color*tex2D(RenderParticlesSpriteSampler, particleCoordinate);
 }
 
 

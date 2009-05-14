@@ -1326,11 +1326,6 @@
       <Importer>EffectImporter</Importer>
       <Processor>EffectProcessor</Processor>
     </Compile>
-    <Compile Include="Textures\Sfx\Snow.1.tga">
-      <Name>Snow.1</Name>
-      <Importer>TextureImporter</Importer>
-      <Processor>TextureProcessor</Processor>
-    </Compile>
     <Compile Include="Fonts\hud_powerup_collect.spritefont">
       <Name>hud_powerup_collect</Name>
       <Importer>FontDescriptionImporter</Importer>
@@ -1434,6 +1429,13 @@
     </Compile>
     <Compile Include="Sprites\Menu\Level\4vs4_selected.png">
       <Name>4vs4_selected</Name>
+      <Importer>TextureImporter</Importer>
+      <Processor>TextureProcessor</Processor>
+    </Compile>
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="Textures\Sfx\snow.png">
+      <Name>snow</Name>
       <Importer>TextureImporter</Importer>
       <Processor>TextureProcessor</Processor>
     </Compile>

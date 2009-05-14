@@ -17,6 +17,9 @@ namespace ProjectMagma.Renderer
         {
             EnablePostProcessing = true;
 
+            renderTime = new RenderTime(Game.Instance.GlobalClock.ContinuousMilliseconds,
+                Game.Instance.GlobalClock.PausableMilliseconds);
+
             this.device = device;
             updateRenderables = new List<Renderable>();
             shadowCaster = new List<Renderable>();
@@ -116,7 +119,7 @@ namespace ProjectMagma.Renderer
         private double lastFrameTime = 0;
         private double currentFrameTime = 0;
 
-        public void Update(GameTime gameTime)
+        private void Update(GameTime gameTime)
         {
             lastFrameTime = currentFrameTime;
             double dtMs = (double)gameTime.ElapsedGameTime.Ticks / 10000d;
@@ -153,7 +156,10 @@ namespace ProjectMagma.Renderer
         
         public void Render(GameTime gameTime)
         {
+            renderTime.Update();
+
             Game.Instance.Profiler.BeginSection("beginning_stuff");
+            Update(gameTime);
             LightManager.Update(gameTime);
 
             device.Clear(Color.CornflowerBlue);
@@ -455,6 +461,11 @@ namespace ProjectMagma.Renderer
             get { return statefulParticleResourceManager; }
         }
 
+        public RenderTime Time
+        {
+            get { return renderTime; }
+        }
+
         public LightManager LightManager { get; set; }
 
         private List<Renderable> updateRenderables;
@@ -505,5 +516,7 @@ namespace ProjectMagma.Renderer
 
         // ACCESS TO THIS LIST ONLY FOR SYNCHRONIZED THINGS!!
         private List<RendererUpdateQueue> updateQueues;
+
+        private RenderTime renderTime;
     }
 }

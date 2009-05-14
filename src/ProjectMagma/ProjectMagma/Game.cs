@@ -126,8 +126,6 @@ namespace ProjectMagma
         {
             // TODO: Add your initialization logic here
             base.Initialize();
-            
-            this.globalClock.Start();
         }
 
         /// <summary>
@@ -141,6 +139,8 @@ namespace ProjectMagma
 
             // Create a new SpriteBatch, which can be used to draw textures.
             spriteBatch = new SpriteBatch(GraphicsDevice);
+
+            this.globalClock.Start();
 
             // initialize renderer
             renderer = new Renderer.Renderer(ContentManager, GraphicsDevice);
@@ -462,7 +462,6 @@ namespace ProjectMagma
             profiler.TryBeginFrame();
             profiler.BeginSection("draw");
 
-            renderer.Update(gameTime);
             renderer.Render(gameTime);
 
             // will apply effect such as bloom

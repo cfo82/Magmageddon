@@ -61,6 +61,7 @@ namespace ProjectMagma.Renderer.ParticleSystem.Stateful.Implementations
             parameters["RenderParticlesSpriteTexture"].SetValue(trailSprite);
         }
 
+
         public Vector3 Position
         {
             get { return position; }

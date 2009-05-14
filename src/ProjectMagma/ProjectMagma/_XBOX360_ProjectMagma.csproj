@@ -132,6 +132,7 @@
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="Renderer\RenderPasses\RenderPass.cs" />
+    <Compile Include="Renderer\RenderTime.cs" />
     <Compile Include="Simulation\Attributes\Base\Attribute.cs" />
     <Compile Include="Simulation\Attributes\Base\AttributeTypes.cs" />
     <Compile Include="Simulation\Attributes\Concrete\BoolAttribute.cs" />

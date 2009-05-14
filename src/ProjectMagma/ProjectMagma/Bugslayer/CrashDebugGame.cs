@@ -12,13 +12,40 @@ namespace ProjectMagma.Bugslayer
     {
         private SpriteBatch spriteBatch;
         private SpriteFont font;
-        private readonly Exception exception;
+        private readonly string message;
+        private static readonly int MAX_LINE_LENGTH = 100;
 
         public CrashDebugGame(Exception exception)
         {
-            this.exception = exception;
             new GraphicsDeviceManager(this);
             Content.RootDirectory = "Content";
+
+            message = string.Format(
+                "**** CRASH LOG (Please take a picture of this and send it to the developers!) ****\n" + 
+                "Press Back to Exit\n" + 
+                "Exception: {0}\n" + 
+                "Stack Trace:\n{1}",
+                exception.Message,
+                exception.StackTrace);
+
+            string[] lines = message.Split('\n');
+            StringBuilder builder = new StringBuilder();
+            foreach (string line in lines)
+            {
+                string currentLine = line;
+
+                while (currentLine.Length > MAX_LINE_LENGTH)
+                {
+                    builder.Append(currentLine.Substring(0, MAX_LINE_LENGTH));
+                    builder.Append("\n");
+                    currentLine = "      " + currentLine.Substring(MAX_LINE_LENGTH);
+                }
+
+                builder.Append(currentLine);
+                builder.Append("\n");
+            }
+
+            message = builder.ToString();
         }
 
         protected override void LoadContent()
@@ -40,25 +67,8 @@ namespace ProjectMagma.Bugslayer
             GraphicsDevice.Clear(Color.Black);
 
             spriteBatch.Begin();
-            spriteBatch.DrawString(
-               font,
-               "**** CRASH LOG (Please take a picture of this and send it to the developers!) ****",
-               new Vector2(10f, 10f),
-               Color.White);
-            spriteBatch.DrawString(
-               font,
-               "Press Back to Exit",
-               new Vector2(10f, 22f),
-               Color.White);
-            spriteBatch.DrawString(
-               font,
-               string.Format("Exception: {0}", exception.Message),
-               new Vector2(10f, 34f),
-               Color.White);
-            spriteBatch.DrawString(
-               font, string.Format("Stack Trace:\n{0}", exception.StackTrace),
-               new Vector2(10f, 46f),
-               Color.White);
+            spriteBatch.DrawString(font, this.message, new Vector2(10f, 10f), Color.White);
+
             spriteBatch.End();
 
             base.Draw(gameTime);

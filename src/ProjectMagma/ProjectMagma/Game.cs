@@ -285,7 +285,10 @@ namespace ProjectMagma
         protected override void UnloadContent()
         {
 #if !XBOX
-            Debug.Assert(simulationThread.Thread.ThreadState == System.Threading.ThreadState.WaitSleepJoin);
+            Debug.Assert(
+                simulationThread.Thread.ThreadState == System.Threading.ThreadState.Stopped ||
+                simulationThread.Thread.ThreadState == System.Threading.ThreadState.WaitSleepJoin
+                );
 #endif
 
             RendererUpdateQueue q = simulation.Close();

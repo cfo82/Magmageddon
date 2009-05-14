@@ -1,4 +1,5 @@
 using System;
+using System.Diagnostics;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -24,10 +25,13 @@ namespace ProjectMagma
             // the other cores.
 #if XBOX
             System.Threading.Thread.CurrentThread.SetProcessorAffinity(ThreadDistribution.RenderThread);
-#endif
+
             try
             {
+#endif
                 Game.RunInstance();
+
+#if XBOX
             }
             catch (Exception exception)
             {
@@ -36,6 +40,8 @@ namespace ProjectMagma
                     game.Run();
                 }
             }
+#endif
         }
+
     }
 }

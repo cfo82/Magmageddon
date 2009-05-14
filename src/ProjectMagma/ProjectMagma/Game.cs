@@ -414,6 +414,7 @@ namespace ProjectMagma
             renderer.Update(gameTime);
         }
 
+        [Conditional("DEBUG")]
         private void DrawFrameCounter(GameTime gameTime)
         {
             spriteBatch.Begin();
@@ -461,7 +462,7 @@ namespace ProjectMagma
             // draw stuff which should not be filtered
             menu.Draw(gameTime);
 
-            //DrawFrameCounter(gameTime);
+            DrawFrameCounter(gameTime);
 
             profiler.EndSection("draw");
             profiler.EndFrame();

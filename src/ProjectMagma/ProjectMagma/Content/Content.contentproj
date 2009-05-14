@@ -698,11 +698,6 @@
       <Importer>FontDescriptionImporter</Importer>
       <Processor>FontDescriptionProcessor</Processor>
     </Compile>
-    <Compile Include="Models\Visualizations\arrow2.fbx">
-      <Name>arrow2</Name>
-      <Importer>FbxImporter</Importer>
-      <Processor>Default</Processor>
-    </Compile>
     <Compile Include="Textures\island_diffuse_v003.tga">
       <Name>island_diffuse_v003</Name>
       <Importer>TextureImporter</Importer>
@@ -729,11 +724,6 @@
       <Name>RobBonesAnim</Name>
       <Importer>FbxImporter</Importer>
       <Processor>PlayerProcessor</Processor>
-    </Compile>
-    <Compile Include="Models\Visualizations\arrow1.fbx">
-      <Name>arrow1</Name>
-      <Importer>FbxImporter</Importer>
-      <Processor>Default</Processor>
     </Compile>
   </ItemGroup>
   <ItemGroup>

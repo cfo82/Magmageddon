@@ -17,7 +17,7 @@ namespace ProjectMagma.Simulation
         private static readonly bool RightStickFlame = false;
         private static readonly bool LeftStickSelection = true;
         private static readonly bool DeselectOnRelease = false;
-        private static readonly bool SelectionRestrictedToJumps = false;
+        private static readonly bool SelectionRestrictedToJumps = true;
         public static readonly bool ImuneToIslandPush = true;
         #endregion
 

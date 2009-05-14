@@ -86,6 +86,8 @@ namespace ProjectMagma.Renderer
                 Game.Instance.Components.RemoveAt(Game.Instance.Components.Count - 1);
             }
 
+//            Console.WriteLine("components: " + Game.Instance.Components.Count);           
+
             // set the first default controller
             RunController("idle0");
             animationMode = AnimationMode.Permanent;

@@ -461,7 +461,7 @@ namespace ProjectMagma
             // draw stuff which should not be filtered
             menu.Draw(gameTime);
 
-            DrawFrameCounter(gameTime);
+            //DrawFrameCounter(gameTime);
 
             profiler.EndSection("draw");
             profiler.EndFrame();

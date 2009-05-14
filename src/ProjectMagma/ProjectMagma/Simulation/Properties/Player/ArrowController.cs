@@ -1,6 +1,7 @@
 ﻿using System;
 using Microsoft.Xna.Framework;
 using ProjectMagma.Simulation.Attributes;
+using ProjectMagma.Shared.Math.Primitives;
 
 namespace ProjectMagma.Simulation
 {
@@ -13,15 +14,43 @@ namespace ProjectMagma.Simulation
 
         private void OnUpdate(Entity powerupEntity, SimulationTime simTime)
         {
+            if (island != null)
+            {
+                Vector3 aimVector = island.GetVector3("position") + Vector3.UnitY * positionOffset.Y - player.GetVector3("position");
+
+                // get intersection
+                Ray3 ray = new Ray3(player.GetVector3("position"), aimVector);
+                Vector3 arrowPos;
+                if(Game.Instance.Simulation.CollisionManager.GetIntersectionPoint(ref ray, island, out arrowPos))
+                    arrow.SetVector3("position", arrowPos);
+
+                // point arrow from player
+                Vector3 tminusp = -aimVector;
+                Vector3 ominusp = Vector3.Backward;
+                if (tminusp != Vector3.Zero)
+                    tminusp.Normalize();
+                float theta = (float)System.Math.Acos(Vector3.Dot(tminusp, ominusp));
+                Vector3 cross = Vector3.Cross(ominusp, tminusp);
+
+                if (cross != Vector3.Zero)
+                    cross.Normalize();
+
+                Quaternion targetQ = Quaternion.CreateFromAxisAngle(cross, theta);
+
+                arrow.SetQuaternion("rotation", targetQ);
+            }
         }
 
         public void OnAttached(Entity arrow)
         {
             this.arrow = arrow;
             this.island = null;
+//            this.player = Game.Instance.Simulation.EntityManager[arrow.GetString("player")];
 
             // register island change handler
             arrow.GetStringAttribute("island").ValueChanged += OnIslandChanged;
+
+            arrow.AddQuaternionAttribute("rotation", Quaternion.Identity);
 
             arrow.Update += OnUpdate;
         }
@@ -53,8 +82,12 @@ namespace ProjectMagma.Simulation
             {
                 // register new island
                 island = Game.Instance.Simulation.EntityManager[newIsland];
-                island.GetVector3Attribute("position").ValueChanged += OnIslandPositionChanged; 
-                positionOffset = island.GetVector3("landing_offset").Y;
+                island.GetVector3Attribute("position").ValueChanged += OnIslandPositionChanged;
+                positionOffset = island.GetVector3("landing_offset");
+
+                // hack hackhack. should be in onAttached, but doesnt work there...
+                this.player = Game.Instance.Simulation.EntityManager[arrow.GetString("player")];
+
             }
         }
 
@@ -67,8 +100,9 @@ namespace ProjectMagma.Simulation
             this.arrow.SetVector3("position", island.GetVector3("position") + Vector3.UnitY * positionOffset);
         }
 
-        private float positionOffset = 0;
+        private Vector3 positionOffset;
         private Entity arrow;
+        private Entity player;
         private Entity island;
     }
 }

@@ -14,9 +14,12 @@ namespace ProjectMagma.Bugslayer
         private SpriteFont font;
         private readonly string message;
         private static readonly int MAX_LINE_LENGTH = 100;
+        private Exception exception;
 
         public CrashDebugGame(Exception exception)
         {
+            this.exception = exception;
+
             new GraphicsDeviceManager(this);
             Content.RootDirectory = "Content";
 
@@ -27,6 +30,12 @@ namespace ProjectMagma.Bugslayer
                 "Stack Trace:\n{1}",
                 exception.Message,
                 exception.StackTrace);
+
+            if (exception.InnerException != null)
+            {
+                message += 
+                    "\nInner exception: " + exception.Message + "\n" + exception.StackTrace;
+            }
 
             string[] lines = message.Split('\n');
             StringBuilder builder = new StringBuilder();
@@ -64,7 +73,7 @@ namespace ProjectMagma.Bugslayer
 
         protected override void Draw(GameTime gameTime)
         {
-            GraphicsDevice.Clear(Color.Black);
+            GraphicsDevice.Clear(Color.Blue);
 
             spriteBatch.Begin();
             spriteBatch.DrawString(font, this.message, new Vector2(10f, 10f), Color.White);

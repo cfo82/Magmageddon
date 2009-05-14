@@ -1441,6 +1441,27 @@
     </Compile>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Level\CenterDomination.xml">
+      <Name>CenterDomination</Name>
+      <Importer>LevelImporter</Importer>
+      <Processor>LevelProcessor</Processor>
+    </Compile>
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="Sprites\Menu\Level\CenterDomination.png">
+      <Name>CenterDomination</Name>
+      <Importer>TextureImporter</Importer>
+      <Processor>TextureProcessor</Processor>
+    </Compile>
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="Sprites\Menu\Level\CenterDomination_selected.png">
+      <Name>CenterDomination_selected</Name>
+      <Importer>TextureImporter</Importer>
+      <Processor>TextureProcessor</Processor>
+    </Compile>
+  </ItemGroup>
+  <ItemGroup>
     <Folder Include="Fonts\MyriadPro\" />
   </ItemGroup>
   <Import Project="$(MSBuildExtensionsPath)\Microsoft\XNA Game Studio\v3.0\Microsoft.Xna.GameStudio.ContentPipeline.targets" />

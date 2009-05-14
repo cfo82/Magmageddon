@@ -115,7 +115,6 @@
     </Attributes>
   </Entity>
 
-  
   <Entity name="island6" extends="island_base_grass3">
     <Attributes>
       <Attribute name="position" template="float3" value="-30 180 190"/>
@@ -127,7 +126,6 @@
       <Attribute name="position" template="float3" value="-250 240 220"/>
     </Attributes>
   </Entity>
-
 
   <Entity name="island8" extends="island_base_ice1">
     <Attributes>

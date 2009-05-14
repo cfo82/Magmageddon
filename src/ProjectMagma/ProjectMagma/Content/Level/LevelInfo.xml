@@ -14,4 +14,10 @@
     <FileName>Level\4vs4</FileName>
   </Level>
   
+  <Level>
+    <Name>Center Domination</Name>
+    <Description>One big stash</Description>
+    <FileName>Level\CenterDomination</FileName>
+  </Level>
+
 </Levels>

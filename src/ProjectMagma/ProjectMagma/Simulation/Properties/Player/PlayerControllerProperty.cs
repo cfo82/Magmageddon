@@ -350,6 +350,9 @@ namespace ProjectMagma.Simulation
         {
             destinationIsland = island;
 
+            ((Vector3Attribute)island.Attributes["position"]).ValueChanged += IslandPositionHandler;
+
+
             // calculate time to travel to island (in xz plane) using an iterative approach
             Vector3 islandDir = GetLandingPosition(destinationIsland) - playerPosition;
             islandDir.Y = 0;
@@ -738,6 +741,8 @@ namespace ProjectMagma.Simulation
                     (destinationIsland.GetProperty("render") as IslandRenderProperty).Squash();
 
                     playerPosition = isectPt;
+
+                    ((Vector3Attribute)destinationIsland.Attributes["position"]).ValueChanged -= IslandPositionHandler;
 
                     destinationIsland = null;
                     playerVelocity = Vector3.Zero;

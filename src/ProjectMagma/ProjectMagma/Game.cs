@@ -262,7 +262,7 @@ namespace ProjectMagma
 
             // init simulation
             simulation = new ProjectMagma.Simulation.Simulation();
-            RendererUpdateQueue q = simulation.Initialize(ContentManager, level, 300);
+            RendererUpdateQueue q = simulation.Initialize(ContentManager, level, globalClock.PausableMilliseconds);
             renderer.AddUpdateQueue(q);
 
 #if !XBOX
@@ -289,24 +289,28 @@ namespace ProjectMagma
         /// </summary>
         protected override void UnloadContent()
         {
+            try
+            {
 #if !XBOX
-            Debug.Assert(
-                simulationThread.Thread.ThreadState == System.Threading.ThreadState.Stopped ||
-                simulationThread.Thread.ThreadState == System.Threading.ThreadState.WaitSleepJoin
-                );
+                Debug.Assert(
+                    simulationThread.Thread.ThreadState == System.Threading.ThreadState.Stopped ||
+                    simulationThread.Thread.ThreadState == System.Threading.ThreadState.WaitSleepJoin
+                    );
 #endif
 
-            RendererUpdateQueue q = simulation.Close();
-            renderer.AddUpdateQueue(q);
-            simulationThread.Abort();
+                RendererUpdateQueue q = simulation.Close();
+                renderer.AddUpdateQueue(q);
+                simulationThread.Abort();
 
-            MediaPlayer.Stop();
+                MediaPlayer.Stop();
 
-            profiler.Write(device, Window.Title, "profiling.txt");
+                profiler.Write(device, Window.Title, "profiling.txt");
 
 #if !XBOX
-            Debug.Assert(simulationThread.Thread.ThreadState == System.Threading.ThreadState.Stopped);
+                Debug.Assert(simulationThread.Thread.ThreadState == System.Threading.ThreadState.Stopped);
 #endif
+            }
+            catch (Exception ex) { }
         }
 
         bool paused = true;

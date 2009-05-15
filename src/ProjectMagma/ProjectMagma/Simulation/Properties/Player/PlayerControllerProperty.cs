@@ -1130,7 +1130,7 @@ namespace ProjectMagma.Simulation
             // and hit?
             if (simTime.At < controllerInput.hitButtonPressedAt + constants.GetInt("hit_cooldown") // has button been pressed lately
                 && simTime.At > hitPerformedAt + constants.GetInt("hit_cooldown") // but no hit performed
-                && player.GetVector3("hit_pushback_velocity") == Vector3.Zero) // and we have not been hit oneself
+                && player.GetVector3("hit_pushback_velocity") == Vector3.Zero) // and we have not been hit ourselves
             {
                 // indicate hit!
                 SoundEffect soundEffect = Game.Instance.ContentManager.Load<SoundEffect>("Sounds/punch2");
@@ -1152,8 +1152,9 @@ namespace ProjectMagma.Simulation
             else
             {
                 // apply collision response to moving player
-                if (simTime.At < movedAt + 400 // todo: extract constants
-                    || simTime.At < islandJumpPerformedAt + 1000) 
+                if ((simTime.At < movedAt + 400 // todo: extract constants
+                    || simTime.At < islandJumpPerformedAt + 1000)
+                    && otherPlayer.GetVector3("hit_pushback_velocity") != Vector3.Zero) // player which was hit doesn't push us back
                 {
                     // calculate pseudo-radi
                     float pr = (player.GetVector3("scale") * new Vector3(1, 0, 1)).Length();

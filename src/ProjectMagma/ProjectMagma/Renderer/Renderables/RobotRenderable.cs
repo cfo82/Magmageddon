@@ -112,6 +112,10 @@ namespace ProjectMagma.Renderer
             
             playerArrowColorBlend.Update(renderer.Time.At);
             animator.Update();
+            foreach(AnimationController controller in controllers.Values)
+            {
+                controller.Update(renderer.Time.PausableAtGameTime);
+            }
 
             if (blendFactor > 0.0f)
             {

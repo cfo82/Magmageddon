@@ -90,6 +90,7 @@
     <Compile Include="Renderer\ParticleSystem\CreateVertex.cs" />
     <Compile Include="Renderer\ParticleSystem\CreateVertexArray.cs" />
     <Compile Include="Renderer\ParticleSystem\Emitter\FireExplosionEmitter.cs" />
+    <Compile Include="Renderer\ParticleSystem\Emitter\FlamethrowerEmitter.cs" />
     <Compile Include="Renderer\ParticleSystem\Emitter\IceExplosionEmitter.cs" />
     <Compile Include="Renderer\ParticleSystem\Emitter\LavaExplosionEmitter.cs" />
     <Compile Include="Renderer\ParticleSystem\Emitter\PointEmitter.cs" />
@@ -99,6 +100,7 @@
     <Compile Include="Renderer\ParticleSystem\ParticleEmitter.cs" />
     <Compile Include="Renderer\ParticleSystem\ParticleSystem.cs" />
     <Compile Include="Renderer\ParticleSystem\Stateful\Implementations\FireExplosion.cs" />
+    <Compile Include="Renderer\ParticleSystem\Stateful\Implementations\Flamethrower.cs" />
     <Compile Include="Renderer\ParticleSystem\Stateful\Implementations\IceExplosion.cs" />
     <Compile Include="Renderer\ParticleSystem\Stateful\Implementations\IceSpike.cs" />
     <Compile Include="Renderer\ParticleSystem\Stateful\Implementations\LavaExplosion.cs" />
@@ -112,6 +114,7 @@
     <Compile Include="Renderer\Renderables\BasicRenderable.cs" />
     <Compile Include="Renderer\Renderables\EnvironmentRenderable.cs" />
     <Compile Include="Renderer\Renderables\FireExplosionRenderable.cs" />
+    <Compile Include="Renderer\Renderables\FlamethrowerRenderable.cs" />
     <Compile Include="Renderer\Renderables\HighlightRenderable.cs" />
     <Compile Include="Renderer\Renderables\IceExplosionRenderable.cs" />
     <Compile Include="Renderer\Renderables\IceSpikeRenderable.cs" />
@@ -201,6 +204,7 @@
     <Compile Include="Simulation\Properties\Rendering\BasicRenderProperty.cs" />
     <Compile Include="Simulation\Properties\Rendering\EnvironmentRenderProperty.cs" />
     <Compile Include="Simulation\Properties\Rendering\FireExplosionRenderProperty.cs" />
+    <Compile Include="Simulation\Properties\Rendering\FlamethrowerRenderProperty.cs" />
     <Compile Include="Simulation\Properties\Rendering\IceExplosionRenderProperty.cs" />
     <Compile Include="Simulation\Properties\Rendering\IceSpikeRenderProperty.cs" />
     <Compile Include="Simulation\Properties\Rendering\IslandRenderProperty.cs" />

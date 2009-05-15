@@ -58,6 +58,8 @@
   <Entity name="flamethrower_base" extends="dynamic_entity" abstract="true">
     <Attributes>
       <Attribute name="active" template="bool" value="true"/>
+      <Attribute name="position" template="float3" value="0 0 0"/>
+      <Attribute name="rotation" template="quaternion" value="0 0 0 1"/>
       <Attribute name="scale" template="float3" value="0 0 0"/>
       <Attribute name="full_scale" template="float3" value="120 120 120"/>
 
@@ -68,7 +70,7 @@
       <Attribute name="bv_type" template="string" value="sphere"/>
     </Attributes>
     <Properties>
-      <Property name="renderer" type="ProjectMagma.Simulation.TexturedRenderProperty"/>
+      <Property name="renderer" type="ProjectMagma.Simulation.FlamethrowerRenderProperty"/>
       <Property name="collision" type="ProjectMagma.Simulation.Collision.CollisionProperty"/>
       <Property name="controller" type="ProjectMagma.Simulation.FlamethrowerControllerProperty"/>
     </Properties>

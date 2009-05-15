@@ -201,6 +201,7 @@ namespace ProjectMagma
             Game.Instance.ContentManager.Load<Effect>("Effects/Sfx/ParticleSystem/Stateful/Implementations/IceSpike");
             Game.Instance.ContentManager.Load<Effect>("Effects/Sfx/ParticleSystem/Stateful/Implementations/LavaExplosion");
             Game.Instance.ContentManager.Load<Effect>("Effects/Sfx/ParticleSystem/Stateful/Implementations/Snow");
+            Game.Instance.ContentManager.Load<Effect>("Effects/Sfx/ParticleSystem/Stateful/Implementations/Flamethrower");
             Game.Instance.ContentManager.Load<Effect>("Effects/Sfx/IceSpike");
             Game.Instance.ContentManager.Load<Texture2D>("Textures/Sfx/FireExplosion");
             Game.Instance.ContentManager.Load<Texture2D>("Textures/Sfx/IceExplosion");

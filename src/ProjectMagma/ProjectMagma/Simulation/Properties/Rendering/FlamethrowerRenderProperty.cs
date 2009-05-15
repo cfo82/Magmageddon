@@ -12,7 +12,7 @@ using ProjectMagma.Renderer.Interface;
 
 namespace ProjectMagma.Simulation
 {
-    public class IceSpikeRenderProperty : RendererUpdatableProperty
+    public class FlamethrowerRenderProperty : RendererUpdatableProperty
     {
         public override void OnAttached(Entity entity)
         {
@@ -23,14 +23,9 @@ namespace ProjectMagma.Simulation
                 entity.GetVector3Attribute("position").ValueChanged += PositionChanged;
             }
 
-            if (entity.HasVector3("velocity"))
+            if (entity.HasQuaternion("rotation"))
             {
-                entity.GetVector3Attribute("velocity").ValueChanged += VelocityChanged;
-            }
-
-            if (entity.HasBool("dead"))
-            {
-                entity.GetBoolAttribute("dead").ValueChanged += DeadChanged;
+                entity.GetQuaternionAttribute("rotation").ValueChanged += RotationChanged;
             }
 
             Game.Instance.Simulation.CurrentUpdateQueue.AddUpdate(new AddRenderableUpdate((Renderable)Updatable));
@@ -44,9 +39,9 @@ namespace ProjectMagma.Simulation
             {
                 entity.GetVector3Attribute("position").ValueChanged -= PositionChanged;
             }
-            if (entity.HasVector3("velocity"))
+            if (entity.HasQuaternion("rotation"))
             {
-                entity.GetVector3Attribute("velocity").ValueChanged -= VelocityChanged;
+                entity.GetQuaternionAttribute("rotation").ValueChanged -= RotationChanged;
             }
 
             base.OnDetached(entity);
@@ -55,27 +50,19 @@ namespace ProjectMagma.Simulation
         protected override RendererUpdatable CreateUpdatable(Entity entity)
         {
             Vector3 position = Vector3.Zero;
-            Vector3 velocity = Vector3.UnitZ;
-            bool dead = false;
+            Quaternion rotation = Quaternion.Identity;
 
             if (entity.HasVector3("position"))
             {
                 position = entity.GetVector3("position");
             }
 
-            if (entity.HasVector3("velocity"))
+            if (entity.HasQuaternion("rotation"))
             {
-                velocity = entity.GetVector3("velocity");
+                rotation = entity.GetQuaternion("rotation");
             }
 
-            if (entity.HasBool("dead"))
-            {
-                dead = entity.GetBool("dead");
-            }
-
-            velocity.Normalize();
-
-            return new IceSpikeRenderable(position, velocity, dead);
+            return new FlamethrowerRenderable(position, CalculateDirection(ref rotation));
         }
 
         protected override void SetUpdatableParameters(Entity entity)
@@ -91,22 +78,18 @@ namespace ProjectMagma.Simulation
             ChangeVector3("Position", newValue);
         }
 
-        private void VelocityChanged(
-            Vector3Attribute sender,
-            Vector3 oldValue,
-            Vector3 newValue
+        private void RotationChanged(
+            QuaternionAttribute sender,
+            Quaternion oldValue,
+            Quaternion newValue
         )
         {
-            ChangeVector3("Direction", newValue);
+            ChangeVector3("Direction", CalculateDirection(ref newValue));
         }
 
-        private void DeadChanged(
-            BoolAttribute sender,
-            bool oldValue,
-            bool newValue
-        )
+        private Vector3 CalculateDirection(ref Quaternion rotation)
         {
-            ChangeBool("Dead", newValue);
+            return Vector3.Transform(Vector3.UnitZ, Matrix.CreateFromQuaternion(rotation));
         }
     }
 }

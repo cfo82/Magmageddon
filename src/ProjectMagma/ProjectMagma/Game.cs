@@ -196,9 +196,18 @@ namespace ProjectMagma
             menu.LoadContent();
 
             // preload effects data
-            Game.Instance.ContentManager.Load<Texture2D>("Textures/Sfx/IceSpikeTrail");
-            Game.Instance.ContentManager.Load<Texture2D>("Textures/Sfx/IceSpikeHead");
+            Game.Instance.ContentManager.Load<Effect>("Effects/Sfx/ParticleSystem/Stateful/Implementations/FireExplosion");
+            Game.Instance.ContentManager.Load<Effect>("Effects/Sfx/ParticleSystem/Stateful/Implementations/IceExplosion");
+            Game.Instance.ContentManager.Load<Effect>("Effects/Sfx/ParticleSystem/Stateful/Implementations/IceSpike");
+            Game.Instance.ContentManager.Load<Effect>("Effects/Sfx/ParticleSystem/Stateful/Implementations/LavaExplosion");
+            Game.Instance.ContentManager.Load<Effect>("Effects/Sfx/ParticleSystem/Stateful/Implementations/Snow");
             Game.Instance.ContentManager.Load<Effect>("Effects/Sfx/IceSpike");
+            Game.Instance.ContentManager.Load<Texture2D>("Textures/Sfx/FireExplosion");
+            Game.Instance.ContentManager.Load<Texture2D>("Textures/Sfx/IceExplosion");
+            Game.Instance.ContentManager.Load<Texture2D>("Textures/Sfx/IceSpikeHead");
+            Game.Instance.ContentManager.Load<Texture2D>("Textures/Sfx/IceSpikeTrail");
+            Game.Instance.ContentManager.Load<Texture2D>("Textures/Sfx/LavaExplosion");
+            Game.Instance.ContentManager.Load<Texture2D>("Textures/Sfx/Snow");
             Game.Instance.ContentManager.Load<MagmaModel>("Models/Sfx/IceSpike");
 
             // preload sounds

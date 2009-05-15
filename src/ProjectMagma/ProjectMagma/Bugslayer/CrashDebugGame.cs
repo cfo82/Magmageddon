@@ -34,7 +34,11 @@ namespace ProjectMagma.Bugslayer
             if (exception.InnerException != null)
             {
                 message += 
-                    "\nInner exception: " + exception.Message + "\n" + exception.StackTrace;
+                    "\n\nInner exception: " +
+                    exception.Message +
+                    "\nInner Stack Trace:\n" +
+                    exception.StackTrace
+                ;
             }
 
             string[] lines = message.Split('\n');

@@ -18,9 +18,9 @@ namespace ProjectMagma.MathHelpers
             //this.velocity = velocity;
         }
 
-        public void Start(GameTime gameTime)
+        public void Start(double currentTime)
         {
-            start_time = gameTime.TotalRealTime.TotalMilliseconds;
+            start_time = currentTime;
         }
 
         public void StopImmediately()
@@ -35,11 +35,11 @@ namespace ProjectMagma.MathHelpers
             value_on_stop_call = value;
         }
 
-        public void Update(GameTime gameTime)
+        public void Update(double currentTime)
         {
             if(start_time != 0.0)
             {
-                double time = (gameTime.TotalRealTime.TotalMilliseconds - start_time) * 0.001;
+                double time = (currentTime - start_time) * 0.001;
                 float normalized_value = (float)Math.Sin(time * frequency) / 2.0f + 0.5f;
                 value = normalized_value * (max-min) + min;
                 if(stop_after_current_phase &&

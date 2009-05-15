@@ -119,14 +119,9 @@ namespace ProjectMagma.Renderer
         private double lastFrameTime = 0;
         private double currentFrameTime = 0;
 
-        private void Update(GameTime gameTime)
+        private void Update()
         {
-            lastFrameTime = currentFrameTime;
-            double dtMs = (double)gameTime.ElapsedGameTime.Ticks / 10000d;
-            double dt = dtMs / 1000.0;
-            currentFrameTime = lastFrameTime + dt;
-
-            Camera.Update(gameTime);
+            Camera.Update(this);
             Camera.RecomputeFrame(opaqueRenderables);
             RendererUpdateQueue q = GetNextUpdateQueue();
             while (q != null)
@@ -141,16 +136,16 @@ namespace ProjectMagma.Renderer
 
             foreach (Renderable renderable in updateRenderables)
             {
-                renderable.Update(this, gameTime);
+                renderable.Update(this);
             }
 
             if (explosionSystem != null)
             {
-                explosionSystem.Update(lastFrameTime, currentFrameTime);
+                explosionSystem.Update(Time.Last / 1000d, Time.At / 1000d);
             }
             if (snowSystem != null)
             {
-                snowSystem.Update(lastFrameTime, currentFrameTime);
+                snowSystem.Update(Time.Last/1000d, Time.At/1000d);
             }
         }
         
@@ -159,8 +154,8 @@ namespace ProjectMagma.Renderer
             renderTime.Update();
 
             Game.Instance.Profiler.BeginSection("beginning_stuff");
-            Update(gameTime);
-            LightManager.Update(gameTime);
+            Update();
+            LightManager.Update(this);
 
             device.Clear(Color.CornflowerBlue);
 
@@ -235,7 +230,7 @@ namespace ProjectMagma.Renderer
             foreach (Renderable renderable in shadowCaster)
             {
                 Debug.Assert(renderable.RenderMode == RenderMode.RenderToShadowMap);
-                renderable.Draw(this, gameTime);
+                renderable.Draw(this);
             }
 
             // restore stencil buffer
@@ -283,7 +278,7 @@ namespace ProjectMagma.Renderer
             foreach (Renderable renderable in opaqueRenderables)
             {
                 Debug.Assert(renderable.RenderMode == RenderMode.RenderToScene);
-                renderable.Draw(this, gameTime);
+                renderable.Draw(this);
             }
 
             // need to sort transparent renderables by position and render them (back to front!!)
@@ -301,7 +296,7 @@ namespace ProjectMagma.Renderer
             foreach (Renderable renderable in transparentRenderables)
             {
                 Debug.Assert(renderable.RenderMode == RenderMode.RenderToSceneAlpha);
-                renderable.Draw(this, gameTime);
+                renderable.Draw(this);
             }
 
             if (EnablePostProcessing)
@@ -323,7 +318,7 @@ namespace ProjectMagma.Renderer
             foreach (Renderable renderable in overlays)
             {
                 Debug.Assert(renderable.RenderMode == RenderMode.RenderOverlays);
-                renderable.Draw(this, gameTime);
+                renderable.Draw(this);
             }
         }
 

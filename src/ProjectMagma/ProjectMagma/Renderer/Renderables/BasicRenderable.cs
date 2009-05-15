@@ -28,16 +28,16 @@ namespace ProjectMagma.Renderer
             base.LoadResources(renderer);
         }
 
-        protected override void PrepareMeshEffects(Renderer renderer, GameTime gameTime, ModelMesh mesh)
+        protected override void PrepareMeshEffects(Renderer renderer, ModelMesh mesh)
         {
             if(start_squash)
             {
-                last_squash_start = gameTime.TotalRealTime.TotalMilliseconds;
+                last_squash_start = renderer.Time.At;
                 start_squash = false;
             }
             if (start_blinking)
             {
-                last_blinking_start = gameTime.TotalRealTime.TotalMilliseconds;
+                last_blinking_start = renderer.Time.At;
                 start_blinking = false;
             }
             foreach (Effect effect in mesh.Effects)
@@ -48,9 +48,9 @@ namespace ProjectMagma.Renderer
                 ApplyTechnique(effect);
                 if (UseLights) ApplyLights(effect, renderer.LightManager);
                 if (UseMaterialParameters) ApplyMaterialParameters(effect);
-                if (UseSquash) ApplySquashParameters(effect, gameTime);
-                if (UseSquash) ApplyBlinkingParameters(effect, gameTime);
-                ApplyCustomEffectParameters(effect, renderer, gameTime);
+                if (UseSquash) ApplySquashParameters(effect, renderer);
+                if (UseSquash) ApplyBlinkingParameters(effect, renderer);
+                ApplyCustomEffectParameters(effect, renderer);
             }
         }
 
@@ -95,7 +95,7 @@ namespace ProjectMagma.Renderer
             effect.Parameters["DirLight2Direction"].SetValue(lightManager.SpotLight.Direction);
         }
 
-        protected virtual void ApplyCustomEffectParameters(Effect effect, Renderer renderer, GameTime gameTime)
+        protected virtual void ApplyCustomEffectParameters(Effect effect, Renderer renderer)
         {
             effect.Parameters["Clouds"].SetValue(renderer.VectorCloudTexture);
             // in the end, this method in BasicRenderable should be empty and all the features
@@ -108,9 +108,9 @@ namespace ProjectMagma.Renderer
             //effect.Parameters["EyePosition"].SetValue(Game.Instance.EyePosition);
         }
 
-        private void ApplySquashParameters(Effect effect, GameTime gameTime)
+        private void ApplySquashParameters(Effect effect, Renderer renderer)
         {
-            double time_since_last_squash = gameTime.TotalRealTime.TotalMilliseconds - last_squash_start;
+            double time_since_last_squash = renderer.Time.At - last_squash_start;
             if (time_since_last_squash > 0 && time_since_last_squash <= squash_wavelength / 2)
                 effect.Parameters["SquashAmount"].SetValue((float)time_since_last_squash / squash_wavelength * squash_amplitude * 2);
             else if (time_since_last_squash >= squash_wavelength / 2 && time_since_last_squash <= squash_wavelength)
@@ -129,9 +129,9 @@ namespace ProjectMagma.Renderer
             }
         }
 
-        private void ApplyBlinkingParameters(Effect effect, GameTime gameTime)
+        private void ApplyBlinkingParameters(Effect effect, Renderer renderer)
         {
-            double time_since_last_blinking = gameTime.TotalRealTime.TotalMilliseconds - last_blinking_start;
+            double time_since_last_blinking = renderer.Time.At - last_blinking_start;
             if (time_since_last_blinking > 0 && time_since_last_blinking <= BlinkingLength)
             {
                 blinking_state = !blinking_state;

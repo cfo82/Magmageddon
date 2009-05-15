@@ -25,11 +25,11 @@ namespace ProjectMagma.Renderer
             effect.CurrentTechnique = effect.Techniques["Environment"];
         }
 
-        protected override void ApplyCustomEffectParameters(Effect effect, Renderer renderer, GameTime gameTime)
+        protected override void ApplyCustomEffectParameters(Effect effect, Renderer renderer)
         {
-            base.ApplyCustomEffectParameters(effect, renderer, gameTime);
+            base.ApplyCustomEffectParameters(effect, renderer);
 
-            randomOffset.RandomlyIntegrate(gameTime, EnvGroundWavesVelocity, 0.0f);
+            randomOffset.RandomlyIntegrate(renderer.Time.DtMs, EnvGroundWavesVelocity, 0.0f);
             effect.Parameters["RandomOffset"].SetValue(randomOffset.Value);
 
             effect.Parameters["EnvGroundWavesAmplitude"].SetValue(EnvGroundWavesAmplitude);

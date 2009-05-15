@@ -99,19 +99,19 @@ namespace ProjectMagma.Renderer
             permanentState = "idle0";
         }
 
-        protected override void ApplyCustomEffectParameters(Effect effect, Renderer renderer, GameTime gameTime)
+        protected override void ApplyCustomEffectParameters(Effect effect, Renderer renderer)
         {
-            base.ApplyCustomEffectParameters(effect, renderer, gameTime);
+            base.ApplyCustomEffectParameters(effect, renderer);
 
             effect.Parameters["ToneColor"].SetValue(color1);
         }
 
-        public override void Update(Renderer renderer, GameTime gameTime)
+        public override void Update(Renderer renderer)
         {
-            base.Update(renderer, gameTime);
+            base.Update(renderer);
             
-            playerArrowColorBlend.Update(gameTime);
-            animator.Update(gameTime);
+            playerArrowColorBlend.Update(renderer.Time.At);
+            animator.Update();
 
             if (blendFactor > 0.0f)
             {
@@ -229,14 +229,14 @@ namespace ProjectMagma.Renderer
 
         Effect eff;
 
-        protected override void DrawMesh(Renderer renderer, GameTime gameTime, ModelMesh mesh)
+        protected override void DrawMesh(Renderer renderer, ModelMesh mesh)
         {
             DrawPlayerArrow(renderer);
 
             animator.World = World;
-            animator.Draw(gameTime);
+            animator.Draw();
 
-            base.DrawMesh(renderer, gameTime, mesh);
+            base.DrawMesh(renderer, mesh);
         }
 
         private void DrawPlayerArrow(Renderer renderer)

@@ -47,13 +47,16 @@ namespace ProjectMagma.Renderer
             base.UnloadResources();
         }
 
-        public override void Update(Renderer renderer, GameTime gameTime)
+        public override void Update(Renderer renderer)
         {
-            base.Update(renderer, gameTime);
+            base.Update(renderer);
+
+            lastFrameTime = renderer.Time.PausableLast / 1000d;
+            currentFrameTime = renderer.Time.PausableAt / 1000d;
 
             if (!dead && iceSpikeEmitter == null)
             {
-                iceSpikeEmitter = new PointEmitter(Position, 2500.0f);
+                iceSpikeEmitter = new PointEmitter(lastFrameTime, Position, 2500.0f);
                 iceSpikeSystem.AddEmitter(iceSpikeEmitter);
             }
 
@@ -76,7 +79,7 @@ namespace ProjectMagma.Renderer
             iceSpikeSystem.Update(LastFrameTime, CurrentFrameTime);
         }
 
-        public override void Draw(Renderer renderer, GameTime gameTime)
+        public override void Draw(Renderer renderer)
         {
             if (!dead)
             {

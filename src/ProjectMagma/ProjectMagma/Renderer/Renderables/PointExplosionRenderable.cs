@@ -38,9 +38,9 @@ namespace ProjectMagma.Renderer
             base.UnloadResources();
         }
 
-        public override void Update(Renderer renderer, GameTime gameTime)
+        public override void Update(Renderer renderer)
         {
-            base.Update(renderer, gameTime);
+            base.Update(renderer);
 
             if (explosionEmitter == null)
             {
@@ -51,7 +51,7 @@ namespace ProjectMagma.Renderer
             explosionSystem.Update(LastFrameTime, CurrentFrameTime);
         }
 
-        public override void Draw(Renderer renderer, GameTime gameTime)
+        public override void Draw(Renderer renderer)
         {
             explosionSystem.Render(LastFrameTime, CurrentFrameTime, renderer.Camera.View, renderer.Camera.Projection);
         }

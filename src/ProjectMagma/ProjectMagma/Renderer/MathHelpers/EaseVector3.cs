@@ -17,10 +17,10 @@ namespace ProjectMagma.MathHelpers
 
         private static readonly float referenceMilliseconds = 20.0f; // 50 fps
 
-        public void Update(GameTime gameTime)
+        public void Update(double dtMs)
         {
 
-            float realSpeed = Speed * gameTime.ElapsedGameTime.Milliseconds/referenceMilliseconds;
+            float realSpeed = Speed * (float)dtMs / referenceMilliseconds;
             Value = TargetValue * realSpeed + Value * (1 - realSpeed);
         }
 

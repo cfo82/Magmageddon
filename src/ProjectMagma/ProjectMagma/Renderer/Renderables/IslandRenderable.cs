@@ -32,11 +32,11 @@ namespace ProjectMagma.Renderer
             effect.CurrentTechnique = effect.Techniques["Island"];
         }
        
-        protected override void ApplyCustomEffectParameters(Effect effect, Renderer renderer, GameTime gameTime)
+        protected override void ApplyCustomEffectParameters(Effect effect, Renderer renderer)
         {
-            base.ApplyCustomEffectParameters(effect, renderer, gameTime);
+            base.ApplyCustomEffectParameters(effect, renderer);
 
-            randomOffset.RandomlyIntegrate(gameTime, 0.04f, 0.0f);
+            randomOffset.RandomlyIntegrate(renderer.Time.DtMs, 0.04f, 0.0f);
             effect.Parameters["EyePosition"].SetValue(renderer.Camera.Position);
             effect.Parameters["Clouds"].SetValue(renderer.VectorCloudTexture);
             effect.Parameters["WindStrength"].SetValue(WindStrength);

@@ -39,14 +39,14 @@ namespace ProjectMagma.Renderer
             );
         }
 
-        public void Update(GameTime gameTime)
+        public void Update(Renderer renderer)
         {
             // update lava light
-            lavaBrightness.RandomlyIntegrate(gameTime, 30.0f, 0.0f);
+            lavaBrightness.RandomlyIntegrate(renderer.Time.DtMs, 30.0f, 0.0f);
             LavaLight.DiffuseColor = lavaBaseColor * lavaBrightness.Value;
 
             // update moving spot light
-            spotLightPhase.RandomlyIntegrate(gameTime, 10.0f, 0.0f);
+            spotLightPhase.RandomlyIntegrate(renderer.Time.DtMs, 10.0f, 0.0f);
             SpotLight.Direction = SpotLightDirection();
         }
 

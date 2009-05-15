@@ -19,8 +19,7 @@ namespace ProjectMagma.Renderer
         }
 
         public override void Draw(
-            Renderer renderer,
-            GameTime gameTime
+            Renderer renderer
         )
         {
             Matrix world = Matrix.Identity;

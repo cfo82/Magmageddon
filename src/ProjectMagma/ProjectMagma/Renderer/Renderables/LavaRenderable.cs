@@ -100,9 +100,9 @@ namespace ProjectMagma.Renderer
 
         private Texture2D temperatureTexture;        
 
-        protected override void ApplyCustomEffectParameters(Effect effect, Renderer renderer, GameTime gameTime)
+        protected override void ApplyCustomEffectParameters(Effect effect, Renderer renderer)
         {
-            base.ApplyCustomEffectParameters(effect, renderer, gameTime);
+            base.ApplyCustomEffectParameters(effect, renderer);
 
             effect.Parameters["WorldViewProjection"].SetValue(
                 effect.Parameters["World"].GetValueMatrix() *

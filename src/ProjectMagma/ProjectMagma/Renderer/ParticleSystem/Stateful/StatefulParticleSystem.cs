@@ -193,6 +193,11 @@ namespace ProjectMagma.Renderer.ParticleSystem.Stateful
 
             if (render)
             {
+                if (GetType().Name == "IceSpike")
+                {
+                    Console.WriteLine("Render create particles");
+                }
+
                 int localCreateVerticesIndex = 0;
                 for (int i = 0; i < createVertexLists.Count; ++i)
                 {
@@ -237,8 +242,8 @@ namespace ProjectMagma.Renderer.ParticleSystem.Stateful
             double currentFrameTime
         )
         {
-            lastFrameTime = GetLastFrameTime();
-            currentFrameTime = GetCurrentFrameTime();
+                lastFrameTime = GetLastFrameTime();
+                currentFrameTime = GetCurrentFrameTime();
 
             for (int i = 0; i < createVertexLists.Count; ++i)
             {
@@ -252,6 +257,11 @@ namespace ProjectMagma.Renderer.ParticleSystem.Stateful
 
             while (intermediateCurrentFrameTime < currentFrameTime)
             {
+                if (GetType().Name == "IceSpike")
+                {
+                    Console.WriteLine("{0}: {1} --> {2}", GetType().Name, intermediateLastFrameTime, intermediateCurrentFrameTime);
+                }
+
                 int nextTexture = (activeTexture + 1) % 2;
 
                 RenderTarget2D oldRenderTarget0 = (RenderTarget2D)device.GetRenderTarget(0);
@@ -414,7 +424,7 @@ namespace ProjectMagma.Renderer.ParticleSystem.Stateful
 
         #endregion
 
-        private Renderer renderer;
+        protected Renderer renderer;
         private List<ParticleEmitter> emitters;
         private int index;
         private GraphicsDevice device;

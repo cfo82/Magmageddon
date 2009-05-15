@@ -31,13 +31,10 @@ namespace ProjectMagma.Renderer
             base.UnloadResources();
         }
 
-        public override void Update(Renderer renderer, GameTime gameTime)
+        public override void Update(Renderer renderer)
         {
-            // calculate the timestep to make
-            lastFrameTime = currentFrameTime;
-            double dtMs = (double)gameTime.ElapsedGameTime.Ticks / 10000d;
-            double dt = dtMs / 1000.0;
-            currentFrameTime = lastFrameTime + dt;
+            lastFrameTime = renderer.Time.Last / 1000d;
+            currentFrameTime = renderer.Time.At / 1000d;
         }
 
         public override bool NeedsUpdate
@@ -45,7 +42,7 @@ namespace ProjectMagma.Renderer
             get { return true; }
         }
 
-        public override void Draw(Renderer renderer, GameTime gameTime)
+        public override void Draw(Renderer renderer)
         {
         }
 
@@ -81,7 +78,7 @@ namespace ProjectMagma.Renderer
         }
         
         private Vector3 position;
-        private double lastFrameTime;
-        private double currentFrameTime;
+        protected double lastFrameTime;
+        protected double currentFrameTime;
     }
 }

@@ -149,25 +149,22 @@ namespace ProjectMagma.Renderer
         #endregion
 
         public override void Draw(
-            Renderer renderer,
-            GameTime gameTime
+            Renderer renderer
         )
         {
             // TODO: ADD EVEN MORE BLINKI-BLINKI ON LOW HEALTH?
 
             // calculate the timestep to make
             lastFrameTime = currentFrameTime;
-            double dtMs = (double)gameTime.ElapsedGameTime.Ticks / 10000d;
-            double dt = dtMs / 1000.0;
-            currentFrameTime = lastFrameTime + dt;
+            currentFrameTime = lastFrameTime + renderer.Time.Dt;
 
-            UpdateDisplayedValues(gameTime);
+            UpdateDisplayedValues(renderer);
             ApplyBarEffectParameters();
             DrawBars();
             DrawStrings(renderer);
         }
 
-        private void UpdateDisplayedValues(GameTime gameTime)
+        private void UpdateDisplayedValues(Renderer renderer)
         {
             const float c = 0.15f;
             displayedHealth = MathHelper.Lerp(displayedHealth, (float)health, c);
@@ -182,11 +179,11 @@ namespace ProjectMagma.Renderer
                 energyBlink = false;
 
             if (frozen > 0 && !frozenColorStrength.Running)
-                frozenColorStrength.Start(gameTime);
+                frozenColorStrength.Start(renderer.Time.At);
             else if (frozen <= 0 && frozenColorStrength.Running)
                 frozenColorStrength.StopAfterCurrentPhase();
 
-            frozenColorStrength.Update(gameTime);
+            frozenColorStrength.Update(renderer.Time.At);
         }
 
         private string PowerupString()

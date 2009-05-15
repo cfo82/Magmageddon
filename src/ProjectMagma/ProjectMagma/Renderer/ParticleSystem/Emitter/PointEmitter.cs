@@ -10,11 +10,12 @@ namespace ProjectMagma.Renderer.ParticleSystem.Emitter
     public class PointEmitter : ParticleEmitter
     {
         public PointEmitter(
+            double time,
             Vector3 point,
             float particlesPerSecond
         )
         {
-            this.times[1] = 0;
+            this.times[1] = time;
             this.points[1] = point;
             this.particlesPerSecond = particlesPerSecond;
         }
@@ -24,7 +25,7 @@ namespace ProjectMagma.Renderer.ParticleSystem.Emitter
             double currentFrameTime
         )
         {
-            Debug.Assert(currentFrameTime > times[0]);
+            Debug.Assert(currentFrameTime >= times[0]);
             double amount = currentFrameTime - times[0];
             double interval = times[1] - times[0];
             double interpolation = amount / interval;
@@ -72,7 +73,7 @@ namespace ProjectMagma.Renderer.ParticleSystem.Emitter
             Vector3 point
         )
         {
-            Debug.Assert(time > times[1]);
+            Debug.Assert(time >= times[1]);
             times[0] = times[1];
             points[0] = points[1];
             times[1] = time;

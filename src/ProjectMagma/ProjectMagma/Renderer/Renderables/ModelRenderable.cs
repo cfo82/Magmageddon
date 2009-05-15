@@ -57,7 +57,7 @@ namespace ProjectMagma.Renderer
 
         protected abstract void ApplyEffectsToModel();
 
-        public override void Draw(Renderer renderer, GameTime gameTime)
+        public override void Draw(Renderer renderer)
         {
             ApplyEffectsToModel();
             defaultEffectMapping = CurrentPartEffectMapping();
@@ -66,13 +66,13 @@ namespace ProjectMagma.Renderer
             RecomputeBoneTransforms();
             foreach (ModelMesh mesh in Model.Meshes)
             {
-                PrepareMeshEffects(renderer, gameTime, mesh);
-                DrawMesh(renderer, gameTime, mesh);
+                PrepareMeshEffects(renderer, mesh);
+                DrawMesh(renderer, mesh);
                 DrawShadow(ref renderer, mesh);
             }
         }
 
-        protected virtual void DrawMesh(Renderer renderer, GameTime gameTime, ModelMesh mesh)
+        protected virtual void DrawMesh(Renderer renderer, ModelMesh mesh)
         {
             mesh.Draw();
         }
@@ -173,7 +173,7 @@ namespace ProjectMagma.Renderer
             }
         }
 
-        protected abstract void PrepareMeshEffects(Renderer renderer, GameTime gameTime, ModelMesh mesh);
+        protected abstract void PrepareMeshEffects(Renderer renderer, ModelMesh mesh);
 
         private void DrawShadow(ref Renderer renderer, ModelMesh mesh)
         {

@@ -61,7 +61,7 @@ namespace ProjectMagma.Shared.Math.Integration
         }
 
         public void Integrate(
-            GameTime gameTime,
+            double dtMs,
             Vector3 dd_value
         )
         {
@@ -69,8 +69,8 @@ namespace ProjectMagma.Shared.Math.Integration
             Vector3 old_value = value;
 
             // integrate using the leap frog scheme
-            d_value += dd_value * gameTime.ElapsedGameTime.Milliseconds * 0.001f;
-            value += d_value * gameTime.ElapsedGameTime.Milliseconds * 0.001f;
+            d_value += dd_value * (float)dtMs * 0.001f;
+            value += d_value * (float)dtMs * 0.001f;
 
             // if we're out of bounds, fetch the backup
             if (CheckBoundsEnabled() && (value.LengthSquared()<minLength || value.LengthSquared()>maxLength))
@@ -86,7 +86,7 @@ namespace ProjectMagma.Shared.Math.Integration
 
         public void RandomlyIntegrate
         (
-            GameTime gameTime,
+            double dtMs,
             float amplitude,
             float bias
             // to play around with the biasing, use the following Matlab line as a start:
@@ -110,7 +110,7 @@ namespace ProjectMagma.Shared.Math.Integration
             dd_value *= amplitude;
 
             // integrates
-            Integrate(gameTime, dd_value);
+            Integrate(dtMs, dd_value);
         }
 
         private Vector3 value;

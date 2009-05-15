@@ -259,8 +259,7 @@ namespace Xclna.Xna.Animation
         /// <summary>
         /// Updates the animator by finding the current absolute transforms.
         /// </summary>
-        /// <param name="gameTime">The GameTime.</param>
-        public void Update(GameTime gameTime)
+        public void Update()
         {
             bonePoses.CopyAbsoluteTransformsTo(pose);
             for (int i = 0; i < skinInfo.Length; i ++) 
@@ -325,8 +324,7 @@ namespace Xclna.Xna.Animation
         /// <summary>
         /// Draws the current frame
         /// </summary>
-        /// <param name="gameTime">The game time</param>
-        public void Draw(GameTime gameTime)
+        public void Draw()
         {
             //try
             {

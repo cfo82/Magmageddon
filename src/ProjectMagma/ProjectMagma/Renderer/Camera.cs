@@ -33,14 +33,14 @@ namespace ProjectMagma.Renderer
             //GoTo(new Vector3(0, 450, 3065));
         }
 
-        public void Update(GameTime gameTime)
+        public void Update(Renderer renderer)
         {
             // update position
-            centerPosition.Update(gameTime);
+            centerPosition.Update(renderer.Time.DtMs);
 
             // compute position
-            Position = centerPosition.Value + (float)Math.Sin(gameTime.TotalGameTime.TotalMilliseconds * 0.002f) * 12.0f * Up
-                + (float)Math.Cos(gameTime.TotalGameTime.TotalMilliseconds * 0.002f) * 7.0f * (new Vector3(1,0,0));
+            Position = centerPosition.Value + (float)Math.Sin(renderer.Time.At * 0.002f) * 12.0f * Up
+                + (float)Math.Cos(renderer.Time.At * 0.002f) * 7.0f * (new Vector3(1,0,0));
 
             //centerPosition.X = renderer.CenterOfMass.X;
             

@@ -289,8 +289,8 @@ namespace ProjectMagma
         /// </summary>
         protected override void UnloadContent()
         {
-            try
-            {
+            //try
+            //{
 #if !XBOX
                 Debug.Assert(
                     simulationThread.Thread.ThreadState == System.Threading.ThreadState.Stopped ||
@@ -309,8 +309,8 @@ namespace ProjectMagma
 #if !XBOX
                 Debug.Assert(simulationThread.Thread.ThreadState == System.Threading.ThreadState.Stopped);
 #endif
-            }
-            catch (Exception ex) { }
+            //}
+            //catch (Exception ex) { }
         }
 
         bool paused = true;

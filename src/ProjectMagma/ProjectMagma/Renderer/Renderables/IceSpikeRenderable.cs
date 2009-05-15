@@ -51,12 +51,9 @@ namespace ProjectMagma.Renderer
         {
             base.Update(renderer);
 
-            lastFrameTime = renderer.Time.PausableLast / 1000d;
-            currentFrameTime = renderer.Time.PausableAt / 1000d;
-
             if (!dead && iceSpikeEmitter == null)
             {
-                iceSpikeEmitter = new PointEmitter(lastFrameTime, Position, 2500.0f);
+                iceSpikeEmitter = new PointEmitter(renderer.Time.PausableLast / 1000d, Position, 2500.0f);
                 iceSpikeSystem.AddEmitter(iceSpikeEmitter);
             }
 
@@ -68,15 +65,15 @@ namespace ProjectMagma.Renderer
 
             if (iceSpikeEmitter != null)
             {
-                iceSpikeEmitter.SetPoint(CurrentFrameTime, Position);
-                Debug.Assert(iceSpikeEmitter.Times[0] == LastFrameTime);
-                Debug.Assert(iceSpikeEmitter.Times[1] == CurrentFrameTime);
+                iceSpikeEmitter.SetPoint(renderer.Time.PausableAt / 1000d, Position);
+                Debug.Assert(iceSpikeEmitter.Times[0] == renderer.Time.PausableLast / 1000d);
+                Debug.Assert(iceSpikeEmitter.Times[1] == renderer.Time.PausableAt / 1000d);
             }
 
             iceSpikeSystem.Position = Position;
             iceSpikeSystem.Direction = direction;
             iceSpikeSystem.Dead = dead;
-            iceSpikeSystem.Update(LastFrameTime, CurrentFrameTime);
+            iceSpikeSystem.Update(renderer.Time.PausableLast / 1000d, renderer.Time.PausableAt / 1000d);
         }
 
         public override void Draw(Renderer renderer)
@@ -94,7 +91,7 @@ namespace ProjectMagma.Renderer
 
                 DrawIceSpike(renderer, world, renderer.Camera.View, renderer.Camera.Projection);
             }
-            iceSpikeSystem.Render(LastFrameTime, CurrentFrameTime, renderer.Camera.View, renderer.Camera.Projection);
+            iceSpikeSystem.Render(renderer.Time.PausableLast / 1000d, renderer.Time.PausableAt / 1000d, renderer.Camera.View, renderer.Camera.Projection);
         }
 
         private void DrawIceSpike(Renderer renderer, Matrix world, Matrix view, Matrix projection)

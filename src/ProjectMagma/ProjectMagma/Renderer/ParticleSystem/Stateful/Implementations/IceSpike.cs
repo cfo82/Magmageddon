@@ -61,16 +61,6 @@ namespace ProjectMagma.Renderer.ParticleSystem.Stateful.Implementations
             parameters["RenderParticlesSpriteTexture"].SetValue(trailSprite);
         }
 
-        protected override double GetLastFrameTime()
-        {
-            return renderer.Time.PausableLast / 1000d;
-        }
-
-        protected override double GetCurrentFrameTime()
-        {
-            return renderer.Time.PausableAt / 1000d;
-        }
-
         public Vector3 Position
         {
             get { return position; }

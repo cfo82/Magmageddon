@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using Microsoft.Xna.Framework;
 
 namespace ProjectMagma.Renderer
 {
@@ -31,6 +32,18 @@ namespace ProjectMagma.Renderer
         public int Frame
         {
             get { return frame; }
+        }
+
+        public GameTime AtGameTime
+        {
+            get
+            {
+                return new GameTime(
+                    new TimeSpan((long)(At * 10000d)),
+                    new TimeSpan((long)(DtMs * 10000d)),
+                    new TimeSpan((long)(At * 10000d)),
+                    new TimeSpan((long)(DtMs * 10000d)));
+            }
         }
 
         /// <summary>
@@ -64,7 +77,19 @@ namespace ProjectMagma.Renderer
         {
             get { return dtMs; }
         }
-        
+
+        public GameTime PausableAtGameTime
+        {
+            get
+            {
+                return new GameTime(
+                    new TimeSpan((long)(PausableAt * 10000d)),
+                    new TimeSpan((long)(PausableDtMs * 10000d)),
+                    new TimeSpan((long)(PausableAt * 10000d)),
+                    new TimeSpan((long)(PausableDtMs * 10000d)));
+            }
+        }
+
         public double PausableAt
         {
         	get { return pausableAt; }

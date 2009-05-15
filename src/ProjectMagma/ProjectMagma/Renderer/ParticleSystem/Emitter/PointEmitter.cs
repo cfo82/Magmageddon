@@ -46,7 +46,7 @@ namespace ProjectMagma.Renderer.ParticleSystem.Emitter
             int length
         )
         {
-            Debug.Assert(currentFrameTime > times[0]);
+            Debug.Assert(currentFrameTime >= times[0]);
             double amount = currentFrameTime - times[0];
             double interval = times[1] - times[0];
             double interpolation = amount / interval;

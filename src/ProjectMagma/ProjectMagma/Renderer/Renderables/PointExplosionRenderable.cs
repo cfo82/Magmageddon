@@ -44,16 +44,16 @@ namespace ProjectMagma.Renderer
 
             if (explosionEmitter == null)
             {
-                explosionEmitter = CreateExplosionEmitter(Position, CurrentFrameTime);
+                explosionEmitter = CreateExplosionEmitter(Position, renderer.Time.PausableAt / 1000d);
                 explosionSystem.AddEmitter(explosionEmitter);
             }
 
-            explosionSystem.Update(LastFrameTime, CurrentFrameTime);
+            explosionSystem.Update(renderer.Time.PausableLast / 1000d, renderer.Time.PausableAt / 1000d);
         }
 
         public override void Draw(Renderer renderer)
         {
-            explosionSystem.Render(LastFrameTime, CurrentFrameTime, renderer.Camera.View, renderer.Camera.Projection);
+            explosionSystem.Render(renderer.Time.PausableLast / 1000d, renderer.Time.PausableAt / 1000d, renderer.Camera.View, renderer.Camera.Projection);
         }
 
         private PointExplosionEmitter explosionEmitter;

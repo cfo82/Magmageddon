@@ -89,7 +89,7 @@ namespace ProjectMagma.Renderer
             snowSystem.AddEmitter(new ProjectMagma.Renderer.ParticleSystem.Emitter.SnowEmitter(12f));
             for (int i = 0; i < 1000; ++i)
             {
-                snowSystem.Update(-20d/1000d + i * -20d/1000d, -20d/1000d + i * -20d/1000d + 20d/1000d);
+                snowSystem.Update(-30d / 1000d + i * -30d / 1000d, -30d / 1000d + i * -30d / 1000d + 30d / 1000d);
             }
 
             updateQueues = new List<RendererUpdateQueue>();

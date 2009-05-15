@@ -18,7 +18,6 @@ namespace ProjectMagma.Renderer
         )
         {
             this.position = position;
-            lastFrameTime = currentFrameTime = 0.0;
         }
 
         public override void LoadResources(Renderer renderer)
@@ -33,8 +32,6 @@ namespace ProjectMagma.Renderer
 
         public override void Update(Renderer renderer)
         {
-            lastFrameTime = renderer.Time.Last / 1000d;
-            currentFrameTime = renderer.Time.At / 1000d;
         }
 
         public override bool NeedsUpdate
@@ -66,19 +63,7 @@ namespace ProjectMagma.Renderer
         {
             get { return RenderMode.RenderToSceneAlpha; }
         }
-
-        protected double LastFrameTime
-        {
-            get { return lastFrameTime; }
-        }
-
-        protected double CurrentFrameTime
-        {
-            get { return currentFrameTime; }
-        }
         
         private Vector3 position;
-        protected double lastFrameTime;
-        protected double currentFrameTime;
     }
 }

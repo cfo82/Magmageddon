@@ -237,9 +237,6 @@ namespace ProjectMagma.Renderer.ParticleSystem.Stateful
             double currentFrameTime
         )
         {
-                lastFrameTime = GetLastFrameTime();
-                currentFrameTime = GetCurrentFrameTime();
-
             for (int i = 0; i < createVertexLists.Count; ++i)
             {
                 renderer.StatefulParticleResourceManager.FreeCreateVertexArray(createVertexLists[i]);
@@ -304,9 +301,6 @@ namespace ProjectMagma.Renderer.ParticleSystem.Stateful
             Matrix projectionMatrix
         )
         {
-            lastFrameTime = GetLastFrameTime();
-            currentFrameTime = GetCurrentFrameTime();
-
             SetParticleRenderStates(device.RenderState);
 
             VertexBuffer renderingVertexBuffer = renderer.StatefulParticleResourceManager.GetRenderingVertexBuffer(systemSize);
@@ -400,16 +394,6 @@ namespace ProjectMagma.Renderer.ParticleSystem.Stateful
 
         protected virtual void SetRenderingParameters(EffectParameterCollection parameters)
         {
-        }
-
-        protected virtual double GetLastFrameTime()
-        {
-            return renderer.Time.Last/1000d;
-        }
-
-        protected virtual double GetCurrentFrameTime()
-        {
-            return renderer.Time.At/1000d;
         }
 
         #endregion

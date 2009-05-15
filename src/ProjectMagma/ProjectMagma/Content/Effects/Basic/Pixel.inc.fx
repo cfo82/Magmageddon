@@ -73,3 +73,17 @@ PSOutput PSBasicPixelLightingTxTo(PixelLightingPSInputTx pin) : COLOR
 	ComputeDiffSpecColorTxTo(Output.Color, texCoord, lightResult, pin.PositionWS.w, ToneColor);
 	return Output;
 }
+
+
+//-----------------------------------------------------------------------------
+// Doubly Toned Textured Pixel Shader: used for colorizing players where the
+// skin color should be colored as well, e.g. when being frozen.
+//-----------------------------------------------------------------------------
+PSOutput PSBasicPixelLightingTxToDb(PixelLightingPSInputTx pin) : COLOR
+{
+	PS_START
+	float2 texCoord = pin.TexCoord;
+	ComputeLighting(lightResult, normal, pin.PositionWS, pin.NormalWS);	
+	ComputeDiffSpecColorTxToDb(Output.Color, texCoord, lightResult, pin.PositionWS.w, ToneColor, InvToneColor);
+	return Output;
+}

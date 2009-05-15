@@ -44,14 +44,24 @@ void PerturbIslandGroundAlpha(inout float alpha, in float4 position)
 //-----------------------------------------------------------------------------
 //
 //-----------------------------------------------------------------------------
+inline float Brightness(in float3 color)
+{
+	return dot(color, float3(0.3, 0.59, 0.11));
+}
+
+inline float3 Toned(in float3 input, in float3 tone)
+{
+	float brightness = Brightness(input);
+	float weight = saturate(abs(brightness - 0.5) * 2);
+	return lerp(tone, float3(brightness,brightness,brightness), weight);
+}
+
 
 inline void ComputeDiffuseTxTo(out float4 diffuse, in float2 texCoord, in ColorPair lightResult, in float3 tone)
 {
 	float4 texDiffuseColorRGBA = tex2D(DiffuseSampler, texCoord);
-	float3 texDiffuseColor = texDiffuseColorRGBA.rgb;
-	float texDiffuseBrightness = dot(texDiffuseColor, float3(0.3, 0.59, 0.11));
-	float weight = saturate(abs(texDiffuseBrightness - 0.5) * 2);
-	float3 tonedDiffuseColor = lerp(tone, float3(texDiffuseBrightness,texDiffuseBrightness,texDiffuseBrightness), weight);
+	float3 texDiffuseColor = texDiffuseColorRGBA.rgb;	
+	float3 tonedDiffuseColor = Toned(texDiffuseColor, tone);
 	float3 finalColor = lerp(texDiffuseColor, tonedDiffuseColor, texDiffuseColorRGBA.a);
 	float4 uniDiffuseColor = float4(lightResult.Diffuse * DiffuseColor, Alpha);
 	diffuse = float4(finalColor,1.0) * uniDiffuseColor;
@@ -67,4 +77,34 @@ inline void ComputeDiffSpecColorTxTo(
 	ComputeSpecularTx(specular, texCoord, lightResult);	
 	color = diffuse + float4(specular.rgb, 0);
 	color.rgb = lerp(color.rgb, FogColor, fogFactor);
+	color.rgb = lerp(color.rgb, BlinkingColor, BlinkingState);
+}
+
+
+inline void ComputeDiffuseTxToDb(
+	out float4 diffuse, in float2 texCoord, in ColorPair lightResult,
+	in float3 tone, in float3 invTone
+)
+{
+	float4 texDiffuseColorRGBA = tex2D(DiffuseSampler, texCoord);
+	float3 texDiffuseColor = texDiffuseColorRGBA.rgb;	
+	float3 tonedDiffuseColor = Toned(texDiffuseColor, tone);
+	float3 invTonedDiffuseColor = Toned(texDiffuseColor, invTone);
+	float3 finalColor = lerp(invTonedDiffuseColor, tonedDiffuseColor, texDiffuseColorRGBA.a);
+	float4 uniDiffuseColor = float4(lightResult.Diffuse * DiffuseColor, Alpha);
+	diffuse = float4(finalColor,1.0) * uniDiffuseColor;
+}
+
+
+inline void ComputeDiffSpecColorTxToDb(
+	out float4 color, in float2 texCoord, in ColorPair lightResult, in float fogFactor,
+	in float3 tone, in float3 invTone
+)
+{
+	float4 diffuse, specular;
+	ComputeDiffuseTxToDb(diffuse, texCoord, lightResult, tone, invTone);
+	ComputeSpecularTx(specular, texCoord, lightResult);	
+	color = diffuse + float4(specular.rgb, 0);
+	color.rgb = lerp(color.rgb, FogColor, fogFactor);
+	color.rgb = lerp(color.rgb, BlinkingColor, BlinkingState);
 }

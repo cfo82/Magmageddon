@@ -73,3 +73,13 @@ Technique AnimatedPlayer
 		ZEnable = true;		
 	}
 }
+
+Technique DoublyColoredAnimatedPlayer
+{
+	Pass
+	{
+		VertexShader = compile vs_3_0 VSBasicPixelLightingNmTxSqSk();
+		PixelShader = compile ps_3_0 PSBasicPixelLightingTxToDb();
+		ZEnable = true;		
+	}
+}

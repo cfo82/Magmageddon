@@ -13,6 +13,7 @@ float EnvGroundWavesHardness;
 float4x4 MatrixPalette[56];
 
 float3 ToneColor;
+float3 InvToneColor;
 float BlinkingState;
 	
 //-----------------------------------------------------------------------------

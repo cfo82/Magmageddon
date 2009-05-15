@@ -21,32 +21,14 @@ namespace ProjectMagma.Renderer
             this.color2 = color2;
 
             RenderChannel = RenderChannelType.One;
-            playerArrowColorBlend = new SineFloat(0.0f, 1.0f, 10.0f);
+            playerArrowColorBlend = new SineFloat(0.0f, 0.5f, 2.0f);
+            frozenColorBlend = new SineFloat(0.6f, 1.0f, 2.8f);
         }
+
 
         ~RobotRenderable()
         {
-            //Console.WriteLine("blah");
         }
-
-        //protected override void ApplyEffectsToModel()
-        //{
-        //    base.ApplyEffectsToModel();
-            
-        //    // create animation component. however, it will register itself in the main 
-        //    // game class as a drawable component. we do not like that and remove it again.
-
-        //    // create all the individual animation controllers as defined in the xml file
-        //    // accompanying the player model
-        //    //idle = new AnimationController(Game.Instance, animator.Animations["idle0"]);
-        //    //walk = new AnimationController(Game.Instance, animator.Animations["walk"]);
-        //    //nod = new AnimationController(Game.Instance, animator.Animations["nodHead"]);
-
-        //}
-
-        SineFloat playerArrowColorBlend;
-        VertexPositionTexture[] vpt;
-        VertexDeclaration vd;
 
         public override void LoadResources(Renderer renderer)
         {
@@ -54,29 +36,30 @@ namespace ProjectMagma.Renderer
 
             ApplyEffectsToModel();
             InitializeControllers();
+            LoadPlayerArrow();
 
-            //eff = new BasicEffect(renderer.Device, null);
-            eff = Game.Instance.ContentManager.Load<Effect>("Effects/Basic/Basic");
+            playerArrowColorBlend.Start(renderer.Time.At);
+            frozenColorBlend.Start(renderer.Time.At);
 
-            vpt = new VertexPositionTexture[4];
-            Vector3 arrowDims = Scale * 0.6f;
-            vpt[0].Position = new Vector3(-arrowDims.X, 0, -arrowDims.Z);
-            vpt[0].TextureCoordinate = new Vector2(0, 0);
-            vpt[1].Position = new Vector3(-arrowDims.X, 0, arrowDims.Z);
-            vpt[1].TextureCoordinate = new Vector2(0, 1);
-            vpt[2].Position = new Vector3(arrowDims.X, 0, -arrowDims.Z);
-            vpt[2].TextureCoordinate = new Vector2(1, 0);
-            vpt[3].Position = new Vector3(arrowDims.X, 0, arrowDims.Z);
-            vpt[3].TextureCoordinate = new Vector2(1, 1);
-
-            vd = new VertexDeclaration(renderer.Device, VertexPositionTexture.VertexElements);
-
-            rect = Game.Instance.ContentManager.Load<MagmaModel>("Models/Primitives/lava_primitive").XnaModel;
-            playerArrowTexture = Game.Instance.ContentManager.Load<Texture2D>("Textures/Visualizations/player_arrow");
+            vertexPositionDeclaration = new VertexDeclaration(renderer.Device, VertexPositionTexture.VertexElements);
         }
 
-        Model rect;
-        Texture2D playerArrowTexture;
+        private void LoadPlayerArrow()
+        {
+            playerArrowEffect = Game.Instance.ContentManager.Load<Effect>("Effects/Basic/Basic");
+
+            playerArrowVertices = new VertexPositionTexture[4];
+            Vector3 arrowDims = Scale * 0.6f;
+            playerArrowVertices[0].Position = new Vector3(-arrowDims.X, 0, -arrowDims.Z);
+            playerArrowVertices[0].TextureCoordinate = new Vector2(0, 0);
+            playerArrowVertices[1].Position = new Vector3(-arrowDims.X, 0, arrowDims.Z);
+            playerArrowVertices[1].TextureCoordinate = new Vector2(0, 1);
+            playerArrowVertices[2].Position = new Vector3(arrowDims.X, 0, -arrowDims.Z);
+            playerArrowVertices[2].TextureCoordinate = new Vector2(1, 0);
+            playerArrowVertices[3].Position = new Vector3(arrowDims.X, 0, arrowDims.Z);
+            playerArrowVertices[3].TextureCoordinate = new Vector2(1, 1);
+            playerArrowTexture = Game.Instance.ContentManager.Load<Texture2D>("Textures/Visualizations/player_arrow");
+        }
 
         private void InitializeControllers()
         {
@@ -104,12 +87,19 @@ namespace ProjectMagma.Renderer
             base.ApplyCustomEffectParameters(effect, renderer);
 
             effect.Parameters["ToneColor"].SetValue(color1);
+            if(Frozen)
+            {
+                effect.Parameters["InvToneColor"].SetValue(new Vector3(0.2f, 0.45f, 0.8f) * frozenColorBlend.Value);
+            }
         }
 
         public override void Update(Renderer renderer)
         {
             base.Update(renderer);
-            
+         
+   
+            frozenColorBlend.Update(renderer.Time.At);
+
             playerArrowColorBlend.Update(renderer.Time.At);
             animator.Update();
             foreach(AnimationController controller in controllers.Values)
@@ -150,15 +140,6 @@ namespace ProjectMagma.Renderer
             (sender as AnimationController).AnimationEnded -= OnceAnimEndedHandler;
         }
 
-
-        //public string NextPermanentState
-        //{
-        //    set { ActivateOneTimeState(value); }
-        //}
-
-        //public string NextOneTimeState {
-        //    set { ActivateOneTimeState(value); }
-        //}
 
         public override void UpdateString(string id, string value)
         {
@@ -223,15 +204,11 @@ namespace ProjectMagma.Renderer
             permanentState = requestedState;
         }
 
-        private readonly float blendIncrement = 0.2f;
 
         public override bool NeedsUpdate
         {
             get { return true; }
         }
-
-
-        Effect eff;
 
         protected override void DrawMesh(Renderer renderer, ModelMesh mesh)
         {
@@ -245,40 +222,31 @@ namespace ProjectMagma.Renderer
 
         private void DrawPlayerArrow(Renderer renderer)
         {
-            eff.CurrentTechnique = eff.Techniques["TexturedNoCullNoDepth"];
-
-            eff.Begin();
-            eff.CurrentTechnique.Passes[0].Begin();
-            //eff.Parameters["World"].SetValue(World);
-            //eff.View = renderer.Camera.View;
-            //eff.Projection = renderer.Camera.Projection;
-            ApplyWorldViewProjection(renderer, eff);
-            eff.Parameters["Local"].SetValue(Matrix.Identity);
-            eff.Parameters["AmbientLightColor"].SetValue(Vector3.One);
-            eff.Parameters["DiffuseColor"].SetValue(color1 * playerArrowColorBlend.Value + color2 * (1 - playerArrowColorBlend.Value));
-            //eff.VertexColorEnabled = true;
-            //eff.TextureEnabled = true;
-            eff.Parameters["DiffuseTexture"].SetValue(playerArrowTexture);
-            //eff.Parameters["RenderChannelColor"].SetValue(RenderChannelType.Three);
-            ApplyRenderChannel(eff, RenderChannelType.Three);
-
-            renderer.Device.VertexDeclaration = vd;
-            //CullMode oldCullMode = renderer.Device.RenderState.CullMode;
-            //bool oldDepthBufferEnable = renderer.Device.RenderState.DepthBufferEnable;
-            
-            //renderer.Device.RenderState.CullMode = CullMode.None;
-            //renderer.Device.RenderState.DepthBufferEnable = false;
-            renderer.Device.DrawUserPrimitives(PrimitiveType.TriangleStrip, vpt, 0, 2);
-            //renderer.Device.RenderState.CullMode = oldCullMode;
-            //rect.Meshes[0].Draw();
-            //Model.Meshes[0].Draw();
-            eff.CurrentTechnique.Passes[0].End();
-            eff.End();
+            playerArrowEffect.CurrentTechnique = playerArrowEffect.Techniques["TexturedNoCullNoDepth"];
+            playerArrowEffect.Begin();
+            playerArrowEffect.CurrentTechnique.Passes[0].Begin();
+            ApplyWorldViewProjection(renderer, playerArrowEffect);            
+            playerArrowEffect.Parameters["Local"].SetValue(Matrix.Identity);
+            playerArrowEffect.Parameters["AmbientLightColor"].SetValue(Vector3.One);
+            playerArrowEffect.Parameters["DiffuseColor"].SetValue(color1 * playerArrowColorBlend.Value + color2 * (1 - playerArrowColorBlend.Value));
+            playerArrowEffect.Parameters["DiffuseTexture"].SetValue(playerArrowTexture);
+            ApplyRenderChannel(playerArrowEffect, RenderChannelType.Three);
+            renderer.Device.VertexDeclaration = vertexPositionDeclaration;
+            renderer.Device.DrawUserPrimitives(PrimitiveType.TriangleStrip, playerArrowVertices, 0, 2);
+            playerArrowEffect.CurrentTechnique.Passes[0].End();
+            playerArrowEffect.End();
         }
 
         protected override void ApplyTechnique(Effect effect)
         {
-            effect.CurrentTechnique = effect.Techniques["AnimatedPlayer"];
+            if(Frozen)
+            {
+                effect.CurrentTechnique = effect.Techniques["DoublyColoredAnimatedPlayer"];
+            }
+            else
+            {
+                effect.CurrentTechnique = effect.Techniques["AnimatedPlayer"];
+            }
         }
 
         protected override void SetDefaultMaterialParameters()
@@ -318,24 +286,42 @@ namespace ProjectMagma.Renderer
             }
         }
 
-        private ModelAnimator animator;
-        //AnimationController idle, walk, jump;
-        //AnimationController attack1, attack2, attack3, attack4;
-        //AnimationController die;
-        //AnimationController nod;
-        private Dictionary<string, AnimationController> controllers;
+        public override void UpdateBool(string id, bool value)
+        {
+            base.UpdateBool(id, value);
 
-        private AnimationController currentController;
-        float blendFactor;
-        string state, destState, permanentState;//= "idle";
+            switch(id)
+            {
+                case "Frozen": Frozen = value; break;
+            }
+        }
 
+        protected bool Frozen { get; set; }
+
+        
+        // player arrow
+        VertexPositionTexture[] playerArrowVertices;
+        Texture2D playerArrowTexture;
+        Effect playerArrowEffect;
+        SineFloat playerArrowColorBlend;
+
+        // rendering related
+        VertexDeclaration vertexPositionDeclaration;
+        SineFloat frozenColorBlend;
         private Vector3 color1;
         private Vector3 color2;
 
+        // animation related
+        private static readonly float blendIncrement = 0.2f;
         private enum AnimationMode
         {
             Permanent, PermanentToPermanent, PermanentToOnce, Once, OnceToOnce, OnceToPermanent
         }
+        private ModelAnimator animator;
         private AnimationMode animationMode;
+        private AnimationController currentController;
+        private Dictionary<string, AnimationController> controllers;
+        float blendFactor;
+        string state, destState, permanentState;
     }
 }

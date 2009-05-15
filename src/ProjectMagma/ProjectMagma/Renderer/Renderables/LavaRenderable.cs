@@ -16,6 +16,8 @@ namespace ProjectMagma.Renderer
             public Vector3 Scale;
         }
 
+        PillarInfo[] pillarInfos;
+
         public LavaRenderable(Vector3 scale, Quaternion rotation, Vector3 position, Model model,
             Texture2D sparseStuccoTexture,
             Texture2D fireFractalTexture,
@@ -28,6 +30,7 @@ namespace ProjectMagma.Renderer
             UseLights = false;
             UseMaterialParameters = false;
             UseSquash = false;
+            UseBlinking = false;
 
             RenderChannel = RenderChannelType.Two;
 
@@ -35,6 +38,7 @@ namespace ProjectMagma.Renderer
             this.fireFractalTexture = fireFractalTexture;
             this.vectorCloudTexture = vectorCloudTexture;
             this.graniteTexture = graniteTexture;
+            this.pillarInfos = pillarInfos;
             SetDefaultMaterialParameters();
 
             Effect effect = Game.Instance.ContentManager.Load<Effect>("Effects/Lava/Lava");
@@ -45,7 +49,28 @@ namespace ProjectMagma.Renderer
         {
             base.LoadResources(renderer);
 
-            this.temperatureTexture = Game.Instance.ContentManager.Load<Texture2D>("Textures/lava/temperature");
+            //this.temperatureTexture = Game.Instance.ContentManager.Load<Texture2D>("Textures/lava/temperature");
+            const int resolution = 16;
+            this.temperatureTexture = new Texture2D(renderer.Device, resolution, resolution);
+            Color[] f = new Color[resolution * resolution];
+            Random r = new Random();
+            for (int i = 0; i < resolution; i++)
+            {
+                for (int j = 0; j < resolution; j++)
+                {
+                    float x = Position.X + ((float)j) / resolution * Scale.X;
+                    float y = Position.Y + ((float)i) / resolution * Scale.Y;
+                    //f[i] = new Color(Vector3.One * ((float) r.NextDouble()));
+                    float v = 0;
+                    foreach(PillarInfo pillarInfo in pillarInfos)
+                    {
+                        if ((new Vector2(Position.X, Position.Y) - new Vector2(x, y)).LengthSquared() < 100)
+                            v = 1;
+                    }
+                    f[i * resolution + j] = new Color(Vector3.One * v);
+                }
+            }
+            temperatureTexture.SetData<Color>(f);
         }
 
         protected override void ApplyEffectsToModel()

@@ -10,10 +10,11 @@ namespace ProjectMagma.Renderer
         {
             start_squash = false;
             start_blinking = false;
-            last_squash_start = -10000;
+            last_squash_start = -100000;
+            last_blinking_start = -100000;
             squash_wavelength = 170;
             squash_amplitude = 0.2f;
-            BlinkingLength = 2000;
+            BlinkingLength = 1000;
             UseLights = true;
             UseMaterialParameters = true;
             UseSquash = true;
@@ -49,7 +50,7 @@ namespace ProjectMagma.Renderer
                 if (UseLights) ApplyLights(effect, renderer.LightManager);
                 if (UseMaterialParameters) ApplyMaterialParameters(effect);
                 if (UseSquash) ApplySquashParameters(effect, renderer);
-                if (UseSquash) ApplyBlinkingParameters(effect, renderer);
+                if (UseBlinking) ApplyBlinkingParameters(effect, renderer);
                 ApplyCustomEffectParameters(effect, renderer);
             }
         }
@@ -135,7 +136,7 @@ namespace ProjectMagma.Renderer
             if (time_since_last_blinking > 0 && time_since_last_blinking <= BlinkingLength)
             {
                 blinking_state = !blinking_state;
-                effect.Parameters["BlinkingState"].SetValue(blinking_state ? 1.0f : 0.0f);
+                effect.Parameters["BlinkingState"].SetValue(blinking_state ? 0.5f : 0.0f);
             }
             else
             {

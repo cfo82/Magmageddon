@@ -29,6 +29,34 @@ namespace ProjectMagma.Simulation
                 color1, color2);
         }
 
+        public override void OnAttached(Entity entity)
+        {
+            base.OnAttached(entity);
+
+            if (entity.HasInt("health"))
+            {
+                entity.GetIntAttribute("health").ValueChanged += HealthChanged;
+            }
+            if (entity.HasInt("frozen"))
+            {
+                entity.GetIntAttribute("frozen").ValueChanged += FrozenChanged;
+            }
+        }
+
+        public override void OnDetached(Entity entity)
+        {
+            base.OnDetached(entity);
+
+            if (entity.HasInt("health"))
+            {
+                entity.GetIntAttribute("health").ValueChanged -= HealthChanged;
+            }
+            if (entity.HasInt("frozen"))
+            {
+                entity.GetIntAttribute("frozen").ValueChanged -= FrozenChanged;
+            }
+        }
+
         public string NextOnceState
         {
             set
@@ -50,6 +78,34 @@ namespace ProjectMagma.Simulation
                     ChangeString("NextPermanentState", value);
                     nextPermanentState = value;
                 }
+            }
+        }
+
+        private void HealthChanged(
+            IntAttribute sender,
+            int oldValue,
+            int newValue
+        )
+        {
+            if(oldValue > newValue)
+            {
+                ChangeBool("Blink", true);
+            }
+        }
+
+        private void FrozenChanged(
+           IntAttribute sender,
+           int oldValue,
+           int newValue
+       )
+        {
+            if (newValue > 0)
+            {
+                ChangeBool("Frozen", true);
+            }
+            else
+            {
+                //ChangeBool("Frozen", false);
             }
         }
 

@@ -1395,27 +1395,40 @@ namespace ProjectMagma.Simulation
             // try at most count*2 times
             for(int i = 0; i < cnt*4; i++)
             {
+                bool valid = true;
                 int islandNo = rand.Next(Game.Instance.Simulation.IslandManager.Count - 1);
                 island = Game.Instance.Simulation.IslandManager[islandNo];
+
                 // check no players on island
                 if (island.GetInt("players_on_island") > 0)
-                    continue;
+                    valid = false;
+                
                 // check no powerup on island
                 foreach(Entity powerup in Game.Instance.Simulation.PowerupManager)
                 {
                     if (island.Name == powerup.GetString("island_reference"))
-                        continue; // select again
+                    {
+                        valid = false;
+                        break;
+                    }
                 }
+
                 // check island is far enough away from other players,
                 foreach (Entity p in Game.Instance.Simulation.PlayerManager)
                 {
                     Vector3 dist = island.GetVector3("position") - p.GetVector3("position");
                     dist.Y = 0; // ignore y component
                     if (dist.Length() < constants.GetFloat("respawn_min_distance_to_players"))
-                        continue; // select again
+                    {
+                        valid = false;
+                        break;
+                    }
                 }
-                // current island seems ok -> break;
-                break; 
+
+                if (valid)
+                    break; // ok
+                else
+                    continue; // select another
             }
             SetActiveIsland(island);
             player.SetVector3("position", GetLandingPosition(island));

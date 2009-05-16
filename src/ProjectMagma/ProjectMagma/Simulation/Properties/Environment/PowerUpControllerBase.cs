@@ -134,15 +134,18 @@ namespace ProjectMagma.Simulation
         private void SelectNewIsland()
         {
             int cnt = Game.Instance.Simulation.IslandManager.Count;
-            Entity island = Game.Instance.Simulation.IslandManager[0];
-            for (int i = 0; i < cnt*2; i++)
+            Entity island;
+            int i = 0;
+            do
             {
                 int islandNo = rand.Next(Game.Instance.Simulation.IslandManager.Count - 1);
                 island = Game.Instance.Simulation.IslandManager[islandNo];
 
+                bool valid = true;
+
                 // no players on it
                 if (island.GetInt("players_on_island") > 0)
-                    continue;                
+                    valid = false;
 
                 // check we are far enough away from other powerups
                 foreach (Entity p in Game.Instance.Simulation.PowerupManager)
@@ -150,14 +153,18 @@ namespace ProjectMagma.Simulation
                     if ((p.GetVector3("position") - island.GetVector3("position")).Length()
                         < constants.GetFloat("respawn_min_distance_to_others"))
                     {
-                        // select again
-                        continue;
+                        valid = false;
+                        break;
                     }
                 }
 
-                // no players on selected island -> break;
-                break;
-            }
+                if (valid)
+                    break; // ok
+                else
+                    continue; // select another
+            } 
+                while (i < cnt * 2);
+
             this.island = island;
             powerup.SetString("island_reference", island.Name);
             CalculateSurfaceOffset();

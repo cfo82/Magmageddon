@@ -530,13 +530,15 @@ namespace ProjectMagma.Simulation
                         else
                             direction = Vector3.Transform(new Vector3(0, 0, 1), GetRotation(player));
                         direction.Normalize();
-                        Entity targetPlayer = SelectBestPlayerInDirection(ref playerPosition, ref direction, out aimVector);
+                        Entity targetPlayer = SelectBestPlayerInDirection(ref playerPosition, ref direction, 
+                            constants.GetFloat("flamethrower_aim_angle"), out aimVector);
                         if (targetPlayer != null)
                         {
-                            // only aim towards  player in y, x and z are from controller direction
-                            aimVector.X = direction.X;
-                            aimVector.Z = direction.Z;
+                            // we only aim perfectly in y, but give a little support in x/z
+                            aimVector.X = direction.X * 0.5f + aimVector.X * 0.5f;
+                            aimVector.Z = direction.Z * 0.5f + direction.Z * 0.5f;
                         }
+
                         Vector3 tminusp = aimVector;
                         Vector3 ominusp = Vector3.Backward;
                         if (tminusp != Vector3.Zero)
@@ -580,7 +582,8 @@ namespace ProjectMagma.Simulation
 
                 Vector3 aimVector;
                 Vector3 viewVector = Vector3.Transform(new Vector3(0, 0, 1), GetRotation(player));
-                Entity targetPlayer = SelectBestPlayerInDirection(ref playerPosition, ref viewVector, out aimVector);
+                Entity targetPlayer = SelectBestPlayerInDirection(ref playerPosition, ref viewVector, 
+                    constants.GetFloat("ice_spike_aim_angle"), out aimVector);
                 String targetPlayerName = targetPlayer != null ? targetPlayer.Name : "";
 
                 Entity iceSpike = new Entity("icespike" + (++iceSpikeCount) + "_" + player.Name);
@@ -1355,9 +1358,8 @@ namespace ProjectMagma.Simulation
         /// <summary>
         /// selects the player best fitting direction given
         /// </summary>
-        private Entity SelectBestPlayerInDirection(ref Vector3 playerPosition, ref Vector3 direction, out Vector3 aimVector)
+        private Entity SelectBestPlayerInDirection(ref Vector3 playerPosition, ref Vector3 direction, float maxAngle, out Vector3 aimVector)
         {
-            float maxAngle = constants.GetFloat("ice_spike_aim_angle");
             float minAngle = float.PositiveInfinity;
             Entity targetPlayer = null;
             aimVector = direction;
@@ -1373,7 +1375,7 @@ namespace ProjectMagma.Simulation
                         if (a < minAngle)
                         {
                             targetPlayer = p;
-                            aimVector = pdir;
+                            aimVector = pdir + Vector3.UnitY * 15; // todo: extract constant
                             minAngle = a;
                         }
                     }

@@ -62,8 +62,6 @@ namespace ProjectMagma.Simulation
 
         private double hitPerformedAt = 0;
 
-        private float islandRepulsionStoppedAt = 0;
-
         private float islandSelectedAt = 0;
         private Entity selectedIsland = null;
         private bool selectedIslandInFreeJumpRange = false;
@@ -338,6 +336,7 @@ namespace ProjectMagma.Simulation
             if (controllerInput.jetpackButtonPressed
                 && selectedIsland != null
                 && destinationIsland == null
+                && player.GetInt("frozen") <= 0
                 && (player.GetInt("jumps") > 0 // far ranged jumps avail?
                 || selectedIslandInFreeJumpRange) // or only near jump?
             )
@@ -456,6 +455,18 @@ namespace ProjectMagma.Simulation
 
         private void PerformIslandRepulsionAction(SimulationTime simTime, ref int fuel)
         {
+            // island repulsion start
+            if (controllerInput.repulsionButtonPressed
+                && player.GetInt("energy") > constants.GetInt("island_repulsion_start_energy_cost"))
+            {
+                Vector3 velocity = new Vector3(controllerInput.leftStickX, 0, controllerInput.leftStickY);
+                Vector3 currentVelocity = activeIsland.GetVector3("repulsion_velocity");
+                velocity *= constants.GetFloat("island_repulsion_start_velocity_multiplier");
+                activeIsland.SetVector3("repulsion_velocity", currentVelocity + velocity);
+
+                player.SetInt("energy", player.GetInt("energy") - constants.GetInt("island_repulsion_start_energy_cost"));
+            }
+            else
             // island repulsion
             if ((controllerInput.repulsionButtonPressed
                 || controllerInput.repulsionButtonHold)
@@ -466,19 +477,11 @@ namespace ProjectMagma.Simulation
             {
                 Vector3 velocity = new Vector3(controllerInput.leftStickX, 0, controllerInput.leftStickY);
                 Vector3 currentVelocity = activeIsland.GetVector3("repulsion_velocity");
-                if (currentVelocity == Vector3.Zero)
-                    velocity *= constants.GetFloat("island_repulsion_start_velocity_multiplier");
-                else
-                    velocity *= constants.GetFloat("island_repulsion_velocity_multiplier");
+                velocity *= constants.GetFloat("island_repulsion_velocity_multiplier");
                 activeIsland.SetVector3("repulsion_velocity", currentVelocity + velocity);
-
-                player.SetFloat("repulsion_seconds", player.GetFloat("repulsion_seconds") - 
-                    simTime.DtMs / 1000);
 
                 Game.Instance.Simulation.ApplyPerSecondSubstraction(player, "repulsion_energy_cost",
                     constants.GetInt("island_repulsion_energy_cost_per_second"), player.GetIntAttribute("energy"));
-
-                islandRepulsionStoppedAt = simTime.At;
             }
         }
 
@@ -514,45 +517,51 @@ namespace ProjectMagma.Simulation
                 }
                 else
                 {
-                    // change y rotation towards player in range
-                    Vector3 aimVector;
-                    Vector3 direction;
-                    if (RightStickFlame)
-                        direction = new Vector3(controllerInput.flameStickX, 0, controllerInput.flameStickY);
-                    else
-                        direction = Vector3.Transform(new Vector3(0, 0, 1), GetRotation(player));
-                    direction.Normalize();
-                    Entity targetPlayer = SelectBestPlayerInDirection(ref playerPosition, ref direction, out aimVector);
-                    if (targetPlayer != null)
+                    // only rotate when fueled
+                    if (flame.GetBool("fueled"))
                     {
-                        // only aim towards  player in y, x and z are from controller direction
-                        aimVector.X = direction.X;
-                        aimVector.Z = direction.Z;
-                    }
-                    Vector3 tminusp = aimVector;
-                    Vector3 ominusp = Vector3.Backward;
-                    if (tminusp != Vector3.Zero)
-                        tminusp.Normalize();
-                    float theta = (float)System.Math.Acos(Vector3.Dot(tminusp, ominusp));
-                    Vector3 cross = Vector3.Cross(ominusp, tminusp);
+                        // change y rotation towards player in range
+                        Vector3 aimVector;
+                        Vector3 direction;
+                        if (RightStickFlame)
+                            direction = new Vector3(controllerInput.flameStickX, 0, controllerInput.flameStickY);
+                        else
+                            direction = Vector3.Transform(new Vector3(0, 0, 1), GetRotation(player));
+                        direction.Normalize();
+                        Entity targetPlayer = SelectBestPlayerInDirection(ref playerPosition, ref direction, out aimVector);
+                        if (targetPlayer != null)
+                        {
+                            // only aim towards  player in y, x and z are from controller direction
+                            aimVector.X = direction.X;
+                            aimVector.Z = direction.Z;
+                        }
+                        Vector3 tminusp = aimVector;
+                        Vector3 ominusp = Vector3.Backward;
+                        if (tminusp != Vector3.Zero)
+                            tminusp.Normalize();
+                        float theta = (float)System.Math.Acos(Vector3.Dot(tminusp, ominusp));
+                        Vector3 cross = Vector3.Cross(ominusp, tminusp);
 
-                    if (cross != Vector3.Zero)
-                        cross.Normalize();
+                        if (cross != Vector3.Zero)
+                            cross.Normalize();
 
-                    Quaternion targetQ = Quaternion.CreateFromAxisAngle(cross, theta);
+                        Quaternion targetQ = Quaternion.CreateFromAxisAngle(cross, theta);
 
-                    flame.SetQuaternion("rotation", targetQ);
-                  
+                        flame.SetQuaternion("rotation", targetQ);
 
-                    if (player.GetInt("energy") <= 0)
-                    {
-                        flame.SetBool("fueled", false);
+                        // stop when energy runs out
+                        if (player.GetInt("energy") <= 0)
+                        {
+                            flame.SetBool("fueled", false);
+                        }
                     }
                 }
             }
             else
+            {
                 if (flame != null)
                     flame.SetBool("fueled", false);
+            }
         }
 
         private void PerformIceSpikeAction(Entity player, float at, Vector3 playerPosition)
@@ -596,7 +605,7 @@ namespace ProjectMagma.Simulation
             }
         }
 
-            private void PerformFrozenSlowdown(Entity player, SimulationTime simTime, ref Vector3 playerPosition)
+        private void PerformFrozenSlowdown(Entity player, SimulationTime simTime, ref Vector3 playerPosition)
         {
             if (player.GetInt("frozen") > 0
                 && activeIsland != null) // only when on island...
@@ -628,26 +637,28 @@ namespace ProjectMagma.Simulation
                     playerPosition.X += controllerInput.leftStickX * dt * constants.GetFloat("x_axis_jetpack_multiplier");
                     playerPosition.Z += controllerInput.leftStickY * dt * constants.GetFloat("z_axis_jetpack_multiplier");
                 }
-                else // don't allow positioning on island if hit
-                if(player.GetVector3("hit_pushback_velocity") == Vector3.Zero)
-                {
-                    (player.GetProperty("render") as RobotRenderProperty).NextPermanentState = "walk";
-
-                    // on island ground
-                    playerPosition.X += controllerInput.leftStickX * dt * constants.GetFloat("x_axis_movement_multiplier");
-                    playerPosition.Z += controllerInput.leftStickY * dt * constants.GetFloat("z_axis_movement_multiplier");
-
-                    // check position a bit further in walking direction to be still on island
-                    Vector3 checkPos = playerPosition + new Vector3(controllerInput.leftStickX * 20,
-                        0, controllerInput.leftStickY * 20);
-
-                    Vector3 isectPt;
-                    if (!Simulation.GetPositionOnSurface(ref checkPos, activeIsland, out isectPt))
+                else
+                    // don't allow positioning on island if hit
+                    if (player.GetVector3("hit_pushback_velocity") == Vector3.Zero
+                        && !controllerInput.flamethrowerButtonHold)
                     {
-                        // check point outside of island -> prohibit movement
-                        playerPosition = previousPosition;
+                        (player.GetProperty("render") as RobotRenderProperty).NextPermanentState = "walk";
+
+                        // on island ground
+                        playerPosition.X += controllerInput.leftStickX * dt * constants.GetFloat("x_axis_movement_multiplier");
+                        playerPosition.Z += controllerInput.leftStickY * dt * constants.GetFloat("z_axis_movement_multiplier");
+
+                        // check position a bit further in walking direction to be still on island
+                        Vector3 checkPos = playerPosition + new Vector3(controllerInput.leftStickX * 20,
+                            0, controllerInput.leftStickY * 20);
+
+                        Vector3 isectPt;
+                        if (!Simulation.GetPositionOnSurface(ref checkPos, activeIsland, out isectPt))
+                        {
+                            // check point outside of island -> prohibit movement
+                            playerPosition = previousPosition;
+                        }
                     }
-                }
                 
                 // rotation
                 if (destinationIsland == null)
@@ -672,12 +683,14 @@ namespace ProjectMagma.Simulation
                 if (Simulation.GetPositionOnSurface(ref playerPosition, activeIsland, out isectPt))
                 {
                     // check height difference
+                    /*
                     if (isectPt.Y - previousPosition.Y > 10)
                     {
                         playerPosition = previousPosition;
                     }
                     else
-                        if (player.GetVector3("hit_pushback_velocity") == Vector3.Zero)
+                     */
+                    if (player.GetVector3("hit_pushback_velocity") == Vector3.Zero)
                         {
                             // set position to contact point
                             playerPosition.Y = isectPt.Y + 1; // todo: make constant?
@@ -1158,7 +1171,7 @@ namespace ProjectMagma.Simulation
                 // apply collision response to moving player
                 if ((simTime.At < movedAt + 400 // todo: extract constants
                     || simTime.At < islandJumpPerformedAt + 1000)
-                    && otherPlayer.GetVector3("hit_pushback_velocity") != Vector3.Zero) // player which was hit doesn't push us back
+                    && otherPlayer.GetVector3("hit_pushback_velocity") == Vector3.Zero) // player which was hit doesn't push us back
                 {
                     // calculate pseudo-radi
                     float pr = (player.GetVector3("scale") * new Vector3(1, 0, 1)).Length();

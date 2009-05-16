@@ -35,7 +35,6 @@ namespace ProjectMagma.Simulation
             this.player = Game.Instance.Simulation.EntityManager[flame.GetString("player")];
 
             player.GetVector3Attribute("position").ValueChanged += PlayerPositionHandler;
-            player.GetQuaternionAttribute("rotation").ValueChanged += PlayerRotationHandler;
 
             flame.GetBoolAttribute("fueled").ValueChanged += FlameFuelChangeHandler;
 
@@ -49,7 +48,6 @@ namespace ProjectMagma.Simulation
             flame.Update -= OnUpdate;
             ((CollisionProperty)flame.GetProperty("collision")).OnContact -= FlamethrowerCollisionHandler;
             flame.GetBoolAttribute("fueled").ValueChanged -= FlameFuelChangeHandler;
-            player.GetQuaternionAttribute("rotation").ValueChanged -= PlayerRotationHandler;
             player.GetVector3Attribute("position").ValueChanged -= PlayerPositionHandler;
         }
 
@@ -124,14 +122,6 @@ namespace ProjectMagma.Simulation
             Vector3 delta = newValue - oldValue;
             position += delta;
             flame.SetVector3("position", position);
-        }
-
-        private void PlayerRotationHandler(QuaternionAttribute sender, Quaternion oldValue, Quaternion newValue)
-        {
-            flame.SetQuaternion("rotation", newValue);
-
-//            if (flameThrowerState == FlameThrowerState.Active)
-//                scaleFactor = constants.GetFloat("flamethrower_turn_scale");
         }
 
         private void FlameFuelChangeHandler(BoolAttribute sender, bool oldValue, bool newValue)

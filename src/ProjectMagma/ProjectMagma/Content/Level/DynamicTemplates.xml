@@ -57,7 +57,8 @@
 
   <Entity name="flamethrower_base" extends="dynamic_entity" abstract="true">
     <Attributes>
-      <Attribute name="active" template="bool" value="true"/>
+      <Attribute name="fueled" template="bool" value="true"/>
+
       <Attribute name="position" template="float3" value="0 0 0"/>
       <Attribute name="rotation" template="quaternion" value="0 0 0 1"/>
       <Attribute name="scale" template="float3" value="0 0 0"/>

@@ -37,7 +37,6 @@ namespace ProjectMagma.Simulation
             player.GetVector3Attribute("position").ValueChanged += PlayerPositionHandler;
             player.GetQuaternionAttribute("rotation").ValueChanged += PlayerRotationHandler;
 
-            flame.AddBoolAttribute("fueled", true);
             flame.GetBoolAttribute("fueled").ValueChanged += FlameFuelChangeHandler;
 
             ((CollisionProperty)flame.GetProperty("collision")).OnContact += FlamethrowerCollisionHandler;
@@ -81,7 +80,6 @@ namespace ProjectMagma.Simulation
                 else
                 {
                     player.SetInt("energy", player.GetInt("energy") - (warmupCost-flameThrowerWarmupDeducted));
-                    flame.SetBool("active", true);
                     flameThrowerState = FlameThrowerState.Active;
                     flameThrowerStateChangedAt = at;
                 }
@@ -98,7 +96,6 @@ namespace ProjectMagma.Simulation
             if(flameThrowerState == FlameThrowerState.Cooldown)
             {
                 // cooldown
-                flame.SetBool("active", false);
                 int cooldownTime = constants.GetInt("flamethrower_cooldown_time");
                 if (at < flameThrowerStateChangedAt + constants.GetInt("flamethrower_cooldown_time"))
                 {

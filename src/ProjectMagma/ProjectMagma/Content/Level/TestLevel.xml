@@ -163,6 +163,9 @@
     <Attributes>
       <Attribute name="position" template="float3" value="140 330 240"/>
     </Attributes>
+    <Properties>
+      <Property name="controller" type="ProjectMagma.Simulation.IslandNoMovementControllerProperty"/>
+    </Properties>
   </Entity>
 
   

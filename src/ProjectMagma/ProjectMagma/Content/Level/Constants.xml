@@ -44,13 +44,13 @@
       <Attribute name="ice_spike_death_timeout" template="int" value="3500"/>
       <Attribute name="frozen_slowdown_divisor" template="float" value="6"/>
 
-      <Attribute name="flamethrower_warmup_time" template="int" value="600"/>
-      <Attribute name="flamethrower_warmup_energy_cost" template="int" value="20"/>
+      <Attribute name="flamethrower_warmup_time" template="int" value="1200"/>
+      <Attribute name="flamethrower_warmup_energy_cost" template="int" value="15"/>
       <Attribute name="flamethrower_energy_per_second" template="int" value="5"/>
       <Attribute name="flamethrower_cooldown_time" template="int" value="400"/>
       <Attribute name="flamethrower_turn_flame_increase" template="float" value="1"/>
       <Attribute name="flamethrower_turn_scale" template="float" value="0.6"/>
-      <Attribute name="flamethrower_damage_per_second" template="int" value="50"/>
+      <Attribute name="flamethrower_damage_per_second" template="int" value="40"/>
       <Attribute name="flamethrower_after_burn_time" template="int" value="300"/>
 
       <Attribute name="hit_damage" template="int" value="20"/>

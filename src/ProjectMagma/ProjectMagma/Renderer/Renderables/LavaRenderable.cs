@@ -141,7 +141,7 @@ namespace ProjectMagma.Renderer
 
 
             temperatureTexture.SetData<Color>(f);
-            temperatureTexture.Save("TEST.dds", ImageFileFormat.Dds);
+            //temperatureTexture.Save("TEST.dds", ImageFileFormat.Dds);
             //Random r = new Random();
             //for (int i = 0; i < resolution; i++)
             //{

@@ -96,12 +96,16 @@ namespace ProjectMagma.Simulation
                 // did we have collision last time too?
                 if (HadCollision(simTime))
                 {
+                    Vector3 pushbackVelocity = island.GetVector3("pushback_velocity");
+                    Vector3 pushbackDir = pushbackVelocity;
+                    if (pushbackDir != Vector3.Zero)
+                        pushbackDir.Normalize();
                     Vector3 pushback = -normal * (island.GetVector3("position") - other.GetVector3("position")).Length();
                     pushback.Y = 0; // only in xz plane
                     // same direction already?
-                    if (Vector3.Dot(diff, normal) > 0)
+                    if (Vector3.Dot(pushbackDir, normal) > 0)
                     {
-                        island.SetVector3("pushback_velocity", island.GetVector3("pushback_velocity") + pushback);
+                        island.SetVector3("pushback_velocity", pushbackVelocity + pushback);
                     }
                     else
                     {
@@ -116,7 +120,7 @@ namespace ProjectMagma.Simulation
                      && island.GetVector3("repulsion_velocity") == Vector3.Zero)
                 {
                     // change dir
-                    if (simTime.At > dirChangedAt + 1000) // todo: constant
+                    if (simTime.At > dirChangedAt + 1000) // todo: extract constant
                     {
                         dir = -dir;
                         dirChangedAt = simTime.At;

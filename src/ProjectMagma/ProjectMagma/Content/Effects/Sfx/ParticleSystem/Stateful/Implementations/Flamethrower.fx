@@ -56,7 +56,7 @@ UpdateParticlesPixelShaderOutput UpdateFlamethrowerPixelShader(
 	float3 current_position = position_sample.xyz;
 	float3 current_velocity = velocity_sample.xyz;
 	
-	float3 force = Gravity;
+	float3 force = -Gravity;
 	
 	float3 next_velocity = current_velocity - Dt * current_velocity * FlamethrowerVelocityDamping + Dt * force;
 	float3 next_position = current_position + Dt*next_velocity;

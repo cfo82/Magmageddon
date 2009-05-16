@@ -46,6 +46,8 @@ namespace ProjectMagma.Simulation
         private Entity constants;
         private LevelData templates;
 
+        private bool won = false;
+
         private Entity activeIsland = null;
 
         private readonly Random rand = new Random(DateTime.Now.Millisecond);
@@ -496,6 +498,7 @@ namespace ProjectMagma.Simulation
                         // indicate 
                         flameThrowerSoundInstance = flameThrowerSound.Play(Game.Instance.EffectsVolume, 1, 0, true);
 
+                        // todo: extract offset
                         Vector3 pos = new Vector3(playerPosition.X + 10, playerPosition.Y + 10, playerPosition.Z);
                         Vector3 viewVector = Vector3.Transform(new Vector3(0, 0, 1), GetRotation(player));
 
@@ -877,6 +880,7 @@ namespace ProjectMagma.Simulation
                     // any lives left?
                     if (player.GetInt("lives") <= 0)
                     {
+                        Game.Instance.Simulation.EntityManager.EntityRemoved -= EntityRemovedHandler;
                         Game.Instance.Simulation.EntityManager.RemoveDeferred(player);
                     }
 
@@ -1279,6 +1283,18 @@ namespace ProjectMagma.Simulation
             if (entity == attractedIsland)
             {
                 attractedIsland = null;
+            }
+
+            // check if player was removed (lost all his lives)
+            if(entity.HasAttribute("kind")
+                && entity.GetString("kind") == "player")
+            {
+                // check if we are last man standing
+                if (Game.Instance.Simulation.PlayerManager.Count == 1)
+                {
+                    won = true;
+                    Game.Instance.Simulation.Phase = SimulationPhase.Outro;
+                }
             }
         }
 

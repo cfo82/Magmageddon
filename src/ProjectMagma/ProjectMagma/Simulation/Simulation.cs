@@ -213,6 +213,15 @@ namespace ProjectMagma.Simulation
             paused = false;
         }
 
+        public SimulationPhase Phase
+        {
+            get { return phase; }
+            set { 
+                    phase = value;
+                    currentUpdateQueue.AddUpdate(new ProjectMagma.Renderer.Renderer.ChangePhase(phase));
+                }
+        } 
+
         #region interval execution functionality
 
         private readonly Dictionary<string, float> appliedAt = new Dictionary<String, float>();
@@ -392,7 +401,15 @@ namespace ProjectMagma.Simulation
 
         private SimulationTime simTime;
         private bool paused;
+        private SimulationPhase phase = SimulationPhase.Intro;
 
         private RendererUpdateQueue currentUpdateQueue;
+    }
+
+    public enum SimulationPhase
+    {
+        Intro,
+        Game,
+        Outro
     }
 }

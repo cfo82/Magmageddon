@@ -10,19 +10,19 @@ namespace ProjectMagma.Renderer
 {
     public class Renderer : RendererInterface
     {
-        public class ChangeState : RendererUpdate
+        public class ChangePhase: RendererUpdate
         {
-            public ChangeState(string newState)
+            public ChangePhase(Simulation.SimulationPhase newPhase)
             {
-                this.newState = newState;
+                this.newPhase = newPhase;
             }
 
             public void Apply()
             {
-                Game.Instance.Renderer.ChangeToState(newState);
+                Game.Instance.Renderer.ChangeToPhase(newPhase);
             }
 
-            private string newState;
+            private Simulation.SimulationPhase newPhase;
         }
 
         public Renderer(
@@ -110,9 +110,7 @@ namespace ProjectMagma.Renderer
             updateQueues = new List<RendererUpdateQueue>();
         }
 
-        public void ChangeToState(
-            string newState
-        )
+        public void ChangeToPhase(Simulation.SimulationPhase phase)
         {
             // TODO: Janick/Dominik add state dependant code here...
         }

@@ -47,7 +47,7 @@
       <Attribute name="flamethrower_warmup_time" template="int" value="1200"/>
       <Attribute name="flamethrower_warmup_energy_cost" template="int" value="15"/>
       <Attribute name="flamethrower_energy_per_second" template="int" value="5"/>
-      <Attribute name="flamethrower_cooldown_time" template="int" value="400"/>
+      <Attribute name="flamethrower_cooldown_time" template="int" value="2000"/>
       <Attribute name="flamethrower_turn_flame_increase" template="float" value="1"/>
       <Attribute name="flamethrower_turn_scale" template="float" value="0.6"/>
       <Attribute name="flamethrower_damage_per_second" template="int" value="40"/>

@@ -7,5 +7,5 @@ using ProjectMagma.Simulation;
 
 namespace ProjectMagma.Simulation
 {
-    public delegate void EntityRemovedHandler(EntityManager manager, Entity entity);
+    public delegate void LevelLoadedHandler(Simulation simulation);
 }

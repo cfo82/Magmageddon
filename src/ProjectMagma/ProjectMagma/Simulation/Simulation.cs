@@ -43,6 +43,7 @@ namespace ProjectMagma.Simulation
             // load level data
             levelData = wrappedContent.Load<LevelData>(level);
             entityManager.Load(levelData);
+            OnLevelLoaded();
 
             return EndOperation();
         }
@@ -371,6 +372,16 @@ namespace ProjectMagma.Simulation
                 return currentUpdateQueue;
             }
         }
+
+        private void OnLevelLoaded()
+        {
+            if (LevelLoaded != null)
+            {
+                LevelLoaded(this);
+            }
+        }
+
+        public event LevelLoadedHandler LevelLoaded;
 
         private readonly EntityManager entityManager;
         private EntityKindManager pillarManager;

@@ -176,9 +176,9 @@
     <Compile Include="Simulation\Entity.cs" />
     <Compile Include="Simulation\EntityKindManager.cs" />
     <Compile Include="Simulation\EntityManager.cs" />
-    <Compile Include="Simulation\Event\DrawHandler.cs" />
     <Compile Include="Simulation\Event\EntityAddedHandler.cs" />
     <Compile Include="Simulation\Event\EntityRemovedHandler.cs" />
+    <Compile Include="Simulation\Event\LevelLoadedHandler.cs" />
     <Compile Include="Simulation\Event\PropertyAddedHandler.cs" />
     <Compile Include="Simulation\Event\UpdateHandler.cs" />
     <Compile Include="Simulation\OrientationHelper.cs" />

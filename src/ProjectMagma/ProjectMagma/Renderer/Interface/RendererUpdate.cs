@@ -6,9 +6,14 @@ using Microsoft.Xna.Framework;
 
 namespace ProjectMagma.Renderer.Interface
 {
-    public abstract class RendererUpdate
+    public interface RendererUpdate
     {
-        public RendererUpdate(RendererUpdatable updatable)
+        void Apply();
+    }
+
+    public abstract class TargetedRendererUpdate : RendererUpdate
+    {
+        public TargetedRendererUpdate(RendererUpdatable updatable)
         {
             this.updatable = updatable;
         }
@@ -18,7 +23,7 @@ namespace ProjectMagma.Renderer.Interface
         protected RendererUpdatable updatable;
     }
 
-    public abstract class ValueRendererUpdate : RendererUpdate
+    public abstract class ValueRendererUpdate : TargetedRendererUpdate
     {
         public ValueRendererUpdate(RendererUpdatable updatable, string id)
         :   base(updatable)
@@ -157,7 +162,7 @@ namespace ProjectMagma.Renderer.Interface
         protected Vector3 value;
     }
 
-    public class AddRenderableUpdate : RendererUpdate
+    public class AddRenderableUpdate : TargetedRendererUpdate
     {
         public AddRenderableUpdate(Renderable updatable)
         :   base(updatable)
@@ -170,7 +175,7 @@ namespace ProjectMagma.Renderer.Interface
         }
     }
 
-    public class RemoveRenderableUpdate : RendererUpdate
+    public class RemoveRenderableUpdate : TargetedRendererUpdate
     {
         public RemoveRenderableUpdate(Renderable updatable)
         :   base(updatable)

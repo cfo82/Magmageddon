@@ -11,7 +11,6 @@ namespace ProjectMagma.Simulation
     public class Entity
     {
         public event UpdateHandler Update;
-        public event DrawHandler Draw;
 
         public Entity(string name)
         {
@@ -46,14 +45,6 @@ namespace ProjectMagma.Simulation
             if (Update != null)
             {
                 Update(this, simTime);
-            }
-        }
-
-        public void OnDraw(SimulationTime simTime, RenderMode renderMode)
-        {
-            if (Draw != null)
-            {
-                Draw(this, simTime, renderMode);
             }
         }
 

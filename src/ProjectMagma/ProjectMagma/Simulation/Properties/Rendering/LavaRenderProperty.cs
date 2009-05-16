@@ -26,14 +26,19 @@ namespace ProjectMagma.Simulation
             {
                 entity.GetVector3Attribute("scale").ValueChanged += ScaleChanged;
             }
+
             if (entity.HasQuaternion("rotation"))
             {
                 entity.GetQuaternionAttribute("rotation").ValueChanged += RotationChanged;
             }
+
             if (entity.HasVector3("position"))
             {
                 entity.GetVector3Attribute("position").ValueChanged += PositionChanged;
             }
+
+            Game.Instance.Simulation.LevelLoaded += LevelLoaded;
+            Game.Instance.Simulation.EntityManager.EntityAdded += EntityAdded;
 
             Game.Instance.Simulation.CurrentUpdateQueue.AddUpdate(new AddRenderableUpdate((Renderable)Updatable));
         }
@@ -41,6 +46,9 @@ namespace ProjectMagma.Simulation
         public override void OnDetached(Entity entity)
         {
             Game.Instance.Simulation.CurrentUpdateQueue.AddUpdate(new RemoveRenderableUpdate((Renderable)Updatable));
+
+            Game.Instance.Simulation.EntityManager.EntityAdded -= EntityAdded;
+            Game.Instance.Simulation.LevelLoaded -= LevelLoaded;
 
             if (entity.HasVector3("position"))
             {
@@ -135,6 +143,33 @@ namespace ProjectMagma.Simulation
         )
         {
             ChangeVector3("Position", newValue);
+        }
+
+        private void EntityAdded(
+            EntityManager manager,
+            Entity entity
+        )
+        {
+            if (entity.HasString("kind") && entity.GetString("kind") == "pillar")
+            {
+                Debug.Assert(entity.HasVector3("position"));
+
+                LavaRenderable.PillarInfo info = new LavaRenderable.PillarInfo();
+                info.Position = entity.GetVector3("position");
+                if (entity.HasVector3("scale"))
+                {
+                    info.Scale = entity.GetVector3("scale");
+                }
+
+                Game.Instance.Simulation.CurrentUpdateQueue.AddUpdate(new LavaRenderable.LavaPillarUpdate(Updatable, info));
+            }
+        }
+
+        private void LevelLoaded(
+            Simulation simulation
+        )
+        {
+            Game.Instance.Simulation.CurrentUpdateQueue.AddUpdate(new LavaRenderable.RecomputeLavaTemperatureUpdate(Updatable));
         }
     }
 }

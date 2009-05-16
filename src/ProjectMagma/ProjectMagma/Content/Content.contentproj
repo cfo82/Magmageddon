@@ -1311,6 +1311,11 @@
       <Importer>EffectImporter</Importer>
       <Processor>EffectProcessor</Processor>
     </None>
+    <Compile Include="Textures\Lava\temperaturebase.tga">
+      <Name>temperaturebase</Name>
+      <Importer>TextureImporter</Importer>
+      <Processor>TextureProcessor</Processor>
+    </Compile>
     <Compile Include="Effects\Sfx\ParticleSystem\Stateful\Implementations\Flamethrower.fx">
       <Name>Flamethrower</Name>
       <Importer>EffectImporter</Importer>

@@ -184,6 +184,7 @@
     <Compile Include="Simulation\Collision\CollisionProperty.cs" />
     <Compile Include="Simulation\Collision\ContactPoint.cs" />
     <Compile Include="Simulation\Collision\TestList.cs" />
+    <Compile Include="Simulation\Event\LevelLoadedHandler.cs" />
     <Compile Include="Simulation\Event\EntityRemovedHandler.cs" />
     <Compile Include="Simulation\Event\EntityAddedHandler.cs" />
     <Compile Include="Simulation\EntityKindManager.cs" />
@@ -202,7 +203,6 @@
     <Compile Include="Simulation\Attributes\Concrete\Vector3Attribute.cs" />
     <Compile Include="Simulation\Entity.cs" />
     <Compile Include="Simulation\Attributes\Events\BoolChangeHandler.cs" />
-    <Compile Include="Simulation\Event\DrawHandler.cs" />
     <Compile Include="Simulation\Attributes\Events\FloatChangeHandler.cs" />
     <Compile Include="Simulation\Attributes\Events\IntChangeHandler.cs" />
     <Compile Include="Simulation\Attributes\Events\MatrixChangeEventHandler.cs" />

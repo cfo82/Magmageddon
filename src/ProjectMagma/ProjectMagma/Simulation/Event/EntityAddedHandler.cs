@@ -5,7 +5,7 @@ using System.Text;
 using Microsoft.Xna.Framework;
 using ProjectMagma.Simulation;
 
-namespace ProjectMagma
+namespace ProjectMagma.Simulation
 {
     public delegate void EntityAddedHandler(EntityManager manager, Entity entity);
 }

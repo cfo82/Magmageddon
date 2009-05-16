@@ -1,10 +1,12 @@
 ﻿using System;
+using System.Diagnostics;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using ProjectMagma.Shared.Math.Primitives;
+using ProjectMagma.Renderer.Interface;
 
 namespace ProjectMagma.Renderer
 {
@@ -16,7 +18,45 @@ namespace ProjectMagma.Renderer
             public Vector3 Scale;
         }
 
-        PillarInfo[] pillarInfos;
+        #region specific update classes
+
+        public class LavaPillarUpdate : TargetedRendererUpdate
+        {
+            public LavaPillarUpdate(
+                RendererUpdatable updatable,
+                PillarInfo pillarInfo
+            )
+            :   base(updatable)
+            {
+                Debug.Assert(updatable.GetType() == typeof(LavaRenderable));
+                this.pillarInfo = pillarInfo;
+            }
+
+            public override void Apply()
+            {
+                ((LavaRenderable)updatable).AddPillarInfo(pillarInfo);
+            }
+
+            private PillarInfo pillarInfo;
+        }
+
+        public class RecomputeLavaTemperatureUpdate : TargetedRendererUpdate
+        {
+            public RecomputeLavaTemperatureUpdate(
+                RendererUpdatable updatable
+            )
+            :   base(updatable)
+            {
+                Debug.Assert(updatable.GetType() == typeof(LavaRenderable));
+            }
+
+            public override void Apply()
+            {
+                ((LavaRenderable)updatable).RecomputeLavaTemperatureTexture();
+            }
+        }
+
+        #endregion
 
         public LavaRenderable(Vector3 scale, Quaternion rotation, Vector3 position, Model model,
             Texture2D sparseStuccoTexture,
@@ -38,7 +78,8 @@ namespace ProjectMagma.Renderer
             this.fireFractalTexture = fireFractalTexture;
             this.vectorCloudTexture = vectorCloudTexture;
             this.graniteTexture = graniteTexture;
-            this.pillarInfos = pillarInfos;
+            this.pillarInfos = new List<PillarInfo>();
+            this.pillarInfos.AddRange(pillarInfos);
             SetDefaultMaterialParameters();
 
             Effect effect = Game.Instance.ContentManager.Load<Effect>("Effects/Lava/Lava");
@@ -49,32 +90,76 @@ namespace ProjectMagma.Renderer
         {
             base.LoadResources(renderer);
 
-            this.temperatureTexture = Game.Instance.ContentManager.Load<Texture2D>("Textures/lava/temperature");
+            Texture2D temperatureTemplate = Game.Instance.ContentManager.Load<Texture2D>("Textures/lava/temperaturebase");
+            this.temperatureTexture = new Texture2D(renderer.Device, temperatureTemplate.Width, temperatureTemplate.Height);
+        }
 
-            return; // hack to have temporarily nice lava ;)
+        public override void UnloadResources()
+        {
+            this.temperatureTexture.Dispose();
 
+            base.UnloadResources();
+        }
 
-            const int resolution = 16;
-            this.temperatureTexture = new Texture2D(renderer.Device, resolution, resolution);
-            Color[] f = new Color[resolution * resolution];
-            Random r = new Random();
-            for (int i = 0; i < resolution; i++)
+        public void AddPillarInfo(PillarInfo info)
+        {
+            this.pillarInfos.Add(info);
+        }
+
+        public void RecomputeLavaTemperatureTexture()
+        {
+            Texture2D temperatureTemplate = Game.Instance.ContentManager.Load<Texture2D>("Textures/lava/temperaturebase");
+            Color[] f = new Color[temperatureTemplate.Width * temperatureTemplate.Height];
+            temperatureTemplate.GetData<Color>(f);
+
+            Vector3 scale = Scale * 2;
+
+            for (int i = 0; i < temperatureTemplate.Width; i++)
             {
-                for (int j = 0; j < resolution; j++)
+                for (int j = 0; j < temperatureTemplate.Height; j++)
                 {
-                    float x = Position.X + ((float)j) / resolution * Scale.X;
-                    float y = Position.Y + ((float)i) / resolution * Scale.Y;
-                    //f[i] = new Color(Vector3.One * ((float) r.NextDouble()));
-                    float v = 0;
-                    foreach(PillarInfo pillarInfo in pillarInfos)
+                    float x = Position.X + ((float)j) / temperatureTemplate.Width * scale.X - scale.X / 2;
+                    float y = Position.Z + ((float)i) / temperatureTemplate.Height * scale.Z - scale.Z / 2;
+                    Vector2 pixelPosition = new Vector2(x, y);
+
+                    float v = 1;
+                    foreach (PillarInfo pillarInfo in pillarInfos)
                     {
-                        if ((new Vector2(Position.X, Position.Y) - new Vector2(x, y)).LengthSquared() < 100)
-                            v = 1;
+                        Vector2 pillarPosition = new Vector2(pillarInfo.Position.X, pillarInfo.Position.Z);
+                        float distancSqr = (pillarPosition - pixelPosition).LengthSquared();
+
+
+                        if (distancSqr < 100 * 100)
+                        { v = distancSqr / (100f*100f); }
                     }
-                    f[i * resolution + j] = new Color(Vector3.One * v);
+                    if (v < 1)
+                    {
+                        f[i * temperatureTemplate.Width + j] = new Color(Vector3.One * v);
+                    }
                 }
             }
+
+
             temperatureTexture.SetData<Color>(f);
+            temperatureTexture.Save("TEST.dds", ImageFileFormat.Dds);
+            //Random r = new Random();
+            //for (int i = 0; i < resolution; i++)
+            //{
+            //    for (int j = 0; j < resolution; j++)
+            //    {
+            //        float x = Position.X + ((float)j) / resolution * Scale.X;
+            //        float y = Position.Y + ((float)i) / resolution * Scale.Y;
+            //        //f[i] = new Color(Vector3.One * ((float) r.NextDouble()));
+            //        float v = 0;
+            //        foreach (PillarInfo pillarInfo in pillarInfos)
+            //        {
+            //            if ((new Vector2(Position.X, Position.Y) - new Vector2(x, y)).LengthSquared() < 100)
+            //                v = 1;
+            //        }
+            //        f[i * resolution + j] = new Color(Vector3.One * v);
+            //    }
+            //}
+            //temperatureTexture.SetData<Color>(f);
         }
 
         protected override void ApplyEffectsToModel()
@@ -271,6 +356,7 @@ namespace ProjectMagma.Renderer
 //        EffectParameter randomOffsetParameter;
 
         //AlignedBox3 boundingBox;
+        private List<PillarInfo> pillarInfos;
 
         Random offsetRand;
     }

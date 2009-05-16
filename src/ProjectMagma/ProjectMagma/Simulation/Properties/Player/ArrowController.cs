@@ -26,7 +26,7 @@ namespace ProjectMagma.Simulation
 
                 // point arrow from player
                 Vector3 tminusp = -aimVector;
-                Vector3 ominusp = new Vector3(1,0,0);
+                Vector3 ominusp = Vector3.Up;
                 if (tminusp != Vector3.Zero)
                     tminusp.Normalize();
                 float theta = (float)System.Math.Acos(Vector3.Dot(tminusp, ominusp));

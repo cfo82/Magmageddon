@@ -428,7 +428,7 @@ namespace ProjectMagma.Simulation
                     || player.GetInt("jumps") > 0) // arrow indicates jump 
                 {
                     //arrow.SetVector2("persistent_squash", new Vector2(100f, 1f));
-                    (arrow.GetProperty("render") as ArrowRenderProperty).JumpPossible = true;//SquashParams = new Vector2(100f, 1f);
+//                    (arrow.GetProperty("render") as ArrowRenderProperty).JumpPossible = true;//SquashParams = new Vector2(100f, 1f);
                     // hack hack hack
 //                    if(xzdist.Length() < constants.GetFloat("island_jump_free_range"))
                         selectedIslandInFreeJumpRange = true;
@@ -455,33 +455,35 @@ namespace ProjectMagma.Simulation
 
         private void PerformIslandRepulsionAction(SimulationTime simTime, ref int fuel)
         {
-            // island repulsion start
-            if (controllerInput.repulsionButtonPressed
-                && player.GetInt("energy") > constants.GetInt("island_repulsion_start_energy_cost"))
+            if (activeIsland != null)
             {
-                Vector3 velocity = new Vector3(controllerInput.leftStickX, 0, controllerInput.leftStickY);
-                Vector3 currentVelocity = activeIsland.GetVector3("repulsion_velocity");
-                velocity *= constants.GetFloat("island_repulsion_start_velocity_multiplier");
-                activeIsland.SetVector3("repulsion_velocity", currentVelocity + velocity);
+                // island repulsion start
+                if (controllerInput.repulsionButtonPressed
+                    && player.GetInt("energy") > constants.GetInt("island_repulsion_start_energy_cost"))
+                {
+                    Vector3 velocity = new Vector3(controllerInput.leftStickX, 0, controllerInput.leftStickY);
+                    Vector3 currentVelocity = activeIsland.GetVector3("repulsion_velocity");
+                    velocity *= constants.GetFloat("island_repulsion_start_velocity_multiplier");
+                    activeIsland.SetVector3("repulsion_velocity", currentVelocity + velocity);
 
-                player.SetInt("energy", player.GetInt("energy") - constants.GetInt("island_repulsion_start_energy_cost"));
-            }
-            else
-            // island repulsion
-            if ((controllerInput.repulsionButtonPressed
-                || controllerInput.repulsionButtonHold)
-                && activeIsland != null
-//                && player.GetFloat("repulsion_seconds") > 0
-                && player.GetInt("energy") > 0
-                )
-            {
-                Vector3 velocity = new Vector3(controllerInput.leftStickX, 0, controllerInput.leftStickY);
-                Vector3 currentVelocity = activeIsland.GetVector3("repulsion_velocity");
-                velocity *= constants.GetFloat("island_repulsion_velocity_multiplier");
-                activeIsland.SetVector3("repulsion_velocity", currentVelocity + velocity);
+                    player.SetInt("energy", player.GetInt("energy") - constants.GetInt("island_repulsion_start_energy_cost"));
+                }
+                else
+                    // island repulsion
+                    if ((controllerInput.repulsionButtonPressed
+                        || controllerInput.repulsionButtonHold)
+                        //                && player.GetFloat("repulsion_seconds") > 0
+                        && player.GetInt("energy") > 0
+                        )
+                    {
+                        Vector3 velocity = new Vector3(controllerInput.leftStickX, 0, controllerInput.leftStickY);
+                        Vector3 currentVelocity = activeIsland.GetVector3("repulsion_velocity");
+                        velocity *= constants.GetFloat("island_repulsion_velocity_multiplier");
+                        activeIsland.SetVector3("repulsion_velocity", currentVelocity + velocity);
 
-                Game.Instance.Simulation.ApplyPerSecondSubstraction(player, "repulsion_energy_cost",
-                    constants.GetInt("island_repulsion_energy_cost_per_second"), player.GetIntAttribute("energy"));
+                        Game.Instance.Simulation.ApplyPerSecondSubstraction(player, "repulsion_energy_cost",
+                            constants.GetInt("island_repulsion_energy_cost_per_second"), player.GetIntAttribute("energy"));
+                    }
             }
         }
 

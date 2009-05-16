@@ -32,5 +32,10 @@ namespace ProjectMagma
             Game.Instance.LoadLevel(Game.Instance.Levels[Selected].FileName);
             menu.OpenMenuScreen(playerMenu);
         }
+
+        public override void OnOpen()
+        {
+            // do nothing (base reverts to first item)
+        }
     }
 }

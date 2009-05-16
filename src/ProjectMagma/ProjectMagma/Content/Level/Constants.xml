@@ -21,7 +21,7 @@
       <Attribute name="max_fuel" template="int" value="2500"/>
 
       <Attribute name="lava_damage_per_second" template="int" value="200"/>
-      <Attribute name="energy_recharge_per_second" template="int" value="5"/>
+      <Attribute name="energy_recharge_per_second" template="int" value="8"/>
 
       <Attribute name="fuel_recharge_multiplier" template="float" value="1.2"/>
       <Attribute name="fuel_recharge_multiplier_island" template="float" value="4"/>
@@ -44,10 +44,10 @@
       <Attribute name="ice_spike_death_timeout" template="int" value="3500"/>
       <Attribute name="frozen_slowdown_divisor" template="float" value="6"/>
 
-      <Attribute name="flamethrower_warmup_time" template="int" value="1200"/>
+      <Attribute name="flamethrower_warmup_time" template="int" value="1000"/>
       <Attribute name="flamethrower_warmup_energy_cost" template="int" value="15"/>
       <Attribute name="flamethrower_energy_per_second" template="int" value="5"/>
-      <Attribute name="flamethrower_cooldown_time" template="int" value="2000"/>
+      <Attribute name="flamethrower_cooldown_time" template="int" value="600"/>
       <Attribute name="flamethrower_turn_flame_increase" template="float" value="1"/>
       <Attribute name="flamethrower_turn_scale" template="float" value="0.6"/>
       <Attribute name="flamethrower_damage_per_second" template="int" value="40"/>
@@ -69,9 +69,10 @@
       <Attribute name="island_jump_destination_radius" template="float" value=".1"/>
       <Attribute name="island_jump_free_range" template="float" value="160"/>
 
-      <Attribute name="island_repulsion_velocity_multiplier" template="float" value="10"/>
       <Attribute name="island_repulsion_start_velocity_multiplier" template="float" value="80"/>
-      <Attribute name="island_repulsion_energy_cost_per_second" template="int" value="15"/>
+      <Attribute name="island_repulsion_velocity_multiplier" template="float" value="10"/>
+      <Attribute name="island_repulsion_start_energy_cost" template="int" value="7"/>
+      <Attribute name="island_repulsion_energy_cost_per_second" template="int" value="16"/>
 
       <Attribute name="x_axis_movement_multiplier" template="float" value="140"/>
       <Attribute name="z_axis_movement_multiplier" template="float" value="140"/>

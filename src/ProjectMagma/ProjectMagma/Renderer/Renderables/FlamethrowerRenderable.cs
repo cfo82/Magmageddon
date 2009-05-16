@@ -45,7 +45,7 @@ namespace ProjectMagma.Renderer
 
             if (/*!dead && */ flamethrowerEmitter == null)
             {
-                flamethrowerEmitter = new FlamethrowerEmitter(Position, Direction, 1500);
+                flamethrowerEmitter = new FlamethrowerEmitter(Position, Direction, 2500);
                 flamethrowerSystem.AddEmitter(flamethrowerEmitter);
             }
 

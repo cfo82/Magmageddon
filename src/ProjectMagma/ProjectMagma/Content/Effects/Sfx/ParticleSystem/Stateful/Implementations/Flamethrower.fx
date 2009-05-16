@@ -5,7 +5,7 @@
 
 
 //-----------------------------------------------------------------------------------------------------------
-float FlamethrowerParticleLifetime = 1.25;
+float FlamethrowerParticleLifetime = 0.7;
 float FlamethrowerVelocityDamping = 0.1;
 float3 Gravity = float3(0,-9.81,0);
 

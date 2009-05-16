@@ -42,8 +42,8 @@ namespace ProjectMagma.Renderer.ParticleSystem.Emitter
             int length
         )
         {
-            float innerSpeed = 340;
-            float outerSpeed = 300;
+            float innerSpeed = 540;
+            float outerSpeed = 470;
 
             for (int i = 0; i < length; ++i)
             {

@@ -86,10 +86,11 @@ namespace ProjectMagma
                 }
                 else
                 {
-                    // resume simulation as soon as x-button is released (so we don't accidentally fire)
+                    // resume simulation as soon as button we used to close is released (so we don't accidentally fire)
                     if (Game.Instance.Paused
                         && waitForButtonRelease
-                        && gamePadState.Buttons.B == ButtonState.Released)
+                        && gamePadState.Buttons.B == ButtonState.Released
+                        && gamePadState.Buttons.A == ButtonState.Released)
                     {
                         Game.Instance.Resume();
                         waitForButtonRelease = false;
@@ -152,11 +153,15 @@ namespace ProjectMagma
 
         public void Close()
         {
-            active = false;
-            screens.Clear();
+            // only allow closing of menu when players are in play
+            if (Game.Instance.Simulation.PlayerManager.Count > 0)
+            {
+                active = false;
+                screens.Clear();
 
-            // don't resume simulation yet, but only after a-button is released
-            waitForButtonRelease = true;
+                // don't resume simulation yet, but only after a-button is released
+                waitForButtonRelease = true;
+            }
         }
 
         private bool active = false;

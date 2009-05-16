@@ -47,7 +47,7 @@
     </Properties>
   </Entity>
 
-  
+
   <!-- masses of game elements... -->
   
   <Entity name="cave" extends="cave_base">
@@ -184,5 +184,6 @@
       <Attribute name="relative_position" template="float3" value="20 10 10"/>
     </Attributes>
   </Entity>
+
 
 </Level>

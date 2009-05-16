@@ -49,7 +49,11 @@ namespace ProjectMagma.Renderer
         {
             base.LoadResources(renderer);
 
-            //this.temperatureTexture = Game.Instance.ContentManager.Load<Texture2D>("Textures/lava/temperature");
+            this.temperatureTexture = Game.Instance.ContentManager.Load<Texture2D>("Textures/lava/temperature");
+
+            return; // hack to have temporarily nice lava ;)
+
+
             const int resolution = 16;
             this.temperatureTexture = new Texture2D(renderer.Device, resolution, resolution);
             Color[] f = new Color[resolution * resolution];

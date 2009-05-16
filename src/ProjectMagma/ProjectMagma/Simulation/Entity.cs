@@ -389,8 +389,7 @@ namespace ProjectMagma.Simulation
         {
             if (properties.ContainsKey(name))
             {
-                // TODO: duplicate property exception
-                properties.Add(name, null); // throws exception
+                throw new System.ArgumentException(string.Format("a property with the name '{0}' is already registered", name);
             }
             else
             {

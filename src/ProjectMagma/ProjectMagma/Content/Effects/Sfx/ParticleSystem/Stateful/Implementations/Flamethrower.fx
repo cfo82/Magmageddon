@@ -6,7 +6,7 @@
 
 //-----------------------------------------------------------------------------------------------------------
 float FlamethrowerParticleLifetime = 0.7;
-float FlamethrowerVelocityDamping = 0.1;
+float FlamethrowerVelocityDamping = 0.5;
 float3 Gravity = float3(0,-9.81,0);
 
 
@@ -56,7 +56,7 @@ UpdateParticlesPixelShaderOutput UpdateFlamethrowerPixelShader(
 	float3 current_position = position_sample.xyz;
 	float3 current_velocity = velocity_sample.xyz;
 	
-	float3 force = -Gravity;
+	float3 force = -Gravity /*+ float3(0,1,0)*max(0, normalized_age-0.6)*40000*/;
 	
 	float3 next_velocity = current_velocity - Dt * current_velocity * FlamethrowerVelocityDamping + Dt * force;
 	float3 next_position = current_position + Dt*next_velocity;

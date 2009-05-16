@@ -28,6 +28,11 @@ namespace ProjectMagma.Simulation
                 entity.GetQuaternionAttribute("rotation").ValueChanged += RotationChanged;
             }
 
+            if (entity.HasBool("fueled"))
+            {
+                entity.GetBoolAttribute("fueled").ValueChanged += FueledChanged;
+            }
+
             Game.Instance.Simulation.CurrentUpdateQueue.AddUpdate(new AddRenderableUpdate((Renderable)Updatable));
         }
 
@@ -39,9 +44,15 @@ namespace ProjectMagma.Simulation
             {
                 entity.GetVector3Attribute("position").ValueChanged -= PositionChanged;
             }
+
             if (entity.HasQuaternion("rotation"))
             {
                 entity.GetQuaternionAttribute("rotation").ValueChanged -= RotationChanged;
+            }
+
+            if (entity.HasBool("fueled"))
+            {
+                entity.GetBoolAttribute("fueled").ValueChanged -= FueledChanged;
             }
 
             base.OnDetached(entity);
@@ -51,6 +62,7 @@ namespace ProjectMagma.Simulation
         {
             Vector3 position = Vector3.Zero;
             Quaternion rotation = Quaternion.Identity;
+            bool fueled = true;
 
             if (entity.HasVector3("position"))
             {
@@ -62,7 +74,12 @@ namespace ProjectMagma.Simulation
                 rotation = entity.GetQuaternion("rotation");
             }
 
-            return new FlamethrowerRenderable(position, CalculateDirection(ref rotation));
+            if (entity.HasBool("fueled"))
+            {
+                fueled = entity.GetBool("fueled");
+            }
+
+            return new FlamethrowerRenderable(position, CalculateDirection(ref rotation), fueled);
         }
 
         protected override void SetUpdatableParameters(Entity entity)
@@ -85,6 +102,16 @@ namespace ProjectMagma.Simulation
         )
         {
             ChangeVector3("Direction", CalculateDirection(ref newValue));
+        }
+
+        private void FueledChanged(
+            BoolAttribute sender,
+            bool oldValue,
+            bool newValue
+        )
+        {
+            Console.WriteLine("fueled changed to {0}", newValue);
+            ChangeBool("Fueled", newValue);
         }
 
         private Vector3 CalculateDirection(ref Quaternion rotation)

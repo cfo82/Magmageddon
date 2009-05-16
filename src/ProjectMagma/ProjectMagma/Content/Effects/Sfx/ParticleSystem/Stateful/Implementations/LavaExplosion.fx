@@ -125,7 +125,9 @@ float4 RenderExplosionPixelShader(
 #endif
 ) : COLOR0
 {
-    float4 color = input.Color*tex2D(RenderParticlesSpriteSampler, particleCoordinate/4);
+	float4 texColor = tex2D(RenderParticlesSpriteSampler, particleCoordinate/4);
+	clip(texColor-float4(0.1,0.1,0.1,0.1));
+    float4 color = input.Color*texColor;
     color.rgb *= dot(float3(0.025, 0.025, 0.025), color.rgb) * input.Color.a/3;
     return color;
 }

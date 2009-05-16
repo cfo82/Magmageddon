@@ -15,11 +15,13 @@ namespace ProjectMagma.Renderer
     {
         public FlamethrowerRenderable(
             Vector3 position,
-            Vector3 direction
+            Vector3 direction,
+            bool fueled
         )
         :   base(position)
         {
             this.direction = direction;
+            this.fueled = fueled;
 
             flamethrowerEmitter = null;
             flamethrowerSystem = null;
@@ -43,17 +45,17 @@ namespace ProjectMagma.Renderer
         {
             base.Update(renderer);
 
-            if (/*!dead && */ flamethrowerEmitter == null)
+            if (fueled && flamethrowerEmitter == null)
             {
                 flamethrowerEmitter = new FlamethrowerEmitter(Position, Direction, 2500);
                 flamethrowerSystem.AddEmitter(flamethrowerEmitter);
             }
 
-            /*if (dead && iceSpikeEmitter != null)
+            if (!fueled && flamethrowerEmitter != null)
             {
-                iceSpikeSystem.RemoveEmitter(iceSpikeEmitter);
-                iceSpikeEmitter = null;
-            }*/
+                flamethrowerSystem.RemoveEmitter(flamethrowerEmitter);
+                flamethrowerEmitter = null;
+            }
 
             if (flamethrowerEmitter != null)
             {
@@ -67,6 +69,16 @@ namespace ProjectMagma.Renderer
         public override void Draw(Renderer renderer)
         {
             flamethrowerSystem.Render(renderer.Time.PausableLast / 1000d, renderer.Time.PausableAt / 1000d, renderer.Camera.View, renderer.Camera.Projection);
+        }
+
+        public override void UpdateBool(string id, bool value)
+        {
+            base.UpdateBool(id, value);
+
+            if (id == "Fueled")
+            {
+                fueled = value;
+            }
         }
 
         public override void UpdateVector3(string id, Vector3 value)
@@ -84,7 +96,13 @@ namespace ProjectMagma.Renderer
             get { return direction; }
         }
 
+        public bool Fueled
+        {
+            get { return fueled; }
+        }
+
         private Vector3 direction;
+        private bool fueled;
         private FlamethrowerEmitter flamethrowerEmitter;
         private Flamethrower flamethrowerSystem;
     }

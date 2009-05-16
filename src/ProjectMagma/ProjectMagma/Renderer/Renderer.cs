@@ -10,6 +10,21 @@ namespace ProjectMagma.Renderer
 {
     public class Renderer : RendererInterface
     {
+        public class ChangeState : RendererUpdate
+        {
+            public ChangeState(string newState)
+            {
+                this.newState = newState;
+            }
+
+            public void Apply()
+            {
+                Game.Instance.Renderer.ChangeToState(newState);
+            }
+
+            private string newState;
+        }
+
         public Renderer(
             WrappedContentManager wrappedContent,
             GraphicsDevice device
@@ -93,6 +108,13 @@ namespace ProjectMagma.Renderer
             }
 
             updateQueues = new List<RendererUpdateQueue>();
+        }
+
+        public void ChangeToState(
+            string newState
+        )
+        {
+            // TODO: Janick/Dominik add state dependant code here...
         }
 
         public void AddUpdateQueue(RendererUpdateQueue updateQueue)

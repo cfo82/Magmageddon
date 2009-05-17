@@ -310,9 +310,7 @@ namespace ProjectMagma.Simulation
                             }
                         }
                     }
-
-                    // if other is island, set players_on_island
-
+                    else
                     // attraction?
                     if (island.GetString("attracted_by") != "")
                     {

@@ -71,6 +71,7 @@ namespace ProjectMagma.Simulation
         private Vector3 lastIslandDir = Vector3.Zero;
         private float islandJumpPerformedAt = 0;
         private Entity attractedIsland = null;
+        private bool repulsionActive = false;
 
         Entity flame = null;
         Entity arrow;
@@ -331,18 +332,25 @@ namespace ProjectMagma.Simulation
 
         private void PerformIslandJumpAction(ref Vector3 playerPosition, ref Vector3 playerVelocity)
         {
-            // island jump start
             if (controllerInput.jetpackButtonPressed
-                && selectedIsland != null
-                && destinationIsland == null
-                && player.GetInt("frozen") <= 0
-                && (player.GetInt("jumps") > 0 // far ranged jumps avail?
-                || selectedIslandInFreeJumpRange) // or only near jump?
-            )
+                && player.GetInt("frozen") <= 0)
             {
-                if(!selectedIslandInFreeJumpRange)
-                    player.SetInt("jumps", player.GetInt("jumps") - 1);
-                StartIslandJump(selectedIsland, ref playerPosition, ref playerVelocity);
+                // island jump start
+                if (controllerInput.jetpackButtonPressed
+                    && selectedIsland != null
+                    && destinationIsland == null
+                    && (player.GetInt("jumps") > 0 // far ranged jumps avail?
+                    || selectedIslandInFreeJumpRange) // or only near jump?
+                )
+                {
+                    if (!selectedIslandInFreeJumpRange)
+                        player.SetInt("jumps", player.GetInt("jumps") - 1);
+                    StartIslandJump(selectedIsland, ref playerPosition, ref playerVelocity);
+                }
+                else // only jump up
+                {
+                    player.SetVector3("velocity", -constants.GetVector3("gravit_acceleration") * constants.GetFloat("island_jump_arc_height"));
+                }
             }
         }
 
@@ -458,7 +466,7 @@ namespace ProjectMagma.Simulation
             {
                 // island repulsion start
                 if (controllerInput.repulsionButtonPressed
-                    && player.GetInt("energy") > constants.GetInt("island_repulsion_start_energy_cost"))
+                    && player.GetInt("energy") > constants.GetInt("island_repulsion_start_min_energy"))
                 {
                     Vector3 velocity = new Vector3(controllerInput.leftStickX, 0, controllerInput.leftStickY);
                     Vector3 currentVelocity = activeIsland.GetVector3("repulsion_velocity");
@@ -466,11 +474,13 @@ namespace ProjectMagma.Simulation
                     activeIsland.SetVector3("repulsion_velocity", currentVelocity + velocity);
 
                     player.SetInt("energy", player.GetInt("energy") - constants.GetInt("island_repulsion_start_energy_cost"));
+
+                    repulsionActive = true;
                 }
                 else
                     // island repulsion
-                    if ((controllerInput.repulsionButtonPressed
-                        || controllerInput.repulsionButtonHold)
+                    if (repulsionActive
+                        && controllerInput.repulsionButtonHold
                         //                && player.GetFloat("repulsion_seconds") > 0
                         && player.GetInt("energy") > 0
                         )
@@ -482,6 +492,11 @@ namespace ProjectMagma.Simulation
 
                         Game.Instance.Simulation.ApplyPerSecondSubstraction(player, "repulsion_energy_cost",
                             constants.GetInt("island_repulsion_energy_cost_per_second"), player.GetIntAttribute("energy"));
+
+                        if (player.GetInt("energy") <= 0)
+                        {
+                            repulsionActive = false;
+                        }
                     }
             }
         }
@@ -644,7 +659,8 @@ namespace ProjectMagma.Simulation
                 else
                     // don't allow positioning on island if hit
                     if (player.GetVector3("hit_pushback_velocity") == Vector3.Zero
-                        && !controllerInput.flamethrowerButtonHold)
+                        && !controllerInput.flamethrowerButtonHold
+                        && !controllerInput.repulsionButtonHold)
                     {
                         (player.GetProperty("render") as RobotRenderProperty).NextPermanentState = "walk";
 

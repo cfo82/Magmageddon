@@ -1421,7 +1421,7 @@ namespace ProjectMagma.Simulation
             int cnt = Game.Instance.Simulation.IslandManager.Count;
             Entity island = Game.Instance.Simulation.IslandManager[0];
             // try at most count*2 times
-            for(int i = 0; i < cnt*4; i++)
+            for(int i = 0; i < cnt*2; i++)
             {
                 bool valid = true;
                 int islandNo = rand.Next(Game.Instance.Simulation.IslandManager.Count - 1);

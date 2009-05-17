@@ -4,7 +4,7 @@ float2 RandomOffset;
 float4 RenderChannelColor;
 float DirLight1BottomAmpMaxY = 0;// = 300;
 float DirLight1BottomAmpStrength = 1;//= 3;
-float3 BlinkingColor = float3(0.9, 0.9, 0.9);
+float3 BlinkingColor = float3(0.7, 0.0, 0.0);
 
 float EnvGroundWavesAmplitude;
 float EnvGroundWavesFrequency;

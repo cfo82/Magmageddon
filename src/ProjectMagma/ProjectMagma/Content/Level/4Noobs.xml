@@ -1,0 +1,51 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<!DOCTYPE Level SYSTEM "Levels.dtd">
+<Level>
+
+  <Includes>
+    <Include name="Level\Constants.xml"/>
+    <Include name="Level\Templates.xml"/>
+  </Includes>
+  <!-- "unique" game entities -->
+
+  <Entity name="camera1" extends="camera_base">
+    <!-- you can mess with the camera if you really want to. but beware of dominik's wrath... -->
+  </Entity>
+
+  <Entity name="lava" extends="lava_base">
+    <!-- don't mess with the lava, there is nothing to change here. -->
+    <!-- if you know what you are doing, do it in the template. -->
+  </Entity>
+
+  <Entity name="cave" extends="cave_base">
+    <!-- don't mess with the cave, there is nothing to change here. -->
+    <!-- if you know what you are doing, do it in the template. -->
+  </Entity>
+
+  <!-- masses of game elements... -->
+
+   <Entity name="island1" extends="island_base_grass1">
+    <Attributes>
+      <Attribute name="position" template="float3" value="0 200 0"/>
+      <Attribute name="scale" template="float3" value="300 300 300"/>
+    </Attributes>
+     <Properties>
+       <Property name="controller" type="ProjectMagma.Simulation.IslandNoMovementControllerProperty"/>
+     </Properties>
+   </Entity>
+  
+  <Entity name="powerup1" extends="powerup_health">
+    <Attributes>
+      <Attribute name="island_reference" template="string" value="island1"/>
+      <Attribute name="relative_position" template="float3" value="100 10 100"/>
+    </Attributes>
+  </Entity>
+
+  <Entity name="powerup2" extends="powerup_energy">
+    <Attributes>
+      <Attribute name="island_reference" template="string" value="island1"/>
+      <Attribute name="relative_position" template="float3" value="-100 10 -100"/>
+    </Attributes>
+  </Entity>
+
+</Level>

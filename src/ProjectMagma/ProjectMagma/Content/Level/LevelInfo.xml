@@ -3,7 +3,7 @@
 <Levels>
 
   <Level>
-    <Name>TestLevel1</Name>
+    <Name>1000 Islands</Name>
     <Description>A level to test!</Description>
     <FileName>Level\TestLevel</FileName>
   </Level>
@@ -13,6 +13,11 @@
     <Description>Hardcore Deathmatch</Description>
     <FileName>Level\4vs4</FileName>
   </Level>
-  
+
+  <Level>
+    <Name>4 Noobs</Name>
+    <Description>A beginner level</Description>
+    <FileName>Level\4Noobs</FileName>
+  </Level>
 
 </Levels>

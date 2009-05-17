@@ -126,15 +126,20 @@ namespace ProjectMagma.Renderer
                     foreach (PillarInfo pillarInfo in pillarInfos)
                     {
                         Vector2 pillarPosition = new Vector2(pillarInfo.Position.X, pillarInfo.Position.Z);
+                        Vector2 pillarScale = new Vector2(pillarInfo.Scale.X, pillarInfo.Scale.Z);
                         float distancSqr = (pillarPosition - pixelPosition).LengthSquared();
 
-
-                        if (distancSqr < 100 * 100)
-                        { v = distancSqr / (100f*100f); }
+                        // this assumes that pillars are always round. if they aren't, this code has to be adapted.
+                        float pillarRadiusSq = pillarScale.LengthSquared();
+                        float radiusSq = pillarRadiusSq * 0.12f;
+                        if (distancSqr < radiusSq)
+                        { v *= distancSqr / radiusSq; }
                     }
                     if (v < 1)
                     {
-                        f[i * temperatureTemplate.Width + j] = new Color(Vector3.One * v);
+                        Vector3 oldColorVector = f[i * temperatureTemplate.Width + j].ToVector3();
+                        Vector3 newColorVector = Vector3.One * v;
+                        f[i * temperatureTemplate.Width + j] = new Color(oldColorVector * newColorVector);
                     }
                 }
             }

@@ -40,7 +40,7 @@ namespace ProjectMagma
         private List<LevelInfo> levels;
 
         private Menu menu;
-        private Entity currentCamera;
+        //private Entity currentCamera;
 
         private Settings settings = new Settings();
         
@@ -63,7 +63,7 @@ namespace ProjectMagma
         IAsyncResult storageSelectionResult;
 
         // framecounter
-        private SpriteFont font;
+        private SpriteFont fpsFont;
         private float minFPS = float.MaxValue;
         private float maxFPS = 0;
         private static int numFrames = 0;
@@ -85,8 +85,9 @@ namespace ProjectMagma
             //this.TargetElapsedTime = TimeSpan.FromSeconds(1.0 / 15.0);
             //graphics.SynchronizeWithVerticalRetrace = false; 
             graphics.ApplyChanges();
-            graphics.PreferredBackBufferWidth = 1280;
-            graphics.PreferredBackBufferHeight = 720;
+            const float multiplier = 0.7f;
+            graphics.PreferredBackBufferWidth = (int) (1280 * multiplier);
+            graphics.PreferredBackBufferHeight = (int) (720 * multiplier);
 
             Window.Title = "Project Magma";
             ContentManager.RootDirectory = "Content";
@@ -241,7 +242,7 @@ namespace ProjectMagma
             this.profiler = ProjectMagma.Profiler.Profiler.CreateProfiler("main_profiler");
 #endif
 
-            font = Game.Instance.ContentManager.Load<SpriteFont>("Sprites/HUD/HUDFont");
+            fpsFont = Game.Instance.ContentManager.Load<SpriteFont>("Fonts/fps");
         }
 
         /// <summary>
@@ -285,7 +286,7 @@ namespace ProjectMagma
             simulationThread.Reinitialize(this.simulation, this.renderer);
 
             // set camera
-            currentCamera = simulation.EntityManager["camera1"];
+            //currentCamera = simulation.EntityManager["camera1"];
 
             if (!paused)
             {
@@ -440,7 +441,7 @@ namespace ProjectMagma
             numFrames++;
             totalMilliSeconds += gameTime.ElapsedGameTime.TotalMilliseconds;
 
-            // only start after 2 sec "warmup"
+            // only start after 2 sec "warm-up"
             if (totalMilliSeconds > 2000)
             {
                 float fps = (float)(1000f / gameTime.ElapsedGameTime.TotalMilliseconds);
@@ -449,15 +450,22 @@ namespace ProjectMagma
                 if (fps < minFPS)
                     minFPS = fps;
                 spriteBatch.DrawString(
-                    font,
-                    String.Format("{0:000.0} fps", fps) + " " +
-                    String.Format("{0:00.0} avg", (1000.0f * numFrames / totalMilliSeconds)) + " " +
-                    String.Format("{0:00.0} min", minFPS) + " " +
-                    String.Format("{0:00.0} max", maxFPS) + " " +
-                    String.Format("{0:000.0} sps", (simulationThread != null ? simulationThread.Sps : 0)) + " " +
-                    String.Format("{0:00.0} avg sps", (simulationThread != null ? simulationThread.AvgSps : 0)) + " ",
-                    new Vector2(GraphicsDevice.Viewport.Width / 2 - 150, 5), Color.Silver
+                    fpsFont,
+                    "rendering\n" +
+                    String.Format("- cur: {0:000.0}", fps) + "\n" +
+                    String.Format("- avg: {0:00.0}", (1000.0f * numFrames / totalMilliSeconds)) + "\n",
+                    // is min/max really necessary?
+                    //String.Format("- min: {0:00.0}", minFPS) + "\n" +
+                    //String.Format("- max: {0:00.0}", maxFPS),
+                    new Vector2(4, 7), new Color(Color.White, 0.7f)
                 );
+                spriteBatch.DrawString(
+                   fpsFont,
+                   "simulation\n" +
+                   String.Format("- cur: {0:000.0}", (simulationThread != null ? simulationThread.Sps : 0)) + "\n" +
+                   String.Format("- avg: {0:00.0}", (simulationThread != null ? simulationThread.AvgSps : 0)) + "\n",
+                   new Vector2(GraphicsDevice.Viewport.Width-60, 7), new Color(Color.White, 0.7f)
+               );
             }
 
             spriteBatch.End();

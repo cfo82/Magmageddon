@@ -124,9 +124,9 @@ namespace ProjectMagma.Renderer
                     animationMode = AnimationMode.Permanent;
             }
 
-            BonePose head = animator.BonePoses["head"];
-            head.CurrentController = controllers["nodHead"];
-            head.CurrentBlendController = null;
+            //BonePose head = animator.BonePoses["head"];
+            //head.CurrentController = controllers["nodHead"];
+            //head.CurrentBlendController = null;
 //            Console.WriteLine("elapsed time: " + currentController.ElapsedTime);
         }
 
@@ -163,7 +163,7 @@ namespace ProjectMagma.Renderer
             //Console.WriteLine("activateonetimestate call");
             if(stateRequestString=="hit") {
                 Random r = new Random();
-                destState = "attack" + r.Next(0,4);
+                destState = "melee" + r.Next(0,0); // depends on how many we have
             }
             blendFactor = blendIncrement;
             RunController(state, destState);

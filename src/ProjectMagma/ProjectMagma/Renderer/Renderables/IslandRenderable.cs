@@ -53,7 +53,17 @@ namespace ProjectMagma.Renderer
             }
         }
 
+        public override void UpdateBool(string id, bool value)
+        {
+            base.UpdateBool(id, value);
+
+            if (id == "WindStrength")
+            {
+                Interactable = value;
+            }
+        }
         public float WindStrength { get; set; }
+        public bool Interactable { get; set; }
         
         private DoublyIntegratedVector2 randomOffset;
     }

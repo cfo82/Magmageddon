@@ -14,7 +14,7 @@ namespace ProjectMagma
 
         public MenuScreen(Menu menu, Vector2 position)
         {
-            this.font = Game.Instance.ContentManager.Load<SpriteFont>("Sprites/Menu/MenuFont");
+            this.font = Game.Instance.ContentManager.Load<SpriteFont>("Fonts/MenuFont");
             this.menu = menu;
             this.position = position;
         }

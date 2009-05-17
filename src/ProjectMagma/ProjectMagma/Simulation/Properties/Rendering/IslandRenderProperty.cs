@@ -35,6 +35,10 @@ namespace ProjectMagma.Simulation
             {
                 entity.GetVector3Attribute("position").ValueChanged += PositionChanged;
             }
+            if (entity.HasVector3("interactable"))
+            {
+                entity.GetBoolAttribute("interactable").ValueChanged += InteractableChanged;
+            }
 
             Game.Instance.Simulation.CurrentUpdateQueue.AddUpdate(new AddRenderableUpdate((Renderable)Updatable));
         }
@@ -55,6 +59,11 @@ namespace ProjectMagma.Simulation
             {
                 entity.GetVector3Attribute("scale").ValueChanged -= ScaleChanged;
             }
+            if (entity.HasVector3("interactable"))
+            {
+                entity.GetBoolAttribute("interactable").ValueChanged -= InteractableChanged;
+            }
+
 
             base.OnDetached(entity);
         }
@@ -123,6 +132,15 @@ namespace ProjectMagma.Simulation
         )
         {
             ChangeVector3("Position", newValue);
+        }
+
+        private void InteractableChanged(
+            BoolAttribute sender,
+            bool oldValue,
+            bool newValue
+        )
+        {
+            ChangeBool("Interactable", newValue);
         }
     }
 }

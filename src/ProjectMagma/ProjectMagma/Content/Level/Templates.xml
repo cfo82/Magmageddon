@@ -9,23 +9,6 @@
   
   <!-- abstract game entities (templates) -->
 
-
-  <Entity name="camera_base" abstract="true">
-    <Attributes>
-      <Attribute name="kind" template="string" value="camera"/>
-      <Attribute name="position" template="float3" value="0 420 1065"/>
-      <!--Attribute name="position" template="float3" value="0 420 1065"/-->
-      <Attribute name="target" template="float3" value="0 180 0"/>
-      <Attribute name="up" template="float3" value="0 1 0"/>
-      <Attribute name="fov" template="float" value="33"/>
-      <Attribute name="near_clip" template="float" value="1"/>
-      <Attribute name="far_clip" template="float" value="10000"/>
-    </Attributes>
-    <Properties>
-      <Property name="camera" type="ProjectMagma.Simulation.CameraProperty"/>
-    </Properties>
-  </Entity>
-
   <Entity name="lava_base" abstract="true">
     <Attributes>
       <Attribute name="kind" template="string" value="lava"/>
@@ -74,8 +57,8 @@
   <Entity name="cave_base" abstract="true">
     <Attributes>
       <Attribute name="kind" template="string" value="cave"/>
-      <Attribute name="position" template="float3" value="0 -20 90"/>
-      <Attribute name="scale" template="float3" value="800 800 800"/>
+      <Attribute name="position" template="float3" value="80 0 290"/>
+      <Attribute name="scale" template="float3" value="900 1200 900"/>
       <Attribute name="mesh" template="string" value="Models/Environment/cave_grp"/>
       <Attribute name="bv_type" template="string" value="alignedbox3tree"/>
       <Attribute name="diffuse_texture" template="string" value="Textures/Environment/cave_diffuse_v001"/>

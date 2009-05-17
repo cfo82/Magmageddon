@@ -693,7 +693,7 @@
       <Processor>TextureProcessor</Processor>
       <ProcessorParameters_ColorKeyEnabled>False</ProcessorParameters_ColorKeyEnabled>
     </Compile>
-    <Compile Include="Sprites\Menu\MenuFont.spritefont">
+    <Compile Include="Fonts\MenuFont.spritefont">
       <Name>MenuFont</Name>
       <Importer>FontDescriptionImporter</Importer>
       <Processor>FontDescriptionProcessor</Processor>
@@ -1311,6 +1311,16 @@
       <Importer>EffectImporter</Importer>
       <Processor>EffectProcessor</Processor>
     </None>
+    <Compile Include="Models\Player\austinrobot.x">
+      <Name>austinrobot</Name>
+      <Importer>XModelImporter</Importer>
+      <Processor>DwarfProcessor</Processor>
+    </Compile>
+    <Compile Include="Fonts\fps.spritefont">
+      <Name>fps</Name>
+      <Importer>FontDescriptionImporter</Importer>
+      <Processor>FontDescriptionProcessor</Processor>
+    </Compile>
     <Compile Include="Textures\Lava\temperaturebase.tga">
       <Name>temperaturebase</Name>
       <Importer>TextureImporter</Importer>
@@ -1451,10 +1461,24 @@
     </Compile>
   </ItemGroup>
   <ItemGroup>
+    <None Include="Models\Player\austinrobotanimation.xml">
+      <Name>austinrobotanimation</Name>
+      <Importer>XmlImporter</Importer>
+      <Processor>PassThroughProcessor</Processor>
+    </None>
+  </ItemGroup>
+  <ItemGroup>
     <Compile Include="Level\4Noobs.xml">
       <Name>4Noobs</Name>
       <Importer>LevelImporter</Importer>
       <Processor>LevelProcessor</Processor>
+    </Compile>
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="Textures\Player\Robot_texture10.jpg">
+      <Name>Robot_texture10</Name>
+      <Importer>TextureImporter</Importer>
+      <Processor>TextureProcessor</Processor>
     </Compile>
   </ItemGroup>
   <ItemGroup>

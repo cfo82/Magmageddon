@@ -15,8 +15,9 @@ float4 getfirefractal(float2 texCoord)
 
 float gettemperature(float2 texCoord)
 {
-	float2 mirroredTexCoord = float2(1-texCoord.x-.015, texCoord.y);
-	return pow(tex2D(TemperatureSampler, mirroredTexCoord).x,5); // mirror hack
+	float2 mirroredTexCoord = float2(1-texCoord.x, texCoord.y);
+	//return pow(tex2D(TemperatureSampler, mirroredTexCoord).x,5); // mirror hack
+	return tex2D(TemperatureSampler, mirroredTexCoord).x;
 }
 
 float ComputeFogFactor(float d)
@@ -41,7 +42,7 @@ float getstucco(float2 texCoord, float compression)
 	return stucco;
 }
 
-float temperatureImpact = 0.45;
+const float temperatureImpact = 0.95;
 
 //------------------------------------------------------------
 //                 EVALUATE LIGHTING MODEL
@@ -192,8 +193,10 @@ PSOutput MultiPlanePS(PS_INPUT i) : COLOR0
 	//float planeFraction = 0.35;
 	//
 	outp.Color = float4(cResultColor_rgb*0.7, alphaStucco >= planeFraction ? 1 : 0);
+//	outp.Color = gettemperature(i.texCoord);
 //	outp.Color = float4(planeFraction,0,0,1);
 	outp.RenderChannelColor = RenderChannelColor;
+	
 	return outp;	
 	
 	if(planeFraction<=0.0)

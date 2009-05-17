@@ -205,7 +205,7 @@ namespace ProjectMagma.Renderer
 
         private void DrawBars()
         {
-            Rectangle barRect = new Rectangle(xStart, yStart + 30, (int)barAreaSize.X, (int)barAreaSize.Y);
+            Rectangle barRect = new Rectangle(xStart, (int) (yStart + 30), (int)barAreaSize.X, (int)barAreaSize.Y);
             spriteBatch.Begin(SpriteBlendMode.AlphaBlend, SpriteSortMode.Immediate, SaveStateMode.None, spriteScale);
             barEffect.Begin();
             barEffect.CurrentTechnique.Passes[0].Begin();
@@ -221,6 +221,7 @@ namespace ProjectMagma.Renderer
 
             spriteBatch.Begin(SpriteBlendMode.AlphaBlend, SpriteSortMode.Immediate, SaveStateMode.None, spriteScale);
             Vector3 textColor = defaultTextColor * (1 - frozenColorStrength.Value) + frozenTextColor * frozenColorStrength.Value;
+
 
             // draw the player name
             Vector2 playerNameSize = playerNameFont.MeasureString(playerName.ToUpper());
@@ -241,6 +242,8 @@ namespace ProjectMagma.Renderer
             string livesString = lives.ToString();
             Vector2 livesStringSize = powerupStatusFont.MeasureString(livesString);
             Vector2 livesCenterOffset = new Vector2((int) livesStringSize.X / 2, (int) livesStringSize.Y / 2);
+            //Viewport v = Game.Instance.GraphicsDevice.Viewport
+            //            Vector2 livesPos = new Vector2(xStart + 19, yStart + 50) + multiplier * (new Vector2(236*v.Width/1280, 21*v.Height/720) - livesStringSize * 0.25f) - livesCenterOffset;
             Vector2 livesPos = new Vector2(xStart + 19, yStart + 50) + multiplier * (new Vector2(236, 21) - livesStringSize * 0.25f) - livesCenterOffset;
             spriteBatch.DrawString(livesFont, livesString, livesPos, new Color(Color.White, 0.85f));
 
@@ -288,15 +291,17 @@ namespace ProjectMagma.Renderer
             details.Age = 0;
             powerupPickupDetails.Add(details);
         }
-
+        
         private void ComputePositions()
         {
             Viewport viewport = Game.Instance.GraphicsDevice.Viewport;
             float screenScale = (float)viewport.Width / 1280f;
             spriteScale = Matrix.CreateScale(screenScale, screenScale, 1);
+
             barAreaSize = new Vector2(271, 52);
             Vector2 TotalSize = barAreaSize + new Vector2(0, 50);
-            int horOff = 100, vertOff = 50;
+            int horOff = (int)(100);
+            int vertOff = (int)(50);
 
             playerMirror = Matrix.Identity;
             multiplier = new Vector2(0, 0);
@@ -306,7 +311,8 @@ namespace ProjectMagma.Renderer
             }
             else
             {
-                xStart = viewport.Width - (int)TotalSize.X - horOff;
+                // everything is computed in 1280x720 space and then scaled later, thus 1280 here
+                xStart = 1280 - (int)TotalSize.X - horOff;
                 playerMirror *= new Matrix(
                     -1, 0, 1, 0,
                      0, 1, 0, 0,
@@ -321,7 +327,8 @@ namespace ProjectMagma.Renderer
             }
             else
             {
-                yStart = viewport.Height - (int)TotalSize.Y - vertOff;
+                // everything is computed in 1280x720 space and then scaled later, thus 720 here
+                yStart = 720 - (int)TotalSize.Y - vertOff;
                 playerMirror *= new Matrix(
                     1, 0, 0, 0,
                     0,-1, 1, 0,

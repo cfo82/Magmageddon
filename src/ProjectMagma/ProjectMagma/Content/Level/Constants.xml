@@ -20,6 +20,8 @@
       <Attribute name="max_energy" template="int" value="100"/>
       <Attribute name="max_fuel" template="int" value="2500"/>
 
+      <Attribute name="arrow_island_distance" template="float" value="50"/>
+      
       <Attribute name="lava_damage_per_second" template="int" value="200"/>
       <Attribute name="energy_recharge_per_second" template="int" value="8"/>
 
@@ -42,6 +44,7 @@
       <Attribute name="ice_spike_island_force_radius" template="float" value="50"/>
       <Attribute name="ice_spike_lifetime" template="int" value="6000"/>
       <Attribute name="ice_spike_death_timeout" template="int" value="3500"/>
+      
       <Attribute name="frozen_slowdown_divisor" template="float" value="6"/>
 
       <Attribute name="flamethrower_aim_angle" template="float" value="90"/>

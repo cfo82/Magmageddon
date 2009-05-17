@@ -14,6 +14,7 @@ namespace ProjectMagma.Simulation
 
         private void OnUpdate(Entity powerupEntity, SimulationTime simTime)
         {
+            /*
             if (island != null)
             {
                 Vector3 aimVector = island.GetVector3("position") + Vector3.UnitY * positionOffset.Y - player.GetVector3("position");
@@ -40,12 +41,15 @@ namespace ProjectMagma.Simulation
                 arrow.SetQuaternion("rotation", targetQ);
                 //arrow.SetQuaternion("rotation", Quaternion.Identity);
             }
+             */
         }
 
         public void OnAttached(Entity arrow)
         {
             this.arrow = arrow;
             this.island = null;
+            this.constants = Game.Instance.Simulation.EntityManager["player_constants"];
+
 //            this.player = Game.Instance.Simulation.EntityManager[arrow.GetString("player")];
 
             // register island change handler
@@ -98,12 +102,38 @@ namespace ProjectMagma.Simulation
             Vector3 newPosition
         )
         {
-            this.arrow.SetVector3("position", island.GetVector3("position") + Vector3.UnitY * positionOffset);
+            Vector3 aimVector = newPosition /*+ Vector3.UnitY * positionOffset.Y*/ - player.GetVector3("position");
+
+            // get intersection
+            Ray3 ray = new Ray3(player.GetVector3("position"), aimVector);
+            Vector3 arrowPos;
+            if (Game.Instance.Simulation.CollisionManager.GetIntersectionPoint(ref ray, island, out arrowPos))
+            {
+                if(aimVector != Vector3.Zero)
+                    aimVector.Normalize();
+                arrow.SetVector3("position", arrowPos + -aimVector * constants.GetFloat("arrow_island_distance"));
+            }
+
+            // point arrow from player
+            Vector3 tminusp = -aimVector;
+            Vector3 ominusp = Vector3.Up;
+            if (tminusp != Vector3.Zero)
+                tminusp.Normalize();
+            float theta = (float)System.Math.Acos(Vector3.Dot(tminusp, ominusp));
+            Vector3 cross = Vector3.Cross(ominusp, tminusp);
+
+            if (cross != Vector3.Zero)
+                cross.Normalize();
+
+            Quaternion targetQ = Quaternion.CreateFromAxisAngle(cross, theta);
+
+            arrow.SetQuaternion("rotation", targetQ);
         }
 
         private Vector3 positionOffset;
         private Entity arrow;
         private Entity player;
         private Entity island;
+        private Entity constants;
     }
 }

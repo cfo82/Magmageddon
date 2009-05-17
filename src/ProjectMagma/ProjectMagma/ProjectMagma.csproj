@@ -214,6 +214,7 @@
     <Compile Include="Simulation\Attributes\Events\Vector3ChangeHandler.cs" />
     <Compile Include="Simulation\OrientationHelper.cs" />
     <Compile Include="Simulation\Properties\Base\RendererUpdatableProperty.cs" />
+    <Compile Include="Simulation\Properties\Environment\PowerUpControllerLives.cs" />
     <Compile Include="Simulation\Properties\Island\IslandStraightMovementControllerProperty.cs" />
     <Compile Include="Simulation\Properties\Island\IslandNoMovementControllerProperty.cs" />
     <Compile Include="Simulation\Properties\Player\ArrowController.cs" />

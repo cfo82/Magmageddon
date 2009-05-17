@@ -100,7 +100,7 @@
     <Compile Include="Renderer\MathHelpers\SineFloat.cs" />
     <Compile Include="Menu\HelpMenu.cs" />
     <Compile Include="Menu\ItemizedMenuScreen.cs" />
-    <Compile Include="Menu\ItemSelectionHandler.cs" />
+    <Compile Include="Menu\ItemHandlers.cs" />
     <Compile Include="Menu\LevelMenu.cs" />
     <Compile Include="Menu\MainMenu.cs" />
     <Compile Include="Menu\Menu.cs" />

@@ -48,16 +48,24 @@ namespace ProjectMagma
 
         public void SelectNext()
         {
+            SelectedItem.Deactivate();
+
             selected++;
             if (selected == MenuItems.Length)
                 selected = 0;
+
+            SelectedItem.Activate();
         }
 
         public void SelectPrevious()
         {
+            SelectedItem.Deactivate();
+
             selected--;
             if (selected < 0)
                 selected = MenuItems.Length - 1;
+
+            SelectedItem.Activate();
         }
 
         public abstract MenuItem[] MenuItems

@@ -18,6 +18,7 @@ namespace ProjectMagma
             {
                 menuItems[i] = new MenuItem(levels[i].Name, levels[i].Name,
                     new ItemSelectionHandler(LevelSelected));
+                menuItems[i].SetActivationHandler(new ItemActivationHandler(LevelActivated));
             }
             playerMenu = new PlayerMenu(menu, this);
         }
@@ -27,9 +28,13 @@ namespace ProjectMagma
             get { return menuItems; }
         }
 
-        private void LevelSelected(MenuItem sender)
+        private void LevelActivated(MenuItem sender)
         {
             Game.Instance.LoadLevel(Game.Instance.Levels[Selected].FileName);
+        }
+
+        private void LevelSelected(MenuItem sender)
+        {
             menu.OpenMenuScreen(playerMenu);
         }
 

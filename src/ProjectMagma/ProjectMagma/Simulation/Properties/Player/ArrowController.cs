@@ -102,16 +102,16 @@ namespace ProjectMagma.Simulation
             Vector3 newPosition
         )
         {
-            Vector3 aimVector = newPosition /*+ Vector3.UnitY * positionOffset.Y*/ - player.GetVector3("position");
+            Vector3 playerPos = player.GetVector3("position");
+            Vector3 aimVector = newPosition /*+ Vector3.UnitY * positionOffset.Y*/ - playerPos;
 
             // get intersection
-            Ray3 ray = new Ray3(player.GetVector3("position"), aimVector);
+            Ray3 ray = new Ray3(playerPos, aimVector);
             Vector3 arrowPos;
             if (Game.Instance.Simulation.CollisionManager.GetIntersectionPoint(ref ray, island, out arrowPos))
             {
-                if(aimVector != Vector3.Zero)
-                    aimVector.Normalize();
-                arrow.SetVector3("position", arrowPos + -aimVector * constants.GetFloat("arrow_island_distance"));
+                Vector3 delta = (arrowPos - playerPos) * constants.GetFloat("arrow_island_distance");
+                arrow.SetVector3("position", playerPos + delta);
             }
 
             // point arrow from player

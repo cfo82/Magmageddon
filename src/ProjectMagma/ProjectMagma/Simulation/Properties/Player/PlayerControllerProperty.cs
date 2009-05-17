@@ -31,6 +31,7 @@ namespace ProjectMagma.Simulation
         private static readonly Buttons[] IceSpikeButtons = { Buttons.X };
         private static readonly Buttons[] FlamethrowerButtons = { Buttons.Y };
         private static readonly Buttons[] HitButtons = { Buttons.B };
+        private static readonly Buttons[] RunButtons = { Buttons.RightTrigger };
 
         // keyboard keys
         private static readonly Keys JetpackKey = Keys.Space;
@@ -38,6 +39,7 @@ namespace ProjectMagma.Simulation
         private static readonly Keys HitKey = Keys.E;
         private static readonly Keys FlamethrowerKey = Keys.R;
         private static readonly Keys AttractionKey = Keys.LeftControl;
+        private static readonly Keys RunKey = Keys.LeftControl;
         #endregion
 
 
@@ -672,8 +674,16 @@ namespace ProjectMagma.Simulation
                         (player.GetProperty("render") as RobotRenderProperty).NextPermanentState = "walk";
 
                         // on island ground
-                        playerPosition.X += controllerInput.leftStickX * dt * constants.GetFloat("x_axis_movement_multiplier");
-                        playerPosition.Z += controllerInput.leftStickY * dt * constants.GetFloat("z_axis_movement_multiplier");
+                        if (controllerInput.runButtonHold)
+                        {
+                            playerPosition.X += controllerInput.leftStickX * dt * constants.GetFloat("x_axis_run_multiplier");
+                            playerPosition.Z += controllerInput.leftStickY * dt * constants.GetFloat("z_axis_run_multiplier");
+                        }
+                        else
+                        {
+                            playerPosition.X += controllerInput.leftStickX * dt * constants.GetFloat("x_axis_walk_multiplier");
+                            playerPosition.Z += controllerInput.leftStickY * dt * constants.GetFloat("z_axis_walk_multiplier");
+                        }
 
                         // check position a bit further in walking direction to be still on island
                         Vector3 checkPos = playerPosition + new Vector3(controllerInput.leftStickX * 20,
@@ -1643,6 +1653,7 @@ namespace ProjectMagma.Simulation
                 SetStates(HitButtons, HitKey, out hitButtonPressed, out hitButtonHold, out hitButtonReleased);
                 SetStates(FlamethrowerButtons, FlamethrowerKey, out flamethrowerButtonPressed, out flamethrowerButtonHold, out flamethrowerButtonReleased);
                 SetStates(AttractionButtons, AttractionKey, out attractionButtonPressed, out attractionButtonHold, out attractionButtonReleased);
+                SetStates(RunButtons, RunKey, out runButtonPressed, out runButtonHold, out runButtonReleased);
 
                 #endregion
 
@@ -1725,9 +1736,12 @@ namespace ProjectMagma.Simulation
             public float dPadX, dPadY;
 
             // buttons
-            public bool repulsionButtonPressed, jetpackButtonPressed, flamethrowerButtonPressed, iceSpikeButtonPressed, hitButtonPressed, attractionButtonPressed;
-            public bool repulsionButtonReleased, jetpackButtonReleased, flamethrowerButtonReleased, iceSpikeButtonReleased, hitButtonReleased, attractionButtonReleased;
-            public bool repulsionButtonHold, jetpackButtonHold, flamethrowerButtonHold, iceSpikeButtonHold, hitButtonHold, attractionButtonHold;
+            public bool runButtonPressed, repulsionButtonPressed, jetpackButtonPressed, flamethrowerButtonPressed, 
+                iceSpikeButtonPressed, hitButtonPressed, attractionButtonPressed;
+            public bool runButtonReleased, repulsionButtonReleased, jetpackButtonReleased, flamethrowerButtonReleased, 
+                iceSpikeButtonReleased, hitButtonReleased, attractionButtonReleased;
+            public bool runButtonHold, repulsionButtonHold, jetpackButtonHold, flamethrowerButtonHold, 
+                iceSpikeButtonHold, hitButtonHold, attractionButtonHold;
 
             // times
             public float hitButtonPressedAt = float.NegativeInfinity;

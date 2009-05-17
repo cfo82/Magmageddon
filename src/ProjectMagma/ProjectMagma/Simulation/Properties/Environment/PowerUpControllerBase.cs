@@ -37,6 +37,8 @@ namespace ProjectMagma.Simulation
             // get position on surface
             powerup.AddFloatAttribute("surface_offset", 0f);
             CalculateSurfaceOffset();
+            Vector3 islandPos = island.GetVector3("position");
+            PositionOnIsland(ref islandPos);
 
             // add timeout respawn attribute
             this.powerup.AddFloatAttribute("respawn_at", 0);
@@ -99,8 +101,13 @@ namespace ProjectMagma.Simulation
             Vector3 newPosition
         )
         {
-            this.powerup.SetVector3("position", newPosition + this.powerup.GetVector3("relative_position")
-                + powerup.GetFloat("surface_offset") * Vector3.UnitY);
+            PositionOnIsland(ref newPosition);
+        }
+
+        private void PositionOnIsland(ref Vector3 position)
+        {
+            this.powerup.SetVector3("position", position + this.powerup.GetVector3("relative_position")
+                            + powerup.GetFloat("surface_offset") * Vector3.UnitY);
         }
 
         private void PowerupCollisionHandler(SimulationTime simTime, Contact contact)
@@ -158,6 +165,7 @@ namespace ProjectMagma.Simulation
                     }
                 }
 
+                i++;
                 if (valid)
                     break; // ok
                 else

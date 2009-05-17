@@ -75,7 +75,7 @@ namespace ProjectMagma.Simulation
             {
                 if (playersOnIsland > 0)
                 {
-                    position -= dt * constants.GetFloat("sinking_speed") * playersOnIsland * (Vector3.UnitY);
+                    position -= dt * island.GetFloat("sinking_speed") * playersOnIsland * (Vector3.UnitY);
                     playerLeftAt = 0;
                 }
                 else

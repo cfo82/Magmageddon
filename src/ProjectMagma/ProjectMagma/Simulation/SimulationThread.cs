@@ -52,8 +52,8 @@ namespace ProjectMagma.Simulation
 #if XBOX
             this.thread.SetProcessorAffinity(ThreadDistribution.SimulationThread);
 #endif
-            try
-            {
+/*            try
+            {*/
                 while (true)
                 {
                     startEvent.WaitOne();
@@ -69,7 +69,7 @@ namespace ProjectMagma.Simulation
 
                     finishedEvent.Set();
                 }
-            }
+/*            }
             catch (Exception ex)
             {
                 if (!this.aborted)
@@ -79,7 +79,7 @@ namespace ProjectMagma.Simulation
                     finishedEvent.Set();
                 }
                 throw ex;
-            }
+            } */
         }
 
         public void Join()

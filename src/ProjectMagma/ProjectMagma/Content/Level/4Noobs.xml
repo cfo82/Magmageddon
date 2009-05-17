@@ -24,6 +24,7 @@
     <Attributes>
       <Attribute name="position" template="float3" value="0 150 0"/>
       <Attribute name="scale" template="float3" value="330 330 330"/>
+      <Attribute name="sinking_speed" template="float" value="0"/>
     </Attributes>
      <Properties>
        <Property name="controller" type="ProjectMagma.Simulation.IslandNoMovementControllerProperty"/>

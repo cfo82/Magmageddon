@@ -7,15 +7,17 @@ using ProjectMagma.Simulation.Collision;
 
 namespace ProjectMagma.Simulation
 {
-    public class IslandNoMovementControllerProperty : IslandControllerPropertyBase
+    public class IslandStraightMovementControllerProperty : IslandControllerPropertyBase
     {
-        public IslandNoMovementControllerProperty()
+        public IslandStraightMovementControllerProperty()
         {
         }
 
         public override void OnAttached(Entity entity)
         {
             base.OnAttached(entity);
+
+            Debug.Assert(entity.HasVector3("velocity"));
         }
 
         public override void OnDetached(Entity entity)
@@ -25,7 +27,7 @@ namespace ProjectMagma.Simulation
 
         public override void CalculateNewPosition(Entity island, ref Vector3 position, float dt)
         {
-            // do nothing
+            position += island.GetVector3("velocity") * dt;
         }
 
         protected override Vector3 GetNearestPointOnPath(ref Vector3 position)
@@ -38,6 +40,5 @@ namespace ProjectMagma.Simulation
             // do nothing
         }
 
-        private Vector3 originalPositon;
     }
 }

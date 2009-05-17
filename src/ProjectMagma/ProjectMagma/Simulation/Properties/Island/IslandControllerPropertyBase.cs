@@ -26,6 +26,9 @@ namespace ProjectMagma.Simulation
                 entity.AddIntAttribute("max_health", (int) (entity.GetVector3("scale").Length() * constants.GetFloat("scale_health_multiplier")));
             entity.AddIntAttribute("health", entity.GetInt("max_health"));
 
+            if (entity.HasAttribute("fixed"))
+                hasFixedMovementPath = entity.GetBool("fixed");
+
             entity.AddVector3Attribute("repulsion_velocity", Vector3.Zero);
             entity.AddVector3Attribute("pushback_velocity", Vector3.Zero);
             entity.AddVector3Attribute("repositioning_velocity", Vector3.Zero);
@@ -184,7 +187,14 @@ namespace ProjectMagma.Simulation
             {
                 if (lastState != IslandState.Repositioning)
                 {
-                    repositioningPosition = GetNearestPointOnPath(ref position);
+                    if (hasFixedMovementPath)
+                    {
+                        repositioningPosition = GetNearestPointOnPath(ref position);
+                    }
+                    else
+                    {
+                        repositioningPosition = position;
+                    }
 //                    Console.WriteLine("repositioning to: " + repositioningPosition);
                 }
 
@@ -500,6 +510,10 @@ namespace ProjectMagma.Simulation
 
         protected IslandState state = IslandState.Normal;
         protected IslandState lastState = IslandState.Normal;
+
+
+        // has island a fixed path or can it start its path from wherever it is?
+        protected bool hasFixedMovementPath = true; 
 
         // position island started out at
         protected Vector3 originalPosition;

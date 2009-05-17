@@ -32,12 +32,13 @@ namespace ProjectMagma.Simulation
 
         protected override Vector3 GetNearestPointOnPath(ref Vector3 position)
         {
-            return originalPosition;
+            // todo: calculate postion on path (can be done with originalpositon and velocity vector)
+            return position;
         }
 
         protected override void CollisionHandler(SimulationTime simTime, Entity island, Entity other, Contact co, ref Vector3 normal)
         {
-            // do nothing
+            island.SetVector3("velocity", -island.GetVector3("velocity"));
         }
 
     }

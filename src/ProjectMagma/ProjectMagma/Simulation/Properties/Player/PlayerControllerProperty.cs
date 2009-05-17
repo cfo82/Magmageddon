@@ -1161,11 +1161,15 @@ namespace ProjectMagma.Simulation
 
         private void PlayerCaveCollisionHandler(SimulationTime simTime, Entity player, Entity pillar, Contact co)
         {
-            Vector3 pos = player.GetVector3("position");
-            // todo: extract constants
-            Vector3 velocity = (-Vector3.Normalize(pos) - Vector3.UnitY / 10) * 2000;
-            velocity.Y = 0;
-            player.SetVector3("collision_pushback_velocity", player.GetVector3("collision_pushback_velocity") + velocity);
+            // only collide with cave when in air
+            if (activeIsland != null)
+            {
+                Vector3 pos = player.GetVector3("position");
+                // todo: extract constants
+                Vector3 velocity = (-Vector3.Normalize(pos) - Vector3.UnitY / 10) * 2000;
+                velocity.Y = 0;
+                player.SetVector3("collision_pushback_velocity", player.GetVector3("collision_pushback_velocity") + velocity);
+            }
         }
 
         private void PlayerLavaCollisionHandler(SimulationTime simTime, Entity player, Entity lava)

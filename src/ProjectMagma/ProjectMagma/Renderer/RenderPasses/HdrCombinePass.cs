@@ -16,6 +16,7 @@ namespace ProjectMagma.Renderer
             hdrCombineEffect.Parameters["GeometryRender"].SetValue(GeometryRender);
             hdrCombineEffect.Parameters["BlurGeometryRender"].SetValue(BlurGeometryRender);
             hdrCombineEffect.Parameters["RenderChannelColor"].SetValue(RenderChannelColor);
+            hdrCombineEffect.Parameters["DepthTexture"].SetValue(DepthTexture);
 
             hdrCombineEffect.Parameters["BloomSensitivity"].SetValue(BloomSensitivity);
             hdrCombineEffect.Parameters["BloomIntensity"].SetValue(BloomIntensity);
@@ -36,6 +37,7 @@ namespace ProjectMagma.Renderer
         public Texture2D GeometryRender { get; set; }
         public Texture2D BlurGeometryRender { get; set; }
         public Texture2D RenderChannelColor { get; set; }
+        public Texture2D DepthTexture { get; set; }
 
         private float[] BloomSensitivity = { 0.25f, 0.0f, 0.0f };
 

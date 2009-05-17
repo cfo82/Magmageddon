@@ -1461,6 +1461,11 @@
     </Compile>
   </ItemGroup>
   <ItemGroup>
+    <None Include="Effects\Global.inc.fx">
+      <Name>Global.inc</Name>
+      <Importer>EffectImporter</Importer>
+      <Processor>EffectProcessor</Processor>
+    </None>
     <None Include="Models\Player\austinrobotanimation.xml">
       <Name>austinrobotanimation</Name>
       <Importer>XmlImporter</Importer>

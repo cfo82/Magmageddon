@@ -37,8 +37,7 @@ namespace ProjectMagma.Renderer
             base.ApplyCustomEffectParameters(effect, renderer);
 
             randomOffset.RandomlyIntegrate(renderer.Time.DtMs, 0.04f, 0.0f);
-            effect.Parameters["EyePosition"].SetValue(renderer.Camera.Position);
-            effect.Parameters["Clouds"].SetValue(renderer.VectorCloudTexture);
+            //effect.Parameters["Clouds"].SetValue(renderer.VectorCloudTexture);
             effect.Parameters["WindStrength"].SetValue(WindStrength);
             effect.Parameters["RandomOffset"].SetValue(randomOffset.Value);
         }

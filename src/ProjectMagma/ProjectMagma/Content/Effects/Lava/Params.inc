@@ -7,11 +7,6 @@ float2 RandomOffset[RANDOM_OFFSET_COUNT];
 #define StuccoRandomOffset3 (RandomOffset[3])
 #define GraniteRandomOffset (RandomOffset[4]*0.2)
 
-uniform const float		FogEnabled;
-uniform const float		FogStart;
-uniform const float		FogEnd;
-uniform const float3	FogColor;
-uniform const float3	EyePosition;
 
 
 

@@ -1,3 +1,4 @@
+#include "..\Global.inc.fx"
 #include "..\Basic\Params.inc.fx"
 #include "..\Basic\Structs.inc.fx"
 #include "..\Basic\Textures.inc.fx"

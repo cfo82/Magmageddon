@@ -5,8 +5,10 @@
 #define PS_START                                           \
 	PSOutput Output;                                       \
 	Output.RenderChannelColor = RenderChannelColor;        \
+	Output.DepthColor = float4(pin.PositionWS.y/DepthClipY, pin.PositionWS.w, 0.0, 1.0); \
 	ColorPair lightResult;                                 \
 	float3 normal;                                         
+	//Output.DepthColor = float4(pin.PositionWS.y/DepthClipY, pin.PositionWS.w, 0.0, 1.0); \
 
 
 //-----------------------------------------------------------------------------

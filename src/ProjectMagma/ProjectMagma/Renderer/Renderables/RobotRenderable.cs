@@ -246,6 +246,7 @@ namespace ProjectMagma.Renderer
             playerArrowEffect.Parameters["DiffuseColor"].SetValue(color1 * playerArrowColorBlend.Value + color2 * (1 - playerArrowColorBlend.Value));
             playerArrowEffect.Parameters["DiffuseTexture"].SetValue(playerArrowTexture);
             ApplyRenderChannel(playerArrowEffect, RenderChannelType.Three);
+            ApplyEyePosition(renderer, playerArrowEffect);
             renderer.Device.VertexDeclaration = vertexPositionDeclaration;
             renderer.Device.DrawUserPrimitives(PrimitiveType.TriangleStrip, playerArrowVertices, 0, 2);
             playerArrowEffect.CurrentTechnique.Passes[0].End();

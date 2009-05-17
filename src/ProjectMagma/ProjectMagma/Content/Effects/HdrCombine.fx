@@ -32,6 +32,17 @@ sampler2D RenderChannelColorSampler = sampler_state
 	AddressU = Clamp;
 	AddressV = Clamp;
 };
+
+texture DepthTexture;
+sampler2D DepthTextureSampler = sampler_state
+{
+	Texture = <DepthTexture>;
+	MinFilter = Linear;
+	MagFilter = Linear;
+	MipFilter = Linear;
+	AddressU = Clamp;
+	AddressV = Clamp;
+};
   
 float BloomSensitivity[3];
 
@@ -104,6 +115,25 @@ float4 ChannelPixelShader(float2 texCoord : TEXCOORD0, int channel)
     return tonemapped;
 }
 
+float4 GradientMap(float4 input, float2 texCoord)
+{
+	float yRaw = tex2D(DepthTextureSampler, texCoord).x;
+	
+	float y = saturate(yRaw * 2.0 - 0.8);
+	
+	float newRed = input.r;
+	float newGreen = saturate(input.g / 0.6) + 0.03;
+	float newBlue = saturate(input.b / 0.15) + 0.1;
+	float newAlpha = input.a;
+	
+	float4 newColor = float4(newRed, newGreen, newBlue, newAlpha);
+	newColor = saturate(newColor / 0.5);
+	
+	//input = float4(0,0,0,1);
+	//newColor = float4(1,1,1,1);
+	
+	return lerp(input, newColor, y);
+}
 
 float4 PixelShader(float2 texCoord : TEXCOORD0) : COLOR0
 {
@@ -113,10 +143,12 @@ float4 PixelShader(float2 texCoord : TEXCOORD0) : COLOR0
 	
 	float4 channel_map = tex2D(RenderChannelColorSampler, texCoord);
     
-    //return channel_map;
+    float4 combined = channel1*channel_map.r + channel2*channel_map.g + channel3*channel_map.b;
+    return GradientMap(combined, texCoord);
+    //return tex2D(DepthTextureSampler, texCoord);
 
     // Combine the two images.
-    return channel1*channel_map.r + channel2*channel_map.g + channel3*channel_map.b;
+
 }
 
 

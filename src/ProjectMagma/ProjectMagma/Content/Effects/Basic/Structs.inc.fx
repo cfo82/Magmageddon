@@ -77,10 +77,3 @@ struct PixelLightingPSInputTx
 	float4	PositionWS	: TEXCOORD1;
 	float3	NormalWS	: TEXCOORD2;
 };
-
-struct PSOutput
-{
-	float4 Color              : COLOR0;
-	float4 RenderChannelColor : COLOR1;
-	
-};

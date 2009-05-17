@@ -46,6 +46,7 @@ namespace ProjectMagma.Renderer
                 // set shader parameters
                 ApplyRenderChannel(effect, RenderChannel);
                 ApplyMeshWorldViewProjection(renderer, effect, mesh);
+                ApplyEyePosition(renderer, effect);
                 ApplyTechnique(effect);
                 if (UseLights) ApplyLights(effect, renderer.LightManager);
                 if (UseMaterialParameters) ApplyMaterialParameters(effect);
@@ -61,6 +62,11 @@ namespace ProjectMagma.Renderer
             ApplyWorldViewProjection(renderer, effect);
         }
         
+        protected void ApplyEyePosition(Renderer renderer, Effect effect)
+        {
+            effect.Parameters["EyePosition"].SetValue(renderer.Camera.Position);
+        }
+
         protected virtual void ApplyTechnique(Effect effect)
         {
             effect.CurrentTechnique = effect.Techniques["Unicolored"];

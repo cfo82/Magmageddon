@@ -89,6 +89,7 @@ namespace ProjectMagma.Renderer
                 Target0 = new RenderTarget2D(Device, width, height, 1, format);
                 Target1 = new RenderTarget2D(Device, width, height, 1, format);
                 Target2 = new RenderTarget2D(Device, width, height, 1, format);
+                Target3 = new RenderTarget2D(Device, width, height, 1, format);
                 glowPass = new GlowPass(this, Target2, Target1);
                 hdrCombinePass = new HdrCombinePass(this, Target0, Target1);
             }
@@ -223,9 +224,10 @@ namespace ProjectMagma.Renderer
                 Game.Instance.Profiler.EndSection("renderer_post_glow");
 
                 hdrCombinePass.GeometryRender = GeometryRender;
-
                 hdrCombinePass.BlurGeometryRender = glowPass.BlurGeometryRender;
                 hdrCombinePass.RenderChannelColor = glowPass.BlurRenderChannelColor;
+                hdrCombinePass.DepthTexture = DepthTexture;
+
                 Game.Instance.Profiler.BeginSection("renderer_post_hdr");
                 hdrCombinePass.Render(gameTime);
                 Game.Instance.Profiler.EndSection("renderer_post_hdr");
@@ -291,6 +293,7 @@ namespace ProjectMagma.Renderer
             {
                 Device.SetRenderTarget(0, Target0);
                 Device.SetRenderTarget(1, Target1);
+                Device.SetRenderTarget(2, Target3);
             }
 
             Device.Clear(Color.Black);
@@ -323,8 +326,10 @@ namespace ProjectMagma.Renderer
             {
                 Device.SetRenderTarget(0, null);
                 Device.SetRenderTarget(1, null);
+                Device.SetRenderTarget(2, null);
                 GeometryRender = Target0.GetTexture();
                 RenderChannels = Target1.GetTexture();
+                DepthTexture = Target3.GetTexture();
             }
         }
 
@@ -514,9 +519,11 @@ namespace ProjectMagma.Renderer
         private RenderTarget2D Target0 { get; set; }
         private RenderTarget2D Target1 { get; set; }
         private RenderTarget2D Target2 { get; set; }
+        private RenderTarget2D Target3 { get; set; }
 
         public Texture2D GeometryRender { get; set; }
         public Texture2D RenderChannels { get; set; }
+        public Texture2D DepthTexture { get; set; }
 
         public ResolveTexture2D ResolveTarget { get; set; }
 

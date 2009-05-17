@@ -49,14 +49,6 @@ ColorPair ComputePerPixelLights(float3 E, float3 N, float y)
 }
 
 
-//-----------------------------------------------------------------------------
-// Compute fog factor
-//-----------------------------------------------------------------------------
-float ComputeFogFactor(float d)
-{
-    return clamp((d - FogStart) / (FogEnd - FogStart), 0, 1) * FogEnabled;
-}
-
 
 //-----------------------------------------------------------------------------
 //
@@ -88,7 +80,7 @@ inline void ComputeDiffColorUni(out float4 color, in ColorPair lightResult, in f
 {
 	float4 uniDiffuseColor = float4(lightResult.Diffuse * DiffuseColor, Alpha);
 	color = uniDiffuseColor + float4(lightResult.Specular, 0);
-	color.rgb = lerp(color.rgb, FogColor, fogFactor);
+	color.rgb = lerp(color.rgb, FogColor, fogFactor* FogEnabled);
 	color.rgb = lerp(color.rgb, BlinkingColor, BlinkingState);
 }
 
@@ -98,6 +90,6 @@ inline void ComputeDiffSpecColorTx(out float4 color, in float2 texCoord, in Colo
 	ComputeDiffuseTx(diffuse, texCoord, lightResult);
 	ComputeSpecularTx(specular, texCoord, lightResult);	
 	color = diffuse + float4(specular.rgb, 0);
-	color.rgb = lerp(color.rgb, FogColor, fogFactor);
+	color.rgb = lerp(color.rgb, FogColor, fogFactor* FogEnabled);
 	color.rgb = lerp(color.rgb, BlinkingColor, BlinkingState);
 }

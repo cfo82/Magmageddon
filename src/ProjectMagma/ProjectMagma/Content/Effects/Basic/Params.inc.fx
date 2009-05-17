@@ -20,12 +20,9 @@ float BlinkingState;
 // Fog settings
 //-----------------------------------------------------------------------------
 
-uniform const float		FogEnabled;	//	: register(c0);
-uniform const float		FogStart;	//	: register(c1);
-uniform const float		FogEnd;		//	: register(c2);
-uniform const float3	FogColor;	//	: register(c3);
-
-uniform const float3	EyePosition;//		: register(c4);		// in world space
+//moved to global
+//uniform const float		FogStart = 0.0;	//	: register(c1);
+//uniform const float		FogEnd = 4000.0;		//	: register(c2);
 
 
 //-----------------------------------------------------------------------------

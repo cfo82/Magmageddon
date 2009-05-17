@@ -11,19 +11,22 @@ namespace ProjectMagma.Renderer
 {
     public class Camera
     {
-        private static readonly float cameraSpeed = 0.012f;
+        private static readonly float cameraSpeed = 0.007f;
 
         public Camera(Renderer renderer)
         {
-            Position = new Vector3(0, 500, 1065)*1.4f;
+            //Position = new Vector3(0, 500, 1065)*1.4f;
+            Position = new Vector3(0, 450, 1065);
+            //Position = new Vector3(0, 475, 1065)*1.2f;
 //            Target = new Vector3(0, 180, 0);
             Up = new Vector3(0, 1, 0);
 
             NearClip = 1.0f;
             FarClip = 10000.0f;
-            //FovRadians = MathHelper.ToRadians(33.0f);
-            FovRadians = MathHelper.ToRadians(27.0f);
-
+            FovRadians = MathHelper.ToRadians(33.0f);
+            //FovRadians = MathHelper.ToRadians(30.0f);
+            //FovRadians = MathHelper.ToRadians(27.0f);
+            
             //centerPosition = new EaseVector3(Position, 0.003f);
             targetController = new EaseVector3(new Vector3(0, 180, 0), cameraSpeed);
             centerController = new EaseVector3(Position, cameraSpeed);
@@ -71,10 +74,10 @@ namespace ProjectMagma.Renderer
         {
             pos.X = Math.Max(pos.X, -100.0f);
             pos.X = Math.Min(pos.X, 100.0f);
-            pos.Y = Math.Max(pos.Y, 400);
-            pos.Y = Math.Min(pos.Y, 600.0f);
-            pos.Z = Math.Max(pos.Z, -200.0f);
-            pos.Z = Math.Min(pos.Z, 1300.0f);
+            //pos.Y = Math.Max(pos.Y, 400);
+            //pos.Y = Math.Min(pos.Y, 600.0f);
+            //pos.Z = Math.Max(pos.Z, -200.0f);
+            //pos.Z = Math.Min(pos.Z, 1300.0f);
             centerController.TargetValue = pos;
         }
 
@@ -87,7 +90,7 @@ namespace ProjectMagma.Renderer
         float maxWorldY;
         public void RecomputeFrame(List<Renderable> renderables)
         {
-            return;
+            //return;
             if (renderables.Count == 0)
                 return;
 

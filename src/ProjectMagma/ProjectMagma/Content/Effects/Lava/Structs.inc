@@ -26,8 +26,10 @@ struct PS_INPUT
    float3 vNormalWS         : TEXCOORD4;   // Normal vector in world space
 };
 
-struct PSOutput
+/*struct PSOutput
 {
 	float4 Color              : COLOR0;
 	float4 RenderChannelColor : COLOR1;
+	float4 DepthColor         : COLOR2;
 };
+*/

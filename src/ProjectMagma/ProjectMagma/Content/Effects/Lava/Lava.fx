@@ -1,3 +1,4 @@
+#include "..\Global.inc.fx"
 #include "Textures.inc"
 #include "Params.inc"
 #include "Structs.inc"
@@ -22,7 +23,7 @@ float gettemperature(float2 texCoord)
 
 float ComputeFogFactor(float d)
 {
-    return clamp((d - FogStart) / (FogEnd - FogStart), 0, 1) * FogEnabled;
+    return clamp((d - DepthMapNearClip) / (DepthMapFarClip - DepthMapNearClip), 0, 1);
 }
 
 //------------------------------------------------------------
@@ -136,8 +137,9 @@ VS_OUTPUT MultiPlaneVS(float4 inPositionOS  : POSITION,
 	//Out.planeFraction = (inPositionOS.y - minPlaneY) / (maxPlaneY - minPlaneY);
 	Out.pos = inPositionOS;
 	
+	// hack: w is in world space, xyz in object space
 	float3 OutPosition = Out.position;
-	Out.pos.w = ComputeFogFactor(length(EyePosition - OutPosition));
+	Out.pos.w = ComputeFogFactor(length(EyePosition - mul(inPositionOS, localWorld)));
 	
    return Out;
 }
@@ -172,7 +174,7 @@ PSOutput MultiPlanePS(PS_INPUT i) : COLOR0
 	if(invert) alphaStucco = 1 - alphaStucco;
 	
 	// compute composite RGBA color
-	float3 cResultColor_rgb = lerp(cResultColor.rgb,FogColor, i.pos.w);
+	float3 cResultColor_rgb = lerp(cResultColor.rgb,FogColor, i.pos.w* FogEnabled);
 	//float planeFraction = (i.pos.y - minPlaneY) / (maxPlaneY - minPlaneY);
 	//float minPlaneYb = -45.0;
 	//float maxPlaneYb = 45.0;
@@ -196,6 +198,8 @@ PSOutput MultiPlanePS(PS_INPUT i) : COLOR0
 //	outp.Color = gettemperature(i.texCoord);
 //	outp.Color = float4(planeFraction,0,0,1);
 	outp.RenderChannelColor = RenderChannelColor;
+	//outp.DepthColor = float4(i.pos.y/DepthClipY,0,0,1);
+	outp.DepthColor = float4(i.pos.y/DepthClipY,i.pos.w,0,1);
 	
 	return outp;	
 	

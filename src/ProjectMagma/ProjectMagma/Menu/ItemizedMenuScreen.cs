@@ -86,6 +86,8 @@ namespace ProjectMagma
             base.Update(gameTime);
         }
 
+        private readonly Vector2 shadowOffset = new Vector2(2, 4);
+
         public override void Draw(GameTime gameTime, SpriteBatch spriteBatch)
         {
             Vector2 pos = Position;
@@ -93,18 +95,16 @@ namespace ProjectMagma
             {
                 MenuItem item = MenuItems[i];
 
-                Texture2D sprite;
-                if (i == Selected)
-                    sprite = item.SelectedSprite;
-                else
-                    sprite = item.Sprite;
+                spriteBatch.DrawString(font, item.Text, pos + shadowOffset, Color.Red);
+                spriteBatch.DrawString(font, item.Text, pos + shadowOffset / 2, Color.Orange);
+                spriteBatch.DrawString(font, item.Text, pos, Color.Yellow);
+                if (i == selected)
+                    spriteBatch.DrawString(font, item.Text, pos, Color.White);
+                
+                DrawWithItem(gameTime, spriteBatch, item, pos, 0.5f);
 
-                float scale = (float)Width / (float)sprite.Width;
-                pos.Y -= sprite.Height * scale;
-
-                spriteBatch.Draw(sprite, pos, null, Color.White, 0, Vector2.Zero, scale, SpriteEffects.None, 0);
-
-                DrawWithItem(gameTime, spriteBatch, item, pos, scale);
+                Vector2 box = font.MeasureString(item.Name);
+                pos.Y -= box.Y;
             }
         }
 

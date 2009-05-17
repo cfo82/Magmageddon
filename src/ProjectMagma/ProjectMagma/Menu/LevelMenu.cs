@@ -16,7 +16,7 @@ namespace ProjectMagma
             this.menuItems = new MenuItem[levels.Count];
             for (int i = 0; i < menuItems.Length; i++)
             {
-                menuItems[i] = new MenuItem(levels[i].Name, levels[i].FileName,
+                menuItems[i] = new MenuItem(levels[i].Name, levels[i].Name,
                     new ItemSelectionHandler(LevelSelected));
             }
             playerMenu = new PlayerMenu(menu, this);

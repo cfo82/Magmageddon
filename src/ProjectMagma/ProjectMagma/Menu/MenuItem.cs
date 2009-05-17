@@ -6,15 +6,13 @@ namespace ProjectMagma
     class MenuItem
     {
         private readonly String name;
-        private readonly Texture2D sprite;
-        private readonly Texture2D selectedSprite;
+        private readonly String text;
         private event ItemSelectionHandler itemSelected;
 
-        public MenuItem(String name, String sprite, ItemSelectionHandler itemSelected)
+        public MenuItem(String name, String text, ItemSelectionHandler itemSelected)
         {
             this.name = name;
-            this.sprite = Game.Instance.ContentManager.Load<Texture2D>("Sprites/Menu/" + sprite);
-            this.selectedSprite = Game.Instance.ContentManager.Load<Texture2D>("Sprites/Menu/" + sprite + "_selected");
+            this.text = text;
             this.itemSelected = itemSelected;
         }
 
@@ -23,14 +21,9 @@ namespace ProjectMagma
             get { return name; }
         }
 
-        public Texture2D Sprite
+        public String Text
         {
-            get { return sprite; }
-        }
-
-        public Texture2D SelectedSprite
-        {
-            get { return selectedSprite; }
+            get { return text; }
         }
 
         public void PerformAction()

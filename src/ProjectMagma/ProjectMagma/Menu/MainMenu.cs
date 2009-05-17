@@ -13,10 +13,10 @@ namespace ProjectMagma
             : base(menu, new Vector2(30, 650), 200)
         {
             this.menuItems = new MenuItem[] { 
-                new MenuItem("new_game", "new_game", new ItemSelectionHandler(NewGameHandler)),
-                new MenuItem("settings", "settings", new ItemSelectionHandler(SettingsHandler)),
-                new MenuItem("help", "help", new ItemSelectionHandler(HelpHandler)),
-                new MenuItem("exit_game", "exit_game", new ItemSelectionHandler(ExitGameHandler))
+                new MenuItem("new_game", "New game", new ItemSelectionHandler(NewGameHandler)),
+                new MenuItem("settings", "Settings", new ItemSelectionHandler(SettingsHandler)),
+                new MenuItem("help", "Help", new ItemSelectionHandler(HelpHandler)),
+                new MenuItem("exit_game", "Exit game", new ItemSelectionHandler(ExitGameHandler))
             };
 
             levelMenu = new LevelMenu(menu);

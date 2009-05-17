@@ -6,12 +6,15 @@ namespace ProjectMagma
 {
     abstract class MenuScreen
     {
+        protected readonly SpriteFont font;
+
         protected readonly Menu menu;
 
         readonly Vector2 position;
 
         public MenuScreen(Menu menu, Vector2 position)
         {
+            this.font = Game.Instance.ContentManager.Load<SpriteFont>("Sprites/Menu/MenuFont");
             this.menu = menu;
             this.position = position;
         }

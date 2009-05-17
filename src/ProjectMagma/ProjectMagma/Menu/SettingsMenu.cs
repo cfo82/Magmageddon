@@ -14,8 +14,8 @@ namespace ProjectMagma
             : base(menu, new Vector2(280, 600), 250)
         {
             this.menuItems = new MenuItem[] { 
-                new MenuItem("sound_volume", "sound_volume", new ItemSelectionHandler(DoNothing)),
-                new MenuItem("music_volume", "music_volume", new ItemSelectionHandler(DoNothing))
+                new MenuItem("sound_volume", "Sound volume", new ItemSelectionHandler(DoNothing)),
+                new MenuItem("music_volume", "Music volume", new ItemSelectionHandler(DoNothing))
             };
 
             volumeIndicator = Game.Instance.ContentManager.Load<Texture2D>("Sprites/Menu/volume_indicator");

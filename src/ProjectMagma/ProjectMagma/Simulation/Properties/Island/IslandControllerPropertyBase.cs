@@ -297,31 +297,16 @@ namespace ProjectMagma.Simulation
                     Vector3 repulsionVelocity = island.GetVector3("repulsion_velocity");
                     if (repulsionVelocity.Length() > 0)
                     {
-                        /*
-                        if (kind == "island")
+                        // only if collision normal is in opposite direction of current repulsion
+                        Vector3 xznormal = normal;
+                        xznormal.Y = 0;
+                        if (Vector3.Dot(repulsionVelocity, xznormal) > 0)
                         {
-                            // push the other island away (if contact normal is opposed)
-                            if (Vector3.Dot(repulsionVelocity, normal) > 0)
-                            {
-                                Vector3 velocity = normal * repulsionVelocity.Length() * constants.GetFloat("collision_damping")
-                                    // resulting velocity depends on angle
-                                    * Vector3.Dot(normal, Vector3.Normalize(repulsionVelocity));
-                                velocity.Y = 0; // only in xz plane
-                                other.SetVector3("repulsion_velocity", velocity + other.GetVector3("repulsion_velocity"));
-                            }
+                            island.SetVector3("repulsion_velocity", Vector3.Reflect(repulsionVelocity, xznormal)
+                                * constants.GetFloat("collision_damping"));
                         }
-                        else
-                        */
-                        {
-                            // only if collision normal is in opposite direction of current repulsion
-                            Vector3 xznormal = normal;
-                            xznormal.Y = 0;
-                            if (Vector3.Dot(repulsionVelocity, xznormal) > 0)
-                            {
-                                island.SetVector3("repulsion_velocity", Vector3.Reflect(repulsionVelocity, xznormal)
-                                    * constants.GetFloat("collision_damping"));
-                            }
-                        }
+                        island.SetVector3("pushback_velocity", island.GetVector3("pushback_velocity")
+                            - xznormal * 50); // todo: extract constant
                     }
                     else
                     // attraction?

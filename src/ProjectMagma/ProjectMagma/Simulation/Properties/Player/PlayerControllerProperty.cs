@@ -305,11 +305,17 @@ namespace ProjectMagma.Simulation
         {
             if (simpleJumpIsland != null)
             {
+                // check position a bit further in walking direction to be still on island
+                float islandNonWalkingRangeMultiplier = constants.GetFloat("island_non_walking_range_multiplier");
+                Vector3 checkPos = playerPosition + new Vector3(controllerInput.leftStickX * islandNonWalkingRangeMultiplier,
+                    0, controllerInput.leftStickY * islandNonWalkingRangeMultiplier); // todo: extract constant
+
                 Vector3 isectPt;
-                if (!Simulation.GetPositionOnSurface(ref playerPosition, simpleJumpIsland, out isectPt))
+                if (!Simulation.GetPositionOnSurface(ref checkPos, simpleJumpIsland, out isectPt))
                 {
-                    // abort jump
-                    StopSimpleJump();
+                    // prohibit movement
+                    playerPosition.X = previousPosition.X;
+                    playerPosition.Z = previousPosition.Z;
                 }
             }
         }
@@ -709,8 +715,9 @@ namespace ProjectMagma.Simulation
                         }
 
                         // check position a bit further in walking direction to be still on island
-                        Vector3 checkPos = playerPosition + new Vector3(controllerInput.leftStickX * 20,
-                            0, controllerInput.leftStickY * 20);
+                        float islandNonWalkingRangeMultiplier = constants.GetFloat("island_non_walking_range_multiplier");
+                        Vector3 checkPos = playerPosition + new Vector3(controllerInput.leftStickX * islandNonWalkingRangeMultiplier,
+                            0, controllerInput.leftStickY * islandNonWalkingRangeMultiplier); // todo: extract constant
 
                         Vector3 isectPt;
                         if (!Simulation.GetPositionOnSurface(ref checkPos, activeIsland, out isectPt))

@@ -71,10 +71,11 @@ namespace ProjectMagma.Simulation
         private float destinationOrigY = 0;
         private Vector3 lastIslandDir = Vector3.Zero;
         private float islandJumpPerformedAt = 0;
+
+        private Entity simpleJumpIsland = null;
+
         private Entity attractedIsland = null;
         private bool repulsionActive = false;
-
-        private bool selfJump = false;
 
         Entity flame = null;
         Entity arrow;
@@ -209,6 +210,9 @@ namespace ProjectMagma.Simulation
             // perform island jump
             PerformIslandJump(player, dt, at, ref playerPosition, ref playerVelocity);
 
+            // perform simple jump on self
+            PerformSimpleJump(ref playerPosition);
+
             // only apply velocity if not on island
             ApplyGravity(dt, ref playerPosition, ref playerVelocity);
 
@@ -297,6 +301,19 @@ namespace ProjectMagma.Simulation
             Debug.Assert(!(selectedIsland == null) || !arrow.HasProperty("render"));
         }
 
+        private void PerformSimpleJump(ref Vector3 playerPosition)
+        {
+            if (simpleJumpIsland != null)
+            {
+                Vector3 isectPt;
+                if (!Simulation.GetPositionOnSurface(ref playerPosition, simpleJumpIsland, out isectPt))
+                {
+                    // abort jump
+                    StopSimpleJump();
+                }
+            }
+        }
+
         private void PerformIslandAttractionAction(Entity player, bool allowSelection,
             ref Vector3 playerPosition, ref Vector3 playerVelocity)
         {
@@ -336,12 +353,11 @@ namespace ProjectMagma.Simulation
         private void PerformIslandJumpAction(ref Vector3 playerPosition, ref Vector3 playerVelocity)
         {
             if (controllerInput.jetpackButtonPressed
+                && activeIsland != null
                 && player.GetInt("frozen") <= 0)
             {
                 // island jump start
-                if (controllerInput.jetpackButtonPressed
-                    && selectedIsland != null
-                    && destinationIsland == null
+                if (selectedIsland != null
                     && (player.GetInt("jumps") > 0 // far ranged jumps avail?
                     || selectedIslandInFreeJumpRange) // or only near jump?
                 )
@@ -352,8 +368,13 @@ namespace ProjectMagma.Simulation
                 }
                 else // only jump up
                 {
-                    selfJump = true;
-                    playerVelocity = Vector3.UnitY * 3000;
+                    simpleJumpIsland = activeIsland;
+                    LeaveActiveIsland();
+
+                    ((Vector3Attribute)simpleJumpIsland.Attributes["position"]).ValueChanged += IslandPositionHandler;
+
+                    playerVelocity = (float) Math.Sqrt(constants.GetFloat("island_jump_arc_height") / 2 / constants.GetVector3("gravity_acceleration").Length())
+                        * -constants.GetVector3("gravity_acceleration");
                 }
             }
         }
@@ -715,8 +736,7 @@ namespace ProjectMagma.Simulation
                 }
             }
 
-            if (activeIsland != null
-                && !selfJump)
+            if (activeIsland != null)
             {
                 // position on island surface
                 Vector3 isectPt = Vector3.Zero;
@@ -746,7 +766,7 @@ namespace ProjectMagma.Simulation
 
         private void ApplyGravity(float dt, ref Vector3 playerPosition, ref Vector3 playerVelocity)
         {
-            if ((activeIsland == null || selfJump)
+            if (activeIsland == null
                 && destinationIsland == null)
             {
                 // gravity
@@ -828,6 +848,7 @@ namespace ProjectMagma.Simulation
                 || controllerInput.jetpackButtonHold)
                 && activeIsland == null // only in air
                 && destinationIsland == null // not while jump
+                && simpleJumpIsland == null // dito
                 && flame == null // not in combination with flame
                 && fuel > 0 // we need fuel
                 && player.GetInt("frozen") <= 0 // jetpack doesn't work when frozen
@@ -889,6 +910,8 @@ namespace ProjectMagma.Simulation
                     jetpackActive = false;
                     destinationIsland = null;
                     LeaveActiveIsland();
+                    if(simpleJumpIsland != null)
+                        StopSimpleJump();
 
                     Game.Instance.ContentManager.Load<SoundEffect>("Sounds/death").Play(Game.Instance.EffectsVolume);
                     player.SetInt("deaths", player.GetInt("deaths") + 1);
@@ -1079,9 +1102,24 @@ namespace ProjectMagma.Simulation
             float dt = simTime.Dt;
             if (island == activeIsland)
             {
-                // don't do any collision reaction with island we are standing on
+                // don't do any collision reaction with island we are standing/jumping on
                 return;
             }
+
+            if (island == simpleJumpIsland)
+            {
+                if(player.GetVector3("velocity").Y > 0)
+                {
+                    // don't do anything at begining of jump
+                    return;
+                }
+                else
+                {
+                    // remove handler
+                    StopSimpleJump();
+                }
+            }
+
 
             // no collision response at all
             if (ImuneToIslandPush
@@ -1097,7 +1135,8 @@ namespace ProjectMagma.Simulation
 
             // on top?
             // todo: extract constant
-            if ((surfacePosition.Y - 5 < playerPosition.Y
+            if ((//surfacePosition.Y - 5 < playerPosition.Y
+                Vector3.Dot(contact[0].Normal, -Vector3.UnitY) > 0
                 && activeIsland == null) // don't allow switching of islands
                 || island == attractedIsland)
             {
@@ -1169,7 +1208,7 @@ namespace ProjectMagma.Simulation
             {
                 Vector3 pos = player.GetVector3("position");
                 // todo: extract constants
-                Vector3 velocity = (-Vector3.Normalize(pos) - Vector3.UnitY / 10) * 2000;
+                Vector3 velocity = (-Vector3.Normalize(pos) - Vector3.UnitY / 10) * 3000;
                 velocity.Y = 0;
                 player.SetVector3("collision_pushback_velocity", player.GetVector3("collision_pushback_velocity") + velocity);
             }
@@ -1524,6 +1563,12 @@ namespace ProjectMagma.Simulation
                 if (selectedIsland != null)
                     RemoveSelectionArrow();
             }
+        }
+
+        private void StopSimpleJump()
+        {
+            ((Vector3Attribute)simpleJumpIsland.Attributes["position"]).ValueChanged -= IslandPositionHandler;
+            simpleJumpIsland = null;
         }
 
         public static Vector3 GetPosition(Entity player)

@@ -529,6 +529,9 @@ namespace ProjectMagma.Simulation
                         flame.AddQuaternionAttribute("rotation", GetRotation(player));
 
                         Game.Instance.Simulation.EntityManager.AddDeferred(flame, "flamethrower_base", templates);
+
+                        // indicate on model
+                        (player.GetProperty("render") as RobotRenderProperty).NextPermanentState = "attack_long";
                     }
                 }
                 else
@@ -570,6 +573,7 @@ namespace ProjectMagma.Simulation
                         // stop when energy runs out
                         if (player.GetInt("energy") <= 0)
                         {
+                            (player.GetProperty("render") as RobotRenderProperty).NextPermanentState = "idle";
                             flame.SetBool("fueled", false);
                         }
                     }
@@ -578,7 +582,10 @@ namespace ProjectMagma.Simulation
             else
             {
                 if (flame != null)
+                {
+                    (player.GetProperty("render") as RobotRenderProperty).NextPermanentState = "idle";
                     flame.SetBool("fueled", false);
+                }
             }
         }
 
@@ -1182,6 +1189,9 @@ namespace ProjectMagma.Simulation
                 otherPlayer.SetVector3("hit_pushback_velocity", velocity);
                 otherPlayer.SetVector3("position", otherPlayer.GetVector3("position") + velocity * simTime.Dt);
                 hitPerformedAt = simTime.At;
+
+                // indicate in model
+                (otherPlayer.GetProperty("render") as RobotRenderProperty).NextOnceState = "pushback";
 
                 // leave island
                 LeaveActiveIsland();

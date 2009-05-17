@@ -16,7 +16,6 @@ namespace ProjectMagma.Simulation
         #region flags
         private static readonly bool RightStickFlame = false;
         private static readonly bool LeftStickSelection = true;
-        private static readonly bool DeselectOnRelease = false;
         public static readonly bool ImuneToIslandPush = true;
         #endregion
 
@@ -74,6 +73,8 @@ namespace ProjectMagma.Simulation
         private float islandJumpPerformedAt = 0;
         private Entity attractedIsland = null;
         private bool repulsionActive = false;
+
+        private bool selfJump = false;
 
         Entity flame = null;
         Entity arrow;
@@ -351,7 +352,8 @@ namespace ProjectMagma.Simulation
                 }
                 else // only jump up
                 {
-
+                    selfJump = true;
+                    player.SetVector3("velocity", Vector3.UnitY * 3000);
                 }
             }
         }
@@ -713,7 +715,8 @@ namespace ProjectMagma.Simulation
                 }
             }
 
-            if (activeIsland != null)
+            if (activeIsland != null
+                && !selfJump)
             {
                 // position on island surface
                 Vector3 isectPt = Vector3.Zero;
@@ -1500,6 +1503,9 @@ namespace ProjectMagma.Simulation
             // set
             activeIsland = island;
             player.SetString("active_island", island.Name);
+
+            // set interactable attribute
+            island.SetBool("interactable", true);
         }
 
 
@@ -1514,6 +1520,9 @@ namespace ProjectMagma.Simulation
 
                 ((Vector3Attribute)activeIsland.Attributes["position"]).ValueChanged -= IslandPositionHandler;
                 activeIsland.SetInt("players_on_island", activeIsland.GetInt("players_on_island") - 1);
+
+                // set interactable attribute
+                activeIsland.SetBool("interactable", false);
 
                 activeIsland = null;
                 player.SetString("active_island", "");

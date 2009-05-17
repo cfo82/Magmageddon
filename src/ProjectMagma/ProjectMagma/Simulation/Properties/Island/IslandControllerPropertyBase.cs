@@ -21,6 +21,7 @@ namespace ProjectMagma.Simulation
 
             this.island = entity;
             this.constants = Game.Instance.Simulation.EntityManager["island_constants"];
+            this.playerConstants = Game.Instance.Simulation.EntityManager["player_constants"];
 
             if (!entity.HasAttribute("max_health"))
                 entity.AddIntAttribute("max_health", (int) (entity.GetVector3("scale").Length() * constants.GetFloat("scale_health_multiplier")));
@@ -66,11 +67,23 @@ namespace ProjectMagma.Simulation
         {
             float dt = simTime.Dt;
 
-            // get position
+            int playersOnIsland = island.GetInt("players_on_island");
             Vector3 position = island.GetVector3("position");
 
+            // check if any player can interact with this island to provide an attribute so dominik is happy
+            bool interactable = playersOnIsland > 0;
+            if (!interactable)
+            {
+                foreach (Entity player in Game.Instance.Simulation.PlayerManager)
+                {
+                    float dist = (position - player.GetVector3("position")).Length();
+                    if (dist < playerConstants.GetFloat("island_jump_free_range"))
+                        interactable = true;
+                }
+            }
+            island.SetBool("interactable", interactable);
+
             // implement sinking and rising islands
-            int playersOnIsland = island.GetInt("players_on_island");
             if (!HadCollision(simTime))
             {
                 if (playersOnIsland > 0)
@@ -496,6 +509,7 @@ namespace ProjectMagma.Simulation
         }
 
         protected Entity constants;
+        protected Entity playerConstants;
         protected Entity island;
         private double playerLeftAt = double.MaxValue;
 

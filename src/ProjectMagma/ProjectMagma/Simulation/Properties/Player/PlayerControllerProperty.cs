@@ -353,7 +353,7 @@ namespace ProjectMagma.Simulation
                 else // only jump up
                 {
                     selfJump = true;
-                    player.SetVector3("velocity", Vector3.UnitY * 3000);
+                    playerVelocity = Vector3.UnitY * 3000;
                 }
             }
         }
@@ -746,7 +746,7 @@ namespace ProjectMagma.Simulation
 
         private void ApplyGravity(float dt, ref Vector3 playerPosition, ref Vector3 playerVelocity)
         {
-            if (activeIsland == null
+            if ((activeIsland == null || selfJump)
                 && destinationIsland == null)
             {
                 // gravity
@@ -1380,9 +1380,6 @@ namespace ProjectMagma.Simulation
                 float angle = (float)(Math.Acos(Vector3.Dot(dir, islandDir) / dist) / Math.PI * 180);
                 if (dist < constants.GetFloat("island_jump_free_range"))
                 {
-                    // hack hack
-                    island.SetBool("interactable", true);
-
                     if (island != activeIsland
                         && angle < maxAngle)
                     {
@@ -1395,11 +1392,6 @@ namespace ProjectMagma.Simulation
                             distance = dist;
                         }
                     }
-                }
-                else
-                {
-                    // hack hack
-                    island.SetBool("interactable", false);
                 }
             }
 
@@ -1503,9 +1495,6 @@ namespace ProjectMagma.Simulation
             // set
             activeIsland = island;
             player.SetString("active_island", island.Name);
-
-            // set interactable attribute
-            island.SetBool("interactable", true);
         }
 
 
@@ -1520,9 +1509,6 @@ namespace ProjectMagma.Simulation
 
                 ((Vector3Attribute)activeIsland.Attributes["position"]).ValueChanged -= IslandPositionHandler;
                 activeIsland.SetInt("players_on_island", activeIsland.GetInt("players_on_island") - 1);
-
-                // set interactable attribute
-                activeIsland.SetBool("interactable", false);
 
                 activeIsland = null;
                 player.SetString("active_island", "");

@@ -82,4 +82,5 @@ struct PSOutput
 {
 	float4 Color              : COLOR0;
 	float4 RenderChannelColor : COLOR1;
+	
 };

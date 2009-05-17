@@ -161,12 +161,23 @@ namespace ProjectMagma.Renderer
         {
             // update animation
             //Console.WriteLine("activateonetimestate call");
-            if(stateRequestString=="hit") {
+            string requestedState = "";
+            if (stateRequestString == "hit") {
                 Random r = new Random();
-                destState = "melee" + r.Next(0,0); // depends on how many we have
+                requestedState = "melee" + r.Next(0,0); // depends on how many we have
             }
+            if (stateRequestString == "death")
+            {
+                requestedState = "death";
+            }
+            if (stateRequestString == "pushback")
+            {
+                requestedState = "idle0"; // implement this!
+            }
+            Debug.Assert(requestedState != "");
+
             blendFactor = blendIncrement;
-            RunController(state, destState);
+            RunController(state, requestedState);
             currentController.IsLooping = false;
             currentController.ElapsedTime = 0;
             currentController.AnimationEnded += OnceAnimEndedHandler;
@@ -185,6 +196,10 @@ namespace ProjectMagma.Renderer
             if (stateRequestString == "walk")
             {
                 requestedState = "walk";
+            }
+            if (stateRequestString == "attack_long")
+            {
+                requestedState = "walk"; // implement this!
             }
             Debug.Assert(requestedState != "");
 

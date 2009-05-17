@@ -12,11 +12,13 @@ namespace ProjectMagma.Renderer
     public class Camera
     {
         private static readonly float cameraSpeed = 0.007f;
+        private static readonly Vector3 initialPosition = new Vector3(0, 450, 1065);
+        private static readonly Vector3 initialTarget = new Vector3(0, 180, 0);
 
         public Camera(Renderer renderer)
         {
             //Position = new Vector3(0, 500, 1065)*1.4f;
-            Position = new Vector3(0, 450, 1065);
+            Position = initialPosition;
             //Position = new Vector3(0, 475, 1065)*1.2f;
 //            Target = new Vector3(0, 180, 0);
             Up = new Vector3(0, 1, 0);
@@ -28,7 +30,7 @@ namespace ProjectMagma.Renderer
             //FovRadians = MathHelper.ToRadians(27.0f);
             
             //centerPosition = new EaseVector3(Position, 0.003f);
-            targetController = new EaseVector3(new Vector3(0, 180, 0), cameraSpeed);
+            targetController = new EaseVector3(initialTarget, cameraSpeed);
             centerController = new EaseVector3(Position, cameraSpeed);
             CenterView = Matrix.CreateLookAt(centerController.Value, Target, Up);
 
@@ -36,17 +38,18 @@ namespace ProjectMagma.Renderer
             Viewport viewport = Game.Instance.GraphicsDevice.Viewport;
             AspectRatio = (float)viewport.Width / (float)viewport.Height;
             this.renderer = renderer;
-
             //GoTo(new Vector3(0,2000,1065));
             //GoTo(new Vector3(0, 450, 3065));
         }
 
+        private bool allowPause;
+
         public void Update(Renderer renderer)
         {
             // update position
-            centerController.Update(renderer.Time.PausableDtMs);
-            targetController.Update(renderer.Time.PausableDtMs);
-
+            double dtMs = allowPause ? renderer.Time.PausableDtMs : renderer.Time.DtMs;
+            centerController.Update(dtMs);
+            targetController.Update(dtMs);
             // compute position
 
             //            int a = 450;
@@ -88,11 +91,19 @@ namespace ProjectMagma.Renderer
             targetController.TargetValue = pos;
         }
         float maxWorldY;
-        public void RecomputeFrame(List<Renderable> renderables)
+        public void RecomputeFrame(ref List<Renderable> renderables)
         {
             //return;
-            if (renderables.Count == 0)
+            if (renderables.Count == 0 || !IsThereAnyPlayer(ref renderables))
+            {
+                allowPause = false;
+                GoTo(initialPosition);
+                GoToTarget(initialTarget);
                 return;
+            }
+
+            allowPause = true;
+
 
             //Console.WriteLine("starting recomputing frame");
 
@@ -174,6 +185,17 @@ namespace ProjectMagma.Renderer
             //Console.WriteLine(centerPosition.TargetValue.ToString());
         }
 
+        private bool IsThereAnyPlayer(ref List<Renderable> renderables)
+        {
+            for (int i = 0; i < renderables.Count; i++)
+            {
+                if (renderables[i] is RobotRenderable)
+                {
+                    return true;
+                }
+            }
+            return false;
+        }
         
         private void ProjectRenderable(Renderable renderable, out Vector2 minProj, out Vector2 maxProj)
         {

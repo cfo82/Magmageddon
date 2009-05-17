@@ -243,7 +243,7 @@ namespace ProjectMagma.Renderer
             effect.Parameters["minPlaneY"].SetValue(-45.0f);
             effect.Parameters["maxPlaneY"].SetValue(45.0f);
 
-            effect.Parameters["FogEnabled"].SetValue(0.0f);
+            //effect.Parameters["FogEnabled"].SetValue(0.0f);
             //effect.Parameters["FogStart"].SetValue(1000.0f);
             //effect.Parameters["FogEnd"].SetValue(2000.0f);
             //effect.Parameters["FogColor"].SetValue(Vector3.One);

@@ -143,7 +143,7 @@ namespace ProjectMagma.Renderer
         private void Update()
         {
             Camera.Update(this);
-            Camera.RecomputeFrame(opaqueRenderables);
+            Camera.RecomputeFrame(ref opaqueRenderables);
             RendererUpdateQueue q = GetNextUpdateQueue();
             while (q != null)
             {

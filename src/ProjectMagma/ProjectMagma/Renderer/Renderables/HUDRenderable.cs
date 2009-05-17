@@ -38,6 +38,7 @@ namespace ProjectMagma.Renderer
             displayedHealth = health;
             
             frozenColorStrength = new SineFloat(0.0f, 0.85f, 5.0f);
+            statusColorStrength = new SineFloat(0.0f, 1.0f, 5.0f);
             powerupPickupDetails = new List<PowerupPickupDetails>();
         }
 
@@ -392,6 +393,7 @@ namespace ProjectMagma.Renderer
         private float displayedHealth, displayedEnergy;
 
         private SineFloat frozenColorStrength;
+        private SineFloat statusColorStrength;
 
         private Effect barEffect;
 

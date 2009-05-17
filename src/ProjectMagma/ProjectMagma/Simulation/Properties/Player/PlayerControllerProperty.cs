@@ -17,7 +17,6 @@ namespace ProjectMagma.Simulation
         private static readonly bool RightStickFlame = false;
         private static readonly bool LeftStickSelection = true;
         private static readonly bool DeselectOnRelease = false;
-        private static readonly bool SelectionRestrictedToJumps = true;
         public static readonly bool ImuneToIslandPush = true;
         #endregion
 
@@ -1336,19 +1335,28 @@ namespace ProjectMagma.Simulation
                 islandDir.Y = 0;
                 float dist = islandDir.Length();
                 float angle = (float)(Math.Acos(Vector3.Dot(dir, islandDir) / dist) / Math.PI * 180);
-                if (island != activeIsland
-                    && angle < maxAngle
-                    && (dist < constants.GetFloat("island_jump_free_range")
-                    || !SelectionRestrictedToJumps)) 
+                if (dist < constants.GetFloat("island_jump_free_range"))
                 {
-                    if(angle < closestAngle
-                        || (Math.Abs(angle-closestAngle) < constants.GetFloat("island_aim_angle_eps")
-                        && dist < distance))
-                    {        
-                        selectedIsland = island;
-                        closestAngle = angle;
-                        distance = dist;
+                    // hack hack
+                    island.SetBool("interactable", true);
+
+                    if (island != activeIsland
+                        && angle < maxAngle)
+                    {
+                        if (angle < closestAngle
+                            || (Math.Abs(angle - closestAngle) < constants.GetFloat("island_aim_angle_eps")
+                            && dist < distance))
+                        {
+                            selectedIsland = island;
+                            closestAngle = angle;
+                            distance = dist;
+                        }
                     }
+                }
+                else
+                {
+                    // hack hack
+                    island.SetBool("interactable", false);
                 }
             }
 

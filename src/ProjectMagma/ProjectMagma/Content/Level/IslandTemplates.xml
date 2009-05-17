@@ -13,6 +13,7 @@
       <!--Attribute name="diffuse_texture" template="string" value="Textures/xna_logo"/-->
       <Attribute name="bv_type" template="string" value="alignedbox3tree"/>
       <Attribute name="lava_light_strength" template="float" value="10.0"/>
+      <Attribute name="interactable" template="bool" value="false"/>
     </Attributes>
     <Properties>
       <Property name="collision" type="ProjectMagma.Simulation.Collision.CollisionProperty"/>

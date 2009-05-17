@@ -26,8 +26,8 @@
 
    <Entity name="island1" extends="island_base_grass1">
     <Attributes>
-      <Attribute name="position" template="float3" value="0 200 0"/>
-      <Attribute name="scale" template="float3" value="300 300 300"/>
+      <Attribute name="position" template="float3" value="0 150 0"/>
+      <Attribute name="scale" template="float3" value="330 330 330"/>
     </Attributes>
      <Properties>
        <Property name="controller" type="ProjectMagma.Simulation.IslandNoMovementControllerProperty"/>

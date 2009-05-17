@@ -349,8 +349,7 @@ namespace ProjectMagma.Simulation
                 }
                 else // only jump up
                 {
-                    LeaveActiveIsland();
-                    player.SetVector3("velocity", -constants.GetVector3("gravity_acceleration") * constants.GetFloat("island_jump_arc_height"));
+
                 }
             }
         }

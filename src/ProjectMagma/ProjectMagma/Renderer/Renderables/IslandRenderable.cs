@@ -57,7 +57,7 @@ namespace ProjectMagma.Renderer
         {
             base.UpdateBool(id, value);
 
-            if (id == "WindStrength")
+            if (id == "Interactable")
             {
                 Interactable = value;
             }

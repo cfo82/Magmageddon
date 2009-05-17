@@ -35,7 +35,7 @@ namespace ProjectMagma.Simulation
             {
                 entity.GetVector3Attribute("position").ValueChanged += PositionChanged;
             }
-            if (entity.HasVector3("interactable"))
+            if (entity.HasBool("interactable"))
             {
                 entity.GetBoolAttribute("interactable").ValueChanged += InteractableChanged;
             }

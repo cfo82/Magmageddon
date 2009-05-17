@@ -8,10 +8,6 @@
   </Includes>
   <!-- "unique" game entities -->
 
-  <Entity name="camera1" extends="camera_base">
-    <!-- you can mess with the camera if you really want to. but beware of dominik's wrath... -->
-  </Entity>
-
   <Entity name="lava" extends="lava_base">
     <!-- don't mess with the lava, there is nothing to change here. -->
     <!-- if you know what you are doing, do it in the template. -->

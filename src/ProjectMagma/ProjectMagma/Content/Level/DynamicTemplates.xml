@@ -16,7 +16,7 @@
       <Attribute name="mesh" template="string" value="Models/Visualizations/arrow"/>
       <Attribute name="scale" template="float3" value="20 20 20"/>
 
-      <Attribute name="alpha" template="float" value="0.75"/>
+      <Attribute name="alpha" template="float" value="0.5"/>
     </Attributes>
     <Properties>
       <Property name="controller" type="ProjectMagma.Simulation.ArrowControllerProperty"/>

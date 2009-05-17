@@ -162,10 +162,12 @@ technique RenderParticles
     pass Pass1
     {
         AlphaBlendEnable = true;
+        //SrcBlend = SrcAlpha;
+        //DestBlend = InvSrcAlpha;
         SrcBlend = SrcAlpha;
         DestBlend = InvSrcAlpha;
         BlendOp = Add;
-        AlphaTestEnable = true;
+        AlphaTestEnable = false;
         AlphaFunc = Greater;
         AlphaRef = 0.25;
         ZEnable = false;

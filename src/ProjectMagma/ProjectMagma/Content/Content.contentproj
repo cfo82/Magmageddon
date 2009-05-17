@@ -1454,13 +1454,6 @@
     </Compile>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Textures\Sfx\snow.png">
-      <Name>snow</Name>
-      <Importer>TextureImporter</Importer>
-      <Processor>TextureProcessor</Processor>
-    </Compile>
-  </ItemGroup>
-  <ItemGroup>
     <None Include="Effects\Global.inc.fx">
       <Name>Global.inc</Name>
       <Importer>EffectImporter</Importer>
@@ -1482,6 +1475,13 @@
   <ItemGroup>
     <Compile Include="Textures\Player\Robot_texture10.jpg">
       <Name>Robot_texture10</Name>
+      <Importer>TextureImporter</Importer>
+      <Processor>TextureProcessor</Processor>
+    </Compile>
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="Textures\Sfx\snow.png">
+      <Name>snow</Name>
       <Importer>TextureImporter</Importer>
       <Processor>TextureProcessor</Processor>
     </Compile>

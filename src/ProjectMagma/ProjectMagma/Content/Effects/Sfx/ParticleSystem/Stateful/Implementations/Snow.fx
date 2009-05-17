@@ -15,6 +15,18 @@ float3 WindForce;
 
 
 //-----------------------------------------------------------------------------------------------------------
+struct RenderSnowParticlesVertexShaderOutput
+{
+    float4 Position : POSITION0;
+    float4 Color : COLOR0;
+    float4 RandomValues : COLOR1;
+    float Size : PSIZE0;
+};
+
+
+
+
+//-----------------------------------------------------------------------------------------------------------
 CreateParticlesPixelShaderOutput CreateSnowPixelShader(
 	CreateParticlesVertexShaderOutput input
 )
@@ -86,17 +98,18 @@ technique UpdateParticles
 
 
 //-----------------------------------------------------------------------------------------------------------
-RenderParticlesVertexShaderOutput RenderSnowVertexShader(
+RenderSnowParticlesVertexShaderOutput RenderSnowVertexShader(
 	RenderParticlesVertexShaderInput input
 )
 {
-    RenderParticlesVertexShaderOutput output;
+    RenderSnowParticlesVertexShaderOutput output;
 
 	float4 position_sampler_value = tex2Dlod(RenderParticlesPositionSampler, float4(input.ParticleCoordinate , 0, 0));
 
 	if (position_sampler_value.w > 0)
 	{
 		float3 position = position_sampler_value.xyz;
+		float4 random_sampler_value = tex2Dlod(RandomSampler, float4(input.ParticleCoordinate.x*31, input.ParticleCoordinate.y*57, 0, 0));
 
 		float4 world_position = float4(position,1);
 		float4 view_position = mul(world_position, View);
@@ -104,14 +117,16 @@ RenderParticlesVertexShaderOutput RenderSnowVertexShader(
 		float normalizedAge = 1.0 - position_sampler_value.w/SnowParticleLifetime;
 	    
 		output.Position = mul(view_position, Projection);
-		output.Size = 9;
+		output.Size = 7 + random_sampler_value.x*10;
 		output.Color = float4(1,1,1,min(0.6, 1-normalizedAge) * lerp(1, 0.6, normalizedAge));
+		output.RandomValues = random_sampler_value;
 	}
 	else
 	{
 		output.Position = float4(-10,-10,0,0);
 		output.Size = 0;
 		output.Color = float4(0,0,0,0);
+		output.RandomValues = float4(0,0,0,0);
 	}
 	
     return output;
@@ -122,7 +137,7 @@ RenderParticlesVertexShaderOutput RenderSnowVertexShader(
 
 //-----------------------------------------------------------------------------------------------------------
 float4 RenderSnowPixelShader(
-	RenderParticlesVertexShaderOutput input,
+	RenderSnowParticlesVertexShaderOutput input,
 #ifdef XBOX
 	float2 particleCoordinate : SPRITETEXCOORD
 #else
@@ -130,7 +145,12 @@ float4 RenderSnowPixelShader(
 #endif
 ) : COLOR0
 {
-    return input.Color*tex2D(RenderParticlesSpriteSampler, float2(particleCoordinate.x/2, particleCoordinate.y/2+0.5));
+	int spriteNumber = ceil(input.RandomValues.y*4) - 1;
+	int horizontalIndex = spriteNumber/2;
+	int verticalIndex = spriteNumber%2;
+
+	float2 modifiedTextureCoordinates = float2(particleCoordinate.x/2 + horizontalIndex*0.5, particleCoordinate.y/2 + verticalIndex*0.5);
+    return input.Color*tex2D(RenderParticlesSpriteSampler, modifiedTextureCoordinates);
 }
 
 

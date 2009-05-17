@@ -10,7 +10,7 @@
   <!-- abstract game entities (templates) -->
 
 
-  <Entity name="camera1" abstract="true">
+  <Entity name="camera_base" abstract="true">
     <Attributes>
       <Attribute name="kind" template="string" value="camera"/>
       <Attribute name="position" template="float3" value="0 420 1065"/>

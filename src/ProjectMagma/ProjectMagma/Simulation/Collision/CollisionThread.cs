@@ -59,7 +59,7 @@ namespace ProjectMagma.Simulation.Collision
 
                     Contact lastContact = null;
                     TestList.TestEntry entry = testList.GetNextCollisionEntry();
-                    while (entry != null && (Now - startTime) < 5) // todo: extract constant
+                    while (entry != null && (Now - startTime) < 2) // todo: extract constant
                     {
                         // do collision detection with this entry!
                         ContactTest test = CollisionManager.ContactTests[

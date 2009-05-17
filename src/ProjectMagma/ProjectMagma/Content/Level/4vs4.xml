@@ -6,55 +6,24 @@
     <Include name="Level\Constants.xml"/>
     <Include name="Level\Templates.xml"/>
   </Includes>
-
   <!-- "unique" game entities -->
 
-  <Entity name="camera1">
-    <Attributes>
-      <Attribute name="kind" template="string" value="camera"/>
-      <Attribute name="position" template="float3" value="0 420 1065"/>
-      <!--Attribute name="position" template="float3" value="0 420 1065"/-->
-      <Attribute name="target" template="float3" value="0 180 0"/>
-      <Attribute name="up" template="float3" value="0 1 0"/>
-      <Attribute name="fov" template="float" value="33"/>
-      <Attribute name="near_clip" template="float" value="1"/>
-      <Attribute name="far_clip" template="float" value="10000"/>
-    </Attributes>
-    <Properties>
-      <Property name="camera" type="ProjectMagma.Simulation.CameraProperty"/>
-    </Properties>
+  <Entity name="camera1" extends="camera_base">
+    <!-- you can mess with the camera if you really want to. but beware of dominik's wrath... -->
   </Entity>
 
-  <Entity name="lava">
-    <Attributes>
-      <Attribute name="kind" template="string" value="lava"/>
-      <Attribute name="position" template="float3" value="0 0 0"/>
-      <!--Attribute name="scale" template="float3" value="0.8 0.12 0.8"/-->
-      <Attribute name="scale" template="float3" value="800 120 800"/>
-      <!--Attribute name="scale" template="float3" value="1200 4 1200"/-->
-      <!--Attribute name="mesh" template="string" value="Models\Environment\lava6c_wrongdir"/-->
-      <Attribute name="mesh" template="string" value="Models\Environment\lava6c"/>
-      <!--Attribute name="mesh" template="string" value="Models\Primitives\lava_primitive"/-->
-      <Attribute name="sparsestucco_texture" template="string" value="Textures/Lava/sparsestucco"/>
-      <Attribute name="firefractal_texture" template="string" value="Textures/Lava/firefractal"/>
-      <Attribute name="vectorcloud_texture" template="string" value="Textures/Lava/vectorclouds"/>
-      <Attribute name="granite_texture" template="string" value="Textures/Lava/granite"/>
-    </Attributes>
-    <Properties>
-      <Property name="render" type="ProjectMagma.Simulation.LavaRenderProperty"/>
-      <!--Property name="render" type="ProjectMagma.Simulation.BasicRenderProperty"/-->
-      <Property name="render_highlight" type="ProjectMagma.Simulation.RenderHighlightProperty"/>
-    </Properties>
+  <Entity name="lava" extends="lava_base">
+    <!-- don't mess with the lava, there is nothing to change here. -->
+    <!-- if you know what you are doing, do it in the template. -->
   </Entity>
 
-  
-  <!-- masses of game elements... -->
-  
   <Entity name="cave" extends="cave_base">
     <!-- don't mess with the cave, there is nothing to change here. -->
     <!-- if you know what you are doing, do it in the template. -->
   </Entity>
-  
+
+  <!-- masses of game elements... -->
+
   <Entity name="pillar1" extends="pillar_base_001">
     <Attributes>
       <Attribute name="position" template="float3" value="200 -50 200"/>

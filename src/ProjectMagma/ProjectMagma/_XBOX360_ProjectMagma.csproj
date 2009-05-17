@@ -193,7 +193,9 @@
     <Compile Include="Simulation\Properties\Environment\PowerUpControllerRepulsion.cs" />
     <Compile Include="Simulation\Properties\Island\IslandCircualarMovementControllerProperty.cs" />
     <Compile Include="Simulation\Properties\Island\IslandControllerPropertyBase.cs" />
+    <Compile Include="Simulation\Properties\Island\IslandNoMovementControllerProperty.cs" />
     <Compile Include="Simulation\Properties\Island\IslandPhysicalMovementControllerProperty.cs" />
+    <Compile Include="Simulation\Properties\Island\IslandStraightMovementControllerProperty.cs" />
     <Compile Include="Simulation\Properties\Player\ArrowController.cs" />
     <Compile Include="Simulation\Properties\Player\BurnableProperty.cs" />
     <Compile Include="Simulation\Properties\Player\DeathProperty.cs" />

@@ -35,28 +35,6 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Models\Primitives\island_primitive.fbx">
-      <Name>island_primitive</Name>
-      <Importer>FbxImporter</Importer>
-      <Processor>IslandProcessor</Processor>
-    </Compile>
-    <Compile Include="Models\Primitives\lava_primitive.fbx">
-      <Name>lava_primitive</Name>
-      <Importer>FbxImporter</Importer>
-      <Processor>LavaProcessor</Processor>
-    </Compile>
-    <Compile Include="Models\Primitives\pillar_primitive.fbx">
-      <Name>pillar_primitive</Name>
-      <Importer>FbxImporter</Importer>
-      <Processor>PillarProcessor</Processor>
-    </Compile>
-    <Compile Include="Models\Primitives\player_primitive.fbx">
-      <Name>player_primitive</Name>
-      <Importer>FbxImporter</Importer>
-      <Processor>PlayerProcessor</Processor>
-    </Compile>
-  </ItemGroup>
-  <ItemGroup>
     <ProjectReference Include="..\..\AnimationComponentLibraryContentPipeline\AnimationComponentLibraryContentPipeline.csproj">
       <Project>{70808508-17E8-421C-B29A-F7F310FA2171}</Project>
       <Name>AnimationComponentLibraryContentPipeline</Name>
@@ -185,343 +163,11 @@
     </Compile>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Models\Primitives\player1_primitive.fbx">
-      <Name>player1_primitive</Name>
-      <Importer>FbxImporter</Importer>
-      <Processor>PlayerProcessor</Processor>
-    </Compile>
-    <Compile Include="Models\Primitives\player2_primitive.fbx">
-      <Name>player2_primitive</Name>
-      <Importer>FbxImporter</Importer>
-      <Processor>PlayerProcessor</Processor>
-    </Compile>
-    <Compile Include="Models\Islands\Old\islandproto_v002.fbx">
-      <Name>islandproto_v002</Name>
-      <Importer>FbxImporter</Importer>
-      <Processor>IslandProcessor</Processor>
-    </Compile>
-    <Compile Include="Models\Environment\cave_v002.fbx">
-      <Name>cave_v002</Name>
-      <Importer>FbxImporter</Importer>
-      <Processor>CaveProcessor</Processor>
-    </Compile>
     <Compile Include="Models\Visualizations\flame_primitive.fbx">
       <Name>flame_primitive</Name>
       <Importer>FbxImporter</Importer>
       <Processor>FlameProcessor</Processor>
     </Compile>
-    <None Include="Textures\Controls\arrow.png">
-      <Name>arrow</Name>
-      <Importer>TextureImporter</Importer>
-      <Processor>TextureProcessor</Processor>
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Include="Textures\Controls\Button\close.png">
-      <Name>close</Name>
-      <Importer>TextureImporter</Importer>
-      <Processor>TextureProcessor</Processor>
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Include="Textures\Controls\Button\custombutton1.png">
-      <Name>custombutton1</Name>
-      <Importer>TextureImporter</Importer>
-      <Processor>TextureProcessor</Processor>
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Include="Textures\Controls\Button\default.png">
-      <Name>default</Name>
-      <Importer>TextureImporter</Importer>
-      <Processor>TextureProcessor</Processor>
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Include="Textures\Controls\Button\maximize.png">
-      <Name>maximize</Name>
-      <Importer>TextureImporter</Importer>
-      <Processor>TextureProcessor</Processor>
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Include="Textures\Controls\Button\minimize.png">
-      <Name>minimize</Name>
-      <Importer>TextureImporter</Importer>
-      <Processor>TextureProcessor</Processor>
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Include="Textures\Controls\Button\restore.png">
-      <Name>restore</Name>
-      <Importer>TextureImporter</Importer>
-      <Processor>TextureProcessor</Processor>
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Include="Textures\Controls\Checkbox\checked.png">
-      <Name>checked</Name>
-      <Importer>TextureImporter</Importer>
-      <Processor>TextureProcessor</Processor>
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Include="Textures\Controls\Checkbox\unchecked.png">
-      <Name>unchecked</Name>
-      <Importer>TextureImporter</Importer>
-      <Processor>TextureProcessor</Processor>
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Include="Textures\Controls\ComboBox\button.png">
-      <Name>button</Name>
-      <Importer>TextureImporter</Importer>
-      <Processor>TextureProcessor</Processor>
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Include="Textures\Controls\Form\default_lowercenter.png">
-      <Name>default_lowercenter</Name>
-      <Importer>TextureImporter</Importer>
-      <Processor>TextureProcessor</Processor>
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Include="Textures\Controls\Form\default_lowerleft.png">
-      <Name>default_lowerleft</Name>
-      <Importer>TextureImporter</Importer>
-      <Processor>TextureProcessor</Processor>
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Include="Textures\Controls\Form\default_lowerright.png">
-      <Name>default_lowerright</Name>
-      <Importer>TextureImporter</Importer>
-      <Processor>TextureProcessor</Processor>
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Include="Textures\Controls\Form\default_lowerright_resize.png">
-      <Name>default_lowerright_resize</Name>
-      <Importer>TextureImporter</Importer>
-      <Processor>TextureProcessor</Processor>
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Include="Textures\Controls\Form\default_midcenter.png">
-      <Name>default_midcenter</Name>
-      <Importer>TextureImporter</Importer>
-      <Processor>TextureProcessor</Processor>
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Include="Textures\Controls\Form\default_midleft.png">
-      <Name>default_midleft</Name>
-      <Importer>TextureImporter</Importer>
-      <Processor>TextureProcessor</Processor>
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Include="Textures\Controls\Form\default_midright.png">
-      <Name>default_midright</Name>
-      <Importer>TextureImporter</Importer>
-      <Processor>TextureProcessor</Processor>
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Include="Textures\Controls\Form\default_uppercenter.png">
-      <Name>default_uppercenter</Name>
-      <Importer>TextureImporter</Importer>
-      <Processor>TextureProcessor</Processor>
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Include="Textures\Controls\Form\default_upperleft.png">
-      <Name>default_upperleft</Name>
-      <Importer>TextureImporter</Importer>
-      <Processor>TextureProcessor</Processor>
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Include="Textures\Controls\Form\default_upperright.png">
-      <Name>default_upperright</Name>
-      <Importer>TextureImporter</Importer>
-      <Processor>TextureProcessor</Processor>
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Include="Textures\Controls\potentiometer.png">
-      <Name>potentiometer</Name>
-      <Importer>TextureImporter</Importer>
-      <Processor>TextureProcessor</Processor>
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Include="Textures\Controls\RadioButton\checked.png">
-      <Name>checked</Name>
-      <Importer>TextureImporter</Importer>
-      <Processor>TextureProcessor</Processor>
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Include="Textures\Controls\RadioButton\unchecked.png">
-      <Name>unchecked</Name>
-      <Importer>TextureImporter</Importer>
-      <Processor>TextureProcessor</Processor>
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Include="Textures\Controls\Scrollbar\base.png">
-      <Name>base</Name>
-      <Importer>TextureImporter</Importer>
-      <Processor>TextureProcessor</Processor>
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Include="Textures\Controls\Scrollbar\button.png">
-      <Name>button</Name>
-      <Importer>TextureImporter</Importer>
-      <Processor>TextureProcessor</Processor>
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Include="Textures\Controls\Scrollbar\hscrollbar_back.png">
-      <Name>hscrollbar_back</Name>
-      <Importer>TextureImporter</Importer>
-      <Processor>TextureProcessor</Processor>
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Include="Textures\Controls\Scrollbar\hscrollbar_button.png">
-      <Name>hscrollbar_button</Name>
-      <Importer>TextureImporter</Importer>
-      <Processor>TextureProcessor</Processor>
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Include="Textures\Controls\Scrollbar\hscrollbar_cursor.png">
-      <Name>hscrollbar_cursor</Name>
-      <Importer>TextureImporter</Importer>
-      <Processor>TextureProcessor</Processor>
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Include="Textures\Controls\Scrollbar\hscrollbar_highlight_left.png">
-      <Name>hscrollbar_highlight_left</Name>
-      <Importer>TextureImporter</Importer>
-      <Processor>TextureProcessor</Processor>
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Include="Textures\Controls\Scrollbar\hscrollbar_highlight_middle.png">
-      <Name>hscrollbar_highlight_middle</Name>
-      <Importer>TextureImporter</Importer>
-      <Processor>TextureProcessor</Processor>
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Include="Textures\Controls\Scrollbar\hscrollbar_highlight_right.png">
-      <Name>hscrollbar_highlight_right</Name>
-      <Importer>TextureImporter</Importer>
-      <Processor>TextureProcessor</Processor>
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Include="Textures\Controls\Scrollbar\hscrollbar_left.png">
-      <Name>hscrollbar_left</Name>
-      <Importer>TextureImporter</Importer>
-      <Processor>TextureProcessor</Processor>
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Include="Textures\Controls\Scrollbar\hscrollbar_middle.png">
-      <Name>hscrollbar_middle</Name>
-      <Importer>TextureImporter</Importer>
-      <Processor>TextureProcessor</Processor>
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Include="Textures\Controls\Scrollbar\hscrollbar_right.png">
-      <Name>hscrollbar_right</Name>
-      <Importer>TextureImporter</Importer>
-      <Processor>TextureProcessor</Processor>
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Include="Textures\Controls\Scrollbar\scrollbar_cursor.png">
-      <Name>scrollbar_cursor</Name>
-      <Importer>TextureImporter</Importer>
-      <Processor>TextureProcessor</Processor>
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Include="Textures\Controls\Scrollbar\scroller.png">
-      <Name>scroller</Name>
-      <Importer>TextureImporter</Importer>
-      <Processor>TextureProcessor</Processor>
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Include="Textures\Controls\Scrollbar\vscrollbar_back.png">
-      <Name>vscrollbar_back</Name>
-      <Importer>TextureImporter</Importer>
-      <Processor>TextureProcessor</Processor>
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Include="Textures\Controls\Scrollbar\vscrollbar_bottom.png">
-      <Name>vscrollbar_bottom</Name>
-      <Importer>TextureImporter</Importer>
-      <Processor>TextureProcessor</Processor>
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Include="Textures\Controls\Scrollbar\vscrollbar_button.png">
-      <Name>vscrollbar_button</Name>
-      <Importer>TextureImporter</Importer>
-      <Processor>TextureProcessor</Processor>
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Include="Textures\Controls\Scrollbar\vscrollbar_cursor.png">
-      <Name>vscrollbar_cursor</Name>
-      <Importer>TextureImporter</Importer>
-      <Processor>TextureProcessor</Processor>
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Include="Textures\Controls\Scrollbar\vscrollbar_highlight_bottom.png">
-      <Name>vscrollbar_highlight_bottom</Name>
-      <Importer>TextureImporter</Importer>
-      <Processor>TextureProcessor</Processor>
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Include="Textures\Controls\Scrollbar\vscrollbar_highlight_middle.png">
-      <Name>vscrollbar_highlight_middle</Name>
-      <Importer>TextureImporter</Importer>
-      <Processor>TextureProcessor</Processor>
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Include="Textures\Controls\Scrollbar\vscrollbar_highlight_top.png">
-      <Name>vscrollbar_highlight_top</Name>
-      <Importer>TextureImporter</Importer>
-      <Processor>TextureProcessor</Processor>
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Include="Textures\Controls\Scrollbar\vscrollbar_middle.png">
-      <Name>vscrollbar_middle</Name>
-      <Importer>TextureImporter</Importer>
-      <Processor>TextureProcessor</Processor>
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Include="Textures\Controls\Scrollbar\vscrollbar_top.png">
-      <Name>vscrollbar_top</Name>
-      <Importer>TextureImporter</Importer>
-      <Processor>TextureProcessor</Processor>
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Include="Textures\Controls\Slider\slider_center.png">
-      <Name>slider_center</Name>
-      <Importer>TextureImporter</Importer>
-      <Processor>TextureProcessor</Processor>
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Include="Textures\Controls\Slider\slider_cursor.png">
-      <Name>slider_cursor</Name>
-      <Importer>TextureImporter</Importer>
-      <Processor>TextureProcessor</Processor>
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Include="Textures\Controls\Slider\slider_left.png">
-      <Name>slider_left</Name>
-      <Importer>TextureImporter</Importer>
-      <Processor>TextureProcessor</Processor>
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Include="Textures\Controls\textbox.png">
-      <Name>textbox</Name>
-      <Importer>TextureImporter</Importer>
-      <Processor>TextureProcessor</Processor>
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Include="Textures\Cursors\circle.png">
-      <Name>circle</Name>
-      <Importer>TextureImporter</Importer>
-      <Processor>TextureProcessor</Processor>
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Include="Textures\Cursors\default.png">
-      <Name>default</Name>
-      <Importer>TextureImporter</Importer>
-      <Processor>TextureProcessor</Processor>
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Include="Textures\Cursors\resize.png">
-      <Name>resize</Name>
-      <Importer>TextureImporter</Importer>
-      <Processor>TextureProcessor</Processor>
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
     <Compile Include="Textures\flame.tga">
       <Name>flame</Name>
       <Importer>TextureImporter</Importer>
@@ -664,11 +310,6 @@
       <Importer>FbxImporter</Importer>
       <Processor>ModelProcessor</Processor>
     </None>
-    <Compile Include="Models\Environment\lava_with_texcoords.fbx">
-      <Name>lava_with_texcoords</Name>
-      <Importer>FbxImporter</Importer>
-      <Processor>Default</Processor>
-    </Compile>
     <Compile Include="Textures\Lava\firefractal.tga">
       <Name>firefractal</Name>
       <Importer>TextureImporter</Importer>
@@ -697,13 +338,6 @@
       <Name>MenuFont</Name>
       <Importer>FontDescriptionImporter</Importer>
       <Processor>FontDescriptionProcessor</Processor>
-    </Compile>
-    <Compile Include="Textures\island_diffuse_v003.tga">
-      <Name>island_diffuse_v003</Name>
-      <Importer>TextureImporter</Importer>
-      <Processor>TextureProcessor</Processor>
-      <ProcessorParameters_ColorKeyColor>255, 255, 255, 255</ProcessorParameters_ColorKeyColor>
-      <ProcessorParameters_ColorKeyEnabled>False</ProcessorParameters_ColorKeyEnabled>
     </Compile>
     <Compile Include="Models\Pillars\pillar_002.fbx">
       <Name>pillar_002</Name>
@@ -957,11 +591,6 @@
       <Importer>TextureImporter</Importer>
       <Processor>TextureProcessor</Processor>
     </Compile>
-    <Compile Include="Models\Environment\lava10.fbx">
-      <Name>lava10</Name>
-      <Importer>FbxImporter</Importer>
-      <Processor>LavaProcessor</Processor>
-    </Compile>
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Sprites\Menu\Robot\green_animated_robot.png">
@@ -1069,11 +698,6 @@
       <Importer>FbxImporter</Importer>
       <Processor>LavaProcessor</Processor>
     </Compile>
-    <Compile Include="Models\Environment\lava6c_wrongdir.fbx">
-      <Name>lava6c_wrongdir</Name>
-      <Importer>FbxImporter</Importer>
-      <Processor>LavaProcessor</Processor>
-    </Compile>
     <Compile Include="Fonts\hud_playername.spritefont">
       <Name>hud_playername</Name>
       <Importer>FontDescriptionImporter</Importer>
@@ -1094,91 +718,6 @@
       <Importer>EffectImporter</Importer>
       <Processor>EffectProcessor</Processor>
     </Compile>
-    <None Include="Fonts\MyriadPro-Bold.otf">
-      <Name>MyriadPro-Bold</Name>
-    </None>
-    <None Include="Fonts\MyriadPro-BoldCond.otf">
-      <Name>MyriadPro-BoldCond</Name>
-    </None>
-    <None Include="Fonts\MyriadPro-BoldCondIt.otf">
-      <Name>MyriadPro-BoldCondIt</Name>
-    </None>
-    <None Include="Fonts\MyriadPro-BoldIt.otf">
-      <Name>MyriadPro-BoldIt</Name>
-    </None>
-    <None Include="Fonts\MyriadPro-Cond.otf">
-      <Name>MyriadPro-Cond</Name>
-    </None>
-    <None Include="Fonts\MyriadPro-CondIt.otf">
-      <Name>MyriadPro-CondIt</Name>
-    </None>
-    <None Include="Fonts\MyriadPro-It.otf">
-      <Name>MyriadPro-It</Name>
-    </None>
-    <None Include="Fonts\MyriadPro-Regular.otf">
-      <Name>MyriadPro-Regular</Name>
-    </None>
-    <None Include="Fonts\MyriadPro-Semibold.otf">
-      <Name>MyriadPro-Semibold</Name>
-    </None>
-    <None Include="Fonts\MyriadPro-SemiboldIt.otf">
-      <Name>MyriadPro-SemiboldIt</Name>
-    </None>
-    <None Include="Models\Islands\burnt1_col.fbx">
-      <Name>burnt1_col</Name>
-      <Importer>FbxImporter</Importer>
-      <Processor>ModelProcessor</Processor>
-    </None>
-    <None Include="Models\Islands\burnt2_col.fbx">
-      <Name>burnt2_col</Name>
-      <Importer>FbxImporter</Importer>
-      <Processor>ModelProcessor</Processor>
-    </None>
-    <None Include="Models\Islands\burnt3_col.fbx">
-      <Name>burnt3_col</Name>
-      <Importer>FbxImporter</Importer>
-      <Processor>ModelProcessor</Processor>
-    </None>
-    <None Include="Models\Islands\grass1_col.fbx">
-      <Name>grass1_col</Name>
-      <Importer>FbxImporter</Importer>
-      <Processor>ModelProcessor</Processor>
-    </None>
-    <None Include="Models\Islands\grass2_col.fbx">
-      <Name>grass2_col</Name>
-      <Importer>FbxImporter</Importer>
-      <Processor>ModelProcessor</Processor>
-    </None>
-    <None Include="Models\Islands\grass3_col.fbx">
-      <Name>grass3_col</Name>
-      <Importer>FbxImporter</Importer>
-      <Processor>ModelProcessor</Processor>
-    </None>
-    <None Include="Models\Islands\grass4_col.fbx">
-      <Name>grass4_col</Name>
-      <Importer>FbxImporter</Importer>
-      <Processor>ModelProcessor</Processor>
-    </None>
-    <None Include="Models\Islands\ice1_col.fbx">
-      <Name>ice1_col</Name>
-      <Importer>FbxImporter</Importer>
-      <Processor>ModelProcessor</Processor>
-    </None>
-    <None Include="Models\Islands\ice2_col.fbx">
-      <Name>ice2_col</Name>
-      <Importer>FbxImporter</Importer>
-      <Processor>ModelProcessor</Processor>
-    </None>
-    <None Include="Models\Islands\ice3_col.fbx">
-      <Name>ice3_col</Name>
-      <Importer>FbxImporter</Importer>
-      <Processor>ModelProcessor</Processor>
-    </None>
-    <None Include="Models\Islands\ice4_col.fbx">
-      <Name>ice4_col</Name>
-      <Importer>FbxImporter</Importer>
-      <Processor>ModelProcessor</Processor>
-    </None>
     <Compile Include="Models\Player\dwarf2.x">
       <Name>dwarf2</Name>
       <Importer>XModelImporter</Importer>
@@ -1201,61 +740,6 @@
     </Compile>
     <Compile Include="Models\Islands\all_rend_and_col.fbx">
       <Name>all_rend_and_col</Name>
-      <Importer>FbxImporter</Importer>
-      <Processor>IslandProcessor</Processor>
-    </Compile>
-    <Compile Include="Models\Islands\burnt3.fbx">
-      <Name>burnt3</Name>
-      <Importer>FbxImporter</Importer>
-      <Processor>IslandProcessor</Processor>
-    </Compile>
-    <Compile Include="Models\Islands\grass1.fbx">
-      <Name>grass1</Name>
-      <Importer>FbxImporter</Importer>
-      <Processor>IslandProcessor</Processor>
-    </Compile>
-    <Compile Include="Models\Islands\grass2.fbx">
-      <Name>grass2</Name>
-      <Importer>FbxImporter</Importer>
-      <Processor>IslandProcessor</Processor>
-    </Compile>
-    <Compile Include="Models\Islands\grass3.fbx">
-      <Name>grass3</Name>
-      <Importer>FbxImporter</Importer>
-      <Processor>IslandProcessor</Processor>
-    </Compile>
-    <Compile Include="Models\Islands\grass4.fbx">
-      <Name>grass4</Name>
-      <Importer>FbxImporter</Importer>
-      <Processor>IslandProcessor</Processor>
-    </Compile>
-    <Compile Include="Models\Islands\ice1.fbx">
-      <Name>ice1</Name>
-      <Importer>FbxImporter</Importer>
-      <Processor>IslandProcessor</Processor>
-    </Compile>
-    <Compile Include="Models\Islands\ice2.fbx">
-      <Name>ice2</Name>
-      <Importer>FbxImporter</Importer>
-      <Processor>IslandProcessor</Processor>
-    </Compile>
-    <Compile Include="Models\Islands\ice3.fbx">
-      <Name>ice3</Name>
-      <Importer>FbxImporter</Importer>
-      <Processor>IslandProcessor</Processor>
-    </Compile>
-    <Compile Include="Models\Islands\ice4.fbx">
-      <Name>ice4</Name>
-      <Importer>FbxImporter</Importer>
-      <Processor>IslandProcessor</Processor>
-    </Compile>
-    <Compile Include="Models\Islands\burnt1.fbx">
-      <Name>burnt1</Name>
-      <Importer>FbxImporter</Importer>
-      <Processor>IslandProcessor</Processor>
-    </Compile>
-    <Compile Include="Models\Islands\burnt2.fbx">
-      <Name>burnt2</Name>
       <Importer>FbxImporter</Importer>
       <Processor>IslandProcessor</Processor>
     </Compile>
@@ -1485,9 +969,6 @@
       <Importer>TextureImporter</Importer>
       <Processor>TextureProcessor</Processor>
     </Compile>
-  </ItemGroup>
-  <ItemGroup>
-    <Folder Include="Fonts\MyriadPro\" />
   </ItemGroup>
   <Import Project="$(MSBuildExtensionsPath)\Microsoft\XNA Game Studio\v3.0\Microsoft.Xna.GameStudio.ContentPipeline.targets" />
   <ItemGroup>

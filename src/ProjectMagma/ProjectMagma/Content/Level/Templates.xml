@@ -12,9 +12,9 @@
   <Entity name="lava_base" abstract="true">
     <Attributes>
       <Attribute name="kind" template="string" value="lava"/>
-      <Attribute name="position" template="float3" value="0 0 0"/>
+      <Attribute name="position" template="float3" value="0 0 -150"/>
       <!--Attribute name="scale" template="float3" value="0.8 0.12 0.8"/-->
-      <Attribute name="scale" template="float3" value="800 120 800"/>
+      <Attribute name="scale" template="float3" value="800 120 900"/>
       <!--Attribute name="scale" template="float3" value="1200 4 1200"/-->
       <!--Attribute name="mesh" template="string" value="Models\Environment\lava6c_wrongdir"/-->
       <Attribute name="mesh" template="string" value="Models\Environment\lava6c"/>
@@ -57,8 +57,8 @@
   <Entity name="cave_base" abstract="true">
     <Attributes>
       <Attribute name="kind" template="string" value="cave"/>
-      <Attribute name="position" template="float3" value="80 -150 1450"/>
-      <Attribute name="scale" template="float3" value="900 1500 2200"/>
+      <Attribute name="position" template="float3" value="80 -50 1350"/>
+      <Attribute name="scale" template="float3" value="1000 1500 2200"/>
       <!--Attribute name="position" template="float3" value="80 -150 290"/-->
       <!--Attribute name="scale" template="float3" value="900 1200 900"/-->
 

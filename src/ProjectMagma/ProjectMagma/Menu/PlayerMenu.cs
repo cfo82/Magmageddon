@@ -5,6 +5,7 @@ using Microsoft.Xna.Framework.Graphics;
 using ProjectMagma.Simulation;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Input;
+using ProjectMagma.Shared.LevelData;
 
 namespace ProjectMagma
 {
@@ -135,6 +136,22 @@ namespace ProjectMagma
                 Vector2 pos = Position - new Vector2(210,0) + new Vector2((i & 1) * 210, ((i & 2) >> 1) * (sprite.Height * scale + 10));
 
                 Color backgroundColor = Color.White;
+
+                // load templates
+                LevelData levelData = Game.Instance.ContentManager.Load<LevelData>("Level/RobotTemplates");
+                EntityData entityData = levelData.entities[Game.Instance.Robots[i].Entity];
+                List<AttributeData> attributes = entityData.CollectAttributes(levelData);
+                List<PropertyData> properties = entityData.CollectProperties(levelData);
+
+                // create a dummy entity
+                Entity entity = new Entity(entityData.name);
+                foreach (AttributeData attributeData in attributes)
+                {
+                    entity.AddAttribute(attributeData.name, attributeData.template, attributeData.value);
+                }
+
+                Vector3 color1 = entity.GetVector3("color1");
+                Vector3 color2 = entity.GetVector3("color2");
 
                 if (active)
                 {

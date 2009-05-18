@@ -102,8 +102,11 @@ RenderParticlesVertexShaderOutput RenderExplosionVertexShader(
 		float normalized_age = 1.0 - time_to_life/ExplosionParticleLifetime;
 	    
 		output.PositionCopy = output.Position = mul(view_position, Projection);
-		output.Size = lerp(15, 100, random_sampler_value.x) * Projection._m11 / output.Position.w * ViewportHeight / 2;
+		output.Size = lerp(15, 130, random_sampler_value.x) * Projection._m11 / output.Position.w * ViewportHeight / 2;
 		output.Color = float4(1,1,1,1.0-normalized_age);
+		
+		// small hack...
+		output.PositionCopy.x = random_sampler_value.y;
 	}
 	else
 	{
@@ -128,8 +131,14 @@ float4 RenderExplosionPixelShader(
 #endif
 ) : COLOR0
 {
-    float4 color = input.Color*tex2D(SpriteSampler, particleCoordinate/4);
-    color.rgb *= dot(float3(0.1, 0.1, 0.1), color.rgb) * input.Color.a;
+	int spriteNumber = ceil(input.PositionCopy.x*6) - 1;
+	int horizontalIndex = spriteNumber/4;
+	int verticalIndex = spriteNumber%4;
+
+	float2 modifiedTextureCoordinates = float2(particleCoordinate.x/4 + horizontalIndex*0.25, particleCoordinate.y/4 + verticalIndex*0.25);
+
+    float4 color = tex2D(SpriteSampler, modifiedTextureCoordinates);
+    color.rgb *= 0.15 * input.Color.a;
     return color;
 }
 

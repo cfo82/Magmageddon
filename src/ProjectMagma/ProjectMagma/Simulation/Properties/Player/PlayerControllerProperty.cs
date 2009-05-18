@@ -998,12 +998,6 @@ namespace ProjectMagma.Simulation
                     }
                     else
                     {
-                        // activate
-                        player.AddProperty("collision", new CollisionProperty());
-                        player.AddProperty("render", new RobotRenderProperty());
-                        player.AddProperty("shadow_cast", new ShadowCastProperty());
-                        ((CollisionProperty)player.GetProperty("collision")).OnContact += PlayerCollisionHandler;
-
                         // random island selection
                         PositionOnRandomIsland();
 
@@ -1020,6 +1014,12 @@ namespace ProjectMagma.Simulation
                         player.SetInt("fuel", constants.GetInt("max_fuel"));
 
                         player.SetInt("frozen", 0);
+
+                        // activate
+                        player.AddProperty("collision", new CollisionProperty());
+                        player.AddProperty("render", new RobotRenderProperty());
+                        player.AddProperty("shadow_cast", new ShadowCastProperty());
+                        ((CollisionProperty)player.GetProperty("collision")).OnContact += PlayerCollisionHandler;
 
                         // reset respawn timer
                         respawnStartedAt = 0;
@@ -1519,7 +1519,8 @@ namespace ProjectMagma.Simulation
             int cnt = Game.Instance.Simulation.IslandManager.Count;
             Entity island = Game.Instance.Simulation.IslandManager[0];
             // try at most count*2 times
-            for(int i = 0; i < cnt*2; i++)
+            int i = 0;
+            for(; i < cnt*2; i++)
             {
                 bool valid = true;
                 int islandNo = rand.Next(Game.Instance.Simulation.IslandManager.Count - 1);
@@ -1528,26 +1529,30 @@ namespace ProjectMagma.Simulation
                 // check no players on island
                 if (island.GetInt("players_on_island") > 0)
                     valid = false;
-                
-                // check no powerup on island
-                foreach(Entity powerup in Game.Instance.Simulation.PowerupManager)
-                {
-                    if (island.Name == powerup.GetString("island_reference"))
-                    {
-                        valid = false;
-                        break;
-                    }
-                }
 
-                // check island is far enough away from other players,
-                foreach (Entity p in Game.Instance.Simulation.PlayerManager)
+                // for 2nd round (> cnt) we accept respawn on powerups
+                if (i < cnt)
                 {
-                    Vector3 dist = island.GetVector3("position") - p.GetVector3("position");
-                    dist.Y = 0; // ignore y component
-                    if (dist.Length() < constants.GetFloat("respawn_min_distance_to_players"))
+                    // check no powerup on island
+                    foreach (Entity powerup in Game.Instance.Simulation.PowerupManager)
                     {
-                        valid = false;
-                        break;
+                        if (island.Name == powerup.GetString("island_reference"))
+                        {
+                            valid = false;
+                            break;
+                        }
+                    }
+
+                    // check island is far enough away from other players,
+                    foreach (Entity p in Game.Instance.Simulation.PlayerManager)
+                    {
+                        Vector3 dist = island.GetVector3("position") - p.GetVector3("position");
+                        dist.Y = 0; // ignore y component
+                        if (dist.Length() < constants.GetFloat("respawn_min_distance_to_players"))
+                        {
+                            valid = false;
+                            break;
+                        }
                     }
                 }
 

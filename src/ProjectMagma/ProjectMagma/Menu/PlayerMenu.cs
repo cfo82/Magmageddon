@@ -53,24 +53,24 @@ namespace ProjectMagma
             DrawPrevious = false;
 
             // initialize walking player hack
-            playerModel = Game.Instance.ContentManager.Load<MagmaModel>("Models/Player/robot_grp").XnaModel;
-            playerMesh = playerModel.Meshes[0];
-            foreach (ModelMeshPart meshPart in playerMesh.MeshParts)
-            {
-                Effect oldEffect = meshPart.Effect;
-                meshPart.Effect = Game.Instance.ContentManager.Load<Effect>("Effects/Basic/Basic");
-                oldEffect.Dispose();
-            }
-            animator = new ModelAnimator(playerModel);
-            walkController = new AnimationController(Game.Instance, animator.Animations["walk"]);
-            Game.Instance.Components.RemoveAt(Game.Instance.Components.Count - 1);
-            foreach (BonePose p in animator.BonePoses)
-            {
-                p.CurrentController = walkController;
-                p.CurrentBlendController = null;
-                p.BlendFactor = 0.0f;
-            }
-            playerTexture = Game.Instance.ContentManager.Load<Texture2D>("Textures/Player/dwarf");
+            //////playerModel = Game.Instance.ContentManager.Load<MagmaModel>("Models/Player/robot_grp").XnaModel;
+            //////playerMesh = playerModel.Meshes[0];
+            //////foreach (ModelMeshPart meshPart in playerMesh.MeshParts)
+            //////{
+            //////    Effect oldEffect = meshPart.Effect;
+            //////    meshPart.Effect = Game.Instance.ContentManager.Load<Effect>("Effects/Basic/Basic");
+            //////    oldEffect.Dispose();
+            //////}
+            //////animator = new ModelAnimator(playerModel);
+            //////walkController = new AnimationController(Game.Instance, animator.Animations["walk"]);
+            //////Game.Instance.Components.RemoveAt(Game.Instance.Components.Count - 1);
+            //////foreach (BonePose p in animator.BonePoses)
+            //////{
+            //////    p.CurrentController = walkController;
+            //////    p.CurrentBlendController = null;
+            //////    p.BlendFactor = 0.0f;
+            //////}
+            //////playerTexture = Game.Instance.ContentManager.Load<Texture2D>("Textures/Player/dwarf");
         }
 
         Texture2D playerTexture;
@@ -166,26 +166,26 @@ namespace ProjectMagma
 
         public override void Draw(GameTime gameTime, SpriteBatch spriteBatch)
         {
-            //playerModel.Meshes[0].Draw();
-            playerMesh.Effects[0].CurrentTechnique = playerMesh.Effects[0].Techniques["Textured"];
-            playerMesh.Effects[0].Parameters["Local"].SetValue(Matrix.Identity);
-            playerMesh.Effects[0].Parameters["World"].SetValue(Matrix.Identity);
-            playerMesh.Effects[0].Parameters["View"].SetValue(Matrix.CreateLookAt(new Vector3(3,3,3),Vector3.Zero,Vector3.Up));
-            //playerMesh.Effects[0].Parameters["View"].SetValue(Matrix.CreateLookAt(new);
-            playerMesh.Effects[0].Parameters["Projection"].SetValue(Matrix.CreateOrthographic(10f,10f,0.001f,1000)*Matrix.CreateTranslation(Vector3.UnitX*0.5f));
-            playerMesh.Effects[0].Parameters["DiffuseTexture"].SetValue(playerTexture);
-            playerMesh.Effects[0].Parameters["DiffuseColor"].SetValue(Vector3.One);
-            playerMesh.Effects[0].Parameters["SpecularColor"].SetValue(Vector3.One);
-            playerMesh.Effects[0].Parameters["DirLight0Direction"].SetValue(-Vector3.One);
-            playerMesh.Effects[0].Parameters["DirLight0DiffuseColor"].SetValue(Vector3.One);
-            playerMesh.Effects[0].Parameters["DirLight0SpecularColor"].SetValue(Vector3.One);
+            ////////playerModel.Meshes[0].Draw();
+            //////playerMesh.Effects[0].CurrentTechnique = playerMesh.Effects[0].Techniques["Textured"];
+            //////playerMesh.Effects[0].Parameters["Local"].SetValue(Matrix.Identity);
+            //////playerMesh.Effects[0].Parameters["World"].SetValue(Matrix.Identity);
+            //////playerMesh.Effects[0].Parameters["View"].SetValue(Matrix.CreateLookAt(new Vector3(3,3,3),Vector3.Zero,Vector3.Up));
+            ////////playerMesh.Effects[0].Parameters["View"].SetValue(Matrix.CreateLookAt(new);
+            //////playerMesh.Effects[0].Parameters["Projection"].SetValue(Matrix.CreateOrthographic(10f,10f,0.001f,1000)*Matrix.CreateTranslation(Vector3.UnitX*0.5f));
+            //////playerMesh.Effects[0].Parameters["DiffuseTexture"].SetValue(playerTexture);
+            //////playerMesh.Effects[0].Parameters["DiffuseColor"].SetValue(Vector3.One);
+            //////playerMesh.Effects[0].Parameters["SpecularColor"].SetValue(Vector3.One);
+            //////playerMesh.Effects[0].Parameters["DirLight0Direction"].SetValue(-Vector3.One);
+            //////playerMesh.Effects[0].Parameters["DirLight0DiffuseColor"].SetValue(Vector3.One);
+            //////playerMesh.Effects[0].Parameters["DirLight0SpecularColor"].SetValue(Vector3.One);
 
-            animator.World = Matrix.Identity;
-            walkController.Update(Game.Instance.Renderer.Time.AtGameTime);
-            animator.Update();
-            animator.Draw();
+            //////animator.World = Matrix.Identity;
+            //////walkController.Update(Game.Instance.Renderer.Time.AtGameTime);
+            //////animator.Update();
+            //////animator.Draw();
 
-            playerMesh.Draw();
+            //////playerMesh.Draw();
 
             for (int i = 0; i < 4; i++)
             {

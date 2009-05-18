@@ -512,6 +512,7 @@ namespace ProjectMagma.Simulation
 
                     player.SetInt("energy", player.GetInt("energy") - constants.GetInt("island_repulsion_start_energy_cost"));
 
+                    (player.GetProperty("render") as RobotRenderProperty).NextPermanentState = "repulsion";
                     repulsionActive = true;
                 }
                 else
@@ -532,8 +533,15 @@ namespace ProjectMagma.Simulation
 
                         if (player.GetInt("energy") <= 0)
                         {
+                            (player.GetProperty("render") as RobotRenderProperty).NextPermanentState = "idle";
                             repulsionActive = false;
                         }
+                    }
+                    else
+                    if(repulsionActive)
+                    {
+                        (player.GetProperty("render") as RobotRenderProperty).NextPermanentState = "idle";
+                        repulsionActive = false;
                     }
             }
         }

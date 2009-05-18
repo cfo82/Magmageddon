@@ -176,6 +176,8 @@ namespace ProjectMagma.Simulation
             this.island = island;
             powerup.SetString("island_reference", island.Name);
             CalculateSurfaceOffset();
+            Vector3 islandPos = island.GetVector3("postion");
+            PositionOnIsland(ref islandPos);
         }
 
         private void CalculateSurfaceOffset()

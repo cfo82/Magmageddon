@@ -1,0 +1,93 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<!DOCTYPE Level SYSTEM "Levels.dtd">
+<Level>
+
+  <Includes>
+    <Include name="Level\Constants.xml"/>
+    <Include name="Level\Templates.xml"/>
+  </Includes>
+  <!-- "unique" game entities -->
+
+  <Entity name="lava" extends="lava_base">
+    <!-- don't mess with the lava, there is nothing to change here. -->
+    <!-- if you know what you are doing, do it in the template. -->
+  </Entity>
+  <Entity name="cave" extends="cave_base">
+    <!-- don't mess with the cave, there is nothing to change here. -->
+    <!-- if you know what you are doing, do it in the template. -->
+  </Entity>
+
+  <!-- masses of game elements... -->
+
+  <Entity name="pillar1" extends="pillar_base_001">
+    <Attributes>
+      <Attribute name="position" template="float3" value="0 -10 0"/>
+    </Attributes>
+  </Entity>
+
+
+  <Entity name="island1" extends="island_base_grass1">
+    <Attributes>
+      <Attribute name="position" template="float3" value="200 80 0"/>
+    </Attributes>
+  </Entity>
+
+  <Entity name="island2" extends="island_base_grass2">
+    <Attributes>
+      <Attribute name="position" template="float3" value="0 120 200"/>
+    </Attributes>
+  </Entity>
+
+  <Entity name="island3" extends="island_base_grass1">
+    <Attributes>
+      <Attribute name="position" template="float3" value="-200 160 0"/>
+    </Attributes>
+  </Entity>
+
+  <Entity name="island4" extends="island_base_grass2">
+    <Attributes>
+      <Attribute name="position" template="float3" value="0 200 -200"/>
+    </Attributes>
+  </Entity>
+
+  <Entity name="island11" extends="island_base_ice1">
+    <Attributes>
+      <Attribute name="position" template="float3" value="200 240 0"/>
+    </Attributes>
+  </Entity>
+
+  <Entity name="island12" extends="island_base_ice2">
+    <Attributes>
+      <Attribute name="position" template="float3" value="0 280 200"/>
+    </Attributes>
+  </Entity>
+
+  <Entity name="island13" extends="island_base_ice1">
+    <Attributes>
+      <Attribute name="position" template="float3" value="-200 320 0"/>
+    </Attributes>
+  </Entity>
+
+  <Entity name="island14" extends="island_base_ice2">
+    <Attributes>
+      <Attribute name="position" template="float3" value="0 360 -200"/>
+    </Attributes>
+  </Entity>
+
+
+
+  <Entity name="powerup1" extends="powerup_health">
+    <Attributes>
+      <Attribute name="island_reference" template="string" value="island4"/>
+      <Attribute name="relative_position" template="float3" value="15 10 15"/>
+    </Attributes>
+  </Entity>
+
+  <Entity name="powerup2" extends="powerup_energy">
+    <Attributes>
+      <Attribute name="island_reference" template="string" value="island2"/>
+      <Attribute name="relative_position" template="float3" value="-20 10 -5"/>
+    </Attributes>
+  </Entity>
+
+</Level>

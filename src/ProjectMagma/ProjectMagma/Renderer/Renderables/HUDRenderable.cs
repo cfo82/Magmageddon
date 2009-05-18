@@ -55,10 +55,6 @@ namespace ProjectMagma.Renderer
             livesFont = Game.Instance.ContentManager.Load<SpriteFont>("Fonts/hud_lives");
             powerupCollectFont = Game.Instance.ContentManager.Load<SpriteFont>("Fonts/hud_powerup_collect");
             font = Game.Instance.ContentManager.Load<SpriteFont>("Sprites/HUD/HUDFont");
-            background = Game.Instance.ContentManager.Load<Texture2D>("Sprites/HUD/background");
-            healthBar = Game.Instance.ContentManager.Load<Texture2D>("Sprites/HUD/health");
-            energyBar = Game.Instance.ContentManager.Load<Texture2D>("Sprites/HUD/energy");
-            fuelBar = Game.Instance.ContentManager.Load<Texture2D>("Sprites/HUD/fuel");
             
             spriteBatch = new SpriteBatch(Game.Instance.GraphicsDevice);
             ComputePositions();
@@ -373,11 +369,6 @@ namespace ProjectMagma.Renderer
 
         private SpriteFont font, powerupCollectFont;
         private SpriteBatch spriteBatch;
-
-        private Texture2D background;
-        private Texture2D healthBar;
-        private Texture2D energyBar;
-        private Texture2D fuelBar;
 
         private string playerName;
         private int gamePadIndex;

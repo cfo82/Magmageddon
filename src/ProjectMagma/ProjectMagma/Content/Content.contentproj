@@ -168,11 +168,6 @@
       <Importer>FbxImporter</Importer>
       <Processor>FlameProcessor</Processor>
     </Compile>
-    <Compile Include="Textures\flame.tga">
-      <Name>flame</Name>
-      <Importer>TextureImporter</Importer>
-      <Processor>TextureProcessor</Processor>
-    </Compile>
     <Compile Include="Textures\xna_logo.png">
       <Name>xna_logo</Name>
       <Importer>TextureImporter</Importer>
@@ -354,59 +349,10 @@
       <Importer>FbxImporter</Importer>
       <Processor>PillarProcessor</Processor>
     </Compile>
-    <Compile Include="Models\Player\RobBonesAnim.fbx">
-      <Name>RobBonesAnim</Name>
-      <Importer>FbxImporter</Importer>
-      <Processor>PlayerProcessor</Processor>
-    </Compile>
-  </ItemGroup>
-  <ItemGroup>
-    <Compile Include="Sprites\HUD\background.png">
-      <Name>background</Name>
-      <Importer>TextureImporter</Importer>
-      <Processor>TextureProcessor</Processor>
-    </Compile>
-    <Compile Include="Sprites\HUD\energy.png">
-      <Name>energy</Name>
-      <Importer>TextureImporter</Importer>
-      <Processor>TextureProcessor</Processor>
-    </Compile>
-    <Compile Include="Sprites\HUD\fuel.png">
-      <Name>fuel</Name>
-      <Importer>TextureImporter</Importer>
-      <Processor>TextureProcessor</Processor>
-    </Compile>
-    <Compile Include="Sprites\HUD\health.png">
-      <Name>health</Name>
-      <Importer>TextureImporter</Importer>
-      <Processor>TextureProcessor</Processor>
-    </Compile>
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Sprites\Menu\background.png">
       <Name>background</Name>
-      <Importer>TextureImporter</Importer>
-      <Processor>TextureProcessor</Processor>
-    </Compile>
-    <Compile Include="Sprites\Menu\new_game.png">
-      <Name>new_game</Name>
-      <Importer>TextureImporter</Importer>
-      <Processor>TextureProcessor</Processor>
-    </Compile>
-    <Compile Include="Sprites\Menu\new_game_selected.png">
-      <Name>new_game_selected</Name>
-      <Importer>TextureImporter</Importer>
-      <Processor>TextureProcessor</Processor>
-    </Compile>
-  </ItemGroup>
-  <ItemGroup>
-    <Compile Include="Sprites\Menu\exit_game.png">
-      <Name>exit_game</Name>
-      <Importer>TextureImporter</Importer>
-      <Processor>TextureProcessor</Processor>
-    </Compile>
-    <Compile Include="Sprites\Menu\exit_game_selected.png">
-      <Name>exit_game_selected</Name>
       <Importer>TextureImporter</Importer>
       <Processor>TextureProcessor</Processor>
     </Compile>
@@ -433,38 +379,6 @@
     </Compile>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Sprites\Menu\Level\TestLevel.png">
-      <Name>TestLevel</Name>
-      <Importer>TextureImporter</Importer>
-      <Processor>TextureProcessor</Processor>
-    </Compile>
-    <Compile Include="Sprites\Menu\Level\TestLevel_selected.png">
-      <Name>TestLevel_selected</Name>
-      <Importer>TextureImporter</Importer>
-      <Processor>TextureProcessor</Processor>
-    </Compile>
-  </ItemGroup>
-  <ItemGroup>
-    <Compile Include="Sprites\Menu\music_volume.png">
-      <Name>music_volume</Name>
-      <Importer>TextureImporter</Importer>
-      <Processor>TextureProcessor</Processor>
-    </Compile>
-    <Compile Include="Sprites\Menu\music_volume_selected.png">
-      <Name>music_volume_selected</Name>
-      <Importer>TextureImporter</Importer>
-      <Processor>TextureProcessor</Processor>
-    </Compile>
-    <Compile Include="Sprites\Menu\sound_volume.png">
-      <Name>sound_volume</Name>
-      <Importer>TextureImporter</Importer>
-      <Processor>TextureProcessor</Processor>
-    </Compile>
-    <Compile Include="Sprites\Menu\sound_volume_selected.png">
-      <Name>sound_volume_selected</Name>
-      <Importer>TextureImporter</Importer>
-      <Processor>TextureProcessor</Processor>
-    </Compile>
     <Compile Include="Sprites\Menu\volume_indicator.png">
       <Name>volume_indicator</Name>
       <Importer>TextureImporter</Importer>
@@ -477,34 +391,10 @@
     </Compile>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Sprites\Menu\settings.png">
-      <Name>settings</Name>
-      <Importer>TextureImporter</Importer>
-      <Processor>TextureProcessor</Processor>
-    </Compile>
-    <Compile Include="Sprites\Menu\settings_selected.png">
-      <Name>settings_selected</Name>
-      <Importer>TextureImporter</Importer>
-      <Processor>TextureProcessor</Processor>
-    </Compile>
-  </ItemGroup>
-  <ItemGroup>
     <Compile Include="Level\CollisionTestLevel.xml">
       <Name>CollisionTestLevel</Name>
       <Importer>LevelImporter</Importer>
       <Processor>LevelProcessor</Processor>
-    </Compile>
-  </ItemGroup>
-  <ItemGroup>
-    <Compile Include="Sprites\Menu\help.png">
-      <Name>help</Name>
-      <Importer>TextureImporter</Importer>
-      <Processor>TextureProcessor</Processor>
-    </Compile>
-    <Compile Include="Sprites\Menu\help_selected.png">
-      <Name>help_selected</Name>
-      <Importer>TextureImporter</Importer>
-      <Processor>TextureProcessor</Processor>
     </Compile>
   </ItemGroup>
   <ItemGroup>
@@ -515,18 +405,6 @@
     </Compile>
     <Compile Include="Sprites\Menu\robot_selection_background_inactive.png">
       <Name>robot_selection_background_inactive</Name>
-      <Importer>TextureImporter</Importer>
-      <Processor>TextureProcessor</Processor>
-    </Compile>
-  </ItemGroup>
-  <ItemGroup>
-    <Compile Include="Sprites\Menu\Robot\green_robot.png">
-      <Name>green_robot</Name>
-      <Importer>TextureImporter</Importer>
-      <Processor>TextureProcessor</Processor>
-    </Compile>
-    <Compile Include="Sprites\Menu\Robot\yellow_robot.png">
-      <Name>yellow_robot</Name>
       <Importer>TextureImporter</Importer>
       <Processor>TextureProcessor</Processor>
     </Compile>
@@ -718,11 +596,6 @@
       <Importer>EffectImporter</Importer>
       <Processor>EffectProcessor</Processor>
     </Compile>
-    <Compile Include="Models\Player\dwarf2.x">
-      <Name>dwarf2</Name>
-      <Importer>XModelImporter</Importer>
-      <Processor>DwarfProcessor</Processor>
-    </Compile>
     <Compile Include="Sprites\HUD\bar_background.tga">
       <Name>bar_background</Name>
       <Importer>TextureImporter</Importer>
@@ -774,20 +647,6 @@
       <Importer>TextureImporter</Importer>
       <Processor>TextureProcessor</Processor>
     </Compile>
-  </ItemGroup>
-  <ItemGroup>
-    <Compile Include="Textures\Player\axe.jpg">
-      <Name>axe</Name>
-      <Importer>TextureImporter</Importer>
-      <Processor>TextureProcessor</Processor>
-    </Compile>
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="Models\Player\dwarf2animation.xml">
-      <Name>dwarf2animation</Name>
-      <Importer>XmlImporter</Importer>
-      <Processor>PassThroughProcessor</Processor>
-    </None>
   </ItemGroup>
   <ItemGroup>
     <None Include="Effects\Basic\Skinning.inc.fx">
@@ -855,11 +714,6 @@
       <Importer>EffectImporter</Importer>
       <Processor>EffectProcessor</Processor>
     </Compile>
-    <Compile Include="Textures\Player\dwarf.tga">
-      <Name>dwarf</Name>
-      <Importer>TextureImporter</Importer>
-      <Processor>TextureProcessor</Processor>
-    </Compile>
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Textures\Sfx\LavaExplosion.bmp">
@@ -926,18 +780,6 @@
     </Compile>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Sprites\Menu\Level\4vs4.png">
-      <Name>4vs4</Name>
-      <Importer>TextureImporter</Importer>
-      <Processor>TextureProcessor</Processor>
-    </Compile>
-    <Compile Include="Sprites\Menu\Level\4vs4_selected.png">
-      <Name>4vs4_selected</Name>
-      <Importer>TextureImporter</Importer>
-      <Processor>TextureProcessor</Processor>
-    </Compile>
-  </ItemGroup>
-  <ItemGroup>
     <None Include="Effects\Global.inc.fx">
       <Name>Global.inc</Name>
       <Importer>EffectImporter</Importer>
@@ -984,6 +826,11 @@
     <None Include="Effects\Sfx\ParticleSystem\Stateful\Structs.inc">
       <Name>Structs</Name>
     </None>
+    <Compile Include="Textures\Player\dwarf.tga">
+      <Name>dwarf</Name>
+      <Importer>TextureImporter</Importer>
+      <Processor>TextureProcessor</Processor>
+    </Compile>
     <Compile Include="Fonts\ReleaseNotesFont.spritefont">
       <Name>ReleaseNotesFont</Name>
       <Importer>FontDescriptionImporter</Importer>

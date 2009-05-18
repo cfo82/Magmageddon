@@ -44,7 +44,7 @@
       <Attribute name="ice_spike_gravity_acceleration" template="float3" value="0 -200 0"/>
       <Attribute name="ice_spike_homing_acceleration" template="float" value="5000"/>
       <Attribute name="ice_spike_pillar_force_radius" template="float" value="10"/>
-      <Attribute name="ice_spike_island_force_radius" template="float" value="50"/>
+      <Attribute name="ice_spike_island_force_radius" template="float" value="30"/>
       <Attribute name="ice_spike_lifetime" template="int" value="6000"/>
       <Attribute name="ice_spike_death_timeout" template="int" value="3500"/>
       

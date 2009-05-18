@@ -116,6 +116,7 @@
     <Compile Include="Renderer\ParticleSystem\Stateful\Size.cs" />
     <Compile Include="Renderer\ParticleSystem\Stateful\StatefulParticleSystem.cs" />
     <Compile Include="Renderer\Renderables\BasicRenderable.cs" />
+    <Compile Include="Renderer\Renderables\PowerupRenderable.cs" />
     <Compile Include="Renderer\Renderables\EnvironmentRenderable.cs" />
     <Compile Include="Renderer\Renderables\FireExplosionRenderable.cs" />
     <Compile Include="Renderer\Renderables\FlamethrowerRenderable.cs" />
@@ -209,6 +210,7 @@
     <Compile Include="Simulation\Properties\Player\PlayerControllerProperty.cs" />
     <Compile Include="Simulation\Properties\Rendering\ArrowRenderProperty.cs" />
     <Compile Include="Simulation\Properties\Rendering\BasicRenderProperty.cs" />
+    <Compile Include="Simulation\Properties\Rendering\PowerupRenderProperty.cs" />
     <Compile Include="Simulation\Properties\Rendering\EnvironmentRenderProperty.cs" />
     <Compile Include="Simulation\Properties\Rendering\FireExplosionRenderProperty.cs" />
     <Compile Include="Simulation\Properties\Rendering\FlamethrowerRenderProperty.cs" />

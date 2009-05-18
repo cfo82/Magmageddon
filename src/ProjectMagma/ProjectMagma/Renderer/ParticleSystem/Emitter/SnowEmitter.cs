@@ -49,7 +49,7 @@ namespace ProjectMagma.Renderer.ParticleSystem.Emitter
 
             return new Vector3(
                 ((float)random.NextDouble() - 0.5f) * planeSizeX,
-                500.0f + ((float)random.NextDouble() - 0.5f) * planeSizeY,
+                750.0f + ((float)random.NextDouble() - 0.5f) * planeSizeY,
                 ((float)random.NextDouble() - 0.5f) * planeSizeZ
                 );
         }

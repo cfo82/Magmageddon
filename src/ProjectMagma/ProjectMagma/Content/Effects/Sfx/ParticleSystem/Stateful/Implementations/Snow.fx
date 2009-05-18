@@ -8,7 +8,7 @@
 
 
 //-----------------------------------------------------------------------------------------------------------
-float SnowParticleLifetime = 14;
+float SnowParticleLifetime = 25;
 float SnowVelocityDamping = 0.2;
 float SnowParticleMass = 0.01;
 float3 Gravity = float3(0,-9.81,0);

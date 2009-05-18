@@ -89,7 +89,7 @@ namespace ProjectMagma.Simulation
             int newValue
         )
         {
-            if(oldValue > newValue)
+            if(oldValue > newValue && newValue < 100) // hack, this should be maxhealth but where do i get it?
             {
                 ChangeBool("Blink", true);
             }

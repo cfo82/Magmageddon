@@ -124,8 +124,6 @@ namespace ProjectMagma
             base.Update(gameTime);
         }
 
-        private readonly Vector2 shadowOffset = new Vector2(2, 4);
-
         public override void Draw(GameTime gameTime, SpriteBatch spriteBatch)
         {
             // this needs to be updated even if paused
@@ -147,7 +145,7 @@ namespace ProjectMagma
                 if (i<selected) offset -= globalOffset*itemHeight;
 
                 // draw the text and its attachments
-                DrawEffectString(spriteBatch, item.Text, pos + offset, i == selected);
+                DrawEffectString(spriteBatch, item.Text.ToUpper(), pos + offset, i == selected);
                 DrawWithItem(gameTime, spriteBatch, item, pos + offset - Vector2.UnitY*itemHeight/2, 0.5f);
 
                 // go on
@@ -169,17 +167,12 @@ namespace ProjectMagma
             pos -= lastBox * 0.5f;
 
             // draw string countours
-            DrawString(spriteBatch, str, pos + new Vector2(+contourOffset, +contourOffset), shadowColor, scale);
-            DrawString(spriteBatch, str, pos + new Vector2(-contourOffset, +contourOffset), shadowColor, scale);
-            DrawString(spriteBatch, str, pos + new Vector2(+contourOffset, -contourOffset), shadowColor, scale);
-            DrawString(spriteBatch, str, pos + new Vector2(-contourOffset, -contourOffset), shadowColor, scale);
-            DrawString(spriteBatch, str, pos, isSelected && Active ? Color.White : Color.LightGray, scale);
-
-        }
-
-        private void DrawString(SpriteBatch spriteBatch, string str, Vector2 pos, Color color, float scale)
-        {
-            spriteBatch.DrawString(font, str, pos, color, 0.0f, Vector2.Zero, scale, SpriteEffects.None, 1.0f);
+            Menu.DrawString(spriteBatch, font, str, pos + new Vector2(+contourOffset, +contourOffset), shadowColor, scale);
+            Menu.DrawString(spriteBatch, font, str, pos + new Vector2(-contourOffset, +contourOffset), shadowColor, scale);
+            Menu.DrawString(spriteBatch, font, str, pos + new Vector2(+contourOffset, -contourOffset), shadowColor, scale);
+            Menu.DrawString(spriteBatch, font, str, pos + new Vector2(-contourOffset, -contourOffset), shadowColor, scale);
+            Menu.DrawString(spriteBatch, font, str, pos + new Vector2(+contourOffset, +contourOffset) + Menu.ShadowOffset, Menu.ShadowColor, scale);
+            Menu.DrawString(spriteBatch, font, str, pos, isSelected && Active ? Color.White : Color.LightGray, scale);
         }
 
         public virtual void DrawWithItem(GameTime gameTime, SpriteBatch spriteBatch, MenuItem item, Vector2 pos, float scale)

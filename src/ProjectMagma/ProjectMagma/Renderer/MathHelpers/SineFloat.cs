@@ -6,7 +6,7 @@ using Microsoft.Xna.Framework;
 
 namespace ProjectMagma.MathHelpers
 {
-    class SineFloat
+    public class SineFloat
     {
         public SineFloat(float min, float max, float frequency
             //float velocity

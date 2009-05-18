@@ -2,10 +2,11 @@ using System.Collections.Generic;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Input;
+using ProjectMagma.MathHelpers;
 
 namespace ProjectMagma
 {
-    class Menu
+    public class Menu
     {
         public const float ButtonRepeatTimeout = 100;
         public const float StickRepeatTimeout = 250;
@@ -23,6 +24,8 @@ namespace ProjectMagma
 
         private Menu()
         {
+            StaticStringStrength = new SineFloat(0.7f, 1.0f, 2.5f);
+            StaticStringStrength.Start(0.001);
         }
 
         internal static Menu Instance
@@ -38,6 +41,8 @@ namespace ProjectMagma
 
             mainMenu = new MainMenu(this);
             releaseNotesMenu = new ReleaseNotesMenu(this);
+            staticStringFont = Game.Instance.ContentManager.Load<SpriteFont>("Fonts/menu_releasenotes");
+
         }
 
         internal void Update(GameTime gameTime)
@@ -48,6 +53,7 @@ namespace ProjectMagma
             GamePadState gamePadState = GamePad.GetState(PlayerIndex.One);
             KeyboardState keyboardState = Keyboard.GetState();
 
+            StaticStringStrength.Update(gameTime.TotalRealTime.TotalMilliseconds);
             if (active)
             {
                 activeScreen.Update(gameTime);
@@ -114,7 +120,8 @@ namespace ProjectMagma
                 spriteBatch.Begin(SpriteBlendMode.AlphaBlend, SpriteSortMode.Deferred,
                     SaveStateMode.None, spriteScale);
 
-                spriteBatch.Draw(background, new Vector2(0, 0), Color.White);
+                spriteBatch.Draw(background, new Vector2(0, 0), new Color(125,125,125,160));
+                //spriteBatch.Draw(
 
                 // first traversal: sum up total width of all screens
                 int totalWidth = 0;
@@ -153,9 +160,42 @@ namespace ProjectMagma
                 }
                 while (node != null);
 
+                DrawStaticStrings();
+
                 spriteBatch.End();
             }
         }
+
+        private void DrawStaticStrings()
+        {
+            DrawCenteredShadowString(spriteBatch, staticStringFont, "- A - SELECT                                                  - B - BACK",
+                new Vector2(640, 620), StaticStringColor, 0.55f);
+            DrawCenteredShadowString(spriteBatch, staticStringFont, "PROJECT MAGMA - MAY 19 RELEASE",
+                new Vector2(640, 115), StaticStringColor, 0.7f);
+        }
+
+        public SineFloat StaticStringStrength { get; set; }
+        public Color StaticStringColor { get { return new Color(Vector3.One * StaticStringStrength.Value); } }
+
+        public static void DrawString(SpriteBatch spriteBatch, SpriteFont font, string str, Vector2 pos, Color color, float scale)
+        {
+            spriteBatch.DrawString(font, str, pos, color, 0.0f, Vector2.Zero, scale, SpriteEffects.None, 1.0f);
+        }
+
+        public static void DrawShadowString(SpriteBatch spriteBatch, SpriteFont font, string str, Vector2 pos, Color color, float scale)
+        {
+            spriteBatch.DrawString(font, str, pos + ShadowOffset, ShadowColor, 0.0f, Vector2.Zero, scale, SpriteEffects.None, 1.0f);
+            spriteBatch.DrawString(font, str, pos, color, 0.0f, Vector2.Zero, scale, SpriteEffects.None, 1.0f);
+        }
+
+        public static void DrawCenteredShadowString(SpriteBatch spriteBatch, SpriteFont font, string str, Vector2 pos, Color color, float scale)
+        {
+            pos -= font.MeasureString(str)/2 * scale;
+            DrawShadowString(spriteBatch, font, str, pos, color, scale);           
+        }
+
+        public static Color ShadowColor { get { return new Color(0, 0, 0, 90); } }
+        public static Vector2 ShadowOffset { get { return new Vector2(2, 2); } }
 
         public void OpenMenuScreen(MenuScreen screen)
         {
@@ -218,6 +258,7 @@ namespace ProjectMagma
             get { return active; }
         }
 
+        private SpriteFont staticStringFont;
 
         private MenuScreen activeScreen = null;
         private readonly LinkedList<MenuScreen> screens = new LinkedList<MenuScreen>();

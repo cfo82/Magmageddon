@@ -5,7 +5,7 @@ using System.Text;
 
 namespace ProjectMagma.MathHelpers
 {
-    class EaseFloat
+    public class EaseFloat
     {
         public EaseFloat(float value, float speed)
         {

@@ -77,9 +77,9 @@ namespace ProjectMagma.Renderer
         {
             pos.X = Math.Max(pos.X, -300.0f);
             pos.X = Math.Min(pos.X, 300.0f);
-            //pos.Y = Math.Max(pos.Y, 400);
-            //pos.Y = Math.Min(pos.Y, 600.0f);
-            pos.Z = Math.Max(pos.Z, 600.0f);
+            pos.Y = Math.Max(pos.Y, 100.0f);
+            pos.Y = Math.Min(pos.Y, 800.0f);
+            pos.Z = Math.Max(pos.Z, 700.0f);
             pos.Z = Math.Min(pos.Z, 1300.0f);
             centerController.TargetValue = pos;
         }

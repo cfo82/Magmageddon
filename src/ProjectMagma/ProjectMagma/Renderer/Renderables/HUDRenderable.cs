@@ -38,7 +38,7 @@ namespace ProjectMagma.Renderer
             displayedHealth = health;
             
             frozenColorStrength = new SineFloat(0.0f, 0.85f, 5.0f);
-            statusColorStrength = new SineFloat(0.0f, 1.0f, 5.0f);
+            statusColorStrength = new SineFloat(0.6f, 1.0f, 13.0f);
             powerupPickupDetails = new List<PowerupPickupDetails>();
         }
 
@@ -58,6 +58,8 @@ namespace ProjectMagma.Renderer
             
             spriteBatch = new SpriteBatch(Game.Instance.GraphicsDevice);
             ComputePositions();
+
+            statusColorStrength.Start(renderer.Time.At);
         }
 
         public override void UnloadResources()
@@ -181,11 +183,22 @@ namespace ProjectMagma.Renderer
                 frozenColorStrength.StopAfterCurrentPhase();
 
             frozenColorStrength.Update(renderer.Time.At);
+            statusColorStrength.Update(renderer.Time.At);
         }
 
         private string PowerupString()
         {
-            if (jumps > 0)
+            if (jetpackUsable)
+            {
+                return "HOLD A TO USE JETPACK";
+            }
+            else if (repulsionUsable)
+            {
+                return "USE STICK TO MOVE ISLAND";
+            }
+
+            // TODO: the stuff below is actually deprecated, could be killed.
+            else if (jumps > 0)
             {
                 return String.Format("FAR JUMPS: {0}", jumps);
             }
@@ -233,7 +246,7 @@ namespace ProjectMagma.Renderer
             Vector2 powerupPos = new Vector2(xStart + 52, yStart + 21) + invMultiplier * (new Vector2(165, 71) - powerupStringSize);
             Vector2 powerupShadowPos = powerupPos + textShadowOffset;
             spriteBatch.DrawString(powerupStatusFont, powerupString, powerupShadowPos, Color.DimGray);
-            spriteBatch.DrawString(powerupStatusFont, powerupString, powerupPos, new Color(textColor));
+            spriteBatch.DrawString(powerupStatusFont, powerupString, powerupPos, new Color(Vector3.One * statusColorStrength.Value));
 
             // draw the number of lives
             string livesString = lives.ToString();
@@ -379,6 +392,8 @@ namespace ProjectMagma.Renderer
         private int frozen; // remaining time in milliseconds
         private int jumps;
         private int lives;
+
+        private bool jetpackUsable, repulsionUsable;
 
         private float displayedHealth, displayedEnergy;
 

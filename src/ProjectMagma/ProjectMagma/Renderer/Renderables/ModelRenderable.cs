@@ -298,7 +298,7 @@ namespace ProjectMagma.Renderer
         }
         
         protected Model Model { get; set; }
-        protected Matrix World { get; set; }
+        virtual protected Matrix World { get; set; }
 
         public float SkyLightStrength { get; set; }
         public float LavaLightStrength { get; set; }

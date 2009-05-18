@@ -166,7 +166,8 @@ namespace ProjectMagma.Renderer
             string requestedState = "";
             if (stateRequestString == "hit") {
                 Random r = new Random();
-                requestedState = "melee" + r.Next(0,0); // depends on how many we have
+                //requestedState = "melee" + r.Next(0,0); // depends on how many we have
+                requestedState = "push";
             }
             if (stateRequestString == "death")
             {
@@ -201,11 +202,11 @@ namespace ProjectMagma.Renderer
             }
             if (stateRequestString == "attack_long")
             {
-                requestedState = "walk"; // implement this!
+                requestedState = "attack_long_loop"; // implement this!
             }
             if (stateRequestString == "repulsion")
             {
-                requestedState = "walk"; // implement this!
+                requestedState = "crouch_loop"; // implement this!
             }
             Debug.Assert(requestedState != "");
 
@@ -222,7 +223,7 @@ namespace ProjectMagma.Renderer
 
             // update mode
             //animationMode = AnimationMode.OnceToPermanent;
-            permanentState = requestedState;
+            permanentState = requestedState;            
         }
 
 

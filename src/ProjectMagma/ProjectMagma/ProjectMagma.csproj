@@ -150,6 +150,7 @@
     <Compile Include="Renderer\Renderables\IceExplosionRenderable.cs" />
     <Compile Include="Renderer\Renderables\IceSpikeRenderable.cs" />
     <Compile Include="Renderer\Renderables\EnvironmentRenderable.cs" />
+    <Compile Include="Renderer\Renderables\PowerupRenderable.cs" />
     <Compile Include="Renderer\Renderables\RobotRenderable.cs" />
     <Compile Include="Renderer\Renderables\IslandRenderable.cs" />
     <Compile Include="Renderer\Renderables\LavaRenderable.cs" />
@@ -246,6 +247,7 @@
     <Compile Include="Simulation\Properties\Rendering\IceSpikeRenderProperty.cs" />
     <Compile Include="Simulation\Properties\Rendering\EnvironmentRenderProperty.cs" />
     <Compile Include="Simulation\Properties\Rendering\ModelRenderProperty.cs" />
+    <Compile Include="Simulation\Properties\Rendering\PowerupRenderProperty.cs" />
     <Compile Include="Simulation\Properties\Rendering\RobotRenderProperty.cs" />
     <Compile Include="Simulation\Properties\Rendering\IslandRenderProperty.cs" />
     <Compile Include="Simulation\Properties\Rendering\HUDProperty.cs" />

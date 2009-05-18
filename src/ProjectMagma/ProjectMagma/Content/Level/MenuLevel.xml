@@ -6,150 +6,79 @@
     <Include name="Level\Constants.xml"/>
     <Include name="Level\Templates.xml"/>
   </Includes>
-
   <!-- "unique" game entities -->
 
-  <Entity name="camera1">
-    <Attributes>
-      <Attribute name="kind" template="string" value="camera"/>
-      <Attribute name="position" template="float3" value="0 420 1065"/>
-      <!--Attribute name="position" template="float3" value="0 420 1065"/-->
-      <Attribute name="target" template="float3" value="0 180 0"/>
-      <Attribute name="up" template="float3" value="0 1 0"/>
-      <Attribute name="fov" template="float" value="33"/>
-      <Attribute name="near_clip" template="float" value="1"/>
-      <Attribute name="far_clip" template="float" value="10000"/>
-    </Attributes>
-    <Properties>
-      <Property name="camera" type="ProjectMagma.Simulation.CameraProperty"/>
-    </Properties>
+  <Entity name="lava" extends="lava_base">
+    <!-- don't mess with the lava, there is nothing to change here. -->
+    <!-- if you know what you are doing, do it in the template. -->
   </Entity>
-
-  <Entity name="lava">
-    <Attributes>
-      <Attribute name="kind" template="string" value="lava"/>
-      <Attribute name="position" template="float3" value="0 0 0"/>
-      <!--Attribute name="scale" template="float3" value="0.8 0.12 0.8"/-->
-      <Attribute name="scale" template="float3" value="800 120 800"/>
-      <!--Attribute name="scale" template="float3" value="1200 4 1200"/-->
-      <!--Attribute name="mesh" template="string" value="Models\Environment\lava6c_wrongdir"/-->
-      <Attribute name="mesh" template="string" value="Models\Environment\lava6c"/>
-      <!--Attribute name="mesh" template="string" value="Models\Primitives\lava_primitive"/-->
-      <Attribute name="sparsestucco_texture" template="string" value="Textures/Lava/sparsestucco"/>
-      <Attribute name="firefractal_texture" template="string" value="Textures/Lava/firefractal"/>
-      <Attribute name="vectorcloud_texture" template="string" value="Textures/Lava/vectorclouds"/>
-      <Attribute name="granite_texture" template="string" value="Textures/Lava/granite"/>
-    </Attributes>
-    <Properties>
-      <Property name="render" type="ProjectMagma.Simulation.LavaRenderProperty"/>
-      <!--Property name="render" type="ProjectMagma.Simulation.BasicRenderProperty"/-->
-    </Properties>
-  </Entity>
-
-  
-  <!-- masses of game elements... -->
-  
   <Entity name="cave" extends="cave_base">
     <!-- don't mess with the cave, there is nothing to change here. -->
     <!-- if you know what you are doing, do it in the template. -->
   </Entity>
-  
+
+  <!-- masses of game elements... -->
+
   <Entity name="pillar1" extends="pillar_base_001">
     <Attributes>
-      <Attribute name="position" template="float3" value="230 -50 260"/>
+      <Attribute name="position" template="float3" value="200 -50 200"/>
     </Attributes>
   </Entity>
 
-  <Entity name="pillar2" extends="pillar_base_003">
+  <Entity name="pillar2" extends="pillar_base_002">
     <Attributes>
-      <Attribute name="position" template="float3" value="-300 -50 150"/>
+      <Attribute name="position" template="float3" value="200 -50 -200"/>
     </Attributes>
   </Entity>
 
   <Entity name="pillar3" extends="pillar_base_002">
     <Attributes>
-      <Attribute name="position" template="float3" value="200 -50 -120"/>
+      <Attribute name="position" template="float3" value="-200 -50 200"/>
     </Attributes>
   </Entity>
 
   <Entity name="pillar4" extends="pillar_base_001">
     <Attributes>
-      <Attribute name="position" template="float3" value="-100 -20 0"/>
+      <Attribute name="position" template="float3" value="-200 -20 -200"/>
     </Attributes>
   </Entity>
 
-  <Entity name="island1" extends="island_base_burnt1">
+  <Entity name="island1" extends="island_base_grass1">
     <Attributes>
-      <Attribute name="position" template="float3" value="60 200 -30"/>
+      <Attribute name="position" template="float3" value="330 200 330"/>
     </Attributes>
   </Entity>
 
-  <Entity name="island2" extends="island_base_burnt2">
+  <Entity name="island2" extends="island_base_grass1">
     <Attributes>
-      <Attribute name="position" template="float3" value="-140 400 -240"/>
+      <Attribute name="position" template="float3" value="330 200 -330"/>
     </Attributes>
   </Entity>
 
-  <Entity name="island3" extends="island_base_burnt3">
+  <Entity name="island3" extends="island_base_grass1">
     <Attributes>
-      <Attribute name="position" template="float3" value="90 280 280"/>
+      <Attribute name="position" template="float3" value="-330 200 330"/>
     </Attributes>
   </Entity>
 
   <Entity name="island4" extends="island_base_grass1">
     <Attributes>
-      <Attribute name="position" template="float3" value="110 350 -300"/>
+      <Attribute name="position" template="float3" value="-330 200 -330"/>
     </Attributes>
   </Entity>
 
-  <Entity name="island5" extends="island_base_grass2">
+  <Entity name="powerup1" extends="powerup_health">
     <Attributes>
-      <Attribute name="position" template="float3" value="150 150 160"/>
+      <Attribute name="island_reference" template="string" value="island4"/>
+      <Attribute name="relative_position" template="float3" value="15 10 15"/>
     </Attributes>
   </Entity>
 
-  
-  <Entity name="island6" extends="island_base_grass3">
+  <Entity name="powerup2" extends="powerup_energy">
     <Attributes>
-      <Attribute name="position" template="float3" value="-30 180 190"/>
+      <Attribute name="island_reference" template="string" value="island2"/>
+      <Attribute name="relative_position" template="float3" value="-20 10 -5"/>
     </Attributes>
   </Entity>
 
-  <Entity name="island7" extends="island_base_grass4">
-    <Attributes>
-      <Attribute name="position" template="float3" value="-250 240 220"/>
-    </Attributes>
-  </Entity>
-
-
-  <Entity name="island8" extends="island_base_ice1">
-    <Attributes>
-      <Attribute name="position" template="float3" value="-150 260 220"/>
-    </Attributes>
-  </Entity>
-
-  <Entity name="island9" extends="island_base_ice2">
-    <Attributes>
-      <Attribute name="position" template="float3" value="-350 210 320"/>
-    </Attributes>
-  </Entity>
-  
-  <Entity name="island10" extends="island_base_ice3">
-    <Attributes>
-      <Attribute name="position" template="float3" value="-150 120 120"/>
-    </Attributes>
-  </Entity>
-
-  <Entity name="island11" extends="island_base_ice4">
-    <Attributes>
-      <Attribute name="position" template="float3" value="50 140 120"/>
-    </Attributes>
-  </Entity>
-
-  <Entity name="island12" extends="island_base_burnt1">
-    <Attributes>
-      <Attribute name="position" template="float3" value="350 180 120"/>
-    </Attributes>
-  </Entity>
-  
 </Level>

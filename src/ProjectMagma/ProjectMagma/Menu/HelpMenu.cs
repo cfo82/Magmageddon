@@ -13,7 +13,7 @@ namespace ProjectMagma
         private readonly Texture2D helpScreen;
 
         public HelpMenu(Menu menu)
-            : base(menu, new Vector2(250, 150))
+            : base(menu, new Vector2(190, 75))
         {
             helpScreen = Game.Instance.ContentManager.Load<Texture2D>("Sprites/Menu/help_screen");
 

@@ -5,7 +5,7 @@ using ProjectMagma.MathHelpers;
 
 namespace ProjectMagma
 {
-    abstract class MenuScreen
+    public abstract class MenuScreen
     {
         protected readonly SpriteFont font;
 
@@ -71,6 +71,7 @@ namespace ProjectMagma
         }
 
         public abstract void Draw(GameTime gameTime, SpriteBatch spriteBatch);
+
 
         public EaseFloat DrawOffset { get; set; }
         public bool DrawPrevious { get; set; }

@@ -826,13 +826,18 @@
     <None Include="Effects\Sfx\ParticleSystem\Stateful\Structs.inc">
       <Name>Structs</Name>
     </None>
+    <Compile Include="Models\PowerUps\powerups_static.fbx">
+      <Name>powerups_static</Name>
+      <Importer>FbxImporter</Importer>
+      <Processor>PowerUpProcessor</Processor>
+    </Compile>
     <Compile Include="Textures\Player\dwarf.tga">
       <Name>dwarf</Name>
       <Importer>TextureImporter</Importer>
       <Processor>TextureProcessor</Processor>
     </Compile>
-    <Compile Include="Fonts\ReleaseNotesFont.spritefont">
-      <Name>ReleaseNotesFont</Name>
+    <Compile Include="Fonts\menu_releasenotes.spritefont">
+      <Name>menu_releasenotes</Name>
       <Importer>FontDescriptionImporter</Importer>
       <Processor>FontDescriptionProcessor</Processor>
     </Compile>

@@ -15,7 +15,7 @@ namespace ProjectMagma.Simulation
         private double dt = 0;
         private double dtMs = 0;
         
-        private double adjustmentMs = 100;
+        private double adjustmentMs = 0;
 
         public SimulationTime(double at)
         {

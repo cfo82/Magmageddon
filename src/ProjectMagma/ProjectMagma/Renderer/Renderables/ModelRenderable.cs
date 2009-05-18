@@ -23,8 +23,10 @@ namespace ProjectMagma.Renderer
         )
         {
             this.Scale = scale;
-            this.rotation = new QuaternionInterpolationHistory(timestamp, rotation);
-            this.position = new Vector3InterpolationHistory(timestamp, position);
+            //this.rotation = new QuaternionInterpolationHistory(timestamp, rotation);
+            //this.position = new Vector3InterpolationHistory(timestamp, position);
+            this.rotation = rotation;
+            this.position = position;
             this.Model = model;
             this.boneTransforms = new Matrix[Model.Bones.Count];
             SkyLightStrength = 1.0f;
@@ -63,7 +65,8 @@ namespace ProjectMagma.Renderer
         {
             base.Update(renderer);
 
-            position.InvalidateUntil(renderer.Time.At);
+            //position.InvalidateUntil(renderer.PausableTime.At);
+            //rotation.InvalidateUntil(renderer.PausableTime.At);
         }
 
         public override void Draw(Renderer renderer)
@@ -268,7 +271,8 @@ namespace ProjectMagma.Renderer
 
             if (id == "Rotation")
             {
-                rotation.AddKeyframe(timestamp, value);
+                //rotation.AddKeyframe(timestamp, value);
+                rotation = value;
             }
         }
 
@@ -278,7 +282,8 @@ namespace ProjectMagma.Renderer
 
             if (id == "Position")
             {
-                this.position.AddKeyframe(timestamp, value);
+                //this.position.AddKeyframe(timestamp, value);
+                position = value;
             }
             else if (id == "Scale")
             {
@@ -288,12 +293,12 @@ namespace ProjectMagma.Renderer
 
         public Vector3 Scale { get; set; }
         public Quaternion Rotation
-        { 
-            get { return rotation.Evaluate(Game.Instance.Renderer.Time.PausableAt); }
+        {
+            get { return rotation; }// return rotation.Evaluate(Game.Instance.Renderer.Time.PausableAt); }
         }
         public override Vector3 Position
         {
-            get { return position.Evaluate(Game.Instance.Renderer.Time.PausableAt); }
+            get { return position; }// return position.Evaluate(Game.Instance.Renderer.Time.PausableAt); }
         }
         
         protected Model Model { get; set; }
@@ -308,8 +313,10 @@ namespace ProjectMagma.Renderer
 
         PartEffectMapping defaultEffectMapping;
 
-        private Vector3InterpolationHistory position;
-        private QuaternionInterpolationHistory rotation;
+        //private Vector3InterpolationHistory position;
+        //private QuaternionInterpolationHistory rotation;
+        private Vector3 position;
+        private Quaternion rotation;
 
         private Matrix[] boneTransforms;
     }

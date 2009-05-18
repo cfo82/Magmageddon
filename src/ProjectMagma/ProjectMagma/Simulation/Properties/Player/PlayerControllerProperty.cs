@@ -555,7 +555,7 @@ namespace ProjectMagma.Simulation
                         flameThrowerSoundInstance = flameThrowerSound.Play(Game.Instance.EffectsVolume, 1, 0, true);
 
                         // todo: extract offset
-                        Vector3 pos = new Vector3(playerPosition.X + 10, playerPosition.Y + 10, playerPosition.Z);
+                        Vector3 pos = new Vector3(playerPosition.X - 10, playerPosition.Y + 40, playerPosition.Z);
                         Vector3 viewVector = Vector3.Transform(new Vector3(0, 0, 1), GetRotation(player));
 
                         flame = new Entity("flame" + "_" + player.Name);

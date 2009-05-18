@@ -9,6 +9,7 @@
       <Attribute name="position" template="float3" value="60 160 -30"/>
       <Attribute name="landing_offset" template="float3" value="0 70 0"/>
       <Attribute name="scale" template="float3" value="70 70 70"/>
+      <Attribute name="rotation" template="quaternion" value="0 0 0 1"/>
       
       <Attribute name="velocity" template="float3" value="0 0 0"/>
       

@@ -763,11 +763,12 @@ namespace ProjectMagma.Simulation
                     }
                     else
                      */
-                    if (player.GetVector3("hit_pushback_velocity") == Vector3.Zero)
-                        {
-                            // set position to contact point
-                            playerPosition.Y = isectPt.Y + 1; // todo: make constant?
-                        }
+                    // todo: not in future
+//                    if (player.GetVector3("hit_pushback_velocity") == Vector3.Zero)
+                    {
+                        // set position to contact point
+                        playerPosition.Y = isectPt.Y + 1; // todo: make constant?
+                    }
                 }
                 else
                 // not over island anymore
@@ -1271,16 +1272,14 @@ namespace ProjectMagma.Simulation
                 CheckPlayerAttributeRanges(otherPlayer);
 
                 // set values
-                Vector3 velocity = normal * constants.GetVector3("hit_pushback_velocity_multiplier");
+                // todo: bring back up vector! -> needs change in psotion in island too
+                Vector3 velocity = (normal /*+ Vector3.UnitY*/) * constants.GetVector3("hit_pushback_velocity_multiplier");
                 otherPlayer.SetVector3("hit_pushback_velocity", velocity);
                 otherPlayer.SetVector3("position", otherPlayer.GetVector3("position") + velocity * simTime.Dt);
                 hitPerformedAt = simTime.At;
 
                 // indicate in model
                 (otherPlayer.GetProperty("render") as RobotRenderProperty).NextOnceState = "pushback";
-
-                // leave island
-                LeaveActiveIsland();
             }
             else
             {

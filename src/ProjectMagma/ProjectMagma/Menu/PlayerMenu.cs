@@ -26,7 +26,7 @@ namespace ProjectMagma
         private readonly GamePadState[] previousState = new GamePadState[4];
 
         public PlayerMenu(Menu menu, LevelMenu levelMenu)
-            : base(menu, new Vector2(360, 160))
+            : base(menu, new Vector2(450, 200))
         {
             this.levelMenu = levelMenu;
 

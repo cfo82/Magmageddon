@@ -37,14 +37,14 @@
     <endframe>90</endframe>
   </animationsubset>
   <animationsubset>
-    <name>attack_long_end</name>
-    <startframe>91</startframe>
-    <endframe>97</endframe>
+    <name>attack_long_hold</name>
+    <startframe>90</startframe>
+    <endframe>91</endframe>
   </animationsubset>
   <animationsubset>
-    <name>walk_fast</name>
-    <startframe>98</startframe>
-    <endframe>106</endframe>
+    <name>attack_long_end</name>
+    <startframe>92</startframe>
+    <endframe>97</endframe>
   </animationsubset>
   <animationsubset>
     <name>death</name>
@@ -65,5 +65,30 @@
     <name>walk</name>
     <startframe>166</startframe>
     <endframe>176</endframe>
+  </animationsubset>
+  <animationsubset>
+    <name>walk</name>
+    <startframe>177</startframe>
+    <endframe>190</endframe>
+  </animationsubset>
+  <animationsubset>
+    <name>attack_spin</name>
+    <startframe>191</startframe>
+    <endframe>217</endframe>
+  </animationsubset>
+  <animationsubset>
+    <name>crouch_start</name>
+    <startframe>218</startframe>
+    <endframe>232</endframe>
+  </animationsubset>
+  <animationsubset>
+    <name>crouch_loop</name>
+    <startframe>233</startframe>
+    <endframe>235</endframe>
+  </animationsubset>
+  <animationsubset>
+    <name>crouch_end</name>
+    <startframe>236</startframe>
+    <endframe>245</endframe>
   </animationsubset>
 </animation>

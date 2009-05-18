@@ -1255,6 +1255,7 @@ namespace ProjectMagma.Simulation
             if (player.GetVector3("velocity").Y < 0) // stop downwards velocity
             {
                 Vector3 velocity = player.GetVector3("velocity");
+                // todo: extract constant
                 player.SetVector3("velocity", velocity - velocity * 0.9f * simTime.Dt * 25);
             }
             Game.Instance.Simulation.ApplyPerSecondSubstraction(player, "lava_damage", constants.GetInt("lava_damage_per_second"),

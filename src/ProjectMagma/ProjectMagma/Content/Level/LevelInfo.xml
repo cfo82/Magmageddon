@@ -3,21 +3,21 @@
 <Levels>
 
   <Level>
-    <Name>1000 Islands</Name>
-    <Description>A level to test!</Description>
-    <FileName>Level\TestLevel</FileName>
+    <Name>FOR NOOBS</Name>
+    <Description>A beginner level</Description>
+    <FileName>Level\4Noobs</FileName>
   </Level>
 
   <Level>
-    <Name>4 vs 4</Name>
+    <Name>4 VS 4</Name>
     <Description>Hardcore Deathmatch</Description>
     <FileName>Level\4vs4</FileName>
   </Level>
 
   <Level>
-    <Name>4 Noobs</Name>
-    <Description>A beginner level</Description>
-    <FileName>Level\4Noobs</FileName>
+    <Name>1000 ISLANDS</Name>
+    <Description>A level to test!</Description>
+    <FileName>Level\TestLevel</FileName>
   </Level>
 
 </Levels>

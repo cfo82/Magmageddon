@@ -11,7 +11,7 @@ namespace ProjectMagma.Renderer
 {
     public class Camera
     {
-        private static readonly float cameraSpeed = 0.007f;
+        private static readonly float cameraSpeed = 0.004f;
         private static readonly Vector3 initialPosition = new Vector3(0, 450, 1065);
         private static readonly Vector3 initialTarget = new Vector3(0, 180, 0);
 
@@ -75,19 +75,19 @@ namespace ProjectMagma.Renderer
 
         public void GoTo(Vector3 pos)
         {
-            pos.X = Math.Max(pos.X, -100.0f);
-            pos.X = Math.Min(pos.X, 100.0f);
+            pos.X = Math.Max(pos.X, -300.0f);
+            pos.X = Math.Min(pos.X, 300.0f);
             //pos.Y = Math.Max(pos.Y, 400);
             //pos.Y = Math.Min(pos.Y, 600.0f);
-            //pos.Z = Math.Max(pos.Z, -200.0f);
-            //pos.Z = Math.Min(pos.Z, 1300.0f);
+            pos.Z = Math.Max(pos.Z, 600.0f);
+            pos.Z = Math.Min(pos.Z, 1300.0f);
             centerController.TargetValue = pos;
         }
 
         public void GoToTarget(Vector3 pos)
         {
-            pos.X = Math.Max(pos.X, -100.0f);
-            pos.X = Math.Min(pos.X, 100.0f);
+            pos.X = Math.Max(pos.X, -300.0f);
+            pos.X = Math.Min(pos.X, 300.0f);
             targetController.TargetValue = pos;
         }
         float maxWorldY;
@@ -174,6 +174,7 @@ namespace ProjectMagma.Renderer
             targetCorrection += Vector3.Right * (xCenter);
 
             // y-move appropriately
+            correction += -Up * (((float)(centerController.Value.Y - initialPosition.Y)) / renderer.Device.Viewport.Width);
             //correction += Up * (-0.2f-min.Y + 0.2f-max.Y) * 0.2f;
             //targetCorrection += Vector3.Down * (max.Y - 0.5f) * 0.2f;
 

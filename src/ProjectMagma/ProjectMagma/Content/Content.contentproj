@@ -334,8 +334,8 @@
       <Processor>TextureProcessor</Processor>
       <ProcessorParameters_ColorKeyEnabled>False</ProcessorParameters_ColorKeyEnabled>
     </Compile>
-    <Compile Include="Fonts\MenuFont.spritefont">
-      <Name>MenuFont</Name>
+    <Compile Include="Fonts\menu_item.spritefont">
+      <Name>menu_item</Name>
       <Importer>FontDescriptionImporter</Importer>
       <Processor>FontDescriptionProcessor</Processor>
     </Compile>

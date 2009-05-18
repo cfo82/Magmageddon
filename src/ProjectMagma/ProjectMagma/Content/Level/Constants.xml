@@ -30,7 +30,7 @@
       <Attribute name="max_jetpack_speed" template="float" value="200"/>
       <Attribute name="jetpack_acceleration" template="float3" value="0 1600 0"/>
 
-      <Attribute name="simple_jump_gravity_acceleration" template="float3" value="0 -2400 0"/>
+      <Attribute name="simple_jump_gravity_acceleration" template="float3" value="0 -2000 0"/>
       
       <Attribute name="ice_spike_aim_angle" template="float" value="90"/>
       <Attribute name="ice_spike_energy_cost" template="int" value="35"/>

@@ -24,13 +24,13 @@ namespace ProjectMagma.Simulation
         private static readonly float StickMovementEps = 0.1f;
         
         // gamepad buttons
-        private static readonly Buttons[] RepulsionButtons = { Buttons.LeftTrigger };
+        private static readonly Buttons[] RepulsionButtons = { Buttons.RightTrigger };
         private static readonly Buttons[] AttractionButtons = { Buttons.A };
         private static readonly Buttons[] JetpackButtons = { Buttons.A };
         private static readonly Buttons[] IceSpikeButtons = { Buttons.X };
         private static readonly Buttons[] FlamethrowerButtons = { Buttons.Y };
         private static readonly Buttons[] HitButtons = { Buttons.B };
-        private static readonly Buttons[] RunButtons = { Buttons.RightTrigger };
+        private static readonly Buttons[] RunButtons = { Buttons.LeftTrigger };
 
         // keyboard keys
         private static readonly Keys JetpackKey = Keys.Space;
@@ -374,15 +374,21 @@ namespace ProjectMagma.Simulation
                 }
                 else // only jump up
                 {
-                    simpleJumpIsland = activeIsland;
-                    LeaveActiveIsland();
-
-                    ((Vector3Attribute)simpleJumpIsland.Attributes["position"]).ValueChanged += IslandPositionHandler;
-
-                    playerVelocity = (float) Math.Sqrt(constants.GetFloat("island_jump_arc_height") / 2 / constants.GetVector3("gravity_acceleration").Length())
-                        * -constants.GetVector3("gravity_acceleration");
+                    StartSimpleJump(ref playerVelocity);
                 }
             }
+        }
+
+        private Vector3 StartSimpleJump(ref Vector3 playerVelocity)
+        {
+            simpleJumpIsland = activeIsland;
+            LeaveActiveIsland();
+
+            ((Vector3Attribute)simpleJumpIsland.Attributes["position"]).ValueChanged += IslandPositionHandler;
+
+            playerVelocity = (float)Math.Sqrt(constants.GetFloat("island_jump_arc_height") / constants.GetVector3("gravity_acceleration").Length())
+                * -constants.GetVector3("simple_jump_gravity_acceleration");
+            return playerVelocity;
         }
 
         private void StartIslandJump(Entity island, ref Vector3 playerPosition, ref Vector3 playerVelocity)
@@ -780,7 +786,15 @@ namespace ProjectMagma.Simulation
                 if (playerVelocity.Length() <= constants.GetFloat("max_gravity_speed")
                     || playerVelocity.Y > 0) // gravity max speed only applies for downwards speeds
                 {
-                    playerVelocity += constants.GetVector3("gravity_acceleration") * dt;
+                    // todo: hack hack hack
+                    if (simpleJumpIsland != null)
+                    {
+                        playerVelocity += constants.GetVector3("simple_jump_gravity_acceleration") * dt;
+                    }
+                    else
+                    {
+                        playerVelocity += constants.GetVector3("gravity_acceleration") * dt;
+                    }
                 }
             }
         }

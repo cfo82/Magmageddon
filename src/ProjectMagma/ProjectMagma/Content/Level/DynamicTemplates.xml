@@ -74,7 +74,7 @@
     </Attributes>
     <Properties>
       <Property name="renderer" type="ProjectMagma.Simulation.FlamethrowerRenderProperty"/>
-      <Property name="renderer1" type="ProjectMagma.Simulation.BasicRenderProperty"/>
+      <!--<Property name="renderer1" type="ProjectMagma.Simulation.BasicRenderProperty"/>-->
       <Property name="collision" type="ProjectMagma.Simulation.Collision.CollisionProperty"/>
       <Property name="controller" type="ProjectMagma.Simulation.FlamethrowerControllerProperty"/>
     </Properties>

@@ -10,8 +10,7 @@ namespace ProjectMagma
         readonly MenuScreen helpMenu;
 
         public MainMenu(Menu menu)
-            //: base(menu, new Vector2(230, 650), 200)
-            : base(menu, new Vector2(640, 500), 200)
+            : base(menu, 200)
         {
             this.menuItems = new MenuItem[] { 
                 new MenuItem("new_game", "NEW GAME", new ItemSelectionHandler(NewGameHandler)),

@@ -10,7 +10,7 @@ namespace ProjectMagma
         readonly MenuScreen playerMenu;
 
         public LevelMenu(Menu menu)
-            : base(menu, new Vector2(280, 600), 200)
+            : base(menu, 450)
         {
             List<LevelInfo> levels = Game.Instance.Levels;
             this.menuItems = new MenuItem[levels.Count];

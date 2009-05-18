@@ -17,6 +17,8 @@ namespace ProjectMagma
             this.font = Game.Instance.ContentManager.Load<SpriteFont>("Fonts/menu_item");
             this.menu = menu;
             this.position = position;
+
+            DrawPrevious = true;
         }
 
         public Vector2 Position
@@ -67,5 +69,8 @@ namespace ProjectMagma
         }
 
         public abstract void Draw(GameTime gameTime, SpriteBatch spriteBatch);
+
+        public float DrawOffset { get; set; }
+        public bool DrawPrevious { get; set; }
     }
 }

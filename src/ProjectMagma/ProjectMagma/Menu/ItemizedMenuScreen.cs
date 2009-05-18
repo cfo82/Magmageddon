@@ -8,17 +8,16 @@ namespace ProjectMagma
     abstract class ItemizedMenuScreen : MenuScreen
     {
         readonly int width;
-
         protected int selected = 0;
-
         SineFloat selectedSize, unselectedSize;
 
-        public ItemizedMenuScreen(Menu menu, Vector2 position, int width) :
-            base(menu, position)
+        public ItemizedMenuScreen(Menu menu, int width) :
+            base(menu, new Vector2(640, 360))
         {
             this.width = width;
             selectedSize = new SineFloat(0.7f, 0.9f, 10.0f);
             unselectedSize = new SineFloat(0.48f, 0.52f, 3.0f);
+            selectedSize.Start(Game.Instance.GlobalClock.ContinuousMilliseconds);
             unselectedSize.Start(Game.Instance.GlobalClock.ContinuousMilliseconds);
         }
 
@@ -114,7 +113,7 @@ namespace ProjectMagma
             float itemHeight = 50f;
 
             // draw the individual items
-            Vector2 pos = Position;
+            Vector2 pos = new Vector2(640 + DrawOffset, 360 + MenuItems.Length*itemHeight/2);
             for (int i = MenuItems.Length - 1; i >= 0; i--)
             {
                 MenuItem item = MenuItems[i];

@@ -16,6 +16,8 @@ namespace ProjectMagma
             : base(menu, new Vector2(250, 150))
         {
             helpScreen = Game.Instance.ContentManager.Load<Texture2D>("Sprites/Menu/help_screen");
+
+            DrawPrevious = false;
         }
 
         public override void Update(GameTime gameTime)

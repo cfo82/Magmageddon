@@ -115,10 +115,35 @@ namespace ProjectMagma
 
                 spriteBatch.Draw(background, new Vector2(0, 0), Color.White);
 
-                foreach (MenuScreen screen in screens)
+                // first traversal: sum up total width of all screens
+                int totalWidth = 0;
+                foreach(MenuScreen screen in screens)
                 {
-                    screen.Draw(gameTime, spriteBatch);
+                    if (screen is ItemizedMenuScreen)
+                    {
+                        totalWidth += (screen as ItemizedMenuScreen).Width;
+                    }                    
                 }
+
+                // second traversal (backwards): compute individual x offsets and draw the screens
+                int offset = 0;
+                LinkedListNode<MenuScreen> node = screens.Last;
+                do
+                {
+                    MenuScreen screen = node.Value;
+                    //screen.DrawOffset = offset - totalWidth + (screens.Last.Value as ItemizedMenuScreen).Width/2;
+                    screen.DrawOffset = offset;// -totalWidth / 2 + (screen as ItemizedMenuScreen).Width / 2;//- 640;// +640 - totalWidth / 2;
+                    screen.Draw(gameTime, spriteBatch);
+                    if (screen is ItemizedMenuScreen)
+                    {
+                        offset -= (screen as ItemizedMenuScreen).Width;
+                    }
+                    node = node.Previous;
+
+                    if (!screen.DrawPrevious)
+                        break;
+                }
+                while (node != null);
 
                 spriteBatch.End();
             }

@@ -1252,8 +1252,11 @@ namespace ProjectMagma.Simulation
 
         private void PlayerLavaCollisionHandler(SimulationTime simTime, Entity player, Entity lava)
         {
-            if(player.GetVector3("velocity").Y < 0) // stop downwards velocity
-                player.SetVector3("velocity", Vector3.Zero);
+            if (player.GetVector3("velocity").Y < 0) // stop downwards velocity
+            {
+                Vector3 velocity = player.GetVector3("velocity");
+                player.SetVector3("velocity", velocity - velocity * 0.9f * simTime.Dt * 25);
+            }
             Game.Instance.Simulation.ApplyPerSecondSubstraction(player, "lava_damage", constants.GetInt("lava_damage_per_second"),
                 player.GetIntAttribute("health"));
         }

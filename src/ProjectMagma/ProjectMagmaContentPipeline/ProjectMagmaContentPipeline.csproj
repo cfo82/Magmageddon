@@ -120,7 +120,7 @@
     <Compile Include="Math\Primitives\Serialization\VolumeCollectionWriter.cs" />
     <Compile Include="Model\Processors\CaveProcessor.cs" />
     <Compile Include="Model\Processors\DefaultProcessor.cs" />
-    <Compile Include="Model\Processors\DwarfProcessor.cs" />
+    <Compile Include="Model\Processors\RobotProcessor.cs" />
     <Compile Include="Model\Processors\ExplosionProcessor.cs" />
     <Compile Include="Model\Processors\FlameProcessor.cs" />
     <Compile Include="Model\Processors\PowerUpProcessor.cs" />
@@ -129,7 +129,6 @@
     <Compile Include="Model\Processors\LavaProcessor.cs" />
     <Compile Include="Model\Processors\MagmaModelProcessor.cs" />
     <Compile Include="Model\Processors\PillarProcessor.cs" />
-    <Compile Include="Model\Processors\PlayerProcessor.cs" />
     <Compile Include="Model\MagmaModelContent.cs" />
     <Compile Include="Model\Serialization\MagmaModelContentWriter.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

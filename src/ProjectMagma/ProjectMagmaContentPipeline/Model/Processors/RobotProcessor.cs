@@ -4,7 +4,7 @@ using ProjectMagma.Shared.Math.Primitives;
 
 namespace ProjectMagma.ContentPipeline.ModelProcessors
 {
-    [ContentProcessor(DisplayName = "Magma - Dwarf Processor")]
+    [ContentProcessor(DisplayName = "Magma - Robot Processor")]
     public class DwarfProcessor : MagmaModelProcessor<Xclna.Xna.Animation.Content.AnimatedModelProcessor>
     {
         protected override string GetContainerGroupImporter()

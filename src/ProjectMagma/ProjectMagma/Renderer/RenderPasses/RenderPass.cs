@@ -13,7 +13,7 @@ namespace ProjectMagma.Renderer
             this.spriteBatch = new SpriteBatch(renderer.Device);
         }
 
-        public abstract void Render(GameTime gameTime);
+        public abstract void Render();
 
         protected Renderer Renderer { get; set; }
 

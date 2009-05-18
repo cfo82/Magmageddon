@@ -10,8 +10,8 @@ namespace ProjectMagma.Renderer
 {
     public class EnvironmentRenderable : TexturedRenderable
     {
-        public EnvironmentRenderable(Vector3 scale, Quaternion rotation, Vector3 position, Model model, Texture2D diffuseTexture, Texture2D specularTexture, Texture2D normalTexture)
-            : base(scale, rotation, position, model, diffuseTexture, specularTexture, normalTexture)
+        public EnvironmentRenderable(double timestamp, Vector3 scale, Quaternion rotation, Vector3 position, Model model, Texture2D diffuseTexture, Texture2D specularTexture, Texture2D normalTexture)
+        :   base(timestamp, scale, rotation, position, model, diffuseTexture, specularTexture, normalTexture)
         {
             randomOffset = new DoublyIntegratedVector2
             (
@@ -40,9 +40,9 @@ namespace ProjectMagma.Renderer
             effect.Parameters["DirLight1BottomAmpStrength"].SetValue(3);
         }
 
-        public override void UpdateFloat(string id, float value)
+        public override void UpdateFloat(string id, double timestamp, float value)
         {
-            base.UpdateFloat(id, value);
+            base.UpdateFloat(id, timestamp, value);
 
             if (id == "EnvGroundWavesAmplitude")
             {

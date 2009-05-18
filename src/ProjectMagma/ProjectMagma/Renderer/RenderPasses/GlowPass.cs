@@ -13,7 +13,7 @@ namespace ProjectMagma.Renderer
             gaussianBlurEffect = Game.Instance.ContentManager.Load<Effect>("Effects/BlurModified");
         }
 
-        public override void Render(GameTime gameTime)
+        public override void Render()
         {
             //SetBlurEffectParameters(1.0f / Renderer.Device.Viewport.Width, 0);
             //DrawFullscreenQuad(Renderer.RenderChannels, Renderer.Device.Viewport.Width, Renderer.Device.Viewport.Height / 2, gaussianBlurEffect);

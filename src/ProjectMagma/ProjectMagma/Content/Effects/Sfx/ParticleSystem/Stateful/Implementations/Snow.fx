@@ -1,6 +1,9 @@
-#include "../CreateParticles.fx"
-#include "../UpdateParticles.fx"
-#include "../RenderParticles.fx"
+#include "../Params.inc"
+#include "../Structs.inc"
+#include "../Samplers.inc"
+#include "../DefaultCreateParticles.inc"
+#include "../DefaultUpdateParticles.inc"
+#include "../DefaultRenderParticles.inc"
 
 
 
@@ -18,6 +21,7 @@ float3 WindForce;
 struct RenderSnowParticlesVertexShaderOutput
 {
     float4 Position : POSITION0;
+    float4 PositionCopy : POSITION1;
     float4 Color : COLOR0;
     float4 RandomValues : COLOR1;
     float Size : PSIZE0;
@@ -60,8 +64,8 @@ UpdateParticlesPixelShaderOutput UpdateSnowPixelShader(
 {
 	UpdateParticlesPixelShaderOutput output;
 	
-	float4 position_sample = tex2D(UpdateParticlesPositionSampler, ParticleCoordinate);
-	float4 velocity_sample = tex2D(UpdateParticlesVelocitySampler, ParticleCoordinate);
+	float4 position_sample = tex2D(PositionSampler, ParticleCoordinate);
+	float4 velocity_sample = tex2D(VelocitySampler, ParticleCoordinate);
 
 	float current_time_to_death = position_sample.w;
 	float age = SnowParticleLifetime-current_time_to_death;
@@ -104,7 +108,7 @@ RenderSnowParticlesVertexShaderOutput RenderSnowVertexShader(
 {
     RenderSnowParticlesVertexShaderOutput output;
 
-	float4 position_sampler_value = tex2Dlod(RenderParticlesPositionSampler, float4(input.ParticleCoordinate , 0, 0));
+	float4 position_sampler_value = tex2Dlod(PositionSampler, float4(input.ParticleCoordinate , 0, 0));
 
 	if (position_sampler_value.w > 0)
 	{
@@ -116,14 +120,14 @@ RenderSnowParticlesVertexShaderOutput RenderSnowVertexShader(
 	    
 		float normalizedAge = 1.0 - position_sampler_value.w/SnowParticleLifetime;
 	    
-		output.Position = mul(view_position, Projection);
+		output.PositionCopy = output.Position = mul(view_position, Projection);
 		output.Size = 7 + random_sampler_value.x*10;
 		output.Color = float4(1,1,1,min(0.6, 1-normalizedAge) * lerp(1, 0.6, normalizedAge));
 		output.RandomValues = random_sampler_value;
 	}
 	else
 	{
-		output.Position = float4(-10,-10,0,0);
+		output.PositionCopy = output.Position = float4(-10,-10,0,0);
 		output.Size = 0;
 		output.Color = float4(0,0,0,0);
 		output.RandomValues = float4(0,0,0,0);
@@ -150,7 +154,7 @@ float4 RenderSnowPixelShader(
 	int verticalIndex = spriteNumber%2;
 
 	float2 modifiedTextureCoordinates = float2(particleCoordinate.x/2 + horizontalIndex*0.5, particleCoordinate.y/2 + verticalIndex*0.5);
-    return input.Color*tex2D(RenderParticlesSpriteSampler, modifiedTextureCoordinates);
+    return input.Color*tex2D(SpriteSampler, modifiedTextureCoordinates);
 }
 
 

@@ -94,7 +94,7 @@ namespace ProjectMagma.Simulation
             string islandTextureName = entity.GetString("diffuse_texture");
             Texture2D islandTexture = Game.Instance.ContentManager.Load<Texture2D>(islandTextureName);
 
-            return new IslandRenderable(scale, rotation, position, model, islandTexture);
+            return new IslandRenderable(Game.Instance.Simulation.Time.At, scale, rotation, position, model, islandTexture);
         }
 
         protected override void SetUpdatableParameters(Entity entity)

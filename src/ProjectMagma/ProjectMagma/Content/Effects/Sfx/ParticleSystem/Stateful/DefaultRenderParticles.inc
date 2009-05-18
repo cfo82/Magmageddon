@@ -1,73 +1,3 @@
-//-----------------------------------------------------------------------------------------------------------
-float4x4 View;
-float4x4 Projection;
-float2 StartSize;
-float2 EndSize;
-float4 MinColor = float4(1,1,1,1);
-float4 MaxColor = float4(1,1,1,1);
-float ViewportHeight;
-float Time;
-
-texture RenderParticlesPositionTexture;
-texture RenderParticlesSpriteTexture;
-texture RandomTexture;
-
-
-
-
-//-----------------------------------------------------------------------------------------------------------
-sampler RenderParticlesPositionSampler = sampler_state
-{
-    Texture = (RenderParticlesPositionTexture);
-    
-    MinFilter = Point;
-    MagFilter = Point;
-    MipFilter = Point;
-    
-    AddressU = Clamp;
-    AddressV = Clamp;
-};
-sampler2D RandomSampler = sampler_state
-{
-	Texture = (RandomTexture);
-	
-	MinFilter = Linear;
-	MagFilter = Linear;
-	MipFilter = Linear;
-	
-	AddressU = Wrap;
-	AddressV = Wrap;
-};
-sampler RenderParticlesSpriteSampler = sampler_state
-{
-    Texture = (RenderParticlesSpriteTexture);
-    
-    MinFilter = Linear;
-    MagFilter = Linear;
-    MipFilter = Linear;
-    
-    AddressU = Clamp;
-    AddressV = Clamp;
-};
-
-
-
-
-//-----------------------------------------------------------------------------------------------------------
-struct RenderParticlesVertexShaderInput
-{
-	float2 ParticleCoordinate : TEXCOORD0;
-};
-
-struct RenderParticlesVertexShaderOutput
-{
-    float4 Position : POSITION0;
-    float4 Color : COLOR0;
-    float Size : PSIZE0;
-};
-
-
-
 
 //-----------------------------------------------------------------------------------------------------------
 float ComputeParticleSize(float4 projectedPosition,
@@ -114,7 +44,7 @@ RenderParticlesVertexShaderOutput RenderParticlesVertexShader(
 {
     RenderParticlesVertexShaderOutput output;
 
-	float4 position_sampler_value = tex2Dlod(RenderParticlesPositionSampler, float4(input.ParticleCoordinate , 0, 0));
+	float4 position_sampler_value = tex2Dlod(PositionSampler, float4(input.ParticleCoordinate , 0, 0));
 
 	if (position_sampler_value.w > 0)
 	{
@@ -126,13 +56,13 @@ RenderParticlesVertexShaderOutput RenderParticlesVertexShader(
 	    
 		float normalizedAge = 1.0 - position_sampler_value.w/7.0f;
 	    
-		output.Position = mul(view_position, Projection);
+		output.PositionCopy = output.Position = mul(view_position, Projection);
 		output.Size = ComputeParticleSize(output.Position, 0.5, normalizedAge);
 		output.Color = ComputeParticleColor(0.25, normalizedAge);
 	}
 	else
 	{
-		output.Position = float4(-10,-10,0,0);
+		output.PositionCopy = output.Position = float4(-10,-10,0,0);
 		output.Size = 0;
 		output.Color = float4(0,0,0,0);
 	}
@@ -154,5 +84,5 @@ float4 RenderParticlesPixelShader(
 
 ) : COLOR0
 {
-    return input.Color*tex2D(RenderParticlesSpriteSampler, particleCoordinate);
+    return input.Color*tex2D(SpriteSampler, particleCoordinate);
 }

@@ -1,6 +1,9 @@
-#include "./CreateParticles.fx"
-#include "./UpdateParticles.fx"
-#include "./RenderParticles.fx"
+#include "./Params.inc"
+#include "./Structs.inc"
+#include "./Samplers.inc"
+#include "./DefaultCreateParticles.inc"
+#include "./DefaultUpdateParticles.inc"
+#include "./DefaultRenderParticles.inc"
 
 
 

@@ -1,6 +1,9 @@
-#include "../CreateParticles.fx"
-#include "../UpdateParticles.fx"
-#include "../RenderParticles.fx"
+#include "../Params.inc"
+#include "../Structs.inc"
+#include "../Samplers.inc"
+#include "../DefaultCreateParticles.inc"
+#include "../DefaultUpdateParticles.inc"
+#include "../DefaultRenderParticles.inc"
 
 
 
@@ -30,8 +33,8 @@ UpdateParticlesPixelShaderOutput UpdateSmokePixelShader(
 {
 	UpdateParticlesPixelShaderOutput output;
 	
-	float4 position_sample = tex2D(UpdateParticlesPositionSampler, ParticleCoordinate);
-	float4 velocity_sample = tex2D(UpdateParticlesVelocitySampler, ParticleCoordinate);
+	float4 position_sample = tex2D(PositionSampler, ParticleCoordinate);
+	float4 velocity_sample = tex2D(VelocitySampler, ParticleCoordinate);
 	
 	float3 current_position = position_sample.xyz;
 	float3 current_velocity = velocity_sample.xyz;

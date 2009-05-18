@@ -37,6 +37,7 @@ namespace ProjectMagma
             background = Game.Instance.ContentManager.Load<Texture2D>("Sprites/Menu/background");
 
             mainMenu = new MainMenu(this);
+            releaseNotesMenu = new ReleaseNotesMenu(this);
         }
 
         internal void Update(GameTime gameTime)
@@ -162,6 +163,12 @@ namespace ProjectMagma
             {
                 Close();
             }
+            else if (activeScreen == releaseNotesMenu)
+            {
+                screens.Last.Value.OnClose();
+                screens.RemoveLast();
+                Open();
+            }
             else
             {
                 screens.Last.Value.OnClose();
@@ -174,6 +181,12 @@ namespace ProjectMagma
         {
             active = true;
             OpenMenuScreen(mainMenu);
+        }
+
+        public void OpenReleaseNotes()
+        {
+            active = true;
+            OpenMenuScreen(releaseNotesMenu);
         }
 
         public void Close()
@@ -201,6 +214,7 @@ namespace ProjectMagma
         private readonly LinkedList<MenuScreen> screens = new LinkedList<MenuScreen>();
 
         private MainMenu mainMenu;
+        private ReleaseNotesMenu releaseNotesMenu;
 
         private SpriteBatch spriteBatch;
 

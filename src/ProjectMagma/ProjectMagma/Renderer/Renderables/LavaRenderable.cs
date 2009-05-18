@@ -32,7 +32,7 @@ namespace ProjectMagma.Renderer
                 this.pillarInfo = pillarInfo;
             }
 
-            public override void Apply()
+            public override void Apply(double timestamp)
             {
                 ((LavaRenderable)updatable).AddPillarInfo(pillarInfo);
             }
@@ -50,7 +50,7 @@ namespace ProjectMagma.Renderer
                 Debug.Assert(updatable.GetType() == typeof(LavaRenderable));
             }
 
-            public override void Apply()
+            public override void Apply(double timestamp)
             {
                 ((LavaRenderable)updatable).RecomputeLavaTemperatureTexture();
             }
@@ -58,14 +58,14 @@ namespace ProjectMagma.Renderer
 
         #endregion
 
-        public LavaRenderable(Vector3 scale, Quaternion rotation, Vector3 position, Model model,
+        public LavaRenderable(double timestamp, Vector3 scale, Quaternion rotation, Vector3 position, Model model,
             Texture2D sparseStuccoTexture,
             Texture2D fireFractalTexture,
             Texture2D vectorCloudTexture,
             Texture2D graniteTexture,
             PillarInfo[] pillarInfos
             )
-            : base(scale, rotation, position, model)
+        :   base(timestamp, scale, rotation, position, model)
         {
             UseLights = false;
             UseMaterialParameters = false;

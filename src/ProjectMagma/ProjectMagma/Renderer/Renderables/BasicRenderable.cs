@@ -5,8 +5,8 @@ namespace ProjectMagma.Renderer
 {
     public class BasicRenderable : ModelRenderable
     {
-        public BasicRenderable(Vector3 scale, Quaternion rotation, Vector3 position, Model model)
-            : base(scale, rotation, position, model)
+        public BasicRenderable(double timestamp, Vector3 scale, Quaternion rotation, Vector3 position, Model model)
+        :   base(timestamp, scale, rotation, position, model)
         {
             start_squash = false;
             start_blinking = false;
@@ -159,9 +159,9 @@ namespace ProjectMagma.Renderer
             effect.Parameters["SpecularPower"].SetValue(SpecularPower);
         }
 
-        public override void UpdateBool(string id, bool value)
+        public override void UpdateBool(string id, double timestamp, bool value)
         {
-            base.UpdateBool(id, value);
+            base.UpdateBool(id, timestamp, value);
 
             if (id == "Squash")
             {
@@ -177,9 +177,9 @@ namespace ProjectMagma.Renderer
             }
         }
 
-        public override void UpdateFloat(string id, float value)
+        public override void UpdateFloat(string id, double timestamp, float value)
         {
-            base.UpdateFloat(id, value);
+            base.UpdateFloat(id, timestamp, value);
 
             if (id == "SpecularPower")
             {
@@ -191,9 +191,9 @@ namespace ProjectMagma.Renderer
             }
         }
 
-        public override void UpdateVector2(string id, Vector2 value)
+        public override void UpdateVector2(string id, double timestamp, Vector2 value)
         {
-            base.UpdateVector2(id, value);
+            base.UpdateVector2(id, timestamp, value);
 
             if (id == "SquashParams")
             {
@@ -201,9 +201,9 @@ namespace ProjectMagma.Renderer
             }
         }
 
-        public override void UpdateVector3(string id, Vector3 value)
+        public override void UpdateVector3(string id, double timestamp, Vector3 value)
         {
-            base.UpdateVector3(id, value);
+            base.UpdateVector3(id, timestamp, value);
 
             if (id == "DiffuseColor")
             {

@@ -11,6 +11,6 @@ namespace ProjectMagma.Renderer.ParticleSystem
     {
         void AddEmitter(ParticleEmitter emitter);
         void Update(double lastFrameTime, double currentFrameTime);
-        void Render(double lastFrameTime, double currentFrameTime, Matrix viewMatrix, Matrix projectionMatrix);
+        void Render(double lastFrameTime, double currentFrameTime);
     }
 }

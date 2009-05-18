@@ -11,11 +11,13 @@ namespace ProjectMagma.Renderer
 {
     public class RobotRenderable : TexturedRenderable
     {
-        public RobotRenderable(Vector3 scale, Quaternion rotation, Vector3 position, Model model, 
+        public RobotRenderable(
+            double timestamp,
+            Vector3 scale, Quaternion rotation, Vector3 position, Model model, 
             Texture2D diffuseTexture, Texture2D specularTexture, Texture2D normalTexture,
             Vector3 color1, Vector3 color2
         )
-            : base(scale, rotation, position, model, diffuseTexture, specularTexture, normalTexture)
+        :   base(timestamp, scale, rotation, position, model, diffuseTexture, specularTexture, normalTexture)
         {
             this.color1 = color1;
             this.color2 = color2;
@@ -141,9 +143,9 @@ namespace ProjectMagma.Renderer
         }
 
 
-        public override void UpdateString(string id, string value)
+        public override void UpdateString(string id, double timestamp, string value)
         {
-            base.UpdateString(id, value);
+            base.UpdateString(id, timestamp, value);
 
             if(id=="NextOnceState")
             {
@@ -302,9 +304,9 @@ namespace ProjectMagma.Renderer
             }
         }
 
-        public override void UpdateBool(string id, bool value)
+        public override void UpdateBool(string id, double timestamp, bool value)
         {
-            base.UpdateBool(id, value);
+            base.UpdateBool(id, timestamp, value);
 
             switch(id)
             {

@@ -1,6 +1,9 @@
-#include "../CreateParticles.fx"
-#include "../UpdateParticles.fx"
-#include "../RenderParticles.fx"
+#include "../Params.inc"
+#include "../Structs.inc"
+#include "../Samplers.inc"
+#include "../DefaultCreateParticles.inc"
+#include "../DefaultUpdateParticles.inc"
+#include "../DefaultRenderParticles.inc"
 
 
 
@@ -45,8 +48,8 @@ UpdateParticlesPixelShaderOutput UpdateExplosionPixelShader(
 {
 	UpdateParticlesPixelShaderOutput output;
 	
-	float4 position_sample = tex2D(UpdateParticlesPositionSampler, ParticleCoordinate);
-	float4 velocity_sample = tex2D(UpdateParticlesVelocitySampler, ParticleCoordinate);
+	float4 position_sample = tex2D(PositionSampler, ParticleCoordinate);
+	float4 velocity_sample = tex2D(VelocitySampler, ParticleCoordinate);
 	
 	float3 current_position = position_sample.xyz;
 	float3 current_velocity = velocity_sample.xyz;
@@ -84,7 +87,7 @@ RenderParticlesVertexShaderOutput RenderExplosionVertexShader(
 {
     RenderParticlesVertexShaderOutput output;
 
-	float4 position_sampler_value = tex2Dlod(RenderParticlesPositionSampler, float4(input.ParticleCoordinate , 0, 0));
+	float4 position_sampler_value = tex2Dlod(PositionSampler, float4(input.ParticleCoordinate , 0, 0));
 
 	if (position_sampler_value.w > 0)
 	{
@@ -99,12 +102,13 @@ RenderParticlesVertexShaderOutput RenderExplosionVertexShader(
 		float normalized_age = 1.0 - time_to_life/ExplosionParticleLifetime;
 	    
 		output.Position = mul(view_position, Projection);
+		output.PositionCopy = output.Position / output.Position.w;
 		output.Size = 40*pow(normalized_time_to_death,4);
 		output.Color = float4(1,1,1,1.0-normalized_age);
 	}
 	else
 	{
-		output.Position = float4(-10,-10,0,0);
+		output.PositionCopy = output.Position = float4(-10,-10,0,-2);
 		output.Size = 0;
 		output.Color = float4(0,0,0,0);
 	}
@@ -118,6 +122,7 @@ RenderParticlesVertexShaderOutput RenderExplosionVertexShader(
 //-----------------------------------------------------------------------------------------------------------
 float4 RenderExplosionPixelShader(
 	RenderParticlesVertexShaderOutput input,
+	float2 PixelPosition : VPOS,
 #ifdef XBOX
 	float2 particleCoordinate : SPRITETEXCOORD
 #else
@@ -125,7 +130,9 @@ float4 RenderExplosionPixelShader(
 #endif
 ) : COLOR0
 {
-	float4 texColor = tex2D(RenderParticlesSpriteSampler, particleCoordinate/4);
+	//float4 depthSample = tex2D(DepthSampler, PixelPosition);
+	//clip(depthSample.r - input.PositionCopy.z + 0.1);
+	float4 texColor = tex2D(SpriteSampler, particleCoordinate/4);
 	clip(texColor-float4(0.1,0.1,0.1,0.1));
     float4 color = input.Color*texColor;
     color.rgb *= dot(float3(0.025, 0.025, 0.025), color.rgb) * input.Color.a/3;

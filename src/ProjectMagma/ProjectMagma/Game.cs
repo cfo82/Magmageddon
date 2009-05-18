@@ -154,7 +154,7 @@ namespace ProjectMagma
              
 #if DEBUG
             // initialize simulation
-            LoadLevel(levels[0].FileName);
+            LoadLevel(levels[2].FileName);
 
             // set default player
             Entity player1 = new Entity("player1");
@@ -234,7 +234,7 @@ namespace ProjectMagma
 
             // open menu
 #if !DEBUG
-            menu.Open();
+            menu.OpenReleaseNotes();
 #endif
 
             this.profiler = null;
@@ -480,7 +480,7 @@ namespace ProjectMagma
             profiler.TryBeginFrame();
             profiler.BeginSection("draw");
 
-            renderer.Render(gameTime);
+            renderer.Render();
 
             // will apply effect such as bloom
             base.Draw(gameTime);

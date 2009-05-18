@@ -11,13 +11,13 @@ namespace ProjectMagma.Renderer.ParticleSystem.Stateful.Implementations
             WrappedContentManager wrappedContent,
             GraphicsDevice device
         )
-            : base(renderer, wrappedContent, device)
+        :   base(renderer, wrappedContent, device)
         {
         }
+
         protected override void LoadResources(Renderer renderer, WrappedContentManager wrappedContent, GraphicsDevice device)
         {
             base.LoadResources(renderer, wrappedContent, device);
-            smokeTexture = Game.Instance.ContentManager.Load<Texture2D>("smoke");
         }
 
         public override void UnloadResources()
@@ -41,6 +41,11 @@ namespace ProjectMagma.Renderer.ParticleSystem.Stateful.Implementations
             return wrappedContent.Load<Effect>("Effects/ParticleSystem/Stateful/Implementations/Smoke");
         }
 
+        protected override Texture2D LoadSprite(WrappedContentManager wrappedContent)
+        {
+            return wrappedContent.Load<Texture2D>("Textures/Sfx/smoke");
+        }
+
         protected override void SetUpdateParameters(EffectParameterCollection parameters)
         {
             base.SetUpdateParameters(parameters);
@@ -55,11 +60,8 @@ namespace ProjectMagma.Renderer.ParticleSystem.Stateful.Implementations
         )
         {
             base.SetRenderingParameters(parameters);
-
-            parameters["RenderParticlesSpriteTexture"].SetValue(smokeTexture);
         }
 
-        private Texture2D smokeTexture;
         private float windSpeed = -20.0f;
         private float windAngle = 0.0f;
         private Random random = new Random();

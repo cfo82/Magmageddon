@@ -658,8 +658,8 @@
       <Importer>EffectImporter</Importer>
       <Processor>EffectProcessor</Processor>
     </Compile>
-    <None Include="Effects\Sfx\ParticleSystem\Stateful\CreateParticles.fx">
-      <Name>CreateParticles</Name>
+    <None Include="Effects\Sfx\ParticleSystem\Stateful\DefaultCreateParticles.inc">
+      <Name>DefaultCreateParticles</Name>
       <Importer>EffectImporter</Importer>
       <Processor>EffectProcessor</Processor>
     </None>
@@ -673,8 +673,8 @@
       <Importer>EffectImporter</Importer>
       <Processor>EffectProcessor</Processor>
     </Compile>
-    <None Include="Effects\Sfx\ParticleSystem\Stateful\RenderParticles.fx">
-      <Name>RenderParticles</Name>
+    <None Include="Effects\Sfx\ParticleSystem\Stateful\DefaultRenderParticles.inc">
+      <Name>DefaultRenderParticles</Name>
       <Importer>EffectImporter</Importer>
       <Processor>EffectProcessor</Processor>
     </None>
@@ -683,8 +683,8 @@
       <Importer>EffectImporter</Importer>
       <Processor>EffectProcessor</Processor>
     </Compile>
-    <None Include="Effects\Sfx\ParticleSystem\Stateful\UpdateParticles.fx">
-      <Name>UpdateParticles</Name>
+    <None Include="Effects\Sfx\ParticleSystem\Stateful\DefaultUpdateParticles.inc">
+      <Name>DefaultUpdateParticles</Name>
       <Importer>EffectImporter</Importer>
       <Processor>EffectProcessor</Processor>
     </None>
@@ -968,6 +968,26 @@
       <Name>snow</Name>
       <Importer>TextureImporter</Importer>
       <Processor>TextureProcessor</Processor>
+    </Compile>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Effects\Sfx\ParticleSystem\Stateful\Params.inc">
+      <Name>Params</Name>
+    </None>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Effects\Sfx\ParticleSystem\Stateful\Samplers.inc">
+      <Name>Samplers</Name>
+    </None>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Effects\Sfx\ParticleSystem\Stateful\Structs.inc">
+      <Name>Structs</Name>
+    </None>
+    <Compile Include="Fonts\ReleaseNotesFont.spritefont">
+      <Name>ReleaseNotesFont</Name>
+      <Importer>FontDescriptionImporter</Importer>
+      <Processor>FontDescriptionProcessor</Processor>
     </Compile>
   </ItemGroup>
   <Import Project="$(MSBuildExtensionsPath)\Microsoft\XNA Game Studio\v3.0\Microsoft.Xna.GameStudio.ContentPipeline.targets" />

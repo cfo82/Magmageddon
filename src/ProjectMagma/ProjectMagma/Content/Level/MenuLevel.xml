@@ -43,7 +43,6 @@
     <Properties>
       <Property name="render" type="ProjectMagma.Simulation.LavaRenderProperty"/>
       <!--Property name="render" type="ProjectMagma.Simulation.BasicRenderProperty"/-->
-      <Property name="render_highlight" type="ProjectMagma.Simulation.RenderHighlightProperty"/>
     </Properties>
   </Entity>
 

@@ -16,7 +16,7 @@ namespace ProjectMagma.Simulation
     {
         protected override ModelRenderable CreateRenderable(Entity entity, Vector3 scale, Quaternion rotation, Vector3 position, Model model)
         {
-            return new BasicRenderable(scale, rotation, position, model);
+            return new BasicRenderable(Game.Instance.Simulation.Time.At, scale, rotation, position, model);
         }
 
         protected override void SetUpdatableParameters(Entity entity)

@@ -72,9 +72,9 @@ namespace ProjectMagma.Renderer
             get { return RenderMode.RenderToShadowMap; }
         }
 
-        public override void UpdateQuaternion(string id, Quaternion value)
+        public override void UpdateQuaternion(string id, double timestamp, Quaternion value)
         {
-            base.UpdateQuaternion(id, value);
+            base.UpdateQuaternion(id, timestamp, value);
 
             if (id == "Rotation")
             {
@@ -82,13 +82,13 @@ namespace ProjectMagma.Renderer
             }
         }
 
-        public override void UpdateVector3(string id, Vector3 value)
+        public override void UpdateVector3(string id, double timestamp, Vector3 value)
         {
-            base.UpdateVector3(id, value);
+            base.UpdateVector3(id, timestamp, value);
 
             if (id == "Position")
             {
-                Position = value;
+                position = value;
             }
             else if (id == "Scale")
             {
@@ -111,7 +111,6 @@ namespace ProjectMagma.Renderer
         public override Vector3 Position
         {
             get { return position; }
-            set { position = value; }
         }
 
         private Vector3 scale;

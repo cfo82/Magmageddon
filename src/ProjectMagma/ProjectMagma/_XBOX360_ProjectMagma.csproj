@@ -59,6 +59,9 @@
     <Compile Include="Bugslayer\CrashDebugGame.cs" />
     <Compile Include="EntryPoint.cs" />
     <Compile Include="GlobalClock.cs" />
+    <Compile Include="Renderer\Interface\InterpolationHistory.cs" />
+    <Compile Include="Renderer\Interface\QuaternionInterpolationHistory.cs" />
+    <Compile Include="Renderer\Interface\Vector3InterpolationHistory.cs" />
     <Compile Include="Renderer\MathHelpers\DoublyIntegratedFloat.cs" />
     <Compile Include="Renderer\MathHelpers\DoublyIntegratedVector2.cs" />
     <Compile Include="Renderer\MathHelpers\DoublyIntegratedVector3.cs" />
@@ -74,6 +77,7 @@
     <Compile Include="Menu\MenuItem.cs" />
     <Compile Include="Menu\MenuScreen.cs" />
     <Compile Include="Menu\PlayerMenu.cs" />
+    <Compile Include="Menu\ReleaseNotesMenu.cs" />
     <Compile Include="Menu\SettingsMenu.cs" />
     <Compile Include="Profiler\FrameStatistics.cs" />
     <Compile Include="Profiler\Profiler.cs" />
@@ -215,7 +219,6 @@
     <Compile Include="Simulation\Properties\Rendering\HUDProperty.cs" />
     <Compile Include="Simulation\Properties\Rendering\ModelRenderProperty.cs" />
     <Compile Include="Simulation\Properties\Rendering\PointExplosionRenderProperty.cs" />
-    <Compile Include="Simulation\Properties\Rendering\RenderHighlightProperty.cs" />
     <Compile Include="Simulation\Properties\Rendering\RobotRenderProperty.cs" />
     <Compile Include="Simulation\Properties\Rendering\ShadowCastProperty.cs" />
     <Compile Include="Simulation\Properties\Rendering\TexturedRenderProperty.cs" />

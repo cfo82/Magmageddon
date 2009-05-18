@@ -75,9 +75,9 @@ namespace ProjectMagma.Renderer
 
         #region external value updates
 
-        public override void UpdateInt(string id, int value)
+        public override void UpdateInt(string id, double timestamp, int value)
         {
-            base.UpdateInt(id, value);
+            base.UpdateInt(id, timestamp, value);
 
             if (id == "GamePadIndex")
             {
@@ -113,9 +113,9 @@ namespace ProjectMagma.Renderer
             }
         }
 
-        public override void UpdateString(string id, string value)
+        public override void UpdateString(string id, double timestamp, string value)
         {
-            base.UpdateString(id, value);
+            base.UpdateString(id, timestamp, value);
 
             if (id == "PlayerName")
             {
@@ -127,9 +127,9 @@ namespace ProjectMagma.Renderer
             }
         }
 
-        public override void UpdateVector3(string id, Vector3 value)
+        public override void UpdateVector3(string id, double timestamp, Vector3 value)
         {
-            base.UpdateVector3(id, value);
+            base.UpdateVector3(id, timestamp, value);
 
             if (id == "NextPowerupPickupPosition")
             {
@@ -137,9 +137,9 @@ namespace ProjectMagma.Renderer
             }
         }
 
-        public override void UpdateFloat(string id, float value)
+        public override void UpdateFloat(string id, double timestamp, float value)
         {
-            base.UpdateFloat(id, value);
+            base.UpdateFloat(id, timestamp, value);
 
             if (id == "RepulsionSeconds")
             {
@@ -364,7 +364,6 @@ namespace ProjectMagma.Renderer
         public override Vector3 Position
         {
             get { return Vector3.Zero; }
-            set { }
         }
 
         public string PlayerName

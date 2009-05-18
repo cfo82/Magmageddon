@@ -109,7 +109,9 @@ namespace ProjectMagma.Simulation
                 pillarData[i].Scale = pillar.HasVector3("scale") ? pillar.GetVector3("scale") : Vector3.One;
             }
 
-            return new LavaRenderable(scale, rotation, position, model, 
+            return new LavaRenderable(
+                Game.Instance.Simulation.Time.At,
+                scale, rotation, position, model, 
                 sparseStuccoTexture, fireFractalTexture, vectorCloudTexture, graniteTexture,
                 pillarData);
         }

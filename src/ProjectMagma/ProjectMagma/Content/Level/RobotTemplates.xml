@@ -16,7 +16,6 @@
       <Property name="controller" type="ProjectMagma.Simulation.PlayerControllerProperty"/>
       <Property name="burnable" type="ProjectMagma.Simulation.BurnableProperty"/>
       <Property name="shadow_cast" type="ProjectMagma.Simulation.ShadowCastProperty"/>
-      <Property name="render_highlight" type="ProjectMagma.Simulation.RenderHighlightProperty"/>
       <Property name="hud" type="ProjectMagma.Simulation.HUDProperty"/>
     </Properties>
   </Entity>

@@ -19,7 +19,6 @@ namespace ProjectMagma.Renderer.ParticleSystem.Stateful.Implementations
         )
         :   base(renderer, wrappedContent, device)
         {
-            sprite = wrappedContent.Load<Texture2D>("Textures/Sfx/FireExplosion");
         }
 
         private Effect LoadEffect(WrappedContentManager wrappedContent)
@@ -42,6 +41,11 @@ namespace ProjectMagma.Renderer.ParticleSystem.Stateful.Implementations
             return LoadEffect(wrappedContent);
         }
 
+        protected override Texture2D LoadSprite(WrappedContentManager wrappedContent)
+        {
+            return wrappedContent.Load<Texture2D>("Textures/Sfx/FireExplosion");
+        }
+
         protected override void SetUpdateParameters(EffectParameterCollection parameters)
         {
             base.SetUpdateParameters(parameters);
@@ -50,10 +54,6 @@ namespace ProjectMagma.Renderer.ParticleSystem.Stateful.Implementations
         protected override void SetRenderingParameters(EffectParameterCollection parameters)
         {
             base.SetRenderingParameters(parameters);
-
-            parameters["RenderParticlesSpriteTexture"].SetValue(sprite);
         }
-
-        private Texture2D sprite;
     }
 }

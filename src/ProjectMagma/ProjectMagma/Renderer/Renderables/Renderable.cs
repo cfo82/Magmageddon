@@ -25,6 +25,6 @@ namespace ProjectMagma.Renderer
         public abstract void Draw(Renderer renderer);
 
         public abstract RenderMode RenderMode { get; }
-        public abstract Vector3 Position { get; set; }
+        public abstract Vector3 Position { get; }
     }
 }

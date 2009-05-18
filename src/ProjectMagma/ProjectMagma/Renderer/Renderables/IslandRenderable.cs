@@ -10,8 +10,9 @@ namespace ProjectMagma.Renderer
 {
     public class IslandRenderable : TexturedRenderable
     {
-        public IslandRenderable(Vector3 scale, Quaternion rotation, Vector3 position, Model model, Texture2D texture)
-            : base(scale, rotation, position, model, texture, null, null)
+        public IslandRenderable(
+            double timestamp, Vector3 scale, Quaternion rotation, Vector3 position, Model model, Texture2D texture)
+        :   base(timestamp, scale, rotation, position, model, texture, null, null)
         {
             randomOffset = new DoublyIntegratedVector2
             (
@@ -42,9 +43,9 @@ namespace ProjectMagma.Renderer
             effect.Parameters["RandomOffset"].SetValue(randomOffset.Value);
         }
 
-        public override void UpdateFloat(string id, float value)
+        public override void UpdateFloat(string id, double timestamp, float value)
         {
-            base.UpdateFloat(id, value);
+            base.UpdateFloat(id, timestamp, value);
 
             if (id == "WindStrength")
             {
@@ -52,9 +53,9 @@ namespace ProjectMagma.Renderer
             }
         }
 
-        public override void UpdateBool(string id, bool value)
+        public override void UpdateBool(string id, double timestamp, bool value)
         {
-            base.UpdateBool(id, value);
+            base.UpdateBool(id, timestamp, value);
 
             if (id == "Interactable")
             {

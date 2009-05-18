@@ -34,98 +34,124 @@ namespace ProjectMagma.Simulation
             double startTime
         )
         {
-            simTime = new SimulationTime(startTime);
+            try
+            {
+                simTime = new SimulationTime(startTime);
 
-            StartOperation(); // needs a valid simTime!
+                StartOperation(); // needs a valid simTime!
 
-            paused = false;
+                paused = false;
 
-            // load level data
-            levelData = wrappedContent.Load<LevelData>(level);
-            entityManager.Load(levelData);
-            OnLevelLoaded();
+                // load level data
+                levelData = wrappedContent.Load<LevelData>(level);
+                entityManager.Load(levelData);
+                OnLevelLoaded();
 
-            return EndOperation();
+                return EndOperation();
+            }
+            finally
+            {
+                currentUpdateQueue = null;
+            }
         }
 
         public RendererUpdateQueue AddPlayers(Entity[] players)
         {
-            StartOperation();
-
-            String[] models = new String[players.Length];
-            for(int i = 0; i < models.Length; i++)
+            try
             {
-                Entity player = players[i];
-                Debug.Assert(player.HasInt("game_pad_index"));
-                Debug.Assert(player.HasInt("lives"));
-                Debug.Assert(player.HasString("robot_entity"));
-                Debug.Assert(player.HasString("player_name"));
+                StartOperation();
 
-                models[i] = player.GetString("robot_entity");
+                String[] models = new String[players.Length];
+                for (int i = 0; i < models.Length; i++)
+                {
+                    Entity player = players[i];
+                    Debug.Assert(player.HasInt("game_pad_index"));
+                    Debug.Assert(player.HasInt("lives"));
+                    Debug.Assert(player.HasString("robot_entity"));
+                    Debug.Assert(player.HasString("player_name"));
+
+                    models[i] = player.GetString("robot_entity");
+                }
+                entityManager.AddEntities(levelData, models, players);
+
+                return EndOperation();
             }
-            entityManager.AddEntities(levelData, models, players);
-
-            return EndOperation();
+            finally
+            {
+                currentUpdateQueue = null;
+            }
         }
 
         public RendererUpdateQueue Close()
         {
-            if (currentUpdateQueue != null)
+            try
             {
-                throw new Exception("synchronisation error");
+                StartOperation();
+
+                entityManager.Clear();
+                pillarManager.Close();
+                islandManager.Close();
+                playerManager.Close();
+                powerupManager.Close();
+                collisionManager.Close();
+
+                return EndOperation();
             }
-
-            currentUpdateQueue = new RendererUpdateQueue(simTime.At);
-
-            entityManager.Clear();
-            pillarManager.Close();
-            islandManager.Close();
-            playerManager.Close();
-            powerupManager.Close();
-            collisionManager.Close();
-
-            return EndOperation();
+            finally
+            {
+                currentUpdateQueue = null;
+            }
         }
 
         public RendererUpdateQueue Update()
         {
-            Game.Instance.Profiler.BeginSection("simulation_update");
-            StartOperation();            
-
-            // pause simulation if explicitly paused or app changed
-            // removed app-changed thing (Game.Instance.IsActive) since this should be already handled
-            // by the game class
-            if (!paused) 
+            try
             {
-                // update simulation time
-                simTime.Update();
+                Game.Instance.Profiler.BeginSection("simulation_update");
+                StartOperation();
 
-                // update all entities
-                foreach (Entity e in entityManager)
+                // pause simulation if explicitly paused or app changed
+                // removed app-changed thing (Game.Instance.IsActive) since this should be already handled
+                // by the game class
+                if (!paused)
                 {
-                    e.OnUpdate(simTime);
+                    // update simulation time
+                    simTime.Update();
+                    //Console.WriteLine("simulating {0}", simTime.At);
+
+                    // update all entities
+                    foreach (Entity e in entityManager)
+                    {
+                        e.OnUpdate(simTime);
+                    }
+
+                    // perform collision detection
+                    collisionManager.Update(simTime);
+
+                    // execute deferred add/remove orders on the entityManager
+                    entityManager.ExecuteDeferred();
+
+                    //System.Threading.Thread.Sleep(60);
+                }
+                else
+                {
+                    // safety measurement:
+                    //   - first we should never enter this methode since we pause simulation and simulation thread simultaneously
+                    //    => assert if we arrive here
+                    //   - second take precautions and pause vor 10 milliseconds if we arrive here in a release build
+
+                    Debug.Assert(false);
+                    System.Threading.Thread.Sleep(10);
                 }
 
-                // perform collision detection
-                collisionManager.Update(simTime);
-
-                // execute deferred add/remove orders on the entityManager
-                entityManager.ExecuteDeferred();
+                RendererUpdateQueue returnValue = EndOperation();
+                Game.Instance.Profiler.EndSection("simulation_update");
+                return returnValue;
             }
-            else
+            finally
             {
-                // safety measurement:
-                //   - first we should never enter this methode since we pause simulation and simulation thread simultaneously
-                //    => assert if we arrive here
-                //   - second take precautions and pause vor 10 milliseconds if we arrive here in a release build
-
-                Debug.Assert(false);
-                System.Threading.Thread.Sleep(10);
+                currentUpdateQueue = null;
             }
-
-            RendererUpdateQueue returnValue = EndOperation();
-            Game.Instance.Profiler.EndSection("simulation_update");
-            return returnValue;
         }
 
         private void StartOperation()

@@ -76,6 +76,8 @@ namespace ProjectMagma.Renderer.ParticleSystem.Stateful
             // rendering effect
             particleRenderingEffect = LoadRenderEffect(wrappedContent).Clone(device);
             particleRenderingEffect.CurrentTechnique = particleRenderingEffect.Techniques["RenderParticles"];
+
+            spriteTexture = LoadSprite(wrappedContent);
         }
 
         public virtual void UnloadResources()
@@ -255,10 +257,22 @@ namespace ProjectMagma.Renderer.ParticleSystem.Stateful
                 RenderTarget2D oldRenderTarget1 = (RenderTarget2D)device.GetRenderTarget(1);
                 device.SetRenderTarget(0, positionTextures[nextTexture]);
                 device.SetRenderTarget(1, velocityTextures[nextTexture]);
-
-                particleUpdateEffect.Parameters["UpdateParticlesPositionTexture"].SetValue(positionTextures[activeTexture].GetTexture());
-                particleUpdateEffect.Parameters["UpdateParticlesVelocityTexture"].SetValue(velocityTextures[activeTexture].GetTexture());
+                
+                particleUpdateEffect.Parameters["View"].SetValue(renderer.Camera.View);
+                particleUpdateEffect.Parameters["Projection"].SetValue(renderer.Camera.Projection);
+                particleUpdateEffect.Parameters["StartSize"].SetValue(new Vector2(5.0f, 10.0f));
+                particleUpdateEffect.Parameters["EndSize"].SetValue(new Vector2(50.0f, 200.0f));
+                particleUpdateEffect.Parameters["MinColor"].SetValue(Vector4.One);
+                particleUpdateEffect.Parameters["MaxColor"].SetValue(Vector4.One);
+                particleUpdateEffect.Parameters["ViewportHeight"].SetValue(device.Viewport.Height);
+                particleUpdateEffect.Parameters["ViewportWidth"].SetValue(device.Viewport.Width);
+                particleUpdateEffect.Parameters["Time"].SetValue((float)intermediateCurrentFrameTime);
                 particleUpdateEffect.Parameters["Dt"].SetValue((float)simulationStep);
+                particleUpdateEffect.Parameters["PositionTexture"].SetValue(positionTextures[activeTexture].GetTexture());
+                particleUpdateEffect.Parameters["VelocityTexture"].SetValue(velocityTextures[activeTexture].GetTexture());
+                particleUpdateEffect.Parameters["RandomTexture"].SetValue(renderer.VectorCloudTexture);
+                particleUpdateEffect.Parameters["SpriteTexture"].SetValue(spriteTexture);
+                particleUpdateEffect.Parameters["DepthTexture"].SetValue(renderer.DepthTexture);
                 SetUpdateParameters(particleUpdateEffect.Parameters);
 
                 Debug.Assert(particleUpdateEffect.CurrentTechnique.Passes.Count == 1);
@@ -296,9 +310,7 @@ namespace ProjectMagma.Renderer.ParticleSystem.Stateful
 
         public void Render(
             double lastFrameTime,
-            double currentFrameTime,
-            Matrix viewMatrix,
-            Matrix projectionMatrix
+            double currentFrameTime
         )
         {
             SetParticleRenderStates(device.RenderState);
@@ -309,14 +321,21 @@ namespace ProjectMagma.Renderer.ParticleSystem.Stateful
             device.Vertices[0].SetSource(renderingVertexBuffer, 0, RenderVertex.SizeInBytes);
             device.VertexDeclaration = renderingVertexDeclaration;
 
-            particleRenderingEffect.Parameters["View"].SetValue(viewMatrix);
-            particleRenderingEffect.Parameters["Projection"].SetValue(projectionMatrix);
-            particleRenderingEffect.Parameters["RenderParticlesPositionTexture"].SetValue(positionTextures[activeTexture].GetTexture());
-            particleRenderingEffect.Parameters["RandomTexture"].SetValue(renderer.VectorCloudTexture);
-            particleRenderingEffect.Parameters["ViewportHeight"].SetValue(device.Viewport.Height);
+            particleRenderingEffect.Parameters["View"].SetValue(renderer.Camera.View);
+            particleRenderingEffect.Parameters["Projection"].SetValue(renderer.Camera.Projection);
             particleRenderingEffect.Parameters["StartSize"].SetValue(new Vector2(5.0f, 10.0f));
             particleRenderingEffect.Parameters["EndSize"].SetValue(new Vector2(50.0f, 200.0f));
+            particleRenderingEffect.Parameters["MinColor"].SetValue(Vector4.One);
+            particleRenderingEffect.Parameters["MaxColor"].SetValue(Vector4.One);
+            particleRenderingEffect.Parameters["ViewportHeight"].SetValue(device.Viewport.Height);
+            particleRenderingEffect.Parameters["ViewportWidth"].SetValue(device.Viewport.Width);
             particleRenderingEffect.Parameters["Time"].SetValue((float)currentFrameTime);
+            particleRenderingEffect.Parameters["Dt"].SetValue((float)(currentFrameTime-lastFrameTime));
+            particleRenderingEffect.Parameters["PositionTexture"].SetValue(positionTextures[activeTexture].GetTexture());
+            particleRenderingEffect.Parameters["VelocityTexture"].SetValue(velocityTextures[activeTexture].GetTexture());
+            particleRenderingEffect.Parameters["RandomTexture"].SetValue(renderer.VectorCloudTexture);
+            particleRenderingEffect.Parameters["SpriteTexture"].SetValue(spriteTexture);
+            particleRenderingEffect.Parameters["DepthTexture"].SetValue(renderer.DepthTexture);
 
             SetRenderingParameters(particleRenderingEffect.Parameters);
 
@@ -388,6 +407,11 @@ namespace ProjectMagma.Renderer.ParticleSystem.Stateful
             return wrappedContent.Load<Effect>("Effects/ParticleSystem/Stateful/Default");
         }
 
+        protected virtual Texture2D LoadSprite(WrappedContentManager wrappedContent)
+        {
+            return wrappedContent.Load<Texture2D>("Textures/xna_logo");
+        }
+
         protected virtual void SetUpdateParameters(EffectParameterCollection parameters)
         {
         }
@@ -425,5 +449,7 @@ namespace ProjectMagma.Renderer.ParticleSystem.Stateful
 
         private SpriteBatch spriteBatch;
         private List<CreateVertexArray> createVertexLists;
+
+        private Texture2D spriteTexture;
     }
 }

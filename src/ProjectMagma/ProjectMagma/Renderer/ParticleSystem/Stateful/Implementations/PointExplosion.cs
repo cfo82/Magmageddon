@@ -15,12 +15,10 @@ namespace ProjectMagma.Renderer.ParticleSystem.Stateful.Implementations
         public PointExplosion(
             Renderer renderer,
             WrappedContentManager wrappedContent,
-            GraphicsDevice device,
-            string explosionSprite
+            GraphicsDevice device
         )
         :   base(renderer, wrappedContent, device)
         {
-            this.explosionSprite = wrappedContent.Load<Texture2D>(explosionSprite);
         }
 
         protected abstract Effect LoadEffect(WrappedContentManager wrappedContent);
@@ -48,10 +46,6 @@ namespace ProjectMagma.Renderer.ParticleSystem.Stateful.Implementations
         protected override void SetRenderingParameters(EffectParameterCollection parameters)
         {
             base.SetRenderingParameters(parameters);
-
-            parameters["RenderParticlesSpriteTexture"].SetValue(explosionSprite);
         }
-
-        private Texture2D explosionSprite;
     }
 }

@@ -28,7 +28,6 @@
       <Property name="shadow_cast" type="ProjectMagma.Simulation.ShadowCastProperty"/>
       <Property name="render" type="ProjectMagma.Simulation.IslandRenderProperty"/>
       <!--Property name="render" type="ProjectMagma.Simulation.BasicRenderProperty"/-->
-      <Property name="render_highlight" type="ProjectMagma.Simulation.RenderHighlightProperty"/>
     </Properties>
   </Entity>
 

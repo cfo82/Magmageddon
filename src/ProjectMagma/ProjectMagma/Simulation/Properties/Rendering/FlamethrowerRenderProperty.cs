@@ -110,7 +110,6 @@ namespace ProjectMagma.Simulation
             bool newValue
         )
         {
-            Console.WriteLine("fueled changed to {0}", newValue);
             ChangeBool("Fueled", newValue);
         }
 

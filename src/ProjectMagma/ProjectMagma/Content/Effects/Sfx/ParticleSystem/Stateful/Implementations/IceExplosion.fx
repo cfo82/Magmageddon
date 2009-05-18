@@ -1,6 +1,9 @@
-#include "../CreateParticles.fx"
-#include "../UpdateParticles.fx"
-#include "../RenderParticles.fx"
+#include "../Params.inc"
+#include "../Structs.inc"
+#include "../Samplers.inc"
+#include "../DefaultCreateParticles.inc"
+#include "../DefaultUpdateParticles.inc"
+#include "../DefaultRenderParticles.inc"
 
 
 
@@ -45,8 +48,8 @@ UpdateParticlesPixelShaderOutput UpdateExplosionPixelShader(
 {
 	UpdateParticlesPixelShaderOutput output;
 	
-	float4 position_sample = tex2D(UpdateParticlesPositionSampler, ParticleCoordinate);
-	float4 velocity_sample = tex2D(UpdateParticlesVelocitySampler, ParticleCoordinate);
+	float4 position_sample = tex2D(PositionSampler, ParticleCoordinate);
+	float4 velocity_sample = tex2D(VelocitySampler, ParticleCoordinate);
 	
 	float3 current_position = position_sample.xyz;
 	float3 current_velocity = velocity_sample.xyz;
@@ -84,13 +87,12 @@ RenderParticlesVertexShaderOutput RenderExplosionVertexShader(
 {
     RenderParticlesVertexShaderOutput output;
 
-	float4 position_sampler_value = tex2Dlod(RenderParticlesPositionSampler, float4(input.ParticleCoordinate , 0, 0));
+	float4 position_sampler_value = tex2Dlod(PositionSampler, float4(input.ParticleCoordinate , 0, 0));
 
 	if (position_sampler_value.w > 0)
 	{
 		float3 position = position_sampler_value.xyz;
-		//float4 random_sampler_value = tex2Dlod(RandomSampler, float4(position.x + Time*31, position.y + Time*57, 0, 0));
-		float4 random_sampler_value = tex2Dlod(RandomSampler, float4(position.x*31 + Time*17, position.y*57 + Time*43, 0, 0));
+		float4 random_sampler_value = tex2Dlod(RandomSampler, float4(input.ParticleCoordinate.x*31, input.ParticleCoordinate.y*57, 0, 0));
 
 		float4 world_position = float4(position,1);
 		float4 view_position = mul(world_position, View);
@@ -99,14 +101,13 @@ RenderParticlesVertexShaderOutput RenderExplosionVertexShader(
 	    float normalized_time_to_death = time_to_life/ExplosionParticleLifetime;
 		float normalized_age = 1.0 - time_to_life/ExplosionParticleLifetime;
 	    
-		output.Position = mul(view_position, Projection);
-		//output.Size = lerp(5, 500, random_sampler_value.x) * Projection._m11 / output.Position.w * ViewportHeight / 2;
-		output.Size = lerp(15, 225, random_sampler_value.x);// * Projection._m11 / output.Position.w * ViewportHeight / 2;
+		output.PositionCopy = output.Position = mul(view_position, Projection);
+		output.Size = lerp(15, 100, random_sampler_value.x) * Projection._m11 / output.Position.w * ViewportHeight / 2;
 		output.Color = float4(1,1,1,1.0-normalized_age);
 	}
 	else
 	{
-		output.Position = float4(-10,-10,0,0);
+		output.PositionCopy = output.Position = float4(-10,-10,0,0);
 		output.Size = 0;
 		output.Color = float4(0,0,0,0);
 	}
@@ -127,7 +128,7 @@ float4 RenderExplosionPixelShader(
 #endif
 ) : COLOR0
 {
-    float4 color = input.Color*tex2D(RenderParticlesSpriteSampler, particleCoordinate/4);
+    float4 color = input.Color*tex2D(SpriteSampler, particleCoordinate/4);
     color.rgb *= dot(float3(0.1, 0.1, 0.1), color.rgb) * input.Color.a;
     return color;
 }

@@ -95,7 +95,6 @@ namespace ProjectMagma.Renderer
         public override Vector3 Position
         {
             get { return position; }
-            set { position = value; }
         }
 
         private Vector3 scale;

@@ -1,27 +1,4 @@
 //-----------------------------------------------------------------------------------------------------------
-struct CreateParticlesVertexShaderInput
-{
-	float3 ParticlePosition : POSITION0;
-	float3 ParticleVelocity : NORMAL0;
-    float2 ParticleCoordinate : TEXCOORD0;
-};
-struct CreateParticlesVertexShaderOutput
-{
-    float4 ParticleCoordinate : POSITION0;
-    float3 ParticlePosition : TEXCOORD0;
-    float3 ParticleVelocity : TEXCOORD1;
-    float Size : PSIZE0;
-};
-struct CreateParticlesPixelShaderOutput
-{
-	float4 PositionTimeToDeath : COLOR0;
-	float4 Velocity : COLOR1;
-};
-
-
-
-
-//-----------------------------------------------------------------------------------------------------------
 CreateParticlesVertexShaderOutput CreateParticlesVertexShader(
 	CreateParticlesVertexShaderInput input
 )
@@ -36,6 +13,10 @@ CreateParticlesVertexShaderOutput CreateParticlesVertexShader(
     return output;
 }
 
+
+
+
+//-----------------------------------------------------------------------------------------------------------
 CreateParticlesPixelShaderOutput CreateParticlesPixelShader(
 	CreateParticlesVertexShaderOutput input
 )

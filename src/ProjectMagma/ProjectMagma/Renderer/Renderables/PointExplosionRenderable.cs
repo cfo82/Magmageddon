@@ -53,7 +53,7 @@ namespace ProjectMagma.Renderer
 
         public override void Draw(Renderer renderer)
         {
-            explosionSystem.Render(renderer.Time.PausableLast / 1000d, renderer.Time.PausableAt / 1000d, renderer.Camera.View, renderer.Camera.Projection);
+            explosionSystem.Render(renderer.Time.PausableLast / 1000d, renderer.Time.PausableAt / 1000d);
         }
 
         private PointExplosionEmitter explosionEmitter;

@@ -1,6 +1,9 @@
-#include "../CreateParticles.fx"
-#include "../UpdateParticles.fx"
-#include "../RenderParticles.fx"
+#include "../Params.inc"
+#include "../Structs.inc"
+#include "../Samplers.inc"
+#include "../DefaultCreateParticles.inc"
+#include "../DefaultUpdateParticles.inc"
+#include "../DefaultRenderParticles.inc"
 
 
 
@@ -46,8 +49,8 @@ UpdateParticlesPixelShaderOutput UpdateFlamethrowerPixelShader(
 {
 	UpdateParticlesPixelShaderOutput output;
 	
-	float4 position_sample = tex2D(UpdateParticlesPositionSampler, ParticleCoordinate);
-	float4 velocity_sample = tex2D(UpdateParticlesVelocitySampler, ParticleCoordinate);
+	float4 position_sample = tex2D(PositionSampler, ParticleCoordinate);
+	float4 velocity_sample = tex2D(VelocitySampler, ParticleCoordinate);
 	
 	float current_time_to_death = position_sample.w;
 	float age = FlamethrowerParticleLifetime-current_time_to_death;
@@ -90,7 +93,7 @@ RenderParticlesVertexShaderOutput RenderIceSpikeVertexShader(
 {
     RenderParticlesVertexShaderOutput output;
 
-	float4 position_sampler_value = tex2Dlod(RenderParticlesPositionSampler, float4(input.ParticleCoordinate , 0, 0));
+	float4 position_sampler_value = tex2Dlod(PositionSampler, float4(input.ParticleCoordinate , 0, 0));
 
 	if (position_sampler_value.w > 0)
 	{
@@ -102,14 +105,14 @@ RenderParticlesVertexShaderOutput RenderIceSpikeVertexShader(
 	    
 		float normalizedAge = 1.0 - position_sampler_value.w/FlamethrowerParticleLifetime;
 	    
-		output.Position = mul(view_position, Projection);
+		output.PositionCopy = output.Position = mul(view_position, Projection);
 		output.Size = lerp(6,50,normalizedAge) * (1-pow(normalizedAge,6));
 		//output.Color = float4(1,1-normalizedAge,(1-normalizedAge)/4,1.0);
 		output.Color = float4(1,1,1,1-pow(normalizedAge,6));
 	}
 	else
 	{
-		output.Position = float4(-10,-10,0,0);
+		output.PositionCopy = output.Position = float4(-10,-10,0,0);
 		output.Size = 0;
 		output.Color = float4(0,0,0,0);
 	}
@@ -130,7 +133,7 @@ float4 RenderIceSpikePixelShader(
 #endif
 ) : COLOR0
 {
-    return tex2D(RenderParticlesSpriteSampler, particleCoordinate/4)*0.025*input.Color.a;
+    return tex2D(SpriteSampler, particleCoordinate/4)*0.025*input.Color.a;
 }
 
 

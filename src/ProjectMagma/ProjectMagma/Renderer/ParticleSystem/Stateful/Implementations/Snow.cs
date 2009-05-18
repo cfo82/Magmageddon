@@ -19,7 +19,6 @@ namespace ProjectMagma.Renderer.ParticleSystem.Stateful.Implementations
         )
         :   base(renderer, wrappedContent, device)
         {
-            snowSprite = wrappedContent.Load<Texture2D>("Textures/Sfx/Snow");
         }
 
         private Effect LoadEffect(WrappedContentManager wrappedContent)
@@ -42,6 +41,11 @@ namespace ProjectMagma.Renderer.ParticleSystem.Stateful.Implementations
             return LoadEffect(wrappedContent);
         }
 
+        protected override Texture2D LoadSprite(WrappedContentManager wrappedContent)
+        {
+            return wrappedContent.Load<Texture2D>("Textures/Sfx/Snow");
+        }
+
         protected override void SetUpdateParameters(EffectParameterCollection parameters)
         {
             windAngle += 0.5f * ((float)random.NextDouble() - 0.5f);
@@ -53,11 +57,8 @@ namespace ProjectMagma.Renderer.ParticleSystem.Stateful.Implementations
         protected override void SetRenderingParameters(EffectParameterCollection parameters)
         {
             base.SetRenderingParameters(parameters);
-
-            parameters["RenderParticlesSpriteTexture"].SetValue(snowSprite);
         }
 
-        private Texture2D snowSprite;
         private float windForce = 14.0f;
         private float windAngle = 0.0f;
         private static Random random = new Random();

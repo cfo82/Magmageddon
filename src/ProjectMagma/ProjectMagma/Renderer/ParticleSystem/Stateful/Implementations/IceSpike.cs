@@ -17,8 +17,6 @@ namespace ProjectMagma.Renderer.ParticleSystem.Stateful.Implementations
         protected override void LoadResources(Renderer renderer, WrappedContentManager wrappedContent, GraphicsDevice device)
         {
             base.LoadResources(renderer, wrappedContent, device);
-
-            trailSprite = Game.Instance.ContentManager.Load<Texture2D>("Textures/Sfx/IceSpikeTrail");
         }
 
         public override void UnloadResources()
@@ -27,19 +25,29 @@ namespace ProjectMagma.Renderer.ParticleSystem.Stateful.Implementations
             base.UnloadResources();
         }
 
-        protected override Effect LoadCreateEffect(WrappedContentManager wrappedContent)
+        private Effect LoadEffect(WrappedContentManager wrappedContent)
         {
             return wrappedContent.Load<Effect>("Effects/Sfx/ParticleSystem/Stateful/Implementations/IceSpike");
+        }
+
+        protected override Effect LoadCreateEffect(WrappedContentManager wrappedContent)
+        {
+            return LoadEffect(wrappedContent);
         }
 
         protected override Effect LoadUpdateEffect(WrappedContentManager wrappedContent)
         {
-            return wrappedContent.Load<Effect>("Effects/Sfx/ParticleSystem/Stateful/Implementations/IceSpike");
+            return LoadEffect(wrappedContent);
         }
 
         protected override Effect LoadRenderEffect(WrappedContentManager wrappedContent)
         {
-            return wrappedContent.Load<Effect>("Effects/Sfx/ParticleSystem/Stateful/Implementations/IceSpike");
+            return LoadEffect(wrappedContent);
+        }
+
+        protected override Texture2D LoadSprite(WrappedContentManager wrappedContent)
+        {
+            return wrappedContent.Load<Texture2D>("Textures/Sfx/IceSpikeTrail");
         }
 
         protected override void SetUpdateParameters(EffectParameterCollection parameters)
@@ -57,8 +65,6 @@ namespace ProjectMagma.Renderer.ParticleSystem.Stateful.Implementations
         protected override void SetRenderingParameters(EffectParameterCollection parameters)
         {
             base.SetRenderingParameters(parameters);
-
-            parameters["RenderParticlesSpriteTexture"].SetValue(trailSprite);
         }
 
         public Vector3 Position
@@ -82,6 +88,5 @@ namespace ProjectMagma.Renderer.ParticleSystem.Stateful.Implementations
         private Vector3 position;
         private Vector3 direction;
         private bool dead;
-        private Texture2D trailSprite;
     }
 }

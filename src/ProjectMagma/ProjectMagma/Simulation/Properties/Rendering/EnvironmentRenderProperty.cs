@@ -18,7 +18,7 @@ namespace ProjectMagma.Simulation
             Entity entity, Vector3 scale, Quaternion rotation, Vector3 position, Model model,
             Texture2D diffuseTexture, Texture2D specularTexture, Texture2D normalTexture)
         {
-            return new EnvironmentRenderable(scale, rotation, position, model, diffuseTexture, specularTexture, normalTexture);
+            return new EnvironmentRenderable(Game.Instance.Simulation.Time.At, scale, rotation, position, model, diffuseTexture, specularTexture, normalTexture);
         }
 
         protected override void SetUpdatableParameters(Entity entity)

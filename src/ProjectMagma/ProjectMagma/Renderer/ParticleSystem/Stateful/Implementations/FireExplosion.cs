@@ -17,13 +17,18 @@ namespace ProjectMagma.Renderer.ParticleSystem.Stateful.Implementations
             WrappedContentManager wrappedContent,
             GraphicsDevice device
         )
-        :   base(renderer, wrappedContent, device, "Textures/Sfx/FireExplosion")
+        :   base(renderer, wrappedContent, device)
         {
         }
 
         protected override Effect LoadEffect(WrappedContentManager wrappedContent)
         {
             return wrappedContent.Load<Effect>("Effects/Sfx/ParticleSystem/Stateful/Implementations/FireExplosion");
+        }
+
+        protected override Texture2D LoadSprite(WrappedContentManager wrappedContent)
+        {
+            return wrappedContent.Load<Texture2D>("Textures/Sfx/FireExplosion");
         }
     }
 }

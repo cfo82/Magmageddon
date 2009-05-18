@@ -27,7 +27,6 @@
     <Properties>
       <Property name="render" type="ProjectMagma.Simulation.LavaRenderProperty"/>
       <!--Property name="render" type="ProjectMagma.Simulation.BasicRenderProperty"/-->
-      <Property name="render_highlight" type="ProjectMagma.Simulation.RenderHighlightProperty"/>
     </Properties>
   </Entity>
 
@@ -50,7 +49,6 @@
     <Properties>
       <Property name="collision" type="ProjectMagma.Simulation.Collision.CollisionProperty"/>
       <Property name="render" type="ProjectMagma.Simulation.EnvironmentRenderProperty"/>
-      <Property name="render_highlight" type="ProjectMagma.Simulation.RenderHighlightProperty"/>
     </Properties>
   </Entity>
 
@@ -80,7 +78,6 @@
     <Properties>
       <Property name="render" type="ProjectMagma.Simulation.EnvironmentRenderProperty"/>
       <Property name="collision" type="ProjectMagma.Simulation.Collision.CollisionProperty"/>
-      <Property name="render_highlight" type="ProjectMagma.Simulation.RenderHighlightProperty"/>
     </Properties>
   </Entity>
   
@@ -120,7 +117,6 @@
       <Property name="collision" type="ProjectMagma.Simulation.Collision.CollisionProperty"/>
       <Property name="shadow_cast" type="ProjectMagma.Simulation.ShadowCastProperty"/>
       <Property name="render" type="ProjectMagma.Simulation.BasicRenderProperty"/>
-      <Property name="render_highlight" type="ProjectMagma.Simulation.RenderHighlightProperty"/>
     </Properties>
   </Entity>
 

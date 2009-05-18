@@ -91,7 +91,7 @@ namespace ProjectMagma.Renderer
 
                 DrawIceSpike(renderer, world, renderer.Camera.View, renderer.Camera.Projection);
             }
-            iceSpikeSystem.Render(renderer.Time.PausableLast / 1000d, renderer.Time.PausableAt / 1000d, renderer.Camera.View, renderer.Camera.Projection);
+            iceSpikeSystem.Render(renderer.Time.PausableLast / 1000d, renderer.Time.PausableAt / 1000d);
         }
 
         private void DrawIceSpike(Renderer renderer, Matrix world, Matrix view, Matrix projection)
@@ -126,9 +126,9 @@ namespace ProjectMagma.Renderer
             device.RenderState.CullMode = saveCullMode;
         }
 
-        public override void UpdateBool(string id, bool value)
+        public override void UpdateBool(string id, double timestamp, bool value)
         {
-            base.UpdateBool(id, value);
+            base.UpdateBool(id, timestamp, value);
 
             if (id == "Dead")
             {
@@ -136,9 +136,9 @@ namespace ProjectMagma.Renderer
             }
         }
 
-        public override void UpdateVector3(string id, Vector3 value)
+        public override void UpdateVector3(string id, double timestamp, Vector3 value)
         {
-            base.UpdateVector3(id, value);
+            base.UpdateVector3(id, timestamp, value);
 
             if (id == "Direction")
             {

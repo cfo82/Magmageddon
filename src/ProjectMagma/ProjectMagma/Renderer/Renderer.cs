@@ -17,7 +17,7 @@ namespace ProjectMagma.Renderer
                 this.newPhase = newPhase;
             }
 
-            public void Apply()
+            public void Apply(double timestamp)
             {
                 Game.Instance.Renderer.ChangeToPhase(newPhase);
             }
@@ -149,7 +149,7 @@ namespace ProjectMagma.Renderer
             {
                 for (int i = 0; i < q.Count; ++i)
                 {
-                    q[i].Apply();
+                    q[i].Apply(q.Timestamp);
                 }
 
                 q = GetNextUpdateQueue();
@@ -170,9 +170,10 @@ namespace ProjectMagma.Renderer
             }
         }
         
-        public void Render(GameTime gameTime)
+        public void Render()
         {
             renderTime.Update();
+            //Console.WriteLine("rendering {0}", renderTime.PausableAt);
 
             Game.Instance.Profiler.BeginSection("beginning_stuff");
             Update();
@@ -186,7 +187,7 @@ namespace ProjectMagma.Renderer
 
             // 2) Render the scene from the perspective of the light
             Game.Instance.Profiler.BeginSection("renderer_shadow");
-            RenderShadow(gameTime);
+            RenderShadow();
             Game.Instance.Profiler.EndSection("renderer_shadow");
 
             // 3) Set our render target back to the screen, and get the 
@@ -199,7 +200,7 @@ namespace ProjectMagma.Renderer
             // 4) Render the scene from the view of the camera, 
             //and do depth comparisons in the shader to determine shadowing
             Game.Instance.Profiler.BeginSection("renderer_scene");
-            RenderScene(gameTime);
+            RenderScene();
             Game.Instance.Profiler.EndSection("renderer_scene");
 
             // 5) Bloom (later HDR etc) -- commented out, we have no components anymore anyway
@@ -220,7 +221,7 @@ namespace ProjectMagma.Renderer
                 RenderChannels = Target1.GetTexture();
                 glowPass.GeometryRender = GeometryRender;
                 Game.Instance.Profiler.BeginSection("renderer_post_glow");
-                glowPass.Render(gameTime);
+                glowPass.Render();
                 Game.Instance.Profiler.EndSection("renderer_post_glow");
 
                 hdrCombinePass.GeometryRender = GeometryRender;
@@ -229,18 +230,20 @@ namespace ProjectMagma.Renderer
                 hdrCombinePass.DepthTexture = DepthTexture;
 
                 Game.Instance.Profiler.BeginSection("renderer_post_hdr");
-                hdrCombinePass.Render(gameTime);
+                hdrCombinePass.Render();
                 Game.Instance.Profiler.EndSection("renderer_post_hdr");
                 Game.Instance.Profiler.EndSection("renderer_post");
             }
 
+            RenderParticles();
+
             // 5) Render overlays
             Game.Instance.Profiler.BeginSection("overlay");
-            RenderOverlays(gameTime);
+            RenderOverlays();
             Game.Instance.Profiler.EndSection("overlay");
         }
 
-        private void RenderShadow(GameTime gameTime)
+        private void RenderShadow()
         {
             // backup stencil buffer
             DepthStencilBuffer oldStencilBuffer
@@ -283,7 +286,7 @@ namespace ProjectMagma.Renderer
             }
         }
 
-        private void RenderScene(GameTime gameTime)
+        private void RenderScene()
         {
             //RenderTarget2D oldRenderTarget0 = (RenderTarget2D) Device.GetRenderTarget(0);
             //RenderTarget2D oldRenderTarget1 = (RenderTarget2D) Device.GetRenderTarget(1);
@@ -309,11 +312,11 @@ namespace ProjectMagma.Renderer
             //transparentRenderables.Sort(TransparentRenderableComparison);
             if (explosionSystem != null)
             {
-                explosionSystem.Render(lastFrameTime, currentFrameTime, Camera.View, Camera.Projection);
+                explosionSystem.Render(lastFrameTime, currentFrameTime);
             }
             if (snowSystem != null)
             {
-                snowSystem.Render(lastFrameTime, currentFrameTime, Camera.View, Camera.Projection);
+                snowSystem.Render(lastFrameTime, currentFrameTime);
             }
 
             foreach (Renderable renderable in transparentRenderables)
@@ -333,12 +336,12 @@ namespace ProjectMagma.Renderer
             }
         }
 
-        #region post-processing tests
+        private void RenderParticles()
+        {
+            // later on particle systems should be rendered inside this function 
+        }
 
-
-        #endregion
-
-        private void RenderOverlays(GameTime gameTime)
+        private void RenderOverlays()
         {
             foreach (Renderable renderable in overlays)
             {

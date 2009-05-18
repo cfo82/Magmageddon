@@ -43,9 +43,9 @@ namespace ProjectMagma.Renderer
         {
         }
 
-        public override void UpdateVector3(string id, Vector3 value)
+        public override void UpdateVector3(string id, double timestamp, Vector3 value)
         {
-            base.UpdateVector3(id, value);
+            base.UpdateVector3(id, timestamp, value);
 
             if (id == "Position")
             {
@@ -56,7 +56,6 @@ namespace ProjectMagma.Renderer
         public override Vector3 Position
         {
             get { return position; }
-            set { position = value; }
         }
 
         public override RenderMode RenderMode

@@ -11,7 +11,7 @@ namespace ProjectMagma.Renderer
             hdrCombineEffect = Game.Instance.ContentManager.Load<Effect>("Effects/HdrCombine");
         }
 
-        public override void Render(GameTime gameTime)
+        public override void Render()
         {
             hdrCombineEffect.Parameters["GeometryRender"].SetValue(GeometryRender);
             hdrCombineEffect.Parameters["BlurGeometryRender"].SetValue(BlurGeometryRender);

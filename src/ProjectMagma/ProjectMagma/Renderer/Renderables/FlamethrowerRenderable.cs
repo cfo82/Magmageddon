@@ -68,12 +68,12 @@ namespace ProjectMagma.Renderer
 
         public override void Draw(Renderer renderer)
         {
-            flamethrowerSystem.Render(renderer.Time.PausableLast / 1000d, renderer.Time.PausableAt / 1000d, renderer.Camera.View, renderer.Camera.Projection);
+            flamethrowerSystem.Render(renderer.Time.PausableLast / 1000d, renderer.Time.PausableAt / 1000d);
         }
 
-        public override void UpdateBool(string id, bool value)
+        public override void UpdateBool(string id, double timestamp, bool value)
         {
-            base.UpdateBool(id, value);
+            base.UpdateBool(id, timestamp, value);
 
             if (id == "Fueled")
             {
@@ -81,9 +81,9 @@ namespace ProjectMagma.Renderer
             }
         }
 
-        public override void UpdateVector3(string id, Vector3 value)
+        public override void UpdateVector3(string id, double timestamp, Vector3 value)
         {
-            base.UpdateVector3(id, value);
+            base.UpdateVector3(id, timestamp, value);
 
             if (id == "Direction")
             {

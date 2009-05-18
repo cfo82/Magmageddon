@@ -6,6 +6,7 @@ using System.Diagnostics;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Xclna.Xna.Animation;
+using ProjectMagma.Renderer.Interface;
 
 namespace ProjectMagma.Renderer
 {
@@ -14,6 +15,7 @@ namespace ProjectMagma.Renderer
         #region constructor
 
         public ModelRenderable(
+            double timestamp,
             Vector3 scale,
             Quaternion rotation,
             Vector3 position,
@@ -21,8 +23,8 @@ namespace ProjectMagma.Renderer
         )
         {
             this.Scale = scale;
-            this.Rotation = rotation;
-            this.Position = position;
+            this.rotation = new QuaternionInterpolationHistory(timestamp, rotation);
+            this.position = new Vector3InterpolationHistory(timestamp, position);
             this.Model = model;
             this.boneTransforms = new Matrix[Model.Bones.Count];
             SkyLightStrength = 1.0f;
@@ -56,6 +58,13 @@ namespace ProjectMagma.Renderer
         #endregion
 
         protected abstract void ApplyEffectsToModel();
+
+        public override void Update(Renderer renderer)
+        {
+            base.Update(renderer);
+
+            position.InvalidateUntil(renderer.Time.At);
+        }
 
         public override void Draw(Renderer renderer)
         {
@@ -222,16 +231,22 @@ namespace ProjectMagma.Renderer
             return boneTransforms[mesh.ParentBone.Index];
         }
 
+        public override bool NeedsUpdate
+        {
+            get
+            {
+                return true;
+            }
+        }
+
         public override RenderMode RenderMode 
         {
             get { return RenderMode.RenderToScene; }
         }
 
-        private Matrix[] boneTransforms;
-
-        public override void UpdateFloat(string id, float value)
+        public override void UpdateFloat(string id, double timestamp, float value)
         {
-            base.UpdateFloat(id, value);
+            base.UpdateFloat(id, timestamp, value);
 
             if (id == "LavaLightStrength")
             {
@@ -247,23 +262,23 @@ namespace ProjectMagma.Renderer
             }
         }
 
-        public override void UpdateQuaternion(string id, Quaternion value)
+        public override void UpdateQuaternion(string id, double timestamp, Quaternion value)
         {
-            base.UpdateQuaternion(id, value);
+            base.UpdateQuaternion(id, timestamp, value);
 
             if (id == "Rotation")
             {
-                Rotation = value;
+                rotation.AddKeyframe(timestamp, value);
             }
         }
 
-        public override void UpdateVector3(string id, Vector3 value)
+        public override void UpdateVector3(string id, double timestamp, Vector3 value)
         {
-            base.UpdateVector3(id, value);
+            base.UpdateVector3(id, timestamp, value);
 
             if (id == "Position")
             {
-                Position = value;
+                this.position.AddKeyframe(timestamp, value);
             }
             else if (id == "Scale")
             {
@@ -272,8 +287,14 @@ namespace ProjectMagma.Renderer
         }
 
         public Vector3 Scale { get; set; }
-        public Quaternion Rotation { get; set; }
-        public override Vector3 Position { get; set; }
+        public Quaternion Rotation
+        { 
+            get { return rotation.Evaluate(Game.Instance.Renderer.Time.PausableAt); }
+        }
+        public override Vector3 Position
+        {
+            get { return position.Evaluate(Game.Instance.Renderer.Time.PausableAt); }
+        }
         
         protected Model Model { get; set; }
         protected Matrix World { get; set; }
@@ -286,5 +307,10 @@ namespace ProjectMagma.Renderer
         public RenderChannelType RenderChannel { get; set; }
 
         PartEffectMapping defaultEffectMapping;
+
+        private Vector3InterpolationHistory position;
+        private QuaternionInterpolationHistory rotation;
+
+        private Matrix[] boneTransforms;
     }
 }

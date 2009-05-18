@@ -24,7 +24,9 @@ namespace ProjectMagma.Simulation
             Debug.Assert(entity.HasVector3("color2"));
             Vector3 color2 = entity.GetVector3("color2");
 
-            return new RobotRenderable(scale, rotation, position, model,
+            return new RobotRenderable(
+                Game.Instance.Simulation.Time.At,
+                scale, rotation, position, model,
                 diffuseTexture, specularTexture, normalTexture,
                 color1, color2);
         }

@@ -8,7 +8,7 @@ namespace ProjectMagma.Renderer.Interface
 {
     public interface RendererUpdate
     {
-        void Apply();
+        void Apply(double timestamp);
     }
 
     public abstract class TargetedRendererUpdate : RendererUpdate
@@ -18,7 +18,7 @@ namespace ProjectMagma.Renderer.Interface
             this.updatable = updatable;
         }
 
-        public abstract void Apply();
+        public abstract void Apply(double timestamp);
 
         protected RendererUpdatable updatable;
     }
@@ -42,9 +42,9 @@ namespace ProjectMagma.Renderer.Interface
             this.value = value;
         }
 
-        public override void Apply()
+        public override void Apply(double timestamp)
         {
-            updatable.UpdateBool(id, value);
+            updatable.UpdateBool(id, timestamp, value);
         }
 
         protected bool value;
@@ -58,9 +58,9 @@ namespace ProjectMagma.Renderer.Interface
             this.value = value;
         }
 
-        public override void Apply()
+        public override void Apply(double timestamp)
         {
-            updatable.UpdateFloat(id, value);
+            updatable.UpdateFloat(id, timestamp, value);
         }
 
         protected float value;
@@ -74,9 +74,9 @@ namespace ProjectMagma.Renderer.Interface
             this.value = value;
         }
 
-        public override void Apply()
+        public override void Apply(double timestamp)
         {
-            updatable.UpdateInt(id, value);
+            updatable.UpdateInt(id, timestamp, value);
         }
 
         protected int value;
@@ -90,9 +90,9 @@ namespace ProjectMagma.Renderer.Interface
             this.value = value;
         }
 
-        public override void Apply()
+        public override void Apply(double timestamp)
         {
-            updatable.UpdateMatrix(id, value);
+            updatable.UpdateMatrix(id, timestamp, value);
         }
 
         protected Matrix value;
@@ -106,9 +106,9 @@ namespace ProjectMagma.Renderer.Interface
             this.value = value;
         }
 
-        public override void Apply()
+        public override void Apply(double timestamp)
         {
-            updatable.UpdateQuaternion(id, value);
+            updatable.UpdateQuaternion(id, timestamp, value);
         }
 
         protected Quaternion value;
@@ -122,9 +122,9 @@ namespace ProjectMagma.Renderer.Interface
             this.value = value;
         }
 
-        public override void Apply()
+        public override void Apply(double timestamp)
         {
-            updatable.UpdateString(id, value);
+            updatable.UpdateString(id, timestamp, value);
         }
 
         protected string value;
@@ -138,9 +138,9 @@ namespace ProjectMagma.Renderer.Interface
             this.value = value;
         }
 
-        public override void Apply()
+        public override void Apply(double timestamp)
         {
-            updatable.UpdateVector2(id, value);
+            updatable.UpdateVector2(id, timestamp, value);
         }
 
         protected Vector2 value;
@@ -154,9 +154,9 @@ namespace ProjectMagma.Renderer.Interface
             this.value = value;
         }
 
-        public override void Apply()
+        public override void Apply(double timestamp)
         {
-            updatable.UpdateVector3(id, value);
+            updatable.UpdateVector3(id, timestamp, value);
         }
 
         protected Vector3 value;
@@ -169,7 +169,7 @@ namespace ProjectMagma.Renderer.Interface
         {
         }
 
-        public override void Apply()
+        public override void Apply(double timestamp)
         {
             Game.Instance.Renderer.AddRenderable((Renderable)updatable);
         }
@@ -182,7 +182,7 @@ namespace ProjectMagma.Renderer.Interface
         {
         }
 
-        public override void Apply()
+        public override void Apply(double timestamp)
         {
             Game.Instance.Renderer.RemoveRenderable((Renderable)updatable);
         }

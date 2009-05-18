@@ -41,7 +41,7 @@ namespace ProjectMagma
 
             mainMenu = new MainMenu(this);
             releaseNotesMenu = new ReleaseNotesMenu(this);
-            staticStringFont = Game.Instance.ContentManager.Load<SpriteFont>("Fonts/menu_releasenotes");
+            StaticStringFont = Game.Instance.ContentManager.Load<SpriteFont>("Fonts/menu_releasenotes");
 
         }
 
@@ -160,7 +160,10 @@ namespace ProjectMagma
                 }
                 while (node != null);
 
-                if (screens.Last.Value is ItemizedMenuScreen && (screens.Last.Value as ItemizedMenuScreen).DrawPrevious)
+                // HACK: retrospectively, this DrawPrevious thing was a stupid idea. whoever wants to
+                // refactor this at some point, should get rid of this property and such ugly conditionals.
+                if ( (screens.Last.Value is ItemizedMenuScreen && (screens.Last.Value as ItemizedMenuScreen).DrawPrevious)
+                  || (screens.Last.Value is PlayerMenu))
                 {
                     DrawStaticStrings();
                 }
@@ -171,9 +174,9 @@ namespace ProjectMagma
 
         private void DrawStaticStrings()
         {
-            DrawCenteredShadowString(spriteBatch, staticStringFont, "- A - SELECT                                                  - B - BACK",
+            DrawCenteredShadowString(spriteBatch, StaticStringFont, "- A - SELECT                                                  - B - BACK",
                 new Vector2(640, 620), StaticStringColor, 0.55f);
-            DrawCenteredShadowString(spriteBatch, staticStringFont, "PROJECT MAGMA - MAY 19 RELEASE",
+            DrawCenteredShadowString(spriteBatch, StaticStringFont, "PROJECT MAGMA - MAY 19 RELEASE",
                 new Vector2(640, 115), StaticStringColor, 0.7f);
         }
 
@@ -261,7 +264,7 @@ namespace ProjectMagma
             get { return active; }
         }
 
-        private SpriteFont staticStringFont;
+        public SpriteFont StaticStringFont { get; set; }
 
         private MenuScreen activeScreen = null;
         private readonly LinkedList<MenuScreen> screens = new LinkedList<MenuScreen>();

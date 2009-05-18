@@ -26,7 +26,7 @@ namespace ProjectMagma
         private readonly GamePadState[] previousState = new GamePadState[4];
 
         public PlayerMenu(Menu menu, LevelMenu levelMenu)
-            : base(menu, new Vector2(450, 200))
+            : base(menu, new Vector2(640, 160))
         {
             this.levelMenu = levelMenu;
 
@@ -129,18 +129,40 @@ namespace ProjectMagma
             for (int i = 0; i < 4; i++)
             {
                 bool active = playerActive[i];
-                Texture2D sprite = active ? playerBackground : playerBackgroundInactive;
+                //Texture2D sprite = active ? playerBackground : playerBackgroundInactive; // not needed anymore - dpk
+                Texture2D sprite = playerBackgroundInactive;
                 float scale = 200f / sprite.Width;
-                Vector2 pos = Position + new Vector2((i & 1) * 220, ((i & 2) >> 1) * (sprite.Height * scale + 20));
-                spriteBatch.Draw(sprite, pos, null, Color.White, 0, Vector2.Zero, scale, SpriteEffects.None, 0);
+                Vector2 pos = Position - new Vector2(210,0) + new Vector2((i & 1) * 210, ((i & 2) >> 1) * (sprite.Height * scale + 10));
+
+                Color backgroundColor = Color.White;
+
+                if (active)
+                {
+                    // TODO: replace by real colors
+                    if (i == 0) backgroundColor = Color.Red;
+                    if (i == 1) backgroundColor = Color.Green;
+                    if (i == 2) backgroundColor = Color.Blue;
+                    if (i == 3) backgroundColor = Color.Yellow;
+                }
+
+                spriteBatch.Draw(sprite, pos, null, backgroundColor, 0, Vector2.Zero, scale, SpriteEffects.None, 0);
+                Vector2 halfSpriteDim = new Vector2(sprite.Width, sprite.Height)/4;              
 
                 if (active)
                 {
                     Texture2D robot = robotSprites[robotSelected[i]];
                     float width = PlayerIconRect.Width * scale;
                     float rscale = width / robot.Width;
-                    spriteBatch.Draw(robot, pos + new Vector2(PlayerIconRect.Left, PlayerIconRect.Top) * scale,
-                        null, Color.White, 0, Vector2.Zero, rscale, SpriteEffects.None, 0);
+                    //spriteBatch.Draw(robot, pos + new Vector2(PlayerIconRect.Left, PlayerIconRect.Top) * scale,
+                    //    null, Color.White, 0, Vector2.Zero, ((float)sprite.Width )/ robot.Width*scale, SpriteEffects.None, 0);
+                    spriteBatch.Draw(robot, pos,
+                        null, Color.White, 0, Vector2.Zero, ((float)sprite.Width) / robot.Width * scale, SpriteEffects.None, 0);
+
+                }
+                else
+                {
+                    Menu.DrawCenteredShadowString(spriteBatch, menu.StaticStringFont, "HIT START", pos+halfSpriteDim-Vector2.UnitY*27*scale, menu.StaticStringColor, 1.2f*scale);
+                    Menu.DrawCenteredShadowString(spriteBatch, menu.StaticStringFont, "TO JOIN", pos + halfSpriteDim + Vector2.UnitY * 27*scale, menu.StaticStringColor, 1.2f*scale);
                 }
             }
         }

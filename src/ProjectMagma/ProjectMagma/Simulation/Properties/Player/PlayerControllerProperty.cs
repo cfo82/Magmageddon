@@ -1454,10 +1454,11 @@ namespace ProjectMagma.Simulation
                     continue;
 
                 Vector3 islandDir = island.GetVector3("position") - player.GetVector3("position");
-                islandDir.Y = 0;
                 float dist = islandDir.Length();
+                islandDir.Y = 0;
+                float xzdist = islandDir.Length();
                 float angle = (float)(Math.Acos(Vector3.Dot(dir, islandDir) / dist) / Math.PI * 180);
-                if (dist < constants.GetFloat("island_jump_free_range"))
+                if (xzdist < constants.GetFloat("island_jump_free_range"))
                 {
                     if (island != activeIsland
                         && angle < maxAngle)

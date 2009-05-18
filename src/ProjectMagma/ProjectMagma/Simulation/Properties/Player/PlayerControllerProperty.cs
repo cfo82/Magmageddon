@@ -386,7 +386,7 @@ namespace ProjectMagma.Simulation
 
             ((Vector3Attribute)simpleJumpIsland.Attributes["position"]).ValueChanged += IslandPositionHandler;
 
-            playerVelocity = (float)Math.Sqrt(constants.GetFloat("island_jump_arc_height") / constants.GetVector3("gravity_acceleration").Length())
+            playerVelocity = (float)Math.Sqrt(constants.GetFloat("simple_jump_height") / constants.GetVector3("gravity_acceleration").Length())
                 * -constants.GetVector3("simple_jump_gravity_acceleration");
             return playerVelocity;
         }
@@ -522,10 +522,10 @@ namespace ProjectMagma.Simulation
                         && player.GetInt("energy") > 0
                         )
                     {
-                        Vector3 velocity = new Vector3(controllerInput.leftStickX, 0, controllerInput.leftStickY);
+                        Vector3 dir = new Vector3(controllerInput.leftStickX, 0, controllerInput.leftStickY);
                         Vector3 currentVelocity = activeIsland.GetVector3("repulsion_velocity");
-                        velocity *= constants.GetFloat("island_repulsion_velocity_multiplier");
-                        activeIsland.SetVector3("repulsion_velocity", currentVelocity + velocity);
+                        activeIsland.SetVector3("repulsion_velocity", currentVelocity +
+                            dir * constants.GetFloat("island_repulsion_acceleration") * simTime.Dt);
 
                         Game.Instance.Simulation.ApplyPerSecondSubstraction(player, "repulsion_energy_cost",
                             constants.GetInt("island_repulsion_energy_cost_per_second"), player.GetIntAttribute("energy"));
@@ -1235,7 +1235,7 @@ namespace ProjectMagma.Simulation
         private void PlayerCaveCollisionHandler(SimulationTime simTime, Entity player, Entity pillar, Contact co)
         {
             // only collide with cave when in air
-            if (activeIsland != null)
+            if (activeIsland == null)
             {
                 Vector3 pos = player.GetVector3("position");
                 // todo: extract constants

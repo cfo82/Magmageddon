@@ -31,6 +31,7 @@
       <Attribute name="jetpack_acceleration" template="float3" value="0 1600 0"/>
 
       <Attribute name="simple_jump_gravity_acceleration" template="float3" value="0 -2000 0"/>
+      <Attribute name="simple_jump_height" template="float" value="100"/>
       
       <Attribute name="ice_spike_aim_angle" template="float" value="90"/>
       <Attribute name="ice_spike_energy_cost" template="int" value="35"/>
@@ -75,8 +76,8 @@
       <Attribute name="island_jump_destination_radius" template="float" value=".1"/>
       <Attribute name="island_jump_free_range" template="float" value="160"/>
 
-      <Attribute name="island_repulsion_start_velocity_multiplier" template="float" value="80"/>
-      <Attribute name="island_repulsion_velocity_multiplier" template="float" value="10"/>
+      <Attribute name="island_repulsion_start_velocity_multiplier" template="float" value="60"/>
+      <Attribute name="island_repulsion_acceleration" template="float" value="1000"/>
       <Attribute name="island_repulsion_start_min_energy" template="int" value="10"/>
       <Attribute name="island_repulsion_start_energy_cost" template="int" value="6"/>
       <Attribute name="island_repulsion_energy_cost_per_second" template="int" value="16"/>
@@ -99,7 +100,7 @@
 
       <Attribute name="scale_health_multiplier" template="float" value="1.8"/>
 
-      <Attribute name="repulsion_deacceleration" template="float" value="800"/>
+      <Attribute name="repulsion_deacceleration" template="float" value="400"/>
       <Attribute name="repulsion_max_speed" template="float" value="400"/>
       <Attribute name="collision_damping" template="float" value="0.9"/>
 

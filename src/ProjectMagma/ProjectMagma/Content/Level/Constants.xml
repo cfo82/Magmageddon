@@ -22,7 +22,7 @@
 
       <Attribute name="arrow_island_distance" template="float" value="0.5"/>
       
-      <Attribute name="lava_damage_per_second" template="int" value="200"/>
+      <Attribute name="lava_damage_per_second" template="int" value="100"/>
       <Attribute name="energy_recharge_per_second" template="int" value="8"/>
 
       <Attribute name="fuel_recharge_multiplier" template="float" value="1.2"/>

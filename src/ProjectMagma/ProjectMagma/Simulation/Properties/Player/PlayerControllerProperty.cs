@@ -289,7 +289,7 @@ namespace ProjectMagma.Simulation
 
             // check collision with lava
             Entity lava = Game.Instance.Simulation.EntityManager["lava"];
-            if (playerPosition.Y < lava.GetVector3("position").Y)
+            if (playerPosition.Y <= 0) // todo: extract constant?
                 PlayerLavaCollisionHandler(simTime, player, lava);
 
             if(controllerInput.StartHitAnimation)
@@ -971,7 +971,12 @@ namespace ProjectMagma.Simulation
                     deathExplosion = new Entity(player.Name + "_explosion");
                     deathExplosion.AddStringAttribute("player", player.Name);
 
-                    deathExplosion.AddVector3Attribute("position", player.GetVector3("position"));
+                    Vector3 pos = player.GetVector3("position");
+                    /*
+                    if(pos.Y < 0) // explode on lava
+                        pos.Y = 0;
+                     */
+                    deathExplosion.AddVector3Attribute("position", pos);
 
                     Game.Instance.Simulation.EntityManager.AddDeferred(deathExplosion, "player_explosion_base", templates);
 
@@ -1247,6 +1252,7 @@ namespace ProjectMagma.Simulation
 
         private void PlayerLavaCollisionHandler(SimulationTime simTime, Entity player, Entity lava)
         {
+            player.SetVector3("velocity", Vector3.Zero);
             Game.Instance.Simulation.ApplyPerSecondSubstraction(player, "lava_damage", constants.GetInt("lava_damage_per_second"),
                 player.GetIntAttribute("health"));
         }

@@ -95,8 +95,8 @@
   <Entity name="island_constants" extends="constants">
     <Attributes>
       <!-- all islands -->          
-      <Attribute name="rising_delay" template="int" value="500"/>
-      <Attribute name="repositioning_speed" template="float" value="120" />
+      <Attribute name="rising_delay" template="int" value="800"/>
+      <Attribute name="repositioning_speed" template="float" value="100" />
 
       <Attribute name="scale_health_multiplier" template="float" value="1.8"/>
 

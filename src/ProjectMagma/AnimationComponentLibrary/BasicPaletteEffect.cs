@@ -34,7 +34,6 @@ using Microsoft.Xna.Framework.Content;
 
 namespace Xclna.Xna.Animation
 {
-
     /// <summary>
     /// Provides functionality similar to that of BasicEffect, but uses a 
     /// Matrix Palette.

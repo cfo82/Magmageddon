@@ -7,7 +7,7 @@ namespace ProjectMagma
     {
         private static readonly string funnyReleaseNotes =
             "Improvements from the May 19 release compared to the May 7 release:\n" +
-            "  - New Control Possibilites: Use repulsion (LT) to move the island you\n" + 
+            "  - New control possibilites: Use repulsion (LT) to move the island you\n" + 
             "        are occupying, jump to other islands as soon as they are in range\n" + 
             "        (indicated by an arrow)\n" +
             "  - Check out out the new levels: Gameplay feels different on those maps.\n" + 
@@ -37,7 +37,7 @@ namespace ProjectMagma
             for (int i = 0; i < lines.Length; ++i)
             {
                 if (lines[i].StartsWith("  -")) { offset += 10; }
-                Menu.DrawShadowString(spriteBatch, f, lines[i], new Vector2(220, 150 + offset), menu.StaticStringColor, 0.66f);
+                Menu.DrawShadowString(spriteBatch, f, lines[i], new Vector2(220, 160 + offset), menu.StaticStringColor, 0.66f);
                 offset += 30;
             }
         }

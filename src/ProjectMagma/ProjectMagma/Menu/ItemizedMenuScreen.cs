@@ -41,7 +41,7 @@ namespace ProjectMagma
             SelectedItem.Activate();
         }
 
-        protected bool ResetSelectionOnOpen
+        protected virtual bool ResetSelectionOnOpen
         {
             get { return true; }
         }

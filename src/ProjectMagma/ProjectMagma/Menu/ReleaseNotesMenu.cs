@@ -1,5 +1,6 @@
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
+using Microsoft.Xna.Framework.Input;
 
 namespace ProjectMagma
 {
@@ -39,6 +40,20 @@ namespace ProjectMagma
                 if (lines[i].StartsWith("  -")) { offset += 10; }
                 Menu.DrawShadowString(spriteBatch, f, lines[i], new Vector2(220, 175 + offset), menu.StaticStringColor, 0.66f);
                 offset += 30;
+            }
+        }
+
+        public override void Update(GameTime gameTime)
+        {
+            base.Update(gameTime);
+
+            GamePadState gamePadState = GamePad.GetState(PlayerIndex.One);
+
+            if (gamePadState.Buttons.Start == ButtonState.Pressed
+                || gamePadState.Buttons.A == ButtonState.Pressed)
+            {
+                menu.CloseActiveMenuScreen();
+                menu.buttonPressedAt = gameTime.TotalGameTime.TotalMilliseconds;
             }
         }
     }

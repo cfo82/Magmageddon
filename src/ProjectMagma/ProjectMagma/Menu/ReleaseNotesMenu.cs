@@ -7,17 +7,17 @@ namespace ProjectMagma
     {
         private static readonly string funnyReleaseNotes =
             "Improvements from the May 19 release compared to the May 7 release:\n" +
-            "  - New control possibilites: Use repulsion (LT) to move the island you\n" + 
+            "  - New control possibilites: Use repulsion (left trigger) to move the island you\n" + 
             "        are occupying, jump to other islands as soon as they are in range\n" + 
             "        (indicated by an arrow)\n" +
-            "  - Check out out the new levels: Gameplay feels different on those maps.\n" + 
-            "  - Watch out for power ups. They help a lot if you are short on health or energy!\n" +
+            "  - Check out out the new levels: The game feels different on those maps.\n" + 
+            "  - Watch out for power-ups. They help a lot if you are short on health or energy!\n" +
             "  - If you are pushed off an island, save yourself using the jetpack on button A!\n" + 
-            "        If the opponent tries to safe himself, take him down using an ice spike\n" + 
-            "        (disables the jetpack)\n" + 
-            "  - Please report any bluescreens you might encounter! It is so easy, take a picture\n" + 
+            "        If the opponent tries to save himself, take him down using an ice spike\n" + 
+            "        (this disables the jetpack)\n" + 
+            "  - Please report any blue screens you might encounter! It is so easy, take a picture\n" + 
             "        and mail it to us: dpk@student.ethz.ch!\n" + 
-            "  - Enjoy the game and admire the graphics ;-)\n";
+            "  - Enjoy the game!\n";
         private string[] funnyReleaseNotesLines = funnyReleaseNotes.Split('\n');
 
         public ReleaseNotesMenu(Menu menu)

@@ -3,15 +3,15 @@
 <Levels>
 
   <Level>
-    <Name>FOR NOOBS</Name>
-    <Description>A beginner level</Description>
-    <FileName>Level\4Noobs</FileName>
-  </Level>
-
-  <Level>
     <Name>4 VS 4</Name>
     <Description>Hardcore Deathmatch</Description>
     <FileName>Level\4vs4</FileName>
+  </Level>
+
+  <Level>
+    <Name>FOR NOOBS</Name>
+    <Description>A beginner level</Description>
+    <FileName>Level\4Noobs</FileName>
   </Level>
 
   <Level>

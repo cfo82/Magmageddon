@@ -11,7 +11,6 @@ namespace ProjectMagma.Simulation
 {
     public class BurnableProperty : Property
     {
-
         Entity constants;
 
         public BurnableProperty()

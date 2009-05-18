@@ -37,6 +37,7 @@ namespace ProjectMagma
         public override void OnOpen()
         {
             selected = 0;
+            SelectedItem.Activate();
         }
 
         public int Width

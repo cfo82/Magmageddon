@@ -359,6 +359,7 @@ namespace ProjectMagma.Simulation
         private void PerformIslandJumpAction(ref Vector3 playerPosition, ref Vector3 playerVelocity)
         {
             if (controllerInput.jetpackButtonPressed
+                && !repulsionActive
                 && activeIsland != null
                 && player.GetInt("frozen") <= 0)
             {
@@ -810,8 +811,7 @@ namespace ProjectMagma.Simulation
 
         private void PerformIslandJump(Entity player, float dt, float at, ref Vector3 playerPosition, ref Vector3 playerVelocity)
         {
-            if (destinationIsland != null
-                && !repulsionActive)
+            if (destinationIsland != null)
             {
                 // apply from last jump
                 playerPosition += player.GetVector3("island_jump_velocity") * dt;

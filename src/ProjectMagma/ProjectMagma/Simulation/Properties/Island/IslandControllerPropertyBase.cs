@@ -292,13 +292,6 @@ namespace ProjectMagma.Simulation
                 {
                     // other objects
                     Vector3 normal = CalculatePseudoNormalIsland(island, other);
-                    if (kind == "cave")
-                    {
-                        normal = /*island.GetVector3("position");*/ contact[0].Normal;
-                        normal.Y = 0;
-                        if(normal != Vector3.Zero)
-                            normal.Normalize();
-                    }
 
                     // change direction of repulsion
                     Vector3 repulsionVelocity = island.GetVector3("repulsion_velocity");
@@ -307,7 +300,7 @@ namespace ProjectMagma.Simulation
                         // only if collision normal is in opposite direction of current repulsion
                         Vector3 xznormal = normal;
                         xznormal.Y = 0;
-                        if (Vector3.Dot(repulsionVelocity, xznormal) > 0)
+                        if (Vector3.Dot(Vector3.Normalize(repulsionVelocity), xznormal) > 0)
                         {
                             island.SetVector3("repulsion_velocity", Vector3.Reflect(repulsionVelocity, xznormal)
                                 * constants.GetFloat("collision_damping"));
@@ -411,11 +404,18 @@ namespace ProjectMagma.Simulation
         private Vector3 CalculatePseudoNormalIsland(Entity entityA, Entity entityB)
         {
             Vector3 normal;
-            if(entityB.GetString("kind") == "pillar")
+            String kind = entityB.GetString("kind");
+            if (kind == "pillar")
             {
                 normal = entityB.GetVector3("position")-entityA.GetVector3("position");
                 normal.Y = 0;
             }
+            else
+            if (kind == "cave")
+            {
+                normal = entityA.GetVector3("position");
+                normal.Y = 0;
+            }       
             else
             {
                 normal = entityB.GetVector3("position")-entityA.GetVector3("position");

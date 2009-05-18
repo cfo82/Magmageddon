@@ -100,7 +100,7 @@ namespace ProjectMagma.Simulation
                     Vector3 pushbackDir = pushbackVelocity;
                     if (pushbackDir != Vector3.Zero)
                         pushbackDir.Normalize();
-                    Vector3 pushback = -normal * (island.GetVector3("position") - other.GetVector3("position")).Length();
+                    Vector3 pushback = -normal * 100;
                     pushback.Y = 0; // only in xz plane
                     // same direction already?
                     if (Vector3.Dot(pushbackDir, normal) > 0)

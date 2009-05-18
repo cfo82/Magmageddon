@@ -394,6 +394,11 @@ namespace ProjectMagma.Simulation
                         Vector3 slidingVelocity = slidingDir * constants.GetFloat("repositioning_speed");
 
                         island.SetVector3("repositioning_velocity", slidingVelocity);
+
+                        // push a bit out too
+                        normal.Y = 0;
+                        island.SetVector3("pushback_velocity", island.GetVector3("pushback_velocity")
+                                                   - normal * 10); // todo: extract constant
                     }
                     else
                         CollisionHandler(simTime, island, other, contact, ref normal);

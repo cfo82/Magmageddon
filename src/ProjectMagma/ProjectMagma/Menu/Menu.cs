@@ -160,7 +160,10 @@ namespace ProjectMagma
                 }
                 while (node != null);
 
-                DrawStaticStrings();
+                if (screens.Last.Value is ItemizedMenuScreen && (screens.Last.Value as ItemizedMenuScreen).DrawPrevious)
+                {
+                    DrawStaticStrings();
+                }
 
                 spriteBatch.End();
             }

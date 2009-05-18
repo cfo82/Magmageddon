@@ -203,6 +203,10 @@ namespace ProjectMagma.Renderer
             {
                 requestedState = "walk"; // implement this!
             }
+            if (stateRequestString == "repulsion")
+            {
+                requestedState = "walk"; // implement this!
+            }
             Debug.Assert(requestedState != "");
 
             // update animation

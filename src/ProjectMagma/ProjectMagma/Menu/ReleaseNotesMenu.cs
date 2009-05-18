@@ -37,7 +37,7 @@ namespace ProjectMagma
             for (int i = 0; i < lines.Length; ++i)
             {
                 if (lines[i].StartsWith("  -")) { offset += 10; }
-                Menu.DrawShadowString(spriteBatch, f, lines[i], new Vector2(220, 140 + offset), menu.StaticStringColor, 0.66f);
+                Menu.DrawShadowString(spriteBatch, f, lines[i], new Vector2(220, 150 + offset), menu.StaticStringColor, 0.66f);
                 offset += 30;
             }
         }

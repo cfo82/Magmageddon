@@ -14,9 +14,10 @@ namespace ProjectMagma.Renderer
     public abstract class PointExplosionRenderable : ParticleSystemRenderable
     {
         public PointExplosionRenderable(
+            double timestamp,
             Vector3 position
         )
-        :   base(position)
+        :   base(timestamp, position)
         {
             explosionEmitter = null;
         }

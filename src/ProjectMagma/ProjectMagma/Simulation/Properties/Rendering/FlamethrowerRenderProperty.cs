@@ -79,7 +79,7 @@ namespace ProjectMagma.Simulation
                 fueled = entity.GetBool("fueled");
             }
 
-            return new FlamethrowerRenderable(position, CalculateDirection(ref rotation), fueled);
+            return new FlamethrowerRenderable(Game.Instance.Simulation.Time.At, position, CalculateDirection(ref rotation), fueled);
         }
 
         protected override void SetUpdatableParameters(Entity entity)

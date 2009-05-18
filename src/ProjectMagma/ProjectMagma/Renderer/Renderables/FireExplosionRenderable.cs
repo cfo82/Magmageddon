@@ -14,9 +14,10 @@ namespace ProjectMagma.Renderer
     public class FireExplosionRenderable : PointExplosionRenderable
     {
         public FireExplosionRenderable(
+            double timestamp, 
             Vector3 position
         )
-        :   base(position)
+        :   base(timestamp, position)
         {
         }
 

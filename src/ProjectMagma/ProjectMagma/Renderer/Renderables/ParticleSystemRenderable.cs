@@ -6,6 +6,7 @@ using System.Diagnostics;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using ProjectMagma.Shared.Model;
+using ProjectMagma.Renderer.Interface;
 using ProjectMagma.Renderer.ParticleSystem.Emitter;
 using ProjectMagma.Renderer.ParticleSystem.Stateful.Implementations;
 
@@ -14,10 +15,11 @@ namespace ProjectMagma.Renderer
     public class ParticleSystemRenderable : Renderable
     {
         public ParticleSystemRenderable(
+            double timestamp,
             Vector3 position
         )
         {
-            this.position = position;
+            this.position = new Vector3InterpolationHistory(timestamp, position);
         }
 
         public override void LoadResources(Renderer renderer)
@@ -49,20 +51,20 @@ namespace ProjectMagma.Renderer
 
             if (id == "Position")
             {
-                position = value;
+                position.AddKeyframe(timestamp, value);
             }
         }
 
         public override Vector3 Position
         {
-            get { return position; }
+            get { return position.Evaluate(Game.Instance.Renderer.Time.PausableAt); }
         }
 
         public override RenderMode RenderMode
         {
             get { return RenderMode.RenderToSceneAlpha; }
         }
-        
-        private Vector3 position;
+
+        private Vector3InterpolationHistory position;
     }
 }

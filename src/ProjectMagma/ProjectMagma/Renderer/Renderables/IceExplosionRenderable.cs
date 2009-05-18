@@ -14,9 +14,10 @@ namespace ProjectMagma.Renderer
     public class IceExplosionRenderable : PointExplosionRenderable
     {
         public IceExplosionRenderable(
+            double timestamp,
             Vector3 position
         )
-        :   base(position)
+        :   base(timestamp, position)
         {
         }
 

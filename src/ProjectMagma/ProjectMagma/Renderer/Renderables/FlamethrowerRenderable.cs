@@ -14,11 +14,12 @@ namespace ProjectMagma.Renderer
     public class FlamethrowerRenderable : ParticleSystemRenderable
     {
         public FlamethrowerRenderable(
+            double timestamp,
             Vector3 position,
             Vector3 direction,
             bool fueled
         )
-        :   base(position)
+        :   base(timestamp, position)
         {
             this.direction = direction;
             this.fueled = fueled;

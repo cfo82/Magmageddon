@@ -16,7 +16,7 @@ namespace ProjectMagma.Simulation
     {
         protected override PointExplosionRenderable CreateExplosionRenderable(Entity entity, Vector3 position)
         {
-            return new IceExplosionRenderable(position);
+            return new IceExplosionRenderable(Game.Instance.Simulation.Time.At, position);
         }
     }
 }

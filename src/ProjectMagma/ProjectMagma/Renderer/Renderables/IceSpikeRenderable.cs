@@ -14,11 +14,12 @@ namespace ProjectMagma.Renderer
     public class IceSpikeRenderable : ParticleSystemRenderable
     {
         public IceSpikeRenderable(
+            double timestamp,
             Vector3 position,
             Vector3 direction,
             bool dead
         )
-        :   base(position)
+        :   base(timestamp, position)
         {
             this.direction = direction;
             this.dead = dead;

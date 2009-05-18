@@ -115,7 +115,14 @@ namespace ProjectMagma.Simulation
             // apply pushback from other objects as long as there is a collision
             if (HadCollision(simTime))
             {
-                position += island.GetVector3("pushback_velocity") * dt;
+                Vector3 pushbackVelocity = island.GetVector3("pushback_velocity");
+                if (pushbackVelocity.Length() > constants.GetFloat("repulsion_max_speed"))
+                {
+                    pushbackVelocity.Normalize();
+                    pushbackVelocity *= constants.GetFloat("repulsion_max_speed");
+                    island.SetVector3("pushback_velocity", pushbackVelocity);
+                }
+                position += pushbackVelocity * dt;
             }
             else
                 island.SetVector3("pushback_velocity", Vector3.Zero);

@@ -36,8 +36,14 @@ namespace ProjectMagma
 
         public override void OnOpen()
         {
-            selected = 0;
+            if(ResetSelectionOnOpen)
+                selected = 0;
             SelectedItem.Activate();
+        }
+
+        protected bool ResetSelectionOnOpen
+        {
+            get { return true; }
         }
 
         public int Width

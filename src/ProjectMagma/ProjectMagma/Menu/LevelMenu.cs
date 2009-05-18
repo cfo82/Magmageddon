@@ -40,9 +40,9 @@ namespace ProjectMagma
             menu.OpenMenuScreen(playerMenu);
         }
 
-        public override void OnOpen()
+        protected override bool ResetSelectionOnOpen
         {
-            // do nothing (base reverts to first item)
+            get { return false; }
         }
     }
 }

@@ -498,22 +498,30 @@ namespace ProjectMagma.Simulation
             islandSelectedAt = 0;
         }
 
+        private Vector3 islandRepulsionStartDir;
+        private Quaternion islandRepulsionStartRotation;
+
         private void PerformIslandRepulsionAction(SimulationTime simTime, ref int fuel)
         {
             if (activeIsland != null)
             {
                 // island repulsion start
                 if (controllerInput.repulsionButtonPressed
+                    && activeIsland.GetString("repulsed_by") == ""
                     && player.GetInt("energy") > constants.GetInt("island_repulsion_start_min_energy"))
                 {
-                    Vector3 velocity = new Vector3(controllerInput.leftStickX, 0, controllerInput.leftStickY);
+                    islandRepulsionStartDir = Vector3.Transform(new Vector3(0, 0, 1), GetRotation(player));
+                    islandRepulsionStartRotation = activeIsland.GetQuaternion("rotation");
+
                     Vector3 currentVelocity = activeIsland.GetVector3("repulsion_velocity");
-                    velocity *= constants.GetFloat("island_repulsion_start_velocity_multiplier");
+                    Vector3 velocity = islandRepulsionStartDir * 
+                        constants.GetFloat("island_repulsion_start_velocity_multiplier");
                     activeIsland.SetVector3("repulsion_velocity", currentVelocity + velocity);
 
                     player.SetInt("energy", player.GetInt("energy") - constants.GetInt("island_repulsion_start_energy_cost"));
 
                     (player.GetProperty("render") as RobotRenderProperty).NextPermanentState = "repulsion";
+                    activeIsland.SetString("repulsed_by", player.Name);
                     repulsionActive = true;
                 }
                 else
@@ -525,6 +533,14 @@ namespace ProjectMagma.Simulation
                         )
                     {
                         Vector3 dir = new Vector3(controllerInput.leftStickX, 0, controllerInput.leftStickY);
+                        if(dir != Vector3.Zero)
+                        {
+                            float angle = (float) Math.Acos(Vector3.Dot(Vector3.Normalize(dir), islandRepulsionStartDir));
+                            Matrix rotationMatrix = Matrix.CreateRotationY(angle);
+                            activeIsland.SetQuaternion("rotation", islandRepulsionStartRotation *
+                                Quaternion.CreateFromRotationMatrix(rotationMatrix));
+                        }
+
                         Vector3 currentVelocity = activeIsland.GetVector3("repulsion_velocity");
                         activeIsland.SetVector3("repulsion_velocity", currentVelocity +
                             dir * constants.GetFloat("island_repulsion_acceleration") * simTime.Dt);
@@ -535,6 +551,7 @@ namespace ProjectMagma.Simulation
                         if (player.GetInt("energy") <= 0)
                         {
                             (player.GetProperty("render") as RobotRenderProperty).NextPermanentState = "idle";
+                            activeIsland.SetString("repulsed_by", "");
                             repulsionActive = false;
                         }
                     }
@@ -542,8 +559,16 @@ namespace ProjectMagma.Simulation
                     if(repulsionActive)
                     {
                         (player.GetProperty("render") as RobotRenderProperty).NextPermanentState = "idle";
+                        activeIsland.SetString("repulsed_by", "");
                         repulsionActive = false;
                     }
+            }
+            else
+                // todo: move to leaveisland code
+            if(repulsionActive)
+            {
+                (player.GetProperty("render") as RobotRenderProperty).NextPermanentState = "idle";
+                repulsionActive = false;
             }
         }
 

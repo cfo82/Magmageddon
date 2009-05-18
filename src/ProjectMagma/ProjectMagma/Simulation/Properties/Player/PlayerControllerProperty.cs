@@ -1044,7 +1044,16 @@ namespace ProjectMagma.Simulation
 
         private Vector3 GetLandingPosition(Entity island)
         {
-            Vector3 pos = island.GetVector3("position") + island.GetVector3("landing_offset");
+            int gpi = player.GetInt("game_pad_index");
+            Vector3 pos;
+            if (island.HasAttribute("landing_offset_p" + gpi))
+            {
+                pos = island.GetVector3("position") + island.GetVector3("landing_offset_p" + gpi);
+            }
+            else
+            {
+                pos = island.GetVector3("position") + island.GetVector3("landing_offset");
+            }
             return pos;
         }
 

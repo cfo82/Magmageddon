@@ -139,7 +139,7 @@ namespace ProjectMagma
 
                 // load templates
                 LevelData levelData = Game.Instance.ContentManager.Load<LevelData>("Level/RobotTemplates");
-                EntityData entityData = levelData.entities[Game.Instance.Robots[i].Entity];
+                EntityData entityData = levelData.entities[Game.Instance.Robots[robotSelected[i]].Entity];
                 List<AttributeData> attributes = entityData.CollectAttributes(levelData);
                 List<PropertyData> properties = entityData.CollectProperties(levelData);
 

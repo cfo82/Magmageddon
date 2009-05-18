@@ -85,7 +85,7 @@ namespace ProjectMagma
             //this.TargetElapsedTime = TimeSpan.FromSeconds(1.0 / 15.0);
             //graphics.SynchronizeWithVerticalRetrace = false; 
             graphics.ApplyChanges();
-            const float multiplier = 1f;
+            const float multiplier = 1.0f;
             graphics.PreferredBackBufferWidth = (int) (1280 * multiplier);
             graphics.PreferredBackBufferHeight = (int) (720 * multiplier);
 

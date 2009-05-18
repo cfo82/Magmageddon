@@ -26,7 +26,7 @@ namespace ProjectMagma
         private readonly GamePadState[] previousState = new GamePadState[4];
 
         public PlayerMenu(Menu menu, LevelMenu levelMenu)
-            : base(menu, new Vector2(550, 250))
+            : base(menu, new Vector2(640, 360))
         {
             this.levelMenu = levelMenu;
 
@@ -46,6 +46,8 @@ namespace ProjectMagma
                     robotSprites[i] = Game.Instance.ContentManager.Load<Texture2D>("Sprites/Menu/Robot/no_image");
                 }
             }
+
+            DrawPrevious = false;
         }
 
         public override void Update(GameTime gameTime)

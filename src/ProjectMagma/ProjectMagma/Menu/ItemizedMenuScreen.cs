@@ -2,23 +2,36 @@ using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Input;
 using ProjectMagma.MathHelpers;
+using System;
 
 namespace ProjectMagma
 {
     abstract class ItemizedMenuScreen : MenuScreen
     {
-        readonly int width;
+        int width;
         protected int selected = 0;
         SineFloat selectedSize, unselectedSize;
 
-        public ItemizedMenuScreen(Menu menu, int width) :
+        public ItemizedMenuScreen(Menu menu) :
             base(menu, new Vector2(640, 360))
         {
-            this.width = width;
+            //this.width = width;
             selectedSize = new SineFloat(0.7f, 0.9f, 10.0f);
             unselectedSize = new SineFloat(0.48f, 0.52f, 3.0f);
             selectedSize.Start(Game.Instance.GlobalClock.ContinuousMilliseconds);
             unselectedSize.Start(Game.Instance.GlobalClock.ContinuousMilliseconds);
+        }
+
+        public void RecomputeWidth()
+        {
+            float width = 0;
+            foreach(MenuItem item in MenuItems)
+            {
+                width = (int) Math.Max(width, font.MeasureString(item.Text).X);
+            }
+            width *= 0.8f;
+
+            this.width = (int) width;
         }
 
         public override void OnOpen()
@@ -108,12 +121,15 @@ namespace ProjectMagma
 
         public override void Draw(GameTime gameTime, SpriteBatch spriteBatch)
         {
+            // this needs to be updated even if paused
+            DrawOffset.Update(gameTime.ElapsedRealTime.TotalMilliseconds);
+
             // this is to compensate for the size overhead of the currently selected item
             Vector2 globalOffset = new Vector2(0, (selectedSize.Value-1)/2 + 0.1f);
             float itemHeight = 50f;
 
             // draw the individual items
-            Vector2 pos = new Vector2(640 + DrawOffset, 360 + MenuItems.Length*itemHeight/2);
+            Vector2 pos = new Vector2(640 + DrawOffset.Value, 360 + MenuItems.Length*itemHeight/2);
             for (int i = MenuItems.Length - 1; i >= 0; i--)
             {
                 MenuItem item = MenuItems[i];
@@ -125,13 +141,14 @@ namespace ProjectMagma
 
                 // draw the text and its attachments
                 DrawEffectString(spriteBatch, item.Text, pos + offset, i == selected);
-                DrawWithItem(gameTime, spriteBatch, item, pos, 0.5f);
+                DrawWithItem(gameTime, spriteBatch, item, pos + offset - Vector2.UnitY*itemHeight/2, 0.5f);
 
                 // go on
                 pos.Y -= itemHeight;
             }
         }
-
+        
+        public bool Active { get; set; }
         private Vector2 lastBox;
 
         private static readonly int contourOffset = 2;
@@ -149,7 +166,7 @@ namespace ProjectMagma
             DrawString(spriteBatch, str, pos + new Vector2(-contourOffset, +contourOffset), shadowColor, scale);
             DrawString(spriteBatch, str, pos + new Vector2(+contourOffset, -contourOffset), shadowColor, scale);
             DrawString(spriteBatch, str, pos + new Vector2(-contourOffset, -contourOffset), shadowColor, scale);
-            DrawString(spriteBatch, str, pos, isSelected ? Color.White : Color.LightGray, scale);
+            DrawString(spriteBatch, str, pos, isSelected && Active ? Color.White : Color.LightGray, scale);
 
         }
 

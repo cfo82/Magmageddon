@@ -10,7 +10,7 @@ namespace ProjectMagma
         readonly MenuScreen playerMenu;
 
         public LevelMenu(Menu menu)
-            : base(menu, 450)
+            : base(menu)
         {
             List<LevelInfo> levels = Game.Instance.Levels;
             this.menuItems = new MenuItem[levels.Count];
@@ -21,6 +21,8 @@ namespace ProjectMagma
                 menuItems[i].SetActivationHandler(new ItemActivationHandler(LevelActivated));
             }
             playerMenu = new PlayerMenu(menu, this);
+
+            RecomputeWidth();
         }
 
         public override MenuItem[] MenuItems

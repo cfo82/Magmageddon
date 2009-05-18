@@ -10,7 +10,7 @@ namespace ProjectMagma
         readonly MenuScreen helpMenu;
 
         public MainMenu(Menu menu)
-            : base(menu, 200)
+            : base(menu)
         {
             this.menuItems = new MenuItem[] { 
                 new MenuItem("new_game", "NEW GAME", new ItemSelectionHandler(NewGameHandler)),
@@ -22,6 +22,8 @@ namespace ProjectMagma
             levelMenu = new LevelMenu(menu);
             settingsMenu = new SettingsMenu(menu);
             helpMenu = new HelpMenu(menu);
+
+            RecomputeWidth();
         }
 
         public override MenuItem[] MenuItems

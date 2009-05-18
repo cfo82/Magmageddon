@@ -1,6 +1,7 @@
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Input;
+using ProjectMagma.MathHelpers;
 
 namespace ProjectMagma
 {
@@ -19,6 +20,7 @@ namespace ProjectMagma
             this.position = position;
 
             DrawPrevious = true;
+            DrawOffset = new EaseFloat(0.0f, 0.1f);
         }
 
         public Vector2 Position
@@ -70,7 +72,7 @@ namespace ProjectMagma
 
         public abstract void Draw(GameTime gameTime, SpriteBatch spriteBatch);
 
-        public float DrawOffset { get; set; }
+        public EaseFloat DrawOffset { get; set; }
         public bool DrawPrevious { get; set; }
     }
 }

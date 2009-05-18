@@ -118,6 +118,7 @@ namespace ProjectMagma
 
                 // first traversal: sum up total width of all screens
                 int totalWidth = 0;
+
                 foreach(MenuScreen screen in screens)
                 {
                     if (screen is ItemizedMenuScreen)
@@ -132,8 +133,14 @@ namespace ProjectMagma
                 do
                 {
                     MenuScreen screen = node.Value;
-                    //screen.DrawOffset = offset - totalWidth + (screens.Last.Value as ItemizedMenuScreen).Width/2;
-                    screen.DrawOffset = offset;// -totalWidth / 2 + (screen as ItemizedMenuScreen).Width / 2;//- 640;// +640 - totalWidth / 2;
+                    screen.DrawOffset.TargetValue = offset + totalWidth / 2;
+                    if (screen is ItemizedMenuScreen)
+                    {
+                        (screen as ItemizedMenuScreen).Active = (screen == screens.Last.Value);
+                        screen.DrawOffset.TargetValue -= (screens.Last.Value as ItemizedMenuScreen).Width / 2;
+                    }
+                    //screen.DrawOffset.TargetValue = offset + totalWidth/2 - (screens.Last.Value as ItemizedMenuScreen).Width/2;
+                    
                     screen.Draw(gameTime, spriteBatch);
                     if (screen is ItemizedMenuScreen)
                     {
@@ -153,6 +160,8 @@ namespace ProjectMagma
         public void OpenMenuScreen(MenuScreen screen)
         {
             screen.OnOpen();
+            screen.DrawOffset.TargetValue = 0f;
+            screen.DrawOffset.Value = 0f;
             screens.AddLast(screen);
             activeScreen = screen;
         }

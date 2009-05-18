@@ -24,13 +24,13 @@ namespace ProjectMagma.Simulation
         private static readonly float StickMovementEps = 0.1f;
         
         // gamepad buttons
-        private static readonly Buttons[] RepulsionButtons = { Buttons.RightTrigger };
+        private static readonly Buttons[] RepulsionButtons = { Buttons.LeftTrigger };
         private static readonly Buttons[] AttractionButtons = { Buttons.A };
         private static readonly Buttons[] JetpackButtons = { Buttons.A };
         private static readonly Buttons[] IceSpikeButtons = { Buttons.X };
         private static readonly Buttons[] FlamethrowerButtons = { Buttons.Y };
         private static readonly Buttons[] HitButtons = { Buttons.B };
-        private static readonly Buttons[] RunButtons = { Buttons.LeftTrigger };
+        private static readonly Buttons[] RunButtons = { Buttons.RightTrigger };
 
         // keyboard keys
         private static readonly Keys JetpackKey = Keys.Space;

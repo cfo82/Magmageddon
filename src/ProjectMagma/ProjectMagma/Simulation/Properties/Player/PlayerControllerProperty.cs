@@ -519,7 +519,7 @@ namespace ProjectMagma.Simulation
                     // island repulsion
                     if (repulsionActive
                         && controllerInput.repulsionButtonHold
-                        //                && player.GetFloat("repulsion_seconds") > 0
+                        && activeIsland != null
                         && player.GetInt("energy") > 0
                         )
                     {
@@ -751,7 +751,7 @@ namespace ProjectMagma.Simulation
             }
             else
             {
-                if((player.GetProperty("render") as RobotRenderProperty).NextPermanentState != "idle")
+                if((player.GetProperty("render") as RobotRenderProperty).NextPermanentState == "walk")
                 {
                     (player.GetProperty("render") as RobotRenderProperty).NextPermanentState = "idle";
                 }
@@ -810,7 +810,8 @@ namespace ProjectMagma.Simulation
 
         private void PerformIslandJump(Entity player, float dt, float at, ref Vector3 playerPosition, ref Vector3 playerVelocity)
         {
-            if (destinationIsland != null)
+            if (destinationIsland != null
+                && !repulsionActive)
             {
                 // apply from last jump
                 playerPosition += player.GetVector3("island_jump_velocity") * dt;
@@ -1150,21 +1151,6 @@ namespace ProjectMagma.Simulation
                 return;
             }
 
-            if (island == simpleJumpIsland)
-            {
-                if(player.GetVector3("velocity").Y > 0)
-                {
-                    // don't do anything at begining of jump
-                    return;
-                }
-                else
-                {
-                    // remove handler
-                    StopSimpleJump();
-                }
-            }
-
-
             // no collision response at all
             if (ImuneToIslandPush
                 && activeIsland != null)
@@ -1182,13 +1168,28 @@ namespace ProjectMagma.Simulation
             if ((//surfacePosition.Y - 5 < playerPosition.Y
                 Vector3.Dot(contact[0].Normal, -Vector3.UnitY) > 0
                 && activeIsland == null) // don't allow switching of islands
-                || island == attractedIsland)
+                || island == attractedIsland
+                || island == simpleJumpIsland)
             {
 //                Console.WriteLine(player.Name + " collidet with " + island.Name);
 
                 if (destinationIsland != null) // if we are in jump, don't active island
                 {
                     return;
+                }
+
+                if (island == simpleJumpIsland)
+                {
+                    if (player.GetVector3("velocity").Y > 0)
+                    {
+                        // don't do anything at begining of jump
+                        return;
+                    }
+                    else
+                    {
+                        // remove handler
+                        StopSimpleJump();
+                    }
                 }
 
                 // has active island changed (either from none or another)
@@ -1220,6 +1221,16 @@ namespace ProjectMagma.Simulation
                     // on island -> calculate pseudo normal in xz
                     Vector3 normal = island.GetVector3("position") - pos;
                     normal.Y = 0;
+                    Vector3 velocity = -normal * 100; // todo: extract constant
+                    player.SetVector3("collision_pushback_velocity", player.GetVector3("collision_pushback_velocity") + velocity);
+                }
+                else
+                if (simpleJumpIsland != null)
+                {
+                    // don't push in xz if in simplejump
+                    Vector3 normal = island.GetVector3("position") - pos;
+                    normal.X = 0;
+                    normal.Z = 0;
                     Vector3 velocity = -normal * 100; // todo: extract constant
                     player.SetVector3("collision_pushback_velocity", player.GetVector3("collision_pushback_velocity") + velocity);
                 }

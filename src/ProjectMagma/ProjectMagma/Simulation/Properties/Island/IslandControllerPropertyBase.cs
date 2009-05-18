@@ -294,7 +294,7 @@ namespace ProjectMagma.Simulation
                     Vector3 normal = CalculatePseudoNormalIsland(island, other);
                     if (kind == "cave")
                     {
-                        normal = island.GetVector3("position");
+                        normal = /*island.GetVector3("position");*/ contact[0].Normal;
                         normal.Y = 0;
                         if(normal != Vector3.Zero)
                             normal.Normalize();

@@ -380,7 +380,7 @@ namespace ProjectMagma.Simulation
             }
         }
 
-        private Vector3 StartSimpleJump(ref Vector3 playerVelocity)
+        private void StartSimpleJump(ref Vector3 playerVelocity)
         {
             simpleJumpIsland = activeIsland;
             LeaveActiveIsland();
@@ -389,7 +389,8 @@ namespace ProjectMagma.Simulation
 
             playerVelocity = (float)Math.Sqrt(constants.GetFloat("simple_jump_height") / constants.GetVector3("gravity_acceleration").Length())
                 * -constants.GetVector3("simple_jump_gravity_acceleration");
-            return playerVelocity;
+
+            (player.GetProperty("render") as RobotRenderProperty).NextPermanentState = "jump";
         }
 
         private void StartIslandJump(Entity island, ref Vector3 playerPosition, ref Vector3 playerVelocity)
@@ -397,7 +398,6 @@ namespace ProjectMagma.Simulation
             destinationIsland = island;
 
             ((Vector3Attribute)island.Attributes["position"]).ValueChanged += IslandPositionHandler;
-
 
             // calculate time to travel to island (in xz plane) using an iterative approach
             Vector3 islandDir = GetLandingPosition(destinationIsland) - playerPosition;
@@ -407,6 +407,8 @@ namespace ProjectMagma.Simulation
             destinationOrigY = playerPosition.Y;
 
             LeaveActiveIsland();
+
+            (player.GetProperty("render") as RobotRenderProperty).NextPermanentState = "jump";
         }
 
         private void PerformIslandSelectionAction(float at, bool allowSelection, ref Vector3 playerPosition)
@@ -873,6 +875,7 @@ namespace ProjectMagma.Simulation
 
                     (player.GetProperty("render") as BasicRenderProperty).Squash();
                     (destinationIsland.GetProperty("render") as IslandRenderProperty).Squash();
+                    (player.GetProperty("render") as RobotRenderProperty).NextPermanentState = "idle";
 
                     playerPosition = isectPt;
 
@@ -1668,6 +1671,7 @@ namespace ProjectMagma.Simulation
         private void StopSimpleJump()
         {
             ((Vector3Attribute)simpleJumpIsland.Attributes["position"]).ValueChanged -= IslandPositionHandler;
+            (player.GetProperty("render") as RobotRenderProperty).NextPermanentState = "idle";
             simpleJumpIsland = null;
         }
 

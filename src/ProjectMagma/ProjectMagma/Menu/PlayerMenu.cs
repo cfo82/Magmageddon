@@ -8,6 +8,7 @@ using Microsoft.Xna.Framework.Input;
 using ProjectMagma.Shared.Model;
 using ProjectMagma.Shared.LevelData;
 using Xclna.Xna.Animation;
+using ProjectMagma.MathHelpers;
 
 namespace ProjectMagma
 {
@@ -27,6 +28,8 @@ namespace ProjectMagma
         private readonly LevelMenu levelMenu;
 
         private readonly GamePadState[] previousState = new GamePadState[4];
+
+        private SineFloat playerBoxSize;
 
         public PlayerMenu(Menu menu, LevelMenu levelMenu)
             : base(menu, new Vector2(640, 160))
@@ -78,12 +81,16 @@ namespace ProjectMagma
             }
 
             playerTexture = Game.Instance.ContentManager.Load<Texture2D>("Textures/Player/dwarf");
+
+            playerBoxSize = new SineFloat(0.96f, 1.0f, 8.0f);
+            playerBoxSize.Start(0.001f);
         }
 
         Texture2D playerTexture;
         public override void Update(GameTime gameTime)
         {
             double at = gameTime.TotalGameTime.TotalMilliseconds;
+            playerBoxSize.Update(at);
 
             if (at > menu.buttonPressedAt + Menu.ButtonRepeatTimeout
                && ((GamePad.GetState(PlayerIndex.One).Buttons.A == ButtonState.Pressed
@@ -173,21 +180,29 @@ namespace ProjectMagma
 
                 RenderTarget2D oldRenderTarget = (RenderTarget2D)Game.Instance.GraphicsDevice.GetRenderTarget(0);
                 Game.Instance.GraphicsDevice.SetRenderTarget(0, playerPreview[i]);
-                Game.Instance.GraphicsDevice.Clear(new Color(color2));
+                Game.Instance.GraphicsDevice.Clear(new Color(0,0,0,0));
 
                 ////////playerModel.Meshes[0].Draw();
                 playerMesh.Effects[0].CurrentTechnique = playerMesh.Effects[0].Techniques["DoublyColoredAnimatedPlayer"];
                 playerMesh.Effects[0].Parameters["Local"].SetValue(Matrix.Identity);
-                playerMesh.Effects[0].Parameters["World"].SetValue(Matrix.Identity);
+                playerMesh.Effects[0].Parameters["World"].SetValue(Matrix.Identity*0.8f);
                 playerMesh.Effects[0].Parameters["View"].SetValue(Matrix.CreateLookAt(new Vector3(3, 3, 3), new Vector3(0,2.0f,-3), Vector3.Up));
                 ////////playerMesh.Effects[0].Parameters["View"].SetValue(Matrix.CreateLookAt(new);
-                playerMesh.Effects[0].Parameters["Projection"].SetValue(Matrix.CreateOrthographic(10f, 10f, 0.001f, 1000) * Matrix.CreateTranslation(Vector3.UnitX * 0.5f));
+                playerMesh.Effects[0].Parameters["Projection"].SetValue(Matrix.CreateOrthographic(8.5f, 8.5f, 0.001f, 1000) * Matrix.CreateTranslation(Vector3.UnitX * 0.36f));
                 playerMesh.Effects[0].Parameters["DiffuseTexture"].SetValue(playerTexture);
-                playerMesh.Effects[0].Parameters["DiffuseColor"].SetValue(Vector3.One);
+                playerMesh.Effects[0].Parameters["DiffuseColor"].SetValue(Vector3.One * 0.9f);
                 playerMesh.Effects[0].Parameters["SpecularColor"].SetValue(Vector3.One);
+                playerMesh.Effects[0].Parameters["SpecularPower"].SetValue(5f);
+                playerMesh.Effects[0].Parameters["EmissiveColor"].SetValue(Vector3.One * 1.7f);
                 playerMesh.Effects[0].Parameters["DirLight0Direction"].SetValue(-Vector3.One);
-                playerMesh.Effects[0].Parameters["DirLight0DiffuseColor"].SetValue(Vector3.One);
-                playerMesh.Effects[0].Parameters["DirLight0SpecularColor"].SetValue(Vector3.One);
+                playerMesh.Effects[0].Parameters["DirLight0DiffuseColor"].SetValue(entity.GetVector3("color1")*3.5f);
+                playerMesh.Effects[0].Parameters["DirLight0SpecularColor"].SetValue(Vector3.One/3);
+                playerMesh.Effects[0].Parameters["DirLight1Direction"].SetValue(new Vector3(-1,1,-1));
+                playerMesh.Effects[0].Parameters["DirLight1DiffuseColor"].SetValue(new Vector3(1,1,1)*0.5f);
+                playerMesh.Effects[0].Parameters["DirLight1SpecularColor"].SetValue(Vector3.One/3);
+                playerMesh.Effects[0].Parameters["DirLight2Direction"].SetValue(new Vector3(-1, -1, 1));
+                playerMesh.Effects[0].Parameters["DirLight2DiffuseColor"].SetValue(entity.GetVector3("color2")*3.5f);
+                playerMesh.Effects[0].Parameters["DirLight2SpecularColor"].SetValue(Vector3.One/3);
 
                 Viewport oldViewport = Game.Instance.GraphicsDevice.Viewport;
 
@@ -259,17 +274,18 @@ namespace ProjectMagma
                 Vector3 color1 = entity.GetVector3("color1");
                 Vector3 color2 = entity.GetVector3("color2");
 
-                if (active)
-                {
-                    // TODO: replace by real colors
-                    if (i == 0) backgroundColor = Color.Red;
-                    if (i == 1) backgroundColor = Color.Green;
-                    if (i == 2) backgroundColor = Color.Blue;
-                    if (i == 3) backgroundColor = Color.Yellow;
-                }
+                //if (active)
+                //{
+                //    // TODO: replace by real colors
+                //    if (i == 0) backgroundColor = Color.Red;
+                //    if (i == 1) backgroundColor = Color.Green;
+                //    if (i == 2) backgroundColor = Color.Blue;
+                //    if (i == 3) backgroundColor = Color.Yellow;
+                //}
+                backgroundColor = new Color(entity.GetVector3("color1")*0.8f);
 
-                spriteBatch.Draw(sprite, pos, null, backgroundColor, 0, Vector2.Zero, scale, SpriteEffects.None, 0);
-                Vector2 halfSpriteDim = new Vector2(sprite.Width, sprite.Height)/4;              
+                Vector2 halfSpriteDim = new Vector2(sprite.Width, sprite.Height) / 4;
+                spriteBatch.Draw(sprite, pos - halfSpriteDim * (playerBoxSize.Value-1f), null, backgroundColor, 0, Vector2.Zero, scale * playerBoxSize.Value, SpriteEffects.None, 0);
 
                 if (active)
                 {

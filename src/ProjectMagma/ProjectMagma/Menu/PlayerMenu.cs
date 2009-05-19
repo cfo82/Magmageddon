@@ -183,7 +183,7 @@ namespace ProjectMagma
                 Game.Instance.GraphicsDevice.Clear(new Color(0,0,0,0));
 
                 ////////playerModel.Meshes[0].Draw();
-                playerMesh.Effects[0].CurrentTechnique = playerMesh.Effects[0].Techniques["DoublyColoredAnimatedPlayer"];
+                playerMesh.Effects[0].CurrentTechnique = playerMesh.Effects[0].Techniques["AnimatedPlayer"];
                 playerMesh.Effects[0].Parameters["Local"].SetValue(Matrix.Identity);
                 playerMesh.Effects[0].Parameters["World"].SetValue(Matrix.Identity*0.8f);
                 playerMesh.Effects[0].Parameters["View"].SetValue(Matrix.CreateLookAt(new Vector3(3, 3, 3), new Vector3(0,2.0f,-3), Vector3.Up));
@@ -194,6 +194,7 @@ namespace ProjectMagma
                 playerMesh.Effects[0].Parameters["SpecularColor"].SetValue(Vector3.One);
                 playerMesh.Effects[0].Parameters["SpecularPower"].SetValue(5f);
                 playerMesh.Effects[0].Parameters["EmissiveColor"].SetValue(Vector3.One * 1.7f);
+                playerMesh.Effects[0].Parameters["ToneColor"].SetValue(entity.GetVector3("color1") * 3.5f);
                 playerMesh.Effects[0].Parameters["DirLight0Direction"].SetValue(-Vector3.One);
                 playerMesh.Effects[0].Parameters["DirLight0DiffuseColor"].SetValue(entity.GetVector3("color1")*3.5f);
                 playerMesh.Effects[0].Parameters["DirLight0SpecularColor"].SetValue(Vector3.One/3);

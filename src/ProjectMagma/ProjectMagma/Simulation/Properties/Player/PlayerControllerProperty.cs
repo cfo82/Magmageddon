@@ -964,6 +964,7 @@ namespace ProjectMagma.Simulation
                     if (flameThrowerSoundInstance != null)
                         flameThrowerSoundInstance.Stop();
                     jetpackActive = false;
+                    repulsionActive = false;
                     destinationIsland = null;
                     LeaveActiveIsland();
                     if(simpleJumpIsland != null)

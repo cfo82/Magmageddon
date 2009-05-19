@@ -536,10 +536,10 @@ namespace ProjectMagma.Simulation
                         Vector3 dir = new Vector3(controllerInput.leftStickX, 0, controllerInput.leftStickY);
                         if(dir != Vector3.Zero)
                         {
-                            float angle = (float) Math.Acos(Vector3.Dot(Vector3.Normalize(dir), islandRepulsionStartDir));
-                            Matrix rotationMatrix = Matrix.CreateRotationY(angle);
-                            activeIsland.SetQuaternion("rotation", islandRepulsionStartRotation *
-                                Quaternion.CreateFromRotationMatrix(rotationMatrix));
+                            Matrix rotationStart = Matrix.CreateFromQuaternion(islandRepulsionStartRotation);
+                            float yRotation = (float)Math.Atan2(controllerInput.leftStickX, controllerInput.leftStickY);
+                            Matrix rotationMatrix = Matrix.CreateRotationY(yRotation);
+                            activeIsland.SetQuaternion("rotation", Quaternion.CreateFromRotationMatrix(rotationStart * rotationMatrix));
                         }
 
                         Vector3 currentVelocity = activeIsland.GetVector3("repulsion_velocity");

@@ -300,8 +300,8 @@ namespace ProjectMagma
                 }
                 else
                 {
-                    Menu.DrawCenteredShadowString(spriteBatch, menu.StaticStringFont, "HIT START", pos+halfSpriteDim-Vector2.UnitY*27*scale, menu.StaticStringColor, 1.2f*scale);
-                    Menu.DrawCenteredShadowString(spriteBatch, menu.StaticStringFont, "TO JOIN", pos + halfSpriteDim + Vector2.UnitY * 27*scale, menu.StaticStringColor, 1.2f*scale);
+                    DrawTools.DrawCenteredShadowString(spriteBatch, menu.StaticStringFont, "HIT START", pos+halfSpriteDim-Vector2.UnitY*27*scale, menu.StaticStringColor, 1.2f*scale);
+                    DrawTools.DrawCenteredShadowString(spriteBatch, menu.StaticStringFont, "TO JOIN", pos + halfSpriteDim + Vector2.UnitY * 27 * scale, menu.StaticStringColor, 1.2f * scale);
                 }
             }
         }

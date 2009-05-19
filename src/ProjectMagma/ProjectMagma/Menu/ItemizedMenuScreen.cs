@@ -166,13 +166,13 @@ namespace ProjectMagma
             lastBox = font.MeasureString(str) * scale;
             pos -= lastBox * 0.5f;
 
-            // draw string countours
-            Menu.DrawString(spriteBatch, font, str, pos + new Vector2(+contourOffset, +contourOffset), shadowColor, scale);
-            Menu.DrawString(spriteBatch, font, str, pos + new Vector2(-contourOffset, +contourOffset), shadowColor, scale);
-            Menu.DrawString(spriteBatch, font, str, pos + new Vector2(+contourOffset, -contourOffset), shadowColor, scale);
-            Menu.DrawString(spriteBatch, font, str, pos + new Vector2(-contourOffset, -contourOffset), shadowColor, scale);
-            Menu.DrawString(spriteBatch, font, str, pos + new Vector2(+contourOffset, +contourOffset) + Menu.ShadowOffset, Menu.ShadowColor, scale);
-            Menu.DrawString(spriteBatch, font, str, pos, isSelected && Active ? Color.White : Color.LightGray, scale);
+            // draw string contours
+            DrawTools.DrawString(spriteBatch, font, str, pos + new Vector2(+contourOffset, +contourOffset), shadowColor, scale);
+            DrawTools.DrawString(spriteBatch, font, str, pos + new Vector2(-contourOffset, +contourOffset), shadowColor, scale);
+            DrawTools.DrawString(spriteBatch, font, str, pos + new Vector2(+contourOffset, -contourOffset), shadowColor, scale);
+            DrawTools.DrawString(spriteBatch, font, str, pos + new Vector2(-contourOffset, -contourOffset), shadowColor, scale);
+            DrawTools.DrawString(spriteBatch, font, str, pos + new Vector2(+contourOffset, +contourOffset) + DrawTools.ShadowOffset, DrawTools.ShadowColor, scale);
+            DrawTools.DrawString(spriteBatch, font, str, pos, isSelected && Active ? Color.White : Color.LightGray, scale);
         }
 
         public virtual void DrawWithItem(GameTime gameTime, SpriteBatch spriteBatch, MenuItem item, Vector2 pos, float scale)

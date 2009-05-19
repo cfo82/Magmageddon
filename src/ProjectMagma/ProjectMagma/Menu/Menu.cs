@@ -183,34 +183,14 @@ namespace ProjectMagma
 
         private void DrawStaticStrings()
         {
-            DrawCenteredShadowString(spriteBatch, StaticStringFont, "- A - SELECT                                                  - B - BACK",
+            DrawTools.DrawCenteredShadowString(spriteBatch, StaticStringFont, "- A - SELECT                                                  - B - BACK",
                 new Vector2(640, 620), StaticStringColor, 0.55f);
-            DrawCenteredShadowString(spriteBatch, StaticStringFont, "PROJECT MAGMA - MAY 19 RELEASE",
+            DrawTools.DrawCenteredShadowString(spriteBatch, StaticStringFont, "PROJECT MAGMA - MAY 19 RELEASE",
                 new Vector2(640, 115), StaticStringColor, 0.7f);
         }
 
         public SineFloat StaticStringStrength { get; set; }
         public Color StaticStringColor { get { return new Color(Vector3.One * StaticStringStrength.Value); } }
-
-        public static void DrawString(SpriteBatch spriteBatch, SpriteFont font, string str, Vector2 pos, Color color, float scale)
-        {
-            spriteBatch.DrawString(font, str, pos, color, 0.0f, Vector2.Zero, scale, SpriteEffects.None, 1.0f);
-        }
-
-        public static void DrawShadowString(SpriteBatch spriteBatch, SpriteFont font, string str, Vector2 pos, Color color, float scale)
-        {
-            spriteBatch.DrawString(font, str, pos + ShadowOffset, ShadowColor, 0.0f, Vector2.Zero, scale, SpriteEffects.None, 1.0f);
-            spriteBatch.DrawString(font, str, pos, color, 0.0f, Vector2.Zero, scale, SpriteEffects.None, 1.0f);
-        }
-
-        public static void DrawCenteredShadowString(SpriteBatch spriteBatch, SpriteFont font, string str, Vector2 pos, Color color, float scale)
-        {
-            pos -= font.MeasureString(str)/2 * scale;
-            DrawShadowString(spriteBatch, font, str, pos, color, scale);           
-        }
-
-        public static Color ShadowColor { get { return new Color(0, 0, 0, 90); } }
-        public static Vector2 ShadowOffset { get { return new Vector2(2, 2); } }
 
         public void OpenMenuScreen(MenuScreen screen)
         {

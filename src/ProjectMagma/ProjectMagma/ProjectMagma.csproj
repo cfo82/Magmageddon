@@ -90,6 +90,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Bugslayer\CrashDebugGame.cs" />
+    <Compile Include="DrawTools.cs" />
     <Compile Include="EntryPoint.cs" />
     <Compile Include="GlobalClock.cs" />
     <Compile Include="Menu\ReleaseNotesMenu.cs" />
@@ -160,6 +161,7 @@
     <Compile Include="Renderer\Renderables\HighlightRenderable.cs" />
     <Compile Include="Renderer\Renderables\BasicRenderable.cs" />
     <Compile Include="Renderer\Renderables\Renderable.cs" />
+    <Compile Include="Renderer\Renderables\WinningScreenRenderable.cs" />
     <Compile Include="Renderer\Renderer.cs" />
     <Compile Include="Renderer\Interface\RendererUpdatable.cs" />
     <Compile Include="Renderer\Interface\RendererUpdate.cs" />

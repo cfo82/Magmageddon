@@ -826,6 +826,11 @@
     <None Include="Effects\Sfx\ParticleSystem\Stateful\Structs.inc">
       <Name>Structs</Name>
     </None>
+    <Compile Include="Fonts\winning_screen.spritefont">
+      <Name>winning_screen</Name>
+      <Importer>FontDescriptionImporter</Importer>
+      <Processor>FontDescriptionProcessor</Processor>
+    </Compile>
     <Compile Include="Models\PowerUps\powerups_static.fbx">
       <Name>powerups_static</Name>
       <Importer>FbxImporter</Importer>

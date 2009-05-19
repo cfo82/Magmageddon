@@ -30,7 +30,7 @@ namespace ProjectMagma
         public override void Draw(GameTime gameTime, SpriteBatch spriteBatch)
         {
             SpriteFont f = Game.Instance.ContentManager.Load<SpriteFont>("Fonts/menu_releasenotes");
-            Menu.DrawCenteredShadowString(spriteBatch, f, "RELEASE NOTES", new Vector2(620, 132), menu.StaticStringColor, 1.0f);
+            DrawTools.DrawCenteredShadowString(spriteBatch, f, "RELEASE NOTES", new Vector2(620, 132), menu.StaticStringColor, 1.0f);
 
             string[] lines = funnyReleaseNotesLines;
 
@@ -38,7 +38,7 @@ namespace ProjectMagma
             for (int i = 0; i < lines.Length; ++i)
             {
                 if (lines[i].StartsWith("  -")) { offset += 10; }
-                Menu.DrawShadowString(spriteBatch, f, lines[i], new Vector2(220, 175 + offset), menu.StaticStringColor, 0.66f);
+                DrawTools.DrawShadowString(spriteBatch, f, lines[i], new Vector2(220, 175 + offset), menu.StaticStringColor, 0.66f);
                 offset += 30;
             }
         }

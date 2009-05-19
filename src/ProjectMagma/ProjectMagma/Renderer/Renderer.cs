@@ -5,6 +5,7 @@ using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using ProjectMagma.Renderer.Interface;
 using ProjectMagma.Renderer.ParticleSystem.Stateful.Implementations;
+using ProjectMagma.Renderer.Renderables;
 
 namespace ProjectMagma.Renderer
 {
@@ -123,11 +124,14 @@ namespace ProjectMagma.Renderer
 
         public void ChangeToPhase(RendererPhase phase, string winningPlayer)
         {
-            // TODO: Janick/Dominik add state dependant code here...
             if (phase == RendererPhase.Outro)
             {
-                //Console.WriteLine("player {0} has won", winningPlayer);
+                WinningScreenRenderable renderable = new WinningScreenRenderable(winningPlayer);
+                renderable.LoadResources();
+                opaqueRenderables.Add(renderable);
             }
+            // TODO: Janick/Dominik add state dependant code here...
+            //Console.WriteLine("player {0} has won", winningPlayer);
         }
 
         public void AddUpdateQueue(RendererUpdateQueue updateQueue)

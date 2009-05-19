@@ -57,6 +57,7 @@
   </PropertyGroup>
   <ItemGroup>
     <Compile Include="Bugslayer\CrashDebugGame.cs" />
+    <Compile Include="DrawTools.cs" />
     <Compile Include="EntryPoint.cs" />
     <Compile Include="GlobalClock.cs" />
     <Compile Include="Renderer\Interface\InterpolationHistory.cs" />
@@ -133,6 +134,7 @@
     <Compile Include="Renderer\Renderables\RobotRenderable.cs" />
     <Compile Include="Renderer\Renderables\ShadowRenderable.cs" />
     <Compile Include="Renderer\Renderables\TexturedRenderable.cs" />
+    <Compile Include="Renderer\Renderables\WinningScreenRenderable.cs" />
     <Compile Include="Renderer\Renderer.cs" />
     <Compile Include="Renderer\RenderMode.cs" />
     <Compile Include="Renderer\RenderPasses\GlowPass.cs" />

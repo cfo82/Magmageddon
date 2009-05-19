@@ -166,6 +166,13 @@ namespace ProjectMagma.Renderer
             string requestedState = "";
             if (stateRequestString == "hit") {
                 Random r = new Random();
+                switch(r.Next(0,2))
+                {
+                    case 0: requestedState = "melee0"; break;
+                    case 1: requestedState = "push"; break;
+                    case 2: requestedState = "attack_spin"; break;
+                    default: Debug.Assert(false); break;
+                }
                 //requestedState = "melee" + r.Next(0,0); // depends on how many we have
                 requestedState = "push";
             }
@@ -202,11 +209,15 @@ namespace ProjectMagma.Renderer
             }
             if (stateRequestString == "attack_long")
             {
-                requestedState = "attack_long_loop"; // implement this!
+                requestedState = "attack_long_loop";
             }
             if (stateRequestString == "repulsion")
             {
-                requestedState = "crouch_loop"; // implement this!
+                requestedState = "crouch_loop";
+            }
+            if (stateRequestString == "jump")
+            {
+                requestedState = "jump_loop";
             }
             Debug.Assert(requestedState != "");
 

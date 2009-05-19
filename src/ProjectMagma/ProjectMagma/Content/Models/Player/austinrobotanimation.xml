@@ -37,7 +37,7 @@
     <endframe>90</endframe>
   </animationsubset>
   <animationsubset>
-    <name>attack_long_hold</name>
+    <name>attack_long_loop</name>
     <startframe>90</startframe>
     <endframe>91</endframe>
   </animationsubset>

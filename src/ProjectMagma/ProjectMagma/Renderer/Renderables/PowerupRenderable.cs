@@ -24,7 +24,7 @@ namespace ProjectMagma.Renderer
         protected override Matrix World {
             get
             {
-                return Matrix.CreateRotationY((float) rotationTime) * originalWorld;
+                return Matrix.CreateRotationY((float) rotationTime) * Matrix.CreateTranslation(Vector3.Up * 0.25f) * originalWorld;
             }
 
             set

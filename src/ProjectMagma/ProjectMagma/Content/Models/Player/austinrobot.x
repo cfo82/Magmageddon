@@ -21,6 +21,7 @@ template Vector {
  FLOAT z;
 }
 
+
 template Coords2d {
  <F6F23F44-7686-11cf-8F52-0040333594A3>
  FLOAT u;

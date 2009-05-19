@@ -178,7 +178,7 @@ namespace ProjectMagma.Simulation
 
             #region collision reaction
             // reset collision response
-            if (simTime.At > collisionAt + 500) // todo: extract constant
+            if (simTime.At > collisionAt + 250) // todo: extract constant
             {
                 player.SetVector3("collision_pushback_velocity", Vector3.Zero);
             }

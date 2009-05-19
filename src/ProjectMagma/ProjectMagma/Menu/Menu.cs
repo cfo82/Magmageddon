@@ -56,6 +56,8 @@ namespace ProjectMagma
             StaticStringStrength.Update(gameTime.TotalRealTime.TotalMilliseconds);
             if (active)
             {
+                MenuScreen currentActiveScreen = activeScreen;
+
                 activeScreen.Update(gameTime);
 
                 if (at > buttonPressedAt + Menu.ButtonRepeatTimeout)
@@ -69,6 +71,7 @@ namespace ProjectMagma
                         buttonPressedAt = at;
                     }
                     else
+                    {
                         if ((gamePadState.Buttons.B == ButtonState.Pressed
                             && lastGPState.Buttons.B == ButtonState.Released)
                             || (keyboardState.IsKeyDown(Keys.Back)
@@ -77,6 +80,12 @@ namespace ProjectMagma
                             CloseActiveMenuScreen();
                             buttonPressedAt = at;
                         }
+                    }
+                }
+
+                if (currentActiveScreen != activeScreen)
+                {
+                    activeScreen.Update(gameTime);
                 }
             }
             else

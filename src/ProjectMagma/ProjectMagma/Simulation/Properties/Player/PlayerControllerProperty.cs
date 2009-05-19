@@ -1489,9 +1489,14 @@ namespace ProjectMagma.Simulation
                     (Game.Instance.Simulation.Phase == SimulationPhase.Intro || Game.Instance.Simulation.Phase == SimulationPhase.Game))
                 {
                     won = true;
+
+                    Entity winningPlayer = Game.Instance.Simulation.PlayerManager[0];
+                    RendererUpdatableProperty renderProperty = (RendererUpdatableProperty)winningPlayer.GetProperty("render");
+
                     Game.Instance.Simulation.SetPhase(
                         SimulationPhase.Outro,
-                        Game.Instance.Simulation.PlayerManager[0].GetString("player_name")
+                        winningPlayer.GetString("player_name"),
+                        renderProperty.Updatable
                         );
                 }
             }

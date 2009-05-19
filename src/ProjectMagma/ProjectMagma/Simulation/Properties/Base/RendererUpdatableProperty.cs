@@ -70,7 +70,7 @@ namespace ProjectMagma.Simulation
 
         #endregion
 
-        protected RendererUpdatable Updatable
+        public RendererUpdatable Updatable
         {
             get { return updatable; }
         }

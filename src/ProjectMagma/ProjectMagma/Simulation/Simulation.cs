@@ -88,7 +88,7 @@ namespace ProjectMagma.Simulation
             {
                 StartOperation();
 
-                SetPhase(SimulationPhase.Closed, "");
+                SetPhase(SimulationPhase.Closed, "", null);
 
                 entityManager.Clear();
                 pillarManager.Close();
@@ -241,7 +241,7 @@ namespace ProjectMagma.Simulation
             paused = false;
         }
 
-        public void SetPhase(SimulationPhase phase, string winningPlayer)
+        public void SetPhase(SimulationPhase phase, string winningPlayer, RendererUpdatable winningUpdatable)
         {
             Renderer.Renderer.RendererPhase rendererPhase;
 
@@ -255,7 +255,7 @@ namespace ProjectMagma.Simulation
             }
 
             this.phase = phase;
-            currentUpdateQueue.AddUpdate(new ProjectMagma.Renderer.Renderer.ChangePhase(rendererPhase, winningPlayer));
+            currentUpdateQueue.AddUpdate(new ProjectMagma.Renderer.Renderer.ChangePhase(rendererPhase, winningPlayer, winningUpdatable));
         }
 
         public SimulationPhase Phase

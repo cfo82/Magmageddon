@@ -1273,13 +1273,17 @@ namespace ProjectMagma.Simulation
 
         private void PlayerPillarCollisionHandler(SimulationTime simTime, Entity player, Entity pillar, Contact co)
         {
-            Vector3 normal = pillar.GetVector3("position") - player.GetVector3("position");
-            normal.Y = 0;
-            if(normal != Vector3.Zero)
-                normal.Normalize();
-            // todo: extract constant
-            Vector3 velocity = -normal * 1000;
-            player.SetVector3("collision_pushback_velocity", player.GetVector3("collision_pushback_velocity") + velocity);
+            // only collide with pillar when in air
+            if (activeIsland == null)
+            {
+                Vector3 normal = pillar.GetVector3("position") - player.GetVector3("position");
+                normal.Y = 0;
+                if (normal != Vector3.Zero)
+                    normal.Normalize();
+                // todo: extract constant
+                Vector3 velocity = -normal * 1000;
+                player.SetVector3("collision_pushback_velocity", player.GetVector3("collision_pushback_velocity") + velocity);
+            }
         }
 
         private void PlayerCaveCollisionHandler(SimulationTime simTime, Entity player, Entity pillar, Contact co)

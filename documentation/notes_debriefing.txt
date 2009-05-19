@@ -1,0 +1,44 @@
+1) What was the biggest technical difficulty during the project? 
+2) What would you do differently in your next game project? 
+3) What was your greatest success during the project? 
+4) Are you happy with the final result of your project? 
+5) Do you consider the project a success? 
+6) To what extend did you meet your project plan and milestones (not at all, partly, mostly, always)? 
+7) What improvements would you suggest for the course organization? (perhaps in D1 evaluation)? 
+8) Did you like the XNA framework?
+
+
+
+===============================
+
+
+
+
+
+1) fucking collision response
+2) collision detection & response; no direct velocity (always use acceleration)
+3) working island jump using bezier curve
+4) graphically yes
+5) jaja
+6) mostly
+7) don't do xna-intro first, but game-design stuff (as it is in the project)
+8) jaja
+
+===============================
+
+1) There is no particular 'biggest' difficulty but a few places where we struggled very hard to get the job done. Among them were hardly debuggable synchronization errors arising due to multi-threading, differences between nVidia and ATI, seemingly nondeterministic performance issues in the shaders and various issues with character animations.
+
+2) noed afange probiere schriftlich ueber skype meinigsverschiedeheite zloese sondern meeting trakdandiere
+und früener bugliste füere
+
+3)greatest success was to gradually experience that all three team members were passionate about what they produced. we've spent nights and days debating about details which certainly annoyed the heck out of everybody at some point, but in the end we have a product which was real team work and which we can all be proud of.
+
+4) yes, i already had lots of fun playing this game with friends and i personally think it looks great
+
+5) absolutely.
+
+6) mostly. i believe that our goals were very high, thus there are some points from the "high target" which are not implemented. for us, quality of the implemented parts was always paramount, compared to starting new implementations.
+
+7) less general lectures, more technical ones and more about experiences of other people. maybe a report on how blizzard makes a game or so. i liked those of last year's participants most. a lot of times unfortunately, i did not learn anything in the lecture because there was almost no content.
+
+8) yes, it has really solid constructs like the content pipeline or the math and resources library which facilitates the development a lot. a bit more freedom towards directx would be nice, though (full selection in enumerations for function parameters, etc.). also, learning C# was very helpful.

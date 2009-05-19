@@ -1485,7 +1485,8 @@ namespace ProjectMagma.Simulation
                 && entity.GetString("kind") == "player")
             {
                 // check if we are last man standing
-                if (Game.Instance.Simulation.PlayerManager.Count == 1)
+                if (Game.Instance.Simulation.PlayerManager.Count == 1 && 
+                    (Game.Instance.Simulation.Phase == SimulationPhase.Intro || Game.Instance.Simulation.Phase == SimulationPhase.Game))
                 {
                     won = true;
                     Game.Instance.Simulation.SetPhase(

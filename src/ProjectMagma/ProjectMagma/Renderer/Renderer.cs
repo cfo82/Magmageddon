@@ -14,7 +14,8 @@ namespace ProjectMagma.Renderer
         {
             Intro,
             Game,
-            Outro
+            Outro,
+            Closed
         }
 
         public class ChangePhase: RendererUpdate
@@ -123,7 +124,10 @@ namespace ProjectMagma.Renderer
         public void ChangeToPhase(RendererPhase phase, string winningPlayer)
         {
             // TODO: Janick/Dominik add state dependant code here...
-            Console.WriteLine("player {0} has won", winningPlayer);
+            if (phase == RendererPhase.Outro)
+            {
+                //Console.WriteLine("player {0} has won", winningPlayer);
+            }
         }
 
         public void AddUpdateQueue(RendererUpdateQueue updateQueue)

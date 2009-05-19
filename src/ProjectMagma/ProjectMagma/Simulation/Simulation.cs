@@ -88,6 +88,8 @@ namespace ProjectMagma.Simulation
             {
                 StartOperation();
 
+                SetPhase(SimulationPhase.Closed, "");
+
                 entityManager.Clear();
                 pillarManager.Close();
                 islandManager.Close();
@@ -248,6 +250,7 @@ namespace ProjectMagma.Simulation
                 case SimulationPhase.Intro: rendererPhase = ProjectMagma.Renderer.Renderer.RendererPhase.Intro; break;
                 case SimulationPhase.Game: rendererPhase = ProjectMagma.Renderer.Renderer.RendererPhase.Game; break;
                 case SimulationPhase.Outro: rendererPhase = ProjectMagma.Renderer.Renderer.RendererPhase.Outro; break;
+                case SimulationPhase.Closed: rendererPhase = ProjectMagma.Renderer.Renderer.RendererPhase.Closed; break;
                 default: throw new System.ArgumentException(string.Format("{0} is not a valid phase", phase));
             }
 
@@ -448,6 +451,7 @@ namespace ProjectMagma.Simulation
     {
         Intro,
         Game,
-        Outro
+        Outro,
+        Closed
     }
 }

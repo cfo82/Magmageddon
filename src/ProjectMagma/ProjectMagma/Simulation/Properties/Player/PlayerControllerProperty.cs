@@ -498,6 +498,7 @@ namespace ProjectMagma.Simulation
             islandSelectedAt = 0;
         }
 
+        // todo: move up this
         private Vector3 islandRepulsionStartDir;
         private Quaternion islandRepulsionStartRotation;
 
@@ -768,7 +769,8 @@ namespace ProjectMagma.Simulation
                     }
                 
                 // rotation
-                if (destinationIsland == null)
+                if (destinationIsland == null
+                    /*&& !repulsionActive*/)
                 {
                     float yRotation = (float)Math.Atan2(controllerInput.leftStickX, controllerInput.leftStickY);
                     Matrix rotationMatrix = Matrix.CreateRotationY(yRotation);

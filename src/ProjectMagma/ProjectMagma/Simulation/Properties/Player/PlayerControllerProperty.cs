@@ -1488,7 +1488,10 @@ namespace ProjectMagma.Simulation
                 if (Game.Instance.Simulation.PlayerManager.Count == 1)
                 {
                     won = true;
-                    Game.Instance.Simulation.Phase = SimulationPhase.Outro;
+                    Game.Instance.Simulation.SetPhase(
+                        SimulationPhase.Outro,
+                        Game.Instance.Simulation.PlayerManager[0].GetString("player_name")
+                        );
                 }
             }
         }

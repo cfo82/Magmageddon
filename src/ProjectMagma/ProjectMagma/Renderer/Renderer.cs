@@ -10,19 +10,28 @@ namespace ProjectMagma.Renderer
 {
     public class Renderer : RendererInterface
     {
+        public enum RendererPhase
+        {
+            Intro,
+            Game,
+            Outro
+        }
+
         public class ChangePhase: RendererUpdate
         {
-            public ChangePhase(Simulation.SimulationPhase newPhase)
+            public ChangePhase(RendererPhase newPhase, string winningPlayer)
             {
                 this.newPhase = newPhase;
+                this.winningPlayer = winningPlayer;
             }
 
             public void Apply(double timestamp)
             {
-                Game.Instance.Renderer.ChangeToPhase(newPhase);
+                Game.Instance.Renderer.ChangeToPhase(newPhase, winningPlayer);
             }
 
-            private Simulation.SimulationPhase newPhase;
+            private RendererPhase newPhase;
+            private string winningPlayer;
         }
 
         public Renderer(
@@ -111,9 +120,10 @@ namespace ProjectMagma.Renderer
             updateQueues = new List<RendererUpdateQueue>();
         }
 
-        public void ChangeToPhase(Simulation.SimulationPhase phase)
+        public void ChangeToPhase(RendererPhase phase, string winningPlayer)
         {
             // TODO: Janick/Dominik add state dependant code here...
+            Console.WriteLine("player {0} has won", winningPlayer);
         }
 
         public void AddUpdateQueue(RendererUpdateQueue updateQueue)

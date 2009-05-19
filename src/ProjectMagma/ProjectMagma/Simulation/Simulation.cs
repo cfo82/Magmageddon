@@ -239,13 +239,25 @@ namespace ProjectMagma.Simulation
             paused = false;
         }
 
+        public void SetPhase(SimulationPhase phase, string winningPlayer)
+        {
+            Renderer.Renderer.RendererPhase rendererPhase;
+
+            switch (phase)
+            {
+                case SimulationPhase.Intro: rendererPhase = ProjectMagma.Renderer.Renderer.RendererPhase.Intro; break;
+                case SimulationPhase.Game: rendererPhase = ProjectMagma.Renderer.Renderer.RendererPhase.Game; break;
+                case SimulationPhase.Outro: rendererPhase = ProjectMagma.Renderer.Renderer.RendererPhase.Outro; break;
+                default: throw new System.ArgumentException(string.Format("{0} is not a valid phase", phase));
+            }
+
+            this.phase = phase;
+            currentUpdateQueue.AddUpdate(new ProjectMagma.Renderer.Renderer.ChangePhase(rendererPhase, winningPlayer));
+        }
+
         public SimulationPhase Phase
         {
             get { return phase; }
-            set { 
-                    phase = value;
-                    currentUpdateQueue.AddUpdate(new ProjectMagma.Renderer.Renderer.ChangePhase(phase));
-                }
         } 
 
         #region interval execution functionality

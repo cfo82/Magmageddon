@@ -190,19 +190,19 @@ namespace ProjectMagma
                 ////////playerMesh.Effects[0].Parameters["View"].SetValue(Matrix.CreateLookAt(new);
                 playerMesh.Effects[0].Parameters["Projection"].SetValue(Matrix.CreateOrthographic(8.5f, 8.5f, 0.001f, 1000) * Matrix.CreateTranslation(Vector3.UnitX * 0.36f));
                 playerMesh.Effects[0].Parameters["DiffuseTexture"].SetValue(playerTexture);
-                playerMesh.Effects[0].Parameters["DiffuseColor"].SetValue(Vector3.One * 0.9f);
+                playerMesh.Effects[0].Parameters["DiffuseColor"].SetValue(Vector3.One * 1.0f);
                 playerMesh.Effects[0].Parameters["SpecularColor"].SetValue(Vector3.One);
-                playerMesh.Effects[0].Parameters["SpecularPower"].SetValue(5f);
-                playerMesh.Effects[0].Parameters["EmissiveColor"].SetValue(Vector3.One * 1.7f);
-                playerMesh.Effects[0].Parameters["ToneColor"].SetValue(entity.GetVector3("color1") * 3.5f);
+                playerMesh.Effects[0].Parameters["SpecularPower"].SetValue(16f);
+                playerMesh.Effects[0].Parameters["EmissiveColor"].SetValue(Vector3.One * 0.2f);
+                playerMesh.Effects[0].Parameters["ToneColor"].SetValue(entity.GetVector3("color1"));
                 playerMesh.Effects[0].Parameters["DirLight0Direction"].SetValue(-Vector3.One);
-                playerMesh.Effects[0].Parameters["DirLight0DiffuseColor"].SetValue(entity.GetVector3("color1")*3.5f);
+                playerMesh.Effects[0].Parameters["DirLight0DiffuseColor"].SetValue(entity.GetVector3("color1") * 0.5f);
                 playerMesh.Effects[0].Parameters["DirLight0SpecularColor"].SetValue(Vector3.One/3);
                 playerMesh.Effects[0].Parameters["DirLight1Direction"].SetValue(new Vector3(-1,1,-1));
-                playerMesh.Effects[0].Parameters["DirLight1DiffuseColor"].SetValue(new Vector3(1,1,1)*0.5f);
+                playerMesh.Effects[0].Parameters["DirLight1DiffuseColor"].SetValue(new Vector3(1,1,1)*0.75f);
                 playerMesh.Effects[0].Parameters["DirLight1SpecularColor"].SetValue(Vector3.One/3);
                 playerMesh.Effects[0].Parameters["DirLight2Direction"].SetValue(new Vector3(-1, -1, 1));
-                playerMesh.Effects[0].Parameters["DirLight2DiffuseColor"].SetValue(entity.GetVector3("color2")*3.5f);
+                playerMesh.Effects[0].Parameters["DirLight2DiffuseColor"].SetValue(entity.GetVector3("color2") * 0.75f);
                 playerMesh.Effects[0].Parameters["DirLight2SpecularColor"].SetValue(Vector3.One/3);
 
                 Viewport oldViewport = Game.Instance.GraphicsDevice.Viewport;

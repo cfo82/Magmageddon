@@ -35,6 +35,7 @@ namespace ProjectMagma.Simulation
             entity.AddVector3Attribute("repositioning_velocity", Vector3.Zero);
 
             entity.AddStringAttribute("attracted_by", "");
+            entity.AddStringAttribute("repulsed_by", "");
             entity.AddVector3Attribute("attraction_velocity", Vector3.Zero);
             entity.AddIntAttribute("players_on_island", 0);
 

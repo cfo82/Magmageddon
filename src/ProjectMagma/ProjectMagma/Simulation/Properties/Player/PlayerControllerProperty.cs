@@ -536,6 +536,7 @@ namespace ProjectMagma.Simulation
                         )
                     {
                         Vector3 dir = new Vector3(controllerInput.leftStickX, 0, controllerInput.leftStickY);
+                        /*
                         if(dir != Vector3.Zero)
                         {
                             Matrix rotationStart = Matrix.CreateFromQuaternion(islandRepulsionStartRotation);
@@ -543,6 +544,7 @@ namespace ProjectMagma.Simulation
                             Matrix rotationMatrix = Matrix.CreateRotationY(yRotation);
                             activeIsland.SetQuaternion("rotation", Quaternion.CreateFromRotationMatrix(rotationStart * rotationMatrix));
                         }
+                        */
 
                         Vector3 currentVelocity = activeIsland.GetVector3("repulsion_velocity");
                         activeIsland.SetVector3("repulsion_velocity", currentVelocity +
@@ -772,7 +774,7 @@ namespace ProjectMagma.Simulation
                 
                 // rotation
                 if (destinationIsland == null
-                    /*&& !repulsionActive*/)
+                    && !repulsionActive)
                 {
                     float yRotation = (float)Math.Atan2(controllerInput.leftStickX, controllerInput.leftStickY);
                     Matrix rotationMatrix = Matrix.CreateRotationY(yRotation);

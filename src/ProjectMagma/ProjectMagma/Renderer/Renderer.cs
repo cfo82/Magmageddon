@@ -132,9 +132,12 @@ namespace ProjectMagma.Renderer
         {
             if (phase == RendererPhase.Outro)
             {
-                //Console.WriteLine("player {0} ({1}) has won", winningPlayer, winningUpdatable);
                 WinningScreenRenderable renderable = new WinningScreenRenderable(winningPlayer);
+                RobotRenderable winningRobot = winningUpdatable as RobotRenderable;
+                Debug.Assert(winningRobot != null);
+                winningRobot.ActivatePermanentState("win");
                 renderable.LoadResources(this);
+                updateRenderables.Add(renderable);
                 opaqueRenderables.Add(renderable);
             }
         }

@@ -22,9 +22,7 @@ namespace ProjectMagma.Renderer.Renderables
 
             spriteBatch = new SpriteBatch(Game.Instance.GraphicsDevice);
             font = Game.Instance.ContentManager.Load<SpriteFont>("Fonts/winning_screen");
-            //viewportSize = new Vector2(Game.Instance.GraphicsDevice.Viewport.Width,
-            //    Game.Instance.GraphicsDevice.Viewport.Height);
-            this.pos = new Vector2(640, 360);// -font.MeasureString(str) / 2;
+            this.pos = new Vector2(640, 360);
             scale.Start(renderer.Time.PausableAt);
         }
 
@@ -40,10 +38,9 @@ namespace ProjectMagma.Renderer.Renderables
             spriteBatch.Begin(SpriteBlendMode.AlphaBlend, SpriteSortMode.Deferred,
                SaveStateMode.None, Matrix.Identity*((float)Game.Instance.GraphicsDevice.Viewport.Width)/1280f);
 
-            DrawTools.DrawCenteredShadowString(spriteBatch, font, str, pos - Vector2.UnitY * 50, Color.White, 1.0f*scale.Value);
-            DrawTools.DrawCenteredShadowString(spriteBatch, font, "CONGRATULATIONS!", pos + Vector2.UnitY * 50, Color.White, 0.65f * scale.Value);
+            DrawTools.DrawCenteredBorderedShadowString(spriteBatch, font, str, pos - Vector2.UnitY * 50, Color.White, 1.0f * scale.Value);
+            DrawTools.DrawCenteredBorderedShadowString(spriteBatch, font, "CONGRATULATIONS!", pos + Vector2.UnitY * 50, Color.White, 0.65f * scale.Value);
             spriteBatch.End();
-            //throw new NotImplementedException();
         }
 
         public override RenderMode RenderMode { get { return RenderMode.RenderToScene;  } }
@@ -53,6 +50,5 @@ namespace ProjectMagma.Renderer.Renderables
         SpriteFont font;
         SpriteBatch spriteBatch;
         SineFloat scale;
-        //Vector2 viewportSize;
     }
 }

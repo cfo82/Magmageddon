@@ -219,6 +219,10 @@ namespace ProjectMagma.Renderer
             {
                 requestedState = "jump_loop";
             }
+            if (stateRequestString == "win")
+            {
+                requestedState = "attack_spin"; // todo: replace by winning animation
+            }
             Debug.Assert(requestedState != "");
 
             // update animation

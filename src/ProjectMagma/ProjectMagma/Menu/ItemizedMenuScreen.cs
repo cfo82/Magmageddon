@@ -156,6 +156,7 @@ namespace ProjectMagma
         public bool Active { get; set; }
         private Vector2 lastBox;
 
+        // TODO: replace with contoured shadowed draw routine from draw tools
         private static readonly int contourOffset = 2;
         private static readonly Color shadowColor = new Color(70, 70, 70);
         private void DrawEffectString(SpriteBatch spriteBatch, string str, Vector2 pos, bool isSelected)

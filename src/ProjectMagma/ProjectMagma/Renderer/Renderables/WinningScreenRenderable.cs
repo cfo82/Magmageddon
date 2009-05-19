@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
+using ProjectMagma.MathHelpers;
 
 namespace ProjectMagma.Renderer.Renderables
 {
@@ -12,6 +13,7 @@ namespace ProjectMagma.Renderer.Renderables
         public WinningScreenRenderable(string name)
         {
             this.str = name.ToUpper() + " HAS WON!";
+            scale = new SineFloat(0.9f, 1.0f, 7.0f);
         }
 
         public override void LoadResources(Renderer renderer)
@@ -22,15 +24,24 @@ namespace ProjectMagma.Renderer.Renderables
             font = Game.Instance.ContentManager.Load<SpriteFont>("Fonts/winning_screen");
             //viewportSize = new Vector2(Game.Instance.GraphicsDevice.Viewport.Width,
             //    Game.Instance.GraphicsDevice.Viewport.Height);
-            this.pos = new Vector2(640, 360) - font.MeasureString(str)/2;
+            this.pos = new Vector2(640, 360);// -font.MeasureString(str) / 2;
+            scale.Start(renderer.Time.PausableAt);
         }
+
+        public override void Update(Renderer renderer)
+        {
+            base.Update(renderer);
+            scale.Update(renderer.Time.PausableAt);
+        }
+
 
         public override void Draw(Renderer renderer)
         {
             spriteBatch.Begin(SpriteBlendMode.AlphaBlend, SpriteSortMode.Deferred,
                SaveStateMode.None, Matrix.Identity*((float)Game.Instance.GraphicsDevice.Viewport.Width)/1280f);
 
-            DrawTools.DrawCenteredShadowString(spriteBatch, font, str, pos,Color.White, 1.0f);
+            DrawTools.DrawCenteredShadowString(spriteBatch, font, str, pos - Vector2.UnitY * 50, Color.White, 1.0f*scale.Value);
+            DrawTools.DrawCenteredShadowString(spriteBatch, font, "CONGRATULATIONS!", pos + Vector2.UnitY * 50, Color.White, 0.65f * scale.Value);
             spriteBatch.End();
             //throw new NotImplementedException();
         }
@@ -41,6 +52,7 @@ namespace ProjectMagma.Renderer.Renderables
         Vector2 pos;
         SpriteFont font;
         SpriteBatch spriteBatch;
+        SineFloat scale;
         //Vector2 viewportSize;
     }
 }

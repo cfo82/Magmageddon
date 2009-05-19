@@ -127,7 +127,7 @@ namespace ProjectMagma.Renderer
             if (phase == RendererPhase.Outro)
             {
                 WinningScreenRenderable renderable = new WinningScreenRenderable(winningPlayer);
-                renderable.LoadResources();
+                renderable.LoadResources(this);
                 opaqueRenderables.Add(renderable);
             }
             // TODO: Janick/Dominik add state dependant code here...

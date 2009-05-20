@@ -123,6 +123,7 @@ namespace ProjectMagma.Simulation
 
             player.AddIntAttribute("frozen", 0);
             player.AddStringAttribute("active_island", "");
+            player.AddStringAttribute("jump_island", "");
 
             Game.Instance.Simulation.EntityManager.EntityRemoved += EntityRemovedHandler;
             ((CollisionProperty)player.GetProperty("collision")).OnContact += PlayerCollisionHandler;
@@ -385,11 +386,17 @@ namespace ProjectMagma.Simulation
             simpleJumpIsland = activeIsland;
             LeaveActiveIsland();
 
+            // set attribute
+            player.SetString("jump_island", simpleJumpIsland.Name);
+
+            // ensure we trak island movement
             ((Vector3Attribute)simpleJumpIsland.Attributes["position"]).ValueChanged += IslandPositionHandler;
 
+            // initiate jump
             playerVelocity = (float)Math.Sqrt(constants.GetFloat("simple_jump_height") / constants.GetVector3("gravity_acceleration").Length())
                 * -constants.GetVector3("simple_jump_gravity_acceleration");
 
+            // and adapt model
             (player.GetProperty("render") as RobotRenderProperty).NextPermanentState = "jump";
         }
 
@@ -1683,6 +1690,7 @@ namespace ProjectMagma.Simulation
         {
             ((Vector3Attribute)simpleJumpIsland.Attributes["position"]).ValueChanged -= IslandPositionHandler;
             (player.GetProperty("render") as RobotRenderProperty).NextPermanentState = "idle";
+            player.SetString("jump_island", "");
             simpleJumpIsland = null;
         }
 

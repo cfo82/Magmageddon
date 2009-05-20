@@ -605,7 +605,6 @@ namespace ProjectMagma.Simulation
                         // indicate 
                         flameThrowerSoundInstance = flameThrowerSound.Play(Game.Instance.EffectsVolume, 1, 0, true);
 
-                        // todo: extract offset
                         Vector3 pos = playerPosition + constants.GetVector3("flamethrower_offset");
                         Vector3 viewVector = Vector3.Transform(new Vector3(0, 0, 1), GetRotation(player));
 
@@ -757,18 +756,20 @@ namespace ProjectMagma.Simulation
                         && !controllerInput.flamethrowerButtonHold
                         && !controllerInput.repulsionButtonHold)
                     {
-                        (player.GetProperty("render") as RobotRenderProperty).NextPermanentState = "walk";
-
                         // on island ground
                         if (controllerInput.runButtonHold)
                         {
                             playerPosition.X += controllerInput.leftStickX * dt * constants.GetFloat("x_axis_run_multiplier");
                             playerPosition.Z += controllerInput.leftStickY * dt * constants.GetFloat("z_axis_run_multiplier");
+
+                            (player.GetProperty("render") as RobotRenderProperty).NextPermanentState = "run";
                         }
                         else
                         {
                             playerPosition.X += controllerInput.leftStickX * dt * constants.GetFloat("x_axis_walk_multiplier");
                             playerPosition.Z += controllerInput.leftStickY * dt * constants.GetFloat("z_axis_walk_multiplier");
+
+                            (player.GetProperty("render") as RobotRenderProperty).NextPermanentState = "walk";
                         }
 
                         // check position a bit further in walking direction to be still on island
@@ -795,7 +796,8 @@ namespace ProjectMagma.Simulation
             }
             else
             {
-                if((player.GetProperty("render") as RobotRenderProperty).NextPermanentState == "walk")
+                if((player.GetProperty("render") as RobotRenderProperty).NextPermanentState == "walk"
+                    || (player.GetProperty("render") as RobotRenderProperty).NextPermanentState == "run")
                 {
                     (player.GetProperty("render") as RobotRenderProperty).NextPermanentState = "idle";
                 }

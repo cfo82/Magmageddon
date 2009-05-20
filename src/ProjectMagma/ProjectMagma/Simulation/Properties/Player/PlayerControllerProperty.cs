@@ -1612,7 +1612,12 @@ namespace ProjectMagma.Simulation
                 if (i < cnt)
                 {
                     // check island is high enough
-                    island.GetVector3("positon").Y > 80; // todo: extract constant
+
+                    if (island.GetVector3("positon").Y > 80) // todo: extract constant
+                    {
+                        valid = false;
+                        continue;
+                    }
 
                     // check no powerup on island
                     foreach (Entity powerup in Game.Instance.Simulation.PowerupManager)

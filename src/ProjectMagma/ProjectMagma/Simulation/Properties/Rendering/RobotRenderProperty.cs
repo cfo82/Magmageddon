@@ -107,7 +107,7 @@ namespace ProjectMagma.Simulation
             }
             else
             {
-                //ChangeBool("Frozen", false);
+                ChangeBool("Frozen", false);
             }
         }
 

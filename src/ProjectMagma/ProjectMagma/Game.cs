@@ -117,7 +117,7 @@ namespace ProjectMagma
             Game.instance = null;
 #else 
             Game.instance = new Game();
-            game.Run();
+            Game.instance.Run();
             Game.instance = null;
 #endif
         }

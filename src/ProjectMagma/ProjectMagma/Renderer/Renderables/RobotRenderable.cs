@@ -182,7 +182,15 @@ namespace ProjectMagma.Renderer
             }
             if (stateRequestString == "pushback")
             {
-                requestedState = "idle0"; // implement this!
+                requestedState = "pushback_medium";
+            }
+            if (stateRequestString == "hurt_soft")
+            {
+                requestedState = "hurt_soft"; 
+            }
+            if (stateRequestString == "hurt_hard")
+            {
+                requestedState = "hurt_soft"; 
             }
             Debug.Assert(requestedState != "");
 
@@ -207,13 +215,17 @@ namespace ProjectMagma.Renderer
             {
                 requestedState = "walk";
             }
+            if (stateRequestString == "run")
+            {
+                requestedState = "run";
+            }
             if (stateRequestString == "attack_long")
             {
-                requestedState = "attack_long_loop";
+                requestedState = "attack_long_loop"; // todo: add start/end
             }
             if (stateRequestString == "repulsion")
             {
-                requestedState = "crouch_loop";
+                requestedState = "crouch_loop"; // todo: add start/end
             }
             if (stateRequestString == "jump")
             {
@@ -221,7 +233,15 @@ namespace ProjectMagma.Renderer
             }
             if (stateRequestString == "win")
             {
-                requestedState = "attack_spin"; // todo: replace by winning animation
+                requestedState = "winning_loop";
+            }
+            if (stateRequestString == "crawl_left")
+            {
+                requestedState = "crawl_left_loop";
+            }
+            if (stateRequestString == "crawl_right")
+            {
+                requestedState = "crawl_right_loop";
             }
             Debug.Assert(requestedState != "");
 

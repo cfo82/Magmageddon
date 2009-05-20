@@ -91,4 +91,34 @@
     <startframe>236</startframe>
     <endframe>245</endframe>
   </animationsubset>
+  <animationsubset>
+    <name>pushback</name>
+    <startframe>248</startframe>
+    <endframe>260</endframe>
+  </animationsubset>
+  <animationsubset>
+    <name>hurt_soft</name>
+    <startframe>270</startframe>
+    <endframe>280</endframe>
+  </animationsubset>
+  <animationsubset>
+    <name>hurt_hard</name>
+    <startframe>281</startframe>
+    <endframe>290</endframe>
+  </animationsubset>
+  <animationsubset>
+    <name>crawl_right_loop</name>
+    <startframe>320</startframe>
+    <endframe>340</endframe>
+  </animationsubset>
+  <animationsubset>
+    <name>crawl_left_loop</name>
+    <startframe>341</startframe>
+    <endframe>360</endframe>
+  </animationsubset>
+  <animationsubset>
+    <name>winning_loop</name>
+    <startframe>370</startframe>
+    <endframe>420</endframe>
+  </animationsubset>
 </animation>

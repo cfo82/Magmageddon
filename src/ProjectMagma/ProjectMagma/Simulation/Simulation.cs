@@ -16,8 +16,6 @@ namespace ProjectMagma.Simulation
 
     public class Simulation
     {
-        private const float IntroTime = 2000;
-
         private LevelData levelData;
 
         public Simulation()
@@ -71,10 +69,12 @@ namespace ProjectMagma.Simulation
                     Debug.Assert(player.HasInt("lives"));
                     Debug.Assert(player.HasString("robot_entity"));
                     Debug.Assert(player.HasString("player_name"));
-
+                    player.AddBoolAttribute("ready", false);
+                    ((BoolAttribute)player.GetAttribute("ready")).ValueChanged += OnPlayerReady;
                     models[i] = player.GetString("robot_entity");
                 }
                 entityManager.AddEntities(levelData, models, players);
+                playersWaiting = models.Length;
 
                 return EndOperation();
             }
@@ -91,6 +91,11 @@ namespace ProjectMagma.Simulation
                 StartOperation();
 
                 SetPhase(SimulationPhase.Closed, "", null);
+
+                foreach (Entity player in playerManager)
+                {
+                    ((BoolAttribute)player.GetAttribute("ready")).ValueChanged -= OnPlayerReady;
+                }
 
                 entityManager.Clear();
                 pillarManager.Close();
@@ -136,7 +141,7 @@ namespace ProjectMagma.Simulation
                     entityManager.ExecuteDeferred();
 
                     if (phase == SimulationPhase.Intro
-                        && simTime.Elapsed > IntroTime)
+                        && playersWaiting == 0)
                     {
                         SetPhase(SimulationPhase.Game, "", null);
                     }
@@ -161,6 +166,14 @@ namespace ProjectMagma.Simulation
             finally
             {
                 currentUpdateQueue = null;
+            }
+        }
+
+        private void OnPlayerReady(BoolAttribute attr, bool oldValue, bool newValue)
+        {
+            if (newValue == true)
+            {
+                playersWaiting--;
             }
         }
 
@@ -450,6 +463,7 @@ namespace ProjectMagma.Simulation
 
         private SimulationTime simTime;
         private bool paused;
+        private int playersWaiting;
         private SimulationPhase phase = SimulationPhase.Intro;
 
         private RendererUpdateQueue currentUpdateQueue;

@@ -113,6 +113,8 @@ namespace ProjectMagma.Simulation
 
             player.AddIntAttribute("energy", constants.GetInt("max_energy"));
             player.AddIntAttribute("health", constants.GetInt("max_health"));
+            ((IntAttribute)player.GetAttribute("health")).ValueChanged += HealthChangeHandler;
+
             player.AddIntAttribute("fuel", constants.GetInt("max_fuel"));
 
             player.AddIntAttribute("jumps", 0);
@@ -168,6 +170,12 @@ namespace ProjectMagma.Simulation
 
         private void OnUpdate(Entity player, SimulationTime simTime)
         {
+            if (Game.Instance.Simulation.Phase == SimulationPhase.Intro)
+            {
+                PerformIntroMovement(player, simTime);
+                return;
+            }
+            else
             if(Game.Instance.Simulation.Phase != SimulationPhase.Game)
             {
                 return;
@@ -305,6 +313,34 @@ namespace ProjectMagma.Simulation
             }
 
             Debug.Assert(!(selectedIsland == null) || !arrow.HasProperty("render"));
+        }
+
+        private void PerformIntroMovement(Entity player, SimulationTime simTime)
+        {
+            // do nothing if ready
+            if (player.GetBool("ready"))
+            {
+                return;
+            }
+
+            Vector3 velocity = -Vector3.UnitY * constants.GetFloat("max_gravity_speed");
+            Vector3 position = player.GetVector3("position") + velocity * simTime.Dt;
+
+            Vector3 surfacePos;
+            if (Simulation.GetPositionOnSurface(ref position, activeIsland, out surfacePos))
+            {
+                if (position.Y < surfacePos.Y)
+                {
+                    player.SetBool("ready", true);
+                    position = surfacePos;
+                }
+            }
+            else
+            {
+                throw new Exception("island's gone :(");
+            }
+
+            player.SetVector3("position", position);
         }
 
         private void PerformSimpleJump(ref Vector3 playerPosition)
@@ -1445,6 +1481,23 @@ namespace ProjectMagma.Simulation
             }
         }
 
+        private void HealthChangeHandler(IntAttribute sender, int oldValue, int newValue)
+        {
+            if (newValue < oldValue
+                && oldValue <= constants.GetInt("max_health"))
+            {
+                // damage taken
+                if (oldValue - newValue >= constants.GetInt("ice_spike_damage"))
+                {
+                    (player.GetProperty("render") as RobotRenderProperty).NextOnceState = "hurt_hard";
+                }
+                else
+                {
+                    (player.GetProperty("render") as RobotRenderProperty).NextOnceState = "hurt_soft";
+                }
+            }
+        }
+
         private void EntityRemovedHandler(EntityManager manager, Entity entity)
         {
             if (entity.Name.Equals("flame" + "_" + player.Name))
@@ -1648,7 +1701,7 @@ namespace ProjectMagma.Simulation
                     continue; // select another
             }
             SetActiveIsland(island);
-            player.SetVector3("position", GetLandingPosition(island));
+            player.SetVector3("position", GetLandingPosition(island)+Vector3.UnitY*1000);
         }
 
         /// <summary>

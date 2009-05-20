@@ -1611,6 +1611,9 @@ namespace ProjectMagma.Simulation
                 // for 2nd round (> cnt) we accept respawn on powerups
                 if (i < cnt)
                 {
+                    // check island is high enough
+                    island.GetVector3("positon").Y > 80; // todo: extract constant
+
                     // check no powerup on island
                     foreach (Entity powerup in Game.Instance.Simulation.PowerupManager)
                     {

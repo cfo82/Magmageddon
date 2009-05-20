@@ -320,7 +320,7 @@ namespace ProjectMagma.Simulation
         {
             if (landedAt > 0)
             {
-                if (simTime.At > landedAt + 2000) // extract constant
+                if (simTime.At > landedAt + 1000) // extract constant
                 {
                     player.SetBool("ready", true);
                 }

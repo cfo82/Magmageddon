@@ -9,6 +9,7 @@ namespace ProjectMagma.Simulation
     {
         private int frame = 0;
 
+        private readonly double start;
         private double at = 0;
         private double last = 0;
 
@@ -19,7 +20,7 @@ namespace ProjectMagma.Simulation
 
         public SimulationTime(double at)
         {
-            this.last = this.at = at + adjustmentMs;
+            this.start = this.last = this.at = at + adjustmentMs;
         }
 
         /// <summary>
@@ -31,7 +32,14 @@ namespace ProjectMagma.Simulation
         }
 
         /// <summary>
-        /// current time in total milliseconds passed since simulation start
+        /// time in total milliseconds passed since simulation start
+        /// </summary>
+        public float Elapsed
+        {
+            get { return (float)(at - start); }
+        }
+        /// <summary>
+        /// current time in total milliseconds passed since game start
         /// </summary>
         public float At
         {
@@ -39,7 +47,7 @@ namespace ProjectMagma.Simulation
         }
 
         /// <summary>
-        /// last time in total milliseconds passed since simulation start
+        /// last time in total milliseconds passed since game start
         /// </summary>
         public float Last
         {

@@ -799,13 +799,6 @@
     </Compile>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Textures\Player\Robot_texture10.jpg">
-      <Name>Robot_texture10</Name>
-      <Importer>TextureImporter</Importer>
-      <Processor>TextureProcessor</Processor>
-    </Compile>
-  </ItemGroup>
-  <ItemGroup>
     <Compile Include="Textures\Sfx\snow.png">
       <Name>snow</Name>
       <Importer>TextureImporter</Importer>
@@ -826,6 +819,11 @@
     <None Include="Effects\Sfx\ParticleSystem\Stateful\Structs.inc">
       <Name>Structs</Name>
     </None>
+    <Compile Include="Textures\Player\Robot_texture10.tga">
+      <Name>Robot_texture10</Name>
+      <Importer>TextureImporter</Importer>
+      <Processor>TextureProcessor</Processor>
+    </Compile>
     <Compile Include="Fonts\winning_screen.spritefont">
       <Name>winning_screen</Name>
       <Importer>FontDescriptionImporter</Importer>
@@ -857,6 +855,13 @@
   <ItemGroup>
     <Compile Include="Sprites\Menu\robot_unicolor.png">
       <Name>robot_unicolor</Name>
+      <Importer>TextureImporter</Importer>
+      <Processor>TextureProcessor</Processor>
+    </Compile>
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="Textures\Player\robot_spec.jpg">
+      <Name>robot_spec</Name>
       <Importer>TextureImporter</Importer>
       <Processor>TextureProcessor</Processor>
     </Compile>

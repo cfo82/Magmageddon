@@ -192,6 +192,10 @@ namespace ProjectMagma.Renderer
             {
                 requestedState = "hurt_soft"; 
             }
+            if (stateRequestString == "jump_end")
+            {
+                requestedState = "jump_end";
+            }
             Debug.Assert(requestedState != "");
 
             blendFactor = blendIncrement;

@@ -8,7 +8,9 @@
       <Attribute name="position" template="float3" value="0 0 0"/>
       <Attribute name="scale" template="float3" value="10 10 10"/>
       <Attribute name="bv_type" template="string" value="alignedbox3tree"/>
-      <Attribute name="emissive_color" template="float3" value="0.8 0.8 0.8"/>
+      <Attribute name="specular_color" template="float3" value="0.7 0.7 0.7"/>
+      <Attribute name="specular_power" template="float" value="16"/>
+      <Attribute name="emissive_color" template="float3" value="0.55 0.55 0.55"/>
       <Attribute name="alpha" template="float" value="1.0"/>
     </Attributes>
     <Properties>
@@ -23,7 +25,9 @@
   <Entity name="dwarf_base" extends="robot_base" abstract="true">
     <Attributes>
       <Attribute name="mesh" template="string" value="Models/Player/robot_grp"/>
-      <Attribute name="diffuse_texture" template="string" value="Textures/Player/dwarf"/>
+      <Attribute name="diffuse_texture" template="string" value="Textures/Player/robot_texture10"/>
+      <Attribute name="specular_texture" template="string" value="Textures/Player/robot_spec"/>
+      
     </Attributes>
     <Properties>
       <Property name="render" type="ProjectMagma.Simulation.RobotRenderProperty"/>

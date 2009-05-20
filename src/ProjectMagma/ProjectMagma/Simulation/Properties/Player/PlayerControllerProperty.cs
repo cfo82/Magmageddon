@@ -339,6 +339,7 @@ namespace ProjectMagma.Simulation
                     position = surfacePos;
 
                     (player.GetProperty("render") as RobotRenderProperty).NextOnceState = "jump_end";
+                    (activeIsland.GetProperty("render") as IslandRenderProperty).Squash();
 
                     landedAt = simTime.At;
                 }
@@ -1843,7 +1844,6 @@ namespace ProjectMagma.Simulation
 
                 leftStickX = gamePadState.ThumbSticks.Left.X;
                 leftStickY = -gamePadState.ThumbSticks.Left.Y;
-                Console.WriteLine("x: " + leftStickX + "; y: " + leftStickY);
                 if (PlayerControllerProperty.LeftStickSelection)
                 {
                     rightStickX = leftStickX;

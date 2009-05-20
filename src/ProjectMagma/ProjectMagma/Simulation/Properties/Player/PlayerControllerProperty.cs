@@ -66,7 +66,7 @@ namespace ProjectMagma.Simulation
         private float islandSelectedAt = 0;
         private Entity selectedIsland = null;
         private bool selectedIslandInFreeJumpRange = false;
-        private Vector3 lastStickDir = Vector3.Zero;
+        private Vector3 islandSelectionLastStickDir = Vector3.Zero;
         private Entity destinationIsland = null;
         private float destinationOrigDist = 0;
         private float destinationOrigY = 0;
@@ -77,6 +77,7 @@ namespace ProjectMagma.Simulation
 
         private Entity attractedIsland = null;
         private bool repulsionActive = false;
+        private Vector3 islandRepulsionLastStickDir = Vector3.Zero;
 
         Entity flame = null;
         Entity arrow;
@@ -478,7 +479,7 @@ namespace ProjectMagma.Simulation
                     Vector3 selectionDirection = Vector3.Transform(new Vector3(0, 0, 1), GetRotation(player));
 
                     // only allow reselection if stick moved slightly
-                    bool stickMoved = Vector3.Dot(lastStickDir, selectionDirection) < constants.GetFloat("island_reselection_max_value");
+                    bool stickMoved = Vector3.Dot(islandSelectionLastStickDir, selectionDirection) < constants.GetFloat("island_reselection_max_value");
                     if (/*(selectedIsland == null || stickMoved)
                         && */ at > islandSelectedAt + constants.GetFloat("island_reselection_timeout"))
                     {
@@ -486,7 +487,7 @@ namespace ProjectMagma.Simulation
                         //                            Vector3.Dot(lastStickDir, stickDir));
 
                         // select closest island in direction of stick
-                        lastStickDir = selectionDirection;
+                        islandSelectionLastStickDir = selectionDirection;
                         Entity bestIsland = SelectBestIslandInDirection(ref selectionDirection);
 
                         // new island selected
@@ -551,7 +552,7 @@ namespace ProjectMagma.Simulation
             if (arrow.HasProperty("shadow_cast"))
                 arrow.RemoveProperty("shadow_cast");
             arrow.SetString("island", "");
-            lastStickDir = Vector3.Zero;
+            islandSelectionLastStickDir = Vector3.Zero;
             islandSelectedAt = 0;
         }
 
@@ -569,6 +570,7 @@ namespace ProjectMagma.Simulation
                     && player.GetInt("energy") > constants.GetInt("island_repulsion_start_min_energy"))
                 {
                     islandRepulsionStartDir = Vector3.Transform(new Vector3(0, 0, 1), GetRotation(player));
+                    islandRepulsionLastStickDir = islandRepulsionStartDir;
                     islandRepulsionStartRotation = activeIsland.GetQuaternion("rotation");
 
                     Vector3 currentVelocity = activeIsland.GetVector3("repulsion_velocity");
@@ -591,6 +593,22 @@ namespace ProjectMagma.Simulation
                         )
                     {
                         Vector3 dir = new Vector3(controllerInput.leftStickX, 0, controllerInput.leftStickY);
+                        if (dir != Vector3.Zero)
+                            dir.Normalize();
+                        if (dir == islandRepulsionLastStickDir)
+                        {
+                            (player.GetProperty("render") as RobotRenderProperty).NextPermanentState = "repulsion";
+                        }
+                        else
+                            if (Vector3.Cross(dir, islandSelectionLastStickDir).Y > 0)
+                            {
+                                (player.GetProperty("render") as RobotRenderProperty).NextPermanentState = "crawl_left";
+                            }
+                            else
+                            {
+                                (player.GetProperty("render") as RobotRenderProperty).NextPermanentState = "crawl_right";
+                            }
+                        islandRepulsionLastStickDir = dir;
                         /*
                         if(dir != Vector3.Zero)
                         {
@@ -600,6 +618,7 @@ namespace ProjectMagma.Simulation
                             activeIsland.SetQuaternion("rotation", Quaternion.CreateFromRotationMatrix(rotationStart * rotationMatrix));
                         }
                         */
+
 
                         Vector3 currentVelocity = activeIsland.GetVector3("repulsion_velocity");
                         activeIsland.SetVector3("repulsion_velocity", currentVelocity +
@@ -829,8 +848,7 @@ namespace ProjectMagma.Simulation
                     }
                 
                 // rotation
-                if (destinationIsland == null
-                    && !repulsionActive)
+                if (destinationIsland == null)
                 {
                     float yRotation = (float)Math.Atan2(controllerInput.leftStickX, controllerInput.leftStickY);
                     Matrix rotationMatrix = Matrix.CreateRotationY(yRotation);
@@ -956,8 +974,9 @@ namespace ProjectMagma.Simulation
                     float speed = destinationOrigDist * 2.2f;
                     if (speed < 300)
                         speed = 300;
-                    player.SetVector3("island_jump_velocity", Vector3.Normalize(islandDir)
-                        /** constants.GetFloat("island_jump_speed")*/ * speed);
+                    if (islandDir != Vector3.Zero)
+                        islandDir.Normalize();
+                    player.SetVector3("island_jump_velocity", islandDir * speed);
                 }
             }
         }
@@ -1314,8 +1333,11 @@ namespace ProjectMagma.Simulation
                     // on island -> calculate pseudo normal in xz
                     Vector3 normal = island.GetVector3("position") - pos;
                     normal.Y = 0;
-                    Vector3 velocity = -normal * 100; // todo: extract constant
-                    player.SetVector3("collision_pushback_velocity", player.GetVector3("collision_pushback_velocity") + velocity);
+                    if (normal != Vector3.Zero)
+                    {
+                        Vector3 velocity = -normal * 100; // todo: extract constant
+                        player.SetVector3("collision_pushback_velocity", player.GetVector3("collision_pushback_velocity") + velocity);
+                    }
                 }
                 else
                 if (simpleJumpIsland != null)
@@ -1324,8 +1346,11 @@ namespace ProjectMagma.Simulation
                     Vector3 normal = island.GetVector3("position") - pos;
                     normal.X = 0;
                     normal.Z = 0;
-                    Vector3 velocity = -normal * 100; // todo: extract constant
-                    player.SetVector3("collision_pushback_velocity", player.GetVector3("collision_pushback_velocity") + velocity);
+                    if (normal != Vector3.Zero)
+                    {
+                        Vector3 velocity = -normal * 100; // todo: extract constant
+                        player.SetVector3("collision_pushback_velocity", player.GetVector3("collision_pushback_velocity") + velocity);
+                    }
                 }
                 else
                 {
@@ -1818,6 +1843,7 @@ namespace ProjectMagma.Simulation
 
                 leftStickX = gamePadState.ThumbSticks.Left.X;
                 leftStickY = -gamePadState.ThumbSticks.Left.Y;
+                Console.WriteLine("x: " + leftStickX + "; y: " + leftStickY);
                 if (PlayerControllerProperty.LeftStickSelection)
                 {
                     rightStickX = leftStickX;
@@ -1839,6 +1865,7 @@ namespace ProjectMagma.Simulation
                     - ((gamePadState.DPad.Up == ButtonState.Pressed) ? 1.0f : 0.0f);
                 dPadPressed = dPadX != 0 || dPadY != 0;
 
+                /*
                 if (keyboardState.IsKeyDown(Keys.A))
                 {
                     leftStickX = gamepadEmulationValue;
@@ -1878,6 +1905,7 @@ namespace ProjectMagma.Simulation
                     {
                         rightStickY = gamepadEmulationValue;
                     }
+                */
 
                 moveStickMoved = leftStickX > StickMovementEps || leftStickX < -StickMovementEps
                     || leftStickY > StickMovementEps || leftStickY < -StickMovementEps;

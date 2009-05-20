@@ -16,6 +16,8 @@ namespace ProjectMagma.Simulation
 
     public class Simulation
     {
+        private const float IntroTime = 2000;
+
         private LevelData levelData;
 
         public Simulation()
@@ -132,6 +134,11 @@ namespace ProjectMagma.Simulation
 
                     // execute deferred add/remove orders on the entityManager
                     entityManager.ExecuteDeferred();
+
+                    if (simTime.At > IntroTime)
+                    {
+                        SetPhase(SimulationPhase.Game, "", null);
+                    }
 
                     //System.Threading.Thread.Sleep(60);
                 }

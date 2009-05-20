@@ -136,7 +136,7 @@ namespace ProjectMagma.Simulation
                     entityManager.ExecuteDeferred();
 
                     if (phase == SimulationPhase.Intro
-                        && simTime.At > IntroTime)
+                        && simTime.Elapsed > IntroTime)
                     {
                         SetPhase(SimulationPhase.Game, "", null);
                     }

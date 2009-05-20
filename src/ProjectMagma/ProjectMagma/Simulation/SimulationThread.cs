@@ -65,6 +65,8 @@ namespace ProjectMagma.Simulation
 
                         Sps = 1000f / simulation.Time.DtMs;
                         AvgSps = 1000f * simulation.Time.Frame / simulation.Time.At;
+
+                        Thread.Sleep(20);
                     }
 
                     finishedEvent.Set();

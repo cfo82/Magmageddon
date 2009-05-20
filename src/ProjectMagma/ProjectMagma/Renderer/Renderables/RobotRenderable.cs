@@ -182,7 +182,7 @@ namespace ProjectMagma.Renderer
             }
             if (stateRequestString == "pushback")
             {
-                requestedState = "pushback_medium";
+                requestedState = "pushback";
             }
             if (stateRequestString == "hurt_soft")
             {

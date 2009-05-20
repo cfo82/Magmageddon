@@ -107,14 +107,19 @@ namespace ProjectMagma
 
         public static void RunInstance()
         {
+#if !XBOX
             using (Game game = new Game())
             {
                 Game.instance = game;
-
                 game.Run();
             }
 
             Game.instance = null;
+#else 
+            Game.instance = new Game();
+            game.Run();
+            Game.instance = null;
+#endif
         }
 
         /// <summary>

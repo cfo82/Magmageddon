@@ -33,9 +33,7 @@ namespace ProjectMagma.Simulation
             entity.AddVector3Attribute("pushback_velocity", Vector3.Zero);
             entity.AddVector3Attribute("repositioning_velocity", Vector3.Zero);
 
-            entity.AddStringAttribute("attracted_by", "");
             entity.AddStringAttribute("repulsed_by", "");
-            entity.AddVector3Attribute("attraction_velocity", Vector3.Zero);
             entity.AddIntAttribute("players_on_island", 0);
 
             // approximation of island's radius and height
@@ -44,12 +42,9 @@ namespace ProjectMagma.Simulation
             scale.Y = 0;
             entity.AddFloatAttribute("radius", scale.Length());
 
-            entity.AddBoolAttribute("stop_attraction", false);
-
             entity.Update += OnUpdate;
 
             ((CollisionProperty)entity.GetProperty("collision")).OnContact += CollisionHandler;
-            ((StringAttribute)entity.GetAttribute("attracted_by")).ValueChanged += AttracedByChangeHandler;
             ((Vector3Attribute)entity.GetAttribute("repulsion_velocity")).ValueChanged += RepulsionChangeHandler;
 
             originalPosition = entity.GetVector3("position");
@@ -59,7 +54,6 @@ namespace ProjectMagma.Simulation
         {
             entity.Update -= OnUpdate;
             ((CollisionProperty)entity.GetProperty("collision")).OnContact -= CollisionHandler;
-            ((StringAttribute)entity.GetAttribute("attracted_by")).ValueChanged -= AttracedByChangeHandler;
             ((Vector3Attribute)entity.GetAttribute("repulsion_velocity")).ValueChanged -= RepulsionChangeHandler;
         }
 
@@ -132,82 +126,7 @@ namespace ProjectMagma.Simulation
             }
             else
                 island.SetVector3("pushback_velocity", Vector3.Zero);
-
-            // perform attraction
-            if (island.GetString("attracted_by") != "")
-            {
-                // get direction to player
-                Entity player = Game.Instance.Simulation.EntityManager[island.GetString("attracted_by")];
-                Entity playerIsland = Game.Instance.Simulation.EntityManager[player.GetString("active_island")];
-                Vector3 destinationPos = playerIsland.GetVector3("position");
-                Vector3 dir = destinationPos - position;
-                float dist = dir.Length();
-                if(dir != Vector3.Zero)
-                    dir.Normalize();
-
-                bool inRadius = (position - destinationPos).Length()
-                        < island.GetFloat("radius") + playerIsland.GetFloat("radius");
-
-                bool inHeight =
-                    (position.Y < destinationPos.Y
-                    && position.Y > destinationPos.Y - playerIsland.GetFloat("height"))
-                    || (position.Y - island.GetFloat("height") < destinationPos.Y
-                    && position.Y - island.GetFloat("height") > destinationPos.Y - playerIsland.GetFloat("height"));
-
-                if (!collisionWithDestination)
-                {
-                    if (!inRadius || inHeight)
-                    {
-                        Vector3 velocity = island.GetVector3("attraction_velocity");
-                        float maxSpeed = constants.GetFloat("attraction_max_speed");
-                        if (dist < constants.GetFloat("attraction_slowdown_distance"))
-                            maxSpeed *= dist / (2*constants.GetFloat("attraction_slowdown_distance"));
-
-                        // don't allow being faster than max-speed
-                        if (velocity.Length() > maxSpeed
-                            && maxSpeed > 0)
-                        {
-                            velocity = Vector3.Normalize(velocity) * maxSpeed;
-                        }
-                        if (!HadCollision(simTime))
-                        {
-//                            if (simTime.At > collisionAt + 1000)
-                            {
-                                velocity += dir * constants.GetFloat("attraction_acceleration") * dt;
-//                                velocity.Y += dir.Y * constants.GetFloat("attraction_acceleration") * dt; // faster acceleration on y axis
-                            }
-                        }
-                        island.SetVector3("attraction_velocity", velocity);
-
-                        // change position according to velocity
-                        position += velocity * dt;
-                    }
-                    else
-                    {
-                        // hover on correct y
-                        position.Y += dir.Y * constants.GetFloat("attraction_max_speed") * dt;
-                    }
-                }
-                else
-                {
-                    attractionAtDestination = true;
-                    island.SetVector3("attraction_velocity", Vector3.Zero);
-                }
-
-                // check wheter to stop attraction (after timeout)
-                if (island.GetBool("stop_attraction"))
-                {
-                    if (attractionEndTimoutStartedAt == 0)
-                        attractionEndTimoutStartedAt = simTime.At;
-                    if (simTime.At > attractionEndTimoutStartedAt + constants.GetFloat("attraction_timeout")
-                        || !attractionAtDestination) // only wait for timeout if at destination
-                    {
-                        // finally stop attraction
-                        island.SetString("attracted_by", "");
-                    }
-                }
-            }
-
+           
             // perform repositioning
             if (state == IslandState.Repositioning)
             {
@@ -274,7 +193,6 @@ namespace ProjectMagma.Simulation
 
             island.SetVector3("position", position);
 
-            collisionWithDestination = false;
             lastState = state;
         }
 
@@ -315,69 +233,7 @@ namespace ProjectMagma.Simulation
                         }
                         island.SetVector3("pushback_velocity", island.GetVector3("pushback_velocity")
                             - xznormal * 50); // todo: extract constant
-                    }
-                    else
-                    // attraction?
-                    if (island.GetString("attracted_by") != "")
-                    {
-                        Vector3 attractionVelocity = island.GetVector3("attraction_velocity");
-
-                        if (kind == "island")
-                        {
-                            // check if collision island is island player who attracts is standing on
-                            Entity player = Game.Instance.Simulation.EntityManager[island.GetString("attracted_by")];
-                            if (other.Name == player.GetString("active_island"))
-                            {
-                                collisionWithDestination = true;
-                                return;
-                            }
-
-                            // push the other island away (if contact normal is opposed)
-                            if (Vector3.Dot(attractionVelocity, normal) > 0)
-                            {
-                                Vector3 velocity = normal * attractionVelocity.Length() * constants.GetFloat("collision_damping")
-                                    // resulting velocity depends on angle
-                                    * Vector3.Dot(normal, Vector3.Normalize(attractionVelocity));
-                                velocity.Y = 0; // only in xz plane
-                                other.SetVector3("repulsion_velocity", velocity + other.GetVector3("repulsion_velocity"));
-                            }
-                        }
-                        else
-                        // reflect for collision with pillar/island (if not already in direction away from it)
-                        if (Vector3.Dot(attractionVelocity, normal) > 0)
-                        {
-                            Vector3 normXZ = normal;
-                            normXZ.Y = 0;
-                            if(normXZ != Vector3.Zero)
-                                normXZ.Normalize();
-
-                            // compute only on x/z plane for now
-                            Vector3 velocityXZ = attractionVelocity;
-                            velocityXZ.Y = 0.0f;
-
-                            // project onto normal
-                            Vector3 projection = Vector3.Dot(velocityXZ, normXZ) * normXZ;
-
-                            // compute orthogonal repulsion
-                            Vector3 newVelocity = -(projection - velocityXZ);
-                            if (newVelocity != Vector3.Zero)
-                                newVelocity.Normalize();
-                            newVelocity.Y = 0; // -contact[0].Normal.Y * attractionVelocity.Y;
-                            //newVelocity *= 600;
-                            newVelocity *= attractionVelocity.Length();
-
-                            // repulse in direction of normal too
-                            if (Vector3.Dot(attractionVelocity, normal) > 0)
-                            {
-                                newVelocity += -normal * attractionVelocity.Length() / 2;
-                                if (other.GetString("kind") == "pillar")
-                                    newVelocity.Y = 0;
-                            }
-//                            newVelocity *= attractionVelocity.Length(); // *constants.GetFloat("collision_damping");      
-
-                            island.SetVector3("attraction_velocity", newVelocity);
-                        }
-                    }
+                    }                   
                     else
                     // adapt repositioning velocity
                     if (state == IslandState.Repositioning)
@@ -442,19 +298,6 @@ namespace ProjectMagma.Simulation
             }
         }
 
-        protected void AttracedByChangeHandler(StringAttribute sender, string oldValue, string newValue)
-        {
-            if (newValue != "" && oldValue == "")
-            {
-                OnAttractionStart();
-            }
-            else
-            if (newValue == "" && oldValue != "")
-            {
-                OnAttractionEnd();
-            }
-        }
-
         public abstract void CalculateNewPosition(Entity island, ref Vector3 position, float dt);
 
         /// <summary>
@@ -470,25 +313,11 @@ namespace ProjectMagma.Simulation
             state = IslandState.Influenced;
         }
 
-        protected virtual void OnAttractionStart()
-        {
-            state = IslandState.Influenced;
-        }
-
         private readonly PushBackFinishedHandler OnRepulsionEndAction;
 
         protected virtual void OnRepulsionEnd()
         {
             state = IslandState.Repositioning;
-        }
-
-        protected virtual void OnAttractionEnd()
-        {
-            state = IslandState.Repositioning;
-            island.SetVector3("attraction_velocity", Vector3.Zero);
-            island.SetBool("stop_attraction", false);
-            attractionEndTimoutStartedAt = 0;
-            attractionAtDestination = false;
         }
 
         /// <summary>
@@ -500,10 +329,6 @@ namespace ProjectMagma.Simulation
             //Console.WriteLine(" island " + island.Name + " back to normal state");
         }
 
-        private float attractionEndTimoutStartedAt = 0;
-
-        protected bool attractionAtDestination = false;
-        protected bool collisionWithDestination;
         protected float collisionAt;
 
         // todo: extract constant

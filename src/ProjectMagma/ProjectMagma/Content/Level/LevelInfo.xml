@@ -19,11 +19,5 @@
     <Description>Island stacked</Description>
     <FileName>Level\Stack</FileName>
   </Level>
-
-  <Level>
-    <Name>1000 ISLANDS</Name>
-    <Description>A level to test!</Description>
-    <FileName>Level\TestLevel</FileName>
-  </Level>
-
+  
 </Levels>

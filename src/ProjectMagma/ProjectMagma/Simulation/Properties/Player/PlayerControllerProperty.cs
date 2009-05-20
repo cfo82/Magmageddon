@@ -1612,7 +1612,7 @@ namespace ProjectMagma.Simulation
                 if (i < cnt)
                 {
                     // check island is high enough
-                    if (island.GetVector3("positon").Y < 80) // todo: extract constant
+                    if (island.GetVector3("position").Y < 80) // todo: extract constant
                     {
                         continue;
                     }

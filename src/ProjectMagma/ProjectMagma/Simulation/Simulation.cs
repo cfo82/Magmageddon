@@ -135,7 +135,8 @@ namespace ProjectMagma.Simulation
                     // execute deferred add/remove orders on the entityManager
                     entityManager.ExecuteDeferred();
 
-                    if (simTime.At > IntroTime)
+                    if (phase == SimulationPhase.Intro
+                        && simTime.At > IntroTime && )
                     {
                         SetPhase(SimulationPhase.Game, "", null);
                     }

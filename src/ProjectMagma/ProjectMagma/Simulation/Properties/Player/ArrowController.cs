@@ -12,18 +12,51 @@ namespace ProjectMagma.Simulation
         {
         }
 
+        private float relPos;
+
+        public void OnAttached(Entity arrow)
+        {
+            this.arrow = arrow;
+            this.island = null;
+            this.constants = Game.Instance.Simulation.EntityManager["player_constants"];
+
+//            this.player = Game.Instance.Simulation.EntityManager[arrow.GetString("player")];
+
+            // register island change handler
+            arrow.GetStringAttribute("island").ValueChanged += OnIslandChanged;
+
+            arrow.AddQuaternionAttribute("rotation", Quaternion.Identity);
+
+            relPos = constants.GetFloat("arrow_island_min_distance_factor");
+
+            arrow.Update += OnUpdate;
+        }
+
+        public void OnDetached(
+            Entity entity
+        )
+        {
+            arrow.Update -= OnUpdate;
+
+            arrow.GetStringAttribute("island").ValueChanged -= OnIslandChanged;
+        }
+
+
         private void OnUpdate(Entity powerupEntity, SimulationTime simTime)
         {
-            /*
             if (island != null)
             {
-                Vector3 aimVector = island.GetVector3("position") + Vector3.UnitY * positionOffset.Y - player.GetVector3("position");
+                Vector3 playerPos = player.GetVector3("position");
+                Vector3 aimVector = island.GetVector3("position") - playerPos;
 
                 // get intersection
-                Ray3 ray = new Ray3(player.GetVector3("position"), aimVector);
+                Ray3 ray = new Ray3(playerPos, aimVector);
                 Vector3 arrowPos;
-                if(Game.Instance.Simulation.CollisionManager.GetIntersectionPoint(ref ray, island, out arrowPos))
-                    arrow.SetVector3("position", arrowPos);
+                if (Game.Instance.Simulation.CollisionManager.GetIntersectionPoint(ref ray, island, out arrowPos))
+                {
+                    Vector3 delta = (arrowPos - playerPos) * relPos;
+                    arrow.SetVector3("position", playerPos + delta);
+                }
 
                 // point arrow from player
                 Vector3 tminusp = -aimVector;
@@ -39,46 +72,20 @@ namespace ProjectMagma.Simulation
                 Quaternion targetQ = Quaternion.CreateFromAxisAngle(cross, theta);
 
                 arrow.SetQuaternion("rotation", targetQ);
-                //arrow.SetQuaternion("rotation", Quaternion.Identity);
+
+                relPos += simTime.Dt * constants.GetFloat("arrows_per_second");
+
+                if (relPos > constants.GetFloat("arrow_island_max_distance_factor"))
+                {
+                    relPos = constants.GetFloat("arrow_island_min_distance_factor");
+                }
             }
-             */
         }
 
-        public void OnAttached(Entity arrow)
-        {
-            this.arrow = arrow;
-            this.island = null;
-            this.constants = Game.Instance.Simulation.EntityManager["player_constants"];
-
-//            this.player = Game.Instance.Simulation.EntityManager[arrow.GetString("player")];
-
-            // register island change handler
-            arrow.GetStringAttribute("island").ValueChanged += OnIslandChanged;
-
-            arrow.AddQuaternionAttribute("rotation", Quaternion.Identity);
-
-            arrow.Update += OnUpdate;
-        }
-
-        public void OnDetached(
-            Entity entity
-        )
-        {
-            arrow.Update -= OnUpdate;
-
-            arrow.GetStringAttribute("island").ValueChanged -= OnIslandChanged;
-
-            if(island != null)
-                island.GetVector3Attribute("position").ValueChanged -= OnIslandPositionChanged;
-        }
 
         private void OnIslandChanged(StringAttribute sender,
             String oldIsland, String newIsland)
         {
-            // reset handler on old island
-            if(island != null)
-                island.GetVector3Attribute("position").ValueChanged -= OnIslandPositionChanged;
-
             if ("" == newIsland)
             {
                 island = null;
@@ -87,49 +94,16 @@ namespace ProjectMagma.Simulation
             {
                 // register new island
                 island = Game.Instance.Simulation.EntityManager[newIsland];
-                island.GetVector3Attribute("position").ValueChanged += OnIslandPositionChanged;
                 positionOffset = island.GetVector3("landing_offset");
 
                 // hack hackhack. should be in onAttached, but doesnt work there...
                 this.player = Game.Instance.Simulation.EntityManager[arrow.GetString("player")];
 
+                relPos = 0;
             }
         }
 
-        private void OnIslandPositionChanged(
-            Vector3Attribute positionAttribute,
-            Vector3 oldPosition,
-            Vector3 newPosition
-        )
-        {
-            Vector3 playerPos = player.GetVector3("position");
-            Vector3 aimVector = newPosition /*+ Vector3.UnitY * positionOffset.Y*/ - playerPos;
-
-            // get intersection
-            Ray3 ray = new Ray3(playerPos, aimVector);
-            Vector3 arrowPos;
-            if (Game.Instance.Simulation.CollisionManager.GetIntersectionPoint(ref ray, island, out arrowPos))
-            {
-                Vector3 delta = (arrowPos - playerPos) * constants.GetFloat("arrow_island_distance");
-                arrow.SetVector3("position", playerPos + delta);
-            }
-
-            // point arrow from player
-            Vector3 tminusp = -aimVector;
-            Vector3 ominusp = Vector3.Up;
-            if (tminusp != Vector3.Zero)
-                tminusp.Normalize();
-            float theta = (float)System.Math.Acos(Vector3.Dot(tminusp, ominusp));
-            Vector3 cross = Vector3.Cross(ominusp, tminusp);
-
-            if (cross != Vector3.Zero)
-                cross.Normalize();
-
-            Quaternion targetQ = Quaternion.CreateFromAxisAngle(cross, theta);
-
-            arrow.SetQuaternion("rotation", targetQ);
-        }
-
+ 
         private Vector3 positionOffset;
         private Entity arrow;
         private Entity player;

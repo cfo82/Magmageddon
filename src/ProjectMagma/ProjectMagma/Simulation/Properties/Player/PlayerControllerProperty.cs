@@ -1615,7 +1615,6 @@ namespace ProjectMagma.Simulation
 
                     if (island.GetVector3("positon").Y > 80) // todo: extract constant
                     {
-                        valid = false;
                         continue;
                     }
 

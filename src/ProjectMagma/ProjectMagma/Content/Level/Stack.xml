@@ -34,13 +34,13 @@
 
   <Entity name="island2" extends="island_base_grass2">
     <Attributes>
-      <Attribute name="position" template="float3" value="0 120 200"/>
+      <Attribute name="position" template="float3" value="0 120 400"/>
     </Attributes>
   </Entity>
 
   <Entity name="island3" extends="island_base_grass1">
     <Attributes>
-      <Attribute name="position" template="float3" value="-200 160 0"/>
+      <Attribute name="position" template="float3" value="-400 160 0"/>
     </Attributes>
   </Entity>
 
@@ -52,7 +52,7 @@
 
   <Entity name="island11" extends="island_base_ice1">
     <Attributes>
-      <Attribute name="position" template="float3" value="200 240 0"/>
+      <Attribute name="position" template="float3" value="400 240 0"/>
     </Attributes>
   </Entity>
 
@@ -64,7 +64,7 @@
 
   <Entity name="island13" extends="island_base_ice1">
     <Attributes>
-      <Attribute name="position" template="float3" value="-200 320 0"/>
+      <Attribute name="position" template="float3" value="-400 320 0"/>
     </Attributes>
   </Entity>
 

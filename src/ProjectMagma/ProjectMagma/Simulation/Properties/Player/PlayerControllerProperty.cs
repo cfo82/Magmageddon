@@ -1201,9 +1201,7 @@ namespace ProjectMagma.Simulation
             if (contact.EntityB.HasAttribute("kind"))
             {
                 // slide on jump
-                if (destinationIsland != null
-                    && (contact.EntityB.GetString("kind") == "pillar"
-                    || contact.EntityB.GetString("kind") == "island"))
+                if (destinationIsland != null)
                 {
                     // hack: no response on jump (who sees that anyway...)
                     return;

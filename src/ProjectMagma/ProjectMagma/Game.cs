@@ -1,4 +1,4 @@
-//#define ALWAYS_FOUR_PLAYERS
+#define ALWAYS_FOUR_PLAYERS
 
 using System;
 using System.Diagnostics;
@@ -159,7 +159,7 @@ namespace ProjectMagma
              
 #if DEBUG
             // initialize simulation
-            LoadLevel(levels[2].FileName);
+            LoadLevel("Levels/TestLevel.xml");
 
             // set default player
             Entity player1 = new Entity("player1");

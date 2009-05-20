@@ -1185,6 +1185,9 @@ namespace ProjectMagma.Simulation
                     && (contact.EntityB.GetString("kind") == "pillar"
                     || contact.EntityB.GetString("kind") == "island"))
                 {
+                    // hack: no response on jump (who sees that anyway...)
+                    return;
+
                     if (contact.EntityB == destinationIsland)
                         return;
 

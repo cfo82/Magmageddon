@@ -168,6 +168,11 @@ namespace ProjectMagma.Simulation
 
         private void OnUpdate(Entity player, SimulationTime simTime)
         {
+            if(Game.Instance.Simulation.Phase != SimulationPhase.Game)
+            {
+                return;
+            }
+
             float dt = simTime.Dt;
             float at = simTime.At;
 

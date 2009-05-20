@@ -66,6 +66,11 @@ namespace ProjectMagma.Simulation
 
         protected virtual void OnUpdate(Entity island, SimulationTime simTime)
         {
+            if (Game.Instance.Simulation.Phase == SimulationPhase.Intro)
+            {
+                return;
+            }
+
             float dt = simTime.Dt;
 
             int playersOnIsland = island.GetInt("players_on_island");
@@ -85,7 +90,8 @@ namespace ProjectMagma.Simulation
             island.SetBool("interactable", interactable);
 
             // implement sinking and rising islands
-            if (!HadCollision(simTime))
+            if (!HadCollision(simTime)
+                && Game.Instance.Simulation.Phase == SimulationPhase.Game) // only sink in game-phase
             {
                 if (playersOnIsland > 0)
                 {

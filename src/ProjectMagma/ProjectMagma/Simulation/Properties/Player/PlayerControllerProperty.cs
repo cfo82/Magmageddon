@@ -46,6 +46,7 @@ namespace ProjectMagma.Simulation
         private Entity constants;
         private LevelData templates;
 
+        private float landedAt = -1;
         private bool won = false;
 
         private Entity activeIsland = null;
@@ -317,9 +318,12 @@ namespace ProjectMagma.Simulation
 
         private void PerformIntroMovement(Entity player, SimulationTime simTime)
         {
-            // do nothing if ready
-            if (player.GetBool("ready"))
+            if (landedAt > 0)
             {
+                if (simTime.At > landedAt + 2000) // extract constant
+                {
+                    player.SetBool("ready", true);
+                }
                 return;
             }
 
@@ -331,8 +335,11 @@ namespace ProjectMagma.Simulation
             {
                 if (position.Y < surfacePos.Y)
                 {
-                    player.SetBool("ready", true);
                     position = surfacePos;
+
+                    (player.GetProperty("render") as RobotRenderProperty).NextOnceState = "jump_end";
+
+                    landedAt = simTime.At;
                 }
             }
             else
@@ -1701,7 +1708,7 @@ namespace ProjectMagma.Simulation
                     continue; // select another
             }
             SetActiveIsland(island);
-            player.SetVector3("position", GetLandingPosition(island)+Vector3.UnitY*1000);
+            player.SetVector3("position", GetLandingPosition(island) + Vector3.UnitY*500);
         }
 
         /// <summary>

@@ -27,8 +27,7 @@ namespace ProjectMagma.Simulation
                 entity.AddIntAttribute("max_health", (int) (entity.GetVector3("scale").Length() * constants.GetFloat("scale_health_multiplier")));
             entity.AddIntAttribute("health", entity.GetInt("max_health"));
 
-            if (entity.HasAttribute("fixed"))
-                hasFixedMovementPath = entity.GetBool("fixed");
+            hasFixedMovementPath = entity.GetBool("fixed");
 
             entity.AddVector3Attribute("repulsion_velocity", Vector3.Zero);
             entity.AddVector3Attribute("pushback_velocity", Vector3.Zero);

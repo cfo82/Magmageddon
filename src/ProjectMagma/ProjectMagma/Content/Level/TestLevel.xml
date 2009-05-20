@@ -57,7 +57,11 @@
   <Entity name="island1" extends="island_base_burnt1">
     <Attributes>
       <Attribute name="position" template="float3" value="-150 65 120"/>
+      <Attribute name="fixed" template="bool" value="false"/>
     </Attributes>
+    <Properties>
+      <Property name="controller" type="ProjectMagma.Simulation.IslandNoMovementControllerProperty"/>
+    </Properties>
   </Entity>
 
   <Entity name="island2" extends="island_base_burnt2">
@@ -123,6 +127,7 @@
   <Entity name="island12" extends="island_base_ice2">
     <Attributes>
       <Attribute name="position" template="float3" value="-140 400 -240"/>
+      <Attribute name="fixed" template="bool" value="false"/>
     </Attributes>
   </Entity>
 

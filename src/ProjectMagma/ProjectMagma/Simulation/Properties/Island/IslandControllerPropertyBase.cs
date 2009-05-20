@@ -220,6 +220,7 @@ namespace ProjectMagma.Simulation
                     else
                     {
                         repositioningPosition = position;
+                        repositioningPosition.Y = originalPosition.Y; // ensure we still maintian y position
                     }
 //                    Console.WriteLine("repositioning to: " + repositioningPosition);
                 }

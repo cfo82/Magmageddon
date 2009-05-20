@@ -102,7 +102,7 @@ namespace ProjectMagma.Simulation
                     a.Y *= 0.6f; // don't accelerate as fast on y axis
 
                     // and add forces for islands
-                    float pillarForceRadius = constants.GetFloat("ice_spike_pillar_force_radius");
+                    float islandForceRadius = constants.GetFloat("ice_spike_island_force_radius");
                     foreach (Entity island in Game.Instance.Simulation.IslandManager)
                     {
                         // island target player is standing on has no force
@@ -113,18 +113,18 @@ namespace ProjectMagma.Simulation
                         Vector3 idir = island.GetVector3("position") - pos;
                         float dist = idir.Length();
                         idir.Normalize();
-                        Vector3 ia = -idir * acc * (pillarForceRadius * pillarForceRadius / dist / dist);
+                        Vector3 ia = -idir * acc * (islandForceRadius * islandForceRadius / dist / dist);
                         a += ia;
                     }
                     // and pillars
-                    float islandForceRadius = constants.GetFloat("ice_spike_island_force_radius");
+                    float pillarForceRadius = constants.GetFloat("ice_spike_pillar_force_radius");
                     foreach (Entity island in Game.Instance.Simulation.PillarManager)
                     {
                         Vector3 idir = island.GetVector3("position") - pos;
                         idir.Y = 0;
                         float dist = idir.Length();
                         idir.Normalize();
-                        Vector3 ia = -idir * acc * (islandForceRadius * islandForceRadius / dist / dist);
+                        Vector3 ia = -idir * acc * (pillarForceRadius * pillarForceRadius / dist / dist);
                         a += ia;
                     }
                 }

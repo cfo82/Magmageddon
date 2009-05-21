@@ -258,7 +258,7 @@ namespace ProjectMagma.Simulation
             PerformIslandRepulsionAction(simTime, ref fuel);
 
             // island selection and attraction
-            PerformIslandSelectionAction(at, allowSelection, ref playerPosition);
+            PerformIslandSelectionAction(at, ref playerPosition);
             PerformIslandJumpAction(ref playerPosition, ref playerVelocity);
             #endregion
 

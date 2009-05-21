@@ -224,7 +224,7 @@ namespace ProjectMagma.Renderer
                 requestedState = "run";
             }
             if (stateRequestString == "attack_long")
-            {
+            {   
                 requestedState = "attack_long_loop"; // todo: add start/end
             }
             if (stateRequestString == "repulsion")

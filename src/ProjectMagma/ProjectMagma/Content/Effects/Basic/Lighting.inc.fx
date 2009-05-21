@@ -28,8 +28,11 @@ ColorPair ComputePerPixelLights(float3 E, float3 N, float y)
 	L = -DirLight1Direction;
 	H = normalize(E + L);
 	dt = max(0,dot(L,N));
-	float a = max(1,(DirLight1BottomAmpMaxY-y)/DirLight1BottomAmpMaxY*DirLight1BottomAmpStrength);
+	//float a = max(1,(DirLight1BottomAmpMaxY-y)/DirLight1BottomAmpMaxY*DirLight1BottomAmpStrength);
+	
+	float a =1;
     result.Diffuse += DirLight1DiffuseColor * dt * a;
+    //result.Diffuse += float4(1,0,0,1)* dt * a;
     if (dt != 0)
 	    result.Specular += DirLight1SpecularColor * pow(max(0,dot(H,N)), SpecularPower);
     

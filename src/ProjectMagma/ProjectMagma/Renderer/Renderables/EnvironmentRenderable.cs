@@ -17,7 +17,7 @@ namespace ProjectMagma.Renderer
             (
                 Vector2.Zero, new Vector2(0.0002f, 0.0002f), 0.0f, 0.0f, -0.0004f, 0.0004f
             );
-            RenderChannel = RenderChannelType.One;
+            RenderChannel = RenderChannelType.Three;
         }
 
         protected override void ApplyTechnique(Effect effect)

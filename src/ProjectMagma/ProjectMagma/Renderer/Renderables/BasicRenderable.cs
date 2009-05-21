@@ -48,6 +48,7 @@ namespace ProjectMagma.Renderer
                 ApplyMeshWorldViewProjection(renderer, effect, mesh);
                 ApplyEyePosition(renderer, effect);
                 ApplyTechnique(effect);
+                //ApplyFog(effect);
                 if (UseLights) ApplyLights(effect, renderer.LightManager);
                 if (UseMaterialParameters) ApplyMaterialParameters(effect);
                 if (UseSquash) ApplySquashParameters(effect, renderer);
@@ -55,6 +56,15 @@ namespace ProjectMagma.Renderer
                 ApplyCustomEffectParameters(effect, renderer);
             }
         }
+
+        //private void ApplyFog(Effect effect)
+        //{
+        //    effect.Parameters["FogEnabled"].SetValue(1.0f);
+        //    //effect.Parameters["FogStart"].SetValue(1000.0f);
+        //    //effect.Parameters["FogEnd"].SetValue(2000.0f);
+        //    effect.Parameters["FogColor"].SetValue(Vector3.One);
+        //    //effect.Parameters["EyePosition"].SetValue(Game.Instance.EyePosition);
+        //}
 
         private void ApplyMeshWorldViewProjection(Renderer renderer, Effect effect, ModelMesh mesh)
         {

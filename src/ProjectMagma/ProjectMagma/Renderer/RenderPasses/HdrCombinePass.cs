@@ -1,5 +1,6 @@
 ﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
+using ProjectMagma.Shared.Math.Integration;
 
 namespace ProjectMagma.Renderer
 {
@@ -9,14 +10,23 @@ namespace ProjectMagma.Renderer
             : base(renderer, target0, target1)
         {
             hdrCombineEffect = Game.Instance.ContentManager.Load<Effect>("Effects/HdrCombine");
+            randomOffset = new DoublyIntegratedVector2
+            (
+               Vector2.Zero, new Vector2(0.002f, 0.002f), 0.0f, 0.0f, -0.004f, 0.004f
+            );
         }
 
         public override void Render()
         {
+            randomOffset.RandomlyIntegrate(Renderer.Time.DtMs, 0.02f, 0.0f);
+
             hdrCombineEffect.Parameters["GeometryRender"].SetValue(GeometryRender);
             hdrCombineEffect.Parameters["BlurGeometryRender"].SetValue(BlurGeometryRender);
             hdrCombineEffect.Parameters["RenderChannelColor"].SetValue(RenderChannelColor);
             hdrCombineEffect.Parameters["DepthTexture"].SetValue(DepthTexture);
+            hdrCombineEffect.Parameters["CloudTexture"].SetValue(Renderer.VectorCloudTexture);
+
+            hdrCombineEffect.Parameters["RandomOffset"].SetValue(randomOffset.Value);
 
             hdrCombineEffect.Parameters["BloomSensitivity"].SetValue(BloomSensitivity);
             hdrCombineEffect.Parameters["BloomIntensity"].SetValue(BloomIntensity);
@@ -32,6 +42,7 @@ namespace ProjectMagma.Renderer
             //DrawFullscreenQuad(GeometryRender, null);
         }
 
+        private DoublyIntegratedVector2 randomOffset;
         private Effect hdrCombineEffect;
 
         public Texture2D GeometryRender { get; set; }
@@ -44,10 +55,10 @@ namespace ProjectMagma.Renderer
         //private float[] BloomIntensity = { 1.15f, 0.7f, 2.0f };
         //private float[] BaseIntensity = { 0.75f, 0.8f, 1.0f };
 
-        private float[] BloomIntensity = { 0.8f, 0.7f, 0.0f };
+        private float[] BloomIntensity = { 2.8f, 0.7f, 0.0f };
         private float[] BaseIntensity = { 0.87f, 0.8f, 1.0f };
 
-        private float[] BloomSaturation = { 0.5f, 0.8f, 1.0f };
+        private float[] BloomSaturation = { 2.5f, 0.8f, 1.0f };
         private float[] BaseSaturation = { 1.0f, 1.0f, 1.0f };
 
         private float[] In1 = { 1.0f, 1.4f, 1.0f };
@@ -55,6 +66,6 @@ namespace ProjectMagma.Renderer
         private float[] Out1 = { 1.0f, 1.1f, 1.0f };
         private float[] In2 = { 2.0f, 2.7f, 2.0f };
         //private float[] Out2 = { 2.0f, 20.0f, 1.0f };
-        private float[] Out2 = { 2.0f, 10.0f, 2.0f };
+        private float[] Out2 = { 2.0f, 14.0f, 2.0f };
     }
 }

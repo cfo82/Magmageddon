@@ -43,6 +43,18 @@ sampler2D DepthTextureSampler = sampler_state
 	AddressU = Clamp;
 	AddressV = Clamp;
 };
+
+texture CloudTexture;
+sampler2D CloudTextureSampler = sampler_state
+{
+	Texture = <CloudTexture>;
+	MinFilter = Linear;
+	MagFilter = Linear;
+	MipFilter = Linear;
+	AddressU = Clamp;
+	AddressV = Clamp;
+};
+  
   
 float BloomSensitivity[3];
 
@@ -57,6 +69,7 @@ float Out1[3];
 float In2[3];
 float Out2[3];
 
+float2 RandomOffset;
 
 // Helper for modifying the saturation of a color.
 float4 AdjustSaturation(float4 color, float saturation)
@@ -115,7 +128,7 @@ float4 ChannelPixelShader(float2 texCoord : TEXCOORD0, int channel)
     return tonemapped;
 }
 
-float4 GradientMap(float4 input, float2 texCoord)
+inline float4 GradientYBlueMap(float4 input, float2 texCoord)
 {
 	float yRaw = tex2D(DepthTextureSampler, texCoord).x;
 	
@@ -135,16 +148,58 @@ float4 GradientMap(float4 input, float2 texCoord)
 	return lerp(input, newColor, y);
 }
 
+float4 orangeFogColor = float4(1,0.3,0,1);
+float4 blueFogColor = float4(0,0.7,1,1);
+inline void ApplyFog(inout float4 img, in float2 texCoord)
+{
+	float zRaw = tex2D(DepthTextureSampler, texCoord).y;
+	
+	float zRescaled = (zRaw - 0.33) *1.5;
+	//float z = lerp(0,1,zRaw);
+	float z = saturate(zRescaled);
+	
+	float yRaw = tex2D(DepthTextureSampler, texCoord).x;
+	float y = saturate((1-yRaw*2)*0.25);
+	
+	float y2 = saturate((1-yRaw));
+
+	//float4 fogColor = lerp(blueFogColor, orangeFogColor,y2);
+	
+	img = lerp(img, orangeFogColor, saturate(z+y));
+}
+
+const float flickerStrength = 0.01;
+inline float2 PerturbTexCoord(in float2 texCoord)
+{
+	float yRaw = tex2D(DepthTextureSampler, texCoord).x;
+	float y = saturate((1-yRaw*2));
+	
+	float4 clouds = tex2D(CloudTextureSampler, texCoord + RandomOffset);
+	float2 perturbation = clouds.gb * 2 * flickerStrength - flickerStrength;
+	float2 perturbedTexCoord = texCoord + perturbation;
+	
+	return lerp(texCoord, perturbedTexCoord, y);	
+}
+
 float4 PixelShader(float2 texCoord : TEXCOORD0) : COLOR0
 {
-	float4 channel1 = ChannelPixelShader(texCoord, 0);
-	float4 channel2 = ChannelPixelShader(texCoord, 1);
-	float4 channel3 = ChannelPixelShader(texCoord, 2);
-	
-	float4 channel_map = tex2D(RenderChannelColorSampler, texCoord);
+	float2 perturbedTexCoord = PerturbTexCoord(texCoord);
+
+	float4 channel1 = ChannelPixelShader(perturbedTexCoord, 0);
+	float4 channel2 = ChannelPixelShader(perturbedTexCoord, 1);
+	float4 channel3 = ChannelPixelShader(perturbedTexCoord, 2);
+		
+	float4 channel_map = tex2D(RenderChannelColorSampler, perturbedTexCoord);
     
     float4 combined = channel1*channel_map.r + channel2*channel_map.g + channel3*channel_map.b;
-    return GradientMap(combined, texCoord);
+    ApplyFog(combined, perturbedTexCoord);
+    combined = GradientYBlueMap(combined, perturbedTexCoord);
+    
+    //if( (combined.x>=1 || combined.y>=1 || combined.z>=1) && !(combined.x>=1 && combined.y>=1 && combined.z>=1) )
+		//return float4(1,0,0,1);
+    //else
+		return combined;
+    //return channel_map;
     //return tex2D(DepthTextureSampler, texCoord);
 
     // Combine the two images.
@@ -156,6 +211,6 @@ technique BloomCombine
 {
     pass Pass1
     {
-        PixelShader = compile ps_2_0 PixelShader();
+        PixelShader = compile ps_3_0 PixelShader();
     }
 }

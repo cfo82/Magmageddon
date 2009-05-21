@@ -49,13 +49,6 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Level\TestLevel.xml">
-      <Name>TestLevel</Name>
-      <Importer>LevelImporter</Importer>
-      <Processor>LevelProcessor</Processor>
-    </Compile>
-  </ItemGroup>
-  <ItemGroup>
     <Compile Include="Models\Visualizations\icespike_primitive.fbx">
       <Name>icespike_primitive</Name>
       <Importer>FbxImporter</Importer>
@@ -141,11 +134,6 @@
     <None Include="Fonts\PescaderoBold.ttf">
       <Name>PescaderoBold</Name>
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Include="Level\Levels.dtd">
-      <Name>Levels</Name>
-      <Importer>XmlImporter</Importer>
-      <Processor>PassThroughProcessor</Processor>
     </None>
   </ItemGroup>
   <ItemGroup>
@@ -252,13 +240,6 @@
     </Compile>
   </ItemGroup>
   <ItemGroup>
-    <None Include="Level\Constants.xml">
-      <Name>Constants</Name>
-      <Importer>XmlImporter</Importer>
-      <Processor>PassThroughProcessor</Processor>
-    </None>
-  </ItemGroup>
-  <ItemGroup>
     <Compile Include="Effects\Lava\DeprecatedLava.fx">
       <Name>DeprecatedLava</Name>
       <Importer>EffectImporter</Importer>
@@ -279,16 +260,8 @@
       <Importer>EffectImporter</Importer>
       <Processor>EffectProcessor</Processor>
     </Compile>
-    <None Include="Level\RobotInfo.dtd">
-      <Name>RobotInfo</Name>
-    </None>
     <None Include="Level\LevelInfo.dtd">
       <Name>LevelInfo</Name>
-    </None>
-    <None Include="Level\Templates.xml">
-      <Name>Templates</Name>
-      <Importer>XmlImporter</Importer>
-      <Processor>PassThroughProcessor</Processor>
     </None>
     <None Include="Models\Pillars\pillar_003_col.fbx">
       <Name>pillar_003_col</Name>
@@ -365,20 +338,6 @@
     </Compile>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Level\RobotTemplates.xml">
-      <Name>RobotTemplates</Name>
-      <Importer>LevelImporter</Importer>
-      <Processor>LevelProcessor</Processor>
-    </Compile>
-  </ItemGroup>
-  <ItemGroup>
-    <Compile Include="Level\RobotInfo.xml">
-      <Name>RobotInfo</Name>
-      <Importer>LevelImporter</Importer>
-      <Processor>RobotInfoProcessor</Processor>
-    </Compile>
-  </ItemGroup>
-  <ItemGroup>
     <Compile Include="Sprites\Menu\volume_indicator.png">
       <Name>volume_indicator</Name>
       <Importer>TextureImporter</Importer>
@@ -388,13 +347,6 @@
       <Name>volume_indicator_selected</Name>
       <Importer>TextureImporter</Importer>
       <Processor>TextureProcessor</Processor>
-    </Compile>
-  </ItemGroup>
-  <ItemGroup>
-    <Compile Include="Level\CollisionTestLevel.xml">
-      <Name>CollisionTestLevel</Name>
-      <Importer>LevelImporter</Importer>
-      <Processor>LevelProcessor</Processor>
     </Compile>
   </ItemGroup>
   <ItemGroup>
@@ -730,13 +682,6 @@
     </Compile>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Level\MenuLevel.xml">
-      <Name>MenuLevel</Name>
-      <Importer>LevelImporter</Importer>
-      <Processor>LevelProcessor</Processor>
-    </Compile>
-  </ItemGroup>
-  <ItemGroup>
     <Compile Include="Textures\Sfx\FireExplosion.bmp">
       <Name>FireExplosion</Name>
       <Importer>TextureImporter</Importer>
@@ -766,20 +711,6 @@
     </Compile>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Level\DynamicTemplates.xml">
-      <Name>DynamicTemplates</Name>
-      <Importer>LevelImporter</Importer>
-      <Processor>LevelProcessor</Processor>
-    </Compile>
-  </ItemGroup>
-  <ItemGroup>
-    <Compile Include="Level\4vs4.xml">
-      <Name>4vs4</Name>
-      <Importer>LevelImporter</Importer>
-      <Processor>LevelProcessor</Processor>
-    </Compile>
-  </ItemGroup>
-  <ItemGroup>
     <None Include="Effects\Global.inc.fx">
       <Name>Global.inc</Name>
       <Importer>EffectImporter</Importer>
@@ -790,13 +721,6 @@
       <Importer>XmlImporter</Importer>
       <Processor>PassThroughProcessor</Processor>
     </None>
-  </ItemGroup>
-  <ItemGroup>
-    <Compile Include="Level\4Noobs.xml">
-      <Name>4Noobs</Name>
-      <Importer>LevelImporter</Importer>
-      <Processor>LevelProcessor</Processor>
-    </Compile>
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Textures\Sfx\snow.png">
@@ -818,6 +742,12 @@
   <ItemGroup>
     <None Include="Effects\Sfx\ParticleSystem\Stateful\Structs.inc">
       <Name>Structs</Name>
+    </None>
+    <None Include="Level\Common\Levels.dtd">
+      <Name>Levels</Name>
+    </None>
+    <None Include="Level\Common\RobotInfo.dtd">
+      <Name>RobotInfo</Name>
     </None>
     <Compile Include="Textures\Player\Robot_texture10.tga">
       <Name>Robot_texture10</Name>
@@ -846,13 +776,6 @@
     </Compile>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Level\Stack.xml">
-      <Name>Stack</Name>
-      <Importer>LevelImporter</Importer>
-      <Processor>LevelProcessor</Processor>
-    </Compile>
-  </ItemGroup>
-  <ItemGroup>
     <Compile Include="Sprites\Menu\robot_unicolor.png">
       <Name>robot_unicolor</Name>
       <Importer>TextureImporter</Importer>
@@ -866,14 +789,74 @@
       <Processor>TextureProcessor</Processor>
     </Compile>
   </ItemGroup>
-  <Import Project="$(MSBuildExtensionsPath)\Microsoft\XNA Game Studio\v3.0\Microsoft.Xna.GameStudio.ContentPipeline.targets" />
   <ItemGroup>
-    <Compile Include="Level\IslandTemplates.xml">
+    <None Include="Level\Common\Constants.xml">
+      <Name>Constants</Name>
+      <Importer>XmlImporter</Importer>
+      <Processor>PassThroughProcessor</Processor>
+    </None>
+    <Compile Include="Level\Common\DynamicTemplates.xml">
+      <Name>DynamicTemplates</Name>
+      <Importer>LevelImporter</Importer>
+      <Processor>LevelProcessor</Processor>
+    </Compile>
+    <None Include="Level\Common\IslandTemplates.xml">
       <Name>IslandTemplates</Name>
+      <Importer>XmlImporter</Importer>
+      <Processor>PassThroughProcessor</Processor>
+    </None>
+    <Compile Include="Level\Common\RobotInfo.xml">
+      <Name>RobotInfo</Name>
+      <Importer>LevelImporter</Importer>
+      <Processor>RobotInfoProcessor</Processor>
+    </Compile>
+    <Compile Include="Level\Common\RobotTemplates.xml">
+      <Name>RobotTemplates</Name>
+      <Importer>LevelImporter</Importer>
+      <Processor>LevelProcessor</Processor>
+    </Compile>
+    <None Include="Level\Common\Templates.xml">
+      <Name>Templates</Name>
+      <Importer>XmlImporter</Importer>
+      <Processor>PassThroughProcessor</Processor>
+    </None>
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="Level\Instances\TestLevel\TestLevel.xml">
+      <Name>TestLevel</Name>
       <Importer>LevelImporter</Importer>
       <Processor>LevelProcessor</Processor>
     </Compile>
   </ItemGroup>
+  <ItemGroup>
+    <Compile Include="Level\Instances\Stack\Stack.xml">
+      <Name>Stack</Name>
+      <Importer>LevelImporter</Importer>
+      <Processor>LevelProcessor</Processor>
+    </Compile>
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="Level\Instances\MenuLevel\MenuLevel.xml">
+      <Name>MenuLevel</Name>
+      <Importer>LevelImporter</Importer>
+      <Processor>LevelProcessor</Processor>
+    </Compile>
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="Level\Instances\4vs4\4vs4.xml">
+      <Name>4vs4</Name>
+      <Importer>LevelImporter</Importer>
+      <Processor>LevelProcessor</Processor>
+    </Compile>
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="Level\Instances\4Noobs\4Noobs.xml">
+      <Name>4Noobs</Name>
+      <Importer>LevelImporter</Importer>
+      <Processor>LevelProcessor</Processor>
+    </Compile>
+  </ItemGroup>
+  <Import Project="$(MSBuildExtensionsPath)\Microsoft\XNA Game Studio\v3.0\Microsoft.Xna.GameStudio.ContentPipeline.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.
   <Target Name="BeforeBuild">

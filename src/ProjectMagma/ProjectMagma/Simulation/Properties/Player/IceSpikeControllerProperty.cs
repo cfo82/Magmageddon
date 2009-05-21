@@ -20,7 +20,7 @@ namespace ProjectMagma.Simulation
         {
             this.iceSpike = entity;
             this.constants = Game.Instance.Simulation.EntityManager["player_constants"];
-            this.templates = Game.Instance.ContentManager.Load<LevelData>("Level/DynamicTemplates");
+            this.templates = Game.Instance.ContentManager.Load<LevelData>("Level/Common/DynamicTemplates");
 
             ((CollisionProperty)entity.GetProperty("collision")).OnContact += IceSpikeCollisionHandler;
 

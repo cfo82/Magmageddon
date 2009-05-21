@@ -5,19 +5,19 @@
   <Level>
     <Name>4 VS 4</Name>
     <Description>Hardcore Deathmatch</Description>
-    <FileName>Level\4vs4</FileName>
+    <FileName>Level\Instances\4vs4\4vs4</FileName>
   </Level>
 
   <Level>
     <Name>FOR NOOBS</Name>
     <Description>A beginner level</Description>
-    <FileName>Level\4Noobs</FileName>
+    <FileName>Level\Instances\4Noobs\4Noobs</FileName>
   </Level>
 
   <Level>
     <Name>Stack</Name>
     <Description>Island stacked</Description>
-    <FileName>Level\Stack</FileName>
+    <FileName>Level\Instances\Stack\Stack</FileName>
   </Level>
   
 </Levels>

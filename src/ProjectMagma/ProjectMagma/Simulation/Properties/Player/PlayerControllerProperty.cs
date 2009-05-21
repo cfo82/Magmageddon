@@ -102,7 +102,7 @@ namespace ProjectMagma.Simulation
 
             this.player = player;
             this.constants = Game.Instance.Simulation.EntityManager["player_constants"];
-            this.templates = Game.Instance.ContentManager.Load<LevelData>("Level/DynamicTemplates");
+            this.templates = Game.Instance.ContentManager.Load<LevelData>("Level/Common/DynamicTemplates");
 
             player.AddQuaternionAttribute("rotation", Quaternion.Identity);
             player.AddVector3Attribute("velocity", Vector3.Zero);

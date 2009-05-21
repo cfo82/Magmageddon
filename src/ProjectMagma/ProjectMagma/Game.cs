@@ -154,7 +154,7 @@ namespace ProjectMagma
             // load level infos
             levels = ContentManager.Load<List<LevelInfo>>("Level/LevelInfo");
             // load list of available robots
-            robots = ContentManager.Load<List<RobotInfo>>("Level/RobotInfo");
+            robots = ContentManager.Load<List<RobotInfo>>("Level/Common/RobotInfo");
 
              
 #if DEBUG
@@ -195,7 +195,7 @@ namespace ProjectMagma
     #endif
 #else
             // initialize simulation
-            LoadLevel("Level/MenuLevel");
+            LoadLevel("Level/Instances/MenuLevel/MenuLevel");
 #endif
 
             // load menu

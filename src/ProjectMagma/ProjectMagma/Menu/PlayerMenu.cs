@@ -163,7 +163,7 @@ namespace ProjectMagma
             for (int i = 0; i < 4; ++i)
             {
                 // load templates
-                LevelData levelData = Game.Instance.ContentManager.Load<LevelData>("Level/RobotTemplates");
+                LevelData levelData = Game.Instance.ContentManager.Load<LevelData>("Level/Common/RobotTemplates");
                 EntityData entityData = levelData.entities[Game.Instance.Robots[robotSelected[i]].Entity];
                 List<AttributeData> attributes = entityData.CollectAttributes(levelData);
                 List<PropertyData> properties = entityData.CollectProperties(levelData);
@@ -260,7 +260,7 @@ namespace ProjectMagma
                 Color backgroundColor = Color.White;
 
                 // load templates
-                LevelData levelData = Game.Instance.ContentManager.Load<LevelData>("Level/RobotTemplates");
+                LevelData levelData = Game.Instance.ContentManager.Load<LevelData>("Level/Common/RobotTemplates");
                 EntityData entityData = levelData.entities[Game.Instance.Robots[robotSelected[i]].Entity];
                 List<AttributeData> attributes = entityData.CollectAttributes(levelData);
                 List<PropertyData> properties = entityData.CollectProperties(levelData);

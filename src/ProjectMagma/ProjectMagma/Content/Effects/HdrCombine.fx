@@ -128,11 +128,15 @@ float4 ChannelPixelShader(float2 texCoord : TEXCOORD0, int channel)
     return tonemapped;
 }
 
-inline float4 GradientYBlueMap(float4 input, float2 texCoord)
+inline float GradientY(float2 texCoord)
 {
 	float yRaw = tex2D(DepthTextureSampler, texCoord).x;
-	
-	float y = saturate(yRaw * 2.0 - 0.8);
+	return saturate(yRaw * 2.0 - 0.8);
+}
+
+inline float4 GradientYBlueMap(float4 input, float2 texCoord)
+{
+	float y = GradientY(texCoord);
 	
 	float newRed = input.r;
 	float newGreen = saturate(input.g / 0.6) + 0.03;
@@ -174,7 +178,10 @@ inline void ApplyFog(inout float4 img, in float2 texCoord)
 
 	//float4 fogColor = lerp(blueFogColor, orangeFogColor,y2);
 	
-	img = lerp(img, FogColor, saturate((z+y)*FogGlobMul));
+	float grad = GradientY(texCoord);
+	float fogColor = lerp(FogColor,float4(0,0.5,1.0,1),0);
+	
+	img = lerp(img, fogColor, saturate((z+y)*FogGlobMul*(1-grad)));
 	//img = saturate(z*y*12);
 }
 

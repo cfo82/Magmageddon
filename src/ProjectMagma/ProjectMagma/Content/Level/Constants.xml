@@ -70,12 +70,12 @@
       <Attribute name="player_pushback_deacceleration" template="float" value="600"/>
       <Attribute name="player_pushback_velocity_multiplier" template="float" value="120"/>
 
-      <Attribute name="island_aim_angle" template="float" value="120"/>
+      <Attribute name="island_aim_angle" template="float" value="360"/>
       <Attribute name="island_aim_angle_eps" template="float" value="30"/>
       <Attribute name="island_reselection_max_value" template="float" value="0.9"/>
       <Attribute name="island_reselection_timeout" template="float" value="100"/>
       <Attribute name="island_deselection_timeout" template="float" value="200"/>
-      <Attribute name="island_jump_free_range" template="float" value="200"/>
+      <Attribute name="island_jump_free_range" template="float" value="250"/>
       <Attribute name="island_jump_arc_height" template="float" value="220"/>
       <Attribute name="island_jump_speed" template="float" value="20"/>
 

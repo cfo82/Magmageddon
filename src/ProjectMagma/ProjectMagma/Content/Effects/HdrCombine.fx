@@ -156,7 +156,7 @@ float4 blueFogColor = float4(0,0.7,1,1);
 //float FogColor=float4(1,1,1,1);
 
 float FogZOff, FogZMul, FogYOff, FogYMul, FogGlobMul;
-float FogColor;
+float4 FogColor;
 
 
 inline void ApplyFog(inout float4 img, in float2 texCoord)

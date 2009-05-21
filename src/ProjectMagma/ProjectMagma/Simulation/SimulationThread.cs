@@ -88,7 +88,6 @@ namespace ProjectMagma.Simulation
                     Game.Instance.ExceptionThrown = ex;
                     finishedEvent.Set();
                 }
-                throw ex;
             } 
 #endif
         }

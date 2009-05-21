@@ -105,7 +105,10 @@
       <Attribute name="position" template="float3" value="0 -100 0"/>
       <Attribute name="scale" template="float3" value="30 30 30"/>
       <Attribute name="relative_position" template="float3" value="15 20 15"/>
+      
       <Attribute name="pickup_sound" template="string" value="excellent"/>
+      <Attribute name="fixed" template="bool" value="false"/>
+      
       <Attribute name="bv_type" template="string" value="sphere"/>
       <Attribute name="specular_color" template="float3" value="0.2 0.2 0.2"/>
       <Attribute name="specular_power" template="float" value="10.0"/>
@@ -144,6 +147,18 @@
     </Properties>
   </Entity>
 
+  <Entity name="powerup_life" extends="powerup_base" abstract="true">
+    <Attributes>
+      <Attribute name="mesh" template="string" value="Models/Powerups/powerup_life_grp"/>
+      <Attribute name="value" template="int" value="1"/>
+      <Attribute name="diffuse_color" template="float3" value="0.6 0.7 0.9"/>
+      <Attribute name="emissive_color" template="float3" value="0.0 0.0 0.1"/>
+    </Attributes>
+    <Properties>
+      <Property name="controller" type="ProjectMagma.Simulation.PowerUpControllerLives"/>
+    </Properties>
+  </Entity>
+  
   <!--
   <Entity name="powerup_jumps" extends="powerup_base" abstract="true">
     <Attributes>

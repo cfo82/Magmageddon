@@ -34,6 +34,8 @@ namespace ProjectMagma.Simulation
                 this.powerup.AddVector3Attribute("position", Vector3.Zero);
             }
 
+            Debug.Assert(powerup.HasBool("fixed"));
+
             // get position on surface
             powerup.AddFloatAttribute("surface_offset", 0f);
             CalculateSurfaceOffset();
@@ -81,7 +83,15 @@ namespace ProjectMagma.Simulation
             if (respawnAt != 0
                 && simTime.At > respawnAt)
             {
-                SelectNewIsland();
+                if (!powerup.GetBool("fixed"))
+                {
+                    SelectNewIsland();
+                }
+                else
+                {
+                    Vector3 pos = island.GetVector3("position");
+                    PositionOnIsland(ref pos);
+                }
 
                 powerup.AddProperty("collision", new CollisionProperty());
                 powerup.AddProperty("render", new PowerupRenderProperty());

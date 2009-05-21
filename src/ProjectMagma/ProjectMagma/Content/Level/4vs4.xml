@@ -66,7 +66,17 @@
       <Attribute name="position" template="float3" value="-330 200 -330"/>
     </Attributes>
   </Entity>
-  
+
+  <Entity name="island5" extends="island_base_burnt1">
+    <Attributes>
+      <Attribute name="position" template="float3" value="0 -25 0"/>
+      <Attribute name="velocity" template="float3" value="0 0 -300"/>
+    </Attributes>
+    <Properties>
+      <Property name="controller" type="ProjectMagma.Simulation.IslandStraightMovementControllerProperty"/>
+    </Properties>
+  </Entity>
+
   <Entity name="powerup1" extends="powerup_health">
     <Attributes>
       <Attribute name="island_reference" template="string" value="island4"/>
@@ -78,6 +88,14 @@
     <Attributes>
       <Attribute name="island_reference" template="string" value="island2"/>
       <Attribute name="relative_position" template="float3" value="-20 10 -5"/>
+    </Attributes>
+  </Entity>
+
+  <Entity name="powerup3" extends="powerup_life">
+    <Attributes>
+      <Attribute name="island_reference" template="string" value="island5"/>
+      <Attribute name="relative_position" template="float3" value="-20 10 -5"/>
+      <Attribute name="fixed" template="bool" value="true"/>
     </Attributes>
   </Entity>
 

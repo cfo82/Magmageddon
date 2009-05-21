@@ -56,7 +56,7 @@
     <XnaCompressContent>true</XnaCompressContent>
   </PropertyGroup>
   <ItemGroup>
-    <Compile Include="Bugslayer\CrashDebugGame.cs" />
+    <Compile Include="Bugslayer\CrashDebugger.cs" />
     <Compile Include="DrawTools.cs" />
     <Compile Include="EntryPoint.cs" />
     <Compile Include="GlobalClock.cs" />

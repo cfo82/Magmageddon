@@ -26,20 +26,8 @@ namespace ProjectMagma
 #if XBOX
             System.Threading.Thread.CurrentThread.SetProcessorAffinity(ThreadDistribution.RenderThread);
 
-            try
-            {
 #endif
-                Game.RunInstance();
-#if XBOX
-            }
-            catch (Exception exception)
-            {
-                using (CrashDebugGame game = new CrashDebugGame(exception))
-                {
-                    game.Run();
-                }
-            }
-#endif
+            Game.RunInstance();
         }
 
     }

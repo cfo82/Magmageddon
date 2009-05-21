@@ -3,25 +3,32 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Input;
 using Microsoft.Xna.Framework.Graphics;
 
 namespace ProjectMagma.Bugslayer
 {
-    public class CrashDebugGame : Microsoft.Xna.Framework.Game
+    public class CrashDebugger
     {
         private SpriteBatch spriteBatch;
         private SpriteFont font;
-        private readonly string message;
+        private string message;
         private static readonly int MAX_LINE_LENGTH = 100;
         private Exception exception;
 
-        public CrashDebugGame(Exception exception)
+        public CrashDebugger(GraphicsDevice device, WrappedContentManager wrappedContent)
         {
-            this.exception = exception;
+            font = wrappedContent.Load<SpriteFont>("Fonts/kootenay9");
+            spriteBatch = new SpriteBatch(device);
+        }
 
-            new GraphicsDeviceManager(this);
-            Content.RootDirectory = "Content";
+        public void SetException(Exception exception)
+        {
+            if (exception == this.exception)
+                { return; }
+
+            this.exception = exception;
 
             message = string.Format(
                 "**** CRASH LOG (Please take a picture of this and send it to dpk@student.ethz.ch!) ****\n" + 
@@ -61,30 +68,19 @@ namespace ProjectMagma.Bugslayer
             message = builder.ToString();
         }
 
-        protected override void LoadContent()
+        public void Draw(GraphicsDevice graphics)
         {
-            font = Content.Load<SpriteFont>("Fonts/kootenay9");
-            spriteBatch = new SpriteBatch(GraphicsDevice);
-        }
-
-        protected override void Update(GameTime gameTime)
-        {
-            if (GamePad.GetState(PlayerIndex.One).Buttons.Back == ButtonState.Pressed)
-                Exit();
-
-            base.Update(gameTime);
-        }
-
-        protected override void Draw(GameTime gameTime)
-        {
-            GraphicsDevice.Clear(Color.Blue);
+            graphics.Clear(Color.Blue);
 
             spriteBatch.Begin();
             spriteBatch.DrawString(font, this.message, new Vector2(10f, 10f), Color.White);
 
             spriteBatch.End();
+        }
 
-            base.Draw(gameTime);
+        public Exception Exception
+        {
+            get { return exception; }
         }
     }
 }

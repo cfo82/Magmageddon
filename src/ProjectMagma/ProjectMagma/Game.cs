@@ -17,6 +17,8 @@ using ProjectMagma.Simulation.Collision;
 
 using ProjectMagma.Renderer.Interface;
 
+using ProjectMagma.Bugslayer;
+
 using Microsoft.Xna.Framework.Storage;
 using Microsoft.Xna.Framework.GamerServices;
 using System.IO;
@@ -72,6 +74,7 @@ namespace ProjectMagma
         private SimulationThread simulationThread;
 
         private Exception exceptionThrown;
+        private CrashDebugger crashDebugger;
         
         private GlobalClock globalClock;
 
@@ -107,47 +110,14 @@ namespace ProjectMagma
 
         public static void RunInstance()
         {
-/*#if !XBOX*/
-            //using (Game game = new Game())
-            //{
-                Game game = new Game();
+            using (Game game = new Game())
+            {
                 Game.instance = game;
 
-                Exception rethrow = null;
-
-                try
-                {
-                    game.Run();
-                }
-                catch (Exception e)
-                {
-                    rethrow = e;
-                }
-                try
-                {
-                    game.Dispose();
-                }
-                catch (Exception e)
-                {
-                    if (rethrow == null)
-                    {
-                        rethrow = e;
-                    }
-                }
-
-                 
-            //}
+                game.Run();
+            }
 
             Game.instance = null;
-
-            System.Threading.Thread.Sleep(1000);
-
-            throw rethrow;
-/*#else 
-            Game.instance = new Game();
-            Game.instance.Run();
-            Game.instance = null;
-#endif*/
         }
 
         /// <summary>
@@ -168,6 +138,8 @@ namespace ProjectMagma
         /// </summary>
         protected override void LoadContent()
         {
+            crashDebugger = new CrashDebugger(GraphicsDevice, ContentManager);
+
 //            GraphicsDevice.RenderState.MultiSampleAntiAlias = true;
             //            GraphicsDevice.PresentationParameters.MultiSampleType = MultiSampleType.FourSamples;
 
@@ -428,46 +400,67 @@ namespace ProjectMagma
         /// <param name="gameTime">Provides a snapshot of timing values.</param>
         protected override void Update(GameTime gameTime)
         {
-            // get storage device as soon as selected
-            if (!storageAvailable && storageSelectionResult.IsCompleted)
-            {
-                device = Guide.EndShowStorageDeviceSelector(storageSelectionResult);
-                storageAvailable = true;
-                LoadSettings();
-            }
-
             if (ExceptionThrown != null)
             {
-                throw ExceptionThrown;
-            }
-
-            profiler.TryEndFrame();
-            profiler.BeginFrame();
-
-            // wait with normal update until storage available
-            if(storageAvailable)
-            {
-                profiler.BeginSection("update");
-            
-                // fullscreen
-                if(Keyboard.GetState().IsKeyDown(Keys.Enter)
-                    && Keyboard.GetState().IsKeyDown(Keys.LeftAlt))
+                if (!Paused)
                 {
-                    graphics.IsFullScreen = !this.graphics.IsFullScreen;
-                    graphics.ApplyChanges();
+                    Pause();
+                    RendererUpdateQueue q = simulation.Close();
+                    renderer.AddUpdateQueue(q);
+                    simulationThread.Abort();
                 }
 
-                //simulationThread.Join();
+                crashDebugger.SetException(ExceptionThrown);
 
-                // update menu
-                menu.Update(gameTime);
+                if (GamePad.GetState(PlayerIndex.One).Buttons.Back == ButtonState.Pressed)
+                {
+                    Exit();
+                }
+                return;
+            }
 
-                // update all GameComponents registered
-                profiler.BeginSection("base_update");
-                base.Update(gameTime);
-                profiler.EndSection("base_update");
-                
-                profiler.EndSection("update");
+            try
+            {
+                // get storage device as soon as selected
+                if (!storageAvailable && storageSelectionResult.IsCompleted)
+                {
+                    device = Guide.EndShowStorageDeviceSelector(storageSelectionResult);
+                    storageAvailable = true;
+                    LoadSettings();
+                }
+
+                profiler.TryEndFrame();
+                profiler.BeginFrame();
+
+                // wait with normal update until storage available
+                if (storageAvailable)
+                {
+                    profiler.BeginSection("update");
+
+                    // fullscreen
+                    if (Keyboard.GetState().IsKeyDown(Keys.Enter)
+                        && Keyboard.GetState().IsKeyDown(Keys.LeftAlt))
+                    {
+                        graphics.IsFullScreen = !this.graphics.IsFullScreen;
+                        graphics.ApplyChanges();
+                    }
+
+                    //simulationThread.Join();
+
+                    // update menu
+                    menu.Update(gameTime);
+
+                    // update all GameComponents registered
+                    profiler.BeginSection("base_update");
+                    base.Update(gameTime);
+                    profiler.EndSection("base_update");
+
+                    profiler.EndSection("update");
+                }
+            }
+            catch (Exception e)
+            {
+                exceptionThrown = e;
             }
         }
 
@@ -514,21 +507,34 @@ namespace ProjectMagma
         /// <param name="gameTime">Provides a snapshot of timing values.</param>
         protected override void Draw(GameTime gameTime)
         {
-            profiler.TryBeginFrame();
-            profiler.BeginSection("draw");
+            if (exceptionThrown != null)
+            {
+                crashDebugger.Draw(GraphicsDevice);
+                return;
+            }
 
-            renderer.Render();
+            try
+            {
+                profiler.TryBeginFrame();
+                profiler.BeginSection("draw");
 
-            // will apply effect such as bloom
-            base.Draw(gameTime);
+                renderer.Render();
 
-            // draw stuff which should not be filtered
-            menu.Draw(gameTime);
+                // will apply effect such as bloom
+                base.Draw(gameTime);
 
-            DrawFrameCounter(gameTime);
+                // draw stuff which should not be filtered
+                menu.Draw(gameTime);
 
-            profiler.EndSection("draw");
-            profiler.EndFrame();
+                DrawFrameCounter(gameTime);
+
+                profiler.EndSection("draw");
+                profiler.EndFrame();
+            }
+            catch (Exception e)
+            {
+                exceptionThrown = e;
+            }
         }
 
         #region Stuff to be moved by janick!

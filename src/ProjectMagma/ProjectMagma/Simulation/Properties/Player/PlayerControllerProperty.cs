@@ -581,9 +581,7 @@ namespace ProjectMagma.Simulation
 
                     player.SetInt("energy", player.GetInt("energy") - constants.GetInt("island_repulsion_start_energy_cost"));
 
-                    (player.GetProperty("render") as RobotRenderProperty).NextPermanentState = "repulsion";
-                    activeIsland.SetString("repulsed_by", player.Name);
-                    repulsionActive = true;
+                    StartRepulsion();
                 }
                 else
                     // island repulsion
@@ -630,17 +628,13 @@ namespace ProjectMagma.Simulation
 
                         if (player.GetInt("energy") <= 0)
                         {
-                            (player.GetProperty("render") as RobotRenderProperty).NextPermanentState = "idle";
-                            activeIsland.SetString("repulsed_by", "");
-                            repulsionActive = false;
+                            StopRepulsion();
                         }
                     }
                     else
                     if(repulsionActive)
                     {
-                        (player.GetProperty("render") as RobotRenderProperty).NextPermanentState = "idle";
-                        activeIsland.SetString("repulsed_by", "");
-                        repulsionActive = false;
+                        StopRepulsion();
                     }
             }
             else
@@ -650,6 +644,20 @@ namespace ProjectMagma.Simulation
                 (player.GetProperty("render") as RobotRenderProperty).NextPermanentState = "idle";
                 repulsionActive = false;
             }
+        }
+
+        private void StartRepulsion()
+        {
+            (player.GetProperty("render") as RobotRenderProperty).NextPermanentState = "repulsion";
+            activeIsland.SetString("repulsed_by", player.Name);
+            repulsionActive = true;
+        }
+
+        private void StopRepulsion()
+        {
+            (player.GetProperty("render") as RobotRenderProperty).NextPermanentState = "idle";
+            activeIsland.SetString("repulsed_by", "");
+            repulsionActive = false;
         }
 
         private void PerformFlamethrowerAction(Entity player, ref Vector3 playerPosition)
@@ -1048,11 +1056,12 @@ namespace ProjectMagma.Simulation
                     if (flameThrowerSoundInstance != null)
                         flameThrowerSoundInstance.Stop();
                     jetpackActive = false;
-                    repulsionActive = false;
                     destinationIsland = null;
                     LeaveActiveIsland();
                     if(simpleJumpIsland != null)
                         StopSimpleJump();
+                    if(repulsionActive)
+                        StopRepulsion();
 
                     Game.Instance.ContentManager.Load<SoundEffect>("Sounds/death").Play(Game.Instance.EffectsVolume);
                     player.SetInt("deaths", player.GetInt("deaths") + 1);

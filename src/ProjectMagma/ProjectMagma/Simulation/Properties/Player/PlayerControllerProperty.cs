@@ -258,10 +258,8 @@ namespace ProjectMagma.Simulation
             PerformIslandRepulsionAction(simTime, ref fuel);
 
             // island selection and attraction
-            bool allowSelection = attractedIsland == null && destinationIsland == null;
             PerformIslandSelectionAction(at, allowSelection, ref playerPosition);
             PerformIslandJumpAction(ref playerPosition, ref playerVelocity);
-//            PerformIslandAttractionAction(player, allowSelection, ref playerPosition, ref playerVelocity);
             #endregion
 
             #region recharge
@@ -468,21 +466,23 @@ namespace ProjectMagma.Simulation
             (player.GetProperty("render") as RobotRenderProperty).NextPermanentState = "jump";
         }
 
-        private void PerformIslandSelectionAction(float at, bool allowSelection, ref Vector3 playerPosition)
+        private void PerformIslandSelectionAction(float at, ref Vector3 playerPosition)
         {
-            if (allowSelection)
+            if (activeIsland != null && player.GetInt("frozen") <= 0)
             {
                 if (/*controllerInput.rightStickMoved
-                    &&*/ activeIsland != null) // must be standing on island
+                    &&*/
+                         activeIsland != null) // must be standing on island
                 {
                     //    Vector3 selectionDirection = new Vector3(controllerInput.rightStickX, 0, controllerInput.rightStickY);
-                  //  stickDir.Normalize();
+                    //  stickDir.Normalize();
                     Vector3 selectionDirection = Vector3.Transform(new Vector3(0, 0, 1), GetRotation(player));
 
                     // only allow reselection if stick moved slightly
                     bool stickMoved = Vector3.Dot(islandSelectionLastStickDir, selectionDirection) < constants.GetFloat("island_reselection_max_value");
                     if (/*(selectedIsland == null || stickMoved)
-                        && */ at > islandSelectedAt + constants.GetFloat("island_reselection_timeout"))
+                        && */
+                              at > islandSelectedAt + constants.GetFloat("island_reselection_timeout"))
                     {
                         //                        Console.WriteLine("new selection (old: " + ((selectedIsland != null) ? selectedIsland.Name : "") + "): " + lastStickDir + "." + stickDir + " = " +
                         //                            Vector3.Dot(lastStickDir, stickDir));
@@ -503,7 +503,7 @@ namespace ProjectMagma.Simulation
                                 arrow.AddProperty("render", new ArrowRenderProperty());
                                 arrow.AddProperty("shadow_cast", new ShadowCastProperty());
                             }
-                            
+
                             // reset in range indicator
                             //selectedIslandInFreeJumpRange = false;
                             // hacky hack hack
@@ -511,18 +511,24 @@ namespace ProjectMagma.Simulation
                         }
                     }
                 }
-//                else
+                //                else
                 {
                     // deselect after timeout
-                    if (selectedIsland != null
-                        && at > islandSelectedAt + constants.GetFloat("island_deselection_timeout")
-                        /*&& DeselectOnRelease*/)
-                    {
-                        RemoveSelectionArrow();
-                    }
+
                 }
             }
+            else
+            {
+                if (selectedIsland != null)
+                    RemoveSelectionArrow();
+            }
 
+            if ((selectedIsland != null
+            && at > islandSelectedAt + constants.GetFloat("island_deselection_timeout")))
+            {
+                RemoveSelectionArrow();
+            }
+       
             if (selectedIsland != null)
             {
                 // check range

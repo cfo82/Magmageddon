@@ -115,7 +115,7 @@ namespace ProjectMagma.Renderer
                 explosionSystem.AddEmitter(new ProjectMagma.Renderer.ParticleSystem.Emitter.LavaExplosionEmitter());
             }
             snowSystem = new Snow(this, Game.Instance.ContentManager, device);
-            snowSystem.AddEmitter(new ProjectMagma.Renderer.ParticleSystem.Emitter.SnowEmitter(12f));
+            snowSystem.AddEmitter(new ProjectMagma.Renderer.ParticleSystem.Emitter.SnowEmitter(20f));
             for (int i = 0; i < 1000; ++i)
             {
                 snowSystem.Update(-30d / 1000d + i * -30d / 1000d, -30d / 1000d + i * -30d / 1000d + 30d / 1000d);

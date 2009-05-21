@@ -121,8 +121,12 @@ RenderSnowParticlesVertexShaderOutput RenderSnowVertexShader(
 		float normalizedAge = 1.0 - position_sampler_value.w/SnowParticleLifetime;
 	    
 		output.PositionCopy = output.Position = mul(view_position, Projection);
-		output.Size = 7 + random_sampler_value.x*10;
-		output.Color = float4(1,1,1,min(0.6, 1-normalizedAge) * lerp(1, 0.6, normalizedAge));
+		output.Size = 5 + random_sampler_value.x*8;
+		
+		float calculatedAlpha = min(0.6, 2*(1-normalizedAge) * lerp(1, 0.6, min(1,normalizedAge+0.5)));
+		//float alpha = normalizedAge<0.5?1:calculatedAlpha;
+		
+		output.Color = float4(1,1,1,calculatedAlpha);
 		output.RandomValues = random_sampler_value;
 	}
 	else

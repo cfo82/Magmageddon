@@ -80,12 +80,15 @@ namespace ProjectMagma.Simulation
                 respawnAt = (float)(simTime.At + rand.NextDouble() * constants.GetFloat("respawn_random_time") + constants.GetFloat("respawn_min_time"));
             }
             else
-            if (respawnAt != 0
-                && simTime.At > respawnAt)
+                if (powerUsed && simTime.At > respawnAt)
             {
                 if (!powerup.GetBool("fixed"))
                 {
-                    SelectNewIsland();
+                    if (!SelectNewIsland())
+                    {
+                        // if we cannot find a suitable island: wait
+                        return;
+                    }
                 }
                 else
                 {
@@ -148,12 +151,12 @@ namespace ProjectMagma.Simulation
 
         protected abstract void GivePower(Entity player);
 
-        private void SelectNewIsland()
+        private bool SelectNewIsland()
         {
             int cnt = Game.Instance.Simulation.IslandManager.Count;
             Entity island;
             int i = 0;
-            do
+            while(true)
             {
                 int islandNo = rand.Next(Game.Instance.Simulation.IslandManager.Count - 1);
                 island = Game.Instance.Simulation.IslandManager[islandNo];
@@ -176,18 +179,24 @@ namespace ProjectMagma.Simulation
                 }
 
                 i++;
+
+                if (i == cnt)
+                {
+                    return false;
+                }
+
                 if (valid)
                     break; // ok
                 else
                     continue; // select another
-            } 
-                while (i < cnt * 2);
+            }
 
             this.island = island;
             powerup.SetString("island_reference", island.Name);
             CalculateSurfaceOffset();
             Vector3 islandPos = island.GetVector3("position");
             PositionOnIsland(ref islandPos);
+            return true;
         }
 
         private void CalculateSurfaceOffset()

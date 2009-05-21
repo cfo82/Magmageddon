@@ -114,10 +114,7 @@ namespace ProjectMagma.Simulation
                     }
                 }
                 else
-                if (!(other.GetString("kind") == "island"
-                     && other.GetString("attracted_by") != "")
-                     && island.GetString("attracted_by") != null
-                     && island.GetVector3("repulsion_velocity") == Vector3.Zero)
+                if (island.GetVector3("repulsion_velocity") == Vector3.Zero)
                 {
                     // change dir
                     if (simTime.At > dirChangedAt + 1000) // todo: extract constant
@@ -132,10 +129,7 @@ namespace ProjectMagma.Simulation
                         //                    dir = -dir;
 
                         // always ensure we apply a bit of pushback out of other entity so we don't get stuck in there
-                        if (!(other.GetString("kind") == "island"
-                            && other.GetString("attracted_by") != "")
-                            && island.GetString("attracted_by") != null
-                            && island.GetVector3("repulsion_velocity") == Vector3.Zero)
+                        if (island.GetVector3("repulsion_velocity") == Vector3.Zero)
                         {
                             Vector3 pushback = -normal * 100;
                             pushback.Y = 0; // only in xz plane

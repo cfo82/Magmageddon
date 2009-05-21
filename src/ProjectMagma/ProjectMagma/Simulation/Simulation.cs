@@ -42,6 +42,8 @@ namespace ProjectMagma.Simulation
 
                 paused = false;
 
+                SetPhase(SimulationPhase.Intro, "", null);
+
                 // load level data
                 levelData = wrappedContent.Load<LevelData>(level);
                 entityManager.Load(levelData);

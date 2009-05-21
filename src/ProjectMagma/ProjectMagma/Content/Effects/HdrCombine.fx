@@ -191,17 +191,17 @@ inline float2 PerturbTexCoord(in float2 texCoord)
 	return lerp(texCoord, perturbedTexCoord, y);	
 }
 
-half4 PixelShader(float2 texCoord : TEXCOORD0) : COLOR0
+float4 PixelShader(float2 texCoord : TEXCOORD0) : COLOR0
 {
 	float2 perturbedTexCoord = PerturbTexCoord(texCoord);
 
-	half4 channel1 = ChannelPixelShader(perturbedTexCoord, 0);
-	half4 channel2 = ChannelPixelShader(perturbedTexCoord, 1);
-	half4 channel3 = ChannelPixelShader(perturbedTexCoord, 2);
+	float4 channel1 = ChannelPixelShader(perturbedTexCoord, 0);
+	float4 channel2 = ChannelPixelShader(perturbedTexCoord, 1);
+	float4 channel3 = ChannelPixelShader(perturbedTexCoord, 2);
 		
-	half4 channel_map = tex2D(RenderChannelColorSampler, perturbedTexCoord);
+	float4 channel_map = tex2D(RenderChannelColorSampler, perturbedTexCoord);
     
-    half4 combined = channel1*channel_map.r + channel2*channel_map.g + channel3*channel_map.b;
+    float4 combined = channel1*channel_map.r + channel2*channel_map.g + channel3*channel_map.b;
     ApplyFog(combined, perturbedTexCoord);
     combined = GradientYBlueMap(combined, perturbedTexCoord);
     

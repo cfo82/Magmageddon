@@ -120,7 +120,7 @@ RenderParticlesVertexShaderOutput RenderExplosionVertexShader(
 
 
 //-----------------------------------------------------------------------------------------------------------
-half4 RenderExplosionPixelShader(
+float4 RenderExplosionPixelShader(
 	RenderParticlesVertexShaderOutput input,
 	float2 PixelPosition : VPOS,
 #ifdef XBOX

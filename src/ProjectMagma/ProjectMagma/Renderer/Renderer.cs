@@ -43,7 +43,7 @@ namespace ProjectMagma.Renderer
             GraphicsDevice device
         )
         {
-            EnablePostProcessing = true;
+            //EnablePostProcessing = true;
 
             renderTime = new RenderTime(Game.Instance.GlobalClock.ContinuousMilliseconds,
                 Game.Instance.GlobalClock.PausableMilliseconds);
@@ -116,7 +116,7 @@ namespace ProjectMagma.Renderer
                 explosionSystem.AddEmitter(new ProjectMagma.Renderer.ParticleSystem.Emitter.LavaExplosionEmitter());
             }
             snowSystem = new Snow(this, Game.Instance.ContentManager, device);
-            snowSystem.AddEmitter(new ProjectMagma.Renderer.ParticleSystem.Emitter.SnowEmitter(20f));
+            snowSystem.AddEmitter(new ProjectMagma.Renderer.ParticleSystem.Emitter.SnowEmitter(200f));
             for (int i = 0; i < 1000; ++i)
             {
                 snowSystem.Update(-30d / 1000d + i * -30d / 1000d, -30d / 1000d + i * -30d / 1000d + 30d / 1000d);
@@ -131,15 +131,31 @@ namespace ProjectMagma.Renderer
             RendererUpdatable winningUpdatable
         )
         {
-            if (phase == RendererPhase.Outro)
+            switch(phase)
             {
-                WinningScreenRenderable renderable = new WinningScreenRenderable(winningPlayer);
-                RobotRenderable winningRobot = winningUpdatable as RobotRenderable;
-                Debug.Assert(winningRobot != null);
-                winningRobot.ActivatePermanentState("win");
-                renderable.LoadResources(this);
-                updateRenderables.Add(renderable);
-                opaqueRenderables.Add(renderable);
+                case RendererPhase.Outro:
+                    {
+                        WinningScreenRenderable renderable = new WinningScreenRenderable(winningPlayer);
+                        RobotRenderable winningRobot = winningUpdatable as RobotRenderable;
+                        Debug.Assert(winningRobot != null);
+                        winningRobot.ActivatePermanentState("win");
+                        renderable.LoadResources(this);
+                        updateRenderables.Add(renderable);
+                        overlays.Add(renderable);
+                        break;
+                    }
+                case RendererPhase.Intro:
+                    {
+                        for (int i = 0; i < overlays.Count; ++i)
+                        {
+                            if (overlays[i] is WinningScreenRenderable)
+                            {
+                                overlays.RemoveAt(i);
+                                break;
+                            }
+                        }
+                        break;
+                    }
             }
         }
 

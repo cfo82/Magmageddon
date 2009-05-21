@@ -86,7 +86,7 @@ namespace ProjectMagma
 
             this.IsFixedTimeStep = false;
             //this.TargetElapsedTime = TimeSpan.FromSeconds(1.0 / 15.0);
-            //graphics.SynchronizeWithVerticalRetrace = false; 
+            graphics.SynchronizeWithVerticalRetrace = false; 
             graphics.ApplyChanges();
             const float multiplier = 1.0f;
             graphics.PreferredBackBufferWidth = (int) (1280 * multiplier);
@@ -498,7 +498,7 @@ namespace ProjectMagma
                    "simulation\n" +
                    String.Format("- cur: {0:000.0}", (simulationThread != null ? simulationThread.Sps : 0)) + "\n" +
                    String.Format("- avg: {0:00.0}", (simulationThread != null ? simulationThread.AvgSps : 0)) + "\n",
-                   new Vector2(GraphicsDevice.Viewport.Width-60, 7), new Color(Color.White, 0.7f)
+                   new Vector2(GraphicsDevice.Viewport.Width-120, 7), new Color(Color.White, 0.7f)
                );
             }
 
@@ -601,6 +601,8 @@ namespace ProjectMagma
 
         public void LoadSettings()
         {
+            return; 
+
             // Open a storage container.StorageContainer container =
             StorageContainer container = device.OpenContainer(Window.Title);
 
@@ -645,7 +647,7 @@ namespace ProjectMagma
             get { return wrappedContentManager; }
         }
 
-        public new Microsoft.Xna.Framework.Content.ContentManager Content
+        /*public new Microsoft.Xna.Framework.Content.ContentManager Content
         {
             get
             {
@@ -658,7 +660,7 @@ namespace ProjectMagma
                     return base.Content; 
                 }
             }
-        }
+        }*/
 
         public Exception ExceptionThrown
         {

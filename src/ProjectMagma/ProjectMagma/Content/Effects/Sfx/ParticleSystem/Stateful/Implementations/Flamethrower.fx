@@ -124,7 +124,7 @@ RenderParticlesVertexShaderOutput RenderIceSpikeVertexShader(
 
 
 //-----------------------------------------------------------------------------------------------------------
-half4 RenderIceSpikePixelShader(
+float4 RenderIceSpikePixelShader(
 	RenderParticlesVertexShaderOutput input,
 #ifdef XBOX
 	float2 particleCoordinate : SPRITETEXCOORD

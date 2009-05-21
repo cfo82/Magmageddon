@@ -1057,11 +1057,11 @@ namespace ProjectMagma.Simulation
                         flameThrowerSoundInstance.Stop();
                     jetpackActive = false;
                     destinationIsland = null;
+                    if (repulsionActive)
+                        StopRepulsion();
                     LeaveActiveIsland();
                     if(simpleJumpIsland != null)
                         StopSimpleJump();
-                    if(repulsionActive)
-                        StopRepulsion();
 
                     Game.Instance.ContentManager.Load<SoundEffect>("Sounds/death").Play(Game.Instance.EffectsVolume);
                     player.SetInt("deaths", player.GetInt("deaths") + 1);

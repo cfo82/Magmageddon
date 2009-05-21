@@ -107,19 +107,47 @@ namespace ProjectMagma
 
         public static void RunInstance()
         {
-#if !XBOX
-            using (Game game = new Game())
-            {
+/*#if !XBOX*/
+            //using (Game game = new Game())
+            //{
+                Game game = new Game();
                 Game.instance = game;
-                game.Run();
-            }
+
+                Exception rethrow = null;
+
+                try
+                {
+                    game.Run();
+                }
+                catch (Exception e)
+                {
+                    rethrow = e;
+                }
+                try
+                {
+                    game.Dispose();
+                }
+                catch (Exception e)
+                {
+                    if (rethrow == null)
+                    {
+                        rethrow = e;
+                    }
+                }
+
+                 
+            //}
 
             Game.instance = null;
-#else 
+
+            System.Threading.Thread.Sleep(1000);
+
+            throw rethrow;
+/*#else 
             Game.instance = new Game();
             Game.instance.Run();
             Game.instance = null;
-#endif
+#endif*/
         }
 
         /// <summary>

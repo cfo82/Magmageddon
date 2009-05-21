@@ -95,6 +95,7 @@ namespace ProjectMagma.Renderer
             int width = pp.BackBufferWidth;
             int height = pp.BackBufferHeight;
             SurfaceFormat format = pp.BackBufferFormat;
+            //SurfaceFormat format = SurfaceFormat.Vector4;
 
             if (EnablePostProcessing)
             {

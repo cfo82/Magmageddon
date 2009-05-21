@@ -122,7 +122,7 @@ RenderParticlesVertexShaderOutput RenderExplosionVertexShader(
 
 
 //-----------------------------------------------------------------------------------------------------------
-float4 RenderExplosionPixelShader(
+half4 RenderExplosionPixelShader(
 	RenderParticlesVertexShaderOutput input,
 #ifdef XBOX
 	float2 particleCoordinate : SPRITETEXCOORD

@@ -144,7 +144,7 @@ RenderSnowParticlesVertexShaderOutput RenderSnowVertexShader(
 
 
 //-----------------------------------------------------------------------------------------------------------
-float4 RenderSnowPixelShader(
+half4 RenderSnowPixelShader(
 	RenderSnowParticlesVertexShaderOutput input,
 #ifdef XBOX
 	float2 particleCoordinate : SPRITETEXCOORD

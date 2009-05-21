@@ -12,13 +12,13 @@ namespace ProjectMagma.Renderer
             hdrCombineEffect = Game.Instance.ContentManager.Load<Effect>("Effects/HdrCombine");
             randomOffset = new DoublyIntegratedVector2
             (
-               Vector2.Zero, new Vector2(0.002f, 0.002f), 0.0f, 0.0f, -0.004f, 0.004f
+               Vector2.Zero, new Vector2(0.002f, 0.002f), 0.0f, 0.0f, -0.4f, 0.4f
             );
         }
 
         public override void Render()
         {
-            randomOffset.RandomlyIntegrate(Renderer.Time.DtMs, 0.02f, 0.0f);
+            randomOffset.RandomlyIntegrate(Renderer.Time.DtMs, 0.2f, 0.0f);
 
             hdrCombineEffect.Parameters["GeometryRender"].SetValue(GeometryRender);
             hdrCombineEffect.Parameters["BlurGeometryRender"].SetValue(BlurGeometryRender);
@@ -37,6 +37,16 @@ namespace ProjectMagma.Renderer
             hdrCombineEffect.Parameters["Out1"].SetValue(Out1);
             hdrCombineEffect.Parameters["In2"].SetValue(In2);
             hdrCombineEffect.Parameters["Out2"].SetValue(Out2);
+
+            hdrCombineEffect.Parameters["FogZOff"].SetValue(0.2f);
+            hdrCombineEffect.Parameters["FogZMul"].SetValue(1.0f);
+            hdrCombineEffect.Parameters["FogYOff"].SetValue(0.2f);
+            hdrCombineEffect.Parameters["FogYMul"].SetValue(0.1f);
+            hdrCombineEffect.Parameters["FogGlobMul"].SetValue(1.0f);
+            hdrCombineEffect.Parameters["FogColor"].SetValue(new Vector4(1,1,1,1));
+            //FogGlobMul
+            //float FogZOff = 0.2, FogZMul = 1.0, FogYOff = 0.2, FogYMul = 0.1, FogGlobMul = 1.0;
+            //float FogColor = float4(1, 1, 1, 1);
 
             DrawFullscreenQuad(BlurGeometryRender, hdrCombineEffect);
             //DrawFullscreenQuad(GeometryRender, null);

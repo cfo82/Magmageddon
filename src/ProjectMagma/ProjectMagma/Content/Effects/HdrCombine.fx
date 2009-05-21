@@ -51,8 +51,8 @@ sampler2D CloudTextureSampler = sampler_state
 	MinFilter = Linear;
 	MagFilter = Linear;
 	MipFilter = Linear;
-	AddressU = Clamp;
-	AddressV = Clamp;
+	AddressU = Mirror;
+	AddressV = Mirror;
 };
   
   
@@ -148,27 +148,37 @@ inline float4 GradientYBlueMap(float4 input, float2 texCoord)
 	return lerp(input, newColor, y);
 }
 
-float4 orangeFogColor = float4(1,0.3,0,1);
+//float4 orangeFogColor = float4(1,0.3,0,1);
+float4 orangeFogColor = float4(1,1,1,1);
 float4 blueFogColor = float4(0,0.7,1,1);
+
+//float FogZOff=0.2, FogZMul=1.0, FogYOff=0.2, FogYMul=0.1, FogGlobMul=1.0;
+//float FogColor=float4(1,1,1,1);
+
+float FogZOff, FogZMul, FogYOff, FogYMul, FogGlobMul;
+float FogColor;
+
+
 inline void ApplyFog(inout float4 img, in float2 texCoord)
 {
 	float zRaw = tex2D(DepthTextureSampler, texCoord).y;
 	
-	float zRescaled = (zRaw - 0.33) *1.5;
+	float zRescaled = (zRaw - FogZOff) *FogZMul;
 	//float z = lerp(0,1,zRaw);
 	float z = saturate(zRescaled);
 	
 	float yRaw = tex2D(DepthTextureSampler, texCoord).x;
-	float y = saturate((1-yRaw*2)*0.25);
+	float y = saturate((1-yRaw*2+FogYOff)*FogYMul);
 	
 	float y2 = saturate((1-yRaw));
 
 	//float4 fogColor = lerp(blueFogColor, orangeFogColor,y2);
 	
-	img = lerp(img, orangeFogColor, saturate(z+y));
+	img = lerp(img, FogColor, saturate((z+y)*FogGlobMul));
+	//img = saturate(z*y*12);
 }
 
-const float flickerStrength = 0.01;
+const float flickerStrength = 0.0025;
 inline float2 PerturbTexCoord(in float2 texCoord)
 {
 	float yRaw = tex2D(DepthTextureSampler, texCoord).x;
@@ -181,20 +191,30 @@ inline float2 PerturbTexCoord(in float2 texCoord)
 	return lerp(texCoord, perturbedTexCoord, y);	
 }
 
-float4 PixelShader(float2 texCoord : TEXCOORD0) : COLOR0
+half4 PixelShader(float2 texCoord : TEXCOORD0) : COLOR0
 {
 	float2 perturbedTexCoord = PerturbTexCoord(texCoord);
 
-	float4 channel1 = ChannelPixelShader(perturbedTexCoord, 0);
-	float4 channel2 = ChannelPixelShader(perturbedTexCoord, 1);
-	float4 channel3 = ChannelPixelShader(perturbedTexCoord, 2);
+	half4 channel1 = ChannelPixelShader(perturbedTexCoord, 0);
+	half4 channel2 = ChannelPixelShader(perturbedTexCoord, 1);
+	half4 channel3 = ChannelPixelShader(perturbedTexCoord, 2);
 		
-	float4 channel_map = tex2D(RenderChannelColorSampler, perturbedTexCoord);
+	half4 channel_map = tex2D(RenderChannelColorSampler, perturbedTexCoord);
     
-    float4 combined = channel1*channel_map.r + channel2*channel_map.g + channel3*channel_map.b;
+    half4 combined = channel1*channel_map.r + channel2*channel_map.g + channel3*channel_map.b;
     ApplyFog(combined, perturbedTexCoord);
     combined = GradientYBlueMap(combined, perturbedTexCoord);
     
+    
+    
+    //--- perturbation tester
+   	//float4 clouds = tex2D(CloudTextureSampler, texCoord + RandomOffset);
+	//float2 perturbation = clouds.gb * 2 * flickerStrength - flickerStrength;
+	//return float4(perturbation*100,0,0);
+	///---
+	
+	
+	
     //if( (combined.x>=1 || combined.y>=1 || combined.z>=1) && !(combined.x>=1 && combined.y>=1 && combined.z>=1) )
 		//return float4(1,0,0,1);
     //else

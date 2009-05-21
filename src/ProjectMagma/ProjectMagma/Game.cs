@@ -159,7 +159,7 @@ namespace ProjectMagma
              
 #if DEBUG
             // initialize simulation
-            LoadLevel("Level/TestLevel");
+            LoadLevel("Level/Instances/TestLevel/TestLevel");
 
             // set default player
             Entity player1 = new Entity("player1");

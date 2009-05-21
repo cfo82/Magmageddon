@@ -567,6 +567,7 @@ namespace ProjectMagma.Simulation
         private Vector3 islandRepulsionStartDir;
         private Quaternion islandRepulsionStartRotation;
         private bool repulsionPossible = false;
+        private float crawlStateChangedAt = 0;
 
         private void PerformIslandRepulsionAction(SimulationTime simTime, ref int fuel)
         {
@@ -595,12 +596,13 @@ namespace ProjectMagma.Simulation
                         StartRepulsion();
                     }
                     else
-                    {
-                        // if button pressed but move stick not moved just indicate possible stuff
-                        (player.GetProperty("render") as RobotRenderProperty).NextPermanentState = "repulsion";
-                        ((HUDProperty)player.GetProperty("hud")).RepulsionUsable = true;
-                        repulsionPossible = true;
-                    }
+                        if(!repulsionPossible)
+                        {
+                            // if button pressed but move stick not moved just indicate possible stuff
+                            (player.GetProperty("render") as RobotRenderProperty).NextPermanentState = "repulsion";
+                            ((HUDProperty)player.GetProperty("hud")).RepulsionUsable = true;
+                            repulsionPossible = true;
+                        }
                 }
                 else
                     // island repulsion
@@ -621,19 +623,25 @@ namespace ProjectMagma.Simulation
                             ((HUDProperty)player.GetProperty("hud")).RepulsionUsable = true;
                         }
 
-                        if (dir == islandRepulsionLastStickDir)
+                        if (simTime.At > crawlStateChangedAt + 200) // todo: change constant
                         {
-                            (player.GetProperty("render") as RobotRenderProperty).NextPermanentState = "repulsion";
-                        }
-                        else
-                            if (Vector3.Cross(dir, islandSelectionLastStickDir).Y > 0)
+                            if (dir == islandRepulsionLastStickDir)
                             {
-                                (player.GetProperty("render") as RobotRenderProperty).NextPermanentState = "crawl_left";
+                                (player.GetProperty("render") as RobotRenderProperty).NextPermanentState = "repulsion";
+                                crawlStateChangedAt = simTime.At;
                             }
                             else
-                            {
-                                (player.GetProperty("render") as RobotRenderProperty).NextPermanentState = "crawl_right";
-                            }
+                                if (Vector3.Cross(dir, islandSelectionLastStickDir).Y > 0)
+                                {
+                                    (player.GetProperty("render") as RobotRenderProperty).NextPermanentState = "crawl_left";
+                                    crawlStateChangedAt = simTime.At;
+                                }
+                                else
+                                {
+                                    (player.GetProperty("render") as RobotRenderProperty).NextPermanentState = "crawl_right";
+                                    crawlStateChangedAt = simTime.At;
+                                }
+                        }
                         islandRepulsionLastStickDir = dir;
                         /*
                         if(dir != Vector3.Zero)
@@ -673,7 +681,6 @@ namespace ProjectMagma.Simulation
                         }
             }
             else
-                // todo: move to leaveisland code
                 if(repulsionActive)
                 {
                     (player.GetProperty("render") as RobotRenderProperty).NextPermanentState = "idle";

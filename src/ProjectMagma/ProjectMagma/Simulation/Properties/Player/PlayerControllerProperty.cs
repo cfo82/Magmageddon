@@ -1641,14 +1641,25 @@ namespace ProjectMagma.Simulation
             }
 
             // check if player was removed (lost all his lives)
-            if(entity.HasAttribute("kind")
-                && entity.GetString("kind") == "player")
+            if(entity.HasAttribute("kind") && entity.GetString("kind") == "player")
             {
                 // check if we are last man standing
                 if (Game.Instance.Simulation.PlayerManager.Count == 1 && 
                     (Game.Instance.Simulation.Phase == SimulationPhase.Intro || Game.Instance.Simulation.Phase == SimulationPhase.Game))
                 {
                     won = true;
+
+                    if (selectedIsland != null)
+                    {
+                        RemoveSelectionArrow();
+                    }
+
+                    if (flame != null)
+                    {
+                        // remove flamethrower flame
+                        Game.Instance.Simulation.EntityManager.RemoveDeferred(flame);
+                        flame = null;
+                    }
 
                     Entity winningPlayer = Game.Instance.Simulation.PlayerManager[0];
                     RendererUpdatableProperty renderProperty = (RendererUpdatableProperty)winningPlayer.GetProperty("render");

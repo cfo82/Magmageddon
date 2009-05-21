@@ -700,7 +700,7 @@ namespace ProjectMagma.Simulation
                 || controllerInput.flamethrowerButtonHold)
                 && !RightStickFlame)
                 || (controllerInput.flameStickMoved && RightStickFlame)
-                && player.GetInt("frozen") == 0 // not allowed when frozen
+                && player.GetInt("frozen") <= 0 // not allowed when frozen
                 && activeIsland != null) // only allowed on ground
             {
                 if (flame == null)

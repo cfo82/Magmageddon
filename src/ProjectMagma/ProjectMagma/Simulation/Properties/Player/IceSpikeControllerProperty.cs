@@ -216,7 +216,7 @@ namespace ProjectMagma.Simulation
             soundEffect.Play(Game.Instance.EffectsVolume);
         }
 
-        private void OnEntityRemoved(Entity entity)
+        private void OnEntityRemoved(EntityManager manager, Entity entity)
         {
             if (entity == targetPlayer)
             {
@@ -232,7 +232,7 @@ namespace ProjectMagma.Simulation
                 dir.Normalize();
             else
                 dir = new Vector3(0, -1, 0);
-            iceSpike.SetVector3("target_direction", dir);
+            iceSpike.AddVector3Attribute("target_direction", dir);
         }
 
         private Vector3 GetPosition(Entity entity)

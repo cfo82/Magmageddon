@@ -256,5 +256,21 @@ namespace ProjectMagma.Simulation
             ChangeFloat("RepulsionSeconds", newValue);
         }
 
+        public bool RepulsionUsable
+        {
+            set
+            {
+                ChangeBool("RepulsionUsable", value);
+            }
+        }
+
+        public bool JetpackUsable
+        {
+            set
+            {
+                ChangeBool("JetpackUsable", value);
+            }
+        }
+
     }
 }

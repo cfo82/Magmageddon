@@ -145,6 +145,20 @@ namespace ProjectMagma.Renderer
             }
         }
 
+        public override void UpdateBool(string id, double timestamp, bool value)
+        {
+            base.UpdateBool(id, timestamp, value);
+
+            if (id == "JetpackUsable")
+            {
+                jetpackUsable = value;
+            }
+            if (id == "RepulsionUsable")
+            {
+                repulsionUsable = value;
+            }
+        }
+
         #endregion
 
         public override void Draw(

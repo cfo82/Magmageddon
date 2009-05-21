@@ -8,48 +8,45 @@ namespace ProjectMagma.MathHelpers
 {
     public class SineFloat
     {
-        public SineFloat(float min, float max, float frequency
-            //float velocity
-            )
+        public SineFloat(float min, float max, float frequency)
         {
             this.min = min;
             this.max = max;
             this.frequency = frequency;
-            //this.velocity = velocity;
         }
 
         public void Start(double currentTime)
         {
-            start_time = currentTime;
+            startTime = currentTime;
         }
 
         public void StopImmediately()
         {
-            start_time = 0;
+            startTime = 0;
             value = 0;
-            stop_after_current_phase = false;
+            stopAfterCurrentPhase = false;
         }
 
         public void StopAfterCurrentPhase()
         {
-            if (!stop_after_current_phase)
+            if (!stopAfterCurrentPhase)
             {
-                stop_after_current_phase = true;
+                stopAfterCurrentPhase = true;
                 waitOneCycle = (value - lastValue) > 0;
-                value_on_stop_call = value;
+                valueOnStopCall = value;
             }
         }
 
         public void Update(double currentTime)
         {
-            if(start_time != 0.0)
+            if(startTime != 0.0)
             {
-                double time = (currentTime - start_time) * 0.001;
+                double time = (currentTime - startTime) * 0.001;
                 lastValue = value;
                 float normalized_value = (float)Math.Sin(time * frequency) / 2.0f + 0.5f;
                 value = normalized_value * (max-min) + min;
                 waitOneCycle = waitOneCycle && (value - lastValue) > 0;
-                if(stop_after_current_phase && !waitOneCycle &&
+                if(stopAfterCurrentPhase && !waitOneCycle &&
                     (value - lastValue) > 0)
                 {
                     StopImmediately();
@@ -62,17 +59,16 @@ namespace ProjectMagma.MathHelpers
         }
 
         public bool Running {
-            get { return (start_time != 0.0);  }
+            get { return (startTime != 0.0);  }
         }
 
-        private float value_on_stop_call;
+        private float valueOnStopCall;
         private bool waitOneCycle;
-        private bool stop_after_current_phase;
-        private double start_time;
+        private bool stopAfterCurrentPhase;
+        private double startTime;
         private float lastValue;
         private float value;
         private float min, max;
         private float frequency;
-       // private float velocity;
     }
 }

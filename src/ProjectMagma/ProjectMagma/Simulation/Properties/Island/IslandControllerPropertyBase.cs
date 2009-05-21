@@ -47,6 +47,7 @@ namespace ProjectMagma.Simulation
             ((CollisionProperty)entity.GetProperty("collision")).OnContact += CollisionHandler;
             ((Vector3Attribute)entity.GetAttribute("repulsion_velocity")).ValueChanged += RepulsionChangeHandler;
             ((StringAttribute)entity.GetAttribute("repulsed_by")).ValueChanged += RepulsedByChangeHandler;
+            ((IntAttribute)entity.GetAttribute("players_on_island")).ValueChanged += PlayersOnIslandChangeHandler;
 
             originalPosition = entity.GetVector3("position");
         }
@@ -56,7 +57,8 @@ namespace ProjectMagma.Simulation
             entity.Update -= OnUpdate;
             ((CollisionProperty)entity.GetProperty("collision")).OnContact -= CollisionHandler;
             ((Vector3Attribute)entity.GetAttribute("repulsion_velocity")).ValueChanged -= RepulsionChangeHandler;
-            ((StringAttribute)entity.GetAttribute("repulsed_by")).ValueChanged += RepulsedByChangeHandler;
+            ((StringAttribute)entity.GetAttribute("repulsed_by")).ValueChanged -= RepulsedByChangeHandler;
+            ((IntAttribute)entity.GetAttribute("players_on_island")).ValueChanged -= PlayersOnIslandChangeHandler;
         }
 
         protected virtual void OnUpdate(Entity island, SimulationTime simTime)
@@ -84,25 +86,19 @@ namespace ProjectMagma.Simulation
             }
             island.SetBool("interactable", interactable);
 
-            // implement sinking and rising islands
+            // implement sinking islands
             if (!HadCollision(simTime)
                 && Game.Instance.Simulation.Phase == SimulationPhase.Game) // only sink in game-phase
             {
                 if (playersOnIsland > 0)
                 {
                     position -= dt * island.GetFloat("sinking_speed") * playersOnIsland * (Vector3.UnitY);
-                    playerLeftAt = -1;
                 }
             }
 
             // set repositioning on players left
             if (playersOnIsland == 0)
             {
-                if (playerLeftAt == -1)
-                {
-                    playerLeftAt = simTime.At;
-                }
-                else
                 if (simTime.At > playerLeftAt + constants.GetInt("rising_delay"))
                 {
                     // rising using normal repositioning
@@ -151,15 +147,18 @@ namespace ProjectMagma.Simulation
                     //                    Console.WriteLine("repositioning to: " + repositioningPosition);
                 }
 
+                Vector3 desiredPosition = repositioningPosition;
                 // if players are standing on island, we only reposition in xz
-                if (playersOnIsland > 0)
+                if (playersOnIsland > 0
+                    || (simTime.At < playerLeftAt + constants.GetInt("rising_delay") // also wait for the delay
+                    && playerLeftAt < float.MaxValue)) 
                 {
                     // stay on y
-                    repositioningPosition.Y = position.Y;
+                    desiredPosition.Y = position.Y;
                 }
 
                 // get direction of new repositioning effort
-                Vector3 dir = repositioningPosition - position;
+                Vector3 dir = desiredPosition - position;
                 float dist = dir.Length();
                 if (dir != Vector3.Zero)
                     dir.Normalize();
@@ -169,10 +168,9 @@ namespace ProjectMagma.Simulation
                 {
                     oldVelocity = Vector3.Normalize(oldVelocity) * constants.GetFloat("max_speed");
                 }
-                if (dist < 100 && oldVelocity != Vector3.Zero) // todo: extract constant
+                if (dist < 80 && oldVelocity != Vector3.Zero) // todo: extract constant
                 {
-                    //oldVelocity = oldVelocity * (100 - dist) / 100;
-                    oldVelocity -= oldVelocity * 0.9f * simTime.Dt * 25;
+                    oldVelocity -= oldVelocity * 0.6f * simTime.Dt * 25;
                 }
 
                 Vector3 velocity = oldVelocity;
@@ -186,9 +184,9 @@ namespace ProjectMagma.Simulation
                 newPosition += velocity * dt;
 
                 // if acceleration takes us further away from object we stop
-                if ((newPosition - repositioningPosition).Length() > (position - repositioningPosition).Length())
+                if ((newPosition - desiredPosition).Length() > (position - desiredPosition).Length())
                 {
-                    position = repositioningPosition;
+                    position = desiredPosition;
                     state = IslandState.Normal;
                     island.SetVector3("repositioning_velocity", Vector3.Zero);
                     OnRepositioningEnded(dir);
@@ -318,6 +316,14 @@ namespace ProjectMagma.Simulation
                 && newValue == "")
             {
                 OnRepulsionEnd();
+            }
+        }
+
+        protected void PlayersOnIslandChangeHandler(IntAttribute sender, int oldVlaue, int newValue)
+        {
+            if (newValue == 0)
+            {
+                playerLeftAt = Game.Instance.Simulation.Time.At;
             }
         }
 

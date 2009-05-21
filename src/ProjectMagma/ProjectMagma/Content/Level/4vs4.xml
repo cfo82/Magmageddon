@@ -70,7 +70,7 @@
   <Entity name="island5" extends="island_base_burnt1">
     <Attributes>
       <Attribute name="position" template="float3" value="0 -25 0"/>
-      <Attribute name="velocity" template="float3" value="0 0 -300"/>
+      <Attribute name="direction" template="float3" value="0 0 -1"/>
     </Attributes>
     <Properties>
       <Property name="controller" type="ProjectMagma.Simulation.IslandStraightMovementControllerProperty"/>

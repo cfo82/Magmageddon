@@ -38,7 +38,7 @@ namespace ProjectMagma.Simulation
             base.OnDetached(entity);
         }
 
-        public override void CalculateNewPosition(Entity island, ref Vector3 position, float dt)
+        public override Vector3 CalculateAccelerationDirection(Entity island, ref Vector3 position, ref Vector3 velocity, float acceleration, float dt)
         {
             // get positions (ignore y component)
             Vector3 islandPos = position;
@@ -48,15 +48,25 @@ namespace ProjectMagma.Simulation
 
             // calculate radius
             Vector3 radiusV = islandPos - pillarPos;
- 
-            // rotate
-            float delta = dir * dt * constants.GetFloat("angle_speed");
-            Matrix rotation = Matrix.CreateRotationY(delta);
-            radiusV = Vector3.Transform(radiusV, rotation);
 
-            // set Y
-            position.X = pillarPos.X + radiusV.X;
-            position.Z = pillarPos.Z + radiusV.Z;
+            if (radiusV != Vector3.Zero)
+            {
+                // rotate
+                float delta = dir * dt * constants.GetFloat("angle_speed");
+                Matrix rotation = Matrix.CreateRotationY(delta);
+                radiusV = Vector3.Transform(radiusV, rotation);
+
+                radiusV.Normalize();
+                radiusV = radiusV * radius;
+
+                Vector3 newPos = position;
+                newPos.X = pillarPos.X + radiusV.X;
+                newPos.Z = pillarPos.Z + radiusV.Z;
+
+                return Vector3.Normalize(newPos - position);
+            }
+            else
+                return Vector3.Zero;
         }
 
         protected override Vector3 GetNearestPointOnPath(ref Vector3 position)
@@ -84,13 +94,21 @@ namespace ProjectMagma.Simulation
 
         protected override void CollisionHandler(SimulationTime simTime, Entity island, Entity other, Contact co, ref Vector3 normal)
         {
+            // change dir
+            if (simTime.At > dirChangedAt + 1000) // todo: extract constant
+            {
+                dir = -dir;
+                dirChangedAt = simTime.At;
+            }
+
+            /*
             {
                 // change direction, if not already in direction away from that object
 
                 // calculate direction of movement
                 Vector3 oldPosition = island.GetVector3("position");
                 Vector3 newPosition = oldPosition;
-                CalculateNewPosition(island, ref newPosition, simTime.Dt);
+                CalculateAccelerationDirection(island, ref newPosition, simTime.Dt);
                 Vector3 diff = newPosition - oldPosition;
 
                 // did we have collision last time too?
@@ -138,6 +156,7 @@ namespace ProjectMagma.Simulation
                     }
                 }
             }
+             * */
         }
 
         private void AssignPillar(Entity island)

@@ -23,9 +23,9 @@ namespace ProjectMagma.Simulation
             base.OnDetached(entity);
         }
 
-        public override void CalculateNewPosition(Entity island, ref Vector3 position, float dt)
+        public override Vector3 CalculateAccelerationDirection(Entity island, ref Vector3 position, ref Vector3 velocity, float acceleration, float dt)
         {
-            // do nothing
+            return Vector3.Zero;
         }
 
         protected override Vector3 GetNearestPointOnPath(ref Vector3 position)
@@ -38,6 +38,5 @@ namespace ProjectMagma.Simulation
             // do nothing
         }
 
-        private Vector3 originalPositon;
     }
 }

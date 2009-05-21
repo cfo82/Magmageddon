@@ -17,7 +17,9 @@ namespace ProjectMagma.Simulation
         {
             base.OnAttached(entity);
 
-            Debug.Assert(entity.HasVector3("velocity"));
+            direction = entity.GetVector3("direction");
+            Debug.Assert(direction != Vector3.Zero);
+            direction.Normalize();
         }
 
         public override void OnDetached(Entity entity)
@@ -25,24 +27,28 @@ namespace ProjectMagma.Simulation
             base.OnDetached(entity);
         }
 
-        public override void CalculateNewPosition(Entity island, ref Vector3 position, float dt)
+        public override Vector3 CalculateAccelerationDirection(Entity island, ref Vector3 position, ref Vector3 velocity, float acceleration, float dt)
         {
-            position += island.GetVector3("velocity") * dt;
+            Vector3 ppos = GetNearestPointOnPath(ref position);
+            ppos += direction * acceleration * dt * dt;
+            return ppos;
         }
 
         protected override Vector3 GetNearestPointOnPath(ref Vector3 position)
         {
-            // todo: calculate postion on path (can be done with originalpositon and velocity vector)
-            return originalPosition;
+            // project on direction
+            float d = Vector3.Dot(direction, position - originalPosition);
+            return originalPosition + direction * d;
         }
 
         protected override void CollisionHandler(SimulationTime simTime, Entity island, Entity other, Contact co, ref Vector3 normal)
         {
             if (!HadCollision(simTime))
             {
-                island.SetVector3("velocity", -island.GetVector3("velocity"));
+                direction = -direction;
             }
         }
 
+        private Vector3 direction;
     }
 }

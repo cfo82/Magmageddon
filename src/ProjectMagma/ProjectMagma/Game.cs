@@ -419,8 +419,10 @@ namespace ProjectMagma
                 return;
             }
 
+#if XBOX
             try
             {
+#endif
                 // get storage device as soon as selected
                 if (!storageAvailable && storageSelectionResult.IsCompleted)
                 {
@@ -457,11 +459,13 @@ namespace ProjectMagma
 
                     profiler.EndSection("update");
                 }
+#if XBOX
             }
             catch (Exception e)
             {
                 exceptionThrown = e;
             }
+#endif
         }
 
         private void DrawFrameCounter(GameTime gameTime)
@@ -513,8 +517,10 @@ namespace ProjectMagma
                 return;
             }
 
+#if XBOX
             try
             {
+#endif
                 profiler.TryBeginFrame();
                 profiler.BeginSection("draw");
 
@@ -530,11 +536,13 @@ namespace ProjectMagma
 
                 profiler.EndSection("draw");
                 profiler.EndFrame();
+#if XBOX
             }
             catch (Exception e)
             {
                 exceptionThrown = e;
             }
+#endif
         }
 
         #region Stuff to be moved by janick!

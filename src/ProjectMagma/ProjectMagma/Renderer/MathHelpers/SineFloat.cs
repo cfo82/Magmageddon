@@ -27,12 +27,17 @@ namespace ProjectMagma.MathHelpers
         {
             start_time = 0;
             value = 0;
+            stop_after_current_phase = false;
         }
 
         public void StopAfterCurrentPhase()
         {
-            stop_after_current_phase = true;
-            value_on_stop_call = value;
+            if (!stop_after_current_phase)
+            {
+                stop_after_current_phase = true;
+                waitOneCycle = (value - lastValue) > 0;
+                value_on_stop_call = value;
+            }
         }
 
         public void Update(double currentTime)
@@ -40,10 +45,12 @@ namespace ProjectMagma.MathHelpers
             if(start_time != 0.0)
             {
                 double time = (currentTime - start_time) * 0.001;
+                lastValue = value;
                 float normalized_value = (float)Math.Sin(time * frequency) / 2.0f + 0.5f;
                 value = normalized_value * (max-min) + min;
-                if(stop_after_current_phase &&
-                    Math.Sign(value_on_stop_call) != Math.Sign(value))
+                waitOneCycle = waitOneCycle && (value - lastValue) > 0;
+                if(stop_after_current_phase && !waitOneCycle &&
+                    (value - lastValue) > 0)
                 {
                     StopImmediately();
                 }
@@ -59,8 +66,10 @@ namespace ProjectMagma.MathHelpers
         }
 
         private float value_on_stop_call;
+        private bool waitOneCycle;
         private bool stop_after_current_phase;
         private double start_time;
+        private float lastValue;
         private float value;
         private float min, max;
         private float frequency;

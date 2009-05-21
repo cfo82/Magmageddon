@@ -43,7 +43,7 @@ namespace ProjectMagma.Simulation
             //arrow.AddFloatAttribute("specular_power", 0.3f);
             //arrow.AddVector2Attribute("persistent_squash", new Vector2(1000, 0.8f));
             ChangeFloat("Alpha", 0.8f);
-            PersistentSquash = true;
+            PersistentSquash = false;
             JumpPossible = false;
         }
 

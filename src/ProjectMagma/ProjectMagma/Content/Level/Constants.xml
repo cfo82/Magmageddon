@@ -96,20 +96,16 @@
 
   <Entity name="island_constants" extends="constants">
     <Attributes>
-      <!-- all islands -->          
+      <!-- all islands -->
+      <Attribute name="max_speed" template="float" value="400"/>
+
       <Attribute name="rising_delay" template="int" value="800"/>
-      <Attribute name="repositioning_speed" template="float" value="300" />
+      <Attribute name="repositioning_acceleraton" template="float" value="800" />
 
       <Attribute name="scale_health_multiplier" template="float" value="1.8"/>
 
       <Attribute name="repulsion_deacceleration" template="float" value="400"/>
-      <Attribute name="repulsion_max_speed" template="float" value="400"/>
       <Attribute name="collision_damping" template="float" value="0.9"/>
-
-      <Attribute name="attraction_acceleration" template="float" value="600"/>
-      <Attribute name="attraction_max_speed" template="float" value="300"/>
-      <Attribute name="attraction_timeout" template="float" value="2000"/>
-      <Attribute name="attraction_slowdown_distance" template="float" value="220"/>
 
       <!-- circular moving islands-->
       <Attribute name="angle_speed" template="float" value="0.6"/>

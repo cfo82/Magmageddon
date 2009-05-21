@@ -18,6 +18,7 @@ namespace ProjectMagma.Simulation
 
         public void OnAttached(Entity entity)
         {
+            this.iceSpike = entity;
             this.constants = Game.Instance.Simulation.EntityManager["player_constants"];
             this.templates = Game.Instance.ContentManager.Load<LevelData>("Level/DynamicTemplates");
 
@@ -27,6 +28,7 @@ namespace ProjectMagma.Simulation
             if (targetPlayerName != "")
             {
                 targetPlayer = Game.Instance.Simulation.EntityManager[targetPlayerName];
+                Game.Instance.Simulation.EntityManager.EntityRemoved += OnEntityRemoved;
             }
             else
                 targetPlayer = null;
@@ -43,7 +45,7 @@ namespace ProjectMagma.Simulation
         public void OnDetached(Entity entity)
         {
             ((CollisionProperty)entity.GetProperty("collision")).OnContact -= IceSpikeCollisionHandler;
-
+            Game.Instance.Simulation.EntityManager.EntityRemoved -= OnEntityRemoved; 
             entity.Update -= OnUpdate;
         }
 
@@ -76,6 +78,12 @@ namespace ProjectMagma.Simulation
             // perform targetting logic
             if (state == IceSpikeState.Targeting)
             {
+                if (targetPlayer != null
+                    && targetPlayer.GetInt("health") <= 0)
+                {
+                    AbortPlayerTargeting();
+                }
+
                 Vector3 dir;
                 if (targetPlayer != null)
                 {
@@ -208,6 +216,25 @@ namespace ProjectMagma.Simulation
             soundEffect.Play(Game.Instance.EffectsVolume);
         }
 
+        private void OnEntityRemoved(Entity entity)
+        {
+            if (entity == targetPlayer)
+            {
+                AbortPlayerTargeting();
+            }
+        }
+
+        private void AbortPlayerTargeting()
+        {
+            targetPlayer = null;
+            Vector3 dir = iceSpike.GetVector3("velocity");
+            if (dir != Vector3.Zero)
+                dir.Normalize();
+            else
+                dir = new Vector3(0, -1, 0);
+            iceSpike.SetVector3("target_direction", dir);
+        }
+
         private Vector3 GetPosition(Entity entity)
         {
             return entity.GetVector3("position");
@@ -237,6 +264,7 @@ namespace ProjectMagma.Simulation
             }
         }
 
+        private Entity iceSpike;
         private Entity shootingPlayer;
         private Entity targetPlayer;
         private double explodedAt = 0;

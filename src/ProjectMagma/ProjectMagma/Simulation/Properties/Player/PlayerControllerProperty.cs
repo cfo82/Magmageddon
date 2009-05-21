@@ -606,7 +606,15 @@ namespace ProjectMagma.Simulation
                     {
                         Vector3 dir = new Vector3(controllerInput.leftStickX, 0, controllerInput.leftStickY);
                         if (dir != Vector3.Zero)
+                        {
                             dir.Normalize();
+                            ((HUDProperty)player.GetProperty("hud")).RepulsionUsable = false;
+                        }
+                        else
+                        {
+                            ((HUDProperty)player.GetProperty("hud")).RepulsionUsable = true;
+                        }
+
                         if (dir == islandRepulsionLastStickDir)
                         {
                             (player.GetProperty("render") as RobotRenderProperty).NextPermanentState = "repulsion";
@@ -692,6 +700,7 @@ namespace ProjectMagma.Simulation
                 || controllerInput.flamethrowerButtonHold)
                 && !RightStickFlame)
                 || (controllerInput.flameStickMoved && RightStickFlame)
+                && player.GetInt("frozen") == 0 // not allowed when frozen
                 && activeIsland != null) // only allowed on ground
             {
                 if (flame == null)
@@ -1320,8 +1329,7 @@ namespace ProjectMagma.Simulation
 
             // on top?
             // todo: extract constant
-            if ((//surfacePosition.Y - 5 < playerPosition.Y
-                Vector3.Dot(contact[0].Normal, -Vector3.UnitY) > 0
+            if ((surfacePosition.Y - 5 < playerPosition.Y
                 && activeIsland == null) // don't allow switching of islands
                 || island == attractedIsland
                 || island == simpleJumpIsland)

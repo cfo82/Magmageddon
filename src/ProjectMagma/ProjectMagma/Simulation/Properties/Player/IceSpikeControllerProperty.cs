@@ -167,8 +167,9 @@ namespace ProjectMagma.Simulation
             Entity iceSpike = contact.EntityA;
             Entity other = contact.EntityB;
        
-            // ignore collision with island player is standing on during warmup phae
+            // ignore collision with island player is standing on during warmup phase
             if (simTime.At < createdAt + constants.GetInt("ice_spike_rising_time")
+                && shootingPlayer.HasAttribute("active_island")
                 && other.Name == shootingPlayer.GetString("active_island"))
             {
                 return;

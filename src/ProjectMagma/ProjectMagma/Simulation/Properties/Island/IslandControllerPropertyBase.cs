@@ -45,7 +45,7 @@ namespace ProjectMagma.Simulation
             entity.Update += OnUpdate;
 
             ((CollisionProperty)entity.GetProperty("collision")).OnContact += CollisionHandler;
-            ((Vector3Attribute)entity.GetAttribute("repulsion_velocity")).ValueChanged += RepulsionChangeHandler;
+//            ((Vector3Attribute)entity.GetAttribute("repulsion_velocity")).ValueChanged += RepulsionChangeHandler;
             ((StringAttribute)entity.GetAttribute("repulsed_by")).ValueChanged += RepulsedByChangeHandler;
             ((IntAttribute)entity.GetAttribute("players_on_island")).ValueChanged += PlayersOnIslandChangeHandler;
 
@@ -56,7 +56,7 @@ namespace ProjectMagma.Simulation
         {
             entity.Update -= OnUpdate;
             ((CollisionProperty)entity.GetProperty("collision")).OnContact -= CollisionHandler;
-            ((Vector3Attribute)entity.GetAttribute("repulsion_velocity")).ValueChanged -= RepulsionChangeHandler;
+//            ((Vector3Attribute)entity.GetAttribute("repulsion_velocity")).ValueChanged -= RepulsionChangeHandler;
             ((StringAttribute)entity.GetAttribute("repulsed_by")).ValueChanged -= RepulsedByChangeHandler;
             ((IntAttribute)entity.GetAttribute("players_on_island")).ValueChanged -= PlayersOnIslandChangeHandler;
         }
@@ -332,6 +332,7 @@ namespace ProjectMagma.Simulation
             return normal;
         }
 
+        /*
         protected void RepulsionChangeHandler(Vector3Attribute sender, Vector3 oldValue, Vector3 newValue)
         {
             if (oldValue == Vector3.Zero
@@ -340,14 +341,19 @@ namespace ProjectMagma.Simulation
                 OnRepulsionStart();
             }
         }
+        */
 
         protected void RepulsedByChangeHandler(StringAttribute sender, String oldValue, String newValue)
         {
-            if (oldValue != ""
-                && newValue == "")
+            if (oldValue == "" && newValue != "")
             {
-                OnRepulsionEnd();
+                OnRepulsionStart();
             }
+            else
+                if (oldValue != "" && newValue == "")
+                {
+                    OnRepulsionEnd();
+                }
         }
 
         protected void PlayersOnIslandChangeHandler(IntAttribute sender, int oldVlaue, int newValue)
@@ -370,6 +376,7 @@ namespace ProjectMagma.Simulation
 
         protected virtual void OnRepulsionStart()
         {
+            // reset normal movement
             island.SetVector3("velocity", Vector3.Zero);
             state = IslandState.Influenced;
         }

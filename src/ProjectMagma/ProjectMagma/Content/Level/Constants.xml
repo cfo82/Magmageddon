@@ -49,7 +49,8 @@
       <Attribute name="ice_spike_island_force_radius" template="float" value="30"/>
       <Attribute name="ice_spike_lifetime" template="int" value="6000"/>
       <Attribute name="ice_spike_death_timeout" template="int" value="3500"/>
-      
+
+      <Attribute name="running_energy_cost_per_second" template="int" value="12"/>
       <Attribute name="frozen_slowdown_divisor" template="float" value="6"/>
 
       <Attribute name="flamethrower_aim_angle" template="float" value="90"/>

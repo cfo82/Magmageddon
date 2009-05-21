@@ -837,6 +837,9 @@ namespace ProjectMagma.Simulation
                         // on island ground
                         if (controllerInput.runButtonHold)
                         {
+                            Game.Instance.Simulation.ApplyPerSecondSubstraction(player, "running_energy_cost",
+                                constants.GetInt("running_energy_cost_per_second"), player.GetIntAttribute("energy"));
+
                             playerPosition.X += controllerInput.leftStickX * dt * constants.GetFloat("x_axis_run_multiplier");
                             playerPosition.Z += controllerInput.leftStickY * dt * constants.GetFloat("z_axis_run_multiplier");
 

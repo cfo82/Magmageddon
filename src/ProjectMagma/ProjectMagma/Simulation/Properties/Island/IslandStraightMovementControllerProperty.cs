@@ -30,8 +30,11 @@ namespace ProjectMagma.Simulation
         public override Vector3 CalculateAccelerationDirection(Entity island, ref Vector3 position, ref Vector3 velocity, float acceleration, float dt)
         {
             Vector3 ppos = GetNearestPointOnPath(ref position);
-            ppos += direction * acceleration * dt * dt;
-            return ppos;
+            Vector3 newpos = ppos + direction * acceleration * dt * dt;
+            Vector3 dir = newpos - ppos;
+            if (dir != Vector3.Zero)
+                dir.Normalize();
+            return dir;
         }
 
         protected override Vector3 GetNearestPointOnPath(ref Vector3 position)

@@ -63,7 +63,10 @@ namespace ProjectMagma.Simulation
                 newPos.X = pillarPos.X + radiusV.X;
                 newPos.Z = pillarPos.Z + radiusV.Z;
 
-                return Vector3.Normalize(newPos - position);
+                Vector3 adir = newPos - position;
+                if (adir != Vector3.Zero)
+                    adir.Normalize();
+                return adir;
             }
             else
                 return Vector3.Zero;

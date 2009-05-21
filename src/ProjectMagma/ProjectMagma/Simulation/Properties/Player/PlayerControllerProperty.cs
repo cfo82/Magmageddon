@@ -705,13 +705,20 @@ namespace ProjectMagma.Simulation
                         else
                             direction = Vector3.Transform(new Vector3(0, 0, 1), GetRotation(player));
                         direction.Normalize();
-                        Entity targetPlayer = SelectBestPlayerInDirection(ref playerPosition, ref direction, 
-                            constants.GetFloat("flamethrower_aim_angle"), out aimVector);
+                        float maxAngle = constants.GetFloat("flamethrower_aim_angle");
+                        Entity targetPlayer = SelectBestPlayerInDirection(ref playerPosition, ref direction, maxAngle, out aimVector);
                         if (targetPlayer != null)
                         {
+                            // get angle between stick dir and aimVector 
+                            float a = (float)(Math.Acos(Vector3.Dot(aimVector, direction)) / Math.PI * 180);
+                            float dirM = a / maxAngle;
+                            float aimM = 1 - dirM;
+
+//                            Console.WriteLine("giving " + aimM + " support.");
+ 
                             // we only aim perfectly in y, but give a little support in x/z
-                            aimVector.X = direction.X * 0.5f + aimVector.X * 0.5f;
-                            aimVector.Z = direction.Z * 0.5f + direction.Z * 0.5f;
+                            aimVector.X = direction.X * dirM + aimVector.X * aimM;
+                            aimVector.Z = direction.Z * dirM + direction.Z * aimM;
                         }
 
                         Vector3 tminusp = aimVector;
@@ -1527,7 +1534,8 @@ namespace ProjectMagma.Simulation
         private void HealthChangeHandler(IntAttribute sender, int oldValue, int newValue)
         {
             if (newValue < oldValue
-                && oldValue <= constants.GetInt("max_health"))
+                && oldValue <= constants.GetInt("max_health")
+                && oldValue > 0) // and not dead yet
             {
                 // damage taken
                 if (oldValue - newValue >= constants.GetInt("ice_spike_damage"))

@@ -177,11 +177,6 @@ namespace ProjectMagma.Simulation
                 PerformIntroMovement(player, simTime);
                 return;
             }
-            else
-            if(Game.Instance.Simulation.Phase != SimulationPhase.Game)
-            {
-                return;
-            }
 
             float dt = simTime.Dt;
             float at = simTime.At;
@@ -213,7 +208,15 @@ namespace ProjectMagma.Simulation
             previousPosition = playerPosition;
 
             // get input
-            controllerInput.Update(playerIndex, simTime);
+            if (Game.Instance.Simulation.Phase == SimulationPhase.Game)
+            {
+                controllerInput.Update(playerIndex, simTime);
+            }
+            else
+            {
+                // don't take any new input events
+                controllerInput.Reset();
+            }
 
             #region movement
 
@@ -251,11 +254,14 @@ namespace ProjectMagma.Simulation
 
             #region actions
 
-            PerformIceSpikeAction(player, at, playerPosition);
-            PerformFlamethrowerAction(player, ref playerPosition);
-            PerformIslandRepulsionAction(simTime, ref fuel);
-            PerformIslandSelectionAction(at, ref playerPosition);
-            PerformIslandJumpAction(ref playerPosition, ref playerVelocity);
+            if (Game.Instance.Simulation.Phase == SimulationPhase.Game)
+            {
+                PerformIceSpikeAction(player, at, playerPosition);
+                PerformFlamethrowerAction(player, ref playerPosition);
+                PerformIslandRepulsionAction(simTime, ref fuel);
+                PerformIslandSelectionAction(at, ref playerPosition);
+                PerformIslandJumpAction(ref playerPosition, ref playerVelocity);
+            }
             #endregion
 
             #region recharge
@@ -1014,7 +1020,7 @@ namespace ProjectMagma.Simulation
 
         private void PerformJetpackMovement(SimulationTime simTime, float dt, ref Vector3 playerVelocity, ref int fuel)
         {
-            if ((controllerInput.rightStickPressed
+            if ((controllerInput.jetpackButtonPressed
                 || controllerInput.jetpackButtonHold)
                 && activeIsland == null // only in air
                 && destinationIsland == null // not while jump
@@ -1122,11 +1128,7 @@ namespace ProjectMagma.Simulation
                     deathExplosion = new Entity(player.Name + "_explosion");
                     deathExplosion.AddStringAttribute("player", player.Name);
 
-                    Vector3 pos = player.GetVector3("position");
-                    /*
-                    if(pos.Y < 0) // explode on lava
-                        pos.Y = 0;
-                     */
+                    Vector3 pos = player.GetVector3("position");               
                     deathExplosion.AddVector3Attribute("position", pos);
 
                     Game.Instance.Simulation.EntityManager.AddDeferred(deathExplosion, "player_explosion_base", templates);
@@ -1756,12 +1758,23 @@ namespace ProjectMagma.Simulation
         /// </summary>
         private void SetActiveIsland(Entity island)
         {
-            if(player.HasProperty("hud"))
+            if (player.HasProperty("hud"))
+            {
                 ((HUDProperty)player.GetProperty("hud")).JetpackUsable = false;
+            }
 
             if (simpleJumpIsland != null)
             {
                 StopSimpleJump();
+            }
+
+            if (won == true)
+            {
+                (player.GetProperty("render") as RobotRenderProperty).NextPermanentState = "win";
+            }
+            else
+            {
+                (player.GetProperty("render") as RobotRenderProperty).NextPermanentState = "idle";
             }
 
             // register with active
@@ -1867,7 +1880,6 @@ namespace ProjectMagma.Simulation
                     rightStickX = gamePadState.ThumbSticks.Right.X;
                     rightStickY = -gamePadState.ThumbSticks.Right.Y;
                 }
-                rightStickPressed = gamePadState.Buttons.RightStick == ButtonState.Pressed;
 
                 flameStickX = gamePadState.ThumbSticks.Right.X;
                 flameStickY = -gamePadState.ThumbSticks.Right.Y;
@@ -1950,7 +1962,6 @@ namespace ProjectMagma.Simulation
                 oldKBState = keyboardState;
             }
 
-
             private void SetStates(Buttons[] buttons, Keys key,
                 out bool pressedIndicator,
                 out bool holdIndicator,
@@ -2007,12 +2018,26 @@ namespace ProjectMagma.Simulation
                 return keyboardState.IsKeyDown(key)
                     && oldKBState.IsKeyDown(key);
             }
+
+            public void Reset()
+            {
+                leftStickX = leftStickY = 0;
+                rightStickX = rightStickY = 0;
+                flameStickX = flameStickY = 0;
+                dPadX = dPadY = 0;
+
+                moveStickMoved = flameStickMoved = dPadPressed = false;
+                runButtonPressed = repulsionButtonPressed = jetpackButtonPressed = flamethrowerButtonPressed = iceSpikeButtonPressed = hitButtonPressed = false;
+                runButtonReleased = repulsionButtonReleased = jetpackButtonReleased = flamethrowerButtonReleased = iceSpikeButtonReleased = hitButtonReleased = false;
+                runButtonHold = repulsionButtonHold = jetpackButtonHold = flamethrowerButtonHold = iceSpikeButtonHold = hitButtonHold = false;
+            }
+
            
             // joystick
             public float leftStickX, leftStickY;
             public bool moveStickMoved;
             public float rightStickX, rightStickY;
-            public bool rightStickMoved, rightStickPressed;
+            public bool rightStickMoved;
             public float flameStickX, flameStickY;
             public bool flameStickMoved;
             public bool dPadPressed;

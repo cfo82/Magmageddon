@@ -249,17 +249,17 @@ namespace ProjectMagma.Renderer
         {
             base.UpdateFloat(id, timestamp, value);
 
-            if (id == "LavaLightStrength")
+            switch (id)
             {
-                LavaLightStrength = value;
-            }
-            else if (id == "SkyLightStrength")
-            {
-                SkyLightStrength = value;
-            }
-            else if (id == "SpotLightStrength")
-            {
-                SpotLightStrength = value;
+                case "LavaLightStrength":
+                    LavaLightStrength = value;
+                    break;
+                case "SkyLightStrength":
+                    SkyLightStrength = value;
+                    break;
+                case "SpotLightStrength":
+                    SpotLightStrength = value;
+                    break;
             }
         }
 

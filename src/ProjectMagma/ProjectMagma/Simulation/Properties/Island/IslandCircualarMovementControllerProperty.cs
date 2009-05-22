@@ -52,22 +52,27 @@ namespace ProjectMagma.Simulation
 
             if (radiusV != Vector3.Zero)
             {
-                // rotate
-                float delta = dir * dt * constants.GetFloat("angle_speed");
-                Matrix rotation = Matrix.CreateRotationY(delta);
-                radiusV = Vector3.Transform(radiusV, rotation);
+                // get normal radius vector
+                Vector3 radiusN = Vector3.Normalize(radiusV);
+                Vector3 diff = radiusN * radius - radiusV; // difference from desired to current radius
+                float rd = diff.Length();
+                if (diff != Vector3.Zero)
+                    diff.Normalize();
+                diff *= rd / radius * acceleration;
 
-                radiusV.Normalize();
-                radiusV = radiusV * radius;
+//                Console.WriteLine("diff: " + diff);
 
-                Vector3 newPos = position;
-                newPos.X = pillarPos.X + radiusV.X;
-                newPos.Z = pillarPos.Z + radiusV.Z;
+                // get acceleration direction
+                Vector3 adir = Vector3.Cross(radiusN, Vector3.UnitY * dir);
 
-                Vector3 adir = newPos - position;
-                if (adir != Vector3.Zero)
-                    adir.Normalize();
-                return adir;
+                // calculare final direction
+                Vector3 fdir = adir * acceleration + diff;
+                if (fdir != Vector3.Zero)
+                    fdir.Normalize();
+
+//                Console.WriteLine("fdir: " + fdir);
+
+                return fdir;
             }
             else
                 return Vector3.Zero;

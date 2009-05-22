@@ -54,7 +54,7 @@
   <Entity name="cave_base" abstract="true">
     <Attributes>
       <Attribute name="kind" template="string" value="cave"/>
-      <Attribute name="position" template="float3" value="80 -150 1300"/>
+      <Attribute name="position" template="float3" value="80 -150 1400"/>
       <Attribute name="scale" template="float3" value="1000 1500 2400"/>
       <!--Attribute name="position" template="float3" value="80 -150 290"/-->
       <!--Attribute name="scale" template="float3" value="900 1200 900"/-->

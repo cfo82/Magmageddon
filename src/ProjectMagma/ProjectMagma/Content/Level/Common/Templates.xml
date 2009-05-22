@@ -70,10 +70,10 @@
       <Attribute name="diffuse_color" template="float3" value="1.0 1.0 1.0"/>
       <Attribute name="specular_color" template="float3" value="0 0 0"/>
       <Attribute name="specular_texture" template="string" value="Textures/Environment/cave_SPEC_v001"/>
-      <Attribute name="env_ground_waves_amplitude" template="float" value="45"/>
+      <Attribute name="env_ground_waves_amplitude" template="float" value="70"/>
       <Attribute name="env_ground_waves_frequency" template="float" value="0.00025"/>
       <Attribute name="env_ground_waves_hardness" template="float" value="15"/>
-      <Attribute name="env_ground_waves_velocity" template="float" value="0.002"/>
+      <Attribute name="env_ground_waves_velocity" template="float" value="0.0005"/>
     </Attributes>
     <Properties>
       <Property name="render" type="ProjectMagma.Simulation.EnvironmentRenderProperty"/>

@@ -168,9 +168,9 @@ namespace ProjectMagma.Renderer
                 case RendererPhase.Outro:
                     {
                         WinningScreenRenderable renderable = new WinningScreenRenderable(winningPlayer);
-                        RobotRenderable winningRobot = winningUpdatable as RobotRenderable;
-                        Debug.Assert(winningRobot != null);
-                        winningRobot.ActivatePermanentState("win");
+                        //RobotRenderable winningRobot = winningUpdatable as RobotRenderable;
+                        //Debug.Assert(winningRobot != null);
+                        //winningRobot.ActivatePermanentState("win");
                         renderable.LoadResources(this);
                         updateRenderables.Add(renderable);
                         overlays.Add(renderable);

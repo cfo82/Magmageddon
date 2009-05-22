@@ -162,6 +162,8 @@ namespace ProjectMagma.Simulation
 
             Game.Instance.Simulation.EntityManager.EntityRemoved -= EntityRemovedHandler;
 
+            ((IntAttribute)player.GetAttribute("health")).ValueChanged -= HealthChangeHandler;
+
             if (player.HasProperty("collision"))
             {
                 ((CollisionProperty)player.GetProperty("collision")).OnContact -= PlayerCollisionHandler;
@@ -390,6 +392,7 @@ namespace ProjectMagma.Simulation
         private void StartSimpleJump(ref Vector3 playerVelocity)
         {
             simpleJumpIsland = activeIsland;
+
             LeaveActiveIsland();
 
             // set attribute
@@ -410,7 +413,7 @@ namespace ProjectMagma.Simulation
         {
             destinationIsland = island;
 
-            ((Vector3Attribute)island.Attributes["position"]).ValueChanged += IslandPositionHandler;
+            LeaveActiveIsland();
 
             // calculate time to travel to island (in xz plane) using an iterative approach
             Vector3 islandDir = GetLandingPosition(destinationIsland) - playerPosition;
@@ -419,7 +422,7 @@ namespace ProjectMagma.Simulation
             destinationOrigDist = islandDir.Length();
             destinationOrigY = playerPosition.Y;
 
-            LeaveActiveIsland();
+            ((Vector3Attribute)island.Attributes["position"]).ValueChanged += IslandPositionHandler;
 
             (player.GetProperty("render") as RobotRenderProperty).NextPermanentState = "jump";
         }
@@ -976,13 +979,10 @@ namespace ProjectMagma.Simulation
 
                     (player.GetProperty("render") as BasicRenderProperty).Squash();
                     (destinationIsland.GetProperty("render") as IslandRenderProperty).Squash();
-                    (player.GetProperty("render") as RobotRenderProperty).NextPermanentState = "idle";
 
                     playerPosition = isectPt;
 
-                    ((Vector3Attribute)destinationIsland.Attributes["position"]).ValueChanged -= IslandPositionHandler;
-
-                    destinationIsland = null;
+                    StopIslandJump();
                     playerVelocity = Vector3.Zero;
                     islandJumpPerformedAt = at;
                 }
@@ -1003,6 +1003,13 @@ namespace ProjectMagma.Simulation
                     player.SetVector3("island_jump_velocity", islandDir * speed);
                 }
             }
+        }
+
+        private void StopIslandJump()
+        {
+            (player.GetProperty("render") as RobotRenderProperty).NextPermanentState = "idle";
+            ((Vector3Attribute)destinationIsland.Attributes["position"]).ValueChanged -= IslandPositionHandler;
+            destinationIsland = null;
         }
 
         private void PerformJetpackMovement(SimulationTime simTime, float dt, ref Vector3 playerVelocity, ref int fuel)
@@ -1071,7 +1078,8 @@ namespace ProjectMagma.Simulation
                     if (flameThrowerSoundInstance != null)
                         flameThrowerSoundInstance.Stop();
                     jetpackActive = false;
-                    destinationIsland = null;
+                    if (destinationIsland != null)
+                        StopIslandJump();
                     if (repulsionActive)
                         StopRepulsion();
                     LeaveActiveIsland();

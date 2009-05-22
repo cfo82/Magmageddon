@@ -256,7 +256,7 @@ namespace ProjectMagma.Framework
         {
             if (!attributes.ContainsKey(name))
             {
-                throw new System.ArgumentException(string.Format("property '{0}' not found!", name));
+                throw new System.ArgumentException(string.Format("attribute '{0}' not found!", name));
             }
 
             return attributes[name];

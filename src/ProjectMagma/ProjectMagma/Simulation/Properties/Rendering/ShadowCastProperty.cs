@@ -6,7 +6,8 @@ using System.Text;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using ProjectMagma.Shared.Model;
-using ProjectMagma.Simulation.Attributes;
+using ProjectMagma.Framework;
+using ProjectMagma.Framework.Attributes;
 using ProjectMagma.Renderer;
 using ProjectMagma.Renderer.Interface;
 

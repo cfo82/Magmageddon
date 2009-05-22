@@ -97,7 +97,6 @@
     <Compile Include="Framework\Event\EntityAddedHandler.cs" />
     <Compile Include="Framework\Event\EntityRemovedHandler.cs" />
     <Compile Include="Framework\Event\PropertyAddedHandler.cs" />
-    <Compile Include="Framework\Event\UpdateHandler.cs" />
     <Compile Include="Framework\Properties\Base\Property.cs" />
     <Compile Include="GlobalClock.cs" />
     <Compile Include="Menu\ReleaseNotesMenu.cs" />
@@ -222,6 +221,7 @@
     <Compile Include="Framework\Attributes\Events\StringChangeHandler.cs" />
     <Compile Include="Framework\Attributes\Events\Vector2ChangeHandler.cs" />
     <Compile Include="Framework\Attributes\Events\Vector3ChangeHandler.cs" />
+    <Compile Include="Simulation\Event\UpdateHandler.cs" />
     <Compile Include="Simulation\OrientationHelper.cs" />
     <Compile Include="Simulation\Properties\Base\RendererUpdatableProperty.cs" />
     <Compile Include="Simulation\Properties\Environment\PowerUpControllerLives.cs" />

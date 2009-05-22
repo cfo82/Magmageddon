@@ -189,7 +189,7 @@
     <Compile Include="Simulation\EntityManager.cs" />
     <Compile Include="Simulation\Event\LevelLoadedHandler.cs" />
     <Compile Include="Framework\Event\PropertyAddedHandler.cs" />
-    <Compile Include="Framework\Event\UpdateHandler.cs" />
+    <Compile Include="Simulation\Event\UpdateHandler.cs" />
     <Compile Include="Simulation\OrientationHelper.cs" />
     <Compile Include="Framework\Properties\Base\Property.cs" />
     <Compile Include="Simulation\Properties\Base\RendererUpdatableProperty.cs" />

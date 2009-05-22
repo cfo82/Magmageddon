@@ -1,7 +1,8 @@
 ﻿using System;
 using Microsoft.Xna.Framework;
-using ProjectMagma.Simulation.Attributes;
+using ProjectMagma.Framework.Attributes;
 using ProjectMagma.Shared.Math.Primitives;
+using ProjectMagma.Framework;
 
 namespace ProjectMagma.Simulation
 {

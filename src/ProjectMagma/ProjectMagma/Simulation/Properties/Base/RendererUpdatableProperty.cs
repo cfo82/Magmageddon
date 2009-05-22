@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using Microsoft.Xna.Framework;
+using ProjectMagma.Framework;
 using ProjectMagma.Renderer.Interface;
 
 namespace ProjectMagma.Simulation

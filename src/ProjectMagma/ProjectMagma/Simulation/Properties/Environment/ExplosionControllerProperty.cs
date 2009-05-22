@@ -1,6 +1,7 @@
 ﻿using System;
 using Microsoft.Xna.Framework;
-using ProjectMagma.Simulation.Attributes;
+using ProjectMagma.Framework;
+using ProjectMagma.Framework.Attributes;
 using ProjectMagma.Simulation.Collision;
 
 namespace ProjectMagma.Simulation

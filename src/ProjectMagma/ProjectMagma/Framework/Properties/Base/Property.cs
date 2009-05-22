@@ -1,9 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-
-namespace ProjectMagma.Simulation
+﻿
+namespace ProjectMagma.Framework
 {
     public interface Property
     {

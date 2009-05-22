@@ -5,7 +5,7 @@ using Microsoft.Xna.Framework;
 
 using ProjectMagma.Renderer.Interface;
 using ProjectMagma.Shared.LevelData;
-using ProjectMagma.Simulation.Attributes;
+using ProjectMagma.Framework.Attributes;
 using System.Diagnostics;
 using ProjectMagma.Shared.Math.Primitives;
 

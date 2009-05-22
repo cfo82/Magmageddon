@@ -4,9 +4,9 @@ using System.Reflection;
 using System.Text;
 using Microsoft.Xna.Framework;
 
-using ProjectMagma.Simulation.Attributes;
+using ProjectMagma.Framework.Attributes;
 
-namespace ProjectMagma.Simulation
+namespace ProjectMagma.Framework
 {
     public class AbstractEntity
     {
@@ -361,8 +361,8 @@ namespace ProjectMagma.Simulation
         public void AddProperty(string name, string typeName)
         {
             System.Type type = System.Type.GetType(typeName);
-            ConstructorInfo constructorInfo = type.GetConstructor(Entity.zeroTypeArray);
-            Property property = constructorInfo.Invoke(Entity.zeroObjectArray) as Property;
+            ConstructorInfo constructorInfo = type.GetConstructor(AbstractEntity.zeroTypeArray);
+            Property property = constructorInfo.Invoke(AbstractEntity.zeroObjectArray) as Property;
             AddProperty(name, property);
         }
 

@@ -3,6 +3,7 @@ using System.Diagnostics;
 using System.Collections.Generic;
 using Microsoft.Xna.Framework;
 using ProjectMagma.Simulation.Collision;
+using ProjectMagma.Framework;
 
 
 namespace ProjectMagma.Simulation

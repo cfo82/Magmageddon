@@ -5,6 +5,7 @@ using System.Linq;
 using System.Text;
 using Microsoft.Xna.Framework;
 using ProjectMagma.Simulation;
+using ProjectMagma.Framework;
 
 namespace ProjectMagma.Simulation
 {

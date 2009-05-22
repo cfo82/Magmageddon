@@ -6,6 +6,7 @@ using System.Text;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using ProjectMagma.Shared.Math.Integration;
+using ProjectMagma.Framework;
 
 namespace ProjectMagma.Simulation
 {

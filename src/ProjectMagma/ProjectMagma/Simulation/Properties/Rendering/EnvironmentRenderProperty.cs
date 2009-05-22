@@ -6,7 +6,7 @@ using System.Text;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 
-using ProjectMagma.Simulation.Attributes;
+using ProjectMagma.Framework.Attributes;
 using ProjectMagma.Renderer;
 
 // def. environment: pillars, cave

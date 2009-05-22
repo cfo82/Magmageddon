@@ -3,7 +3,8 @@ using System.Diagnostics;
 using Microsoft.Xna.Framework;
 
 using ProjectMagma.Simulation.Collision;
-using ProjectMagma.Simulation.Attributes;
+using ProjectMagma.Framework;
+using ProjectMagma.Framework.Attributes;
 using Microsoft.Xna.Framework.Audio;
 
 namespace ProjectMagma.Simulation

@@ -1,5 +1,5 @@
 ﻿
-namespace ProjectMagma.Simulation.Attributes
+namespace ProjectMagma.Framework.Attributes
 {
     public class IntAttribute : Attribute
     {

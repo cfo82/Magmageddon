@@ -3,6 +3,7 @@ using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using ProjectMagma.Shared.Model;
 using ProjectMagma.Shared.Math.Primitives;
+using ProjectMagma.Framework;
 
 namespace ProjectMagma.Simulation.Collision
 {

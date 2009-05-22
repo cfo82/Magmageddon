@@ -4,7 +4,8 @@ using System.Reflection;
 using System.Text;
 using Microsoft.Xna.Framework;
 
-using ProjectMagma.Simulation.Attributes;
+using ProjectMagma.Framework;
+using ProjectMagma.Framework.Attributes;
 
 namespace ProjectMagma.Simulation
 {

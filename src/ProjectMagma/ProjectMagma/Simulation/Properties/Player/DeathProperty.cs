@@ -5,6 +5,7 @@ using System.Linq;
 using System.Text;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
+using ProjectMagma.Framework;
 using ProjectMagma.Simulation.Collision;
 
 namespace ProjectMagma.Simulation

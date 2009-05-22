@@ -5,7 +5,7 @@ using System.Linq;
 using ProjectMagma.Shared.LevelData;
 using System.Diagnostics;
 
-namespace ProjectMagma.Simulation
+namespace ProjectMagma.Framework
 {
     public abstract class AbstractEntityManager<EntityType>
         : IEnumerable<EntityType>

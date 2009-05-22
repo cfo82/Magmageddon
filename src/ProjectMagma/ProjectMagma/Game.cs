@@ -10,7 +10,7 @@ using Microsoft.Xna.Framework.Input;
 using Microsoft.Xna.Framework.Media;
 
 using ProjectMagma.Simulation;
-using ProjectMagma.Simulation.Attributes;
+using ProjectMagma.Framework.Attributes;
 using ProjectMagma.Shared.LevelData;
 using ProjectMagma.Shared.Model;
 using ProjectMagma.Simulation.Collision;

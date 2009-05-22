@@ -1,6 +1,6 @@
 ﻿using Microsoft.Xna.Framework;
 
-namespace ProjectMagma.Simulation.Attributes
+namespace ProjectMagma.Framework.Attributes
 {
     public delegate void QuaternionChangeHandler(QuaternionAttribute sender, Quaternion oldValue, Quaternion newValue);
 }

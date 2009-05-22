@@ -4,6 +4,7 @@ using Microsoft.Xna.Framework.Audio;
 using ProjectMagma.Simulation.Collision;
 using System;
 using ProjectMagma.Shared.LevelData;
+using ProjectMagma.Framework;
 
 namespace ProjectMagma.Simulation
 {

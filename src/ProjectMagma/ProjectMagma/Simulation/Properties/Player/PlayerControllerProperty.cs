@@ -1594,6 +1594,12 @@ namespace ProjectMagma.Simulation
                 {
                     won = true;
 
+                    if (player.HasProperty("render")
+                        && activeIsland != null)
+                    {
+                        (player.GetProperty("render") as RobotRenderProperty).NextPermanentState = "win";
+                    }
+
                     if (selectedIsland != null)
                     {
                         RemoveSelectionArrow();

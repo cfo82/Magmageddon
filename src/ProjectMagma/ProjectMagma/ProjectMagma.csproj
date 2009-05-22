@@ -92,8 +92,8 @@
     <Compile Include="Bugslayer\CrashDebugger.cs" />
     <Compile Include="DrawTools.cs" />
     <Compile Include="EntryPoint.cs" />
-    <Compile Include="Framework\Entity.cs" />
-    <Compile Include="Framework\EntityManager.cs" />
+    <Compile Include="Framework\AbstractEntity.cs" />
+    <Compile Include="Framework\AbstractEntityManager.cs" />
     <Compile Include="Framework\Event\EntityAddedHandler.cs" />
     <Compile Include="Framework\Event\EntityRemovedHandler.cs" />
     <Compile Include="Framework\Event\PropertyAddedHandler.cs" />

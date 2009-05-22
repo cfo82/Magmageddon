@@ -59,6 +59,24 @@
     <Compile Include="Bugslayer\CrashDebugger.cs" />
     <Compile Include="DrawTools.cs" />
     <Compile Include="EntryPoint.cs" />
+    <Compile Include="Framework\Attributes\Base\Attribute.cs" />
+    <Compile Include="Framework\Attributes\Base\AttributeTypes.cs" />
+    <Compile Include="Framework\Attributes\Concrete\BoolAttribute.cs" />
+    <Compile Include="Framework\Attributes\Concrete\FloatAttribute.cs" />
+    <Compile Include="Framework\Attributes\Concrete\IntAttribute.cs" />
+    <Compile Include="Framework\Attributes\Concrete\MatrixAttribute.cs" />
+    <Compile Include="Framework\Attributes\Concrete\QuaternionAttribute.cs" />
+    <Compile Include="Framework\Attributes\Concrete\StringAttribute.cs" />
+    <Compile Include="Framework\Attributes\Concrete\Vector2Attribute.cs" />
+    <Compile Include="Framework\Attributes\Concrete\Vector3Attribute.cs" />
+    <Compile Include="Framework\Attributes\Events\BoolChangeHandler.cs" />
+    <Compile Include="Framework\Attributes\Events\FloatChangeHandler.cs" />
+    <Compile Include="Framework\Attributes\Events\IntChangeHandler.cs" />
+    <Compile Include="Framework\Attributes\Events\MatrixChangeEventHandler.cs" />
+    <Compile Include="Framework\Attributes\Events\QuaternionChangeHandler.cs" />
+    <Compile Include="Framework\Attributes\Events\StringChangeHandler.cs" />
+    <Compile Include="Framework\Attributes\Events\Vector2ChangeHandler.cs" />
+    <Compile Include="Framework\Attributes\Events\Vector3ChangeHandler.cs" />
     <Compile Include="GlobalClock.cs" />
     <Compile Include="Renderer\Interface\InterpolationHistory.cs" />
     <Compile Include="Renderer\Interface\QuaternionInterpolationHistory.cs" />
@@ -143,24 +161,6 @@
     </Compile>
     <Compile Include="Renderer\RenderPasses\RenderPass.cs" />
     <Compile Include="Renderer\RenderTime.cs" />
-    <Compile Include="Simulation\Attributes\Base\Attribute.cs" />
-    <Compile Include="Simulation\Attributes\Base\AttributeTypes.cs" />
-    <Compile Include="Simulation\Attributes\Concrete\BoolAttribute.cs" />
-    <Compile Include="Simulation\Attributes\Concrete\FloatAttribute.cs" />
-    <Compile Include="Simulation\Attributes\Concrete\IntAttribute.cs" />
-    <Compile Include="Simulation\Attributes\Concrete\MatrixAttribute.cs" />
-    <Compile Include="Simulation\Attributes\Concrete\QuaternionAttribute.cs" />
-    <Compile Include="Simulation\Attributes\Concrete\StringAttribute.cs" />
-    <Compile Include="Simulation\Attributes\Concrete\Vector2Attribute.cs" />
-    <Compile Include="Simulation\Attributes\Concrete\Vector3Attribute.cs" />
-    <Compile Include="Simulation\Attributes\Events\BoolChangeHandler.cs" />
-    <Compile Include="Simulation\Attributes\Events\FloatChangeHandler.cs" />
-    <Compile Include="Simulation\Attributes\Events\IntChangeHandler.cs" />
-    <Compile Include="Simulation\Attributes\Events\MatrixChangeEventHandler.cs" />
-    <Compile Include="Simulation\Attributes\Events\QuaternionChangeHandler.cs" />
-    <Compile Include="Simulation\Attributes\Events\StringChangeHandler.cs" />
-    <Compile Include="Simulation\Attributes\Events\Vector2ChangeHandler.cs" />
-    <Compile Include="Simulation\Attributes\Events\Vector3ChangeHandler.cs" />
     <Compile Include="Simulation\Collision\BoundingVolumeTypeUtil.cs" />
     <Compile Include="Simulation\Collision\CollisionEntity.cs" />
     <Compile Include="Simulation\Collision\CollisionManager.cs" />
@@ -180,16 +180,16 @@
     <Compile Include="Simulation\Collision\Contact.cs" />
     <Compile Include="Simulation\Collision\ContactPoint.cs" />
     <Compile Include="Simulation\Collision\TestList.cs" />
-    <Compile Include="Simulation\Entity.cs" />
+    <Compile Include="Framework\Entity.cs" />
     <Compile Include="Simulation\EntityKindManager.cs" />
-    <Compile Include="Simulation\EntityManager.cs" />
-    <Compile Include="Simulation\Event\EntityAddedHandler.cs" />
-    <Compile Include="Simulation\Event\EntityRemovedHandler.cs" />
+    <Compile Include="Framework\EntityManager.cs" />
+    <Compile Include="Framework\Event\EntityAddedHandler.cs" />
+    <Compile Include="Framework\Event\EntityRemovedHandler.cs" />
     <Compile Include="Simulation\Event\LevelLoadedHandler.cs" />
-    <Compile Include="Simulation\Event\PropertyAddedHandler.cs" />
-    <Compile Include="Simulation\Event\UpdateHandler.cs" />
+    <Compile Include="Framework\Event\PropertyAddedHandler.cs" />
+    <Compile Include="Framework\Event\UpdateHandler.cs" />
     <Compile Include="Simulation\OrientationHelper.cs" />
-    <Compile Include="Simulation\Properties\Base\Property.cs" />
+    <Compile Include="Framework\Properties\Base\Property.cs" />
     <Compile Include="Simulation\Properties\Base\RendererUpdatableProperty.cs" />
     <Compile Include="Simulation\Properties\Environment\CameraProperty.cs" />
     <Compile Include="Simulation\Properties\Environment\ExplosionControllerProperty.cs" />
@@ -320,6 +320,11 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="ProjectMagma_TemporaryKey.pfx" />
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="Simulation\Attributes\Base\" />
+    <Folder Include="Simulation\Attributes\Concrete\" />
+    <Folder Include="Simulation\Attributes\Events\" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <Import Project="$(MSBuildExtensionsPath)\Microsoft\XNA Game Studio\Microsoft.Xna.GameStudio.targets" />

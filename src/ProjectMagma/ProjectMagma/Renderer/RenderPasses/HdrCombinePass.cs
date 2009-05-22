@@ -38,18 +38,42 @@ namespace ProjectMagma.Renderer
             hdrCombineEffect.Parameters["In2"].SetValue(In2);
             hdrCombineEffect.Parameters["Out2"].SetValue(Out2);
 
-            hdrCombineEffect.Parameters["FogZOff"].SetValue(0.2f);
-            hdrCombineEffect.Parameters["FogZMul"].SetValue(1.0f);
-            hdrCombineEffect.Parameters["FogYOff"].SetValue(0.2f);
-            hdrCombineEffect.Parameters["FogYMul"].SetValue(0.1f);
-            hdrCombineEffect.Parameters["FogGlobMul"].SetValue(0.7f);
+
+            //entityManager["snow"].GetFloat("particles_per_second"))
+
+            //hdrCombineEffect.Parameters["FogZOff"].SetValue(0.2f);
+            //hdrCombineEffect.Parameters["FogZMul"].SetValue(1.0f);
+            //hdrCombineEffect.Parameters["FogYOff"].SetValue(0.2f);
+            //hdrCombineEffect.Parameters["FogYMul"].SetValue(0.1f);
+            //hdrCombineEffect.Parameters["FogGlobMul"].SetValue(0.7f);
+            
+            SetFloatFromEntity("FogZOff", "fog", "fog_z_off");
+            SetFloatFromEntity("FogZMul", "fog", "fog_z_mul");
+            SetFloatFromEntity("FogYOff", "fog", "fog_y_off");
+            SetFloatFromEntity("FogYMul", "fog", "fog_y_mul");
+            SetFloatFromEntity("FogGlobMul", "fog", "fog_glob_mul");
+
             hdrCombineEffect.Parameters["FogColor"].SetValue(new Vector4(1,0.3f,0,1));
+
+            //hdrCombineEffect.Parameters["FogZOff"].SetValue(0.2f);
+            //hdrCombineEffect.Parameters["FogZMul"].SetValue(1.0f);
+            //hdrCombineEffect.Parameters["FogYOff"].SetValue(0.2f);
+            //hdrCombineEffect.Parameters["FogYMul"].SetValue(0.1f);
+            //hdrCombineEffect.Parameters["FogGlobMul"].SetValue(0.7f);
+            //hdrCombineEffect.Parameters["FogColor"].SetValue(new Vector4(1,0.3f,0,1));
             //FogGlobMul
             //float FogZOff = 0.2, FogZMul = 1.0, FogYOff = 0.2, FogYMul = 0.1, FogGlobMul = 1.0;
             //float FogColor = float4(1, 1, 1, 1);
 
             DrawFullscreenQuad(BlurGeometryRender, hdrCombineEffect);
             //DrawFullscreenQuad(GeometryRender, null);
+        }
+
+        private void SetFloatFromEntity(string paramName, string entityName, string attributeName)
+        {
+            hdrCombineEffect.Parameters[paramName].SetValue(
+                Renderer.EntityManager[entityName].GetFloat(attributeName)
+            );
         }
 
         private DoublyIntegratedVector2 randomOffset;

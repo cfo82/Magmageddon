@@ -6,4 +6,15 @@
       <Attribute name="particles_per_second" template="float" value="30"/>
     </Attributes>
   </Entity>
+  
+  <Entity name="fog">
+  	<Attributes>
+  		<Attribute name="fog_z_off" template="float" value="0.2"/>
+  		<Attribute name="fog_z_mul" template="float" value="1.0"/>
+  		<Attribute name="fog_y_off" template="float" value="0.2"/>
+  		<Attribute name="fog_y_mul" template="float" value="0.1"/>
+  		<Attribute name="fog_glob_mul" template="float" value="0.7"/>
+  		<Attribute name="fog_color" template="float3" value="1 0.3 0"/>
+  	</Attributes>
+  </Entity>
 </Level>

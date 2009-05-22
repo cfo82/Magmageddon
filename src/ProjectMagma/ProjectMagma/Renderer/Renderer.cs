@@ -60,12 +60,12 @@ namespace ProjectMagma.Renderer
             GraphicsDevice device
         )
         {
-            //EnablePostProcessing = true;
+            EnablePostProcessing = true;
 
             renderTime = new RenderTime(Game.Instance.GlobalClock.ContinuousMilliseconds,
                 Game.Instance.GlobalClock.PausableMilliseconds);
 
-            entityManager = new RendererEntityManager();
+            EntityManager = new RendererEntityManager();
 
             this.device = device;
             updateRenderables = new List<Renderable>();
@@ -142,14 +142,14 @@ namespace ProjectMagma.Renderer
             string levelName
         )
         {
-            entityManager.Clear();
-            entityManager.Load(Game.Instance.ContentManager.Load<LevelData>(levelName));
+            EntityManager.Clear();
+            EntityManager.Load(Game.Instance.ContentManager.Load<LevelData>(levelName));
 
             // recreate the snow system using the new level parameters
             if (snowSystem != null)
                 { snowSystem.UnloadResources(); }
             snowSystem = new Snow(this, Game.Instance.ContentManager, device);
-            snowSystem.AddEmitter(new SnowEmitter(entityManager["snow"].GetFloat("particles_per_second")));
+            snowSystem.AddEmitter(new SnowEmitter(EntityManager["snow"].GetFloat("particles_per_second")));
             for (int i = 0; i < 1000; ++i)
             {
                 snowSystem.Update(-30d / 1000d + i * -30d / 1000d, -30d / 1000d + i * -30d / 1000d + 30d / 1000d);
@@ -617,6 +617,6 @@ namespace ProjectMagma.Renderer
         private List<RendererUpdateQueue> updateQueues;
 
         private RenderTime renderTime;
-        private RendererEntityManager entityManager;
+        public RendererEntityManager EntityManager { get; set; }
     }
 }

@@ -249,6 +249,12 @@ namespace ProjectMagma.Renderer
             }
             Debug.Assert(requestedState != "");
 
+            // if there is nothing to change, let's just quit.
+            if(requestedState == permanentState)
+            {
+                return;
+            }
+
             // update animation
             if(animationMode==AnimationMode.Permanent ||
                 animationMode==AnimationMode.OnceToPermanent ||

@@ -7,7 +7,17 @@ namespace ProjectMagma.Shared.LevelData.Serialization
     {
         protected override LevelInfo Read(ContentReader input, LevelInfo existingInstance)
         {
-            return new LevelInfo(input.ReadString(), input.ReadString(), input.ReadString());
+            if (existingInstance == null)
+            {
+                existingInstance = new LevelInfo();
+            }
+
+            existingInstance.Name = input.ReadString();
+            existingInstance.Description = input.ReadString();
+            existingInstance.SimulationFileName = input.ReadString();
+            existingInstance.RendererFileName = input.ReadString();
+
+            return existingInstance;
         }
     }
 

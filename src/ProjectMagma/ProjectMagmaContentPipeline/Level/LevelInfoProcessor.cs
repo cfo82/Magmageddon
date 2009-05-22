@@ -16,14 +16,12 @@ namespace ProjectMagma.ContentPipeline.Level
     {
         private static LevelInfo ProcessLevel(XmlElement level)
         {
-            XmlNode el = level.FirstChild;
-            String name = el.InnerText;
-            el = el.NextSibling;
-            String description = el.InnerText;
-            el = el.NextSibling;
-            String fileName = el.InnerText;
+            string name = level["Name"].InnerText;
+            string description = level["Description"].InnerText;
+            string simulationFileName = level["SimulationFileName"].InnerText;
+            string rendererFileName = level["RendererFileName"].InnerText;
 
-            return new LevelInfo(name, description, fileName);
+            return new LevelInfo(name, description, simulationFileName, rendererFileName);
         }
 
         private List<LevelInfo> ProcessLevelInfo(XmlDocument input, ContentProcessorContext context)

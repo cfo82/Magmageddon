@@ -12,7 +12,8 @@ namespace ProjectMagma.ContentPipeline.Level.Serialization
         {
             output.Write(levelInfo.Name);
             output.Write(levelInfo.Description);
-            output.Write(levelInfo.FileName);
+            output.Write(levelInfo.SimulationFileName);
+            output.Write(levelInfo.RendererFileName);
         }
 
         public override string GetRuntimeReader(TargetPlatform targetPlatform)

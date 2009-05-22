@@ -7,31 +7,45 @@ namespace ProjectMagma.Shared.LevelData
 {
     public class LevelInfo
     {
-        private String name;
-        private String description;
-        private String fileName;
+        public LevelInfo()
+        {
+        }
 
-        public LevelInfo(String name, String description, String fileName)
+        public LevelInfo(string name, string description, string simulationFileName, string rendererFileName)
         {
             this.name = name;
             this.description = description;
-            this.fileName = fileName;
+            this.simulationFileName = simulationFileName;
+            this.rendererFileName = rendererFileName;
         }
 
-        public String Name
+        public string Name
         {
+            set { name = value; }
             get { return name; }
         }
 
-        public String Description
+        public string Description
         {
+            set { description = value; }
             get { return description; }
         }
 
-        public String FileName
+        public string SimulationFileName
         {
-            get { return fileName; }
+            set { simulationFileName = value; }
+            get { return simulationFileName; }
         }
 
+        public string RendererFileName
+        {
+            set { rendererFileName = value; }
+            get { return rendererFileName; }
+        }
+
+        private string name;
+        private string description;
+        private string simulationFileName;
+        private string rendererFileName;
     }
 }

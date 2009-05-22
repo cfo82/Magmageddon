@@ -99,7 +99,7 @@
     <Attributes>
       <!-- all islands -->
       <Attribute name="movement_max_speed" template="float" value="200"/>
-      <Attribute name="movement_acceleration" template="float" value="1000"/>
+      <Attribute name="movement_acceleration" template="float" value="600"/>
 
       <Attribute name="rising_delay" template="int" value="800"/>
       <Attribute name="repositioning_acceleraton" template="float" value="800" />

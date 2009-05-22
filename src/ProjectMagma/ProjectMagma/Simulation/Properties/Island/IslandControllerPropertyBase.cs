@@ -185,9 +185,10 @@ namespace ProjectMagma.Simulation
                 newPosition += velocity * dt;
 
                 // if acceleration takes us further away from object we stop
-                if ((newPosition - desiredPosition).Length() > (position - desiredPosition).Length())
+                if ((newPosition - desiredPosition).Length() > (position - desiredPosition).Length()
+                    && (newPosition-desiredPosition).Length() < 40)
                 {
-                    position = desiredPosition;
+//                    position = desiredPosition;
                     state = IslandState.Normal;
                     island.SetVector3("repositioning_velocity", Vector3.Zero);
                     OnRepositioningEnded(dir);

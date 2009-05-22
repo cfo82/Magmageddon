@@ -28,16 +28,27 @@ namespace ProjectMagma.Renderer
 
             hdrCombineEffect.Parameters["RandomOffset"].SetValue(randomOffset.Value);
 
-            hdrCombineEffect.Parameters["BloomSensitivity"].SetValue(BloomSensitivity);
-            hdrCombineEffect.Parameters["BloomIntensity"].SetValue(BloomIntensity);
-            hdrCombineEffect.Parameters["BaseIntensity"].SetValue(BaseIntensity);
-            hdrCombineEffect.Parameters["BloomSaturation"].SetValue(BloomSaturation);
-            hdrCombineEffect.Parameters["BaseSaturation"].SetValue(BaseSaturation);
-            hdrCombineEffect.Parameters["In1"].SetValue(In1);
-            hdrCombineEffect.Parameters["Out1"].SetValue(Out1);
-            hdrCombineEffect.Parameters["In2"].SetValue(In2);
-            hdrCombineEffect.Parameters["Out2"].SetValue(Out2);
+            //hdrCombineEffect.Parameters["BloomSensitivity"].SetValue(BloomSensitivity);
+            //hdrCombineEffect.Parameters["BloomIntensity"].SetValue(BloomIntensity);
+            //hdrCombineEffect.Parameters["BaseIntensity"].SetValue(BaseIntensity);
+            //hdrCombineEffect.Parameters["BloomSaturation"].SetValue(BloomSaturation);
+            //hdrCombineEffect.Parameters["BaseSaturation"].SetValue(BaseSaturation);
+            //hdrCombineEffect.Parameters["In1"].SetValue(In1);
+            //hdrCombineEffect.Parameters["Out1"].SetValue(Out1);
+            //hdrCombineEffect.Parameters["In2"].SetValue(In2);
+            //hdrCombineEffect.Parameters["Out2"].SetValue(Out2);
 
+            SetArray3FromEntity("BloomSensitivity", "tonemapping", "bloom_sensitivity");
+            SetArray3FromEntity("BloomIntensity", "tonemapping", "bloom_intensity");
+            SetArray3FromEntity("BaseIntensity", "tonemapping", "base_intensity");
+            SetArray3FromEntity("BloomSaturation", "tonemapping", "bloom_saturation");
+            SetArray3FromEntity("BaseSaturation", "tonemapping", "base_saturation");
+            SetArray3FromEntity("In1", "tonemapping", "in1");
+            SetArray3FromEntity("Out1", "tonemapping", "out1");
+            SetArray3FromEntity("In2", "tonemapping", "in2");
+            SetArray3FromEntity("Out2", "tonemapping", "out2");
+
+            
 
             //entityManager["snow"].GetFloat("particles_per_second"))
 
@@ -52,8 +63,9 @@ namespace ProjectMagma.Renderer
             SetFloatFromEntity("FogYOff", "fog", "fog_y_off");
             SetFloatFromEntity("FogYMul", "fog", "fog_y_mul");
             SetFloatFromEntity("FogGlobMul", "fog", "fog_glob_mul");
+            SetVector3FromEntity("FogColor", "fog", "fog_color");
 
-            hdrCombineEffect.Parameters["FogColor"].SetValue(new Vector4(1,0.3f,0,1));
+            //hdrCombineEffect.Parameters["FogColor"].SetValue(new Vector4(1,0.3f,0,1));
 
             //hdrCombineEffect.Parameters["FogZOff"].SetValue(0.2f);
             //hdrCombineEffect.Parameters["FogZMul"].SetValue(1.0f);
@@ -76,6 +88,26 @@ namespace ProjectMagma.Renderer
             );
         }
 
+        private void SetVector3FromEntity(string paramName, string entityName, string attributeName)
+        {
+            hdrCombineEffect.Parameters[paramName].SetValue(
+                Renderer.EntityManager[entityName].GetVector3(attributeName)
+            );
+        }
+
+        private void SetArray3FromEntity(string paramName, string entityName, string attributeName)
+        {
+            Vector3 vector = Renderer.EntityManager[entityName].GetVector3(attributeName);
+            float[] array = new float[3];
+            array[0] = vector.X;
+            array[1] = vector.Y;
+            array[2] = vector.Z;
+            hdrCombineEffect.Parameters[paramName].SetValue(
+                array
+            );
+        }
+
+
         private DoublyIntegratedVector2 randomOffset;
         private Effect hdrCombineEffect;
 
@@ -84,22 +116,22 @@ namespace ProjectMagma.Renderer
         public Texture2D RenderChannelColor { get; set; }
         public Texture2D DepthTexture { get; set; }
 
-        private float[] BloomSensitivity = { 0.25f, 0.0f, 0.0f };
+        //private float[] BloomSensitivity = { 0.25f, 0.0f, 0.0f };
 
-        //private float[] BloomIntensity = { 1.15f, 0.7f, 2.0f };
-        //private float[] BaseIntensity = { 0.75f, 0.8f, 1.0f };
+        ////private float[] BloomIntensity = { 1.15f, 0.7f, 2.0f };
+        ////private float[] BaseIntensity = { 0.75f, 0.8f, 1.0f };
 
-        private float[] BloomIntensity = { 2.8f, 0.7f, 0.0f };
-        private float[] BaseIntensity = { 0.87f, 0.8f, 1.0f };
+        //private float[] BloomIntensity = { 2.8f, 0.7f, 0.0f };
+        //private float[] BaseIntensity = { 0.87f, 0.8f, 1.0f };
 
-        private float[] BloomSaturation = { 2.5f, 0.8f, 1.0f };
-        private float[] BaseSaturation = { 1.0f, 1.0f, 1.0f };
+        //private float[] BloomSaturation = { 2.5f, 0.8f, 1.0f };
+        //private float[] BaseSaturation = { 1.0f, 1.0f, 1.0f };
 
-        private float[] In1 = { 1.0f, 1.4f, 1.0f };
-        //private float[] Out1 = { 1.0f, 0.8f, 1.0f };
-        private float[] Out1 = { 1.0f, 1.1f, 1.0f };
-        private float[] In2 = { 2.0f, 2.7f, 2.0f };
-        //private float[] Out2 = { 2.0f, 20.0f, 1.0f };
-        private float[] Out2 = { 2.0f, 14.0f, 2.0f };
+        //private float[] In1 = { 1.0f, 1.4f, 1.0f };
+        ////private float[] Out1 = { 1.0f, 0.8f, 1.0f };
+        //private float[] Out1 = { 1.0f, 1.1f, 1.0f };
+        //private float[] In2 = { 2.0f, 2.7f, 2.0f };
+        ////private float[] Out2 = { 2.0f, 20.0f, 1.0f };
+        //private float[] Out2 = { 2.0f, 14.0f, 2.0f };
     }
 }

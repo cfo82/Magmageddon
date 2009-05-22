@@ -160,7 +160,7 @@ float4 blueFogColor = float4(0,0.7,1,1);
 //float FogColor=float4(1,1,1,1);
 
 float FogZOff, FogZMul, FogYOff, FogYMul, FogGlobMul;
-float4 FogColor;
+float3 FogColor;
 
 
 inline void ApplyFog(inout float4 img, in float2 texCoord)
@@ -179,7 +179,7 @@ inline void ApplyFog(inout float4 img, in float2 texCoord)
 	//float4 fogColor = lerp(blueFogColor, orangeFogColor,y2);
 	
 	float grad = GradientY(texCoord);
-	float fogColor = lerp(FogColor,float4(0,0.5,1.0,1),0);
+	float fogColor = lerp(float4(FogColor,1),float4(0,0.5,1.0,1),0);
 	
 	img = lerp(img, fogColor, saturate((z+y)*FogGlobMul*(1-grad)));
 	//img = saturate(z*y*12);

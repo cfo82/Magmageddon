@@ -15,8 +15,12 @@ namespace ProjectMagma.Renderer
         private static readonly Vector3 initialPosition = new Vector3(0, 450, 1065);
         private static readonly Vector3 initialTarget = new Vector3(0, 180, 0);
 
+        public bool IsMoving { get; set; }
+
         public Camera(Renderer renderer)
         {
+            IsMoving = false;
+
             //Position = new Vector3(0, 500, 1065)*1.4f;
             Position = initialPosition;
             //Position = new Vector3(0, 475, 1065)*1.2f;
@@ -93,7 +97,8 @@ namespace ProjectMagma.Renderer
         float maxWorldY;
         public void RecomputeFrame(ref List<Renderable> renderables)
         {
-            //return;
+            if(!IsMoving) return;
+
             if (renderables.Count == 0 || !IsThereAnyPlayer(ref renderables))
             {
                 allowPause = false;

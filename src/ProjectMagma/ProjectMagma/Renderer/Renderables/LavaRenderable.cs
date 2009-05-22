@@ -146,25 +146,6 @@ namespace ProjectMagma.Renderer
 
 
             temperatureTexture.SetData<Color>(f);
-            //temperatureTexture.Save("TEST.dds", ImageFileFormat.Dds);
-            //Random r = new Random();
-            //for (int i = 0; i < resolution; i++)
-            //{
-            //    for (int j = 0; j < resolution; j++)
-            //    {
-            //        float x = Position.X + ((float)j) / resolution * Scale.X;
-            //        float y = Position.Y + ((float)i) / resolution * Scale.Y;
-            //        //f[i] = new Color(Vector3.One * ((float) r.NextDouble()));
-            //        float v = 0;
-            //        foreach (PillarInfo pillarInfo in pillarInfos)
-            //        {
-            //            if ((new Vector2(Position.X, Position.Y) - new Vector2(x, y)).LengthSquared() < 100)
-            //                v = 1;
-            //        }
-            //        f[i * resolution + j] = new Color(Vector3.One * v);
-            //    }
-            //}
-            //temperatureTexture.SetData<Color>(f);
         }
 
         protected override void ApplyEffectsToModel()
@@ -253,103 +234,6 @@ namespace ProjectMagma.Renderer
 
             UpdateRandomOffsets(effect);
         }
-
-        //public void Draw(
-        //    Renderer renderer,
-        //    GameTime gameTime
-        //)
-        //{
-        //    Matrix world = Matrix.Identity;
-        //    world *= Matrix.CreateScale(scale);
-        //    world *= Matrix.CreateFromQuaternion(rotation);
-        //    world *= Matrix.CreateTranslation(position);
-
-        //    // shadows should be floating a little above the receiving surface
-        //    Matrix world_offset = world;
-        //    world_offset *= Matrix.CreateTranslation(new Vector3(0, 3, 0));
-
-        //    foreach (ModelMesh mesh in model.Meshes)
-        //    {
-        //        effect.CurrentTechnique = effect.Techniques["MultiPlaneLava"];
-
-        //        // transformation parameters
-        //        effect.Parameters["g_mWorld"].SetValue(world);
-        //        effect.Parameters["g_mView"].SetValue(Game.Instance.View);
-        //        effect.Parameters["g_mWorldViewProjection"].SetValue(world * Game.Instance.View * Game.Instance.Projection);
-
-        //        // texture parameters
-        //        effect.Parameters["StuccoSparse"].SetValue(sparseStuccoTexture);
-        //        effect.Parameters["FireFractal"].SetValue(fireFractalTexture);
-        //        effect.Parameters["Granite"].SetValue(graniteTexture);
-        //        effect.Parameters["Clouds"].SetValue(vectorCloudTexture);
-
-        //        // other stuff
-        //        effect.Parameters["g_LightDir"].SetValue(Vector3.Normalize(new Vector3(0, 1, 0)));
-        //        effect.Parameters["invert"].SetValue(true);
-        //        effect.Parameters["flickerStrength"].SetValue(0.01f);
-        //        effect.Parameters["StuccoCompression"].SetValue(0.65f);
-                
-        //        //effect.Parameters["minPlaneY"].SetValue(boundingBox.Min.Y);
-        //        //effect.Parameters["maxPlaneY"].SetValue(boundingBox.Max.Y);
-
-        //        effect.Parameters["minPlaneY"].SetValue(-45.0f);
-        //        effect.Parameters["maxPlaneY"].SetValue(0.0f);
-
-        //        UpdateRandomOffsets();
-
-        //        // draw the lava plane
-        //        foreach (ModelMeshPart meshPart in mesh.MeshParts)
-        //        {
-        //            meshPart.Effect = effect;
-        //        }
-        //        mesh.Draw();
-
-        //        // draw the shadow
-        //        Effect shadowEffect = renderer.ShadowEffect;
-
-        //        shadowEffect.CurrentTechnique = shadowEffect.Techniques["Scene"];
-        //        shadowEffect.Parameters["ShadowMap"].SetValue(renderer.LightResolve);
-        //        shadowEffect.Parameters["WorldCameraViewProjection"].SetValue(
-        //            world_offset * Game.Instance.View * Game.Instance.Projection);
-        //        shadowEffect.Parameters["World"].SetValue(world_offset);
-
-        //        shadowEffect.Parameters["WorldLightViewProjection"].SetValue(
-        //            world_offset * renderer.LightView * renderer.LightProjection);
-        //        foreach (ModelMeshPart meshPart in mesh.MeshParts)
-        //        {
-        //            meshPart.Effect = shadowEffect;
-        //        }
-        //        mesh.Draw();
-        //    }
-        //}
-
-        //public RenderMode RenderMode 
-        //{
-        //    get { return RenderMode.RenderToScene; }
-        //}
-
-        //public Vector3 Scale
-        //{
-        //    get { return scale; }
-        //    set { scale = value; }
-        //}
-
-        //public Quaternion Rotation
-        //{
-        //    get { return rotation; }
-        //    set { rotation = value; }
-        //}
-
-        //public Vector3 Position
-        //{
-        //    get { return position; }
-        //    set { position = value; }
-        //}
-
-        //private Vector3 scale;
-        //private Quaternion rotation;
-        //private Vector3 position;
-        //private Model model;
 
         private Texture2D sparseStuccoTexture;
         private Texture2D fireFractalTexture;

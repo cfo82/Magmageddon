@@ -47,9 +47,10 @@ struct PositionAndNormal
 
 struct PixelLightingVSOutput
 {
-	float4	PositionPS	: POSITION;		// Position in projection space
+	float4	PositionPS 	: POSITION;		// Position in projection space
 	float4	PositionWS	: TEXCOORD0;
-	float3	NormalWS	: TEXCOORD1;
+	float3	NormalWS	: TEXCOORD1;   
+	float4  PositionPSP : TEXCOORD3;    // same as PositionPS but can only be used by pixel shader if declared this way
 };
 
 struct PixelLightingVSOutputTx
@@ -58,6 +59,7 @@ struct PixelLightingVSOutputTx
 	float2	TexCoord	: TEXCOORD0;
 	float4	PositionWS	: TEXCOORD1;
 	float3	NormalWS	: TEXCOORD2;
+	float4  PositionPSP : TEXCOORD3;    // same as PositionPS but can only be used by pixel shader if declared this way
 };
 
 
@@ -69,6 +71,8 @@ struct PixelLightingPSInput
 {
 	float4	PositionWS	: TEXCOORD0;
 	float3	NormalWS	: TEXCOORD1;
+	//float   Depth       : DEPTH;
+	float4  PositionPSP  : TEXCOORD3;
 };
 
 struct PixelLightingPSInputTx
@@ -76,4 +80,6 @@ struct PixelLightingPSInputTx
 	float2	TexCoord	: TEXCOORD0;
 	float4	PositionWS	: TEXCOORD1;
 	float3	NormalWS	: TEXCOORD2;
+	//float   Depth       : DEPTH;
+	float4  PositionPSP  : TEXCOORD3;
 };

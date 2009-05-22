@@ -48,6 +48,7 @@ PixelLightingVSOutput VSBasicPixelLightingNmSq
 	float4 pos_ps = mul(pos_vs, Projection);
 	
 	vout.PositionPS		= pos_ps;
+	vout.PositionPSP	= pos_ps;
 	vout.PositionWS.xyz	= pos_ws.xyz;
 	vout.PositionWS.w	= ComputeFogFactor(length(EyePosition - pos_ws));
 	vout.NormalWS		= normalize(mul(Normal, World));
@@ -75,6 +76,7 @@ PixelLightingVSOutputTx VSBasicPixelLightingNmTxSq
 	float4 pos_ps = mul(pos_vs, Projection);
 	
 	vout.PositionPS		= pos_ps;
+	vout.PositionPSP	= pos_ps;
 	vout.PositionWS.xyz	= pos_ws.xyz;
 	vout.PositionWS.w	= ComputeFogFactor(length(EyePosition - pos_ws));
 	vout.NormalWS		= normalize(mul(Normal, World));
@@ -102,6 +104,7 @@ PixelLightingVSOutputTx VSBasicPixelLightingNmTxSqSk
     float4 pos_ps = mul(pos_vs, Projection);
     
     vout.PositionPS		= pos_ps;
+    vout.PositionPSP	= pos_ps;
     vout.PositionWS.xyz = pos_ws.xyz;
 	vout.PositionWS.w	= ComputeFogFactor(length(EyePosition - pos_ws));
 	vout.NormalWS		= normalize(mul(skinned_input.normal, World));

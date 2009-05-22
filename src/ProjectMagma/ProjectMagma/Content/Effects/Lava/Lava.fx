@@ -102,7 +102,9 @@ VS_OUTPUT MultiPlaneVS(float4 inPositionOS  : POSITION,
     float4x4 localWorld = mul(Local, World);
     
     // Transform and output input position 
-    Out.position = mul( inPositionOS, mul(Local, WorldViewProjection) );
+    float4 transformed = mul( inPositionOS, mul(Local, WorldViewProjection) );
+    Out.position = transformed;
+    Out.positionPSP = transformed;
     
     //Out.position.y += sin(inPositionOS.x/7)*40;
        
@@ -198,6 +200,7 @@ PSOutput MultiPlanePS(PS_INPUT i) : COLOR0
 //	outp.Color = gettemperature(i.texCoord);
 //	outp.Color = float4(planeFraction,0,0,1);
 	outp.RenderChannelColor = RenderChannelColor;
+	outp.Depth = i.positionPSP.z / i.positionPSP.w;
 	//outp.DepthColor = float4(i.pos.y/DepthClipY,0,0,1);
 	outp.DepthColor = float4(i.pos.y/DepthClipY,i.pos.w,0,1);
 	

@@ -60,7 +60,7 @@ namespace ProjectMagma.Renderer
             GraphicsDevice device
         )
         {
-            EnablePostProcessing = true;
+            EnablePostProcessing = false;
 
             renderTime = new RenderTime(Game.Instance.GlobalClock.ContinuousMilliseconds,
                 Game.Instance.GlobalClock.PausableMilliseconds);
@@ -124,6 +124,7 @@ namespace ProjectMagma.Renderer
                 Target1 = new RenderTarget2D(Device, width, height, 1, format);
                 Target2 = new RenderTarget2D(Device, width, height, 1, format);
                 Target3 = new RenderTarget2D(Device, width, height, 1, format);
+                DepthTarget = new RenderTarget2D(Device, width, height, 1, SurfaceFormat.Single);
                 glowPass = new GlowPass(this, Target2, Target1);
                 hdrCombinePass = new HdrCombinePass(this, Target0, Target1);
             }
@@ -302,7 +303,8 @@ namespace ProjectMagma.Renderer
                 hdrCombinePass.GeometryRender = GeometryRender;
                 hdrCombinePass.BlurGeometryRender = glowPass.BlurGeometryRender;
                 hdrCombinePass.RenderChannelColor = glowPass.BlurRenderChannelColor;
-                hdrCombinePass.DepthTexture = DepthTexture;
+                hdrCombinePass.ToolTexture = ToolTexture;
+                hdrCombinePass.DepthTexture = DepthTarget.GetTexture();
 
                 Game.Instance.Profiler.BeginSection("renderer_post_hdr");
                 hdrCombinePass.Render();
@@ -372,6 +374,7 @@ namespace ProjectMagma.Renderer
                 Device.SetRenderTarget(0, Target0);
                 Device.SetRenderTarget(1, Target1);
                 Device.SetRenderTarget(2, Target3);
+                Device.SetRenderTarget(3, DepthTarget);
             }
 
             Device.Clear(Color.Black);
@@ -405,9 +408,10 @@ namespace ProjectMagma.Renderer
                 Device.SetRenderTarget(0, null);
                 Device.SetRenderTarget(1, null);
                 Device.SetRenderTarget(2, null);
+                Device.SetRenderTarget(3, null);
                 GeometryRender = Target0.GetTexture();
                 RenderChannels = Target1.GetTexture();
-                DepthTexture = Target3.GetTexture();
+                ToolTexture = Target3.GetTexture();
             }
         }
 
@@ -598,10 +602,11 @@ namespace ProjectMagma.Renderer
         private RenderTarget2D Target1 { get; set; }
         private RenderTarget2D Target2 { get; set; }
         private RenderTarget2D Target3 { get; set; }
+        private RenderTarget2D DepthTarget { get; set; }
 
         public Texture2D GeometryRender { get; set; }
         public Texture2D RenderChannels { get; set; }
-        public Texture2D DepthTexture { get; set; }
+        public Texture2D ToolTexture { get; set; }
 
         public ResolveTexture2D ResolveTarget { get; set; }
 

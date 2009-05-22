@@ -33,10 +33,10 @@ sampler2D RenderChannelColorSampler = sampler_state
 	AddressV = Clamp;
 };
 
-texture DepthTexture;
-sampler2D DepthTextureSampler = sampler_state
+texture ToolTexture;
+sampler2D ToolTextureSampler = sampler_state
 {
-	Texture = <DepthTexture>;
+	Texture = <ToolTexture>;
 	MinFilter = Linear;
 	MagFilter = Linear;
 	MipFilter = Linear;
@@ -55,6 +55,16 @@ sampler2D CloudTextureSampler = sampler_state
 	AddressV = Mirror;
 };
   
+texture DepthTexture;
+sampler2D DepthTextureSampler = sampler_state
+{
+	Texture = <DepthTexture>;
+	MinFilter = Point;
+	MagFilter = Point;
+	MipFilter = Point;
+	AddressU = Clamp;
+	AddressV = Clamp;
+};  
   
 float BloomSensitivity[3];
 
@@ -130,7 +140,7 @@ float4 ChannelPixelShader(float2 texCoord : TEXCOORD0, int channel)
 
 inline float GradientY(float2 texCoord)
 {
-	float yRaw = tex2D(DepthTextureSampler, texCoord).x;
+	float yRaw = tex2D(ToolTextureSampler, texCoord).x;
 	return saturate(yRaw * 2.0 - 0.8);
 }
 
@@ -165,13 +175,13 @@ float3 FogColor;//=float4(0,0,1,1);
 
 inline void ApplyFog(inout float4 img, in float2 texCoord)
 {
-	float zRaw = tex2D(DepthTextureSampler, texCoord).y;
+	float zRaw = tex2D(ToolTextureSampler, texCoord).y;
 	
 	float zRescaled = (zRaw - FogZOff) *FogZMul;
 	//float z = lerp(0,1,zRaw);
 	float z = saturate(zRescaled);
 	
-	float yRaw = tex2D(DepthTextureSampler, texCoord).x;
+	float yRaw = tex2D(ToolTextureSampler, texCoord).x;
 	float y = saturate((1-yRaw*2+FogYOff)*FogYMul);
 	
 	float y2 = saturate((1-yRaw));
@@ -189,7 +199,7 @@ inline void ApplyFog(inout float4 img, in float2 texCoord)
 const float flickerStrength = 0.0025;
 inline float2 PerturbTexCoord(in float2 texCoord)
 {
-	float yRaw = tex2D(DepthTextureSampler, texCoord).x;
+	float yRaw = tex2D(ToolTextureSampler, texCoord).x;
 	float y = saturate((1-yRaw*2));
 	
 	float4 clouds = tex2D(CloudTextureSampler, texCoord + RandomOffset);
@@ -199,8 +209,24 @@ inline float2 PerturbTexCoord(in float2 texCoord)
 	return lerp(texCoord, perturbedTexCoord, y);	
 }
 
-float4 PixelShader(float2 texCoord : TEXCOORD0) : COLOR0
+
+struct PostPixelShaderOutput
 {
+	float4 color : COLOR0;
+	//float depth  : DEPTH;
+};
+
+PostPixelShaderOutput PostPixelShader(float2 texCoord : TEXCOORD0)
+{
+	PostPixelShaderOutput result;
+	
+	//result.depth = tex2D(DepthTextureSampler, texCoord).r;
+	//result.color = float4(tex2D(DepthTextureSampler, texCoord).b,0,0,1);
+	//result.color = float4(tex2D(DepthTextureSampler, texCoord).r,0,0,1);
+	result.color = tex2D(DepthTextureSampler, texCoord);
+	
+	return result;
+		
 	float2 perturbedTexCoord = PerturbTexCoord(texCoord);
 
 	float4 channel1 = ChannelPixelShader(perturbedTexCoord, 0);
@@ -226,9 +252,11 @@ float4 PixelShader(float2 texCoord : TEXCOORD0) : COLOR0
     //if( (combined.x>=1 || combined.y>=1 || combined.z>=1) && !(combined.x>=1 && combined.y>=1 && combined.z>=1) )
 		//return float4(1,0,0,1);
     //else
-		return combined;
-    //return channel_map;
-    //return tex2D(DepthTextureSampler, texCoord);
+	result.color = combined;
+	return result;
+	
+	    //return channel_map;
+    //return tex2D(ToolTextureSampler, texCoord);
 
     // Combine the two images.
 
@@ -239,6 +267,6 @@ technique BloomCombine
 {
     pass Pass1
     {
-        PixelShader = compile ps_3_0 PixelShader();
+        PixelShader = compile ps_3_0 PostPixelShader();
     }
 }

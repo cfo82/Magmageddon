@@ -6,9 +6,10 @@
 	PSOutput Output;                                       \
 	Output.RenderChannelColor = RenderChannelColor;        \
 	Output.DepthColor = float4(pin.PositionWS.y/DepthClipY, pin.PositionWS.w, 0.0, 1.0); \
+	Output.Depth = pin.PositionPSP.z / pin.PositionPSP.w;                              \
 	ColorPair lightResult;                                 \
 	float3 normal;                                         
-	//Output.DepthColor = float4(pin.PositionWS.y/DepthClipY, pin.PositionWS.w, 0.0, 1.0); \
+	//Output.DepthColor = float4(pin.PositionWS.y/DepthClipY, pin.PositionWS.w, 0.0, 1.0);
 
 
 //-----------------------------------------------------------------------------
@@ -61,6 +62,8 @@ PSOutput PSEnvironment(PixelLightingPSInputTx pin) : COLOR
 	ComputeLighting(lightResult, normal, pin.PositionWS, pin.NormalWS);	
 	ComputeDiffSpecColorTx(Output.Color, texCoord, lightResult, pin.PositionWS.w);
 	PerturbEnvGroundWavesAlpha(Output.Color.a, Output.RenderChannelColor, pin.PositionWS);
+	Output.Depth = float4(pin.PositionPSP.z / pin.PositionPSP.w*10000-9992,0,0,1);
+	
 	return Output;
 }
 

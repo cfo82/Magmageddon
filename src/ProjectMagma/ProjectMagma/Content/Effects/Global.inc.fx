@@ -3,6 +3,7 @@ struct PSOutput
 	float4 Color              : COLOR0;
 	float4 RenderChannelColor : COLOR1;
 	float4 DepthColor         : COLOR2;
+	float4 Depth              : COLOR3;
 };
 
 const float DepthClipY = 600.0f;

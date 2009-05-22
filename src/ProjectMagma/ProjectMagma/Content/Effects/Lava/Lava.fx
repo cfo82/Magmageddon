@@ -43,7 +43,7 @@ float getstucco(float2 texCoord, float compression)
 	return stucco;
 }
 
-const float temperatureImpact = 0.95;
+//const float temperatureImpact = 0.95;
 
 //------------------------------------------------------------
 //                 EVALUATE LIGHTING MODEL
@@ -83,7 +83,7 @@ float4 ComputeIlluminationCombo( float2 texCoord, float3 vLightTS, float fOcclus
    //float4 cFinalColor = cDiffuse * cBaseColor + incandescence;
    float4 cFinalColor = incandescence;
    
-   cFinalColor *= (1 - temperatureImpact) + (gettemperature(texCoord) * temperatureImpact);
+   cFinalColor *= (1 - TemperatureBrightnessInfluence) + (gettemperature(texCoord) * TemperatureBrightnessInfluence);
    return cFinalColor;  
 }   
 

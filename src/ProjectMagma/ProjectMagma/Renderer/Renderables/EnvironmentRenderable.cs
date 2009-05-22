@@ -36,8 +36,10 @@ namespace ProjectMagma.Renderer
             effect.Parameters["EnvGroundWavesFrequency"].SetValue(EnvGroundWavesFrequency);
             effect.Parameters["EnvGroundWavesHardness"].SetValue(EnvGroundWavesHardness);
 
-            effect.Parameters["DirLight1BottomAmpMaxY"].SetValue(300);
-            effect.Parameters["DirLight1BottomAmpStrength"].SetValue(3);
+            effect.Parameters["DirLight1BottomAmpMaxY"].SetValue(renderer.EntityManager["environment"].GetFloat("dir_light_1_bottom_amp_max_y"));
+            effect.Parameters["DirLight1MinMultiplier"].SetValue(renderer.EntityManager["environment"].GetFloat("dir_light_1_min_multiplier"));
+            effect.Parameters["DirLight1MaxMultiplier"].SetValue(renderer.EntityManager["environment"].GetFloat("dir_light_1_max_multiplier"));
+            //effect.Parameters["DirLight1BottomAmpStrength"].SetValue(3);
         }
 
         public override void UpdateFloat(string id, double timestamp, float value)

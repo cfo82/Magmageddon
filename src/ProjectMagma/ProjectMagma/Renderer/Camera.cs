@@ -19,7 +19,7 @@ namespace ProjectMagma.Renderer
 
         public Camera(Renderer renderer)
         {
-            IsMoving = false;
+            IsMoving = true;
 
             //Position = new Vector3(0, 500, 1065)*1.4f;
             Position = initialPosition;
@@ -79,12 +79,12 @@ namespace ProjectMagma.Renderer
 
         public void GoTo(Vector3 pos)
         {
-            pos.X = Math.Max(pos.X, -300.0f);
+            pos.X = Math.Max(pos.X, -100.0f);
             pos.X = Math.Min(pos.X, 300.0f);
             pos.Y = Math.Max(pos.Y, 100.0f);
             pos.Y = Math.Min(pos.Y, 800.0f);
             pos.Z = Math.Max(pos.Z, 700.0f);
-            pos.Z = Math.Min(pos.Z, 1300.0f);
+            pos.Z = Math.Min(pos.Z, 1500.0f);
             centerController.TargetValue = pos;
         }
 

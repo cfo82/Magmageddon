@@ -9,11 +9,12 @@
   
   <Entity name="fog">
   	<Attributes>
-  		<Attribute name="fog_z_off" template="float" value="0.2"/>
-  		<Attribute name="fog_z_mul" template="float" value="0.0"/>
-  		<Attribute name="fog_y_off" template="float" value="0.2"/>
-  		<Attribute name="fog_y_mul" template="float" value="0.0"/>
-  		<Attribute name="fog_glob_mul" template="float" value="0.7"/>
+      <!--Attribute name="fog_z_off" template="float" value="0.37"/-->
+      <Attribute name="fog_z_off" template="float" value="0.35"/> <!-- big value: fog starts at greater distance -->
+  		<Attribute name="fog_z_mul" template="float" value="3.0"/>
+  		<Attribute name="fog_y_off" template="float" value="0"/> <!-- big value: fog ends at greater height -->
+  		<Attribute name="fog_y_mul" template="float" value="0.7"/>
+  		<Attribute name="fog_glob_mul" template="float" value="0.8"/>
   		<Attribute name="fog_color" template="float3" value="1 0.3 0"/>
 
       <!--
@@ -23,12 +24,23 @@
       <Attribute name="fog_y_mul" template="float" value="0.1"/>
       <Attribute name="fog_glob_mul" template="float" value="0.7"/>
       <Attribute name="fog_color" template="float3" value="1 0.3 0"/>
--->
-      
+-->      
     </Attributes>
-  </Entity> 
+  </Entity>
 
+  <Entity name="lava">
+    <Attributes>
+      <Attribute name="temperature_brightness_influence" template="float" value="0.95"/>
+    </Attributes>
+  </Entity>
 
+  <Entity name="environment">
+    <Attributes>
+      <Attribute name="dir_light_1_bottom_amp_max_y" template="float" value="300.0"/>
+      <Attribute name="dir_light_1_min_multiplier" template="float" value="1.0"/>
+      <Attribute name="dir_light_1_max_multiplier" template="float" value="3.0"/>
+    </Attributes>    
+  </Entity>
 
   <Entity name="tonemapping">
     <Attributes>
@@ -40,7 +52,7 @@
       <Attribute name="in1" template="float3" value="1 1.4 1"/>
       <Attribute name="out1" template="float3" value="1 1.1 1"/>
       <Attribute name="in2" template="float3" value="2 2.7 2"/>
-      <Attribute name="out2" template="float3" value="2 14 2"/>
+      <Attribute name="out2" template="float3" value="2 5 2"/>
     </Attributes>    
   </Entity>
 

@@ -75,15 +75,24 @@ namespace ProjectMagma.Simulation
             Vector3 position = island.GetVector3("position");
 
             // check if any player can interact with this island to provide an attribute so dominik is happy
-            bool interactable = playersOnIsland > 0;
-            if (!interactable)
+            bool interactable;
+            if (Game.Instance.Simulation.Phase == SimulationPhase.Game)
             {
-                foreach (Entity player in Game.Instance.Simulation.PlayerManager)
+                interactable = playersOnIsland > 0;
+                if (!interactable)
                 {
-                    float dist = (position - player.GetVector3("position")).Length();
-                    if (dist < playerConstants.GetFloat("island_jump_free_range"))
-                        interactable = true;
+                    foreach (Entity player in Game.Instance.Simulation.PlayerManager)
+                    {
+                        float dist = (position - player.GetVector3("position")).Length();
+                        if (dist < playerConstants.GetFloat("island_jump_free_range"))
+                            interactable = true;
+                    }
                 }
+            }
+            else
+            {
+                // islands are interactable only during game phase
+                interactable = false;
             }
             island.SetBool("interactable", interactable);
 

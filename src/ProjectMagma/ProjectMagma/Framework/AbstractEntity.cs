@@ -124,52 +124,57 @@ namespace ProjectMagma.Framework
             return attributes.ContainsKey(attribute);
         }
 
+        public bool HasAttributeWithType<AttributeType>(string attribute)
+        {
+            return HasAttribute(attribute) && attributes[attribute].GetType() == typeof(AttributeType);
+        }
+
         public bool IsString(string attribute)
         {
             Debug.Assert(HasAttribute(attribute));
-            return (GetAttribute(attribute) as StringAttribute) != null;
+            return HasAttributeWithType<StringAttribute>(attribute);
         }
 
         public bool IsBool(string attribute)
         {
             Debug.Assert(HasAttribute(attribute));
-            return GetAttribute(attribute) is BoolAttribute;
+            return HasAttributeWithType<BoolAttribute>(attribute);
         }
 
         public bool IsInt(string attribute)
         {
             Debug.Assert(HasAttribute(attribute));
-            return (GetAttribute(attribute) as IntAttribute) != null;
+            return HasAttributeWithType<IntAttribute>(attribute);
         }
 
         public bool IsFloat(string attribute)
         {
             Debug.Assert(HasAttribute(attribute));
-            return (GetAttribute(attribute) as FloatAttribute) != null;
+            return HasAttributeWithType<FloatAttribute>(attribute);
         }
 
         public bool IsVector2(string attribute)
         {
             Debug.Assert(HasAttribute(attribute));
-            return (GetAttribute(attribute) as Vector2Attribute) != null;
+            return HasAttributeWithType<Vector2Attribute>(attribute);
         }
 
         public bool IsVector3(string attribute)
         {
             Debug.Assert(HasAttribute(attribute));
-            return (GetAttribute(attribute) as Vector3Attribute) != null;
+            return HasAttributeWithType<Vector3Attribute>(attribute);
         }
 
         public bool IsQuaternion(string attribute)
         {
             Debug.Assert(HasAttribute(attribute));
-            return (GetAttribute(attribute) as QuaternionAttribute) != null;
+            return HasAttributeWithType<QuaternionAttribute>(attribute);
         }
 
         public bool IsMatrix(string attribute)
         {
             Debug.Assert(HasAttribute(attribute));
-            return (GetAttribute(attribute) as MatrixAttribute) != null;
+            return HasAttributeWithType<MatrixAttribute>(attribute);
         }
 
         public bool HasString(string attribute)
@@ -252,110 +257,116 @@ namespace ProjectMagma.Framework
             return GetMatrixAttribute(attribute).Value;
         }
 
-        public Attribute GetAttribute(string name)
+        public AttributeType GetAttribute<AttributeType>(string name) where AttributeType : Attribute
         {
             if (!attributes.ContainsKey(name))
             {
                 throw new System.ArgumentException(string.Format("attribute '{0}' not found!", name));
             }
 
-            return attributes[name];
+            Attribute attribute = attributes[name];
+            if (attributes.GetType() != typeof(AttributeType))
+            {
+                throw new System.ArgumentException(string.Format("requesting type '{0}' but attribute has type '{1}'!", typeof(AttributeType).Name, attribute.GetType()));
+            }
+
+            return attribute as AttributeType;
         }
 
         public StringAttribute GetStringAttribute(string attribute)
         {
             Debug.Assert(HasAttribute(attribute));
             Debug.Assert(IsString(attribute));
-            return GetAttribute(attribute) as StringAttribute;
+            return GetAttribute<StringAttribute>(attribute);
         }
 
         public IntAttribute GetIntAttribute(string attribute)
         {
             Debug.Assert(HasAttribute(attribute));
             Debug.Assert(IsInt(attribute));
-            return GetAttribute(attribute) as IntAttribute;
+            return GetAttribute<IntAttribute>(attribute);
         }
 
         public BoolAttribute GetBoolAttribute(string attribute)
         {
             Debug.Assert(HasAttribute(attribute));
             Debug.Assert(IsBool(attribute));
-            return GetAttribute(attribute) as BoolAttribute;
+            return GetAttribute<BoolAttribute>(attribute);
         }
 
         public FloatAttribute GetFloatAttribute(string attribute)
         {
             Debug.Assert(HasAttribute(attribute));
             Debug.Assert(IsFloat(attribute));
-            return GetAttribute(attribute) as FloatAttribute;
+            return GetAttribute<FloatAttribute>(attribute);
         }
 
         public Vector2Attribute GetVector2Attribute(string attribute)
         {
             Debug.Assert(HasAttribute(attribute));
             Debug.Assert(IsVector2(attribute));
-            return GetAttribute(attribute) as Vector2Attribute;
+            return GetAttribute<Vector2Attribute>(attribute);
         }
 
         public Vector3Attribute GetVector3Attribute(string attribute)
         {
             Debug.Assert(HasAttribute(attribute));
             Debug.Assert(IsVector3(attribute));
-            return GetAttribute(attribute) as Vector3Attribute;
+            return GetAttribute<Vector3Attribute>(attribute);
         }
 
         public QuaternionAttribute GetQuaternionAttribute(string attribute)
         {
             Debug.Assert(HasAttribute(attribute));
             Debug.Assert(IsQuaternion(attribute));
-            return GetAttribute(attribute) as QuaternionAttribute;
+            return GetAttribute<QuaternionAttribute>(attribute);
         }
 
         public MatrixAttribute GetMatrixAttribute(string attribute)
         {
             Debug.Assert(HasAttribute(attribute));
             Debug.Assert(IsMatrix(attribute));
-            return GetAttribute(attribute) as MatrixAttribute;
+            return GetAttribute<MatrixAttribute>(attribute);
         }
 
         public void SetInt(string attribute, int value)
         {
-            (GetAttribute(attribute) as IntAttribute).Value = value;
+            GetAttribute<IntAttribute>(attribute).Value = value;
         }
 
         public void SetBool(string attribute, bool value)
         {
-            (GetAttribute(attribute) as BoolAttribute).Value = value;
+            GetAttribute<BoolAttribute>(attribute).Value = value;
         }
 
         public void SetString(string attribute, string value)
         {
-            (GetAttribute(attribute) as StringAttribute).Value = value;
+            GetAttribute<StringAttribute>(attribute).Value = value;
         }
 
         public void SetFloat(string attribute, float value)
         {
-            (GetAttribute(attribute) as FloatAttribute).Value = value;
+            GetAttribute<FloatAttribute>(attribute).Value = value;
         }
 
         public void SetVector2(string attribute, Vector2 value)
         {
-            (GetAttribute(attribute) as Vector2Attribute).Value = value;
+            GetAttribute<Vector2Attribute>(attribute).Value = value;
         }
 
         public void SetVector3(string attribute, Vector3 value)
         {
-            (GetAttribute(attribute) as Vector3Attribute).Value = value;
+            GetAttribute<Vector3Attribute>(attribute).Value = value;
         }
 
         public void SetQuaternion(string attribute, Quaternion value)
         {
-            (GetAttribute(attribute) as QuaternionAttribute).Value = value;
+            GetAttribute<QuaternionAttribute>(attribute).Value = value;
         }
 
         public void SetMatrix(string attribute, Matrix value)
         {
-            (GetAttribute(attribute) as MatrixAttribute).Value = value;
+            GetAttribute<MatrixAttribute>(attribute).Value = value;
         }
 
         #endregion

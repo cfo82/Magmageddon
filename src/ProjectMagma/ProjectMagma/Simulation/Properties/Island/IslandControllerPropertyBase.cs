@@ -47,8 +47,8 @@ namespace ProjectMagma.Simulation
 
             ((CollisionProperty)entity.GetProperty("collision")).OnContact += CollisionHandler;
 //            ((Vector3Attribute)entity.GetAttribute("repulsion_velocity")).ValueChanged += RepulsionChangeHandler;
-            ((StringAttribute)entity.GetAttribute("repulsed_by")).ValueChanged += RepulsedByChangeHandler;
-            ((IntAttribute)entity.GetAttribute("players_on_island")).ValueChanged += PlayersOnIslandChangeHandler;
+            entity.GetAttribute<StringAttribute>("repulsed_by").ValueChanged += RepulsedByChangeHandler;
+            entity.GetAttribute<IntAttribute>("players_on_island").ValueChanged += PlayersOnIslandChangeHandler;
 
             originalPosition = entity.GetVector3("position");
         }
@@ -58,8 +58,8 @@ namespace ProjectMagma.Simulation
             (entity as Entity).Update -= OnUpdate;
             ((CollisionProperty)entity.GetProperty("collision")).OnContact -= CollisionHandler;
 //            ((Vector3Attribute)entity.GetAttribute("repulsion_velocity")).ValueChanged -= RepulsionChangeHandler;
-            ((StringAttribute)entity.GetAttribute("repulsed_by")).ValueChanged -= RepulsedByChangeHandler;
-            ((IntAttribute)entity.GetAttribute("players_on_island")).ValueChanged -= PlayersOnIslandChangeHandler;
+            entity.GetAttribute<StringAttribute>("repulsed_by").ValueChanged -= RepulsedByChangeHandler;
+            entity.GetAttribute<IntAttribute>("players_on_island").ValueChanged -= PlayersOnIslandChangeHandler;
         }
 
         protected virtual void OnUpdate(Entity island, SimulationTime simTime)

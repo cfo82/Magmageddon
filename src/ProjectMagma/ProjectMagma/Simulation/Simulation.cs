@@ -74,7 +74,7 @@ namespace ProjectMagma.Simulation
                     Debug.Assert(player.HasString("robot_entity"));
                     Debug.Assert(player.HasString("player_name"));
                     player.AddBoolAttribute("ready", false);
-                    ((BoolAttribute)player.GetAttribute("ready")).ValueChanged += OnPlayerReady;
+                    player.GetAttribute<BoolAttribute>("ready").ValueChanged += OnPlayerReady;
                     models[i] = player.GetString("robot_entity");
                 }
                 entityManager.AddEntities(levelData, models, players);
@@ -98,7 +98,7 @@ namespace ProjectMagma.Simulation
 
                 foreach (Entity player in playerManager)
                 {
-                    ((BoolAttribute)player.GetAttribute("ready")).ValueChanged -= OnPlayerReady;
+                    player.GetAttribute<BoolAttribute>("ready").ValueChanged -= OnPlayerReady;
                 }
 
                 entityManager.Clear();

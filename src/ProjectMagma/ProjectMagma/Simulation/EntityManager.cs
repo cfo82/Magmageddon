@@ -10,7 +10,7 @@ namespace ProjectMagma.Simulation
 {
     public class EntityManager : AbstractEntityManager<Entity>
     {
-        public override Entity CreateEntity(string name)
+        protected override Entity CreateEntity(string name)
         {
             return new Entity(name);
         }

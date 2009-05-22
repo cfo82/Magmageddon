@@ -3,7 +3,9 @@ using System.Diagnostics;
 using System.Collections.Generic;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
+using ProjectMagma.Shared.LevelData;
 using ProjectMagma.Renderer.Interface;
+using ProjectMagma.Renderer.ParticleSystem.Emitter;
 using ProjectMagma.Renderer.ParticleSystem.Stateful.Implementations;
 using ProjectMagma.Renderer.Renderables;
 
@@ -19,9 +21,24 @@ namespace ProjectMagma.Renderer
             Closed
         }
 
-        public class ChangePhase: RendererUpdate
+        public class ChangeLevelUpdate : RendererUpdate
         {
-            public ChangePhase(RendererPhase newPhase, string winningPlayer, RendererUpdatable winningUpdatable)
+            public ChangeLevelUpdate(string levelName)
+            {
+                this.levelName = levelName;
+            }
+
+            public void Apply(double timestamp)
+            {
+                Game.Instance.Renderer.ChangeLevel(levelName);
+            }
+
+            private string levelName;
+        }
+
+        public class ChangeToPhaseUpdate : RendererUpdate
+        {
+            public ChangeToPhaseUpdate(RendererPhase newPhase, string winningPlayer, RendererUpdatable winningUpdatable)
             {
                 this.newPhase = newPhase;
                 this.winningPlayer = winningPlayer;
@@ -47,6 +64,8 @@ namespace ProjectMagma.Renderer
 
             renderTime = new RenderTime(Game.Instance.GlobalClock.ContinuousMilliseconds,
                 Game.Instance.GlobalClock.PausableMilliseconds);
+
+            entityManager = new RendererEntityManager();
 
             this.device = device;
             updateRenderables = new List<Renderable>();
@@ -115,17 +134,29 @@ namespace ProjectMagma.Renderer
             {
                 explosionSystem.AddEmitter(new ProjectMagma.Renderer.ParticleSystem.Emitter.LavaExplosionEmitter());
             }
-            snowSystem = new Snow(this, Game.Instance.ContentManager, device);
-            snowSystem.AddEmitter(new ProjectMagma.Renderer.ParticleSystem.Emitter.SnowEmitter(200f));
-            for (int i = 0; i < 1000; ++i)
-            {
-                snowSystem.Update(-30d / 1000d + i * -30d / 1000d, -30d / 1000d + i * -30d / 1000d + 30d / 1000d);
-            }
 
             updateQueues = new List<RendererUpdateQueue>();
         }
 
-        public void ChangeToPhase(
+        protected void ChangeLevel(
+            string levelName
+        )
+        {
+            entityManager.Clear();
+            entityManager.Load(Game.Instance.ContentManager.Load<LevelData>(levelName));
+
+            // recreate the snow system using the new level parameters
+            if (snowSystem != null)
+                { snowSystem.UnloadResources(); }
+            snowSystem = new Snow(this, Game.Instance.ContentManager, device);
+            snowSystem.AddEmitter(new SnowEmitter(entityManager["snow"].GetFloat("particles_per_second")));
+            for (int i = 0; i < 1000; ++i)
+            {
+                snowSystem.Update(-30d / 1000d + i * -30d / 1000d, -30d / 1000d + i * -30d / 1000d + 30d / 1000d);
+            }
+        }
+
+        protected void ChangeToPhase(
             RendererPhase phase,
             string winningPlayer,
             RendererUpdatable winningUpdatable
@@ -586,5 +617,6 @@ namespace ProjectMagma.Renderer
         private List<RendererUpdateQueue> updateQueues;
 
         private RenderTime renderTime;
+        private RendererEntityManager entityManager;
     }
 }

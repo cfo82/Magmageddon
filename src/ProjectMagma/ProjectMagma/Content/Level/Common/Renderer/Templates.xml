@@ -1,0 +1,9 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<!DOCTYPE Level SYSTEM "../Levels.dtd">
+<Level>
+  <Entity name="snow_base" abstract="true">
+    <Attributes>
+      <Attribute name="particles_per_second" template="float" value="30"/>
+    </Attributes>
+  </Entity>
+</Level>

@@ -154,6 +154,8 @@
     <Compile Include="Renderer\Renderables\TexturedRenderable.cs" />
     <Compile Include="Renderer\Renderables\WinningScreenRenderable.cs" />
     <Compile Include="Renderer\Renderer.cs" />
+    <Compile Include="Renderer\RendererEntity.cs" />
+    <Compile Include="Renderer\RendererEntityManager.cs" />
     <Compile Include="Renderer\RenderMode.cs" />
     <Compile Include="Renderer\RenderPasses\GlowPass.cs" />
     <Compile Include="Renderer\RenderPasses\HDRCombinePass.cs">

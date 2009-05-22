@@ -121,6 +121,11 @@ namespace ProjectMagma.Renderer.ParticleSystem.Stateful
             this.emitters.Remove(emitter);
         }
 
+        public void ClearEmitters()
+        {
+            this.emitters.Clear();
+        }
+
         void FlushCreateParticles(int count)
         {
             createVertexBuffer.SetData<CreateVertex>(createVertexBufferIndex * CreateVertex.SizeInBytes, localCreateVertices, 0, count, CreateVertex.SizeInBytes, SetDataOptions.NoOverwrite);

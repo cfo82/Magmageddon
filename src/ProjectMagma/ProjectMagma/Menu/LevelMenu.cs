@@ -32,7 +32,10 @@ namespace ProjectMagma
 
         private void LevelActivated(MenuItem sender)
         {
-            Game.Instance.LoadLevel(Game.Instance.Levels[Selected].SimulationFileName);
+            Game.Instance.LoadLevel(
+                Game.Instance.Levels[Selected].SimulationFileName,
+                Game.Instance.Levels[Selected].RendererFileName
+            );
         }
 
         private void LevelSelected(MenuItem sender)

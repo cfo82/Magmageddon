@@ -30,7 +30,8 @@ namespace ProjectMagma.Simulation
 
         public RendererUpdateQueue Initialize(
             WrappedContentManager wrappedContent,
-            String level,
+            string simulationLevel,
+            string rendererLevel,
             double startTime
         )
         {
@@ -42,10 +43,11 @@ namespace ProjectMagma.Simulation
 
                 paused = false;
 
+                currentUpdateQueue.AddUpdate(new Renderer.Renderer.ChangeLevelUpdate(rendererLevel));
                 SetPhase(SimulationPhase.Intro, "", null);
 
                 // load level data
-                levelData = wrappedContent.Load<LevelData>(level);
+                levelData = wrappedContent.Load<LevelData>(simulationLevel);
                 entityManager.Load(levelData);
                 OnLevelLoaded();
 
@@ -278,7 +280,7 @@ namespace ProjectMagma.Simulation
             }
 
             this.phase = phase;
-            currentUpdateQueue.AddUpdate(new ProjectMagma.Renderer.Renderer.ChangePhase(rendererPhase, winningPlayer, winningUpdatable));
+            currentUpdateQueue.AddUpdate(new ProjectMagma.Renderer.Renderer.ChangeToPhaseUpdate(rendererPhase, winningPlayer, winningUpdatable));
         }
 
         public SimulationPhase Phase

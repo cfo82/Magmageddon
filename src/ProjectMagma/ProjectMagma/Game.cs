@@ -159,7 +159,7 @@ namespace ProjectMagma
              
 #if DEBUG
             // initialize simulation
-            LoadLevel("Level/Instances/TestLevel/Simulation");
+            LoadLevel("Level/Instances/TestLevel/Simulation", "Level/Instances/TestLevel/Renderer");
 
             // set default player
             Entity player1 = new Entity("player1");
@@ -195,7 +195,7 @@ namespace ProjectMagma
     #endif
 #else
             // initialize simulation
-            LoadLevel("Level/Instances/MenuLevel/Simulation");
+            LoadLevel("Level/Instances/MenuLevel/Simulation", "Level/Instances/MenuLevel/Renderer");
 #endif
 
             // load menu
@@ -254,7 +254,10 @@ namespace ProjectMagma
         /// initializes a new simulation using the level provided
         /// </summary>
         /// <param name="level"></param>
-        public void LoadLevel(String level)
+        public void LoadLevel(
+            string simulationLevel,
+            string rendererLevel
+        )
         {
             if (simulationThread != null)
             {
@@ -278,7 +281,7 @@ namespace ProjectMagma
 
             // init simulation
             simulation = new ProjectMagma.Simulation.Simulation();
-            RendererUpdateQueue q = simulation.Initialize(ContentManager, level, globalClock.PausableMilliseconds);
+            RendererUpdateQueue q = simulation.Initialize(ContentManager, simulationLevel, rendererLevel, globalClock.PausableMilliseconds);
             renderer.AddUpdateQueue(q);
 
 #if !XBOX

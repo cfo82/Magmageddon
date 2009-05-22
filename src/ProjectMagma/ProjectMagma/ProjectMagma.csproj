@@ -171,6 +171,8 @@
     <Compile Include="Renderer\Renderer.cs" />
     <Compile Include="Renderer\Interface\RendererUpdatable.cs" />
     <Compile Include="Renderer\Interface\RendererUpdate.cs" />
+    <Compile Include="Renderer\RendererEntity.cs" />
+    <Compile Include="Renderer\RendererEntityManager.cs" />
     <Compile Include="Renderer\RenderMode.cs" />
     <Compile Include="Renderer\Renderables\ShadowRenderable.cs" />
     <Compile Include="Renderer\RenderPasses\HdrCombinePass.cs" />

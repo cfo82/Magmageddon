@@ -150,19 +150,19 @@ namespace ProjectMagma.Framework
         {
             List<EntityType> entityList = new List<EntityType>();
             entityList.AddRange(this.entities.Values);
-            for (int i = entityList.Count; i >= 0; --i)
+            for (int i = entityList.Count; i > 0; --i)
             {
                 if (i >= entityList.Count)
                 { i = entityList.Count - 1; }
                 FireEntityRemoved(entityList[i]);
             }
-            for (int i = entityList.Count; i >= 0; --i)
+            for (int i = entityList.Count; i > 0; --i)
             {
                 if (i >= entityList.Count)
                 { i = entityList.Count - 1; }
                 entityList[i].DetachAll();
             }
-            for (int i = entityList.Count; i >= 0; --i)
+            for (int i = entityList.Count; i > 0; --i)
             {
                 if (i >= entityList.Count)
                 { i = entityList.Count - 1; }
@@ -213,7 +213,7 @@ namespace ProjectMagma.Framework
             }
         }
 
-        public abstract EntityType CreateEntity(string name);
+        protected abstract EntityType CreateEntity(string name);
 
         public event EntityAddedHandler<EntityType> EntityAdded;
         public event EntityRemovedHandler<EntityType> EntityRemoved;

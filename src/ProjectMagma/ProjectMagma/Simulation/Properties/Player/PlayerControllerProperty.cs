@@ -713,26 +713,41 @@ namespace ProjectMagma.Simulation
                     {
                         // change y rotation towards player in range
                         Vector3 aimVector;
-                        Vector3 direction;
-                        if (RightStickFlame)
-                            direction = new Vector3(controllerInput.flameStickX, 0, controllerInput.flameStickY);
-                        else
-                            direction = Vector3.Transform(new Vector3(0, 0, 1), GetRotation(player));
-                        direction.Normalize();
+                        Vector3 offsetDir = Vector3.Normalize(constants.GetVector3("flamethrower_offset"));
+                        Vector3 flamePos = flame.GetVector3("position");
+                        Vector3 direction = Vector3.Transform(new Vector3(0, 0, 1), GetRotation(player));
                         float maxAngle = constants.GetFloat("flamethrower_aim_angle");
                         Entity targetPlayer = SelectBestPlayerInDirection(ref playerPosition, ref direction, maxAngle, out aimVector);
                         if (targetPlayer != null)
                         {
+                            // correct target vector based on flame positon
+                            Vector3 targetPos = targetPlayer.GetVector3("position") + Vector3.UnitY * targetPlayer.GetVector3("scale").Y / 2;
+                            aimVector = targetPlayer.GetVector3("position") - flamePos;
+                            if (aimVector != Vector3.Zero)
+                                aimVector.Normalize();
+
+                            // correct direciton based on flame position
+                            direction = direction - offsetDir;
+                            if (direction != Vector3.Zero)
+                                direction.Normalize();
+
                             // get angle between stick dir and aimVector 
                             float a = (float)(Math.Acos(Vector3.Dot(aimVector, direction)) / Math.PI * 180);
                             float dirM = a / maxAngle;
                             float aimM = 1 - dirM;
 
-//                            Console.WriteLine("giving " + aimM + " support.");
- 
+                            //                            Console.WriteLine("giving " + aimM + " support.");
+
                             // we only aim perfectly in y, but give a little support in x/z
                             aimVector.X = direction.X * dirM + aimVector.X * aimM;
                             aimVector.Z = direction.Z * dirM + direction.Z * aimM;
+                        }
+                        else
+                        {
+                            // correct direciton based on flame position
+                            direction = direction - offsetDir;
+                            if (direction != Vector3.Zero)
+                                direction.Normalize();
                         }
 
                         Vector3 tminusp = aimVector;

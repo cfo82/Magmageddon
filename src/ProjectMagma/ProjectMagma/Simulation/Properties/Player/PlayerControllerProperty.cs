@@ -1607,12 +1607,11 @@ namespace ProjectMagma.Simulation
                     }
 
                     Entity winningPlayer = Game.Instance.Simulation.PlayerManager[0];
-                    RendererUpdatableProperty renderProperty = (RendererUpdatableProperty)winningPlayer.GetProperty("render");
 
                     Game.Instance.Simulation.SetPhase(
                         SimulationPhase.Outro,
                         winningPlayer.GetString("player_name"),
-                        renderProperty.Updatable
+                        null
                         );
                 }
             }
@@ -1762,19 +1761,21 @@ namespace ProjectMagma.Simulation
             {
                 ((HUDProperty)player.GetProperty("hud")).JetpackUsable = false;
             }
+            if (player.HasProperty("render"))
+            {
+                if (won == true)
+                {
+                    (player.GetProperty("render") as RobotRenderProperty).NextPermanentState = "win";
+                }
+                else
+                {
+                    (player.GetProperty("render") as RobotRenderProperty).NextPermanentState = "idle";
+                }
+            }
 
             if (simpleJumpIsland != null)
             {
                 StopSimpleJump();
-            }
-
-            if (won == true)
-            {
-                (player.GetProperty("render") as RobotRenderProperty).NextPermanentState = "win";
-            }
-            else
-            {
-                (player.GetProperty("render") as RobotRenderProperty).NextPermanentState = "idle";
             }
 
             // register with active

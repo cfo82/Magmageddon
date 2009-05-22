@@ -63,7 +63,7 @@
       <Attribute name="bv_type" template="string" value="alignedbox3tree"/>
       <Attribute name="diffuse_texture" template="string" value="Textures/Environment/cave_diffuse_v001"/>
       <!--Attribute name="diffuse_texture" template="string" value="Textures/custom_uv_diag"/-->
-      <Attribute name="lava_light_strength" template="float" value="10.0"/>
+      <Attribute name="lava_light_strength" template="float" value="1.0"/>
       <Attribute name="spot_light_strength" template="float" value="0.3"/>
       <Attribute name="sky_light_strength" template="float" value="1.5"/>
       <Attribute name="diffuse_color" template="float3" value="1.0 1.0 1.0"/>

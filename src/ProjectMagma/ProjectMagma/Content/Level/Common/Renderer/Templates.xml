@@ -4,6 +4,8 @@
   <Entity name="snow_base" abstract="true">
     <Attributes>
       <Attribute name="particles_per_second" template="float" value="30"/>
+      <Attribute name="particle_lifetime" template="float" value="25"/>
+      <Attribute name="max_alpha" template="float" value="0.6"/>
     </Attributes>
   </Entity>
   

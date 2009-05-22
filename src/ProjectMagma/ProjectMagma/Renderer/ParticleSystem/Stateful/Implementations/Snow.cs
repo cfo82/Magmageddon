@@ -49,6 +49,7 @@ namespace ProjectMagma.Renderer.ParticleSystem.Stateful.Implementations
         protected override void SetUpdateParameters(EffectParameterCollection parameters)
         {
             windAngle += 0.5f * ((float)random.NextDouble() - 0.5f);
+            parameters["SnowParticleLifetime"].SetValue(renderer.EntityManager["snow"].GetFloat("particle_lifetime"));
             parameters["WindForce"].SetValue(new Vector3(windForce * (float)Math.Cos(windAngle), 0, windForce * (float)Math.Sin(windAngle)));
              
             base.SetUpdateParameters(parameters);
@@ -56,6 +57,8 @@ namespace ProjectMagma.Renderer.ParticleSystem.Stateful.Implementations
 
         protected override void SetRenderingParameters(EffectParameterCollection parameters)
         {
+            parameters["SnowParticleLifetime"].SetValue(renderer.EntityManager["snow"].GetFloat("particle_lifetime"));
+            parameters["SnowMaxAlpha"].SetValue(renderer.EntityManager["snow"].GetFloat("max_alpha"));
             base.SetRenderingParameters(parameters);
         }
 

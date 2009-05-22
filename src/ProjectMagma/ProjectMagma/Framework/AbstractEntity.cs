@@ -121,55 +121,55 @@ namespace ProjectMagma.Framework
 
         public bool HasAttribute(string attribute)
         {
-            return Attributes.ContainsKey(attribute);
+            return attributes.ContainsKey(attribute);
         }
 
         public bool IsString(string attribute)
         {
             Debug.Assert(HasAttribute(attribute));
-            return (Attributes[attribute] as StringAttribute) != null;
+            return (GetAttribute(attribute) as StringAttribute) != null;
         }
 
         public bool IsBool(string attribute)
         {
             Debug.Assert(HasAttribute(attribute));
-            return Attributes[attribute] is BoolAttribute;
+            return GetAttribute(attribute) is BoolAttribute;
         }
 
         public bool IsInt(string attribute)
         {
             Debug.Assert(HasAttribute(attribute));
-            return (Attributes[attribute] as IntAttribute) != null;
+            return (GetAttribute(attribute) as IntAttribute) != null;
         }
 
         public bool IsFloat(string attribute)
         {
             Debug.Assert(HasAttribute(attribute));
-            return (Attributes[attribute] as FloatAttribute) != null;
+            return (GetAttribute(attribute) as FloatAttribute) != null;
         }
 
         public bool IsVector2(string attribute)
         {
             Debug.Assert(HasAttribute(attribute));
-            return (Attributes[attribute] as Vector2Attribute) != null;
+            return (GetAttribute(attribute) as Vector2Attribute) != null;
         }
 
         public bool IsVector3(string attribute)
         {
             Debug.Assert(HasAttribute(attribute));
-            return (Attributes[attribute] as Vector3Attribute) != null;
+            return (GetAttribute(attribute) as Vector3Attribute) != null;
         }
 
         public bool IsQuaternion(string attribute)
         {
             Debug.Assert(HasAttribute(attribute));
-            return (Attributes[attribute] as QuaternionAttribute) != null;
+            return (GetAttribute(attribute) as QuaternionAttribute) != null;
         }
 
         public bool IsMatrix(string attribute)
         {
             Debug.Assert(HasAttribute(attribute));
-            return (Attributes[attribute] as MatrixAttribute) != null;
+            return (GetAttribute(attribute) as MatrixAttribute) != null;
         }
 
         public bool HasString(string attribute)
@@ -252,106 +252,110 @@ namespace ProjectMagma.Framework
             return GetMatrixAttribute(attribute).Value;
         }
 
-        public Attribute GetAttribute(string attribute)
+        public Attribute GetAttribute(string name)
         {
-            Debug.Assert(HasAttribute(attribute));
-            return Attributes[attribute];
+            if (!attributes.ContainsKey(name))
+            {
+                throw new System.ArgumentException(string.Format("property '{0}' not found!", name));
+            }
+
+            return attributes[name];
         }
 
         public StringAttribute GetStringAttribute(string attribute)
         {
             Debug.Assert(HasAttribute(attribute));
             Debug.Assert(IsString(attribute));
-            return Attributes[attribute] as StringAttribute;
+            return GetAttribute(attribute) as StringAttribute;
         }
 
         public IntAttribute GetIntAttribute(string attribute)
         {
             Debug.Assert(HasAttribute(attribute));
             Debug.Assert(IsInt(attribute));
-            return Attributes[attribute] as IntAttribute;
+            return GetAttribute(attribute) as IntAttribute;
         }
 
         public BoolAttribute GetBoolAttribute(string attribute)
         {
             Debug.Assert(HasAttribute(attribute));
             Debug.Assert(IsBool(attribute));
-            return Attributes[attribute] as BoolAttribute;
+            return GetAttribute(attribute) as BoolAttribute;
         }
 
         public FloatAttribute GetFloatAttribute(string attribute)
         {
             Debug.Assert(HasAttribute(attribute));
             Debug.Assert(IsFloat(attribute));
-            return Attributes[attribute] as FloatAttribute;
+            return GetAttribute(attribute) as FloatAttribute;
         }
 
         public Vector2Attribute GetVector2Attribute(string attribute)
         {
             Debug.Assert(HasAttribute(attribute));
             Debug.Assert(IsVector2(attribute));
-            return Attributes[attribute] as Vector2Attribute;
+            return GetAttribute(attribute) as Vector2Attribute;
         }
 
         public Vector3Attribute GetVector3Attribute(string attribute)
         {
             Debug.Assert(HasAttribute(attribute));
             Debug.Assert(IsVector3(attribute));
-            return Attributes[attribute] as Vector3Attribute;
+            return GetAttribute(attribute) as Vector3Attribute;
         }
 
         public QuaternionAttribute GetQuaternionAttribute(string attribute)
         {
             Debug.Assert(HasAttribute(attribute));
             Debug.Assert(IsQuaternion(attribute));
-            return Attributes[attribute] as QuaternionAttribute;
+            return GetAttribute(attribute) as QuaternionAttribute;
         }
 
         public MatrixAttribute GetMatrixAttribute(string attribute)
         {
             Debug.Assert(HasAttribute(attribute));
             Debug.Assert(IsMatrix(attribute));
-            return Attributes[attribute] as MatrixAttribute;
+            return GetAttribute(attribute) as MatrixAttribute;
         }
 
         public void SetInt(string attribute, int value)
         {
-            (Attributes[attribute] as IntAttribute).Value = value;
+            (GetAttribute(attribute) as IntAttribute).Value = value;
         }
 
         public void SetBool(string attribute, bool value)
         {
-            (Attributes[attribute] as BoolAttribute).Value = value;
+            (GetAttribute(attribute) as BoolAttribute).Value = value;
         }
 
         public void SetString(string attribute, string value)
         {
-            (Attributes[attribute] as StringAttribute).Value = value;
+            (GetAttribute(attribute) as StringAttribute).Value = value;
         }
 
         public void SetFloat(string attribute, float value)
         {
-            (Attributes[attribute] as FloatAttribute).Value = value;
+            (GetAttribute(attribute) as FloatAttribute).Value = value;
         }
 
         public void SetVector2(string attribute, Vector2 value)
         {
-            (Attributes[attribute] as Vector2Attribute).Value = value;
+            (GetAttribute(attribute) as Vector2Attribute).Value = value;
         }
 
         public void SetVector3(string attribute, Vector3 value)
         {
-            (Attributes[attribute] as Vector3Attribute).Value = value;
+            (GetAttribute(attribute) as Vector3Attribute).Value = value;
         }
 
         public void SetQuaternion(string attribute, Quaternion value)
         {
-            (Attributes[attribute] as QuaternionAttribute).Value = value;
+            (GetAttribute(attribute) as QuaternionAttribute).Value = value;
         }
 
         public void SetMatrix(string attribute, Matrix value)
         {
-            (Attributes[attribute] as MatrixAttribute).Value = value;
+            (GetAttribute(attribute) as MatrixAttribute).Value = value;
         }
 
         #endregion
@@ -410,7 +414,7 @@ namespace ProjectMagma.Framework
         {
             StringBuilder str = new StringBuilder();
             str.Append(Name).Append(": {");
-            foreach (Attribute attr in Attributes.Values)
+            foreach (Attribute attr in attributes.Values)
                 str.Append(attr.ToString()).Append(";\n ");
             str.Append("}");
             return str.ToString();
@@ -421,14 +425,6 @@ namespace ProjectMagma.Framework
             get
             {
                 return this.name;
-            }
-        }
-
-        public Dictionary<string, Attribute> Attributes
-        {
-            get
-            {
-                return attributes;
             }
         }
 

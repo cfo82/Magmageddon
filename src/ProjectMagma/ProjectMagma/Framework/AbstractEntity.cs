@@ -396,6 +396,11 @@ namespace ProjectMagma.Framework
 
         public Property GetProperty(string name)
         {
+            if (!properties.ContainsKey(name))
+            {
+                throw new System.ArgumentException(string.Format("property '{0}' not found!", name)), 
+            }
+
             return properties[name];
         }
 

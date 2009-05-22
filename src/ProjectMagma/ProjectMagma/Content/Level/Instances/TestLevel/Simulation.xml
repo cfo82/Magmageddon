@@ -10,6 +10,9 @@
   <!-- "unique" game entities -->
 
   <Entity name="lava" extends="lava_base">
+    <Attributes>
+      <Attribute name="firefractal_texture" template="string" value="Textures/Lava/firefractal_orange"/>
+    </Attributes>
     <!-- don't mess with the lava, there is nothing to change here. -->
     <!-- if you know what you are doing, do it in the template. -->
   </Entity>

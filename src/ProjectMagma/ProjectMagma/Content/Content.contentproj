@@ -278,12 +278,6 @@
       <Importer>FbxImporter</Importer>
       <Processor>ModelProcessor</Processor>
     </None>
-    <Compile Include="Textures\Lava\firefractal.tga">
-      <Name>firefractal</Name>
-      <Importer>TextureImporter</Importer>
-      <Processor>TextureProcessor</Processor>
-      <ProcessorParameters_ColorKeyEnabled>False</ProcessorParameters_ColorKeyEnabled>
-    </Compile>
     <Compile Include="Textures\Lava\granite.tga">
       <Name>granite</Name>
       <Importer>TextureImporter</Importer>
@@ -869,6 +863,16 @@
       <Importer>XmlImporter</Importer>
       <Processor>PassThroughProcessor</Processor>
     </None>
+    <Compile Include="Textures\Lava\firefractal_orange.tga">
+      <Name>firefractal_orange</Name>
+      <Importer>TextureImporter</Importer>
+      <Processor>TextureProcessor</Processor>
+    </Compile>
+    <Compile Include="Textures\Lava\firefractal_red.tga">
+      <Name>firefractal_red</Name>
+      <Importer>TextureImporter</Importer>
+      <Processor>TextureProcessor</Processor>
+    </Compile>
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Level\Instances\Stack\Renderer.xml">

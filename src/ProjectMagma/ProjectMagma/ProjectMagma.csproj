@@ -198,6 +198,8 @@
     <Compile Include="Simulation\Collision\CollisionProperty.cs" />
     <Compile Include="Simulation\Collision\ContactPoint.cs" />
     <Compile Include="Simulation\Collision\TestList.cs" />
+    <Compile Include="Simulation\Entity.cs" />
+    <Compile Include="Simulation\EntityManager.cs" />
     <Compile Include="Simulation\Event\LevelLoadedHandler.cs" />
     <Compile Include="Simulation\EntityKindManager.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

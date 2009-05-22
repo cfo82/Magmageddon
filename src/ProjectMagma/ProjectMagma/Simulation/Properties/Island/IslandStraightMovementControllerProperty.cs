@@ -13,7 +13,7 @@ namespace ProjectMagma.Simulation
         {
         }
 
-        public override void OnAttached(Entity entity)
+        public override void OnAttached(AbstractEntity entity)
         {
             base.OnAttached(entity);
 
@@ -22,7 +22,7 @@ namespace ProjectMagma.Simulation
             direction.Normalize();
         }
 
-        public override void OnDetached(Entity entity)
+        public override void OnDetached(AbstractEntity entity)
         {
             base.OnDetached(entity);
         }

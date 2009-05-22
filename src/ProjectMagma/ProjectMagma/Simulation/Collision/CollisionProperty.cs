@@ -15,7 +15,7 @@ namespace ProjectMagma.Simulation.Collision
         }
 
         public void OnAttached(
-            Entity entity
+            AbstractEntity entity
         )
         {
             bool needAllContacts = entity.HasBool("need_all_contacts") && entity.GetBool("need_all_contacts");
@@ -35,21 +35,21 @@ namespace ProjectMagma.Simulation.Collision
                     object[] bvCylinders = new object[collisionVolumes.Length];
                     for (int i = 0; i < collisionVolumes.Length; ++i)
                     { bvCylinders[i] = collisionVolumes[i].GetVolume(VolumeType.Cylinder3); }
-                    Game.Instance.Simulation.CollisionManager.AddCylinderCollisionEntity(entity, this, bvCylinders, needAllContacts);
+                    Game.Instance.Simulation.CollisionManager.AddCylinderCollisionEntity(entity as Entity, this, bvCylinders, needAllContacts);
                 }
                 else if (bv_type == "alignedbox3tree")
                 {
                     object[] bvTrees = new object[collisionVolumes.Length];
                     for (int i = 0; i < collisionVolumes.Length; ++i)
                         { bvTrees[i] = collisionVolumes[i].GetVolume(VolumeType.AlignedBox3Tree); }
-                    Game.Instance.Simulation.CollisionManager.AddAlignedBox3TreeCollisionEntity(entity, this, bvTrees, needAllContacts);
+                    Game.Instance.Simulation.CollisionManager.AddAlignedBox3TreeCollisionEntity(entity as Entity, this, bvTrees, needAllContacts);
                 }
                 else if (bv_type == "sphere")
                 {
                     object[] bvSpheres = new object[collisionVolumes.Length];
                     for (int i = 0; i < collisionVolumes.Length; ++i)
                         { bvSpheres[i] = collisionVolumes[i].GetVolume(VolumeType.Sphere3); }
-                    Game.Instance.Simulation.CollisionManager.AddSphereCollisionEntity(entity, this, bvSpheres, needAllContacts);
+                    Game.Instance.Simulation.CollisionManager.AddSphereCollisionEntity(entity as Entity, this, bvSpheres, needAllContacts);
                 }
                 else if (bv_type == "alignedbox3")
                 {
@@ -62,7 +62,7 @@ namespace ProjectMagma.Simulation.Collision
         }
 
         public void OnDetached(
-            Entity entity
+            AbstractEntity entity
         )
         {
             Game.Instance.Simulation.CollisionManager.RemoveCollisionEntity(this);

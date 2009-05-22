@@ -25,18 +25,18 @@ namespace ProjectMagma.Simulation
             }
         }
 
-        public void OnAttached(Entity explosion)
+        public void OnAttached(AbstractEntity explosion)
         {
             liveTo = Game.Instance.Simulation.Time.At + explosion.GetInt("live_span");
 
             ((CollisionProperty)explosion.GetProperty("collision")).OnContact += ExplosionCollisionHandler;
          
-            explosion.Update += OnUpdate;
+            (explosion as Entity).Update += OnUpdate;
         }
 
-        public void OnDetached(Entity explosion)
+        public void OnDetached(AbstractEntity explosion)
         {
-            explosion.Update -= OnUpdate;
+            (explosion as Entity).Update -= OnUpdate;
 
             ((CollisionProperty)explosion.GetProperty("collision")).OnContact -= ExplosionCollisionHandler;
         }

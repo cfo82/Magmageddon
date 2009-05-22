@@ -54,7 +54,7 @@ namespace ProjectMagma.Simulation
             }
         }
 
-        private void OnEntityAdded(EntityManager manager, Entity entity)
+        private void OnEntityAdded(AbstractEntityManager<Entity> manager, Entity entity)
         {
             if (entity.HasString("kind"))
             {
@@ -65,7 +65,7 @@ namespace ProjectMagma.Simulation
             }
         }
 
-        private void OnEntityRemoved(EntityManager manager, Entity entity)
+        private void OnEntityRemoved(AbstractEntityManager<Entity> manager, Entity entity)
         {
             if (entities.Contains(entity))
             {

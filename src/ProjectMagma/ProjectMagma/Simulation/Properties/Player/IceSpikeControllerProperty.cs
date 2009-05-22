@@ -16,9 +16,9 @@ namespace ProjectMagma.Simulation
         {
         }
 
-        public void OnAttached(Entity entity)
+        public void OnAttached(AbstractEntity entity)
         {
-            this.iceSpike = entity;
+            this.iceSpike = entity as Entity;
             this.constants = Game.Instance.Simulation.EntityManager["player_constants"];
             this.templates = Game.Instance.ContentManager.Load<LevelData>("Level/Common/DynamicTemplates");
 
@@ -37,16 +37,16 @@ namespace ProjectMagma.Simulation
 
             createdAt = Game.Instance.Simulation.Time.At;
 
-            entity.Update += OnUpdate;
+            (entity as Entity).Update += OnUpdate;
         }
 
         private float createdAt;
 
-        public void OnDetached(Entity entity)
+        public void OnDetached(AbstractEntity entity)
         {
             ((CollisionProperty)entity.GetProperty("collision")).OnContact -= IceSpikeCollisionHandler;
             Game.Instance.Simulation.EntityManager.EntityRemoved -= OnEntityRemoved; 
-            entity.Update -= OnUpdate;
+            (entity as Entity).Update -= OnUpdate;
         }
 
         private void OnUpdate(Entity iceSpike, SimulationTime simTime)
@@ -217,7 +217,7 @@ namespace ProjectMagma.Simulation
             soundEffect.Play(Game.Instance.EffectsVolume);
         }
 
-        private void OnEntityRemoved(EntityManager manager, Entity entity)
+        private void OnEntityRemoved(AbstractEntityManager<Entity> manager, Entity entity)
         {
             if (entity == targetPlayer)
             {

@@ -15,11 +15,11 @@ namespace ProjectMagma.Simulation
             OnRepulsionEndAction = new PushBackFinishedHandler(OnRepulsionEnd);
         }
 
-        public virtual void OnAttached(Entity entity)
+        public virtual void OnAttached(AbstractEntity entity)
         {
             Debug.Assert(entity.HasVector3("position"));
 
-            this.island = entity;
+            this.island = entity as Entity;
             this.constants = Game.Instance.Simulation.EntityManager["island_constants"];
             this.playerConstants = Game.Instance.Simulation.EntityManager["player_constants"];
 
@@ -42,7 +42,7 @@ namespace ProjectMagma.Simulation
             scale.Y = 0;
             entity.AddFloatAttribute("radius", scale.Length());
 
-            entity.Update += OnUpdate;
+            (entity as Entity).Update += OnUpdate;
 
             ((CollisionProperty)entity.GetProperty("collision")).OnContact += CollisionHandler;
 //            ((Vector3Attribute)entity.GetAttribute("repulsion_velocity")).ValueChanged += RepulsionChangeHandler;
@@ -52,9 +52,9 @@ namespace ProjectMagma.Simulation
             originalPosition = entity.GetVector3("position");
         }
 
-        public virtual void OnDetached(Entity entity)
+        public virtual void OnDetached(AbstractEntity entity)
         {
-            entity.Update -= OnUpdate;
+            (entity as Entity).Update -= OnUpdate;
             ((CollisionProperty)entity.GetProperty("collision")).OnContact -= CollisionHandler;
 //            ((Vector3Attribute)entity.GetAttribute("repulsion_velocity")).ValueChanged -= RepulsionChangeHandler;
             ((StringAttribute)entity.GetAttribute("repulsed_by")).ValueChanged -= RepulsedByChangeHandler;

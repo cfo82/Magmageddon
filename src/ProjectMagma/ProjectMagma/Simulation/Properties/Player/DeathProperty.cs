@@ -25,14 +25,14 @@ namespace ProjectMagma.Simulation
             }
         }
 
-        public void OnAttached(Entity arrow)
+        public void OnAttached(AbstractEntity arrow)
         {
-            arrow.Update += OnUpdate;
+            (arrow as Entity).Update += OnUpdate;
         }
 
-        public void OnDetached(Entity entity)
+        public void OnDetached(AbstractEntity entity)
         {
-            entity.Update -= OnUpdate;
+            (entity as Entity).Update -= OnUpdate;
         }
 
     }

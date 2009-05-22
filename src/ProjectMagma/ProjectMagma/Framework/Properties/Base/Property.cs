@@ -7,7 +7,7 @@ namespace ProjectMagma.Simulation
 {
     public interface Property
     {
-        void OnAttached(Entity entity);
-        void OnDetached(Entity entity);
+        void OnAttached(AbstractEntity entity);
+        void OnDetached(AbstractEntity entity);
     }
 }

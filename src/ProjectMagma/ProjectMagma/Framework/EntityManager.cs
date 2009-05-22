@@ -7,13 +7,15 @@ using System.Diagnostics;
 
 namespace ProjectMagma.Simulation
 {
-    public class EntityManager : IEnumerable<Entity>
+    public abstract class AbstractEntityManager<EntityType>
+        : IEnumerable<EntityType>
+        where EntityType : AbstractEntity
     {
-        public EntityManager()
+        public AbstractEntityManager()
         {
-            this.entities = new Dictionary<string, Entity>();
-            this.addDeferred = new List<Entity>();
-            this.removeDeferred = new List<Entity>();
+            this.entities = new Dictionary<string, EntityType>();
+            this.addDeferred = new List<EntityType>();
+            this.removeDeferred = new List<EntityType>();
         }
 
         public void Load(LevelData levelData)
@@ -28,7 +30,7 @@ namespace ProjectMagma.Simulation
                 List<AttributeData> attributes = entityData.CollectAttributes(levelData);
                 List<PropertyData> properties = entityData.CollectProperties(levelData);
 
-                Entity entity = new Entity(entityData.name);
+                EntityType entity = CreateEntity(entityData.name);
                 foreach (AttributeData attributeData in attributes)
                 {
                     entity.AddAttribute(attributeData.name, attributeData.template, attributeData.value);
@@ -41,25 +43,25 @@ namespace ProjectMagma.Simulation
             }
         }
 
-        public void AddEntities(LevelData levelData, String[] bases, Entity[] entities)
+        public void AddEntities(LevelData levelData, String[] bases, EntityType[] entities)
         {
             Debug.Assert(bases.Length == entities.Length);
             for (int i = 0; i < bases.Length; i++)
             {
                 String baseStr = bases[i];
-                Entity entity = entities[i];
+                EntityType entity = entities[i];
                 CollectBaseData(entity, baseStr, levelData);
                 Add(entity);
             }
         }
 
-        public void Add(Entity entity, String baseStr, LevelData levelData)
+        public void Add(EntityType entity, String baseStr, LevelData levelData)
         {
             CollectBaseData(entity, baseStr, levelData);
             Add(entity);
         }
 
-        private void CollectBaseData(Entity entity, String baseStr, LevelData levelData)
+        private void CollectBaseData(EntityType entity, String baseStr, LevelData levelData)
         {
             List<AttributeData> attributes = levelData.entities[baseStr].CollectAttributes(levelData);
             List<PropertyData> properties = levelData.entities[baseStr].CollectProperties(levelData);
@@ -76,7 +78,7 @@ namespace ProjectMagma.Simulation
             }
         }
 
-        public void Add(Entity entity)
+        public void Add(EntityType entity)
         {
             if (entity.Name.Length == 0)
             {
@@ -94,12 +96,12 @@ namespace ProjectMagma.Simulation
             }
         }
 
-        public bool ContainsEntity(Entity entity)
+        public bool ContainsEntity(EntityType entity)
         {
             return this.entities.ContainsKey(entity.Name);
         }
 
-        public void Remove(Entity entity)
+        public void Remove(EntityType entity)
         {
             if (!this.entities.ContainsKey(entity.Name))
             {
@@ -111,18 +113,18 @@ namespace ProjectMagma.Simulation
             entity.Destroy();
         }
 
-        public void AddDeferred(Entity entity, String baseStr, LevelData levelData)
+        public void AddDeferred(EntityType entity, String baseStr, LevelData levelData)
         {
             CollectBaseData(entity, baseStr, levelData);
             AddDeferred(entity);
         }
 
-        public void AddDeferred(Entity entity)
+        public void AddDeferred(EntityType entity)
         {
             addDeferred.Add(entity);
         }
 
-        public void RemoveDeferred(Entity entity)
+        public void RemoveDeferred(EntityType entity)
         {
             if (!removeDeferred.Contains(entity))
             {
@@ -132,11 +134,11 @@ namespace ProjectMagma.Simulation
 
         public void ExecuteDeferred()
         {
-            foreach (Entity entity in removeDeferred)
+            foreach (EntityType entity in removeDeferred)
             {
                 Remove(entity);
             }
-            foreach (Entity entity in addDeferred)
+            foreach (EntityType entity in addDeferred)
             {
                 Add(entity);
             }
@@ -146,7 +148,7 @@ namespace ProjectMagma.Simulation
 
         public void Clear()
         {
-            List<Entity> entityList = new List<Entity>();
+            List<EntityType> entityList = new List<EntityType>();
             entityList.AddRange(this.entities.Values);
             for (int i = entityList.Count; i >= 0; --i)
             {
@@ -169,7 +171,7 @@ namespace ProjectMagma.Simulation
             entities.Clear();
         }
 
-        public IEnumerator<Entity> GetEnumerator()
+        public IEnumerator<EntityType> GetEnumerator()
         {
             return entities.Values.GetEnumerator();
         }
@@ -179,7 +181,7 @@ namespace ProjectMagma.Simulation
             return entities.Values.GetEnumerator();
         }
 
-        public Entity this[string name]
+        public EntityType this[string name]
         {
             get
             {
@@ -195,10 +197,7 @@ namespace ProjectMagma.Simulation
             }
         }
 
-        public event EntityAddedHandler EntityAdded;
-        public event EntityRemovedHandler EntityRemoved;
-
-        private void FireEntityAdded(Entity entity)
+        private void FireEntityAdded(EntityType entity)
         {
             if (this.EntityAdded != null)
             {
@@ -206,7 +205,7 @@ namespace ProjectMagma.Simulation
             }
         }
 
-        private void FireEntityRemoved(Entity entity)
+        private void FireEntityRemoved(EntityType entity)
         {
             if (this.EntityRemoved != null)
             {
@@ -214,8 +213,13 @@ namespace ProjectMagma.Simulation
             }
         }
 
-        Dictionary<string, Entity> entities;
-        List<Entity> addDeferred;
-        List<Entity> removeDeferred;
+        public abstract EntityType CreateEntity(string name);
+
+        public event EntityAddedHandler<EntityType> EntityAdded;
+        public event EntityRemovedHandler<EntityType> EntityRemoved;
+
+        Dictionary<string, EntityType> entities;
+        List<EntityType> addDeferred;
+        List<EntityType> removeDeferred;
     }
 }

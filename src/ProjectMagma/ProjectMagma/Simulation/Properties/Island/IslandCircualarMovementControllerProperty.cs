@@ -13,14 +13,14 @@ namespace ProjectMagma.Simulation
         {
         }
 
-        public override void OnAttached(Entity entity)
+        public override void OnAttached(AbstractEntity entity)
         {
             base.OnAttached(entity);
 
             if (!entity.HasAttribute("pillar"))
             {
                 entity.AddStringAttribute("pillar", "");
-                AssignPillar(entity);
+                AssignPillar(entity as Entity);
             }
             else
             {
@@ -33,7 +33,7 @@ namespace ProjectMagma.Simulation
             }
         }
 
-        public override void OnDetached(Entity entity)
+        public override void OnDetached(AbstractEntity entity)
         {
             base.OnDetached(entity);
         }

@@ -7,5 +7,6 @@ using ProjectMagma.Simulation;
 
 namespace ProjectMagma.Simulation
 {
-    public delegate void EntityAddedHandler(EntityManager manager, Entity entity);
+    public delegate void EntityAddedHandler<EntityType>(AbstractEntityManager<EntityType> manager, EntityType entity) 
+        where EntityType : AbstractEntity;
 }

@@ -14,7 +14,7 @@ namespace ProjectMagma.Simulation
 {
     public class FlamethrowerRenderProperty : RendererUpdatableProperty
     {
-        public override void OnAttached(Entity entity)
+        public override void OnAttached(AbstractEntity entity)
         {
             base.OnAttached(entity);
 
@@ -36,7 +36,7 @@ namespace ProjectMagma.Simulation
             Game.Instance.Simulation.CurrentUpdateQueue.AddUpdate(new AddRenderableUpdate((Renderable)Updatable));
         }
 
-        public override void OnDetached(Entity entity)
+        public override void OnDetached(AbstractEntity entity)
         {
             Game.Instance.Simulation.CurrentUpdateQueue.AddUpdate(new RemoveRenderableUpdate((Renderable)Updatable));
 

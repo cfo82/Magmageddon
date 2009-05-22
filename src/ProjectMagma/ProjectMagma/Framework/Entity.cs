@@ -8,11 +8,9 @@ using ProjectMagma.Simulation.Attributes;
 
 namespace ProjectMagma.Simulation
 {
-    public class Entity
+    public class AbstractEntity
     {
-        public event UpdateHandler Update;
-
-        public Entity(string name)
+        public AbstractEntity(string name)
         {
             this.name = name;
             this.attributes = new Dictionary<string, Attribute>();
@@ -38,14 +36,6 @@ namespace ProjectMagma.Simulation
         {
             properties.Clear();
             attributes.Clear();
-        }
-
-        public void OnUpdate(SimulationTime simTime)
-        {
-            if (Update != null)
-            {
-                Update(this, simTime);
-            }
         }
 
         #region Attribute Handling 

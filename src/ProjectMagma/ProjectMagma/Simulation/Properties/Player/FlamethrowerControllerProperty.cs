@@ -28,10 +28,10 @@ namespace ProjectMagma.Simulation
         {
         }
 
-        public void OnAttached(Entity flame)
+        public void OnAttached(AbstractEntity flame)
         {
             this.constants = Game.Instance.Simulation.EntityManager["player_constants"];
-            this.flame = flame;
+            this.flame = flame as Entity;
             this.player = Game.Instance.Simulation.EntityManager[flame.GetString("player")];
 
             player.GetVector3Attribute("position").ValueChanged += PlayerPositionHandler;
@@ -40,12 +40,12 @@ namespace ProjectMagma.Simulation
 
             ((CollisionProperty)flame.GetProperty("collision")).OnContact += FlamethrowerCollisionHandler;
 
-            flame.Update += OnUpdate;
+            (flame as Entity).Update += OnUpdate;
         }
 
-        public void OnDetached(Entity flame)
+        public void OnDetached(AbstractEntity flame)
         {
-            flame.Update -= OnUpdate;
+            (flame as Entity).Update -= OnUpdate;
             ((CollisionProperty)flame.GetProperty("collision")).OnContact -= FlamethrowerCollisionHandler;
             flame.GetBoolAttribute("fueled").ValueChanged -= FlameFuelChangeHandler;
             player.GetVector3Attribute("position").ValueChanged -= PlayerPositionHandler;

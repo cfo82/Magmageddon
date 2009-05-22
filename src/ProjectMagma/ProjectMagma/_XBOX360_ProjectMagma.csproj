@@ -181,10 +181,12 @@
     <Compile Include="Simulation\Collision\ContactPoint.cs" />
     <Compile Include="Simulation\Collision\TestList.cs" />
     <Compile Include="Framework\Entity.cs" />
+    <Compile Include="Simulation\Entity.cs" />
     <Compile Include="Simulation\EntityKindManager.cs" />
     <Compile Include="Framework\EntityManager.cs" />
     <Compile Include="Framework\Event\EntityAddedHandler.cs" />
     <Compile Include="Framework\Event\EntityRemovedHandler.cs" />
+    <Compile Include="Simulation\EntityManager.cs" />
     <Compile Include="Simulation\Event\LevelLoadedHandler.cs" />
     <Compile Include="Framework\Event\PropertyAddedHandler.cs" />
     <Compile Include="Framework\Event\UpdateHandler.cs" />

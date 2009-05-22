@@ -10,7 +10,6 @@ namespace ProjectMagma.Simulation
 {
     public abstract class PowerUpControllerBase : Property
     {
-
         private Random rand;
 
         public PowerUpControllerBase()
@@ -18,10 +17,10 @@ namespace ProjectMagma.Simulation
         }
 
         public void OnAttached(
-            Entity entity
+            AbstractEntity entity
         )
         {
-            this.powerup = entity;
+            this.powerup = entity as Entity;
             this.constants = Game.Instance.Simulation.EntityManager["powerup_constants"];
             this.island = Game.Instance.Simulation.EntityManager[entity.GetString("island_reference")];
 
@@ -56,7 +55,7 @@ namespace ProjectMagma.Simulation
         }
 
         public void OnDetached(
-            Entity entity
+            AbstractEntity entity
         )
         {
             powerup.Update -= OnUpdate;

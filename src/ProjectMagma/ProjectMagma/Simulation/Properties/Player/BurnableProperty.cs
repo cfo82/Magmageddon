@@ -31,7 +31,7 @@ namespace ProjectMagma.Simulation
             }
         }
 
-        public void OnAttached(Entity entity)
+        public void OnAttached(AbstractEntity entity)
         {
             this.constants = Game.Instance.Simulation.EntityManager["player_constants"];
 
@@ -41,12 +41,12 @@ namespace ProjectMagma.Simulation
             }
             entity.AddFloatAttribute("burnt_at", -entity.GetInt("burn_time"));
 
-            entity.Update += OnUpdate;
+            (entity as Entity).Update += OnUpdate;
         }
 
-        public void OnDetached(Entity entity)
+        public void OnDetached(AbstractEntity entity)
         {
-            entity.Update -= OnUpdate;
+            (entity as Entity).Update -= OnUpdate;
         }
 
     }

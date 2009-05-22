@@ -18,7 +18,7 @@ namespace ProjectMagma.Simulation
         {
         }
 
-        public override void OnAttached(Entity entity)
+        public override void OnAttached(AbstractEntity entity)
         {
             Debug.Assert(entity.HasAttribute("kind") && entity.GetString("kind") == "player");
 
@@ -96,7 +96,7 @@ namespace ProjectMagma.Simulation
             ChangeString("NextPowerupNotification", notification);
         }
 
-        public override void OnDetached(Entity entity)
+        public override void OnDetached(AbstractEntity entity)
         {
             Game.Instance.Simulation.CurrentUpdateQueue.AddUpdate(new RemoveRenderableUpdate((Renderable)Updatable));
 

@@ -14,9 +14,9 @@ namespace ProjectMagma.Simulation
 
         private float relPos;
 
-        public void OnAttached(Entity arrow)
+        public void OnAttached(AbstractEntity arrow)
         {
-            this.arrow = arrow;
+            this.arrow = arrow as Entity;
             this.island = null;
             this.constants = Game.Instance.Simulation.EntityManager["player_constants"];
 
@@ -29,11 +29,11 @@ namespace ProjectMagma.Simulation
 
             relPos = constants.GetFloat("arrow_island_min_distance_factor");
 
-            arrow.Update += OnUpdate;
+            (arrow as Entity).Update += OnUpdate;
         }
 
         public void OnDetached(
-            Entity entity
+            AbstractEntity entity
         )
         {
             arrow.Update -= OnUpdate;

@@ -96,11 +96,11 @@ namespace ProjectMagma.Simulation
         {
         }
 
-        public void OnAttached(Entity player)
+        public void OnAttached(AbstractEntity player)
         {
-            player.Update += OnUpdate;
+            (player as Entity).Update += OnUpdate;
 
-            this.player = player;
+            this.player = player as Entity;
             this.constants = Game.Instance.Simulation.EntityManager["player_constants"];
             this.templates = Game.Instance.ContentManager.Load<LevelData>("Level/Common/DynamicTemplates");
 
@@ -148,9 +148,9 @@ namespace ProjectMagma.Simulation
             this.previousPosition = player.GetVector3("position");
         }
 
-        public void OnDetached(Entity player)
+        public void OnDetached(AbstractEntity player)
         {
-            player.Update -= OnUpdate;
+            (player as Entity).Update -= OnUpdate;
 
             if (arrow != null && Game.Instance.Simulation.EntityManager.ContainsEntity(arrow))
             {
@@ -1598,7 +1598,7 @@ namespace ProjectMagma.Simulation
             }
         }
 
-        private void EntityRemovedHandler(EntityManager manager, Entity entity)
+        private void EntityRemovedHandler(AbstractEntityManager<Entity> manager, Entity entity)
         {
             if (entity.Name.Equals("flame" + "_" + player.Name))
             {

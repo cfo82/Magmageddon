@@ -47,7 +47,7 @@ namespace ProjectMagma.Simulation
 
             // register handlers
             this.island.GetVector3Attribute("position").ValueChanged += OnIslandPositionChanged;
-            ((CollisionProperty)entity.GetProperty("collision")).OnContact += PowerupCollisionHandler;
+            entity.GetProperty<CollisionProperty>("collision").OnContact += PowerupCollisionHandler;
 
             // load sound
             pickupSound = Game.Instance.ContentManager.Load<SoundEffect>("Sounds/" + powerup.GetString("pickup_sound"));
@@ -62,14 +62,14 @@ namespace ProjectMagma.Simulation
             powerup.Update -= OnUpdate;
             this.island.GetVector3Attribute("position").ValueChanged -= OnIslandPositionChanged;
             if(entity.HasProperty("collision"))
-                ((CollisionProperty)entity.GetProperty("collision")).OnContact -= PowerupCollisionHandler;
+                entity.GetProperty<CollisionProperty>("collision").OnContact -= PowerupCollisionHandler;
         }
 
         private void OnUpdate(Entity powerup, SimulationTime simTime)
         {
             if (powerUsed && respawnAt == 0)
             {
-                ((CollisionProperty)powerup.GetProperty("collision")).OnContact -= PowerupCollisionHandler;
+                powerup.GetProperty<CollisionProperty>("collision").OnContact -= PowerupCollisionHandler;
 
                 powerup.RemoveProperty("collision");
                 powerup.RemoveProperty("render");
@@ -101,7 +101,7 @@ namespace ProjectMagma.Simulation
                 powerup.AddProperty("shadow_cast", new ShadowCastProperty());
 
                 this.island.GetVector3Attribute("position").ValueChanged += OnIslandPositionChanged;
-                ((CollisionProperty)powerup.GetProperty("collision")).OnContact += PowerupCollisionHandler;
+                powerup.GetProperty<CollisionProperty>("collision").OnContact += PowerupCollisionHandler;
 
                 respawnAt = 0;
                 powerUsed = false;
@@ -134,10 +134,10 @@ namespace ProjectMagma.Simulation
                 GivePower(other);
 
                 // notify hud
-                (other.GetProperty("hud") as HUDProperty).NotifyPowerupPickup(powerup.GetVector3("position"), NotificationString);
+                other.GetProperty<HUDProperty>("hud").NotifyPowerupPickup(powerup.GetVector3("position"), NotificationString);
 
                 // check ranges
-                ((PlayerControllerProperty)other.GetProperty("controller")).CheckPlayerAttributeRanges(other);
+                other.GetProperty<PlayerControllerProperty>("controller").CheckPlayerAttributeRanges(other);
 
                 // soundeffect
                 pickupSound.Play(Game.Instance.EffectsVolume);

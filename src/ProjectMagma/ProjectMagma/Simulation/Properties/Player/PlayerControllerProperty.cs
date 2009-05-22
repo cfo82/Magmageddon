@@ -128,7 +128,7 @@ namespace ProjectMagma.Simulation
             player.AddStringAttribute("jump_island", "");
 
             Game.Instance.Simulation.EntityManager.EntityRemoved += EntityRemovedHandler;
-            ((CollisionProperty)player.GetProperty("collision")).OnContact += PlayerCollisionHandler;
+            player.GetProperty<CollisionProperty>("collision").OnContact += PlayerCollisionHandler;
 
             jetpackSound = Game.Instance.ContentManager.Load<SoundEffect>("Sounds/jetpack");
             flameThrowerSound = Game.Instance.ContentManager.Load<SoundEffect>("Sounds/flamethrower");
@@ -166,7 +166,7 @@ namespace ProjectMagma.Simulation
 
             if (player.HasProperty("collision"))
             {
-                ((CollisionProperty)player.GetProperty("collision")).OnContact -= PlayerCollisionHandler;
+                player.GetProperty<CollisionProperty>("collision").OnContact -= PlayerCollisionHandler;
             }
         }
 
@@ -311,7 +311,7 @@ namespace ProjectMagma.Simulation
             if(controllerInput.StartHitAnimation)
             {
                 controllerInput.StartHitAnimation = false;
-                (player.GetProperty("render") as RobotRenderProperty).NextOnceState = "hit";
+                player.GetProperty<RobotRenderProperty>("render").NextOnceState = "hit";
             }
 
             Debug.Assert(!(selectedIsland == null) || !arrow.HasProperty("render"));
@@ -338,8 +338,8 @@ namespace ProjectMagma.Simulation
                 {
                     position = surfacePos;
 
-                    (player.GetProperty("render") as RobotRenderProperty).NextOnceState = "jump_end";
-                    (activeIsland.GetProperty("render") as IslandRenderProperty).Squash();
+                    player.GetProperty<RobotRenderProperty>("render").NextOnceState = "jump_end";
+                    activeIsland.GetProperty<IslandRenderProperty>("render").Squash();
 
                     landedAt = simTime.At;
                 }
@@ -412,7 +412,7 @@ namespace ProjectMagma.Simulation
                 * -constants.GetVector3("simple_jump_gravity_acceleration");
 
             // and adapt model
-            (player.GetProperty("render") as RobotRenderProperty).NextPermanentState = "jump";
+            player.GetProperty<RobotRenderProperty>("render").NextPermanentState = "jump";
         }
 
         private void StartIslandJump(Entity island, ref Vector3 playerPosition, ref Vector3 playerVelocity)
@@ -430,7 +430,7 @@ namespace ProjectMagma.Simulation
 
             island.GetAttribute<Vector3Attribute>("position").ValueChanged += IslandPositionHandler;
 
-            (player.GetProperty("render") as RobotRenderProperty).NextPermanentState = "jump";
+            player.GetProperty<RobotRenderProperty>("render").NextPermanentState = "jump";
         }
 
         private void PerformIslandSelectionAction(float at, ref Vector3 playerPosition)
@@ -513,7 +513,7 @@ namespace ProjectMagma.Simulation
                 else
                 {
                     //arrow.SetVector2("persistent_squash", new Vector2(1000f, 0.8f));
-                    (arrow.GetProperty("render") as ArrowRenderProperty).JumpPossible = false;//SquashParams = new Vector2(1000f, 0.8f);
+                    arrow.GetProperty<ArrowRenderProperty>("render").JumpPossible = false;//SquashParams = new Vector2(1000f, 0.8f);
                 }
             }
         }
@@ -566,8 +566,8 @@ namespace ProjectMagma.Simulation
                         if(!repulsionPossible)
                         {
                             // if button pressed but move stick not moved just indicate possible stuff
-                            (player.GetProperty("render") as RobotRenderProperty).NextPermanentState = "repulsion";
-                            ((HUDProperty)player.GetProperty("hud")).RepulsionUsable = true;
+                            player.GetProperty<RobotRenderProperty>("render").NextPermanentState = "repulsion";
+                            player.GetProperty<HUDProperty>("hud").RepulsionUsable = true;
                             repulsionPossible = true;
                         }
                 }
@@ -583,29 +583,29 @@ namespace ProjectMagma.Simulation
                         if (dir != Vector3.Zero)
                         {
                             dir.Normalize();
-                            ((HUDProperty)player.GetProperty("hud")).RepulsionUsable = false;
+                            player.GetProperty<HUDProperty>("hud").RepulsionUsable = false;
                         }
                         else
                         {
-                            ((HUDProperty)player.GetProperty("hud")).RepulsionUsable = true;
+                            player.GetProperty<HUDProperty>("hud").RepulsionUsable = true;
                         }
 
                         if (simTime.At > crawlStateChangedAt + 200) // todo: change constant
                         {
                             if (dir == islandRepulsionLastStickDir)
                             {
-                                (player.GetProperty("render") as RobotRenderProperty).NextPermanentState = "repulsion";
+                                player.GetProperty<RobotRenderProperty>("render").NextPermanentState = "repulsion";
                                 crawlStateChangedAt = simTime.At;
                             }
                             else
                                 if (Vector3.Cross(dir, islandSelectionLastStickDir).Y > 0)
                                 {
-                                    (player.GetProperty("render") as RobotRenderProperty).NextPermanentState = "crawl_left";
+                                    player.GetProperty<RobotRenderProperty>("render").NextPermanentState = "crawl_left";
                                     crawlStateChangedAt = simTime.At;
                                 }
                                 else
                                 {
-                                    (player.GetProperty("render") as RobotRenderProperty).NextPermanentState = "crawl_right";
+                                    player.GetProperty<RobotRenderProperty>("render").NextPermanentState = "crawl_right";
                                     crawlStateChangedAt = simTime.At;
                                 }
                         }
@@ -642,16 +642,16 @@ namespace ProjectMagma.Simulation
                         if(repulsionPossible)
                         {
                             // removed idicators
-                            (player.GetProperty("render") as RobotRenderProperty).NextPermanentState = "idle";
-                            ((HUDProperty)player.GetProperty("hud")).RepulsionUsable = false;
+                            player.GetProperty<RobotRenderProperty>("render").NextPermanentState = "idle";
+                            player.GetProperty<HUDProperty>("hud").RepulsionUsable = false;
                             repulsionPossible = false;
                         }
             }
             else
                 if(repulsionActive)
                 {
-                    (player.GetProperty("render") as RobotRenderProperty).NextPermanentState = "idle";
-                    ((HUDProperty)player.GetProperty("hud")).RepulsionUsable = false;
+                    player.GetProperty<RobotRenderProperty>("render").NextPermanentState = "idle";
+                    player.GetProperty<HUDProperty>("hud").RepulsionUsable = false;
                     repulsionPossible = false;
                     repulsionActive = false;
                 }
@@ -659,15 +659,15 @@ namespace ProjectMagma.Simulation
 
         private void StartRepulsion()
         {
-            (player.GetProperty("render") as RobotRenderProperty).NextPermanentState = "repulsion";
+            player.GetProperty<RobotRenderProperty>("render").NextPermanentState = "repulsion";
             activeIsland.SetString("repulsed_by", player.Name);
             repulsionActive = true;
         }
 
         private void StopRepulsion()
         {
-            (player.GetProperty("render") as RobotRenderProperty).NextPermanentState = "idle";
-            ((HUDProperty)player.GetProperty("hud")).RepulsionUsable = false;
+            player.GetProperty<RobotRenderProperty>("render").NextPermanentState = "idle";
+            player.GetProperty<HUDProperty>("hud").RepulsionUsable = false;
             activeIsland.SetString("repulsed_by", "");
             repulsionActive = false;
             repulsionPossible = false;
@@ -703,7 +703,7 @@ namespace ProjectMagma.Simulation
                         Game.Instance.Simulation.EntityManager.AddDeferred(flame, "flamethrower_base", templates);
 
                         // indicate on model
-                        (player.GetProperty("render") as RobotRenderProperty).NextPermanentState = "attack_long";
+                        player.GetProperty<RobotRenderProperty>("render").NextPermanentState = "attack_long";
                     }
                 }
                 else
@@ -767,7 +767,7 @@ namespace ProjectMagma.Simulation
                         // stop when energy runs out
                         if (player.GetInt("energy") <= 0)
                         {
-                            (player.GetProperty("render") as RobotRenderProperty).NextPermanentState = "idle";
+                            player.GetProperty<RobotRenderProperty>("render").NextPermanentState = "idle";
                             flame.SetBool("fueled", false);
                         }
                     }
@@ -777,7 +777,7 @@ namespace ProjectMagma.Simulation
             {
                 if (flame != null)
                 {
-                    (player.GetProperty("render") as RobotRenderProperty).NextPermanentState = "idle";
+                    player.GetProperty<RobotRenderProperty>("render").NextPermanentState = "idle";
                     flame.SetBool("fueled", false);
                 }
             }
@@ -872,14 +872,14 @@ namespace ProjectMagma.Simulation
                             playerPosition.X += controllerInput.leftStickX * dt * constants.GetFloat("x_axis_run_multiplier");
                             playerPosition.Z += controllerInput.leftStickY * dt * constants.GetFloat("z_axis_run_multiplier");
 
-                            (player.GetProperty("render") as RobotRenderProperty).NextPermanentState = "run";
+                            player.GetProperty<RobotRenderProperty>("render").NextPermanentState = "run";
                         }
                         else
                         {
                             playerPosition.X += controllerInput.leftStickX * dt * constants.GetFloat("x_axis_walk_multiplier");
                             playerPosition.Z += controllerInput.leftStickY * dt * constants.GetFloat("z_axis_walk_multiplier");
 
-                            (player.GetProperty("render") as RobotRenderProperty).NextPermanentState = "walk";
+                            player.GetProperty<RobotRenderProperty>("render").NextPermanentState = "walk";
                         }
 
                         // check position a bit further in walking direction to be still on island
@@ -905,10 +905,10 @@ namespace ProjectMagma.Simulation
             }
             else
             {
-                if((player.GetProperty("render") as RobotRenderProperty).NextPermanentState == "walk"
-                    || (player.GetProperty("render") as RobotRenderProperty).NextPermanentState == "run")
+                if(player.GetProperty<RobotRenderProperty>("render").NextPermanentState == "walk"
+                    || player.GetProperty<RobotRenderProperty>("render").NextPermanentState == "run")
                 {
-                    (player.GetProperty("render") as RobotRenderProperty).NextPermanentState = "idle";
+                    player.GetProperty<RobotRenderProperty>("render").NextPermanentState = "idle";
                 }
             }
 
@@ -998,8 +998,8 @@ namespace ProjectMagma.Simulation
                 {
                     SetActiveIsland(destinationIsland);
 
-                    (player.GetProperty("render") as BasicRenderProperty).Squash();
-                    (destinationIsland.GetProperty("render") as IslandRenderProperty).Squash();
+                    player.GetProperty<BasicRenderProperty>("render").Squash();
+                    destinationIsland.GetProperty<IslandRenderProperty>("render").Squash();
 
                     playerPosition = isectPt;
 
@@ -1028,7 +1028,7 @@ namespace ProjectMagma.Simulation
 
         private void StopIslandJump()
         {
-            (player.GetProperty("render") as RobotRenderProperty).NextPermanentState = "idle";
+            player.GetProperty<RobotRenderProperty>("render").NextPermanentState = "idle";
             destinationIsland.GetAttribute<Vector3Attribute>("position").ValueChanged -= IslandPositionHandler;
             destinationIsland = null;
         }
@@ -1045,7 +1045,7 @@ namespace ProjectMagma.Simulation
                 && player.GetInt("frozen") <= 0 // jetpack doesn't work when frozen
             )
             {
-                ((HUDProperty)player.GetProperty("hud")).JetpackUsable = false;
+                player.GetProperty<HUDProperty>("hud").JetpackUsable = false;
 
                 if (!jetpackActive)
                 {
@@ -1111,7 +1111,7 @@ namespace ProjectMagma.Simulation
                     player.SetInt("deaths", player.GetInt("deaths") + 1);
                     player.SetInt("lives", player.GetInt("lives") - 1);
 
-                    ((CollisionProperty)player.GetProperty("collision")).OnContact -= PlayerCollisionHandler;
+                    player.GetProperty<CollisionProperty>("collision").OnContact -= PlayerCollisionHandler;
 
                     // deactivate
                     player.RemoveProperty("render");
@@ -1187,7 +1187,7 @@ namespace ProjectMagma.Simulation
                         player.AddProperty("collision", new CollisionProperty());
                         player.AddProperty("render", new RobotRenderProperty());
                         player.AddProperty("shadow_cast", new ShadowCastProperty());
-                        ((CollisionProperty)player.GetProperty("collision")).OnContact += PlayerCollisionHandler;
+                        player.GetProperty<CollisionProperty>("collision").OnContact += PlayerCollisionHandler;
 
                         // reset respawn timer
                         respawnStartedAt = 0;
@@ -1477,7 +1477,7 @@ namespace ProjectMagma.Simulation
                 hitPerformedAt = simTime.At;
 
                 // indicate in model
-                (otherPlayer.GetProperty("render") as RobotRenderProperty).NextOnceState = "pushback";
+                otherPlayer.GetProperty<RobotRenderProperty>("render").NextOnceState = "pushback";
             }
             else
             {
@@ -1553,11 +1553,11 @@ namespace ProjectMagma.Simulation
                 // damage taken
                 if (oldValue - newValue >= constants.GetInt("ice_spike_damage"))
                 {
-                    (player.GetProperty("render") as RobotRenderProperty).NextOnceState = "hurt_hard";
+                    player.GetProperty<RobotRenderProperty>("render").NextOnceState = "hurt_hard";
                 }
                 else
                 {
-                    (player.GetProperty("render") as RobotRenderProperty).NextOnceState = "hurt_soft";
+                    player.GetProperty<RobotRenderProperty>("render").NextOnceState = "hurt_soft";
                 }
             }
         }
@@ -1612,7 +1612,7 @@ namespace ProjectMagma.Simulation
                     if (player.HasProperty("render")
                         && activeIsland != null)
                     {
-                        (player.GetProperty("render") as RobotRenderProperty).NextPermanentState = "win";
+                        player.GetProperty<RobotRenderProperty>("render").NextPermanentState = "win";
                     }
 
                     if (selectedIsland != null)
@@ -1780,17 +1780,17 @@ namespace ProjectMagma.Simulation
         {
             if (player.HasProperty("hud"))
             {
-                ((HUDProperty)player.GetProperty("hud")).JetpackUsable = false;
+                player.GetProperty<HUDProperty>("hud").JetpackUsable = false;
             }
             if (player.HasProperty("render"))
             {
                 if (won == true)
                 {
-                    (player.GetProperty("render") as RobotRenderProperty).NextPermanentState = "win";
+                    player.GetProperty<RobotRenderProperty>("render").NextPermanentState = "win";
                 }
                 else
                 {
-                    (player.GetProperty("render") as RobotRenderProperty).NextPermanentState = "idle";
+                    player.GetProperty<RobotRenderProperty>("render").NextPermanentState = "idle";
                 }
             }
 
@@ -1819,7 +1819,7 @@ namespace ProjectMagma.Simulation
                 //Console.WriteLine(player.Name+" left island");
                 if (destinationIsland == null && simpleJumpIsland == null)
                 {
-                    ((HUDProperty)player.GetProperty("hud")).JetpackUsable = true;
+                    player.GetProperty<HUDProperty>("hud").JetpackUsable = true;
                 }
 
                 activeIsland.GetAttribute<Vector3Attribute>("position").ValueChanged -= IslandPositionHandler;
@@ -1839,7 +1839,7 @@ namespace ProjectMagma.Simulation
         private void StopSimpleJump()
         {
             simpleJumpIsland.GetAttribute<Vector3Attribute>("position").ValueChanged -= IslandPositionHandler;
-            (player.GetProperty("render") as RobotRenderProperty).NextPermanentState = "idle";
+            player.GetProperty<RobotRenderProperty>("render").NextPermanentState = "idle";
             player.SetString("jump_island", "");
             simpleJumpIsland = null;
         }

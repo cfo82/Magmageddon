@@ -121,8 +121,8 @@ namespace ProjectMagma.Simulation.Collision
                     //    ++collisionCount;
                     //}
 
-                    CollisionProperty propertyA = contact.EntityA.HasProperty("collision") ? (CollisionProperty)contact.EntityA.GetProperty("collision") : null;
-                    CollisionProperty propertyB = contact.EntityB.HasProperty("collision") ? (CollisionProperty)contact.EntityB.GetProperty("collision") : null;
+                    CollisionProperty propertyA = contact.EntityA.HasProperty("collision") ? contact.EntityA.GetProperty<CollisionProperty>("collision") : null;
+                    CollisionProperty propertyB = contact.EntityB.HasProperty("collision") ? contact.EntityB.GetProperty<CollisionProperty>("collision") : null;
 
                     if (propertyA != null && propertyB != null)
                     {

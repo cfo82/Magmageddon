@@ -23,7 +23,7 @@ namespace ProjectMagma.Simulation
             this.constants = Game.Instance.Simulation.EntityManager["player_constants"];
             this.templates = Game.Instance.ContentManager.Load<LevelData>("Level/Common/DynamicTemplates");
 
-            ((CollisionProperty)entity.GetProperty("collision")).OnContact += IceSpikeCollisionHandler;
+            entity.GetProperty<CollisionProperty>("collision").OnContact += IceSpikeCollisionHandler;
 
             string targetPlayerName = entity.GetString("target_player");
             if (targetPlayerName != "")
@@ -45,7 +45,7 @@ namespace ProjectMagma.Simulation
 
         public void OnDetached(AbstractEntity entity)
         {
-            ((CollisionProperty)entity.GetProperty("collision")).OnContact -= IceSpikeCollisionHandler;
+            entity.GetProperty<CollisionProperty>("collision").OnContact -= IceSpikeCollisionHandler;
             Game.Instance.Simulation.EntityManager.EntityRemoved -= OnEntityRemoved; 
             (entity as Entity).Update -= OnUpdate;
         }
@@ -190,7 +190,7 @@ namespace ProjectMagma.Simulation
         private void SetDead(Entity iceSpike, SimulationTime simTime)
         {
             iceSpike.SetBool("dead", true);
-            ((CollisionProperty)iceSpike.GetProperty("collision")).OnContact -= IceSpikeCollisionHandler;
+            iceSpike.GetProperty<CollisionProperty>("collision").OnContact -= IceSpikeCollisionHandler;
 
             // add explosion
             Entity iceSpikeExplosion = new Entity(iceSpike.Name+"_explosion");

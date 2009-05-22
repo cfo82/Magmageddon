@@ -17,7 +17,7 @@ namespace ProjectMagma.Simulation
         {
             if (hadCollision)
             {
-                ((CollisionProperty)explosion.GetProperty("collision")).OnContact -= ExplosionCollisionHandler;
+                explosion.GetProperty<CollisionProperty>("collision").OnContact -= ExplosionCollisionHandler;
             }
             
             if(simTime.At > liveTo)
@@ -30,7 +30,7 @@ namespace ProjectMagma.Simulation
         {
             liveTo = Game.Instance.Simulation.Time.At + explosion.GetInt("live_span");
 
-            ((CollisionProperty)explosion.GetProperty("collision")).OnContact += ExplosionCollisionHandler;
+            explosion.GetProperty<CollisionProperty>("collision").OnContact += ExplosionCollisionHandler;
          
             (explosion as Entity).Update += OnUpdate;
         }
@@ -39,7 +39,7 @@ namespace ProjectMagma.Simulation
         {
             (explosion as Entity).Update -= OnUpdate;
 
-            ((CollisionProperty)explosion.GetProperty("collision")).OnContact -= ExplosionCollisionHandler;
+            explosion.GetProperty<CollisionProperty>("collision").OnContact -= ExplosionCollisionHandler;
         }
 
         private void ExplosionCollisionHandler(SimulationTime simTime, Contact contact)

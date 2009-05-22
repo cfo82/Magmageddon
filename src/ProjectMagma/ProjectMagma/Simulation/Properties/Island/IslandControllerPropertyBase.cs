@@ -45,7 +45,7 @@ namespace ProjectMagma.Simulation
 
             (entity as Entity).Update += OnUpdate;
 
-            ((CollisionProperty)entity.GetProperty("collision")).OnContact += CollisionHandler;
+            entity.GetProperty<CollisionProperty>("collision").OnContact += CollisionHandler;
 //            ((Vector3Attribute)entity.GetAttribute("repulsion_velocity")).ValueChanged += RepulsionChangeHandler;
             entity.GetAttribute<StringAttribute>("repulsed_by").ValueChanged += RepulsedByChangeHandler;
             entity.GetAttribute<IntAttribute>("players_on_island").ValueChanged += PlayersOnIslandChangeHandler;
@@ -56,7 +56,7 @@ namespace ProjectMagma.Simulation
         public virtual void OnDetached(AbstractEntity entity)
         {
             (entity as Entity).Update -= OnUpdate;
-            ((CollisionProperty)entity.GetProperty("collision")).OnContact -= CollisionHandler;
+            entity.GetProperty<CollisionProperty>("collision").OnContact -= CollisionHandler;
 //            ((Vector3Attribute)entity.GetAttribute("repulsion_velocity")).ValueChanged -= RepulsionChangeHandler;
             entity.GetAttribute<StringAttribute>("repulsed_by").ValueChanged -= RepulsedByChangeHandler;
             entity.GetAttribute<IntAttribute>("players_on_island").ValueChanged -= PlayersOnIslandChangeHandler;

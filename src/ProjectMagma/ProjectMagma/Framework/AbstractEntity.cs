@@ -265,9 +265,9 @@ namespace ProjectMagma.Framework
             }
 
             Attribute attribute = attributes[name];
-            if (attributes.GetType() != typeof(AttributeType))
+            if (attribute.GetType() != typeof(AttributeType))
             {
-                throw new System.ArgumentException(string.Format("requesting type '{0}' but attribute has type '{1}'!", typeof(AttributeType).Name, attribute.GetType()));
+                throw new System.ArgumentException(string.Format("requesting type '{0}' but attribute has type '{1}'!", typeof(AttributeType).Name, attribute.GetType().Name));
             }
 
             return attribute as AttributeType;
@@ -409,14 +409,21 @@ namespace ProjectMagma.Framework
             return properties.ContainsKey(name);
         }
 
-        public Property GetProperty(string name)
+        public PropertyType GetProperty<PropertyType>(string name)
+            where PropertyType : class
         {
             if (!properties.ContainsKey(name))
             {
                 throw new System.ArgumentException(string.Format("property '{0}' not found!", name));
             }
 
-            return properties[name];
+            Property property = properties[name];
+            if (property.GetType() != typeof(PropertyType))
+            {
+                throw new System.ArgumentException(string.Format("requesting type '{0}' but property has type '{1}'!", typeof(PropertyType).Name, property.GetType().Name));
+            }
+
+            return property as PropertyType;
         }
 
         #endregion

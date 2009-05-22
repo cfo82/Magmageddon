@@ -39,7 +39,7 @@ namespace ProjectMagma.Simulation
 
             flame.GetBoolAttribute("fueled").ValueChanged += FlameFuelChangeHandler;
 
-            ((CollisionProperty)flame.GetProperty("collision")).OnContact += FlamethrowerCollisionHandler;
+            flame.GetProperty<CollisionProperty>("collision").OnContact += FlamethrowerCollisionHandler;
 
             (flame as Entity).Update += OnUpdate;
         }
@@ -47,7 +47,7 @@ namespace ProjectMagma.Simulation
         public void OnDetached(AbstractEntity flame)
         {
             (flame as Entity).Update -= OnUpdate;
-            ((CollisionProperty)flame.GetProperty("collision")).OnContact -= FlamethrowerCollisionHandler;
+            flame.GetProperty<CollisionProperty>("collision").OnContact -= FlamethrowerCollisionHandler;
             flame.GetBoolAttribute("fueled").ValueChanged -= FlameFuelChangeHandler;
             player.GetVector3Attribute("position").ValueChanged -= PlayerPositionHandler;
         }

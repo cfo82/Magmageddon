@@ -1,5 +1,6 @@
 ﻿<!ELEMENT Levels (Level*)>
-<!ELEMENT Level (Name, Description, FileName)>
+<!ELEMENT Level (Name, Description, SimulationFileName, RendererFileName)>
 <!ELEMENT Name (#PCDATA)>
 <!ELEMENT Description (#PCDATA)>
-<!ELEMENT FileName (#PCDATA)>
+<!ELEMENT SimulationFileName (#PCDATA)>
+<!ELEMENT RendererFileName (#PCDATA)>

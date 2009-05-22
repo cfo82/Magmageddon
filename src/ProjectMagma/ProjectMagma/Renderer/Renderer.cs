@@ -94,7 +94,7 @@ namespace ProjectMagma.Renderer
             PresentationParameters pp = Device.PresentationParameters;
             int width = pp.BackBufferWidth;
             int height = pp.BackBufferHeight;
-            SurfaceFormat format = pp.BackBufferFormat;
+            SurfaceFormat format = SurfaceFormat.HalfVector4;
             //SurfaceFormat format = SurfaceFormat.Vector4;
 
             if (EnablePostProcessing)

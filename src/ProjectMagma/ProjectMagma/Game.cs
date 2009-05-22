@@ -159,7 +159,7 @@ namespace ProjectMagma
              
 #if DEBUG
             // initialize simulation
-            LoadLevel("Level/Instances/TestLevel/TestLevel");
+            LoadLevel("Level/Instances/TestLevel/Simulation");
 
             // set default player
             Entity player1 = new Entity("player1");
@@ -178,14 +178,14 @@ namespace ProjectMagma
             // set default player
             Entity player3 = new Entity("player3");
             player3.AddIntAttribute("game_pad_index", 2);
-            player3.AddIntAttribute("lives", 1);
+            player3.AddIntAttribute("lives", 100);
             player3.AddStringAttribute("robot_entity", robots[2].Entity);
             player3.AddStringAttribute("player_name", robots[2].Name);
             
             // set default player
             Entity player4 = new Entity("player4");
             player4.AddIntAttribute("game_pad_index", 3);
-            player4.AddIntAttribute("lives", 1);
+            player4.AddIntAttribute("lives", 100);
             player4.AddStringAttribute("robot_entity", robots[3].Entity);
             player4.AddStringAttribute("player_name", robots[3].Name);
 
@@ -195,7 +195,7 @@ namespace ProjectMagma
     #endif
 #else
             // initialize simulation
-            LoadLevel("Level/Instances/MenuLevel/MenuLevel");
+            LoadLevel("Level/Instances/MenuLevel/Simulation");
 #endif
 
             // load menu

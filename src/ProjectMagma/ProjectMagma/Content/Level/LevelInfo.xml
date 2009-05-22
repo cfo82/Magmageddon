@@ -5,19 +5,22 @@
   <Level>
     <Name>4 VS 4</Name>
     <Description>Hardcore Deathmatch</Description>
-    <FileName>Level\Instances\4vs4\4vs4</FileName>
+    <SimulationFileName>Level\Instances\4vs4\Simulation</SimulationFileName>
+    <RendererFileName>Level\Instances\4vs4\Renderer</RendererFileName>
   </Level>
 
   <Level>
     <Name>FOR NOOBS</Name>
     <Description>A beginner level</Description>
-    <FileName>Level\Instances\4Noobs\4Noobs</FileName>
+    <SimulationFileName>Level\Instances\4Noobs\Simulation</SimulationFileName>
+    <RendererFileName>Level\Instances\4Noobs\Renderer</RendererFileName>
   </Level>
 
   <Level>
     <Name>Stack</Name>
     <Description>Island stacked</Description>
-    <FileName>Level\Instances\Stack\Stack</FileName>
+    <SimulationFileName>Level\Instances\Stack\Simulation</SimulationFileName>
+    <RendererFileName>Level\Instances\Stack\Renderer</RendererFileName>
   </Level>
   
 </Levels>

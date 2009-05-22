@@ -822,36 +822,36 @@
     </None>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Level\Instances\TestLevel\TestLevel.xml">
-      <Name>TestLevel</Name>
+    <Compile Include="Level\Instances\TestLevel\Simulation.xml">
+      <Name>Simulation</Name>
       <Importer>LevelImporter</Importer>
       <Processor>LevelProcessor</Processor>
     </Compile>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Level\Instances\Stack\Stack.xml">
-      <Name>Stack</Name>
+    <Compile Include="Level\Instances\Stack\Simulation.xml">
+      <Name>Simulation</Name>
       <Importer>LevelImporter</Importer>
       <Processor>LevelProcessor</Processor>
     </Compile>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Level\Instances\MenuLevel\MenuLevel.xml">
-      <Name>MenuLevel</Name>
+    <Compile Include="Level\Instances\MenuLevel\Simulation.xml">
+      <Name>Simulation</Name>
       <Importer>LevelImporter</Importer>
       <Processor>LevelProcessor</Processor>
     </Compile>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Level\Instances\4vs4\4vs4.xml">
-      <Name>4vs4</Name>
+    <Compile Include="Level\Instances\4vs4\Simulation.xml">
+      <Name>Simulation</Name>
       <Importer>LevelImporter</Importer>
       <Processor>LevelProcessor</Processor>
     </Compile>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Level\Instances\4Noobs\4Noobs.xml">
-      <Name>4Noobs</Name>
+    <Compile Include="Level\Instances\4Noobs\Simulation.xml">
+      <Name>Simulation</Name>
       <Importer>LevelImporter</Importer>
       <Processor>LevelProcessor</Processor>
     </Compile>

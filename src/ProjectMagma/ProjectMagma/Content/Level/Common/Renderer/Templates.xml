@@ -6,6 +6,8 @@
       <Attribute name="particles_per_second" template="float" value="30"/>
       <Attribute name="particle_lifetime" template="float" value="25"/>
       <Attribute name="max_alpha" template="float" value="0.6"/>
+      <Attribute name="base_size" template="float" value="5"/>
+      <Attribute name="random_size_modification" template="float" value="8"/>
     </Attributes>
   </Entity>
   

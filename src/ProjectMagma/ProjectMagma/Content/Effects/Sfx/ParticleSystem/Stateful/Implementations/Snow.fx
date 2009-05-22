@@ -14,6 +14,8 @@ float SnowParticleMass = 0.01;
 float SnowMaxAlpha = 0.6;		
 float3 Gravity = float3(0,-9.81,0);
 float3 WindForce;
+float SnowBaseSize = 5;
+float SnowRandomSizeModification = 8;
 
 
 
@@ -122,7 +124,7 @@ RenderSnowParticlesVertexShaderOutput RenderSnowVertexShader(
 		float normalizedAge = 1.0 - position_sampler_value.w/SnowParticleLifetime;
 	    
 		output.PositionCopy = output.Position = mul(view_position, Projection);
-		output.Size = 5 + random_sampler_value.x*8;
+		output.Size = SnowBaseSize + random_sampler_value.x*SnowRandomSizeModification;
 		
 		float calculatedAlpha = min(SnowMaxAlpha, 2*(1-normalizedAge) * lerp(1.4, 0.6, min(1,normalizedAge)));
 		//float alpha = normalizedAge<0.5?1:calculatedAlpha;

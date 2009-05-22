@@ -26,7 +26,6 @@ namespace ProjectMagma.Simulation
         
         // gamepad buttons
         private static readonly Buttons[] RepulsionButtons = { Buttons.LeftTrigger };
-        private static readonly Buttons[] AttractionButtons = { Buttons.A };
         private static readonly Buttons[] JetpackButtons = { Buttons.A };
         private static readonly Buttons[] IceSpikeButtons = { Buttons.X };
         private static readonly Buttons[] FlamethrowerButtons = { Buttons.Y };
@@ -38,7 +37,6 @@ namespace ProjectMagma.Simulation
         private static readonly Keys IceSpikeKey = Keys.Q;
         private static readonly Keys HitKey = Keys.E;
         private static readonly Keys FlamethrowerKey = Keys.R;
-        private static readonly Keys AttractionKey = Keys.LeftControl;
         private static readonly Keys RunKey = Keys.LeftControl;
         #endregion
 
@@ -76,7 +74,6 @@ namespace ProjectMagma.Simulation
 
         private Entity simpleJumpIsland = null;
 
-        private Entity attractedIsland = null;
         private bool repulsionActive = false;
         private Vector3 islandRepulsionLastStickDir = Vector3.Zero;
 
@@ -253,12 +250,8 @@ namespace ProjectMagma.Simulation
             #region actions
 
             PerformIceSpikeAction(player, at, playerPosition);
-
             PerformFlamethrowerAction(player, ref playerPosition);
-
             PerformIslandRepulsionAction(simTime, ref fuel);
-
-            // island selection and attraction
             PerformIslandSelectionAction(at, ref playerPosition);
             PerformIslandJumpAction(ref playerPosition, ref playerVelocity);
             #endregion
@@ -366,42 +359,6 @@ namespace ProjectMagma.Simulation
                     // prohibit movement
                     playerPosition.X = previousPosition.X;
                     playerPosition.Z = previousPosition.Z;
-                }
-            }
-        }
-
-        private void PerformIslandAttractionAction(Entity player, bool allowSelection,
-            ref Vector3 playerPosition, ref Vector3 playerVelocity)
-        {
-            // island attraction start
-            if (controllerInput.attractionButtonPressed
-                && selectedIsland != null
-                && destinationIsland == null // not during jump
-                && allowSelection)
-            {
-                attractedIsland = selectedIsland;
-                attractedIsland.SetString("attracted_by", player.Name);
-                ((StringAttribute)attractedIsland.GetAttribute("attracted_by")).ValueChanged += IslandAttracedByChangeHandler;
-            }
-            else
-            // running attraction
-            if (attractedIsland != null)
-            {
-                // deactivate if button released
-                if(!controllerInput.attractionButtonHold
-                    || destinationIsland != null) // if we initiated jump, abort attraction
-                {
-                    // start attraction stop (has timeout)
-                    attractedIsland.SetBool("stop_attraction", true);
-
-                    // initiate jump
-                    if (selectedIslandInFreeJumpRange)
-                    {
-                        StartIslandJump(attractedIsland, ref playerPosition, ref playerVelocity);
-                    }
-
-                    // remove selection
-                    RemoveSelectionArrow();
                 }
             }
         }
@@ -1345,7 +1302,6 @@ namespace ProjectMagma.Simulation
             // todo: extract constant
             if ((surfacePosition.Y - 5 < playerPosition.Y
                 && activeIsland == null) // don't allow switching of islands
-                || island == attractedIsland
                 || island == simpleJumpIsland)
             {
 //                Console.WriteLine(player.Name + " collidet with " + island.Name);
@@ -1563,24 +1519,6 @@ namespace ProjectMagma.Simulation
             player.SetVector3("position", position);
         }
 
-        private void IslandAttracedByChangeHandler(StringAttribute sender, String oldValue, String newValue)
-        {
-            if (oldValue != "" && newValue == "")
-            {
-                // remove handler
-                sender.ValueChanged -= IslandAttracedByChangeHandler;
-
-                // remove arrow
-                if (arrow.HasProperty("render"))
-                {
-                    RemoveSelectionArrow();
-                }
-
-                // reset attraction and selection
-                attractedIsland = null;
-            }
-        }
-
         private void HealthChangeHandler(IntAttribute sender, int oldValue, int newValue)
         {
             if (newValue < oldValue
@@ -1635,17 +1573,6 @@ namespace ProjectMagma.Simulation
             {
                 activeIsland = null;
                 player.SetString("active_island", "");
-
-                // disable attraction
-                if (attractedIsland != null)
-                {
-                    attractedIsland.SetString("attracted_by", "");
-                    attractedIsland = null;
-                }
-            }
-            if (entity == attractedIsland)
-            {
-                attractedIsland = null;
             }
 
             // check if player was removed (lost all his lives)
@@ -1858,13 +1785,6 @@ namespace ProjectMagma.Simulation
                 activeIsland = null;
                 player.SetString("active_island", "");
 
-                // disable attraction
-                if (attractedIsland != null)
-                {
-                    attractedIsland.SetString("attracted_by", "");
-                    attractedIsland = null;
-                }
-
                 // disable selection
                 if (selectedIsland != null)
                 {
@@ -2008,7 +1928,6 @@ namespace ProjectMagma.Simulation
                 SetStates(IceSpikeButtons, IceSpikeKey, out iceSpikeButtonPressed, out iceSpikeButtonHold, out iceSpikeButtonReleased);
                 SetStates(HitButtons, HitKey, out hitButtonPressed, out hitButtonHold, out hitButtonReleased);
                 SetStates(FlamethrowerButtons, FlamethrowerKey, out flamethrowerButtonPressed, out flamethrowerButtonHold, out flamethrowerButtonReleased);
-                SetStates(AttractionButtons, AttractionKey, out attractionButtonPressed, out attractionButtonHold, out attractionButtonReleased);
                 SetStates(RunButtons, RunKey, out runButtonPressed, out runButtonHold, out runButtonReleased);
 
                 #endregion
@@ -2093,11 +2012,11 @@ namespace ProjectMagma.Simulation
 
             // buttons
             public bool runButtonPressed, repulsionButtonPressed, jetpackButtonPressed, flamethrowerButtonPressed, 
-                iceSpikeButtonPressed, hitButtonPressed, attractionButtonPressed;
+                iceSpikeButtonPressed, hitButtonPressed;
             public bool runButtonReleased, repulsionButtonReleased, jetpackButtonReleased, flamethrowerButtonReleased, 
-                iceSpikeButtonReleased, hitButtonReleased, attractionButtonReleased;
+                iceSpikeButtonReleased, hitButtonReleased;
             public bool runButtonHold, repulsionButtonHold, jetpackButtonHold, flamethrowerButtonHold, 
-                iceSpikeButtonHold, hitButtonHold, attractionButtonHold;
+                iceSpikeButtonHold, hitButtonHold;
 
             // times
             public float hitButtonPressedAt = float.NegativeInfinity;

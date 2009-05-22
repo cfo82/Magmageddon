@@ -15,10 +15,14 @@ namespace ProjectMagma.Renderer.ParticleSystem.Stateful.Implementations
         public Snow(
             Renderer renderer,
             WrappedContentManager wrappedContent,
-            GraphicsDevice device
+            GraphicsDevice device,
+            float snowLifeTime,
+            float snowMaxAlpha
         )
         :   base(renderer, wrappedContent, device)
         {
+            this.snowLifeTime = snowLifeTime;
+            this.snowMaxAlpha = snowMaxAlpha;
         }
 
         private Effect LoadEffect(WrappedContentManager wrappedContent)
@@ -49,7 +53,7 @@ namespace ProjectMagma.Renderer.ParticleSystem.Stateful.Implementations
         protected override void SetUpdateParameters(EffectParameterCollection parameters)
         {
             windAngle += 0.5f * ((float)random.NextDouble() - 0.5f);
-            parameters["SnowParticleLifetime"].SetValue(renderer.EntityManager["snow"].GetFloat("particle_lifetime"));
+            parameters["SnowParticleLifetime"].SetValue(snowLifeTime);
             parameters["WindForce"].SetValue(new Vector3(windForce * (float)Math.Cos(windAngle), 0, windForce * (float)Math.Sin(windAngle)));
              
             base.SetUpdateParameters(parameters);
@@ -57,13 +61,15 @@ namespace ProjectMagma.Renderer.ParticleSystem.Stateful.Implementations
 
         protected override void SetRenderingParameters(EffectParameterCollection parameters)
         {
-            parameters["SnowParticleLifetime"].SetValue(renderer.EntityManager["snow"].GetFloat("particle_lifetime"));
-            parameters["SnowMaxAlpha"].SetValue(renderer.EntityManager["snow"].GetFloat("max_alpha"));
+            parameters["SnowParticleLifetime"].SetValue(snowLifeTime);
+            parameters["SnowMaxAlpha"].SetValue(snowMaxAlpha);
             base.SetRenderingParameters(parameters);
         }
 
         private float windForce = 14.0f;
         private float windAngle = 0.0f;
+        private float snowLifeTime = 25;
+        private float snowMaxAlpha = 0.6f;
         private static Random random = new Random();
     }
 }

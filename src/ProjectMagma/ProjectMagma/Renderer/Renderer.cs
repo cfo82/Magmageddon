@@ -60,7 +60,7 @@ namespace ProjectMagma.Renderer
             GraphicsDevice device
         )
         {
-            EnablePostProcessing = false;
+            EnablePostProcessing = true;
 
             renderTime = new RenderTime(Game.Instance.GlobalClock.ContinuousMilliseconds,
                 Game.Instance.GlobalClock.PausableMilliseconds);

@@ -43,7 +43,7 @@ namespace ProjectMagma.Renderer.Renderables
             spriteBatch.End();
         }
 
-        public override RenderMode RenderMode { get { return RenderMode.RenderToScene;  } }
+        public override RenderMode RenderMode { get { return RenderMode.RenderOverlays;  } }
         public override Vector3 Position { get { return Vector3.Zero; } }
         string str;
         Vector2 pos;

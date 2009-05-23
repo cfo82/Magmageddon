@@ -22,71 +22,43 @@
     </Properties>
   </Entity>
 
-  <Entity name="dwarf_base" extends="robot_base" abstract="true">
+  <Entity name="rendered_robot_base" extends="robot_base" abstract="true">
     <Attributes>
       <Attribute name="mesh" template="string" value="Models/Player/robot_grp"/>
       <Attribute name="diffuse_texture" template="string" value="Textures/Player/robot_texture10"/>
-      <Attribute name="specular_texture" template="string" value="Textures/Player/robot_spec"/>
-      
+      <Attribute name="specular_texture" template="string" value="Textures/Player/robot_spec"/>      
     </Attributes>
     <Properties>
       <Property name="render" type="ProjectMagma.Simulation.RobotRenderProperty"/>
     </Properties>
     </Entity>
   
-  <Entity name="green_dwarf" extends="dwarf_base" abstract="true" >
+  <Entity name="green_robot" extends="rendered_robot_base" abstract="true" >
       <Attributes>
         <Attribute name="color1" template="float3" value="0.24 0.84 0.16"/>
-      <Attribute name="color2" template="float3" value="0.58 0.82 0.15"/>
-    </Attributes>
-
+        <Attribute name="color2" template="float3" value="0.58 0.82 0.15"/>
+      </Attributes>
   </Entity>
 
-  <Entity name="orange_dwarf" extends="dwarf_base" abstract="true" >
+  <Entity name="orange_robot" extends="rendered_robot_base" abstract="true" >
     <Attributes>
       <Attribute name="color1" template="float3" value="0.97 0.51 0.17"/>
       <Attribute name="color2" template="float3" value="0.97 0.84 0.17"/>
     </Attributes>
-   </Entity>
+  </Entity>
 
-  <Entity name="blue_dwarf" extends="dwarf_base" abstract="true" >
+  <Entity name="blue_robot" extends="rendered_robot_base" abstract="true" >
     <Attributes>
       <Attribute name="color1" template="float3" value="0.15 0.51 0.83"/>
       <Attribute name="color2" template="float3" value="0.27 0.85 0.79"/>
     </Attributes>
   </Entity>
 
-  <Entity name="purple_dwarf" extends="dwarf_base" abstract="true" >
+  <Entity name="purple_robot" extends="rendered_robot_base" abstract="true" >
     <Attributes>
       <Attribute name="color1" template="float3" value="0.91 0.08 0.64"/>
       <Attribute name="color2" template="float3" value="0.77 0.08 0.86"/>
     </Attributes>
-  </Entity>
-  
-  <Entity name="green_animated_robot" extends="robot_base" abstract="true" >
-    <Attributes>
-      <Attribute name="mesh" template="string" value="Models/Player/RobBonesAnim"/>
-      <Attribute name="arrow_mesh" template="string" value="Models/Visualizations/arrow1"/>
-      <Attribute name="scale" template="float3" value="15 15 15"/>
-      <Attribute name="diffuse_color" template="float3" value="0 0.7 0.2"/>
-      <Attribute name="specular_power" template="float" value="50"/>
-    </Attributes>
-    <Properties>
-      <Property name="render" type="ProjectMagma.Simulation.RobotRenderProperty"/>
-    </Properties>
-  </Entity>
-
-  <Entity name="yellow_animated_robot" extends="robot_base" abstract="true" >
-    <Attributes>
-      <Attribute name="mesh" template="string" value="Models/Player/RobBonesAnim"/>
-      <Attribute name="arrow_mesh" template="string" value="Models/Visualizations/arrow2"/>
-      <Attribute name="scale" template="float3" value="15 15 15"/>
-      <Attribute name="diffuse_color" template="float3" value="0.9 0.7 0"/>
-      <Attribute name="specular_power" template="float" value="50"/>
-    </Attributes>
-    <Properties>
-      <Property name="render" type="ProjectMagma.Simulation.RobotRenderProperty"/>
-    </Properties>
-  </Entity>
+  </Entity>  
   
 </Level>

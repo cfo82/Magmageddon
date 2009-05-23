@@ -5,25 +5,25 @@
   <Robot>
     <Name>Bender</Name>
     <Description>I have no description.</Description>
-    <EntityName>green_dwarf</EntityName>
+    <EntityName>green_robot</EntityName>
   </Robot>
 
   <Robot>
     <Name>I, Robot</Name>
     <Description>Blah</Description>
-    <EntityName>orange_dwarf</EntityName>
+    <EntityName>orange_robot</EntityName>
   </Robot>
 
   <Robot>
     <Name>Terminator</Name>
     <Description>Foo, this is a description.</Description>
-    <EntityName>blue_dwarf</EntityName>
+    <EntityName>blue_robot</EntityName>
   </Robot>
 
   <Robot>
     <Name>Marvin</Name>
     <Description>Gugus.</Description>
-    <EntityName>purple_dwarf</EntityName>
+    <EntityName>purple_robot</EntityName>
   </Robot>
 
 </Robots> 

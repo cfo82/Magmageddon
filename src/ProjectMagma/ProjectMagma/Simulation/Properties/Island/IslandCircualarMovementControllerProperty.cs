@@ -104,7 +104,8 @@ namespace ProjectMagma.Simulation
         protected override void CollisionHandler(SimulationTime simTime, Entity island, Entity other, Contact co, ref Vector3 normal)
         {
             // change dir
-            if (simTime.At > dirChangedAt + 1000) // todo: extract constant
+            if (other.HasAttribute("kind") && other.GetString("kind") != "island" // we don't change direction for other islands
+                && simTime.At > dirChangedAt + 1000) // todo: extract constant
             {
                 dir = -dir;
                 dirChangedAt = simTime.At;

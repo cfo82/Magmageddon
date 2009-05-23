@@ -62,14 +62,12 @@ namespace ProjectMagma.Simulation.Collision
                     if (lastFrame > 0)
                     {
                         double targetFps = 60;
-                        double timeDiff = startTime - lastFrame;
-                        double newTarget = ((1000d / targetFps) - timeDiff);
+                        double waitTime = startTime - lastFrame;
+                        double newTarget = ((1000d / targetFps) - waitTime);
                         targetMilliseconds = System.Math.Max(2, targetMilliseconds * 0.9 + newTarget * 0.1);
                     }
 
                     //Console.WriteLine("{0}", targetMilliseconds);
-
-                    lastFrame = startTime;
 
                     Contact lastContact = null;
                     TestList.TestEntry entry = testList.GetNextCollisionEntry();
@@ -118,9 +116,13 @@ namespace ProjectMagma.Simulation.Collision
                             contacts.Add(contact);
                         }
 
+                        System.Threading.Thread.Sleep(random.Next(0, 3));
+
                         // get next entry
                         entry = testList.GetNextCollisionEntry();
                     }
+
+                    lastFrame = Now;
 
                     finishedEvent.Set();
                 }
@@ -188,5 +190,6 @@ namespace ProjectMagma.Simulation.Collision
         private double lastFrame;
         private double targetMilliseconds;
         private static readonly double FpsAdjustmentSteps = 2;
+        private static Random random = new Random();
     }
 }

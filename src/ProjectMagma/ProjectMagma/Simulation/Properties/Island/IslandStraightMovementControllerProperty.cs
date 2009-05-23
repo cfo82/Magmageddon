@@ -49,7 +49,12 @@ namespace ProjectMagma.Simulation
         {
             if (!HadCollision(simTime))
             {
-                direction = -direction;
+                if (other.HasAttribute("kind") 
+                    && other.GetString("kind") != "island" // we don't change direction for other islands
+                    && other.GetString("kind") != "player") // or players
+                {
+                    direction = -direction;
+                }
             }
         }
 

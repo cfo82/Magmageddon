@@ -104,69 +104,14 @@ namespace ProjectMagma.Simulation
         protected override void CollisionHandler(SimulationTime simTime, Entity island, Entity other, Contact co, ref Vector3 normal)
         {
             // change dir
-            if (other.HasAttribute("kind") && other.GetString("kind") != "island" // we don't change direction for other islands
+            if (other.HasAttribute("kind") 
+                && other.GetString("kind") != "island" // we don't change direction for other islands
+                && other.GetString("kind") != "player" // or players
                 && simTime.At > dirChangedAt + 1000) // todo: extract constant
             {
                 dir = -dir;
                 dirChangedAt = simTime.At;
             }
-
-            /*
-            {
-                // change direction, if not already in direction away from that object
-
-                // calculate direction of movement
-                Vector3 oldPosition = island.GetVector3("position");
-                Vector3 newPosition = oldPosition;
-                CalculateAccelerationDirection(island, ref newPosition, simTime.Dt);
-                Vector3 diff = newPosition - oldPosition;
-
-                // did we have collision last time too?
-                if (HadCollision(simTime))
-                {
-                    Vector3 pushbackVelocity = island.GetVector3("pushback_velocity");
-                    Vector3 pushbackDir = pushbackVelocity;
-                    if (pushbackDir != Vector3.Zero)
-                        pushbackDir.Normalize();
-                    Vector3 pushback = -normal * 100;
-                    pushback.Y = 0; // only in xz plane
-                    // same direction already?
-                    if (Vector3.Dot(pushbackDir, normal) > 0)
-                    {
-                        island.SetVector3("pushback_velocity", pushbackVelocity + pushback);
-                    }
-                    else
-                    {
-                        // change pushback dir
-                        island.SetVector3("pushback_velocity", pushback);
-                    }
-                }
-                else
-                if (island.GetVector3("repulsion_velocity") == Vector3.Zero)
-                {
-                    // change dir
-                    if (simTime.At > dirChangedAt + 1000) // todo: extract constant
-                    {
-                        dir = -dir;
-                        dirChangedAt = simTime.At;
-                    }
-
-                    // check if normal is in opposite direction of theoretical velocity
-                    if (Vector3.Dot(diff, normal) > 0)
-                    {
-                        //                    dir = -dir;
-
-                        // always ensure we apply a bit of pushback out of other entity so we don't get stuck in there
-                        if (island.GetVector3("repulsion_velocity") == Vector3.Zero)
-                        {
-                            Vector3 pushback = -normal * 100;
-                            pushback.Y = 0; // only in xz plane
-                            island.SetVector3("pushback_velocity", island.GetVector3("pushback_velocity") + pushback);
-                        }
-                    }
-                }
-            }
-             * */
         }
 
         private void AssignPillar(Entity island)

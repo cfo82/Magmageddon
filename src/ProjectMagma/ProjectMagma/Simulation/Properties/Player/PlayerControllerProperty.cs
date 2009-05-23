@@ -81,6 +81,7 @@ namespace ProjectMagma.Simulation
         private Vector3 islandRepulsionLastStickDir = Vector3.Zero;
 
         Entity flame = null;
+        Entity introLight;
         Entity arrow;
 
         private SoundEffect jetpackSound;
@@ -135,7 +136,7 @@ namespace ProjectMagma.Simulation
             jetpackSound = Game.Instance.ContentManager.Load<SoundEffect>("Sounds/jetpack");
             flameThrowerSound = Game.Instance.ContentManager.Load<SoundEffect>("Sounds/flamethrower");
 
-            arrow = new Entity("arrow" + "_" + player.Name);
+            arrow = new Entity("arrow_" + player.Name);
             arrow.AddStringAttribute("player", player.Name);
 
             arrow.AddVector3Attribute("color1", player.GetVector3("color1"));
@@ -144,6 +145,16 @@ namespace ProjectMagma.Simulation
             Game.Instance.Simulation.EntityManager.AddDeferred(arrow, "arrow_base", templates);
 
             PositionOnRandomIsland();
+
+            introLight = new Entity("intro_light_" + player.Name);
+            introLight.AddStringAttribute("player", player.Name);
+
+            Vector3 position = player.GetVector3("position");
+            Vector3 surfacePos;
+            Simulation.GetPositionOnSurface(ref position, activeIsland, out surfacePos);
+            introLight.AddVector3Attribute("position", surfacePos);
+
+            Game.Instance.Simulation.EntityManager.AddDeferred(introLight, "intro_light_base", templates);
 
             this.previousPosition = player.GetVector3("position");
         }
@@ -155,6 +166,11 @@ namespace ProjectMagma.Simulation
             if (arrow != null && Game.Instance.Simulation.EntityManager.ContainsEntity(arrow))
             {
                 Game.Instance.Simulation.EntityManager.Remove(arrow);
+            }
+
+            if (introLight != null && Game.Instance.Simulation.EntityManager.ContainsEntity(introLight))
+            {
+                Game.Instance.Simulation.EntityManager.Remove(introLight);
             }
 
             if (flame != null && Game.Instance.Simulation.EntityManager.ContainsEntity(flame))
@@ -363,9 +379,12 @@ namespace ProjectMagma.Simulation
         {
             if (landedAt > 0)
             {
-                if (simTime.At > landedAt + 1000) // extract constant
+                if (simTime.At > landedAt + 1000 // extract constant
+                    && !player.GetBool("ready")) 
                 {
                     player.SetBool("ready", true);
+                    Game.Instance.Simulation.EntityManager.RemoveDeferred(introLight);
+                    introLight = null;
                 }
                 return;
             }
@@ -1337,13 +1356,6 @@ namespace ProjectMagma.Simulation
                 return;
             }
 
-            // no collision response at all
-            if (ImuneToIslandPush
-                && activeIsland != null)
-            {
-                return;
-            }
-
             // get theoretical position on island
             Vector3 playerPosition = player.GetVector3("position");
             Vector3 surfacePosition;
@@ -1407,6 +1419,7 @@ namespace ProjectMagma.Simulation
                     normal.Y = 0;
                     if (normal != Vector3.Zero)
                     {
+                        normal.Normalize();
                         Vector3 velocity = -normal * 100; // todo: extract constant
                         player.SetVector3("collision_pushback_velocity", player.GetVector3("collision_pushback_velocity") + velocity);
                     }
@@ -1725,6 +1738,23 @@ namespace ProjectMagma.Simulation
                 int islandNo = rand.Next(Game.Instance.Simulation.IslandManager.Count - 1);
                 island = Game.Instance.Simulation.IslandManager[islandNo];
 
+                // check if there is an island above this one
+                foreach (Entity other in Game.Instance.Simulation.IslandManager)
+                {
+                    if (other != island)
+                    {
+                        float radius = (island.GetVector3("scale") * new Vector3(1,0,1)).Length();
+                        float otherRadius = (other.GetVector3("scale") * new Vector3(1, 0, 1)).Length();
+                        float dist = (island.GetVector3("position") - other.GetVector3("position")).Length();
+                        // are they overlapping in xz?
+                        if (dist < radius + otherRadius)
+                        {
+                            island = other;
+                            break;
+                        }
+                    }
+                }
+
                 // check no players on island
                 if (island.GetInt("players_on_island") > 0)
                     valid = false;
@@ -1766,7 +1796,9 @@ namespace ProjectMagma.Simulation
                 else
                     continue; // select another
             }
+
             SetActiveIsland(island);
+
             player.SetVector3("position", GetLandingPosition(island) + Vector3.UnitY*500);
         }
 

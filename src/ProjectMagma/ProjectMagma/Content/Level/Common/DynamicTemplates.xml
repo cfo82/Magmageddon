@@ -96,4 +96,10 @@
     </Properties>
   </Entity>
 
+  <Entity name="intro_light_base" extends="dynamic_entity" abstract="true">
+    <Attributes>
+      <Attribute name="position" template="float3" value="0 0 0"/>
+    </Attributes>
+  </Entity>
+  
 </Level>

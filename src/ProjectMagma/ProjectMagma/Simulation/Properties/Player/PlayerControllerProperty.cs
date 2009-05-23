@@ -60,6 +60,7 @@ namespace ProjectMagma.Simulation
         private int iceSpikeRemovedCount = 0;
         private float iceSpikeFiredAt = 0;
 
+        private bool canFallFromIsland = false;
         private double hitPerformedAt = 0;
 
         private float islandSelectedAt = 0;
@@ -106,7 +107,6 @@ namespace ProjectMagma.Simulation
             player.AddVector3Attribute("velocity", Vector3.Zero);
 
             player.AddVector3Attribute("collision_pushback_velocity", Vector3.Zero);
-            player.AddVector3Attribute("player_pushback_velocity", Vector3.Zero);
             player.AddVector3Attribute("hit_pushback_velocity", Vector3.Zero);
 
             player.AddVector3Attribute("island_jump_velocity", Vector3.Zero);
@@ -199,10 +199,7 @@ namespace ProjectMagma.Simulation
             Vector3 playerPosition = player.GetVector3("position");
             Vector3 playerVelocity = player.GetVector3("velocity");
             Vector3 collisionPushbackVelocity = player.GetVector3("collision_pushback_velocity");
-            Vector3 playerPushbackVelocity = player.GetVector3("player_pushback_velocity");
             Vector3 hitPushbackVelocity = player.GetVector3("hit_pushback_velocity");
-
-            int fuel = player.GetInt("fuel");
 
             // reset some stuff
             previousPosition = playerPosition;
@@ -221,10 +218,10 @@ namespace ProjectMagma.Simulation
             #region movement
 
             // jetpack
-            PerformJetpackMovement(simTime, dt, ref playerVelocity, ref fuel);
+            PerformJetpackMovement(simTime, dt, ref playerVelocity);
 
             // xz movement
-            PerformStickMovement(player, dt, ref playerPosition, fuel);
+            PerformStickMovement(player, dt, ref playerPosition);
 
             // perform island jump
             PerformIslandJump(player, dt, at, ref playerPosition, ref playerVelocity);
@@ -244,11 +241,13 @@ namespace ProjectMagma.Simulation
 
             // pushback
             Simulation.ApplyPushback(ref playerPosition, ref collisionPushbackVelocity, 0f /*constants.GetFloat("player_pushback_deacceleration")*/);
-            Simulation.ApplyPushback(ref playerPosition, ref playerPushbackVelocity, constants.GetFloat("player_pushback_deacceleration"));
-            Simulation.ApplyPushback(ref playerPosition, ref hitPushbackVelocity, constants.GetFloat("player_pushback_deacceleration"));
+            Simulation.ApplyPushback(ref playerPosition, ref hitPushbackVelocity, constants.GetFloat("player_pushback_deacceleration"), 
+                HitPushbackEndedHandler);
 
             // frozen!?
             PerformFrozenSlowdown(player, simTime, ref playerPosition);
+
+            PerformIslandPositioning(ref playerPosition);
 
             #endregion
 
@@ -258,7 +257,7 @@ namespace ProjectMagma.Simulation
             {
                 PerformIceSpikeAction(player, at, playerPosition);
                 PerformFlamethrowerAction(player, ref playerPosition);
-                PerformIslandRepulsionAction(simTime, ref fuel);
+                PerformIslandRepulsionAction(simTime);
                 PerformIslandSelectionAction(at, ref playerPosition);
                 PerformIslandJumpAction(ref playerPosition, ref playerVelocity);
             }
@@ -271,31 +270,11 @@ namespace ProjectMagma.Simulation
                 Game.Instance.Simulation.ApplyPerSecondAddition(player, "energy_recharge", constants.GetInt("energy_recharge_per_second"),
                     player.GetIntAttribute("energy"));
             }
-
-            // recharge fuel
-            if (!controllerInput.jetpackButtonHold)
-            {
-                if (activeIsland == null)
-                {
-                    fuel += (int)(simTime.DtMs * constants.GetFloat("fuel_recharge_multiplier"));
-                }
-                else
-                {
-                    // faster recharge standing on island, but only if jetpack was not used for repulsion
-                    fuel += (int)(simTime.DtMs * constants.GetFloat("fuel_recharge_multiplier_island"));
-                }
-            }
             #endregion
-
-            // update player attributes
-            player.SetInt("fuel", fuel);
-
-            // player.SetVector3("position", new Vector3(0, 300, 200));
 
             player.SetVector3("position", playerPosition);
             player.SetVector3("velocity", playerVelocity);
             player.SetVector3("collision_pushback_velocity", collisionPushbackVelocity);
-            player.SetVector3("player_pushback_velocity", playerPushbackVelocity);
             player.SetVector3("hit_pushback_velocity", hitPushbackVelocity);
 
             CheckPlayerAttributeRanges(player);
@@ -304,9 +283,11 @@ namespace ProjectMagma.Simulation
             collisionAt = float.MinValue;
 
             // check collision with lava
-            Entity lava = Game.Instance.Simulation.EntityManager["lava"];
             if (playerPosition.Y <= 0) // todo: extract constant?
+            {
+                Entity lava = Game.Instance.Simulation.EntityManager["lava"];
                 PlayerLavaCollisionHandler(simTime, player, lava);
+            }
 
             if(controllerInput.StartHitAnimation)
             {
@@ -315,6 +296,30 @@ namespace ProjectMagma.Simulation
             }
 
             Debug.Assert(!(selectedIsland == null) || !arrow.HasProperty("render"));
+        }
+
+        private void PerformIslandPositioning(ref Vector3 playerPosition)
+        {
+            if (activeIsland != null)
+            {
+                // position on island surface
+                Vector3 isectPt = Vector3.Zero;
+                if (Simulation.GetPositionOnSurface(ref playerPosition, activeIsland, out isectPt))
+                {
+                    // set position to contact point
+                    playerPosition.Y = isectPt.Y + 1; // todo: make constant?
+                }
+                else
+                    // not over island anymore
+                    if (canFallFromIsland)
+                    {
+                        LeaveActiveIsland();
+                    }
+                    else
+                    {
+                        playerPosition = previousPosition;
+                    }
+            }
         }
 
         private void PerformIntroMovement(Entity player, SimulationTime simTime)
@@ -536,7 +541,7 @@ namespace ProjectMagma.Simulation
         private bool repulsionPossible = false;
         private float crawlStateChangedAt = 0;
 
-        private void PerformIslandRepulsionAction(SimulationTime simTime, ref int fuel)
+        private void PerformIslandRepulsionAction(SimulationTime simTime)
         {
             if (activeIsland != null)
             {
@@ -838,7 +843,7 @@ namespace ProjectMagma.Simulation
             }
         }
 
-        private void PerformStickMovement(Entity player, float dt, ref Vector3 playerPosition, int fuel)
+        private void PerformStickMovement(Entity player, float dt, ref Vector3 playerPosition)
         {
             if (destinationIsland != null)
             {
@@ -909,34 +914,6 @@ namespace ProjectMagma.Simulation
                     || player.GetProperty<RobotRenderProperty>("render").NextPermanentState == "run")
                 {
                     player.GetProperty<RobotRenderProperty>("render").NextPermanentState = "idle";
-                }
-            }
-
-            if (activeIsland != null)
-            {
-                // position on island surface
-                Vector3 isectPt = Vector3.Zero;
-                if (Simulation.GetPositionOnSurface(ref playerPosition, activeIsland, out isectPt))
-                {
-                    // check height difference
-                    /*
-                    if (isectPt.Y - previousPosition.Y > 10)
-                    {
-                        playerPosition = previousPosition;
-                    }
-                    else
-                     */
-                    // todo: not in future
-//                    if (player.GetVector3("hit_pushback_velocity") == Vector3.Zero)
-                    {
-                        // set position to contact point
-                        playerPosition.Y = isectPt.Y + 1; // todo: make constant?
-                    }
-                }
-                else
-                // not over island anymore
-                {
-                    LeaveActiveIsland();
                 }
             }
         }
@@ -1033,7 +1010,7 @@ namespace ProjectMagma.Simulation
             destinationIsland = null;
         }
 
-        private void PerformJetpackMovement(SimulationTime simTime, float dt, ref Vector3 playerVelocity, ref int fuel)
+        private void PerformJetpackMovement(SimulationTime simTime, float dt, ref Vector3 playerVelocity)
         {
             if ((controllerInput.jetpackButtonPressed
                 || controllerInput.jetpackButtonHold)
@@ -1041,7 +1018,6 @@ namespace ProjectMagma.Simulation
                 && destinationIsland == null // not while jump
                 && simpleJumpIsland == null // dito
                 && flame == null // not in combination with flame
-                && fuel > 0 // we need fuel
                 && player.GetInt("frozen") <= 0 // jetpack doesn't work when frozen
             )
             {
@@ -1174,7 +1150,6 @@ namespace ProjectMagma.Simulation
                         player.SetVector3("velocity", Vector3.Zero);
 
                         player.SetVector3("collision_pushback_velocity", Vector3.Zero);
-                        player.SetVector3("player_pushback_velocity", Vector3.Zero);
                         player.SetVector3("hit_pushback_velocity", Vector3.Zero);
 
                         player.SetInt("energy", constants.GetInt("max_energy"));
@@ -1427,11 +1402,11 @@ namespace ProjectMagma.Simulation
         private void PlayerCaveCollisionHandler(SimulationTime simTime, Entity player, Entity pillar, Contact co)
         {
             // only collide with cave when in air
-            if (activeIsland == null)
+//            if (activeIsland == null)
             {
                 Vector3 pos = player.GetVector3("position");
                 // todo: extract constants
-                Vector3 velocity = (-Vector3.Normalize(pos) - Vector3.UnitY / 10) * 3000;
+                Vector3 velocity = (-Vector3.Normalize(pos) - Vector3.UnitY / 10) * 1000;
                 velocity.Y = 0;
                 player.SetVector3("collision_pushback_velocity", player.GetVector3("collision_pushback_velocity") + velocity);
             }
@@ -1498,41 +1473,12 @@ namespace ProjectMagma.Simulation
 
                     player.SetVector3("position", player.GetVector3("position") - normal * delta);
                 }
-
-//                if (movedByStick && activeIsland != null)
-//                {
-//                    player.SetVector3("position", previousPosition);
-//                    player.SetVector3("collision_pushback_velocity", player.GetVector3("collision_pushback_velocity")
-//                        - normal * 100);
-//                }
-//                else
-//                if (movedByStick || activeIsland == null)
-//                {
-//                    // normal feedback
-//                    //                    if (Vector3.Dot(dir, normal) > 0 // and only if normal faces right direction
-////                        || dir == Vector3.Zero)
-//                    {
-//                        player.SetVector3("collision_pushback_velocity", player.GetVector3("collision_pushback_velocity")
-//                            - normal * 100);
-//                    }
-
-//                    /*
-//                    Vector3 position = otherPlayer.GetVector3("position");
-
-//                    // get distance of destination point to sliding plane
-//                    float distance = Vector3.Dot(c[0].Normal, position - c[0].Point);
-
-//                    // calculate point on plane
-//                    Vector3 cpos = position - c[0].Normal * distance;
-
-//                    Vector3 slidingDir = Vector3.Normalize(cpos - c[0].Point);
-//                    Vector3 slidingVelocity = slidingDir * (previousPosition-player.GetVector3("position")).Length();
-//                    slidingVelocity.Y = 0;
-
-//                    player.SetVector3("position", previousPosition + slidingVelocity);
-//                     */
-//                }
             }
+        }
+
+        private void HitPushbackEndedHandler()
+        {
+            canFallFromIsland = false;
         }
 
         private void IslandPositionHandler(Vector3Attribute sender, Vector3 oldValue, Vector3 newValue)
@@ -1778,6 +1724,8 @@ namespace ProjectMagma.Simulation
         /// </summary>
         private void SetActiveIsland(Entity island)
         {
+            canFallFromIsland = false;
+
             if (player.HasProperty("hud"))
             {
                 player.GetProperty<HUDProperty>("hud").JetpackUsable = false;

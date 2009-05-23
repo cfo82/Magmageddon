@@ -22,5 +22,12 @@
     <SimulationFileName>Level\Instances\Stack\Simulation</SimulationFileName>
     <RendererFileName>Level\Instances\Stack\Renderer</RendererFileName>
   </Level>
+
+  <Level>
+    <Name>Staircase of Doom</Name>
+    <Description>none</Description>
+    <SimulationFileName>Level\Instances\StaircaseOfDoom\Simulation</SimulationFileName>
+    <RendererFileName>Level\Instances\StaircaseOfDoom\Renderer</RendererFileName>
+  </Level>
   
 </Levels>

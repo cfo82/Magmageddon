@@ -8,6 +8,9 @@
   </Includes>
   <!-- "unique" game entities -->
 
+  <Entity name="sound" extends="sound_base">
+  </Entity>
+  
   <Entity name="lava" extends="lava_base">
     <Attributes>
       <Attribute name="firefractal_texture" template="string" value="Textures/Lava/firefractal_orange"/>

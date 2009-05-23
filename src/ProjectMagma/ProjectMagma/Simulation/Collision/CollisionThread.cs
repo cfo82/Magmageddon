@@ -64,7 +64,7 @@ namespace ProjectMagma.Simulation.Collision
                         double targetFps = 60;
                         double timeDiff = startTime - lastFrame;
                         double newTarget = ((1000d / targetFps) - timeDiff);
-                        targetMilliseconds = System.Math.Max(2, targetMilliseconds * 0.1 + newTarget * 0.9);
+                        targetMilliseconds = System.Math.Max(2, targetMilliseconds * 0.9 + newTarget * 0.1);
                     }
 
                     //Console.WriteLine("{0}", targetMilliseconds);

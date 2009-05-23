@@ -206,6 +206,13 @@ namespace ProjectMagma.Simulation
             Vector3 playerVelocity = player.GetVector3("velocity");
             Vector3 collisionPushbackVelocity = player.GetVector3("collision_pushback_velocity");
             Vector3 hitPushbackVelocity = player.GetVector3("hit_pushback_velocity");
+            
+            // hack hack, should be set when hit
+            if (hitPushbackVelocity.Length() > 0)
+            {
+                // when hit we can fall!
+                canFallFromIsland = true;
+            }
 
             // reset some stuff
             previousPosition = playerPosition;
@@ -1494,9 +1501,6 @@ namespace ProjectMagma.Simulation
                 otherPlayer.SetVector3("hit_pushback_velocity", velocity);
                 otherPlayer.SetVector3("position", otherPlayer.GetVector3("position") + velocity * simTime.Dt);
                 hitPerformedAt = simTime.At;
-
-                // when hit we can fall!
-                canFallFromIsland = true;
 
                 // indicate in model
                 otherPlayer.GetProperty<RobotRenderProperty>("render").NextOnceState = "pushback";

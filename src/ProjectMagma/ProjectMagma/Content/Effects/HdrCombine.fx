@@ -223,9 +223,8 @@ PostPixelShaderOutput PostPixelShader(float2 texCoord : TEXCOORD0)
 	//result.depth = tex2D(DepthTextureSampler, texCoord).r;
 	//result.color = float4(tex2D(DepthTextureSampler, texCoord).b,0,0,1);
 	//result.color = float4(tex2D(DepthTextureSampler, texCoord).r,0,0,1);
-	result.color = tex2D(DepthTextureSampler, texCoord);
-	
-	return result;
+	//result.color = tex2D(DepthTextureSampler, texCoord);	
+	//return result;
 		
 	float2 perturbedTexCoord = PerturbTexCoord(texCoord);
 

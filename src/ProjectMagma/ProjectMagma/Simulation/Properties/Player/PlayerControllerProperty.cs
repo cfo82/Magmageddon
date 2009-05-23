@@ -719,10 +719,7 @@ namespace ProjectMagma.Simulation
             else
                 if(repulsionActive)
                 {
-                    player.GetProperty<RobotRenderProperty>("render").NextPermanentState = "idle";
-                    player.GetProperty<HUDProperty>("hud").RepulsionUsable = false;
-                    repulsionPossible = false;
-                    repulsionActive = false;
+                    StopRepulsion();
                 }
         }
 
@@ -1868,6 +1865,13 @@ namespace ProjectMagma.Simulation
 
                 activeIsland.GetAttribute<Vector3Attribute>("position").ValueChanged -= IslandPositionHandler;
                 activeIsland.SetInt("players_on_island", activeIsland.GetInt("players_on_island") - 1);
+                // ensure repulsion is reset
+                if (repulsionActive)
+                    StopRepulsion();
+                // ensure repulsed_by is reset
+                if(activeIsland.GetString("repulsed_by") == player.Name)
+                    activeIsland.SetString("repulsed_by", player.Name);
+
 
                 activeIsland = null;
                 player.SetString("active_island", "");

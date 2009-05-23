@@ -51,6 +51,7 @@ namespace ProjectMagma.Simulation
         private Entity activeIsland = null;
 
         private readonly Random rand = new Random(DateTime.Now.Millisecond);
+        private bool doRespawnAnimation = false;
         private double respawnStartedAt = 0;
         private Entity deathExplosion = null;
 
@@ -146,6 +147,13 @@ namespace ProjectMagma.Simulation
 
             PositionOnRandomIsland();
 
+            AddIntroAndRespawnLight(player);
+
+            this.previousPosition = player.GetVector3("position");
+        }
+
+        private void AddIntroAndRespawnLight(AbstractEntity player)
+        {
             introLight = new Entity("intro_light_" + player.Name);
             introLight.AddStringAttribute("player", player.Name);
 
@@ -155,8 +163,6 @@ namespace ProjectMagma.Simulation
             introLight.AddVector3Attribute("position", surfacePos);
 
             Game.Instance.Simulation.EntityManager.AddDeferred(introLight, "intro_light_base", templates);
-
-            this.previousPosition = player.GetVector3("position");
         }
 
         public void OnDetached(AbstractEntity player)
@@ -190,9 +196,10 @@ namespace ProjectMagma.Simulation
 
         private void OnUpdate(Entity player, SimulationTime simTime)
         {
-            if (Game.Instance.Simulation.Phase == SimulationPhase.Intro)
+            if (Game.Instance.Simulation.Phase == SimulationPhase.Intro
+                || doRespawnAnimation)
             {
-                PerformIntroMovement(player, simTime);
+                PerformIntroAndRespawnMovement(player, simTime);
                 return;
             }
 
@@ -375,16 +382,17 @@ namespace ProjectMagma.Simulation
             }
         }
 
-        private void PerformIntroMovement(Entity player, SimulationTime simTime)
+        private void PerformIntroAndRespawnMovement(Entity player, SimulationTime simTime)
         {
             if (landedAt > 0)
             {
                 if (simTime.At > landedAt + 1000 // extract constant
-                    && !player.GetBool("ready")) 
+                    && (!player.GetBool("ready") || doRespawnAnimation)) 
                 {
                     player.SetBool("ready", true);
                     Game.Instance.Simulation.EntityManager.RemoveDeferred(introLight);
                     introLight = null;
+                    doRespawnAnimation = false;
                 }
                 return;
             }
@@ -1236,9 +1244,14 @@ namespace ProjectMagma.Simulation
 
                         // reset respawn timer
                         respawnStartedAt = 0;
+                        landedAt = -1;
+                        doRespawnAnimation = true;
+
+                        // add light
+                        AddIntroAndRespawnLight(player);
 
                         // alive again
-                        return false;
+                        return true;
                     }
             }
 

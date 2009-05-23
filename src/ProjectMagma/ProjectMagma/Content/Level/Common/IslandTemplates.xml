@@ -21,7 +21,10 @@
       <Attribute name="interactable" template="bool" value="false"/>
       <Attribute name="fixed" template="bool" value="true"/>
 
-      <Attribute name="sinking_speed" template="float" value="14.0"/>
+      <Attribute name="sinking_speed" template="float" value="18"/>
+      <Attribute name="movement_speed" template="float" value="160"/>
+      <Attribute name="repositioning_speed" template="float" value="300"/>
+      <Attribute name="repulsion_speed" template="float" value="400"/>
     </Attributes>
     <Properties>
       <Property name="collision" type="ProjectMagma.Simulation.Collision.CollisionProperty"/>

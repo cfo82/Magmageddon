@@ -204,13 +204,24 @@ namespace ProjectMagma.Renderer
             }
         }
 
+        [Conditional("DEBUG")]
+        private void ValicateUpdateQueueCount()
+        {
+            if (updateQueues.Count > 10000)
+            {
+                throw new System.Exception("error: renderer has more than 10000 update queues to process!");
+            }
+        }
+
         private RendererUpdateQueue GetNextUpdateQueue()
         {
             lock (updateQueues)
             {
                 if (updateQueues.Count == 0)
                     { return null; }
-                
+
+                ValicateUpdateQueueCount();
+
                 RendererUpdateQueue q = updateQueues[0];
                 updateQueues.RemoveAt(0);
                 return q;

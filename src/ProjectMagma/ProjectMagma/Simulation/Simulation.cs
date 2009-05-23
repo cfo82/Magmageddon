@@ -26,6 +26,7 @@ namespace ProjectMagma.Simulation
             playerManager = new EntityKindManager(entityManager, "player");
             powerupManager = new EntityKindManager(entityManager, "powerup");
             collisionManager = new CollisionManager();
+            soundRegistry = new SoundRegistry();
         }
 
         public RendererUpdateQueue Initialize(
@@ -49,6 +50,7 @@ namespace ProjectMagma.Simulation
                 // load level data
                 levelData = wrappedContent.Load<LevelData>(simulationLevel);
                 entityManager.Load(levelData);
+                soundRegistry.Load();
                 OnLevelLoaded();
 
                 return EndOperation();
@@ -471,6 +473,8 @@ namespace ProjectMagma.Simulation
         private SimulationPhase phase = SimulationPhase.Intro;
 
         private RendererUpdateQueue currentUpdateQueue;
+
+        private SoundRegistry soundRegistry;
     }
 
     public enum SimulationPhase

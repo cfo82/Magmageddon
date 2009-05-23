@@ -94,7 +94,7 @@ namespace ProjectMagma.Renderer
             pos.X = Math.Min(pos.X, 300.0f);
             targetController.TargetValue = pos;
         }
-        float maxWorldY;
+        //float maxWorldY;
         public void RecomputeFrame(ref List<Renderable> renderables)
         {
             if(!IsMoving) return;
@@ -115,51 +115,45 @@ namespace ProjectMagma.Renderer
             Vector2 min = new Vector2(float.PositiveInfinity);
             Vector2 max = new Vector2(float.NegativeInfinity);
             Vector2 maxAbs = new Vector2(float.NegativeInfinity);
-            maxWorldY = float.NegativeInfinity;
+            //maxWorldY = float.NegativeInfinity;
 
             for (int i = 0; i < renderables.Count; i++)
             {
-                //if(!(renderables[i] is RobotRenderable || renderables[i] is IslandRenderable))
-                //if (!(renderables[i] is RobotRenderable))
-                if (renderables[i] is RobotRenderable)
-                    ; // good, go on
-                else if (renderables[i] is IslandRenderable && (renderables[i] as IslandRenderable).Interactable)
-                    ; // good, go on
-                else continue;
+                if ((renderables[i] is RobotRenderable) ||
+                    (renderables[i] is IslandRenderable && (renderables[i] as IslandRenderable).Interactable))
+                {
+                    Vector2 minProj, maxProj;
+                    ProjectRenderable(renderables[i], out minProj, out maxProj);
 
-                //Vector3 ;
+                    // determine maximal deviation, could probably be made easier
+                    maxAbs.X = Math.Max(maxAbs.X, Math.Abs(minProj.X));
+                    maxAbs.Y = Math.Max(maxAbs.Y, Math.Abs(minProj.Y));
+                    maxAbs.X = Math.Max(maxAbs.X, Math.Abs(maxProj.X));
+                    maxAbs.Y = Math.Max(maxAbs.Y, Math.Abs(maxProj.Y));
+                    //float maxDeviation = Math.Max(
+                    //    maxAbs.X,
+                    //    maxAbs.Y
+                    min.X = Math.Min(min.X, minProj.X);
+                    min.Y = Math.Min(min.Y, minProj.Y);
+                    max.X = Math.Max(max.X, maxProj.X);
+                    max.Y = Math.Max(max.Y, maxProj.Y);
 
-                Vector2 minProj, maxProj;
-                ProjectRenderable(renderables[i], out minProj, out maxProj);
+                    //maxWorldY = Math.Max(maxWorldY, pos.Y);
+                    #region debug: comparison of projection operations
 
-                // determine maximal deviation, could probably be made easier
-                maxAbs.X = Math.Max(maxAbs.X, Math.Abs(minProj.X));
-                maxAbs.Y = Math.Max(maxAbs.Y, Math.Abs(minProj.Y));
-                maxAbs.X = Math.Max(maxAbs.X, Math.Abs(maxProj.X));
-                maxAbs.Y = Math.Max(maxAbs.Y, Math.Abs(maxProj.Y));
-                //float maxDeviation = Math.Max(
-                //    maxAbs.X,
-                //    maxAbs.Y
-                min.X = Math.Min(min.X, minProj.X);
-                min.Y = Math.Min(min.Y, minProj.Y);
-                max.X = Math.Max(max.X, maxProj.X);
-                max.Y = Math.Max(max.Y, maxProj.Y);
+                    //Vector3 proj = renderer.Device.Viewport.Project(pos, Projection, View, Matrix.Identity);
+                    //proj.X /= renderer.Device.Viewport.Width;
+                    //proj.Y /= renderer.Device.Viewport.Height;
+                    //proj *= 2;
+                    //proj -= Vector3.One;
 
-                //maxWorldY = Math.Max(maxWorldY, pos.Y);
-                #region debug: comparison of projection operations
+                    //Vector3 proj2 = Vector3.Transform(pos, View * Projection);
+                    //proj2.X /= proj2.Z;
+                    //proj2.Y /= -proj2.Z;                
+                    //Console.WriteLine(proj.ToString() + "/" + proj2.ToString() + "/"+(proj.X-proj2.X)+"/"+(proj.Y-proj2.Y));
 
-                //Vector3 proj = renderer.Device.Viewport.Project(pos, Projection, View, Matrix.Identity);
-                //proj.X /= renderer.Device.Viewport.Width;
-                //proj.Y /= renderer.Device.Viewport.Height;
-                //proj *= 2;
-                //proj -= Vector3.One;
-
-                //Vector3 proj2 = Vector3.Transform(pos, View * Projection);
-                //proj2.X /= proj2.Z;
-                //proj2.Y /= -proj2.Z;                
-                //Console.WriteLine(proj.ToString() + "/" + proj2.ToString() + "/"+(proj.X-proj2.X)+"/"+(proj.Y-proj2.Y));
-
-                #endregion
+                    #endregion
+                }
             }
             //Console.WriteLine("ending recomputing frame");
             float maxDeviation = Math.Max(maxAbs.X, maxAbs.Y) * 1.2f;

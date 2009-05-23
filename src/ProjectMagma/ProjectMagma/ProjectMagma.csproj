@@ -180,6 +180,7 @@
     <Compile Include="Renderer\RenderPasses\GlowPass.cs" />
     <Compile Include="Renderer\Interface\RendererUpdateQueue.cs" />
     <Compile Include="Renderer\RenderTime.cs" />
+    <Compile Include="Simulation\Audio\SoundRegistry.cs" />
     <Compile Include="Simulation\Collision\CollisionTests\ContactSphereMesh.cs" />
     <Compile Include="Simulation\Collision\CollisionTests\ContactMeshSphere.cs" />
     <Compile Include="Simulation\Collision\CollisionTests\ContactCylinderMesh.cs" />

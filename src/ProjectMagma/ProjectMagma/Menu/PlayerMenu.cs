@@ -235,7 +235,7 @@ namespace ProjectMagma
         private ModelAnimator animator;
         //private AnimationMode animationMode;
         private AnimationController walkController;
-        private Effect clonedEffect;
+        //private Effect clonedEffect;
         //private Dictionary<string, AnimationController> controllers;
         //float blendFactor;
         //string state, destState, permanentState;

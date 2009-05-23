@@ -6,6 +6,10 @@
     <Include name="Level\Common\Constants.xml"/>
     <Include name="Level\Common\Templates.xml"/>
   </Includes>
+
+  <Entity name="sound" extends="sound_base">
+  </Entity>
+
   <!-- "unique" game entities -->
 
   <Entity name="lava" extends="lava_base">

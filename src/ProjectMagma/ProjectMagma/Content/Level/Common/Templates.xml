@@ -6,6 +6,36 @@
     <Include name="Level\Common\RobotTemplates.xml"/>
     <Include name="Level\Common\IslandTemplates.xml"/>
   </Includes>
+
+  <Entity name="sound_base" abstract="true">
+    <Attributes>
+      <Attribute name="background_music" template="string" value=""/>
+      <Attribute name="cave_background_loop" template="string" value=""/>
+      <Attribute name="lava_background_loop" template="string" value=""/>
+      <Attribute name="melee_hit" template="string" value=""/>
+      <Attribute name="flame_thrower_start" template="string" value=""/>
+      <Attribute name="flame_thrower_loop" template="string" value=""/>
+      <Attribute name="flame_thrower_end" template="string" value=""/>
+      <Attribute name="ice_spike_fire" template="string" value=""/>
+      <Attribute name="ice_spike_flying" template="string" value=""/>
+      <Attribute name="ice_spike_explosion_on_player" template="string" value=""/>
+      <Attribute name="ice_spike_explosion_on_environment" template="string" value=""/>
+      <Attribute name="take_damage" template="string" value=""/>
+      <Attribute name="respawn" template="string" value=""/>
+      <Attribute name="powerup_health_taken" template="string" value=""/>
+      <Attribute name="powerup_energy_taken" template="string" value=""/>
+      <Attribute name="powerup_life_taken" template="string" value=""/>
+      <Attribute name="island_hits_island" template="string" value=""/>
+      <Attribute name="and_the_winner_is" template="string" value=""/>
+      <Attribute name="walk" template="string" value=""/>
+      <Attribute name="jump_start" template="string" value=""/>
+      <Attribute name="jump_end" template="string" value=""/>
+      <Attribute name="repulsion_start" template="string" value=""/>
+      <Attribute name="repulsion_loop" template="string" value=""/>
+      <Attribute name="repulsion_end" template="string" value=""/>
+    </Attributes>
+  </Entity>
+          
   
   <!-- abstract game entities (templates) -->
 

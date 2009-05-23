@@ -1255,7 +1255,7 @@ namespace ProjectMagma.Simulation
                     // hack: no response on jump (who sees that anyway...)
                     return;
 
-                    if (contact.EntityB == destinationIsland)
+                    /*if (contact.EntityB == destinationIsland)
                         return;
 
                     Vector3 position = destinationIsland.GetVector3("position");
@@ -1278,7 +1278,7 @@ namespace ProjectMagma.Simulation
                     // also ensure we don't fall down yet
 //                    player.SetVector3("velocity", player.GetVector3("velocity") - constants.GetVector3("gravity_acceleration") * simTime.Dt);
 
-                    return;
+                    return;*/
                 }
 
                 String kind = contact.EntityB.GetString("kind");
@@ -2076,7 +2076,7 @@ namespace ProjectMagma.Simulation
             // times
             public float hitButtonPressedAt = float.NegativeInfinity;
 
-            private static float gamepadEmulationValue = -1f;
+            //private static float gamepadEmulationValue = -1f;
         }
 
         private readonly ControllerInput controllerInput = new ControllerInput();

@@ -332,7 +332,10 @@ namespace ProjectMagma
 #endif
 #if !DEBUG
             }
-            catch (Exception ex) { }
+            catch (Exception)
+            {
+                
+            }
 #endif
         }
 
@@ -606,7 +609,7 @@ namespace ProjectMagma
         {
             return; 
 
-            // Open a storage container.StorageContainer container =
+            /*// Open a storage container.StorageContainer container =
             StorageContainer container = device.OpenContainer(Window.Title);
 
             // Get the path of the save game.
@@ -623,7 +626,7 @@ namespace ProjectMagma
             }
 
             // Dispose the container, to commit changes.
-            container.Dispose();
+            container.Dispose();*/
         }
 
         public class Settings

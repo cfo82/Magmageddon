@@ -21,6 +21,8 @@ namespace ProjectMagma.Simulation.Collision
             this.contacts = new List<Contact>(100);
             this.currentContactIndex = 0;
             this.contactsAllocated = new List<Contact>(100);
+            this.lastFrame = -10;
+            this.targetMilliseconds = 2;
 
             this.thread = new Thread(Run);
             this.thread.Name = "CollisionThread" + processor;
@@ -57,9 +59,21 @@ namespace ProjectMagma.Simulation.Collision
 
                     double startTime = Now;
 
+                    if (lastFrame > 0)
+                    {
+                        double targetFps = 60;
+                        double timeDiff = startTime - lastFrame;
+                        double newTarget = ((1000d / targetFps) - timeDiff);
+                        targetMilliseconds = System.Math.Max(2, targetMilliseconds * 0.1 + newTarget * 0.9);
+                    }
+
+                    //Console.WriteLine("{0}", targetMilliseconds);
+
+                    lastFrame = startTime;
+
                     Contact lastContact = null;
                     TestList.TestEntry entry = testList.GetNextCollisionEntry();
-                    while (entry != null && (Now - startTime) < 2) // todo: extract constant
+                    while (entry != null && (Now - startTime) < targetMilliseconds) // todo: extract constant
                     {
                         // do collision detection with this entry!
                         ContactTest test = CollisionManager.ContactTests[
@@ -171,5 +185,8 @@ namespace ProjectMagma.Simulation.Collision
         private List<Contact> contacts;
         private int currentContactIndex;
         private List<Contact> contactsAllocated;
+        private double lastFrame;
+        private double targetMilliseconds;
+        private static readonly double FpsAdjustmentSteps = 2;
     }
 }

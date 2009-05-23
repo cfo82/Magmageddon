@@ -15,30 +15,30 @@ namespace ProjectMagma.Simulation
         {
             Entity sounds = Game.Instance.Simulation.EntityManager["sound"];
 
-            backgroundMusic = sounds.GetString("background_music");
-            caveBackgroundLoop = sounds.GetString("cave_background_loop");
-            lavaBackgroundLoop = sounds.GetString("lava_background_loop");
-            meleeHit = sounds.GetString("melee_hit");
-            flameThrowerStart = sounds.GetString("flame_thrower_start");
-            flameThrowerLoop = sounds.GetString("flame_thrower_loop");
-            flameThrowerEnd = sounds.GetString("flame_thrower_end");
-            iceSpikeFire = sounds.GetString("ice_spike_fire");
-            iceSpikeFlying = sounds.GetString("ice_spike_flying");
-            iceSpikeExplosionOnPlayer = sounds.GetString("ice_spike_explosion_on_player");
-            iceSpikeExplosionOnEnvironment = sounds.GetString("ice_spike_explosion_on_environment");
-            takeDamage = sounds.GetString("take_damage");
-            respawn = sounds.GetString("respawn");
-            powerupHealthTaken = sounds.GetString("powerup_health_taken");
-            powerupEnergyTaken = sounds.GetString("powerup_energy_taken");
-            powerupLifeTaken = sounds.GetString("powerup_life_taken");
-            islandHitsIsland = sounds.GetString("island_hits_island");
-            andTheWinnerIs = sounds.GetString("and_the_winner_is");
-            walk = sounds.GetString("walk");
-            jumpStart = sounds.GetString("jump_start");
-            jumpEnd = sounds.GetString("jump_end");
-            repulsionStart = sounds.GetString("repulsion_start");
-            repulsionLoop = sounds.GetString("repulsion_loop");
-            repulsionEnd = sounds.GetString("repulsion_end");
+            backgroundMusic = sounds.HasString(BackgroundMusicKey) ? sounds.GetString(BackgroundMusicKey) : "";
+            caveBackgroundLoop = sounds.HasString(CaveBackgroundLoopKey) ? sounds.GetString(CaveBackgroundLoopKey) : "";
+            lavaBackgroundLoop = sounds.HasString(LavaBackgroundLoopKey) ? sounds.GetString(LavaBackgroundLoopKey) : "";
+            meleeHit = sounds.HasString(MeleeHitKey) ? sounds.GetString(MeleeHitKey) : "";
+            flameThrowerStart = sounds.HasString(FlameThrowerStartKey) ? sounds.GetString(FlameThrowerStartKey) : "";
+            flameThrowerLoop = sounds.HasString(FlameThrowerLoopKey) ? sounds.GetString(FlameThrowerLoopKey) : "";
+            flameThrowerEnd = sounds.HasString(FlameThrowerEndKey) ? sounds.GetString(FlameThrowerEndKey) : "";
+            iceSpikeFire = sounds.HasString(IceSpikeFireKey) ? sounds.GetString(IceSpikeFireKey) : "";
+            iceSpikeFlying = sounds.HasString(IceSpikeFlyingKey) ? sounds.GetString(IceSpikeFlyingKey) : "";
+            iceSpikeExplosionOnPlayer = sounds.HasString(IceSpikeExplosionOnPlayerKey) ? sounds.GetString(IceSpikeExplosionOnPlayerKey) : "";
+            iceSpikeExplosionOnEnvironment = sounds.HasString(IceSpikeExplosionOnEnvironmentKey) ? sounds.GetString(IceSpikeExplosionOnEnvironmentKey) : "";
+            takeDamage = sounds.HasString(TakeDamageKey) ? sounds.GetString(TakeDamageKey) : "";
+            respawn = sounds.HasString(RespawnKey) ? sounds.GetString(RespawnKey) : "";
+            powerupHealthTaken = sounds.HasString(PowerupHealthTakenKey) ? sounds.GetString(PowerupHealthTakenKey) : "";
+            powerupEnergyTaken = sounds.HasString(PowerupEnergyTakenKey) ? sounds.GetString(PowerupEnergyTakenKey) : "";
+            powerupLifeTaken = sounds.HasString(PowerupLifeTakenKey) ? sounds.GetString(PowerupLifeTakenKey) : "";
+            islandHitsIsland = sounds.HasString(IslandHitsIslandKey) ? sounds.GetString(IslandHitsIslandKey) : "";
+            andTheWinnerIs = sounds.HasString(AndTheWinnerIsKey) ? sounds.GetString(AndTheWinnerIsKey) : "";
+            walk = sounds.HasString(WalkKey) ? sounds.GetString(WalkKey) : "";
+            jumpStart = sounds.HasString(JumpStartKey) ? sounds.GetString(JumpStartKey) : "";
+            jumpEnd = sounds.HasString(JumpEndKey) ? sounds.GetString(JumpEndKey) : "";
+            repulsionStart = sounds.HasString(RepulsionStartKey) ? sounds.GetString(RepulsionStartKey) : "";
+            repulsionLoop = sounds.HasString(RepulsionLoopKey) ? sounds.GetString(RepulsionLoopKey) : "";
+            repulsionEnd = sounds.HasString(RepulsionEndKey) ? sounds.GetString(RepulsionEndKey) : "";
         }
 
         public string BackgroundMusic
@@ -191,5 +191,30 @@ namespace ProjectMagma.Simulation
 
         // menu is not maintained in this class since it is not part of 
         // the simulation!
+
+        private static readonly string BackgroundMusicKey = "background_music";
+        private static readonly string CaveBackgroundLoopKey = "cave_background_loop";
+        private static readonly string LavaBackgroundLoopKey = "lava_background_loop";
+        private static readonly string MeleeHitKey = "melee_hit";
+        private static readonly string FlameThrowerStartKey = "flame_thrower_start";
+        private static readonly string FlameThrowerLoopKey = "flame_thrower_loop";
+        private static readonly string FlameThrowerEndKey = "flame_thrower_end";
+        private static readonly string IceSpikeFireKey = "ice_spike_fire";
+        private static readonly string IceSpikeFlyingKey = "ice_spike_flying";
+        private static readonly string IceSpikeExplosionOnPlayerKey = "ice_spike_explosion_on_player";
+        private static readonly string IceSpikeExplosionOnEnvironmentKey = "ice_spike_explosion_on_environment";
+        private static readonly string TakeDamageKey = "take_damage";
+        private static readonly string RespawnKey = "respawn";
+        private static readonly string PowerupHealthTakenKey = "powerup_health_taken";
+        private static readonly string PowerupEnergyTakenKey = "powerup_energy_taken";
+        private static readonly string PowerupLifeTakenKey = "powerup_life_taken";
+        private static readonly string IslandHitsIslandKey = "island_hits_island";
+        private static readonly string AndTheWinnerIsKey = "and_the_winner_is";
+        private static readonly string WalkKey = "walk";
+        private static readonly string JumpStartKey = "jump_start";
+        private static readonly string JumpEndKey = "jump_end";
+        private static readonly string RepulsionStartKey = "repulsion_start";
+        private static readonly string RepulsionLoopKey = "repulsion_loop";
+        private static readonly string RepulsionEndKey = "repulsion_end";
     }
 }

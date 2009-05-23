@@ -51,24 +51,11 @@ namespace ProjectMagma.Simulation
             {
                 playerConstants.GetIntAttribute("max_energy").ValueChanged += MaxEnergyChanged;
             }
-            if (entity.HasInt("fuel"))
-            {
-                entity.GetIntAttribute("fuel").ValueChanged += FuelChanged;
-            }
-            if (playerConstants.HasInt("max_fuel"))
-            {
-                playerConstants.GetIntAttribute("max_fuel").ValueChanged += MaxFuelChanged;
-            }
             if (entity.HasInt("frozen"))
             {
                 entity.GetIntAttribute("frozen").ValueChanged += FrozenChanged;
             }
-            if (entity.HasInt("jumps"))
-            {
-                entity.GetIntAttribute("jumps").ValueChanged += JumpsChanged;
-            }
             entity.GetIntAttribute("lives").ValueChanged += LivesChanged;
-            entity.GetFloatAttribute("repulsion_seconds").ValueChanged += RepulsionSecondsChanged;
 
             Game.Instance.Simulation.CurrentUpdateQueue.AddUpdate(new AddRenderableUpdate((Renderable)Updatable));
         }
@@ -82,7 +69,6 @@ namespace ProjectMagma.Simulation
                 entity.GetInt("health"), playerConstants.GetInt("max_health"),
                 entity.GetInt("energy"), playerConstants.GetInt("max_energy"),
                 entity.GetInt("lives"), entity.GetInt("frozen"),
-                entity.GetInt("jumps"), entity.GetFloat("repulsion_seconds"),
                 entity.GetVector3("color1"), entity.GetVector3("color2")
             );
         }
@@ -127,24 +113,11 @@ namespace ProjectMagma.Simulation
             {
                 playerConstants.GetIntAttribute("max_energy").ValueChanged -= MaxEnergyChanged;
             }
-            if (entity.HasInt("fuel"))
-            {
-                entity.GetIntAttribute("fuel").ValueChanged -= FuelChanged;
-            }
-            if (playerConstants != null && playerConstants.HasInt("max_fuel"))
-            {
-                playerConstants.GetIntAttribute("max_fuel").ValueChanged -= MaxFuelChanged;
-            }
             if (entity.HasInt("frozen"))
             {
                 entity.GetIntAttribute("frozen").ValueChanged -= FrozenChanged;
             }
-            if (entity.HasInt("jumps"))
-            {
-                entity.GetIntAttribute("jumps").ValueChanged -= JumpsChanged;
-            }
             entity.GetIntAttribute("lives").ValueChanged -= LivesChanged;
-            entity.GetFloatAttribute("repulsion_seconds").ValueChanged -= RepulsionSecondsChanged;
 
             base.OnDetached(entity);
         }
@@ -203,15 +176,6 @@ namespace ProjectMagma.Simulation
             ChangeInt("MaxEnergy", newValue);
         }
 
-        private void FuelChanged(
-            IntAttribute sender,
-            int oldValue,
-            int newValue
-        )
-        {
-            ChangeInt("Fuel", newValue);
-        }
-
         private void MaxFuelChanged(
             IntAttribute sender,
             int oldValue,
@@ -230,15 +194,6 @@ namespace ProjectMagma.Simulation
             ChangeInt("Frozen", newValue);
         }
 
-        private void JumpsChanged(
-            IntAttribute sender,
-            int oldValue,
-            int newValue
-        )
-        {
-            ChangeInt("Jumps", newValue);
-        }
-
         private void LivesChanged(
             IntAttribute sender,
             int oldValue,
@@ -246,15 +201,6 @@ namespace ProjectMagma.Simulation
         )
         {
             ChangeInt("Lives", newValue);
-        }
-
-        private void RepulsionSecondsChanged(
-            FloatAttribute sender,
-            float oldValue,
-            float newValue
-        )
-        {
-            ChangeFloat("RepulsionSeconds", newValue);
         }
 
         public bool RepulsionUsable

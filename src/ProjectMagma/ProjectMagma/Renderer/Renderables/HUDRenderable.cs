@@ -15,7 +15,6 @@ namespace ProjectMagma.Renderer
             string playerName, int gamePadIndex,                     // player identification
             int health, int maxHealth, int energy, int maxEnergy,    // displayed in bars
             int lives, int frozen,                                   // displayed as text
-            int jumps, float repulsion_seconds,                        // displayed as powerup text          
             Vector3 color1, Vector3 color2                           // player color specifices
         )
         {
@@ -27,11 +26,9 @@ namespace ProjectMagma.Renderer
             this.energy = energy;
             this.maxEnergy = maxEnergy;
             this.frozen = frozen;
-            this.jumps = jumps;
             this.lives = lives;
             this.color1 = color1;
             this.color2 = color2;
-            this.repulsion_seconds = repulsion_seconds;
             lastFrameTime = currentFrameTime = 0.0;
 
             displayedEnergy = energy;

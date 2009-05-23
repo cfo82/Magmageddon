@@ -300,6 +300,8 @@ namespace ProjectMagma.Simulation
 
         private void PerformIslandPositioning(ref Vector3 playerPosition)
         {
+            return;
+
             if (activeIsland != null)
             {
                 // position on island surface
@@ -318,6 +320,8 @@ namespace ProjectMagma.Simulation
                     else
                     {
                         playerPosition = previousPosition;
+
+                        // check if we are still to close to island border
                     }
             }
         }
@@ -888,7 +892,8 @@ namespace ProjectMagma.Simulation
                         }
 
                         // check position a bit further in walking direction to be still on island
-                        float islandNonWalkingRangeMultiplier = constants.GetFloat("island_non_walking_range_multiplier");
+                        float islandNonWalkingRangeMultiplier = constants.GetFloat("island_non_walking_range_multiplier")
+                            * activeIsland.GetVector3("scale").X / 100; // normalized to scale of 100
                         Vector3 checkPos = playerPosition + new Vector3(controllerInput.leftStickX * islandNonWalkingRangeMultiplier,
                             0, controllerInput.leftStickY * islandNonWalkingRangeMultiplier); // todo: extract constant
 
@@ -897,6 +902,18 @@ namespace ProjectMagma.Simulation
                         {
                             // check point outside of island -> prohibit movement
                             playerPosition = previousPosition;
+
+                            // plus a bit further inwards
+                            Vector3 corrector = (activeIsland.GetVector3("position") - playerPosition);
+                            corrector.Y = 0;
+                            if (corrector != Vector3.Zero)
+                            {
+                                corrector.Normalize();
+                                corrector.X *= constants.GetFloat("x_axis_walk_multiplier") * dt;
+                                corrector.Z *= constants.GetFloat("z_axis_walk_multiplier") * dt;
+                                playerPosition += corrector;
+                                Console.WriteLine("adapted position: " + playerPosition);
+                            }
                         }
                     }
                 
@@ -1450,6 +1467,8 @@ namespace ProjectMagma.Simulation
                 otherPlayer.SetVector3("hit_pushback_velocity", velocity);
                 otherPlayer.SetVector3("position", otherPlayer.GetVector3("position") + velocity * simTime.Dt);
                 hitPerformedAt = simTime.At;
+
+                canFallFromIsland = true;
 
                 // indicate in model
                 otherPlayer.GetProperty<RobotRenderProperty>("render").NextOnceState = "pushback";

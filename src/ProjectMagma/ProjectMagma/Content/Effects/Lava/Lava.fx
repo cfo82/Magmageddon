@@ -141,7 +141,7 @@ VS_OUTPUT MultiPlaneVS(float4 inPositionOS  : POSITION,
 	
 	// hack: w is in world space, xyz in object space
 	float3 OutPosition = Out.position;
-	Out.pos.w = ComputeFogFactor(length(EyePosition - mul(inPositionOS, localWorld)));
+	Out.pos.w = ComputeFogFactor(length(EyePosition - vPositionWS));
 	
    return Out;
 }
@@ -200,9 +200,15 @@ PSOutput MultiPlanePS(PS_INPUT i) : COLOR0
 //	outp.Color = gettemperature(i.texCoord);
 //	outp.Color = float4(planeFraction,0,0,1);
 	outp.RenderChannelColor = RenderChannelColor;
-	outp.Depth = i.positionPSP.z / i.positionPSP.w;
+	//outp.Depth = i.positionPSP.z / i.positionPSP.w;
+	outp.RealDepth = i.positionPSP.z / i.positionPSP.w;
 	//outp.DepthColor = float4(i.pos.y/DepthClipY,0,0,1);
-	outp.DepthColor = float4(i.pos.y/DepthClipY,i.pos.w,0,1);
+	
+	// original
+	//outp.DepthColor = float4(i.pos.y/DepthClipY,i.pos.w,0,1);
+	
+	// cheat:
+	outp.DepthColor = float4(25/DepthClipY,i.pos.w,0,1);
 	
 	return outp;	
 	

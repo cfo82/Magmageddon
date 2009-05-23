@@ -28,7 +28,7 @@ ColorPair ComputePerPixelLights(float3 E, float3 N, float y)
 	L = -DirLight1Direction;
 	H = normalize(E + L);
 	dt = max(0,dot(L,N));
-	float heightCoefficient = saturate(1-y/DirLight1BottomAmpMaxY);
+	float heightCoefficient = saturate(1-abs((y-130)/DirLight1BottomAmpMaxY));
 	//float a = max(0,(DirLight1BottomAmpMaxY-y)/DirLight1BottomAmpMaxY);
 	float multiplier = lerp(DirLight1MinMultiplier, DirLight1MaxMultiplier, heightCoefficient);
     result.Diffuse += DirLight1DiffuseColor * dt * multiplier;

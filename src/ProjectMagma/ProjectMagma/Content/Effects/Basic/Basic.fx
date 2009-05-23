@@ -11,17 +11,19 @@
 //-----------------------------------------------------------------------------
 // Shader and technique definitions
 //-----------------------------------------------------------------------------
+
+
 Technique Unicolored
 {
 	Pass
 	{
 		VertexShader = compile vs_3_0 VSBasicPixelLightingNmSq();
 		PixelShader	 = compile ps_3_0 PSBasicPixelLighting();
-		AlphaBlendEnable = true;
+		AlphaBlendEnable = false;
 		SrcBlend = SrcAlpha;
 		DestBlend = InvSrcAlpha;
 		ZEnable = true;
-	}	
+	}
 }
 
 Technique Textured
@@ -31,6 +33,8 @@ Technique Textured
 		VertexShader = compile vs_3_0 VSBasicPixelLightingNmTxSq();
 		PixelShader	 = compile ps_3_0 PSBasicPixelLightingTx();
 		ZEnable = true;
+		AlphaBlendEnable = false;
+		AlphaTestEnable = false;						
 	}
 }
 
@@ -42,6 +46,8 @@ Technique TexturedNoCullNoDepth
 		PixelShader	 = compile ps_3_0 PSBasicPixelLightingTx();
 		CullMode = None;
 		ZEnable = false;
+		AlphaBlendEnable = false;
+		AlphaTestEnable = false;				
 	}
 }
 
@@ -52,16 +58,22 @@ Technique Island
 		VertexShader = compile vs_3_0 VSBasicPixelLightingNmTxSq();
 		PixelShader	 = compile ps_3_0 PSIsland();
 		ZEnable = true;		
+		AlphaBlendEnable = false;
+		AlphaTestEnable = false;
 	}
 }
 
 Technique Environment
 {
-	Pass 
+	Pass
 	{
 		VertexShader = compile vs_3_0 VSBasicPixelLightingNmTxSq();
 		PixelShader	 = compile ps_3_0 PSEnvironment();
 		ZEnable = true;
+		AlphaBlendEnable = false;
+		AlphaTestEnable = true;		
+		AlphaFunc = Greater;
+        AlphaRef = 0.5;
 	}
 }
 
@@ -72,6 +84,8 @@ Technique AnimatedPlayer
 		VertexShader = compile vs_3_0 VSBasicPixelLightingNmTxSqSk();
 		PixelShader = compile ps_3_0 PSBasicPixelLightingTxTo();
 		ZEnable = true;		
+		AlphaBlendEnable = false;
+		AlphaTestEnable = false;		
 	}
 }
 
@@ -82,5 +96,7 @@ Technique DoublyColoredAnimatedPlayer
 		VertexShader = compile vs_3_0 VSBasicPixelLightingNmTxSqSk();
 		PixelShader = compile ps_3_0 PSBasicPixelLightingTxToDb();
 		ZEnable = true;		
+		AlphaBlendEnable = false;
+		AlphaTestEnable = false;				
 	}
 }

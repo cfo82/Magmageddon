@@ -207,8 +207,12 @@ technique Scene
         VertexShader = compile vs_2_0 Scene_VS();
         PixelShader  = compile ps_2_0 Scene_PS();
         
-        AlphaBlendEnable = true;
-        SrcBlend = SrcAlpha;
-        DestBlend = InvSrcAlpha;
+        //AlphaBlendEnable = true;
+        //SrcBlend = SrcAlpha;
+        //DestBlend = InvSrcAlpha;
+        
+        AlphaTestEnable = true;
+		AlphaFunc = Greater;
+        AlphaRef = 0.5;
     }
 }

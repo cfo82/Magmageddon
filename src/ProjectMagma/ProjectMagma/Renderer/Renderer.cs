@@ -95,7 +95,7 @@ namespace ProjectMagma.Renderer
                                  shadowMapSize,
                                  shadowMapSize,
                                  1,
-                                 SurfaceFormat.Color);
+                                 SurfaceFormat.Single);
 
             // Create out depth stencil buffer, using the shadow map size, 
             //and the same format as our regular depth stencil buffer.
@@ -120,9 +120,9 @@ namespace ProjectMagma.Renderer
             if (EnablePostProcessing)
             {
                 //ResolveTarget = new ResolveTexture2D(Device, width, height, 1, format);
-                Target0 = new RenderTarget2D(Device, width, height, 1, format);
+                Target0 = new RenderTarget2D(Device, width, height, 1, SurfaceFormat.HalfVector4);
                 Target1 = new RenderTarget2D(Device, width, height, 1, format);
-                Target2 = new RenderTarget2D(Device, width, height, 1, format);
+                Target2 = new RenderTarget2D(Device, width, height, 1, SurfaceFormat.HalfVector4);
                 Target3 = new RenderTarget2D(Device, width, height, 1, format);
                 DepthTarget = new RenderTarget2D(Device, width, height, 1, SurfaceFormat.Single);
                 glowPass = new GlowPass(this, Target2, Target1);
@@ -270,7 +270,7 @@ namespace ProjectMagma.Renderer
             Update();
             LightManager.Update(this);
 
-            device.Clear(Color.CornflowerBlue);
+            device.Clear(Color.White);
 
             // 1) Set the light's render target
             device.SetRenderTarget(0, lightRenderTarget);
@@ -336,7 +336,7 @@ namespace ProjectMagma.Renderer
         }
 
         private void RenderShadow()
-        {
+        {            
             // backup stencil buffer
             DepthStencilBuffer oldStencilBuffer
                 = device.DepthStencilBuffer;
@@ -352,6 +352,23 @@ namespace ProjectMagma.Renderer
 
             // restore stencil buffer
             device.DepthStencilBuffer = oldStencilBuffer;
+
+
+            //device.SetRenderTarget(0, null);
+            //Texture2D texture = lightRenderTarget.GetTexture();
+            //float[] pixelData = new float[texture.Width * texture.Height];
+            //texture.GetData(pixelData, 0, texture.Width * texture.Height);
+            //Console.WriteLine("start");
+            //for (int i = 0; i < texture.Width * texture.Height; i++)
+            //    if (pixelData[i] != 0.0f)
+            //    {
+            //        float g = pixelData[i];
+            //        //Console.WriteLine(g);
+            //    }
+            //Console.WriteLine("end");
+            //int a = 0;
+
+
         }
 
         private int TransparentRenderableComparison(
@@ -392,7 +409,7 @@ namespace ProjectMagma.Renderer
                 Device.SetRenderTarget(3, DepthTarget);
             }
 
-            Device.Clear(Color.Black);
+            Device.Clear(Color.White);
 
             foreach (Renderable renderable in opaqueRenderables)
             {
@@ -402,6 +419,34 @@ namespace ProjectMagma.Renderer
 
             // need to sort transparent renderables by position and render them (back to front!!)
             // TODO: validate sorting... 
+
+            if (EnablePostProcessing)
+            {
+                Device.SetRenderTarget(0, null);
+                Device.SetRenderTarget(1, null);
+                Device.SetRenderTarget(2, null);
+                Device.SetRenderTarget(3, null);
+                GeometryRender = Target0.GetTexture();
+                RenderChannels = Target1.GetTexture();
+                ToolTexture = Target3.GetTexture();
+            }
+
+            //Texture2D texture = DepthTarget.GetTexture();
+            //float[] pixelData = new float[texture.Width * texture.Height];
+            //texture.GetData(pixelData, 0, texture.Width * texture.Height);
+            //Console.WriteLine("start");
+            //for (int i = 0; i < texture.Width * texture.Height; i++)
+            //    if (pixelData[i] != 0.0f)
+            //    {
+            //        float g = pixelData[i];
+            //        Console.WriteLine(g);
+            //    }
+            //Console.WriteLine("end");
+            //int a = 0;
+        }
+
+        private void RenderParticles()
+        {
             //transparentRenderables.Sort(TransparentRenderableComparison);
             if (explosionSystem != null)
             {
@@ -418,21 +463,6 @@ namespace ProjectMagma.Renderer
                 renderable.Draw(this);
             }
 
-            if (EnablePostProcessing)
-            {
-                Device.SetRenderTarget(0, null);
-                Device.SetRenderTarget(1, null);
-                Device.SetRenderTarget(2, null);
-                Device.SetRenderTarget(3, null);
-                GeometryRender = Target0.GetTexture();
-                RenderChannels = Target1.GetTexture();
-                ToolTexture = Target3.GetTexture();
-            }
-        }
-
-        private void RenderParticles()
-        {
-            // later on particle systems should be rendered inside this function 
         }
 
         private void RenderOverlays()

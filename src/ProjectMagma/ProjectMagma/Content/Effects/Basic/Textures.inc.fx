@@ -43,3 +43,15 @@ uniform const sampler NormalSampler = sampler_state
 	AddressU = Wrap;
 	AddressV = Wrap;	
 };
+
+uniform const texture ShadowMap;
+uniform const sampler ShadowSampler = sampler_state
+{
+	Texture = <ShadowMap>;
+	MipFilter = Linear;
+	MinFilter = Linear;
+	MagFilter = Linear;
+	AddressU = Wrap;
+	AddressV = Wrap;	
+};
+

@@ -46,12 +46,14 @@ PixelLightingVSOutput VSBasicPixelLightingNmSq
 	float4 pos_ws = mul(squashed_ws, World);
 	float4 pos_vs = mul(pos_ws, View);
 	float4 pos_ps = mul(pos_vs, Projection);
+	float4 pos_ls = mul(pos_ws, LightViewProjection);
 	
 	vout.PositionPS		= pos_ps;
 	vout.PositionPSP	= pos_ps;
 	vout.PositionWS.xyz	= pos_ws.xyz;
 	vout.PositionWS.w	= ComputeFogFactor(length(EyePosition - pos_ws));
-	vout.NormalWS		= normalize(mul(Normal, World));
+	vout.PositionLS		= pos_ls;
+	vout.NormalWS		= normalize(mul(Normal, World));	
 	
 	return vout;
 }
@@ -74,12 +76,14 @@ PixelLightingVSOutputTx VSBasicPixelLightingNmTxSq
 	float4 pos_ws = mul(squashed_ws, World);
 	float4 pos_vs = mul(pos_ws, View);
 	float4 pos_ps = mul(pos_vs, Projection);
+	float4 pos_ls = mul(pos_ws, LightViewProjection);
 	
 	vout.PositionPS		= pos_ps;
 	vout.PositionPSP	= pos_ps;
 	vout.PositionWS.xyz	= pos_ws.xyz;
 	vout.PositionWS.w	= ComputeFogFactor(length(EyePosition - pos_ws));
 	vout.NormalWS		= normalize(mul(Normal, World));
+	vout.PositionLS		= pos_ls;
 	vout.TexCoord		= TexCoord;
 
 	return vout;
@@ -102,12 +106,14 @@ PixelLightingVSOutputTx VSBasicPixelLightingNmTxSqSk
     float4 pos_ws = mul(skinned_input.position, World);
     float4 pos_vs = mul(pos_ws, View);
     float4 pos_ps = mul(pos_vs, Projection);
+    float4 pos_ls = mul(pos_ws, LightViewProjection);
     
     vout.PositionPS		= pos_ps;
     vout.PositionPSP	= pos_ps;
     vout.PositionWS.xyz = pos_ws.xyz;
 	vout.PositionWS.w	= ComputeFogFactor(length(EyePosition - pos_ws));
 	vout.NormalWS		= normalize(mul(skinned_input.normal, World));
+	vout.PositionLS		= pos_ls;
 	vout.TexCoord		= input.texcoord;
     //
     //// This is the final position of the vertex, and where it will be drawn on the screen

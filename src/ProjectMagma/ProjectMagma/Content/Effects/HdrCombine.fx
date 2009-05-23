@@ -65,6 +65,17 @@ sampler2D DepthTextureSampler = sampler_state
 	AddressU = Clamp;
 	AddressV = Clamp;
 };  
+
+texture ShadowTargetTexture;
+sampler2D ShadowMapSampler = sampler_state
+{
+	Texture = <DepthTexture>;
+	MinFilter = Point;
+	MagFilter = Point;
+	MipFilter = Point;
+	AddressU = Clamp;
+	AddressV = Clamp;
+};  
   
 float BloomSensitivity[3];
 
@@ -190,8 +201,13 @@ inline void ApplyFog(inout float4 img, in float2 texCoord)
 	
 	float grad = GradientY(texCoord);
 	float4 fogColor = lerp(float4(FogColor,1),float4(0,0.5,1.0,1),0);
-	//fogColor=float4(1,0,0,1);
-	img = lerp(img, fogColor, saturate((z*y)*FogGlobMul*(1-grad)));
+	
+	
+	fogColor=float4(1,0.9,0.7,1);
+	
+//	img = lerp(img, fogColor, saturate((z*y)*FogGlobMul*(1-grad)));
+img = float4( zRaw,0,0,1);
+	//img = lerp(float4(img.rgb,1), fogColor, 0.75);
 	//img=float4(1,0,0,1);
 	//img = saturate(z*y*12);
 }
@@ -213,7 +229,7 @@ inline float2 PerturbTexCoord(in float2 texCoord)
 struct PostPixelShaderOutput
 {
 	float4 color : COLOR0;
-	//float depth  : DEPTH;
+	float depth  : DEPTH;
 };
 
 PostPixelShaderOutput PostPixelShader(float2 texCoord : TEXCOORD0)
@@ -223,7 +239,7 @@ PostPixelShaderOutput PostPixelShader(float2 texCoord : TEXCOORD0)
 	//result.depth = tex2D(DepthTextureSampler, texCoord).r;
 	//result.color = float4(tex2D(DepthTextureSampler, texCoord).b,0,0,1);
 	//result.color = float4(tex2D(DepthTextureSampler, texCoord).r,0,0,1);
-	//result.color = tex2D(DepthTextureSampler, texCoord);	
+	//result.color = pow(tex2D(DepthTextureSampler, texCoord).r,1000);
 	//return result;
 		
 	float2 perturbedTexCoord = PerturbTexCoord(texCoord);
@@ -235,9 +251,10 @@ PostPixelShaderOutput PostPixelShader(float2 texCoord : TEXCOORD0)
 	float4 channel_map = tex2D(RenderChannelColorSampler, perturbedTexCoord);
     
     float4 combined = channel1*channel_map.r + channel2*channel_map.g + channel3*channel_map.b;
-    ApplyFog(combined, perturbedTexCoord);
+    //ApplyFog(combined, perturbedTexCoord);
     combined = GradientYBlueMap(combined, perturbedTexCoord);
     
+    result.depth = tex2D(DepthTextureSampler, texCoord).r;
     
     
     //--- perturbation tester
@@ -267,5 +284,7 @@ technique BloomCombine
     pass Pass1
     {
         PixelShader = compile ps_3_0 PostPixelShader();
+        ZEnable = true;
+        ZWriteEnable = true;
     }
 }

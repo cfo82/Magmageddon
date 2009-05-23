@@ -78,7 +78,7 @@ namespace ProjectMagma.Renderer
             {
                 PrepareMeshEffects(renderer, mesh);
                 DrawMesh(renderer, mesh);
-                DrawShadow(ref renderer, mesh);
+                //DrawShadow(ref renderer, mesh);
             }
         }
 

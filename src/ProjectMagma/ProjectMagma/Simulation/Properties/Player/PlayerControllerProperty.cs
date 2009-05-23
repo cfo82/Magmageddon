@@ -327,6 +327,27 @@ namespace ProjectMagma.Simulation
                         playerPosition = previousPosition;
 
                         // check if we are still to close to island border
+                        float islandNonWalkingRangeMultiplier = constants.GetFloat("island_non_walking_range_multiplier")
+                            * activeIsland.GetVector3("scale").X / 100; // normalized to scale of 100
+                        Vector3 islandDir = (activeIsland.GetVector3("position") - playerPosition);
+                        islandDir.Y = 0;
+                        if (islandDir != Vector3.Zero)
+                        {
+                            islandDir.Normalize();
+                            Vector3 checkPos = playerPosition;
+                            checkPos.X += islandDir.X * islandNonWalkingRangeMultiplier;
+                            checkPos.Y += islandDir.Y * islandNonWalkingRangeMultiplier;
+
+                            // if checkpoint is outside of island push inwards
+                            if (!Simulation.GetPositionOnSurface(ref checkPos, activeIsland, out isectPt))
+                            {
+                                Vector3 velocity = islandDir;
+                                velocity.X *= constants.GetFloat("x_axis_run_multiplier");
+                                velocity.Z *= constants.GetFloat("z_axis_run_multiplier");
+                                inwardsPushVelocity = velocity;
+                                inwardsPushStartedAt = Game.Instance.Simulation.Time.At;
+                            }
+                        }
                     }
             }
         }
@@ -916,7 +937,8 @@ namespace ProjectMagma.Simulation
                                 corrector.Normalize();
                                 corrector.X *= constants.GetFloat("x_axis_walk_multiplier");
                                 corrector.Z *= constants.GetFloat("z_axis_walk_multiplier");
-                                inwardsPushVelocity = corrector;
+                                if(corrector.Length() > inwardsPushVelocity.Length())
+                                    inwardsPushVelocity = corrector;
                                 inwardsPushStartedAt = Game.Instance.Simulation.Time.At;
                             }
                         }

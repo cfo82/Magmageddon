@@ -60,6 +60,8 @@ namespace ProjectMagma.Simulation
         private int iceSpikeRemovedCount = 0;
         private float iceSpikeFiredAt = 0;
 
+        private Vector3 inwardsPushVelocity = Vector3.Zero;
+        private float inwardsPushStartedAt = float.MaxValue;
         private bool canFallFromIsland = false;
         private double hitPerformedAt = 0;
 
@@ -189,9 +191,13 @@ namespace ProjectMagma.Simulation
 
             #region collision reaction
             // reset collision response
-            if (simTime.At > collisionAt + 250) // todo: extract constant
+            if (simTime.At > collisionAt + 250)
             {
                 player.SetVector3("collision_pushback_velocity", Vector3.Zero);
+            }
+            if (simTime.At > inwardsPushStartedAt + 100) 
+            {
+                inwardsPushVelocity = Vector3.Zero;
             }
             #endregion
 
@@ -241,6 +247,7 @@ namespace ProjectMagma.Simulation
 
             // pushback
             Simulation.ApplyPushback(ref playerPosition, ref collisionPushbackVelocity, 0f /*constants.GetFloat("player_pushback_deacceleration")*/);
+            Simulation.ApplyPushback(ref playerPosition, ref inwardsPushVelocity, 0f /*constants.GetFloat("player_pushback_deacceleration")*/);
             Simulation.ApplyPushback(ref playerPosition, ref hitPushbackVelocity, constants.GetFloat("player_pushback_deacceleration"), 
                 HitPushbackEndedHandler);
 
@@ -300,8 +307,6 @@ namespace ProjectMagma.Simulation
 
         private void PerformIslandPositioning(ref Vector3 playerPosition)
         {
-            return;
-
             if (activeIsland != null)
             {
                 // position on island surface
@@ -909,10 +914,10 @@ namespace ProjectMagma.Simulation
                             if (corrector != Vector3.Zero)
                             {
                                 corrector.Normalize();
-                                corrector.X *= constants.GetFloat("x_axis_walk_multiplier") * dt;
-                                corrector.Z *= constants.GetFloat("z_axis_walk_multiplier") * dt;
-                                playerPosition += corrector;
-                                Console.WriteLine("adapted position: " + playerPosition);
+                                corrector.X *= constants.GetFloat("x_axis_walk_multiplier");
+                                corrector.Z *= constants.GetFloat("z_axis_walk_multiplier");
+                                inwardsPushVelocity = corrector;
+                                inwardsPushStartedAt = Game.Instance.Simulation.Time.At;
                             }
                         }
                     }
@@ -1468,6 +1473,7 @@ namespace ProjectMagma.Simulation
                 otherPlayer.SetVector3("position", otherPlayer.GetVector3("position") + velocity * simTime.Dt);
                 hitPerformedAt = simTime.At;
 
+                // when hit we can fall!
                 canFallFromIsland = true;
 
                 // indicate in model

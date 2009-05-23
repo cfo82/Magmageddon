@@ -251,12 +251,11 @@ namespace ProjectMagma.Simulation
             {
                 String kind = other.GetString("kind");
 
-                if ((kind == "player" // don't do any collision response with player if set so
-                    && !PlayerControllerProperty.ImuneToIslandPush)
-                    // never do collision response with player who is standing on island
-                    || (other.HasString("active_island") && other.GetString("active_island") == island.Name)
+                if (// never do collision response with player who is standing or jumping on island
+                    (other.HasString("active_island") && other.GetString("active_island") == island.Name)
                     || (other.HasString("jump_island") && other.GetString("jump_island") == island.Name)
-                    || kind == "powerup"
+                    || kind == "powerup" // with powerup neather
+                    || other.HasBool("dynamic") // neither with dynamic entities
                     )
                 {
                     // do nothing

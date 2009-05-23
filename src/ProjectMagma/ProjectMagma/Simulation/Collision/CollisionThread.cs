@@ -116,8 +116,6 @@ namespace ProjectMagma.Simulation.Collision
                             contacts.Add(contact);
                         }
 
-                        System.Threading.Thread.Sleep(random.Next(0, 3));
-
                         // get next entry
                         entry = testList.GetNextCollisionEntry();
                     }

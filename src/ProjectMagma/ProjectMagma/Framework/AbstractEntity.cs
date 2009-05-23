@@ -418,12 +418,13 @@ namespace ProjectMagma.Framework
             }
 
             Property property = properties[name];
-            if (property.GetType() != typeof(PropertyType))
+            PropertyType castedProperty = property as PropertyType;
+            if (castedProperty == null)
             {
-                throw new System.ArgumentException(string.Format("requesting type '{0}' but property has type '{1}'!", typeof(PropertyType).Name, property.GetType().Name));
+                throw new System.ArgumentException(string.Format("requesting type '{0}' but property cannot be converted to type '{1}'!", typeof(PropertyType).Name, property.GetType().Name));
             }
 
-            return property as PropertyType;
+            return castedProperty;
         }
 
         #endregion

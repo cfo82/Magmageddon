@@ -99,6 +99,7 @@
   <Entity name="spawn_light_base" extends="dynamic_entity" abstract="true">
     <Attributes>
       <Attribute name="position" template="float3" value="0 0 0"/>
+      <Attribute name="hide" template="bool" value="false"/>
     </Attributes>
     <Properties>
       <Property name="controller" type="ProjectMagma.Simulation.RespawnLightControllerProperty"/>

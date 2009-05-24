@@ -150,6 +150,7 @@
     <Compile Include="Renderer\Renderables\ParticleSystemRenderable.cs" />
     <Compile Include="Renderer\Renderables\PointExplosionRenderable.cs" />
     <Compile Include="Renderer\Renderables\Renderable.cs" />
+    <Compile Include="Renderer\Renderables\RespawnLightRenderable.cs" />
     <Compile Include="Renderer\Renderables\RobotRenderable.cs" />
     <Compile Include="Renderer\Renderables\TexturedRenderable.cs" />
     <Compile Include="Renderer\Renderables\WinningScreenRenderable.cs" />
@@ -228,6 +229,7 @@
     <Compile Include="Simulation\Properties\Rendering\HUDProperty.cs" />
     <Compile Include="Simulation\Properties\Rendering\ModelRenderProperty.cs" />
     <Compile Include="Simulation\Properties\Rendering\PointExplosionRenderProperty.cs" />
+    <Compile Include="Simulation\Properties\Rendering\RespawnLightRenderProperty.cs" />
     <Compile Include="Simulation\Properties\Rendering\RobotRenderProperty.cs" />
     <Compile Include="Simulation\Properties\Rendering\TexturedRenderProperty.cs" />
     <Compile Include="Simulation\Simulation.cs" />

@@ -161,6 +161,7 @@ namespace ProjectMagma.Simulation
             Vector3 surfacePos;
             Simulation.GetPositionOnSurface(ref position, activeIsland, out surfacePos);
             introLight.AddVector3Attribute("position", surfacePos);
+            introLight.AddProperty("render", new RespawnLightRenderProperty());
 
             Game.Instance.Simulation.EntityManager.AddDeferred(introLight, "intro_light_base", templates);
         }

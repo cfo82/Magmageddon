@@ -60,7 +60,7 @@ namespace ProjectMagma.Renderer
             vertexDeclaration = new VertexDeclaration(renderer.Device, Vertex.VertexElements);
 
             effect = Game.Instance.ContentManager.Load<Effect>("Effects/Sfx/Billboard").Clone(renderer.Device);
-            texture = Game.Instance.ContentManager.Load<Texture2D>("Textures/Sfx/IceSpikeHead");
+            Texture = Game.Instance.ContentManager.Load<Texture2D>("Textures/xna_logo");
         }
 
         public void Reposition(
@@ -81,7 +81,7 @@ namespace ProjectMagma.Renderer
             effect.Parameters["BillboardPosition"].SetValue(position);
             effect.Parameters["BillboardWidth"].SetValue(width);
             effect.Parameters["BillboardHeight"].SetValue(height);
-            effect.Parameters["BillboardTexture"].SetValue(texture);
+            effect.Parameters["BillboardTexture"].SetValue(Texture);
 
             renderer.Device.Vertices[0].SetSource(vertexBuffer, 0, Vertex.SizeInBytes);
             renderer.Device.VertexDeclaration = vertexDeclaration;
@@ -99,6 +99,8 @@ namespace ProjectMagma.Renderer
             effect.End();
         }
 
+        public Texture2D Texture { set; get; }
+
         private Renderer renderer;
         private Vector3 position;
         private float width;
@@ -106,6 +108,5 @@ namespace ProjectMagma.Renderer
         private VertexBuffer vertexBuffer;
         private VertexDeclaration vertexDeclaration;
         private Effect effect;
-        private Texture2D texture;
     }
 }

@@ -49,6 +49,10 @@ namespace ProjectMagma.Simulation
             {
                 entity.GetVector3Attribute("velocity").ValueChanged -= VelocityChanged;
             }
+            if (entity.HasBool("dead"))
+            {
+                entity.GetBoolAttribute("dead").ValueChanged -= DeadChanged;
+            }
 
             base.OnDetached(entity);
         }

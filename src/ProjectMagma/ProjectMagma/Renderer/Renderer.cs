@@ -329,8 +329,6 @@ namespace ProjectMagma.Renderer
                 Game.Instance.Profiler.EndSection("renderer_post");
             }
 
-            testBillboard.Draw(Camera.View, Camera.Projection);
-
             RenderParticles();
 
             // 5) Render overlays
@@ -648,6 +646,11 @@ namespace ProjectMagma.Renderer
         public RendererEntityManager EntityManager
         {
             get { return entityManager; }
+        }
+
+        public Billboard Billboard
+        {
+            get { return testBillboard; }
         }
         
         private GlowPass glowPass;

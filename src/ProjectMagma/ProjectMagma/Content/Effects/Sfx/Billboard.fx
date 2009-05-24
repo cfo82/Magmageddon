@@ -66,7 +66,9 @@ VS_OUTPUT VertexShader(VS_INPUT input)
 
 float4 PixelShader(float2 texCoord : TEXCOORD0) : COLOR0
 {
-    return tex2D(BillboardSampler, texCoord);
+    float4 color = tex2D(BillboardSampler, texCoord);
+    color.a /=2;
+    return color;
 }
 
 technique Billboards
@@ -77,9 +79,9 @@ technique Billboards
         PixelShader = compile ps_1_1 PixelShader();
 
         AlphaBlendEnable = true;
+        BlendOp = Add;
         SrcBlend = SrcAlpha;
         DestBlend = InvSrcAlpha;
-        BlendOp = Add;
 
         AlphaTestEnable = false;
         ZEnable = false;

@@ -159,6 +159,7 @@
     <Compile Include="Renderer\Renderables\IceSpikeRenderable.cs" />
     <Compile Include="Renderer\Renderables\EnvironmentRenderable.cs" />
     <Compile Include="Renderer\Renderables\PowerupRenderable.cs" />
+    <Compile Include="Renderer\Renderables\RespawnLightRenderable.cs" />
     <Compile Include="Renderer\Renderables\RobotRenderable.cs" />
     <Compile Include="Renderer\Renderables\IslandRenderable.cs" />
     <Compile Include="Renderer\Renderables\LavaRenderable.cs" />
@@ -249,6 +250,7 @@
     <Compile Include="Simulation\Properties\Rendering\ArrowRenderProperty.cs" />
     <Compile Include="Simulation\Properties\Rendering\FlamethrowerRenderProperty.cs" />
     <Compile Include="Simulation\Properties\Rendering\FireExplosionRenderProperty.cs" />
+    <Compile Include="Simulation\Properties\Rendering\RespawnLightRenderProperty.cs" />
     <Compile Include="Simulation\Properties\Rendering\PointExplosionRenderProperty.cs" />
     <Compile Include="Simulation\Properties\Rendering\IceExplosionRenderProperty.cs" />
     <Compile Include="Simulation\Properties\Rendering\IceSpikeRenderProperty.cs" />

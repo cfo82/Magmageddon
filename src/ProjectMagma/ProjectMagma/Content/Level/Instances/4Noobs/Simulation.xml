@@ -43,21 +43,6 @@
      </Properties>
    </Entity>
 
-  <Entity name="island1" extends="island_base_grass3">
-    <Attributes>
-      <Attribute name="position" template="float3" value="0 150 0"/>
-      <Attribute name="scale" template="float3" value="550 550 550"/>
-      <Attribute name="sinking_speed" template="float" value="0"/>
-
-      <Attribute name="landing_offset_p1" template="float3" value="-100 150 -100"/>
-      <Attribute name="landing_offset_p2" template="float3" value="-100 150 100"/>
-      <Attribute name="landing_offset_p3" template="float3" value="100 150 -100"/>
-      <Attribute name="landing_offset_p4" template="float3" value="100 150 100"/>
-    </Attributes>
-    <Properties>
-      <Property name="controller" type="ProjectMagma.Simulation.IslandNoMovementControllerProperty"/>
-    </Properties>
-  </Entity>
 
   <Entity name="powerup1" extends="powerup_health">
     <Attributes>

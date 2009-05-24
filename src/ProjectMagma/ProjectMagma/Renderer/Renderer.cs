@@ -138,6 +138,8 @@ namespace ProjectMagma.Renderer
             }
 
             updateQueues = new List<RendererUpdateQueue>();
+
+            testBillboard = new Billboard(this, new Vector3(0, 200, 0), 250, 250);
         }
 
         protected void ChangeLevel(
@@ -326,6 +328,8 @@ namespace ProjectMagma.Renderer
                 Game.Instance.Profiler.EndSection("renderer_post_hdr");
                 Game.Instance.Profiler.EndSection("renderer_post");
             }
+
+            testBillboard.Draw(Camera.View, Camera.Projection);
 
             RenderParticles();
 
@@ -661,5 +665,6 @@ namespace ProjectMagma.Renderer
         private RenderTime renderTime;
 
         private RendererEntityManager entityManager;
+        private Billboard testBillboard;
     }
 }

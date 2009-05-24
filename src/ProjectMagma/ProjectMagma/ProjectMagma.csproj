@@ -100,6 +100,7 @@
     <Compile Include="Framework\Properties\Base\Property.cs" />
     <Compile Include="GlobalClock.cs" />
     <Compile Include="Menu\ReleaseNotesMenu.cs" />
+    <Compile Include="Renderer\Billboard.cs" />
     <Compile Include="Renderer\Interface\InterpolationHistory.cs" />
     <Compile Include="Renderer\Interface\QuaternionInterpolationHistory.cs" />
     <Compile Include="Renderer\Interface\Vector3InterpolationHistory.cs" />

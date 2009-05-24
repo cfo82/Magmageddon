@@ -1765,19 +1765,21 @@ namespace ProjectMagma.Simulation
                     }
                 }
 
+                // check island is high enough
+                if (island.GetVector3("position").Y < 80) // todo: extract constant
+                {
+                    continue;
+                }
+
                 // check no players on island
                 if (island.GetInt("players_on_island") > 0)
+                {
                     valid = false;
+                }
 
                 // for 2nd round (> cnt) we accept respawn on powerups
                 if (i < cnt)
                 {
-                    // check island is high enough
-                    if (island.GetVector3("position").Y < 80) // todo: extract constant
-                    {
-                        continue;
-                    }
-
                     // check no powerup on island
                     foreach (Entity powerup in Game.Instance.Simulation.PowerupManager)
                     {

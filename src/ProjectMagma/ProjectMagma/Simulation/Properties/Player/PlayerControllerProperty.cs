@@ -1161,7 +1161,14 @@ namespace ProjectMagma.Simulation
 
         private void StopIslandJump()
         {
-            player.GetProperty<RobotRenderProperty>("render").NextPermanentState = "idle";
+            if (won)
+            {
+                player.GetProperty<RobotRenderProperty>("render").NextPermanentState = "win";
+            }
+            else
+            {
+                player.GetProperty<RobotRenderProperty>("render").NextPermanentState = "idle";
+            }
             destinationIsland.GetAttribute<Vector3Attribute>("position").ValueChanged -= IslandPositionHandler;
             destinationIsland = null;
         }
@@ -1238,7 +1245,7 @@ namespace ProjectMagma.Simulation
                     if (repulsionActive)
                         StopRepulsion();
                     LeaveActiveIsland();
-                    if(simpleJumpIsland != null)
+                    if (simpleJumpIsland != null)
                         StopSimpleJump();
 
                     Game.Instance.ContentManager.Load<SoundEffect>("Sounds/death").Play(Game.Instance.EffectsVolume);
@@ -1277,13 +1284,13 @@ namespace ProjectMagma.Simulation
                     deathExplosion = new Entity(player.Name + "_explosion");
                     deathExplosion.AddStringAttribute("player", player.Name);
 
-                    Vector3 pos = player.GetVector3("position");               
+                    Vector3 pos = player.GetVector3("position");
                     deathExplosion.AddVector3Attribute("position", pos);
 
                     Game.Instance.Simulation.EntityManager.AddDeferred(deathExplosion, "player_explosion_base", templates);
 
                     // any lives left?
-                    if (player.GetInt("lives") <= 0)
+                    if (player.GetInt("lives") <= 0 && !won)
                     {
                         Game.Instance.Simulation.EntityManager.EntityRemoved -= EntityRemovedHandler;
                         Game.Instance.Simulation.EntityManager.RemoveDeferred(player);
@@ -1293,6 +1300,7 @@ namespace ProjectMagma.Simulation
                     return true;
                 }
                 else
+                {
                     if (respawnStartedAt + constants.GetInt("respawn_time") >= at)
                     {
                         // still dead
@@ -1300,9 +1308,6 @@ namespace ProjectMagma.Simulation
                     }
                     else
                     {
-                        // random island selection
-                        PositionOnRandomIsland();
-
                         // reset
                         player.SetQuaternion("rotation", Quaternion.Identity);
                         player.SetVector3("velocity", Vector3.Zero);
@@ -1322,6 +1327,9 @@ namespace ProjectMagma.Simulation
                         //player.AddProperty("shadow_cast", new ShadowCastProperty());
                         player.GetProperty<CollisionProperty>("collision").OnContact += PlayerCollisionHandler;
 
+                        // random island selection
+                        PositionOnRandomIsland();
+
                         // reset respawn timer
                         respawnStartedAt = 0;
                         landedAt = -1;
@@ -1333,6 +1341,7 @@ namespace ProjectMagma.Simulation
                         // alive again
                         return true;
                     }
+                }
             }
 
             // not dead
@@ -1734,6 +1743,9 @@ namespace ProjectMagma.Simulation
                     {
                         RemoveSelectionArrow();
                     }
+
+                    // remove hud
+                    player.RemoveProperty("hud");
 
                     if (flame != null)
                     {

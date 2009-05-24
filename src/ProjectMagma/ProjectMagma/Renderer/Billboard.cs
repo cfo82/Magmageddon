@@ -63,6 +63,17 @@ namespace ProjectMagma.Renderer
             texture = Game.Instance.ContentManager.Load<Texture2D>("Textures/Sfx/IceSpikeHead");
         }
 
+        public void Reposition(
+            Vector3 position,
+            float width,
+            float height
+        )
+        {
+            this.position = position;
+            this.width = width;
+            this.height = height;
+        }
+
         public void Draw(Matrix view, Matrix projection)
         {
             effect.Parameters["View"].SetValue(view);

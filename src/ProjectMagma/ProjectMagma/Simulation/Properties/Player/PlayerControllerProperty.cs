@@ -381,6 +381,7 @@ namespace ProjectMagma.Simulation
                         && activeIsland.GetBool("allow_props_collision"))
                     {
                         playerPosition = previousPosition;
+                        inwardsPushVelocity = Vector3.Zero;
                     }
                     else
                     {
@@ -489,7 +490,8 @@ namespace ProjectMagma.Simulation
             if (simpleJumpIsland != null)
             {
                 // check position a bit further in walking direction to be still on island
-                float islandNonWalkingRangeMultiplier = constants.GetFloat("island_non_walking_range_multiplier");
+                float islandNonWalkingRangeMultiplier = constants.GetFloat("island_non_walking_range_multiplier")
+                    * simpleJumpIsland.GetVector3("scale").X / 100; // normalized to scale of 100
                 Vector3 checkPos = playerPosition + new Vector3(controllerInput.leftStickX * islandNonWalkingRangeMultiplier,
                     0, controllerInput.leftStickY * islandNonWalkingRangeMultiplier); // todo: extract constant
 
@@ -1044,8 +1046,8 @@ namespace ProjectMagma.Simulation
                                 if (corrector != Vector3.Zero)
                                 {
                                     corrector.Normalize();
-                                    corrector.X *= constants.GetFloat("island_non_walking_inwards_acceleration") * dt;
-                                    corrector.Z *= constants.GetFloat("island_non_walking_inwards_acceleration") * dt;
+                                    corrector.X *= constants.GetFloat("island_non_walking_inwards_acceleration") * dt / 2;
+                                    corrector.Z *= constants.GetFloat("island_non_walking_inwards_acceleration") * dt / 2;
                                     inwardsPushVelocity += corrector;
                                     inwardsPushStartedAt = Game.Instance.Simulation.Time.At;
                                 }
@@ -1371,8 +1373,8 @@ namespace ProjectMagma.Simulation
 
         private Vector3 GetLandingPosition(Entity island)
         {
-            int gpi = player.GetInt("game_pad_index");
             Vector3 pos;
+            int gpi = player.GetInt("game_pad_index");
             if (island.HasAttribute("landing_offset_p" + gpi))
             {
                 pos = island.GetVector3("position") + island.GetVector3("landing_offset_p" + gpi);

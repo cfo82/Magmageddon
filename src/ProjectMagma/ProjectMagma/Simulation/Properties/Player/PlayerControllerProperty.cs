@@ -364,7 +364,7 @@ namespace ProjectMagma.Simulation
 
         private bool HadCollision(SimulationTime simTime)
         {
-            return simTime.At < collisionAt + 250;
+            return simTime.At < collisionAt + 200;
         }
 
         private void PerformIslandPositioning(ref Vector3 playerPosition)
@@ -375,8 +375,18 @@ namespace ProjectMagma.Simulation
                 Vector3 isectPt = Vector3.Zero;
                 if (Simulation.GetPositionOnSurface(ref playerPosition, activeIsland, out isectPt))
                 {
-                    // set position to contact point
-                    playerPosition.Y = isectPt.Y + 1; // todo: make constant?
+                    // check movement steps
+                    if (previousPosition.Y < isectPt.Y
+                        && isectPt.Y - previousPosition.Y > 20
+                        && activeIsland.GetBool("allow_props_collision"))
+                    {
+                        playerPosition = previousPosition;
+                    }
+                    else
+                    {
+                        // set position to contact point
+                        playerPosition.Y = isectPt.Y + 1; // todo: make constant?
+                    }
                 }
                 else
                     // not over island anymore
@@ -959,10 +969,10 @@ namespace ProjectMagma.Simulation
 
             if (controllerInput.moveStickMoved)
             {
-                movedAt = at;
-
                 if (!HadCollision(Game.Instance.Simulation.Time))
                 {
+                    movedAt = at;
+
                     // XZ movement
                     if (activeIsland == null)
                     {

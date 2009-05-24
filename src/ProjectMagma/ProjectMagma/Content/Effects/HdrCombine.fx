@@ -152,11 +152,14 @@ float4 ChannelPixelShader(float2 texCoord : TEXCOORD0, int channel)
 inline float GradientY(float2 texCoord)
 {
 	float yRaw = tex2D(ToolTextureSampler, texCoord).x;
-	return saturate(yRaw * 2.0 - 0.8);
+	return saturate(yRaw * 2 - 1.1); // higher value: blue tone starts at higher altitude
 }
 
+
+float BlueTopOverlayStrength = 1;
 inline float4 GradientYBlueMap(float4 input, float2 texCoord, float weight)
 {
+	//return GradientY(texCoord);
 	float y = GradientY(texCoord);
 	
 	float newRed = input.r;
@@ -165,12 +168,13 @@ inline float4 GradientYBlueMap(float4 input, float2 texCoord, float weight)
 	float newAlpha = input.a;
 	
 	float4 newColor = float4(newRed, newGreen, newBlue, newAlpha);
-	newColor = saturate(newColor / 0.5);
+	newColor = saturate(newColor * 2.5);
 	
 	//input = float4(0,0,0,1);
 	//newColor = float4(1,1,1,1);
 	
-	return lerp(input, newColor, y*weight);
+	return lerp(input, newColor, y*weight*BlueTopOverlayStrength);
+	//return newColor;
 }
 
 //float4 orangeFogColor = float4(1,0.3,0,1);
@@ -184,7 +188,7 @@ float FogZOff, FogZMul, FogYOff, FogYMul, FogGlobMul;
 float3 FogColor;//=float4(0,0,1,1);
 
 
-inline void ApplyFog(inout float4 img, in float2 texCoord)
+inline void ApplyFog(inout float4 img, in float2 texCoord, in float weight)
 {
 	// compute depth intensity
 	float zRaw = tex2D(DepthTextureSampler, texCoord).r;
@@ -198,15 +202,17 @@ inline void ApplyFog(inout float4 img, in float2 texCoord)
 
 	// compute total intensity
 	float grad = GradientY(texCoord);
-	float fogIntensity = saturate((z*y)*FogGlobMul*(1-grad));
+	//float fogIntensity = saturate((z*y)*FogGlobMul*(1-grad));
+	float fogIntensity = saturate((z*y)*FogGlobMul);
 
 	// compute fog color
-	float4 fogColor=float4(1,0.9,0.7,1);
+	//float4 fogColor=float4(1,0.9,0.7,1);
 	//float4 fogColor = lerp(blueFogColor, orangeFogColor,y2);
 	//float4 fogColor = lerp(float4(FogColor,1),float4(0,0.5,1.0,1),0);
 	
 	// compute final image
-	img = lerp(img, fogColor, saturate((z*y)*FogGlobMul*(1-grad)));
+	img = lerp(img, float4(FogColor,1), saturate(fogIntensity*weight
+	));
 	//img = float4(fogIntensity,0,0,1);
 }
 
@@ -252,11 +258,12 @@ PostPixelShaderOutput PostPixelShader(float2 texCoord : TEXCOORD0)
 	float4 channel_map = tex2D(RenderChannelColorSampler, perturbedTexCoord);
     
     float4 combined = channel1*channel_map.r + channel2*channel_map.g + channel3*channel_map.b;
-    ApplyFog(combined, perturbedTexCoord);
     
-    float gradientWeight = saturate(channel_map.r * 0.2 + channel_map.g * 1 + channel_map.b * 1); // players should be less affected
+    float gradientWeight = saturate(channel_map.r * 0.3 + channel_map.g * 1 + channel_map.b * 1); // players should be less affected
+    float fogWeight = saturate(channel_map.r * 0.75 + channel_map.g * 1 + channel_map.b * 1); // players should be less affected
     
     combined = GradientYBlueMap(combined, perturbedTexCoord, gradientWeight);
+    ApplyFog(combined, perturbedTexCoord, fogWeight);
     
     result.depth = tex2D(DepthTextureSampler, texCoord).r;
     

@@ -249,22 +249,54 @@
     <Compile Include="Simulation\Properties\Island\IslandPhysicalMovementControllerProperty.cs" />
     <Compile Include="Simulation\Properties\Player\PlayerControllerProperty.cs" />
     <Compile Include="Simulation\Properties\Environment\PowerUpControllerBase.cs" />
-    <Compile Include="Simulation\Properties\Rendering\ArrowRenderProperty.cs" />
-    <Compile Include="Simulation\Properties\Rendering\FlamethrowerRenderProperty.cs" />
-    <Compile Include="Simulation\Properties\Rendering\FireExplosionRenderProperty.cs" />
-    <Compile Include="Simulation\Properties\Rendering\RespawnLightRenderProperty.cs" />
-    <Compile Include="Simulation\Properties\Rendering\PointExplosionRenderProperty.cs" />
-    <Compile Include="Simulation\Properties\Rendering\IceExplosionRenderProperty.cs" />
-    <Compile Include="Simulation\Properties\Rendering\IceSpikeRenderProperty.cs" />
-    <Compile Include="Simulation\Properties\Rendering\EnvironmentRenderProperty.cs" />
-    <Compile Include="Simulation\Properties\Rendering\ModelRenderProperty.cs" />
-    <Compile Include="Simulation\Properties\Rendering\PowerupRenderProperty.cs" />
-    <Compile Include="Simulation\Properties\Rendering\RobotRenderProperty.cs" />
-    <Compile Include="Simulation\Properties\Rendering\IslandRenderProperty.cs" />
-    <Compile Include="Simulation\Properties\Rendering\HUDProperty.cs" />
-    <Compile Include="Simulation\Properties\Rendering\LavaRenderProperty.cs" />
-    <Compile Include="Simulation\Properties\Rendering\TexturedRenderProperty.cs" />
-    <Compile Include="Simulation\Properties\Rendering\BasicRenderProperty.cs" />
+    <Compile Include="Simulation\Properties\Rendering\ArrowRenderProperty.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Simulation\Properties\Rendering\BasicRenderProperty.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Simulation\Properties\Rendering\EnvironmentRenderProperty.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Simulation\Properties\Rendering\FireExplosionRenderProperty.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Simulation\Properties\Rendering\FlamethrowerRenderProperty.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Simulation\Properties\Rendering\HUDProperty.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Simulation\Properties\Rendering\IceExplosionRenderProperty.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Simulation\Properties\Rendering\IceSpikeRenderProperty.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Simulation\Properties\Rendering\IslandRenderProperty.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Simulation\Properties\Rendering\LavaRenderProperty.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Simulation\Properties\Rendering\ModelRenderProperty.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Simulation\Properties\Rendering\PointExplosionRenderProperty.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Simulation\Properties\Rendering\PowerupRenderProperty.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Simulation\Properties\Rendering\RespawnLightRenderProperty.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Simulation\Properties\Rendering\RobotRenderProperty.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Simulation\Properties\Rendering\TexturedRenderProperty.cs">
+      <SubType>Code</SubType>
+    </Compile>
     <Compile Include="Simulation\Simulation.cs" />
     <Compile Include="Simulation\SimulationThread.cs" />
     <Compile Include="Simulation\SimulationTime.cs" />

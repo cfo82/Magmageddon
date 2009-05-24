@@ -66,6 +66,8 @@ namespace ProjectMagma.Renderer
             SetFloatFromEntity("FogGlobMul", "fog", "fog_glob_mul");
             SetVector3FromEntity("FogColor", "fog", "fog_color");
 
+            SetFloatFromEntity("BlueTopOverlayStrength", "topoverlay", "strength");
+
             //hdrCombineEffect.Parameters["FogColor"].SetValue(new Vector4(1,0.3f,0,1));
 
             //hdrCombineEffect.Parameters["FogZOff"].SetValue(0.2f);

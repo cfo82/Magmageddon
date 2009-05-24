@@ -12,4 +12,22 @@
   <Entity name="snow" extends="snow_base">
   </Entity>
 
+  <Entity name="fog" extends="fog_base">
+  </Entity>
+
+  <Entity name="lava" extends="lava_base">
+  </Entity>
+
+  <Entity name="environment" extends="environment_base">
+  </Entity>
+
+  <Entity name="lights" extends="lights_base">
+  </Entity>
+
+  <Entity name="tonemapping" extends="tonemapping_base">
+  </Entity>
+
+  <Entity name="topoverlay" extends="topoverlay_base">
+  </Entity>
+
 </Level>

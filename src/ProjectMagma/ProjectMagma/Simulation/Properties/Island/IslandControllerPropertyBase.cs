@@ -294,7 +294,7 @@ namespace ProjectMagma.Simulation
                         {
                             // pusbhack a bit
                             island.SetVector3("pushback_velocity", island.GetVector3("pushback_velocity")
-                                - normal * 100); // todo: extract constant
+                                - normal * 5000 * simTime.Dt); // todo: extract constant
 
                             // call handler of child class
                             if (!HandleCollision(simTime, island, other, contact, ref normal))

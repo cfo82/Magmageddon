@@ -19,6 +19,12 @@ namespace ProjectMagma
             spriteBatch.DrawString(font, str, pos, color, 0.0f, Vector2.Zero, scale, SpriteEffects.None, 1.0f);
         }
 
+        public static void DrawCenteredString(SpriteBatch spriteBatch, SpriteFont font, string str, Vector2 pos, Color color, float scale)
+        {
+            pos -= font.MeasureString(str) / 2 * scale;
+            spriteBatch.DrawString(font, str, pos, color, 0.0f, Vector2.Zero, scale, SpriteEffects.None, 1.0f);
+        }
+
         public static void DrawShadowString(SpriteBatch spriteBatch, SpriteFont font, string str, Vector2 pos, Color color, float scale)
         {
             spriteBatch.DrawString(font, str, pos + ShadowOffset, ShadowColor, 0.0f, Vector2.Zero, scale, SpriteEffects.None, 1.0f);

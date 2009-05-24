@@ -863,6 +863,11 @@
       <Importer>EffectImporter</Importer>
       <Processor>EffectProcessor</Processor>
     </Compile>
+    <Compile Include="Fonts\menu_releasenotes_small.spritefont">
+      <Name>menu_releasenotes_small</Name>
+      <Importer>FontDescriptionImporter</Importer>
+      <Processor>FontDescriptionProcessor</Processor>
+    </Compile>
     <None Include="Level\Common\Renderer\Templates.xml">
       <Name>Templates</Name>
       <Importer>XmlImporter</Importer>

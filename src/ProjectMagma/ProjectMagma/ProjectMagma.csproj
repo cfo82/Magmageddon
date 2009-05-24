@@ -99,6 +99,7 @@
     <Compile Include="Framework\Event\PropertyAddedHandler.cs" />
     <Compile Include="Framework\Properties\Base\Property.cs" />
     <Compile Include="GlobalClock.cs" />
+    <Compile Include="Menu\CreditsMenu.cs" />
     <Compile Include="Menu\ReleaseNotesMenu.cs" />
     <Compile Include="Renderer\Billboard.cs" />
     <Compile Include="Renderer\Interface\InterpolationHistory.cs" />

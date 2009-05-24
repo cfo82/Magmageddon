@@ -40,8 +40,14 @@ namespace ProjectMagma
             background = Game.Instance.ContentManager.Load<Texture2D>("Sprites/Menu/background");
 
             mainMenu = new MainMenu(this);
+            LevelMenu = new LevelMenu(this);
+            SettingsMenu = new SettingsMenu(this);
+            HelpMenu = new HelpMenu(this);
+            CreditsMenuPage1 = new CreditsMenuPage1(this);
+            CreditsMenuPage2 = new CreditsMenuPage2(this);
             releaseNotesMenu = new ReleaseNotesMenu(this);
             StaticStringFont = Game.Instance.ContentManager.Load<SpriteFont>("Fonts/menu_releasenotes");
+            StaticStringFontSmall = Game.Instance.ContentManager.Load<SpriteFont>("Fonts/menu_releasenotes_small");
 
         }
 
@@ -246,6 +252,12 @@ namespace ProjectMagma
             }
         }
 
+        public MenuScreen LevelMenu;
+        public MenuScreen SettingsMenu;
+        public MenuScreen HelpMenu;
+        public MenuScreen CreditsMenuPage1;
+        public MenuScreen CreditsMenuPage2;
+
         private bool active = false;
 
         public bool Active
@@ -254,6 +266,7 @@ namespace ProjectMagma
         }
 
         public SpriteFont StaticStringFont { get; set; }
+        public SpriteFont StaticStringFontSmall { get; set; }
 
         private MenuScreen activeScreen = null;
         private readonly LinkedList<MenuScreen> screens = new LinkedList<MenuScreen>();

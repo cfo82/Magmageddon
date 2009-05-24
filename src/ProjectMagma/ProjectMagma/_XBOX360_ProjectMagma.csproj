@@ -78,6 +78,7 @@
     <Compile Include="Framework\Attributes\Events\Vector2ChangeHandler.cs" />
     <Compile Include="Framework\Attributes\Events\Vector3ChangeHandler.cs" />
     <Compile Include="GlobalClock.cs" />
+    <Compile Include="Menu\CreditsMenu.cs" />
     <Compile Include="Renderer\Billboard.cs" />
     <Compile Include="Renderer\Interface\InterpolationHistory.cs" />
     <Compile Include="Renderer\Interface\QuaternionInterpolationHistory.cs" />

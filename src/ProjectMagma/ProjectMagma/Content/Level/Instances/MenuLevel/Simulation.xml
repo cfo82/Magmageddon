@@ -10,6 +10,16 @@
   <Entity name="sound" extends="sound_base">
   </Entity>
 
+
+  <Entity name="player_constants" extends="player_constants_base">
+  </Entity>
+
+  <Entity name="island_constants" extends="island_constants_base">
+  </Entity>
+
+  <Entity name="powerup_constants" extends="powerup_constants_base">
+  </Entity>
+  
   <!-- "unique" game entities -->
 
   <Entity name="lava" extends="lava_base">
@@ -87,5 +97,6 @@
       <Attribute name="relative_position" template="float3" value="-20 10 -5"/>
     </Attributes>
   </Entity>
+
 
 </Level>

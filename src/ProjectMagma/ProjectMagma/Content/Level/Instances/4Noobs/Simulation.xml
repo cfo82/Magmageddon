@@ -9,7 +9,16 @@
 
   <Entity name="sound" extends="sound_base">
   </Entity>
-  
+
+  <Entity name="player_constants" extends="player_constants_base">
+  </Entity>
+
+  <Entity name="island_constants" extends="island_constants_base">
+  </Entity>
+
+  <Entity name="powerup_constants" extends="powerup_constants_base">
+  </Entity>
+
   <!-- "unique" game entities -->
 
   <Entity name="lava" extends="lava_base">
@@ -27,10 +36,10 @@
 
   <!-- masses of game elements... -->
 
-   <Entity name="island1" extends="island_base_grass3">
+   <Entity name="main_island" extends="island_base_grass3">
     <Attributes>
       <Attribute name="position" template="float3" value="0 150 0"/>
-      <Attribute name="scale" template="float3" value="550 550 550"/>
+      <Attribute name="scale" template="float3" value="400 400 400"/>
       <Attribute name="sinking_speed" template="float" value="0"/>
 
       <Attribute name="landing_offset_p1" template="float3" value="-100 150 -100"/>
@@ -45,19 +54,70 @@
      </Properties>
    </Entity>
 
+  <Entity name="outer_island1" extends="island_base_ice1">
+    <Attributes>
+      <Attribute name="position" template="float3" value="400 250 0"/>
+      <Attribute name="scale" template="float3" value="120 120 120"/>
+    </Attributes>
+    <Properties>
+      <Property name="controller" type="ProjectMagma.Simulation.IslandNoMovementControllerProperty"/>
+    </Properties>
+  </Entity>
+
+  <Entity name="outer_island2" extends="island_base_ice2">
+    <Attributes>
+      <Attribute name="position" template="float3" value="123 250 380"/>
+      <Attribute name="scale" template="float3" value="120 120 120"/>
+    </Attributes>
+    <Properties>
+      <Property name="controller" type="ProjectMagma.Simulation.IslandNoMovementControllerProperty"/>
+    </Properties>
+  </Entity>
+
+  <Entity name="outer_island3" extends="island_base_ice3">
+    <Attributes>
+      <Attribute name="position" template="float3" value="-323 250 235"/>
+      <Attribute name="scale" template="float3" value="120 120 120"/>
+    </Attributes>
+    <Properties>
+      <Property name="controller" type="ProjectMagma.Simulation.IslandNoMovementControllerProperty"/>
+    </Properties>
+  </Entity>
+
+  <Entity name="outer_island4" extends="island_base_ice4">
+    <Attributes>
+      <Attribute name="position" template="float3" value="-323 250 -235"/>
+      <Attribute name="scale" template="float3" value="120 120 120"/>
+    </Attributes>
+    <Properties>
+      <Property name="controller" type="ProjectMagma.Simulation.IslandNoMovementControllerProperty"/>
+    </Properties>
+  </Entity>
+
+  <Entity name="outer_island5" extends="island_base_ice2">
+    <Attributes>
+      <Attribute name="position" template="float3" value="123 250 -380"/>
+      <Attribute name="scale" template="float3" value="120 120 120"/>
+    </Attributes>
+    <Properties>
+      <Property name="controller" type="ProjectMagma.Simulation.IslandNoMovementControllerProperty"/>
+    </Properties>
+  </Entity>
+
 
   <Entity name="powerup1" extends="powerup_health">
     <Attributes>
-      <Attribute name="island_reference" template="string" value="island1"/>
+      <Attribute name="island_reference" template="string" value="main_island"/>
       <Attribute name="relative_position" template="float3" value="100 10 100"/>
     </Attributes>
   </Entity>
 
   <Entity name="powerup2" extends="powerup_energy">
     <Attributes>
-      <Attribute name="island_reference" template="string" value="island1"/>
+      <Attribute name="island_reference" template="string" value="main_island"/>
       <Attribute name="relative_position" template="float3" value="-100 10 -100"/>
     </Attributes>
   </Entity>
+
 
 </Level>

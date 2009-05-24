@@ -2,10 +2,21 @@
 <!DOCTYPE Level SYSTEM "..\..\Common\Levels.dtd">
 <Level>
 
-  <Includes>F
+  <Includes>
     <Include name="Level\Common\Constants.xml"/>
     <Include name="Level\Common\Templates.xml"/>
   </Includes>
+
+
+  <Entity name="player_constants" extends="player_constants_base">
+  </Entity>
+
+  <Entity name="island_constants" extends="island_constants_base">
+  </Entity>
+
+  <Entity name="powerup_constants" extends="powerup_constants_base">
+  </Entity>
+  
   <!-- "unique" game entities -->
 
   <Entity name="sound" extends="sound_base">
@@ -34,5 +45,6 @@
       <Property name="controller" type="ProjectMagma.Simulation.IslandStraightMovementControllerProperty"/>
     </Properties>
   </Entity>
+
 
 </Level>

@@ -25,9 +25,25 @@
   </Entity>
 
   <Entity name="lights" extends="lights_base">
+    <Attributes>
+      <Attribute name="sky_light_color" template="float3" value="0.22 0.42 0.5"/>
+      <Attribute name="lava_light_color" template="float3" value="0.8667 0.6220 0.2498"/>
+      <Attribute name="spot_light_color" template="float3" value="1.85 1.85 1.85"/>
+    </Attributes>
   </Entity>
 
   <Entity name="tonemapping" extends="tonemapping_base">
+    <Attributes>
+      <Attribute name="bloom_sensitivity" template="float3" value="0.25 0.0 0.0"/>
+      <Attribute name="bloom_intensity" template="float3" value="2.8 0.7 0.0"/>
+      <Attribute name="base_intensity" template="float3" value="0.87 0.8 1.0"/>
+      <Attribute name="bloom_saturation" template="float3" value="0.5 0.8 1.0"/>
+      <Attribute name="base_saturation" template="float3" value="1 1 1"/>
+      <Attribute name="in1" template="float3" value="1 1.4 1"/>
+      <Attribute name="out1" template="float3" value="1 0.8 1"/>
+      <Attribute name="in2" template="float3" value="2 2.7 2"/>
+      <Attribute name="out2" template="float3" value="2 10 2"/>
+    </Attributes>
   </Entity>
 
   <Entity name="topoverlay" extends="topoverlay_base">

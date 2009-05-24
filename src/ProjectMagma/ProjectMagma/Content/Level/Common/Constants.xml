@@ -85,7 +85,8 @@
       <Attribute name="island_repulsion_start_energy_cost" template="int" value="6"/>
       <Attribute name="island_repulsion_energy_cost_per_second" template="int" value="16"/>
 
-      <Attribute name="island_non_walking_range_multiplier" template="float" value="24"/>
+      <Attribute name="island_non_walking_range_multiplier" template="float" value="12"/>
+      <Attribute name="island_non_walking_inwards_acceleration" template="float" value="2000"/>
       <Attribute name="x_axis_walk_multiplier" template="float" value="140"/>
       <Attribute name="z_axis_walk_multiplier" template="float" value="140"/>
       <Attribute name="x_axis_run_multiplier" template="float" value="330"/>

@@ -311,7 +311,7 @@ namespace ProjectMagma.Simulation
             // frozen!?
             PerformFrozenSlowdown(player, simTime, ref playerPosition);
 
-            PerformIslandPositioning(ref playerPosition);
+            PerformIslandPositioning(simTime, ref playerPosition);
 
             #endregion
 
@@ -367,7 +367,7 @@ namespace ProjectMagma.Simulation
             return simTime.At < collisionAt + 200;
         }
 
-        private void PerformIslandPositioning(ref Vector3 playerPosition)
+        private void PerformIslandPositioning(SimulationTime simTime, ref Vector3 playerPosition)
         {
             if (activeIsland != null)
             {
@@ -403,31 +403,34 @@ namespace ProjectMagma.Simulation
                             playerPosition = previousPosition;
                         }
 
-                // check if we are to close to island border
-                float islandNonWalkingRangeMultiplier = constants.GetFloat("island_non_walking_range_multiplier")
-                    * activeIsland.GetVector3("scale").X / 100; // normalized to scale of 100
-                Vector3 islandDir = (activeIsland.GetVector3("position") - playerPosition);
-                islandDir.Y = 0;
-                if (islandDir != Vector3.Zero)
+                if(!canFallFromIsland)
                 {
-                    islandDir.Normalize();
-                    Vector3 checkPos = playerPosition;
-                    checkPos.X += islandDir.X * islandNonWalkingRangeMultiplier;
-                    checkPos.Y += islandDir.Y * islandNonWalkingRangeMultiplier;
+                    // check if we are to close to island border
+                    float islandNonWalkingRangeMultiplier = constants.GetFloat("island_non_walking_range_multiplier")
+                        * activeIsland.GetVector3("scale").X / 100; // normalized to scale of 100
+                    Vector3 islandDir = (activeIsland.GetVector3("position") - playerPosition);
+                    islandDir.Y = 0;
+                    if (islandDir != Vector3.Zero)
+                    {
+                        islandDir.Normalize();
+                        Vector3 checkPos = playerPosition;
+                        checkPos.X -= islandDir.X * islandNonWalkingRangeMultiplier;
+                        checkPos.Z -= islandDir.Z * islandNonWalkingRangeMultiplier;
 
-                    // if checkpoint is outside of island push inwards
-                    if (!Simulation.GetPositionOnSurface(ref checkPos, activeIsland, out isectPt))
-                    {
-                        Vector3 velocity = islandDir;
-                        velocity.X *= constants.GetFloat("x_axis_run_multiplier");
-                        velocity.Z *= constants.GetFloat("z_axis_run_multiplier");
-                        inwardsPushVelocity = velocity;
-                        inwardsPushStartedAt = Game.Instance.Simulation.Time.At;
-                    }
-                    else
-                    // abort current inwards movement
-                    {
-                        inwardsPushVelocity = Vector3.Zero;
+                        // if checkpoint is outside of island push inwards
+                        if (!Simulation.GetPositionOnSurface(ref checkPos, activeIsland, out isectPt))
+                        {
+                            Vector3 velocity = islandDir;
+                            velocity.X *= constants.GetFloat("island_non_walking_inwards_acceleration") * simTime.Dt;
+                            velocity.Z *= constants.GetFloat("island_non_walking_inwards_acceleration") * simTime.Dt;
+                            inwardsPushVelocity += velocity;
+                            inwardsPushStartedAt = Game.Instance.Simulation.Time.At;
+                        }
+                        else
+                        // abort current inwards movement
+                        {
+                            inwardsPushVelocity = Vector3.Zero;
+                        }
                     }
                 }
             }
@@ -980,16 +983,18 @@ namespace ProjectMagma.Simulation
 
             if (controllerInput.moveStickMoved)
             {
-                if (!HadCollision(Game.Instance.Simulation.Time))
                 {
                     movedAt = at;
 
                     // XZ movement
                     if (activeIsland == null)
                     {
-                        // in air
-                        playerPosition.X += controllerInput.leftStickX * dt * constants.GetFloat("x_axis_jetpack_multiplier");
-                        playerPosition.Z += controllerInput.leftStickY * dt * constants.GetFloat("z_axis_jetpack_multiplier");
+                        if (!HadCollision(Game.Instance.Simulation.Time))
+                        {
+                            // in air
+                            playerPosition.X += controllerInput.leftStickX * dt * constants.GetFloat("x_axis_jetpack_multiplier");
+                            playerPosition.Z += controllerInput.leftStickY * dt * constants.GetFloat("z_axis_jetpack_multiplier");
+                        }
                     }
                     else
                         // don't allow positioning on island if hit
@@ -1034,10 +1039,9 @@ namespace ProjectMagma.Simulation
                                 if (corrector != Vector3.Zero)
                                 {
                                     corrector.Normalize();
-                                    corrector.X *= constants.GetFloat("x_axis_walk_multiplier");
-                                    corrector.Z *= constants.GetFloat("z_axis_walk_multiplier");
-                                    if (corrector.Length() > inwardsPushVelocity.Length())
-                                        inwardsPushVelocity = corrector;
+                                    corrector.X *= constants.GetFloat("island_non_walking_inwards_acceleration") * dt;
+                                    corrector.Z *= constants.GetFloat("island_non_walking_inwards_acceleration") * dt;
+                                    inwardsPushVelocity += corrector;
                                     inwardsPushStartedAt = Game.Instance.Simulation.Time.At;
                                 }
                             }

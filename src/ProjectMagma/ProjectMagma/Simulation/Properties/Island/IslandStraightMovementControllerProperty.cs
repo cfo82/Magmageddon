@@ -45,17 +45,22 @@ namespace ProjectMagma.Simulation
             return originalPosition + direction * d;
         }
 
-        protected override void CollisionHandler(SimulationTime simTime, Entity island, Entity other, Contact co, ref Vector3 normal)
+        protected override bool HandleCollision(SimulationTime simTime, Entity island, Entity other, Contact co, ref Vector3 normal)
         {
             if (!HadCollision(simTime))
             {
-                if (other.HasAttribute("kind") 
+                if (other.HasAttribute("kind")
                     && other.GetString("kind") != "island" // we don't change direction for other islands
                     && other.GetString("kind") != "player") // or players
                 {
                     direction = -direction;
+                    return true;
                 }
+                else
+                    return false; // handle collision at base
             }
+            else
+                return true; // no collision reaction right now
         }
 
         private Vector3 direction;

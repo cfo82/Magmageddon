@@ -292,24 +292,30 @@ namespace ProjectMagma.Simulation
                     else
                         if (state == IslandState.Normal)
                         {
-                            Vector3 xznormal = normal;
-                            xznormal.Y = 0;
-                            if (xznormal != Vector3.Zero)
-                                xznormal.Normalize();
-                            // reflect velocity
-                            Vector3 velocity = island.GetVector3("velocity");
-                            if (velocity != Vector3.Zero)
-                            {
-                                if (Vector3.Dot(Vector3.Normalize(velocity), xznormal) > 0)
-                                {
-                                    island.SetVector3("velocity", Vector3.Reflect(velocity, xznormal)
-                                        * constants.GetFloat("collision_damping"));
-                                }
-                            }
                             // pusbhack a bit
                             island.SetVector3("pushback_velocity", island.GetVector3("pushback_velocity")
-                                - normal * 50); // todo: extract constant
-                            CollisionHandler(simTime, island, other, contact, ref normal);
+                                - normal * 100); // todo: extract constant
+
+                            // call handler of child class
+                            if (!HandleCollision(simTime, island, other, contact, ref normal))
+                            {
+                                // do simple reflection if no special collision handler provided by subclass
+                                // or explicitly return of false
+                                Vector3 xznormal = normal;
+                                xznormal.Y = 0;
+                                if (xznormal != Vector3.Zero)
+                                    xznormal.Normalize();
+                                // reflect velocity
+                                Vector3 velocity = island.GetVector3("velocity");
+                                if (velocity != Vector3.Zero)
+                                {
+                                    if (Vector3.Dot(Vector3.Normalize(velocity), xznormal) > 0)
+                                    {
+                                        island.SetVector3("velocity", Vector3.Reflect(velocity, xznormal)
+                                            * constants.GetFloat("collision_damping"));
+                                    }
+                                }
+                            }
                         }
 
                     collisionAt = simTime.At;
@@ -341,17 +347,6 @@ namespace ProjectMagma.Simulation
             return normal;
         }
 
-        /*
-        protected void RepulsionChangeHandler(Vector3Attribute sender, Vector3 oldValue, Vector3 newValue)
-        {
-            if (oldValue == Vector3.Zero
-                && newValue != Vector3.Zero)
-            {
-                OnRepulsionStart();
-            }
-        }
-        */
-
         protected void RepulsedByChangeHandler(StringAttribute sender, String oldValue, String newValue)
         {
             if (oldValue == "" && newValue != "")
@@ -381,7 +376,10 @@ namespace ProjectMagma.Simulation
         /// </summary>
         protected abstract Vector3 GetNearestPointOnPath(ref Vector3 position);
 
-        protected abstract void CollisionHandler(SimulationTime simTime, Entity island, Entity other, Contact co, ref Vector3 normal);
+        protected virtual bool HandleCollision(SimulationTime simTime, Entity island, Entity other, Contact co, ref Vector3 normal)
+        {
+            return false;
+        }
 
         protected virtual void OnRepulsionStart()
         {

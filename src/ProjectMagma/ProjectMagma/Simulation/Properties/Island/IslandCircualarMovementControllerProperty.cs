@@ -101,17 +101,22 @@ namespace ProjectMagma.Simulation
                 this.dir = 1;
         }
 
-        protected override void CollisionHandler(SimulationTime simTime, Entity island, Entity other, Contact co, ref Vector3 normal)
+        protected override bool HandleCollision(SimulationTime simTime, Entity island, Entity other, Contact co, ref Vector3 normal)
         {
             // change dir
-            if (other.HasAttribute("kind") 
+            if (other.HasAttribute("kind")
                 && other.GetString("kind") != "island" // we don't change direction for other islands
                 && other.GetString("kind") != "player" // or players
                 && simTime.At > dirChangedAt + 1000) // todo: extract constant
             {
                 dir = -dir;
                 dirChangedAt = simTime.At;
+
+                // collision handled
+                return true;
             }
+            else
+                return false;
         }
 
         private void AssignPillar(Entity island)

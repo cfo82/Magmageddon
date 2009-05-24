@@ -34,10 +34,5 @@ namespace ProjectMagma.Simulation
             return originalPosition;
         }
 
-        protected override void CollisionHandler(SimulationTime simTime, Entity island, Entity other, Contact co, ref Vector3 normal)
-        {
-            // do nothing
-        }
-
     }
 }

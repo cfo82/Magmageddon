@@ -139,7 +139,7 @@ namespace ProjectMagma.Renderer
 
             updateQueues = new List<RendererUpdateQueue>();
 
-            testBillboard = new Billboard(this, new Vector3(0, 200, 0), 250, 250);
+            billboard = new Billboard(this, new Vector3(0, 200, 0), 250, 250);
         }
 
         protected void ChangeLevel(
@@ -650,7 +650,7 @@ namespace ProjectMagma.Renderer
 
         public Billboard Billboard
         {
-            get { return testBillboard; }
+            get { return billboard; }
         }
         
         private GlowPass glowPass;
@@ -668,6 +668,6 @@ namespace ProjectMagma.Renderer
         private RenderTime renderTime;
 
         private RendererEntityManager entityManager;
-        private Billboard testBillboard;
+        private Billboard billboard;
     }
 }

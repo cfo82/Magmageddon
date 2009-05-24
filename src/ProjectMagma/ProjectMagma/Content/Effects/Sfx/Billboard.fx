@@ -6,6 +6,7 @@ float4x4 Projection;
 float3 BillboardPosition;
 float BillboardWidth;
 float BillboardHeight;
+float4 BillboardColor;
 
 texture BillboardTexture;
 
@@ -66,9 +67,7 @@ VS_OUTPUT VertexShader(VS_INPUT input)
 
 float4 PixelShader(float2 texCoord : TEXCOORD0) : COLOR0
 {
-    float4 color = tex2D(BillboardSampler, texCoord);
-    color.a /=2;
-    return color;
+    return tex2D(BillboardSampler, texCoord) * BillboardColor;
 }
 
 technique Billboards

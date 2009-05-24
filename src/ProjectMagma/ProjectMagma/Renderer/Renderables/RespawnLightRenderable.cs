@@ -31,9 +31,12 @@ namespace ProjectMagma.Renderer.Renderables
 
         public override void Draw(Renderer renderer)
         {
+            float alpha = Game.Instance.Renderer.EntityManager["respawn_spot"].GetFloat("alpha");
+            Vector3 color = Game.Instance.Renderer.EntityManager["respawn_spot"].GetVector3("color");
+
             Billboard billboard = Game.Instance.Renderer.Billboard;
             billboard.Texture = texture;
-            billboard.Reposition(Position, 120, 1000);
+            billboard.Reposition(Position, 120, 1000, new Vector4(color.X, color.Y, color.Z, alpha));
             billboard.Draw(Game.Instance.Renderer.Camera.View, Game.Instance.Renderer.Camera.Projection);
         }
 

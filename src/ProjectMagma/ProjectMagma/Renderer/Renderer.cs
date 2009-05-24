@@ -139,7 +139,7 @@ namespace ProjectMagma.Renderer
 
             updateQueues = new List<RendererUpdateQueue>();
 
-            billboard = new Billboard(this, new Vector3(0, 200, 0), 250, 250);
+            billboard = new Billboard(this, new Vector3(0, 200, 0), 250, 250, Vector4.One);
         }
 
         protected void ChangeLevel(

@@ -39,13 +39,15 @@ namespace ProjectMagma.Renderer
             Renderer renderer,
             Vector3 position,
             float width,
-            float height
+            float height,
+            Vector4 color
             )
         {
             this.renderer = renderer;
             this.position = position;
             this.width = width;
             this.height = height;
+            this.color = color;
 
             Vertex[] vertices = new Vertex[] {
                 new Vertex(position, new Vector2(0, 0)),
@@ -66,12 +68,14 @@ namespace ProjectMagma.Renderer
         public void Reposition(
             Vector3 position,
             float width,
-            float height
+            float height,
+            Vector4 color
         )
         {
             this.position = position;
             this.width = width;
             this.height = height;
+            this.color = color;
         }
 
         public void Draw(Matrix view, Matrix projection)
@@ -81,6 +85,7 @@ namespace ProjectMagma.Renderer
             effect.Parameters["BillboardPosition"].SetValue(position);
             effect.Parameters["BillboardWidth"].SetValue(width);
             effect.Parameters["BillboardHeight"].SetValue(height);
+            effect.Parameters["BillboardColor"].SetValue(color);
             effect.Parameters["BillboardTexture"].SetValue(Texture);
 
             renderer.Device.Vertices[0].SetSource(vertexBuffer, 0, Vertex.SizeInBytes);
@@ -105,6 +110,7 @@ namespace ProjectMagma.Renderer
         private Vector3 position;
         private float width;
         private float height;
+        private Vector4 color;
         private VertexBuffer vertexBuffer;
         private VertexDeclaration vertexDeclaration;
         private Effect effect;

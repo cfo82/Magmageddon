@@ -231,6 +231,8 @@ namespace ProjectMagma.Simulation
                             velocity *= island.GetFloat("movement_speed");
                         }
 
+                        Console.WriteLine("velocity: " + velocity);
+
                         island.SetVector3("velocity", velocity);
                     }
                 }

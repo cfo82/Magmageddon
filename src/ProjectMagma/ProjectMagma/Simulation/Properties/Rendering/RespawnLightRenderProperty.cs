@@ -51,7 +51,7 @@ namespace ProjectMagma.Simulation
                 position = entity.GetVector3("position");
             }
 
-            return new RespawnLightRenderable(Game.Instance.Simulation.Time.At, position);
+            return new RespawnLightRenderable(Game.Instance.Simulation.Time.At, position - new Vector3(0, 25, 10));
         }
 
         private void PositionChanged(
@@ -60,7 +60,7 @@ namespace ProjectMagma.Simulation
             Vector3 newValue
         )
         {
-            ChangeVector3("Position", newValue);
+            ChangeVector3("Position", newValue - new Vector3(0, 25, 10));
         }
     }
 }

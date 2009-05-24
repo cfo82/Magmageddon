@@ -1264,6 +1264,7 @@ namespace ProjectMagma.Simulation
                 // we cannot take damage on respawn
                 player.SetInt("health", constants.GetInt("max_health"));
                 player.SetInt("energy", constants.GetInt("max_energy"));
+                player.SetInt("frozen", 0);
                 return;
             }
 

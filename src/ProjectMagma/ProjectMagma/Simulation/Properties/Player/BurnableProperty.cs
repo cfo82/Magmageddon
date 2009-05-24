@@ -28,6 +28,7 @@ namespace ProjectMagma.Simulation
                 if(entity.GetString("kind") == "player")
                 {
                     entity.SetInt("frozen", 0);
+                    entity.GetProperty<PlayerControllerProperty>("controller").CheckPlayerAttributeRanges(entity);
                 }
             }
         }

@@ -14,7 +14,7 @@
       <Attribute name="island" template="string" value=""/>
 
       <Attribute name="mesh" template="string" value="Models/Visualizations/arrow"/>
-      <Attribute name="scale" template="float3" value="12 12 12"/>
+      <Attribute name="scale" template="float3" value="16 16 16"/>
 
       <Attribute name="alpha" template="float" value="0.5"/>
     </Attributes>

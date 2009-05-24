@@ -57,6 +57,7 @@ namespace ProjectMagma.Simulation
                 {
                     other.SetInt("frozen", explosion.GetInt("freeze_time"));
                 }
+                other.GetProperty<PlayerControllerProperty>("controller").CheckPlayerAttributeRanges(other);
             }
             hadCollision = true;
         }

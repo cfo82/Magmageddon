@@ -126,7 +126,7 @@ namespace ProjectMagma.Renderer.ParticleSystem.Stateful
             this.emitters.Clear();
         }
 
-        void FlushCreateParticles(int count)
+        void FlushCreateParticles(int count, double currentFrameTime, double dt)
         {
             createVertexBuffer.SetData<CreateVertex>(createVertexBufferIndex * CreateVertex.SizeInBytes, localCreateVertices, 0, count, CreateVertex.SizeInBytes, SetDataOptions.NoOverwrite);
 
@@ -134,6 +134,23 @@ namespace ProjectMagma.Renderer.ParticleSystem.Stateful
             device.VertexDeclaration = createVertexDeclaration;
 
             device.RenderState.AlphaBlendEnable = false;
+
+            particleCreateEffect.Parameters["View"].SetValue(renderer.Camera.View);
+            particleCreateEffect.Parameters["Projection"].SetValue(renderer.Camera.Projection);
+            particleCreateEffect.Parameters["StartSize"].SetValue(new Vector2(5.0f, 10.0f));
+            particleCreateEffect.Parameters["EndSize"].SetValue(new Vector2(50.0f, 200.0f));
+            particleCreateEffect.Parameters["MinColor"].SetValue(Vector4.One);
+            particleCreateEffect.Parameters["MaxColor"].SetValue(Vector4.One);
+            particleCreateEffect.Parameters["ViewportHeight"].SetValue(device.Viewport.Height);
+            particleCreateEffect.Parameters["ViewportWidth"].SetValue(device.Viewport.Width);
+            particleCreateEffect.Parameters["Time"].SetValue((float)currentFrameTime);
+            particleCreateEffect.Parameters["Dt"].SetValue((float)dt);
+            particleCreateEffect.Parameters["PositionTexture"].SetValue(positionTextures[activeTexture].GetTexture());
+            particleCreateEffect.Parameters["VelocityTexture"].SetValue(velocityTextures[activeTexture].GetTexture());
+            particleCreateEffect.Parameters["RandomTexture"].SetValue(renderer.VectorCloudTexture);
+            particleCreateEffect.Parameters["SpriteTexture"].SetValue(spriteTexture);
+            particleCreateEffect.Parameters["DepthTexture"].SetValue(renderer.ToolTexture);
+            SetCreateParameters(particleCreateEffect.Parameters);
 
             particleCreateEffect.Begin();
 
@@ -154,6 +171,7 @@ namespace ProjectMagma.Renderer.ParticleSystem.Stateful
         void CreateParticles(
             double lastFrameTime,
             double currentFrameTime,
+            double dt,
             bool render
         )
         {
@@ -225,7 +243,7 @@ namespace ProjectMagma.Renderer.ParticleSystem.Stateful
 
                         if (localCreateVerticesIndex >= createVertexBufferSize - createVertexBufferIndex)
                         {
-                            FlushCreateParticles(verticesCopied);
+                            FlushCreateParticles(verticesCopied, currentFrameTime, dt);
                             localCreateVerticesIndex = 0;
                             createVertexBufferIndex = 0;
                         }
@@ -234,7 +252,7 @@ namespace ProjectMagma.Renderer.ParticleSystem.Stateful
 
                 if (localCreateVerticesIndex > 0)
                 {
-                    FlushCreateParticles(localCreateVerticesIndex);
+                    FlushCreateParticles(localCreateVerticesIndex, currentFrameTime, dt);
                 }
             }
         }
@@ -301,7 +319,7 @@ namespace ProjectMagma.Renderer.ParticleSystem.Stateful
                 pass.End();
                 particleUpdateEffect.End();
 
-                CreateParticles(intermediateLastFrameTime, intermediateCurrentFrameTime, true);//(intermediateCurrentFrameTime + SimulationStep) > currentFrameTime);
+                CreateParticles(intermediateLastFrameTime, intermediateCurrentFrameTime, SimulationStep, true);//(intermediateCurrentFrameTime + SimulationStep) > currentFrameTime);
 
                 device.SetRenderTarget(1, oldRenderTarget1);
                 device.SetRenderTarget(0, oldRenderTarget0);
@@ -419,6 +437,10 @@ namespace ProjectMagma.Renderer.ParticleSystem.Stateful
         protected virtual Texture2D LoadSprite(WrappedContentManager wrappedContent)
         {
             return wrappedContent.Load<Texture2D>("Textures/xna_logo");
+        }
+
+        protected virtual void SetCreateParameters(EffectParameterCollection parameters)
+        {
         }
 
         protected virtual void SetUpdateParameters(EffectParameterCollection parameters)

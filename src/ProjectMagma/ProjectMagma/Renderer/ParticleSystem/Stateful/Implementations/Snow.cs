@@ -54,6 +54,13 @@ namespace ProjectMagma.Renderer.ParticleSystem.Stateful.Implementations
             return wrappedContent.Load<Texture2D>("Textures/Sfx/Snow");
         }
 
+        protected override void SetCreateParameters(EffectParameterCollection parameters)
+        {
+            parameters["SnowParticleLifetime"].SetValue(snowLifeTime);
+
+            base.SetCreateParameters(parameters);
+        }
+
         protected override void SetUpdateParameters(EffectParameterCollection parameters)
         {
             windAngle += 0.5f * ((float)random.NextDouble() - 0.5f);

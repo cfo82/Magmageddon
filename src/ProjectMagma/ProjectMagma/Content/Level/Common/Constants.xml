@@ -38,7 +38,7 @@
       <Attribute name="ice_spike_aim_angle" template="float" value="240"/>
       <Attribute name="ice_spike_energy_cost" template="int" value="35"/>
       <Attribute name="ice_spike_damage" template="int" value="25"/>
-      <Attribute name="ice_spike_freeze_time" template="int" value="2500"/>
+      <Attribute name="ice_spike_freeze_time" template="int" value="2000"/>
       <Attribute name="ice_spike_cooldown" template="int" value="1200"/>
       <Attribute name="ice_spike_rising_time" template="int" value="500"/>
       <Attribute name="ice_spike_initial_speed_multiplier" template="float3" value="0 300 0"/>

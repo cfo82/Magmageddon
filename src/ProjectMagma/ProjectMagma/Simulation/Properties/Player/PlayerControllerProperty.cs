@@ -308,9 +308,6 @@ namespace ProjectMagma.Simulation
             Simulation.ApplyPushback(ref playerPosition, ref hitPushbackVelocity, constants.GetFloat("player_pushback_deacceleration"), 
                 HitPushbackEndedHandler);
 
-            // frozen!?
-            PerformFrozenSlowdown(player, simTime, ref playerPosition);
-
             PerformIslandPositioning(simTime, ref playerPosition);
 
             #endregion
@@ -333,6 +330,15 @@ namespace ProjectMagma.Simulation
             {
                 Game.Instance.Simulation.ApplyPerSecondAddition(player, "energy_recharge", constants.GetInt("energy_recharge_per_second"),
                     player.GetIntAttribute("energy"));
+            }
+            // count dow
+            if (player.GetInt("frozen") > 0)
+            {
+                player.SetInt("frozen", player.GetInt("frozen") - (int) simTime.DtMs);
+                if (player.GetInt("frozen") < 0)
+                {
+                    player.SetInt("frozen", 0);
+                }
             }
             #endregion
 
@@ -967,20 +973,6 @@ namespace ProjectMagma.Simulation
             }
         }
 
-        private void PerformFrozenSlowdown(Entity player, SimulationTime simTime, ref Vector3 playerPosition)
-        {
-            if (player.GetInt("frozen") > 0
-                && activeIsland != null // only when on island...
-                && player.GetVector3("hit_pushback_velocity") != Vector3.Zero) // and not hit
-            {
-                Vector3 add = playerPosition - previousPosition;
-                playerPosition = previousPosition + add / constants.GetFloat("frozen_slowdown_divisor");
-                player.SetInt("frozen", player.GetInt("frozen") - (int)simTime.DtMs);
-                if (player.GetInt("frozen") < 0)
-                    player.SetInt("frozen", 0);
-            }
-        }
-
         private void PerformStickMovement(Entity player, float dt, float at, ref Vector3 playerPosition)
         {
             if (destinationIsland != null)
@@ -994,14 +986,22 @@ namespace ProjectMagma.Simulation
                 {
                     movedAt = at;
 
+                    float frozenDivisor = 1.0f;
+                    if (player.GetInt("frozen") > 0)
+                    {
+                        frozenDivisor = constants.GetFloat("frozen_slowdown_divisor");
+                    }
+
                     // XZ movement
                     if (activeIsland == null)
                     {
                         if (!HadCollision(Game.Instance.Simulation.Time))
                         {
                             // in air
-                            playerPosition.X += controllerInput.leftStickX * dt * constants.GetFloat("x_axis_jetpack_multiplier");
-                            playerPosition.Z += controllerInput.leftStickY * dt * constants.GetFloat("z_axis_jetpack_multiplier");
+                            playerPosition.X += controllerInput.leftStickX * dt * constants.GetFloat("x_axis_jetpack_multiplier")
+                                * frozenDivisor;
+                            playerPosition.Z += controllerInput.leftStickY * dt * constants.GetFloat("z_axis_jetpack_multiplier")
+                                * frozenDivisor;
                         }
                     }
                     else
@@ -1016,15 +1016,19 @@ namespace ProjectMagma.Simulation
                                 Game.Instance.Simulation.ApplyPerSecondSubstraction(player, "running_energy_cost",
                                     constants.GetInt("running_energy_cost_per_second"), player.GetIntAttribute("energy"));
 
-                                playerPosition.X += controllerInput.leftStickX * dt * constants.GetFloat("x_axis_run_multiplier");
-                                playerPosition.Z += controllerInput.leftStickY * dt * constants.GetFloat("z_axis_run_multiplier");
+                                playerPosition.X += controllerInput.leftStickX * dt * constants.GetFloat("x_axis_run_multiplier")
+                                    * frozenDivisor;
+                                playerPosition.Z += controllerInput.leftStickY * dt * constants.GetFloat("z_axis_run_multiplier")
+                                    * frozenDivisor;
 
                                 player.GetProperty<RobotRenderProperty>("render").NextPermanentState = "run";
                             }
                             else
                             {
-                                playerPosition.X += controllerInput.leftStickX * dt * constants.GetFloat("x_axis_walk_multiplier");
-                                playerPosition.Z += controllerInput.leftStickY * dt * constants.GetFloat("z_axis_walk_multiplier");
+                                playerPosition.X += controllerInput.leftStickX * dt * constants.GetFloat("x_axis_walk_multiplier")
+                                    * frozenDivisor;
+                                playerPosition.Z += controllerInput.leftStickY * dt * constants.GetFloat("z_axis_walk_multiplier")
+                                    * frozenDivisor;
 
                                 player.GetProperty<RobotRenderProperty>("render").NextPermanentState = "walk";
                             }

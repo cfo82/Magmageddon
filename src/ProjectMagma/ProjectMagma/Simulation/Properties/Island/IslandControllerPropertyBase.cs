@@ -277,7 +277,7 @@ namespace ProjectMagma.Simulation
                                 * constants.GetFloat("collision_damping"));
                         }
                         island.SetVector3("pushback_velocity", island.GetVector3("pushback_velocity")
-                            - xznormal * 50); // todo: extract constant
+                            - xznormal * 2000 * simTime.Dt); // todo: extract constant
                     }
 
                     if (state == IslandState.Repositioning)
@@ -294,7 +294,7 @@ namespace ProjectMagma.Simulation
                         {
                             // pusbhack a bit
                             island.SetVector3("pushback_velocity", island.GetVector3("pushback_velocity")
-                                - normal * 5000 * simTime.Dt); // todo: extract constant
+                                - normal * 2000 * simTime.Dt); // todo: extract constant
 
                             // call handler of child class
                             if (!HandleCollision(simTime, island, other, contact, ref normal))

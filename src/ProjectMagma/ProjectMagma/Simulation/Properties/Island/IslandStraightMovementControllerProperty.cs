@@ -57,7 +57,7 @@ namespace ProjectMagma.Simulation
                 {
                     direction = -direction;
                     directionChangedAt = simTime.At;
-                    return false;
+                    return true;
                 }
                 else
                     return false; // handle collision at base

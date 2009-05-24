@@ -35,7 +35,7 @@
       <Attribute name="simple_jump_gravity_acceleration" template="float3" value="0 -2000 0"/>
       <Attribute name="simple_jump_height" template="float" value="100"/>
       
-      <Attribute name="ice_spike_aim_angle" template="float" value="240"/>
+      <Attribute name="ice_spike_aim_angle" template="float" value="60"/>
       <Attribute name="ice_spike_energy_cost" template="int" value="35"/>
       <Attribute name="ice_spike_damage" template="int" value="25"/>
       <Attribute name="ice_spike_freeze_time" template="int" value="2000"/>
@@ -70,7 +70,7 @@
       <Attribute name="player_pushback_deacceleration" template="float" value="600"/>
       <Attribute name="player_pushback_velocity_multiplier" template="float" value="120"/>
 
-      <Attribute name="island_aim_angle" template="float" value="360"/>
+      <Attribute name="island_aim_angle" template="float" value="180"/>
       <Attribute name="island_aim_angle_eps" template="float" value="30"/>
       <Attribute name="island_reselection_max_value" template="float" value="0.9"/>
       <Attribute name="island_reselection_timeout" template="float" value="100"/>

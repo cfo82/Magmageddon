@@ -537,7 +537,7 @@ namespace ProjectMagma.Simulation
                             if (!arrow.HasProperty("render"))
                             {
                                 arrow.AddProperty("render", new ArrowRenderProperty());
-                                arrow.AddProperty("shadow_cast", new ShadowCastProperty());
+                                //arrow.AddProperty("shadow_cast", new ShadowCastProperty());
                             }
 
                             // reset in range indicator
@@ -1236,7 +1236,7 @@ namespace ProjectMagma.Simulation
                         // activate
                         player.AddProperty("collision", new CollisionProperty());
                         player.AddProperty("render", new RobotRenderProperty());
-                        player.AddProperty("shadow_cast", new ShadowCastProperty());
+                        //player.AddProperty("shadow_cast", new ShadowCastProperty());
                         player.GetProperty<CollisionProperty>("collision").OnContact += PlayerCollisionHandler;
 
                         // reset respawn timer

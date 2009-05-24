@@ -174,7 +174,6 @@
     <Compile Include="Renderer\RendererEntity.cs" />
     <Compile Include="Renderer\RendererEntityManager.cs" />
     <Compile Include="Renderer\RenderMode.cs" />
-    <Compile Include="Renderer\Renderables\ShadowRenderable.cs" />
     <Compile Include="Renderer\RenderPasses\HdrCombinePass.cs" />
     <Compile Include="Renderer\RenderPasses\RenderPass.cs" />
     <Compile Include="Renderer\RenderPasses\GlowPass.cs" />
@@ -261,7 +260,6 @@
     <Compile Include="Simulation\Properties\Rendering\LavaRenderProperty.cs" />
     <Compile Include="Simulation\Properties\Rendering\TexturedRenderProperty.cs" />
     <Compile Include="Simulation\Properties\Rendering\BasicRenderProperty.cs" />
-    <Compile Include="Simulation\Properties\Rendering\ShadowCastProperty.cs" />
     <Compile Include="Simulation\Simulation.cs" />
     <Compile Include="Simulation\SimulationThread.cs" />
     <Compile Include="Simulation\SimulationTime.cs" />

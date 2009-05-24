@@ -69,7 +69,7 @@ namespace ProjectMagma.Renderer
 
             this.device = device;
             updateRenderables = new List<Renderable>();
-            shadowCaster = new List<Renderable>();
+//            shadowCaster = new List<Renderable>();
             opaqueRenderables = new List<Renderable>();
             transparentRenderables = new List<Renderable>();
             overlays = new List<Renderable>();
@@ -336,38 +336,24 @@ namespace ProjectMagma.Renderer
         }
 
         private void RenderShadow()
-        {            
+        {
+            //return;
             // backup stencil buffer
             DepthStencilBuffer oldStencilBuffer
                 = device.DepthStencilBuffer;
 
             device.DepthStencilBuffer = shadowStencilBuffer;
-            device.Clear(Color.White);
-
-            foreach (Renderable renderable in shadowCaster)
+            device.Clear(Color.Black);
+            
+            foreach (Renderable renderable in opaqueRenderables)
             {
-                Debug.Assert(renderable.RenderMode == RenderMode.RenderToShadowMap);
-                renderable.Draw(this);
+                //Debug.Assert(renderable.RenderMode == RenderMode.RenderToShadowMap);
+                Debug.Assert(renderable is ModelRenderable);
+                (renderable as ModelRenderable).DrawToShadowMap(this);
             }
 
             // restore stencil buffer
             device.DepthStencilBuffer = oldStencilBuffer;
-
-
-            //device.SetRenderTarget(0, null);
-            //Texture2D texture = lightRenderTarget.GetTexture();
-            //float[] pixelData = new float[texture.Width * texture.Height];
-            //texture.GetData(pixelData, 0, texture.Width * texture.Height);
-            //Console.WriteLine("start");
-            //for (int i = 0; i < texture.Width * texture.Height; i++)
-            //    if (pixelData[i] != 0.0f)
-            //    {
-            //        float g = pixelData[i];
-            //        //Console.WriteLine(g);
-            //    }
-            //Console.WriteLine("end");
-            //int a = 0;
-
 
         }
 
@@ -480,7 +466,7 @@ namespace ProjectMagma.Renderer
         {
             switch (renderable.RenderMode)
             {
-                case RenderMode.RenderToShadowMap: return shadowCaster;
+                //case RenderMode.RenderToShadowMap: return shadowCaster;
                 case RenderMode.RenderToScene: return opaqueRenderables;
                 case RenderMode.RenderToSceneAlpha: return transparentRenderables;
                 case RenderMode.RenderOverlays: return overlays;
@@ -616,7 +602,7 @@ namespace ProjectMagma.Renderer
         public LightManager LightManager { get; set; }
 
         private List<Renderable> updateRenderables;
-        private List<Renderable> shadowCaster;
+        //private List<Renderable> shadowCaster;
         private List<Renderable> opaqueRenderables;
         private List<Renderable> transparentRenderables;
         private List<Renderable> overlays;

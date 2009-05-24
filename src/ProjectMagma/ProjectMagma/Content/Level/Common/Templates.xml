@@ -148,7 +148,6 @@
     </Attributes>
     <Properties>
       <Property name="collision" type="ProjectMagma.Simulation.Collision.CollisionProperty"/>
-      <Property name="shadow_cast" type="ProjectMagma.Simulation.ShadowCastProperty"/>
       <Property name="render" type="ProjectMagma.Simulation.PowerupRenderProperty"/>
     </Properties>
   </Entity>

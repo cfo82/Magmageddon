@@ -86,3 +86,13 @@ sampler2D TemperatureSampler = sampler_state
 	AddressV = Mirror;
 };
 
+uniform const texture ShadowMap;
+uniform const sampler ShadowSampler = sampler_state
+{
+	Texture = <ShadowMap>;
+	MipFilter = Point;
+	MinFilter = Point;
+	MagFilter = Point;
+	AddressU = Wrap;
+	AddressV = Wrap;	
+};

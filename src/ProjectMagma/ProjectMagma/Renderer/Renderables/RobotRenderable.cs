@@ -289,6 +289,7 @@ namespace ProjectMagma.Renderer
 
         private void DrawPlayerArrow(Renderer renderer)
         {
+            return;
             playerArrowEffect.CurrentTechnique = playerArrowEffect.Techniques["TexturedNoCullNoDepth"];
             playerArrowEffect.Begin();
             playerArrowEffect.CurrentTechnique.Passes[0].Begin();

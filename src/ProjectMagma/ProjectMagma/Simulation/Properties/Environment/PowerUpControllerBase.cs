@@ -98,7 +98,7 @@ namespace ProjectMagma.Simulation
 
                 powerup.AddProperty("collision", new CollisionProperty());
                 powerup.AddProperty("render", new PowerupRenderProperty());
-                powerup.AddProperty("shadow_cast", new ShadowCastProperty());
+                //powerup.AddProperty("shadow_cast", new ShadowCastProperty());
 
                 this.island.GetVector3Attribute("position").ValueChanged += OnIslandPositionChanged;
                 powerup.GetProperty<CollisionProperty>("collision").OnContact += PowerupCollisionHandler;

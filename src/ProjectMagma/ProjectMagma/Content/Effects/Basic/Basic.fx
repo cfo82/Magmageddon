@@ -47,7 +47,7 @@ Technique TexturedNoCullNoDepth
 		CullMode = None;
 		ZEnable = false;
 		AlphaBlendEnable = false;
-		AlphaTestEnable = false;				
+		AlphaTestEnable = false;
 	}
 }
 

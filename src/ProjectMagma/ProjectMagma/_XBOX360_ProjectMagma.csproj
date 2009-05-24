@@ -150,7 +150,6 @@
     <Compile Include="Renderer\Renderables\PointExplosionRenderable.cs" />
     <Compile Include="Renderer\Renderables\Renderable.cs" />
     <Compile Include="Renderer\Renderables\RobotRenderable.cs" />
-    <Compile Include="Renderer\Renderables\ShadowRenderable.cs" />
     <Compile Include="Renderer\Renderables\TexturedRenderable.cs" />
     <Compile Include="Renderer\Renderables\WinningScreenRenderable.cs" />
     <Compile Include="Renderer\Renderer.cs" />
@@ -229,7 +228,6 @@
     <Compile Include="Simulation\Properties\Rendering\ModelRenderProperty.cs" />
     <Compile Include="Simulation\Properties\Rendering\PointExplosionRenderProperty.cs" />
     <Compile Include="Simulation\Properties\Rendering\RobotRenderProperty.cs" />
-    <Compile Include="Simulation\Properties\Rendering\ShadowCastProperty.cs" />
     <Compile Include="Simulation\Properties\Rendering\TexturedRenderProperty.cs" />
     <Compile Include="Simulation\Simulation.cs" />
     <Compile Include="Simulation\SimulationThread.cs" />

@@ -82,10 +82,66 @@ namespace ProjectMagma.Renderer
             }
         }
 
+        public void DrawToShadowMap(Renderer renderer)
+        {
+            // TODO: should only be done once per frame.
+            RecomputeWorldMatrix();
+            RecomputeBoneTransforms();
+
+
+//            model.CopyAbsoluteBoneTransformsTo(transforms);
+
+            // shadows should be floating a little above the receiving surface
+
+            foreach (ModelMesh mesh in Model.Meshes)
+            {
+                //ApplyMeshWorldViewProjection(renderer, renderer.ShadowEffect, mesh);
+                Matrix world_offset = BoneTransformMatrix(mesh) * World;
+                world_offset *= Matrix.CreateTranslation(new Vector3(0, 3, 0));
+
+                
+                Effect effect = renderer.ShadowEffect;
+
+                renderer.Device.RenderState.DepthBufferEnable = true;
+                effect.CurrentTechnique = effect.Techniques["DepthMap"];
+                effect.Parameters["LightPosition"].SetValue(renderer.LightPosition);
+                effect.Parameters["World"].SetValue(world_offset);
+
+                effect.Parameters["WorldLightViewProjection"].SetValue(
+                    world_offset * renderer.LightView * renderer.LightProjection);
+
+
+                Effect backup = mesh.MeshParts[0].Effect;
+                foreach (ModelMeshPart meshPart in mesh.MeshParts)
+                {
+                    meshPart.Effect = effect;
+                }
+                renderer.Device.RenderState.AlphaBlendEnable = false;
+                renderer.Device.RenderState.SourceBlend = Blend.SourceAlpha;
+                renderer.Device.RenderState.DestinationBlend = Blend.DestinationColor;
+
+                mesh.Draw();
+
+                renderer.Device.RenderState.AlphaBlendEnable = false;
+
+                foreach (ModelMeshPart meshPart in mesh.MeshParts)
+                {
+                    meshPart.Effect = backup;
+                }
+            }
+        }
+
         protected virtual void DrawMesh(Renderer renderer, ModelMesh mesh)
         {
             mesh.Draw();
         }
+
+        protected void ApplyMeshWorldViewProjection(Renderer renderer, Effect effect, ModelMesh mesh)
+        {
+            effect.Parameters["Local"].SetValue(BoneTransformMatrix(mesh));
+            ApplyWorldViewProjection(renderer, effect);
+        }
+
 
         protected void ApplyWorldViewProjection(Renderer renderer, Effect effect)
         {
@@ -190,7 +246,7 @@ namespace ProjectMagma.Renderer
             Effect shadowEffect = renderer.ShadowEffect;
 
             // shadows should be floating a little above the receiving surface
-            Matrix world_offset = BoneTransformMatrix(mesh) * World * Matrix.CreateTranslation(new Vector3(0, 3, 0));
+            Matrix world_offset = BoneTransformMatrix(mesh) * World;// *Matrix.CreateTranslation(new Vector3(0, 3, 0));
 
             shadowEffect.CurrentTechnique = shadowEffect.Techniques["Scene"];
             shadowEffect.Parameters["ShadowMap"].SetValue(renderer.LightResolve);

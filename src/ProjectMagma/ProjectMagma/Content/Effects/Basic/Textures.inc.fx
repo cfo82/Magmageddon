@@ -48,10 +48,10 @@ uniform const texture ShadowMap;
 uniform const sampler ShadowSampler = sampler_state
 {
 	Texture = <ShadowMap>;
-	MipFilter = Linear;
-	MinFilter = Linear;
-	MagFilter = Linear;
-	AddressU = Wrap;
-	AddressV = Wrap;	
+	MipFilter = Point;
+	MinFilter = Point;
+	MagFilter = Point;
+	AddressU = Clamp;
+	AddressV = Clamp;	
 };
 

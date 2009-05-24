@@ -19,7 +19,7 @@ float ShadowLightPositionY=10000;
 float ShadowMapFarClip=10500;
 float ShadowMapNearClip=9500;
 
-void BlendWithShadow(inout float4 color, in float4 positionWS, in float4 positionLS)
+void BlendWithShadow(inout float4 color, in float4 positionWS, in float4 positionLS, in float3 normal)
 {
 	// compute position where to sample
 	float2 projectedTexCoords;	
@@ -27,20 +27,37 @@ void BlendWithShadow(inout float4 color, in float4 positionWS, in float4 positio
 	projectedTexCoords[1] = (-positionLS.y / positionLS.w / 2.0f) + 0.5f;
 	
 	// compute depth
-	float4 depth = tex2D(ShadowSampler, projectedTexCoords);
+	float depth = tex2D(ShadowSampler, projectedTexCoords).r;
 	
 	// compute distance to light source, assuming directional light in (0,-1,0) direction
-	float len = (ShadowLightPositionY - positionWS.y/positionWS.w - ShadowMapNearClip) / (ShadowMapFarClip - ShadowMapNearClip);
+	//float len = (ShadowLightPositionY - positionWS.y/positionWS.w - ShadowMapNearClip) / (ShadowMapFarClip - ShadowMapNearClip);
 	
-	float depthBias = 0.007f;
+	
+	float len = positionWS.y;
+	
+	float depthBias = 15.0;
 	
 	//float3 worldToLight = (ShadowLightPositionY - positionWS.y/positionWS.w);
-	//float incidentAngle = dot(Input.Normal, normalize(worldToLight);
+	float cosIncidentAngle = normalize(normal).y;
 	
-	if(len - depthBias > depth.r)
-	{
-		color = lerp(color, float4(0,0,0,1), 0.5);
-	}
+	//if(len - depthBias > depth)
+	//{
+//		color = lerp(color, float4(0,0,0,1), 0.5);
+	//}
+	
+	//color = pow(depth,1000);
+	
+	bool angleBigEnough = cosIncidentAngle>0.4;
+	bool isInShadow = (depth-(len + depthBias));
+	
+	bool drawShadow = angleBigEnough * isInShadow;
+	
+	color = drawShadow ? color * 0.3 : color;
+	
+	//color = saturate(float4(b,b*(depth-(len + depthBias)),0,1));
+	//color = float4(normal,1);
+	//color = float4(saturate(len/400),0,0,1);
+	//color = float4(positionLS.x/positionLS.w,positionLS.y/positionLS.w,0,1);
 }
 
 
@@ -52,7 +69,7 @@ PSOutput PSBasicPixelLighting(PixelLightingPSInput pin) : COLOR
 	PS_START
 	ComputeLighting(lightResult, normal, pin.PositionWS, pin.NormalWS);	
 	ComputeDiffColorUni(Output.Color, lightResult, pin.PositionWS.w);
-	BlendWithShadow(Output.Color, pin.PositionWS, pin.PositionLS);
+	BlendWithShadow(Output.Color, pin.PositionWS, pin.PositionLS, pin.NormalWS);
 	return Output;
 }
 
@@ -66,7 +83,7 @@ PSOutput PSBasicPixelLightingTx(PixelLightingPSInputTx pin) : COLOR
 	float2 texCoord = pin.TexCoord;
 	ComputeLighting(lightResult, normal, pin.PositionWS, pin.NormalWS);	
 	ComputeDiffSpecColorTx(Output.Color, texCoord, lightResult, pin.PositionWS.w);
-	BlendWithShadow(Output.Color, pin.PositionWS, pin.PositionLS);
+	BlendWithShadow(Output.Color, pin.PositionWS, pin.PositionLS, pin.NormalWS);
 	return Output;
 }
 
@@ -82,7 +99,7 @@ PSOutput PSIsland(PixelLightingPSInputTx pin) : COLOR
 	PerturbIslandTexCoords(texCoord, normal.y);
 	ComputeDiffSpecColorTx(Output.Color, texCoord, lightResult, pin.PositionWS.w);
 	PerturbIslandGroundAlpha(Output.Color.a, pin.PositionWS);
-	BlendWithShadow(Output.Color, pin.PositionWS, pin.PositionLS);	
+	BlendWithShadow(Output.Color, pin.PositionWS, pin.PositionLS, pin.NormalWS);	
 	return Output;
 }
 
@@ -98,7 +115,7 @@ PSOutput PSEnvironment(PixelLightingPSInputTx pin) : COLOR
 	ComputeDiffSpecColorTx(Output.Color, texCoord, lightResult, pin.PositionWS.w);
 	PerturbEnvGroundWavesAlpha(Output.Color.a, Output.RenderChannelColor, pin.PositionWS);
 	//Output.Depth = float4(pin.PositionPSP.z / pin.PositionPSP.w*10000-9992,0,0,1);
-	BlendWithShadow(Output.Color, pin.PositionWS, pin.PositionLS);
+	BlendWithShadow(Output.Color, pin.PositionWS, pin.PositionLS, pin.NormalWS);
 	return Output;
 }
 
@@ -111,7 +128,7 @@ PSOutput PSBasicPixelLightingTxTo(PixelLightingPSInputTx pin) : COLOR
 	float2 texCoord = pin.TexCoord;
 	ComputeLighting(lightResult, normal, pin.PositionWS, pin.NormalWS);	
 	ComputeDiffSpecColorTxTo(Output.Color, texCoord, lightResult, pin.PositionWS.w, ToneColor);
-	BlendWithShadow(Output.Color, pin.PositionWS, pin.PositionLS);
+	BlendWithShadow(Output.Color, pin.PositionWS, pin.PositionLS, pin.NormalWS);
 	return Output;
 }
 
@@ -126,6 +143,6 @@ PSOutput PSBasicPixelLightingTxToDb(PixelLightingPSInputTx pin) : COLOR
 	float2 texCoord = pin.TexCoord;
 	ComputeLighting(lightResult, normal, pin.PositionWS, pin.NormalWS);	
 	ComputeDiffSpecColorTxToDb(Output.Color, texCoord, lightResult, pin.PositionWS.w, ToneColor, InvToneColor);
-	BlendWithShadow(Output.Color, pin.PositionWS, pin.PositionLS);
+	BlendWithShadow(Output.Color, pin.PositionWS, pin.PositionLS, pin.NormalWS);
 	return Output;
 }

@@ -48,6 +48,7 @@ namespace ProjectMagma.Renderer
                 ApplyMeshWorldViewProjection(renderer, effect, mesh);
                 ApplyEyePosition(renderer, effect);
                 ApplyTechnique(effect);
+                ApplyShadowMap(renderer, effect);
                 //ApplyFog(effect);
                 if (UseLights) ApplyLights(effect, renderer.LightManager);
                 if (UseMaterialParameters) ApplyMaterialParameters(effect);
@@ -55,6 +56,26 @@ namespace ProjectMagma.Renderer
                 if (UseBlinking) ApplyBlinkingParameters(effect, renderer);
                 ApplyCustomEffectParameters(effect, renderer);
             }
+        }
+
+        private void ApplyShadowMap(Renderer renderer, Effect effect)
+        {
+            //effect.Parameters["ShadowMap"].SetValue(renderer.LightRenderTarget.GetTexture());
+            effect.Parameters["ShadowMap"].SetValue(renderer.LightRenderTarget.GetTexture());
+            effect.Parameters["LightViewProjection"].SetValue(renderer.LightView * renderer.LightProjection);
+        //    //device.SetRenderTarget(0, null);
+        //    Texture2D texture = renderer.LightRenderTarget.GetTexture();
+        //    float[] pixelData = new float[texture.Width * texture.Height];
+        //    texture.GetData(pixelData, 0, texture.Width * texture.Height);
+        // //   Console.WriteLine("start");
+        //    for (int i = 0; i < texture.Width * texture.Height; i++)
+        //        if (pixelData[i] != 0.0f)
+        //        {
+        //            float g = pixelData[i];
+        //   //         Console.WriteLine(g);
+        //        }
+        //    //Console.WriteLine("end");
+        //    int a = 0;
         }
 
         //private void ApplyFog(Effect effect)
@@ -66,11 +87,6 @@ namespace ProjectMagma.Renderer
         //    //effect.Parameters["EyePosition"].SetValue(Game.Instance.EyePosition);
         //}
 
-        private void ApplyMeshWorldViewProjection(Renderer renderer, Effect effect, ModelMesh mesh)
-        {
-            effect.Parameters["Local"].SetValue(BoneTransformMatrix(mesh));
-            ApplyWorldViewProjection(renderer, effect);
-        }
         
         protected void ApplyEyePosition(Renderer renderer, Effect effect)
         {

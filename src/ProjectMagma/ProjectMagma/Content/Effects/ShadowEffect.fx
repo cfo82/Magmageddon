@@ -85,7 +85,7 @@ DEPTH_VS_OUTPUT Depth_VS (VS_INPUT Input)
     return Output;
 }
 
-float4 Depth_PS (DEPTH_VS_OUTPUT Input) : COLOR0
+void Depth_PS (in DEPTH_VS_OUTPUT Input, out float4 outcolor : COLOR0)
 {
     // Get the distance from this pixel to the light, 
     //we divide by the far clip of the light so that it 
@@ -98,7 +98,9 @@ float4 Depth_PS (DEPTH_VS_OUTPUT Input) : COLOR0
     float dist = LightPosition.y - Input.WorldPosition.y;
     float depth = (dist - NearClip) / (FarClip - NearClip);
     
-    return float4(depth,depth,depth,1);
+    //return float4(depth,depth,depth,1);
+    outcolor = Input.WorldPosition.y;
+    //outcolor = 0.2;
 }
 
 technique DepthMap
@@ -107,6 +109,7 @@ technique DepthMap
     {
         VertexShader = compile vs_2_0 Depth_VS();
         PixelShader  = compile ps_2_0 Depth_PS();
+        AlphaBlendEnable = false;
     }
 }
 

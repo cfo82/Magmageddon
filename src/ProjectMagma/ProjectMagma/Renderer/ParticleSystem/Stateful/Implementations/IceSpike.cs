@@ -50,6 +50,14 @@ namespace ProjectMagma.Renderer.ParticleSystem.Stateful.Implementations
             return wrappedContent.Load<Texture2D>("Textures/Sfx/IceSpikeTrail");
         }
 
+        protected override double SimulationStep
+        {
+            get
+            {
+                return 1d / 60d;
+            }
+        }
+
         protected override void SetUpdateParameters(EffectParameterCollection parameters)
         {
             base.SetUpdateParameters(parameters);

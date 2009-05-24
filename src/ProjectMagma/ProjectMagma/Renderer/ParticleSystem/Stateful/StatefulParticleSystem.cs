@@ -244,6 +244,8 @@ namespace ProjectMagma.Renderer.ParticleSystem.Stateful
             double currentFrameTime
         )
         {
+            //Console.WriteLine("update {0}", this);
+
             for (int i = 0; i < createVertexLists.Count; ++i)
             {
                 renderer.StatefulParticleResourceManager.FreeCreateVertexArray(createVertexLists[i]);
@@ -252,10 +254,12 @@ namespace ProjectMagma.Renderer.ParticleSystem.Stateful
 
             // calculate the timestep to make
             double intermediateLastFrameTime = lastFrameTime - remainingDt;
-            double intermediateCurrentFrameTime = intermediateLastFrameTime + simulationStep;
+            double intermediateCurrentFrameTime = intermediateLastFrameTime + SimulationStep;
 
             while (intermediateCurrentFrameTime < currentFrameTime)
             {
+                //Console.WriteLine("update step");
+
                 int nextTexture = (activeTexture + 1) % 2;
 
                 RenderTarget2D oldRenderTarget0 = (RenderTarget2D)device.GetRenderTarget(0);
@@ -272,7 +276,7 @@ namespace ProjectMagma.Renderer.ParticleSystem.Stateful
                 particleUpdateEffect.Parameters["ViewportHeight"].SetValue(device.Viewport.Height);
                 particleUpdateEffect.Parameters["ViewportWidth"].SetValue(device.Viewport.Width);
                 particleUpdateEffect.Parameters["Time"].SetValue((float)intermediateCurrentFrameTime);
-                particleUpdateEffect.Parameters["Dt"].SetValue((float)simulationStep);
+                particleUpdateEffect.Parameters["Dt"].SetValue((float)SimulationStep);
                 particleUpdateEffect.Parameters["PositionTexture"].SetValue(positionTextures[activeTexture].GetTexture());
                 particleUpdateEffect.Parameters["VelocityTexture"].SetValue(velocityTextures[activeTexture].GetTexture());
                 particleUpdateEffect.Parameters["RandomTexture"].SetValue(renderer.VectorCloudTexture);
@@ -297,7 +301,7 @@ namespace ProjectMagma.Renderer.ParticleSystem.Stateful
                 pass.End();
                 particleUpdateEffect.End();
 
-                CreateParticles(intermediateLastFrameTime, intermediateCurrentFrameTime, (intermediateCurrentFrameTime + simulationStep) > currentFrameTime);
+                CreateParticles(intermediateLastFrameTime, intermediateCurrentFrameTime, true);//(intermediateCurrentFrameTime + SimulationStep) > currentFrameTime);
 
                 device.SetRenderTarget(1, oldRenderTarget1);
                 device.SetRenderTarget(0, oldRenderTarget0);
@@ -306,10 +310,10 @@ namespace ProjectMagma.Renderer.ParticleSystem.Stateful
 
                 //positionTextures[activeTexture].GetTexture().Save(string.Format("PositionMaps/{0:0000}.dds", fileindex++), ImageFileFormat.Dds);
                 intermediateLastFrameTime = intermediateCurrentFrameTime;
-                intermediateCurrentFrameTime += simulationStep;
+                intermediateCurrentFrameTime += SimulationStep;
             }
 
-            intermediateCurrentFrameTime -= simulationStep; // undo last addition...
+            intermediateCurrentFrameTime -= SimulationStep; // undo last addition...
             remainingDt = currentFrameTime - intermediateCurrentFrameTime;
         }
 
@@ -425,6 +429,11 @@ namespace ProjectMagma.Renderer.ParticleSystem.Stateful
         {
         }
 
+        protected virtual double SimulationStep
+        {
+            get { return simulationStep; }
+        }
+
         #endregion
 
         protected Renderer renderer;
@@ -433,7 +442,7 @@ namespace ProjectMagma.Renderer.ParticleSystem.Stateful
         private GraphicsDevice device;
 
         private double remainingDt;
-        private static readonly double simulationStep = 1.0 / 60.0;
+        private static readonly double simulationStep = 1.0 / 30.0;
 
         private static readonly int textureSize = 96;
         private static readonly Size systemSize = Size.Max9308;

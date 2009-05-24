@@ -134,6 +134,11 @@ namespace ProjectMagma.Simulation
                     simTime.Update();
                     //Console.WriteLine("simulating {0}", simTime.At);
 
+                    if (simTime.DtMs < 15)
+                    {
+                        System.Threading.Thread.Sleep(15 - (int)simTime.DtMs);
+                    }
+
                     // update all entities
                     foreach (Entity e in entityManager)
                     {

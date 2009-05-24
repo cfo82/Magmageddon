@@ -55,5 +55,13 @@ namespace ProjectMagma.Renderer.ParticleSystem.Stateful.Implementations
         {
             base.SetRenderingParameters(parameters);
         }
+
+        protected override double SimulationStep
+        {
+            get
+            {
+                return 1d / 40d;
+            }
+        }
     }
 }

@@ -11,6 +11,8 @@
 float SnowParticleLifetime = 25;
 float SnowVelocityDamping = 0.2;
 float SnowParticleMass = 0.01;
+float SnowMeltingStart = 600;
+float SnowMeltingEnd = 300;
 float SnowMaxAlpha = 0.6;		
 float3 Gravity = float3(0,-9.81,0);
 float3 WindForce;
@@ -126,10 +128,17 @@ RenderSnowParticlesVertexShaderOutput RenderSnowVertexShader(
 		output.PositionCopy = output.Position = mul(view_position, Projection);
 		output.Size = SnowBaseSize + random_sampler_value.x*SnowRandomSizeModification;
 		
-		float calculatedAlpha = min(SnowMaxAlpha, 2*(1-normalizedAge) * lerp(1.4, 0.6, min(1,normalizedAge)));
+		// calculate alpha lerp between given SnowMeltingStart/SnowMeltingEnd based on height
+		float amount = (SnowMeltingStart - world_position.y) / (SnowMeltingStart - SnowMeltingEnd);
+		// clamp to range between [0,1]
+		amount = min(1, amount);
+		amount = max(0, amount);
+		float alpha = lerp(SnowMaxAlpha, 0, amount);
+		
+		//float calculatedAlpha = min(SnowMaxAlpha, 2*(1-normalizedAge) * lerp(1.4, 0.6, min(1,normalizedAge)));
 		//float alpha = normalizedAge<0.5?1:calculatedAlpha;
 		
-		output.Color = float4(1,1,1,calculatedAlpha);
+		output.Color = float4(1,1,1,alpha);
 		output.RandomValues = random_sampler_value;
 	}
 	else

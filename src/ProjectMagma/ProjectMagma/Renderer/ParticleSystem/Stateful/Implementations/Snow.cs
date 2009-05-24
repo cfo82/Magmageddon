@@ -19,7 +19,9 @@ namespace ProjectMagma.Renderer.ParticleSystem.Stateful.Implementations
             float snowLifeTime,
             float snowMaxAlpha,
             float snowBaseSize,
-            float snowRandomSizeModification
+            float snowRandomSizeModification,
+            float snowMeltingStart,
+            float snowMeltingEnd
         )
         :   base(renderer, wrappedContent, device)
         {
@@ -27,6 +29,8 @@ namespace ProjectMagma.Renderer.ParticleSystem.Stateful.Implementations
             this.snowMaxAlpha = snowMaxAlpha;
             this.snowBaseSize = snowBaseSize;
             this.snowRandomSizeModification = snowRandomSizeModification;
+            this.snowMeltingStart = snowMeltingStart;
+            this.snowMeltingEnd = snowMeltingEnd;
         }
 
         private Effect LoadEffect(WrappedContentManager wrappedContent)
@@ -76,6 +80,8 @@ namespace ProjectMagma.Renderer.ParticleSystem.Stateful.Implementations
             parameters["SnowMaxAlpha"].SetValue(snowMaxAlpha);
             parameters["SnowBaseSize"].SetValue(snowBaseSize);
             parameters["SnowRandomSizeModification"].SetValue(snowRandomSizeModification);
+            parameters["SnowMeltingStart"].SetValue(snowMeltingStart);
+            parameters["SnowMeltingEnd"].SetValue(snowMeltingEnd);
             base.SetRenderingParameters(parameters);
         }
 
@@ -84,6 +90,8 @@ namespace ProjectMagma.Renderer.ParticleSystem.Stateful.Implementations
         private float snowLifeTime = 25;
         private float snowMaxAlpha = 0.6f;
         private float snowBaseSize = 5;
+        private float snowMeltingStart = 600;
+        private float snowMeltingEnd = 100;
         private float snowRandomSizeModification = 8;
         private static Random random = new Random();
     }

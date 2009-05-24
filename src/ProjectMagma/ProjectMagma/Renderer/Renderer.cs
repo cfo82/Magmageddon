@@ -156,7 +156,9 @@ namespace ProjectMagma.Renderer
                 entityManager["snow"].GetFloat("particle_lifetime"),
                 entityManager["snow"].GetFloat("max_alpha"),
                 entityManager["snow"].GetFloat("base_size"),
-                entityManager["snow"].GetFloat("random_size_modification"));
+                entityManager["snow"].GetFloat("random_size_modification"),
+                entityManager["snow"].GetFloat("melting_start"),
+                entityManager["snow"].GetFloat("melting_end"));
             snowSystem.AddEmitter(new SnowEmitter(EntityManager["snow"].GetFloat("particles_per_second")));
             for (int i = 0; i < 1000; ++i)
             {

@@ -12,9 +12,11 @@
     <Attributes>
       <Attribute name="particles_per_second" template="float" value="30"/>
       <Attribute name="particle_lifetime" template="float" value="25"/>
-      <Attribute name="max_alpha" template="float" value="0.6"/>
+      <Attribute name="max_alpha" template="float" value="0.75"/>
       <Attribute name="base_size" template="float" value="5"/>
       <Attribute name="random_size_modification" template="float" value="8"/>
+      <Attribute name="melting_start" template="float" value="600"/>
+      <Attribute name="melting_end" template="float" value="100"/>
     </Attributes>
   </Entity>
   

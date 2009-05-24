@@ -279,7 +279,7 @@ namespace ProjectMagma.Renderer
 
         protected override void DrawMesh(Renderer renderer, ModelMesh mesh)
         {
-            DrawPlayerArrow(renderer);
+            //DrawPlayerArrow(renderer);
 
             animator.World = World;
             animator.Draw();
@@ -287,10 +287,12 @@ namespace ProjectMagma.Renderer
             base.DrawMesh(renderer, mesh);
         }
 
-        private void DrawPlayerArrow(Renderer renderer)
+
+        public override void DrawAfterPost(Renderer renderer)
         {
-            return;
-            playerArrowEffect.CurrentTechnique = playerArrowEffect.Techniques["TexturedNoCullNoDepth"];
+            base.DrawAfterPost(renderer);
+
+            playerArrowEffect.CurrentTechnique = playerArrowEffect.Techniques["TexturedAlphaNoCullNoDepth"];
             playerArrowEffect.Begin();
             playerArrowEffect.CurrentTechnique.Passes[0].Begin();
             ApplyWorldViewProjection(renderer, playerArrowEffect);            

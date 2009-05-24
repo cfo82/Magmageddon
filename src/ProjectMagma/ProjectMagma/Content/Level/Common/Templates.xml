@@ -134,7 +134,7 @@
       <Attribute name="kind" template="string" value="powerup"/>
       <Attribute name="position" template="float3" value="0 -100 0"/>
       <Attribute name="scale" template="float3" value="20 20 20"/>
-      <Attribute name="relative_position" template="float3" value="15 20 15"/>
+      <Attribute name="relative_position" template="float3" value="0.21 0.28 0.21"/>
       
       <Attribute name="pickup_sound" template="string" value="excellent"/>
       <Attribute name="fixed" template="bool" value="false"/>

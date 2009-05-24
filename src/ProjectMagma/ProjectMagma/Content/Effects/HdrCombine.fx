@@ -134,8 +134,8 @@ float4 ChannelPixelShader(float2 texCoord : TEXCOORD0, int channel)
     bloom = saturate(bloom/(1.0f-BloomSensitivity[channel]) - 2*BloomSensitivity[channel]);
 
     // Adjust color saturation and intensity.
-    //bloom = AdjustSaturation(bloom, BloomSaturation[channel]) * BloomIntensity[channel];
-    //base = AdjustSaturation(base, BaseSaturation[channel]) * BaseIntensity[channel];
+    bloom = AdjustSaturation(bloom, BloomSaturation[channel]) * BloomIntensity[channel];
+    base = AdjustSaturation(base, BaseSaturation[channel]) * BaseIntensity[channel];
 
     bloom *= BloomIntensity[channel];
     base *= BaseIntensity[channel];

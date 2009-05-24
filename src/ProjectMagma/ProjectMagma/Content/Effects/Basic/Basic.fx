@@ -33,6 +33,7 @@ Technique UnicoloredAlpha
 		VertexShader = compile vs_3_0 VSBasicPixelLightingNmSq();
 		PixelShader	 = compile ps_3_0 PSBasicPixelLighting();
 		AlphaBlendEnable = true;
+		BlendOp = Add;
 		SrcBlend = SrcAlpha;
 		DestBlend = InvSrcAlpha;
 		ZEnable = true;
@@ -51,7 +52,7 @@ Technique Textured
 	}
 }
 
-Technique TexturedNoCullNoDepth
+Technique TexturedAlphaNoCullNoDepth
 {
 	Pass 
 	{
@@ -59,7 +60,10 @@ Technique TexturedNoCullNoDepth
 		PixelShader	 = compile ps_3_0 PSBasicPixelLightingTx();
 		CullMode = None;
 		ZEnable = false;
-		AlphaBlendEnable = false;
+		AlphaBlendEnable = true;
+		BlendOp = Add;
+		SrcBlend = SrcAlpha;
+		DestBlend = InvSrcAlpha;
 		AlphaTestEnable = false;
 	}
 }

@@ -27,7 +27,7 @@ namespace ProjectMagma.Renderer
 
         protected override void SetDefaultMaterialParameters()
         {
-            Alpha = 0.75f;
+            Alpha = 1f;
             //DiffuseColor = Color1 * 1.5f;
             //SpecularColor = Color2 * 2.0f;
             //EmissiveColor = Vector3.One * 0.3f;

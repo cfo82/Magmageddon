@@ -332,8 +332,10 @@ namespace ProjectMagma.Renderer
             }
 
             RenderParticles();
+            RenderSceneAfterPost();
 
-            // 5) Render overlays
+
+            // 6) Render overlays
             Game.Instance.Profiler.BeginSection("overlay");
             RenderOverlays();
             Game.Instance.Profiler.EndSection("overlay");
@@ -433,6 +435,14 @@ namespace ProjectMagma.Renderer
             //    }
             //Console.WriteLine("end");
             //int a = 0;
+        }
+
+        private void RenderSceneAfterPost()
+        {
+            foreach (Renderable renderable in opaqueRenderables)
+            {
+                renderable.DrawAfterPost(this);
+            }
         }
 
         private void RenderParticles()

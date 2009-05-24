@@ -21,6 +21,8 @@ float ShadowMapNearClip=9500;
 
 void BlendWithShadow(inout float4 color, in float4 positionWS, in float4 positionLS, in float3 normal)
 {
+	return;
+	
 	// compute position where to sample
 	float2 projectedTexCoords;	
 	projectedTexCoords[0] = (positionLS.x / positionLS.w / 2.0f) + 0.5f;
@@ -35,7 +37,7 @@ void BlendWithShadow(inout float4 color, in float4 positionWS, in float4 positio
 	
 	float len = positionWS.y;
 	
-	float depthBias = 15.0;
+	float depthBias = 12.0;
 	
 	//float3 worldToLight = (ShadowLightPositionY - positionWS.y/positionWS.w);
 	float cosIncidentAngle = normalize(normal).y;
@@ -48,7 +50,7 @@ void BlendWithShadow(inout float4 color, in float4 positionWS, in float4 positio
 	//color = pow(depth,1000);
 	
 	bool angleBigEnough = cosIncidentAngle>0.4;
-	bool isInShadow = (depth-(len + depthBias));
+	bool isInShadow = (depth-(len + depthBias))>0;
 	
 	bool drawShadow = angleBigEnough * isInShadow;
 	
@@ -96,7 +98,7 @@ PSOutput PSIsland(PixelLightingPSInputTx pin) : COLOR
 	PS_START
 	float2 texCoord = pin.TexCoord;
 	ComputeLighting(lightResult, normal, pin.PositionWS, pin.NormalWS);	
-	PerturbIslandTexCoords(texCoord, normal.y);
+//	PerturbIslandTexCoords(texCoord, normal.y);
 	ComputeDiffSpecColorTx(Output.Color, texCoord, lightResult, pin.PositionWS.w);
 	PerturbIslandGroundAlpha(Output.Color.a, pin.PositionWS);
 	BlendWithShadow(Output.Color, pin.PositionWS, pin.PositionLS, pin.NormalWS);	

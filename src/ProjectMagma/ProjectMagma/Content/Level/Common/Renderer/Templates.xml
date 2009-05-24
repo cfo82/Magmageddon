@@ -14,8 +14,8 @@
   <Entity name="fog">
   	<Attributes>
       <!--Attribute name="fog_z_off" template="float" value="0.37"/-->
-      <Attribute name="fog_z_off" template="float" value="0.35"/> <!-- big value: fog starts at greater distance -->
-  		<Attribute name="fog_z_mul" template="float" value="3.0"/>
+      <Attribute name="fog_z_off" template="float" value="0.0002"/> <!-- big value: fog starts at greater distance -->
+  		<Attribute name="fog_z_mul" template="float" value="1500"/>
   		<Attribute name="fog_y_off" template="float" value="0"/> <!-- big value: fog ends at greater height -->
   		<Attribute name="fog_y_mul" template="float" value="0.7"/>
   		<Attribute name="fog_glob_mul" template="float" value="0.8"/>

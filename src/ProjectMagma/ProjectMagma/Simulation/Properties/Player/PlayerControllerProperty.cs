@@ -1259,6 +1259,14 @@ namespace ProjectMagma.Simulation
 
         public void CheckPlayerAttributeRanges(Entity player)
         {
+            if (doRespawnAnimation)
+            {
+                // we cannot take damage on respawn
+                player.SetInt("health", constants.GetInt("max_health"));
+                player.SetInt("energy", constants.GetInt("max_energy"));
+                return;
+            }
+
             int health = player.GetInt("health");
             if(health < 0)
                 player.SetInt("health", 0);
@@ -1279,11 +1287,6 @@ namespace ProjectMagma.Simulation
             else
             if (fuel > constants.GetInt("max_fuel"))
                 player.SetInt("fuel", constants.GetInt("max_fuel"));
-
-            if (player.GetInt("jumps") < 0)
-                player.SetInt("jumps", 0);
-            if (player.GetFloat("repulsion_seconds") < 0)
-                player.SetFloat("repulsion_seconds", 0);
         }
 
         private Vector3 GetLandingPosition(Entity island)

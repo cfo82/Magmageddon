@@ -47,19 +47,24 @@ namespace ProjectMagma.Simulation
         {
             if (island != null)
             {
-                Vector3 playerPos = player.GetVector3("position");
+                Vector3 playerPos = player.GetVector3("position") + Vector3.UnitY * player.GetVector3("scale").Y / 2;
                 Vector3 aimVector = island.GetVector3("position") - playerPos;
+                if (aimVector != Vector3.Zero)
+                    aimVector.Normalize();
+
+                // also adapt playerpos with radius away
+                playerPos += aimVector * (player.GetVector3("scale")).Length();
 
                 // get intersection
                 Ray3 ray = new Ray3(playerPos, aimVector);
-                Vector3 arrowPos;
-                if (Game.Instance.Simulation.CollisionManager.GetIntersectionPoint(ref ray, island, out arrowPos))
+                Vector3 surfacePos;
+                if (Game.Instance.Simulation.CollisionManager.GetIntersectionPoint(ref ray, island, out surfacePos))
                 {
-                    Vector3 delta = (arrowPos - playerPos) * relPos;
+                    Vector3 delta = (surfacePos - playerPos) * relPos;
                     arrow.SetVector3("position", playerPos + delta);
                 }
 
-                // point arrow from player
+                // rotate arrow from player -> island
                 Vector3 tminusp = -aimVector;
                 Vector3 ominusp = Vector3.Up;
                 if (tminusp != Vector3.Zero)

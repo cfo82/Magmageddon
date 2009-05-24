@@ -8,9 +8,9 @@
 
 
 //-----------------------------------------------------------------------------------------------------------
-float IceSpikeParticleLifetime = 1;
+float IceSpikeParticleLifetime = 1.2;
 float IceSpikeRotationTime = 0.5;
-float IceSpikeGravityStart = 0.2;
+float IceSpikeGravityStart = 0.1;
 float IceSpikeDamping = 0.8;
 float3 IceSpikePosition;
 float3 IceSpikeDirection;

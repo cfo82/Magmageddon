@@ -8,7 +8,7 @@
 
 
 //-----------------------------------------------------------------------------------------------------------
-float IceSpikeParticleLifetime = 3;
+float IceSpikeParticleLifetime = 1;
 float IceSpikeRotationTime = 0.5;
 float IceSpikeGravityStart = 0.2;
 float IceSpikeDamping = 0.8;
@@ -55,6 +55,7 @@ UpdateParticlesPixelShaderOutput UpdateIceSpikePixelShader(
 	
 	float4 position_sample = tex2D(PositionSampler, ParticleCoordinate);
 	float4 velocity_sample = tex2D(VelocitySampler, ParticleCoordinate);
+	float4 random_sample = tex2D(RandomSampler, float2(ParticleCoordinate.x*31, ParticleCoordinate.y*57));
 	
 	float current_time_to_death = position_sample.w;
 	float age = IceSpikeParticleLifetime-current_time_to_death;
@@ -69,7 +70,9 @@ UpdateParticlesPixelShaderOutput UpdateIceSpikePixelShader(
 	float3 normalized_to_position = normalize(to_position);
 	float3 normal = cross(normalized_to_position, -IceSpikeDirection);
 	// calculate the force to apply in object space!
-	float3 rotation_force = (normal * IceSpikeRotationSpeed - normalized_to_position * IceSpikeRotationSpeed);
+	float rotation_speed = random_sample.a*IceSpikeRotationSpeed;
+	float centralize_force = IceSpikeRotationSpeed/2 + random_sample.g*IceSpikeRotationSpeed*2.5;
+	float3 rotation_force = (normal * rotation_speed - normalized_to_position * centralize_force);
 	// apply rotation force only for n seconds... and make it weaker towards the end...
 	float rotation_age = min(age,IceSpikeRotationTime);
 	float normalized_rotation_age = rotation_age/IceSpikeRotationTime;
@@ -119,7 +122,7 @@ RenderParticlesVertexShaderOutput RenderIceSpikeVertexShader(
 
 	if (position_sampler_value.w > 0)
 	{
-
+		float4 random_sampler_value = tex2Dlod(RandomSampler, float4(input.ParticleCoordinate.x*31, input.ParticleCoordinate.y*57, 0, 0));
 		float3 position = position_sampler_value.xyz;
 
 		float4 world_position = float4(position,1);
@@ -128,7 +131,7 @@ RenderParticlesVertexShaderOutput RenderIceSpikeVertexShader(
 		float normalizedAge = 1.0 - position_sampler_value.w/IceSpikeParticleLifetime;
 	    
 		output.PositionCopy = output.Position = mul(view_position, Projection);
-		output.Size = 6;
+		output.Size = 3 + 5*random_sampler_value.b;
 		output.Color = float4(1,1,1,1.0-normalizedAge);
 	}
 	else
@@ -154,7 +157,9 @@ float4 RenderIceSpikePixelShader(
 #endif
 ) : COLOR0
 {
-    return input.Color*tex2D(SpriteSampler, particleCoordinate);
+	float4 value = tex2D(SpriteSampler, particleCoordinate);
+	value *= value.a;
+    return input.Color.a*value;
 }
 
 
@@ -165,6 +170,20 @@ technique RenderParticles
 {
     pass Pass1
     {
+        AlphaBlendEnable = true;
+        //SrcBlend = SrcAlpha;
+        //DestBlend = InvSrcAlpha;
+        SrcBlend = One;
+        DestBlend = One;
+        BlendOp = Add;
+        AlphaTestEnable = false;
+        AlphaFunc = Greater;
+        AlphaRef = 0.25;
+        CullMode = None;
+        
+        ZEnable = true;
+        ZWriteEnable = false;        
+    
         VertexShader = compile vs_3_0 RenderIceSpikeVertexShader();
         PixelShader = compile ps_3_0 RenderIceSpikePixelShader();
     }

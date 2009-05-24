@@ -122,7 +122,7 @@ namespace ProjectMagma.Simulation
         {
             try
             {
-                Game.Instance.Profiler.BeginSection("simulation_update");
+                Game.Instance.SimulationThread.Profiler.BeginSection("simulation_update");
                 StartOperation();
 
                 // pause simulation if explicitly paused or app changed
@@ -166,7 +166,7 @@ namespace ProjectMagma.Simulation
                 }
 
                 RendererUpdateQueue returnValue = EndOperation();
-                Game.Instance.Profiler.EndSection("simulation_update");
+                Game.Instance.SimulationThread.Profiler.EndSection("simulation_update");
                 return returnValue;
             }
             finally

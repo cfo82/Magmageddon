@@ -20,6 +20,7 @@ namespace ProjectMagma.Simulation
             //this.contentManager.RootDirectory = "Content";
 
             this.thread = null;
+            this.profiler = new Profiler.Profiler();
         }
 
         public void Reinitialize(
@@ -60,11 +61,13 @@ namespace ProjectMagma.Simulation
 
                     while (!joinRequested)
                     {
+                        profiler.BeginFrame();
                         RendererUpdateQueue q = simulation.Update();
                         renderer.AddUpdateQueue(q);
 
                         Sps = 1000f / simulation.Time.DtMs;
                         AvgSps = 1000f * simulation.Time.Frame / simulation.Time.At;
+                        profiler.EndFrame();
                     }
 
                     finishedEvent.Set();
@@ -110,6 +113,14 @@ namespace ProjectMagma.Simulation
             get { return thread; }
         }
 
+        public Profiler.Profiler Profiler
+        {
+            get
+            {
+                return this.profiler;
+            }
+        }
+
         private Simulation simulation;
         private Renderer.Renderer renderer;
         private AutoResetEvent startEvent;
@@ -118,5 +129,6 @@ namespace ProjectMagma.Simulation
         private static readonly int processor = 1;
         private Thread thread;
         private volatile bool joinRequested;
+        private Profiler.Profiler profiler;
     }
 }

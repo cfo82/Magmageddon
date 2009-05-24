@@ -66,6 +66,19 @@ namespace ProjectMagma.Bugslayer
             }
 
             message = builder.ToString();
+
+            char[] messageArray = message.ToCharArray();
+            for (int i = 0; i < messageArray.Length; ++i)
+            {
+                if ((messageArray[i] < 32 || messageArray[i] > 126) &&
+                    messageArray[i] != '\n' &&
+                    messageArray[i] != '\r' &&
+                    messageArray[i] != '\t')
+                {
+                    messageArray[i] = ' ';
+                }
+            }
+            message = new string(messageArray);
         }
 
         public void Draw(GraphicsDevice graphics)

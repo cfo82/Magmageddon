@@ -325,7 +325,8 @@ namespace ProjectMagma
 
                 MediaPlayer.Stop();
 
-                profiler.Write(device, Window.Title, "profiling.txt");
+                simulationThread.Profiler.Write(device, Window.Title, "profiling_simulation.txt");
+                profiler.Write(device, Window.Title, "profiling_renderer.txt");
 
 #if !XBOX
                 Debug.Assert(simulationThread.Thread.ThreadState == System.Threading.ThreadState.Stopped);

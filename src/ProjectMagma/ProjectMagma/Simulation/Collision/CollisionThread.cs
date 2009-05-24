@@ -187,7 +187,6 @@ namespace ProjectMagma.Simulation.Collision
         private List<Contact> contactsAllocated;
         private double lastFrame;
         private double targetMilliseconds;
-        private static readonly double FpsAdjustmentSteps = 2;
         private static Random random = new Random();
     }
 }

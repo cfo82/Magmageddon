@@ -67,11 +67,11 @@ namespace ProjectMagma.Simulation.Collision
 
         public void Update(SimulationTime simTime)
         {
-            Game.Instance.Profiler.BeginSection("collision_update");
+            Game.Instance.SimulationThread.Profiler.BeginSection("collision_update");
 
             //long t1 = System.DateTime.Now.Ticks;
 
-            Game.Instance.Profiler.BeginSection("collision_detection");
+            Game.Instance.SimulationThread.Profiler.BeginSection("collision_detection");
 
             testList.BeginCollisionDetection();
 
@@ -93,11 +93,11 @@ namespace ProjectMagma.Simulation.Collision
 
             testList.EndCollisionDetection();
 
-            Game.Instance.Profiler.EndSection("collision_detection");
+            Game.Instance.SimulationThread.Profiler.EndSection("collision_detection");
 
             //long t5 = System.DateTime.Now.Ticks;
 
-            Game.Instance.Profiler.BeginSection("collision_response");
+            Game.Instance.SimulationThread.Profiler.BeginSection("collision_response");
 
             foreach (CollisionThread t in threads)
             {
@@ -150,7 +150,7 @@ namespace ProjectMagma.Simulation.Collision
                 }
             }
 
-            Game.Instance.Profiler.EndSection("collision_response");
+            Game.Instance.SimulationThread.Profiler.EndSection("collision_response");
 
             //long t6 = System.DateTime.Now.Ticks;
 
@@ -173,7 +173,7 @@ namespace ProjectMagma.Simulation.Collision
             //System.Console.WriteLine("  dt4: {0:G}", ddt4);
             //System.Console.WriteLine("  dt5: {0:G} {1}", ddt5, ddt5>10.0?"***************************************************":"");
 
-            Game.Instance.Profiler.EndSection("collision_update");
+            Game.Instance.SimulationThread.Profiler.EndSection("collision_update");
         }
 
         public static readonly ContactTest[,] ContactTests = new ContactTest[3, 3] {

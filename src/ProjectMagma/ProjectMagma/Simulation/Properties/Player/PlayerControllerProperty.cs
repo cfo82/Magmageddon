@@ -375,7 +375,7 @@ namespace ProjectMagma.Simulation
                 Vector3 isectPt = Vector3.Zero;
                 if (Simulation.GetPositionOnSurface(ref playerPosition, activeIsland, out isectPt))
                 {
-                    // check movement steps
+                    // check movement no to high
                     if (previousPosition.Y < isectPt.Y
                         && isectPt.Y - previousPosition.Y > 20
                         && activeIsland.GetBool("allow_props_collision"))
@@ -491,6 +491,17 @@ namespace ProjectMagma.Simulation
                     // prohibit movement
                     playerPosition.X = previousPosition.X;
                     playerPosition.Z = previousPosition.Z;
+                }
+                else
+                {
+                    // check movement no to high
+                    if (previousPosition.Y < isectPt.Y
+                        && isectPt.Y - previousPosition.Y > 20
+                        && simpleJumpIsland.GetBool("allow_props_collision"))
+                    {
+                        playerPosition.X = previousPosition.X;
+                        playerPosition.Z = previousPosition.Z;
+                    }
                 }
             }
         }
@@ -1147,7 +1158,7 @@ namespace ProjectMagma.Simulation
         {
             if ((controllerInput.jumpButtonPressed
                 || controllerInput.jumpButtonHold)
-//                && activeIsland == null // only in air
+                && activeIsland == null // only in air
                 && destinationIsland == null // not while jump
                 && simpleJumpIsland == null // dito
                 && flame == null // not in combination with flame
@@ -1520,10 +1531,11 @@ namespace ProjectMagma.Simulation
                 else
                 {
                     // in air --> pushback
-                    Vector3 velocity = -contact[0].Normal * 1000; // todo: extract constant
-                    if (velocity.Y > 0) // hack: never push upwards
-                        velocity.Y = -velocity.Y;
-                    player.SetVector3("collision_pushback_velocity", player.GetVector3("collision_pushback_velocity") + velocity);
+                    Vector3 acc = -contact[0].Normal * 4000; // todo: extract constant
+                    if (acc.Y > 0) // hack: never push upwards
+                        acc.Y = -acc.Y;
+                    player.SetVector3("collision_pushback_velocity", player.GetVector3("collision_pushback_velocity")
+                        + acc * simTime.Dt);
                 }
             }
         }

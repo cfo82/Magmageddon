@@ -240,6 +240,7 @@
     <Compile Include="Simulation\Properties\Environment\PowerUpControllerHealth.cs" />
     <Compile Include="Simulation\Properties\Environment\ExplosionControllerProperty.cs" />
     <Compile Include="Simulation\Properties\Player\BurnableProperty.cs" />
+    <Compile Include="Simulation\Properties\Player\RespawnLightControllerProperty.cs" />
     <Compile Include="Simulation\Properties\Player\DeathProperty.cs" />
     <Compile Include="Simulation\Properties\Player\FlamethrowerControllerProperty.cs" />
     <Compile Include="Simulation\Properties\Player\IceSpikeControllerProperty.cs" />

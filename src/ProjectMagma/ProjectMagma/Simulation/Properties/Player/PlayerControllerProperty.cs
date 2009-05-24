@@ -147,23 +147,23 @@ namespace ProjectMagma.Simulation
 
             PositionOnRandomIsland();
 
-            AddIntroAndRespawnLight(player);
+            AddSpawnLight(player);
 
             this.previousPosition = player.GetVector3("position");
         }
 
-        private void AddIntroAndRespawnLight(AbstractEntity player)
+        private void AddSpawnLight(AbstractEntity player)
         {
-            introLight = new Entity("intro_light_" + player.Name);
+            introLight = new Entity("spawn_light_" + player.Name);
             introLight.AddStringAttribute("player", player.Name);
+            introLight.AddStringAttribute("island", activeIsland.Name);
 
             Vector3 position = player.GetVector3("position");
             Vector3 surfacePos;
             Simulation.GetPositionOnSurface(ref position, activeIsland, out surfacePos);
             introLight.AddVector3Attribute("position", surfacePos);
-            introLight.AddProperty("render", new RespawnLightRenderProperty());
 
-            Game.Instance.Simulation.EntityManager.AddDeferred(introLight, "intro_light_base", templates);
+            Game.Instance.Simulation.EntityManager.AddDeferred(introLight, "spawn_light_base", templates);
         }
 
         public void OnDetached(AbstractEntity player)
@@ -200,7 +200,7 @@ namespace ProjectMagma.Simulation
             if (Game.Instance.Simulation.Phase == SimulationPhase.Intro
                 || doRespawnAnimation)
             {
-                PerformIntroAndRespawnMovement(player, simTime);
+                PerformSpawnMovement(player, simTime);
                 return;
             }
 
@@ -383,7 +383,7 @@ namespace ProjectMagma.Simulation
             }
         }
 
-        private void PerformIntroAndRespawnMovement(Entity player, SimulationTime simTime)
+        private void PerformSpawnMovement(Entity player, SimulationTime simTime)
         {
             if (landedAt > 0)
             {
@@ -1246,7 +1246,7 @@ namespace ProjectMagma.Simulation
                         doRespawnAnimation = true;
 
                         // add light
-                        AddIntroAndRespawnLight(player);
+                        AddSpawnLight(player);
 
                         // alive again
                         return true;

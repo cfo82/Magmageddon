@@ -30,8 +30,10 @@ ColorPair ComputePerPixelLights(float3 E, float3 N, float y)
 	dt = max(0,dot(L,N));
 	float heightCoefficient = saturate(1-abs((y-130)/DirLight1BottomAmpMaxY));
 	//float a = max(0,(DirLight1BottomAmpMaxY-y)/DirLight1BottomAmpMaxY);
-	float multiplier = lerp(DirLight1MinMultiplier, DirLight1MaxMultiplier, heightCoefficient);
+	
+	float multiplier = CutLight1 ? lerp(DirLight1MinMultiplier, DirLight1MaxMultiplier, heightCoefficient) : 1;
     result.Diffuse += DirLight1DiffuseColor * dt * multiplier;
+    //result.Diffuse += float3(1,1,1)* dt * 1;
     if (dt != 0)
 	    result.Specular += DirLight1SpecularColor * pow(max(0,dot(H,N)), SpecularPower);
     

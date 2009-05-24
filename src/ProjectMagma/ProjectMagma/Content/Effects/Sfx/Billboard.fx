@@ -79,8 +79,8 @@ technique Billboards
 
         AlphaBlendEnable = true;
         BlendOp = Add;
-        SrcBlend = SrcAlpha;
-        DestBlend = InvSrcAlpha;
+        SrcBlend = One;
+        DestBlend = One;
 
         AlphaTestEnable = false;
         ZEnable = false;

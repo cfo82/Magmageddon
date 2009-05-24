@@ -16,19 +16,20 @@ namespace ProjectMagma.Simulation
     {
         protected override ModelRenderable CreateRenderable(Entity entity, Vector3 scale, Quaternion rotation, Vector3 position, Model model)
         {
-            return new BasicRenderable(Game.Instance.Simulation.Time.At, scale, rotation, position, model);
+            scale *= 1.5f;
+            return new ArrowRenderable(Game.Instance.Simulation.Time.At, scale, rotation, position, model);
         }
 
         protected override void SetUpdatableParameters(Entity entity)
         {
             base.SetUpdatableParameters(entity);
 
-            Debug.Assert(entity.HasVector3("color1"));
-            Debug.Assert(entity.HasVector3("color2"));
-            ChangeVector3("DiffuseColor", entity.GetVector3("color1")*1.5f);
-            ChangeVector3("SpecularColor", entity.GetVector3("color2")*2.0f);
-            ChangeVector3("EmissiveColor", new Vector3(0.3f, 0.3f, 0.3f));
-            ChangeFloat("SpecularPower", 16.0f);
+            //Debug.Assert(entity.HasVector3("color1"));
+            //Debug.Assert(entity.HasVector3("color2"));
+            ChangeVector3("DiffuseColor", entity.GetVector3("color1"));
+            ChangeVector3("SpecularColor", entity.GetVector3("color2"));
+            ChangeVector3("EmissiveColor", entity.GetVector3("color1"));
+            //ChangeFloat("SpecularPower", 16.0f);
             
             //}
             //if (entity.HasVector2("persistent_squash"))
@@ -42,7 +43,7 @@ namespace ProjectMagma.Simulation
             //arrow.AddFloatAttribute("alpha", 0.6f);
             //arrow.AddFloatAttribute("specular_power", 0.3f);
             //arrow.AddVector2Attribute("persistent_squash", new Vector2(1000, 0.8f));
-            ChangeFloat("Alpha", 0.8f);
+            //ChangeFloat("Alpha", 0.8f);
             PersistentSquash = false;
             JumpPossible = false;
         }

@@ -20,9 +20,9 @@
       <Attribute name="max_energy" template="int" value="100"/>
       <Attribute name="max_fuel" template="int" value="2500"/>
 
-      <Attribute name="arrow_island_min_distance_factor" template="float" value="0.2"/>
-      <Attribute name="arrow_island_max_distance_factor" template="float" value="0.9"/>
-      <Attribute name="arrows_per_second" template="float" value="3"/>
+      <Attribute name="arrow_island_min_distance_factor" template="float" value="0.3"/>
+      <Attribute name="arrow_island_max_distance_factor" template="float" value="0.7"/>
+      <Attribute name="arrows_per_second" template="float" value="2"/>
 
       <Attribute name="lava_damage_per_second" template="int" value="100"/>
       <Attribute name="energy_recharge_per_second" template="int" value="8"/>

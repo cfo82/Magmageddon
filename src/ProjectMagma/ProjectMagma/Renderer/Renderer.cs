@@ -106,8 +106,6 @@ namespace ProjectMagma.Renderer
                         device.DepthStencilBuffer.Format);
 
             vectorCloudTexture = wrappedContent.Load<Texture2D>("Textures/Lava/vectorclouds");
-            LightManager = new LightManager();
-
 
             // set up render targets
             PresentationParameters pp = Device.PresentationParameters;
@@ -148,6 +146,8 @@ namespace ProjectMagma.Renderer
         {
             EntityManager.Clear();
             EntityManager.Load(Game.Instance.ContentManager.Load<LevelData>(levelName));
+
+            LightManager = new LightManager(this);
 
             // recreate the snow system using the new level parameters
             if (snowSystem != null)

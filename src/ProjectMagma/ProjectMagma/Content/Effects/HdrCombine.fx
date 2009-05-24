@@ -155,7 +155,7 @@ inline float GradientY(float2 texCoord)
 	return saturate(yRaw * 2.0 - 0.8);
 }
 
-inline float4 GradientYBlueMap(float4 input, float2 texCoord)
+inline float4 GradientYBlueMap(float4 input, float2 texCoord, float weight)
 {
 	float y = GradientY(texCoord);
 	
@@ -170,7 +170,7 @@ inline float4 GradientYBlueMap(float4 input, float2 texCoord)
 	//input = float4(0,0,0,1);
 	//newColor = float4(1,1,1,1);
 	
-	return lerp(input, newColor, y);
+	return lerp(input, newColor, y*weight);
 }
 
 //float4 orangeFogColor = float4(1,0.3,0,1);
@@ -210,7 +210,7 @@ inline void ApplyFog(inout float4 img, in float2 texCoord)
 	//img = float4(fogIntensity,0,0,1);
 }
 
-const float flickerStrength = 0.0025;
+const float flickerStrength                                                                                                                                                                                                                                                                                                                    = 0.0025;
 inline float2 PerturbTexCoord(in float2 texCoord)
 {
 	float yRaw = tex2D(ToolTextureSampler, texCoord).x;
@@ -253,7 +253,10 @@ PostPixelShaderOutput PostPixelShader(float2 texCoord : TEXCOORD0)
     
     float4 combined = channel1*channel_map.r + channel2*channel_map.g + channel3*channel_map.b;
     ApplyFog(combined, perturbedTexCoord);
-    combined = GradientYBlueMap(combined, perturbedTexCoord);
+    
+    float gradientWeight = saturate(channel_map.r * 0.2 + channel_map.g * 1 + channel_map.b * 1); // players should be less affected
+    
+    combined = GradientYBlueMap(combined, perturbedTexCoord, gradientWeight);
     
     result.depth = tex2D(DepthTextureSampler, texCoord).r;
     

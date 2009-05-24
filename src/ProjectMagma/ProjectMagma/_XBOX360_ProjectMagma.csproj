@@ -136,6 +136,7 @@
     <Compile Include="Renderer\ParticleSystem\Stateful\Size.cs" />
     <Compile Include="Renderer\ParticleSystem\Stateful\StatefulParticleSystem.cs" />
     <Compile Include="Renderer\Renderables\BasicRenderable.cs" />
+    <Compile Include="Renderer\Renderables\ArrowRenderable.cs" />
     <Compile Include="Renderer\Renderables\PowerupRenderable.cs" />
     <Compile Include="Renderer\Renderables\EnvironmentRenderable.cs" />
     <Compile Include="Renderer\Renderables\FireExplosionRenderable.cs" />

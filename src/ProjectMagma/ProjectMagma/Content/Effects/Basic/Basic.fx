@@ -26,6 +26,19 @@ Technique Unicolored
 	}
 }
 
+Technique UnicoloredAlpha
+{
+	Pass
+	{
+		VertexShader = compile vs_3_0 VSBasicPixelLightingNmSq();
+		PixelShader	 = compile ps_3_0 PSBasicPixelLighting();
+		AlphaBlendEnable = true;
+		SrcBlend = SrcAlpha;
+		DestBlend = InvSrcAlpha;
+		ZEnable = true;
+	}
+}
+
 Technique Textured
 {
 	Pass 
@@ -73,7 +86,7 @@ Technique Environment
 		AlphaBlendEnable = false;
 		AlphaTestEnable = true;		
 		AlphaFunc = Greater;
-        AlphaRef = 0.5;
+        AlphaRef = 0.1;
 	}
 }
 
@@ -88,6 +101,7 @@ Technique AnimatedPlayer
 		AlphaTestEnable = false;		
 	}
 }
+
 
 Technique DoublyColoredAnimatedPlayer
 {

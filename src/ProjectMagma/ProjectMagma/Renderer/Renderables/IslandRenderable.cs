@@ -11,8 +11,9 @@ namespace ProjectMagma.Renderer
     public class IslandRenderable : TexturedRenderable
     {
         public IslandRenderable(
-            double timestamp, Vector3 scale, Quaternion rotation, Vector3 position, Model model, Texture2D texture)
-        :   base(timestamp, scale, rotation, position, model, texture, null, null)
+            double timestamp, Vector3 scale, Quaternion rotation, Vector3 position, Model model,
+            Texture2D diffuseTexture, Texture2D specularTexture, Texture2D normalTexture)
+            : base(timestamp, scale, rotation, position, model, diffuseTexture, specularTexture, normalTexture)
         {
             randomOffset = new DoublyIntegratedVector2
             (
@@ -62,6 +63,14 @@ namespace ProjectMagma.Renderer
                 Interactable = value;
             }
         }
+
+        //public override RenderMode RenderMode
+        //{
+        //    get
+        //    {
+        //        return RenderMode.RenderToSceneAlpha;
+        //    }
+        //}
         public float WindStrength { get; set; }
         public bool Interactable { get; set; }
         

@@ -102,7 +102,7 @@
       <Attribute name="specular_texture" template="string" value="Textures/Environment/cave_SPEC_v001"/>
       <Attribute name="env_ground_waves_amplitude" template="float" value="70"/>
       <Attribute name="env_ground_waves_frequency" template="float" value="0.00025"/>
-      <Attribute name="env_ground_waves_hardness" template="float" value="15"/>
+      <Attribute name="env_ground_waves_hardness" template="float" value="150"/>
       <Attribute name="env_ground_waves_velocity" template="float" value="0.0005"/>
     </Attributes>
     <Properties>

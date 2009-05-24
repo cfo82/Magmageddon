@@ -39,6 +39,7 @@ namespace ProjectMagma.Renderer
             effect.Parameters["DirLight1BottomAmpMaxY"].SetValue(renderer.EntityManager["environment"].GetFloat("dir_light_1_bottom_amp_max_y"));
             effect.Parameters["DirLight1MinMultiplier"].SetValue(renderer.EntityManager["environment"].GetFloat("dir_light_1_min_multiplier"));
             effect.Parameters["DirLight1MaxMultiplier"].SetValue(renderer.EntityManager["environment"].GetFloat("dir_light_1_max_multiplier"));
+            effect.Parameters["CutLight1"].SetValue(1.0f);
             //effect.Parameters["DirLight1BottomAmpStrength"].SetValue(3);
         }
 

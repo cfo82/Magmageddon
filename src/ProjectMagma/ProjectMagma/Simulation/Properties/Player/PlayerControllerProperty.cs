@@ -864,7 +864,7 @@ namespace ProjectMagma.Simulation
                         {
                             // correct target vector based on flame positon
                             Vector3 targetPos = targetPlayer.GetVector3("position") + Vector3.UnitY * targetPlayer.GetVector3("scale").Y / 2;
-                            aimVector = targetPlayer.GetVector3("position") - flamePos;
+                            aimVector = targetPos - flamePos;
                             if (aimVector != Vector3.Zero)
                                 aimVector.Normalize();
 
@@ -970,7 +970,8 @@ namespace ProjectMagma.Simulation
         private void PerformFrozenSlowdown(Entity player, SimulationTime simTime, ref Vector3 playerPosition)
         {
             if (player.GetInt("frozen") > 0
-                && activeIsland != null) // only when on island...
+                && activeIsland != null // only when on island...
+                && player.GetVector3("hit_pushback_velocity") != Vector3.Zero) // and not hit
             {
                 Vector3 add = playerPosition - previousPosition;
                 playerPosition = previousPosition + add / constants.GetFloat("frozen_slowdown_divisor");

@@ -26,7 +26,7 @@ namespace ProjectMagma.Simulation
         
         // gamepad buttons
         private static readonly Buttons[] RepulsionButtons = { Buttons.LeftTrigger };
-        private static readonly Buttons[] JetpackButtons = { Buttons.A };
+        private static readonly Buttons[] jumpButtons = { Buttons.A };
         private static readonly Buttons[] IceSpikeButtons = { Buttons.X };
         private static readonly Buttons[] FlamethrowerButtons = { Buttons.Y };
         private static readonly Buttons[] HitButtons = { Buttons.B };
@@ -52,6 +52,7 @@ namespace ProjectMagma.Simulation
 
         private readonly Random rand = new Random(DateTime.Now.Millisecond);
         private bool doRespawnAnimation = false;
+        private bool abortSpawnAnimation = false;
         private double respawnStartedAt = 0;
         private Entity deathExplosion = null;
 
@@ -82,7 +83,7 @@ namespace ProjectMagma.Simulation
         private Vector3 islandRepulsionLastStickDir = Vector3.Zero;
 
         Entity flame = null;
-        Entity introLight;
+        Entity spawnLight;
         Entity arrow;
 
         private SoundEffect jetpackSound;
@@ -147,23 +148,21 @@ namespace ProjectMagma.Simulation
 
             PositionOnRandomIsland();
 
-            AddSpawnLight(player);
-
             this.previousPosition = player.GetVector3("position");
         }
 
         private void AddSpawnLight(AbstractEntity player)
         {
-            introLight = new Entity("spawn_light_" + player.Name);
-            introLight.AddStringAttribute("player", player.Name);
-            introLight.AddStringAttribute("island", activeIsland.Name);
+            spawnLight = new Entity("spawn_light_" + player.Name);
+            spawnLight.AddStringAttribute("player", player.Name);
+            spawnLight.AddStringAttribute("island", activeIsland.Name);
 
             Vector3 position = player.GetVector3("position");
             Vector3 surfacePos;
             Simulation.GetPositionOnSurface(ref position, activeIsland, out surfacePos);
-            introLight.AddVector3Attribute("position", surfacePos);
+            spawnLight.AddVector3Attribute("position", surfacePos);
 
-            Game.Instance.Simulation.EntityManager.AddDeferred(introLight, "spawn_light_base", templates);
+            Game.Instance.Simulation.EntityManager.AddDeferred(spawnLight, "spawn_light_base", templates);
         }
 
         public void OnDetached(AbstractEntity player)
@@ -175,9 +174,9 @@ namespace ProjectMagma.Simulation
                 Game.Instance.Simulation.EntityManager.Remove(arrow);
             }
 
-            if (introLight != null && Game.Instance.Simulation.EntityManager.ContainsEntity(introLight))
+            if (spawnLight != null && Game.Instance.Simulation.EntityManager.ContainsEntity(spawnLight))
             {
-                Game.Instance.Simulation.EntityManager.Remove(introLight);
+                Game.Instance.Simulation.EntityManager.Remove(spawnLight);
             }
 
             if (flame != null && Game.Instance.Simulation.EntityManager.ContainsEntity(flame))
@@ -197,6 +196,39 @@ namespace ProjectMagma.Simulation
 
         private void OnUpdate(Entity player, SimulationTime simTime)
         {
+            PlayerIndex playerIndex = (PlayerIndex)player.GetInt("game_pad_index");
+            if (Game.Instance.Simulation.Phase == SimulationPhase.Intro
+                || doRespawnAnimation)
+            {
+                controllerInput.Update(playerIndex, simTime);
+                if (controllerInput.jumpButtonPressed)
+                {
+                    abortSpawnAnimation = true;
+                }
+            }
+
+            if (Game.Instance.Simulation.Phase == SimulationPhase.Intro)
+            {
+                // wait for preciding player to be ready
+                if ((PlayerIndex)player.GetInt("game_pad_index") != PlayerIndex.One)
+                {
+                    foreach (Entity other in Game.Instance.Simulation.PlayerManager)
+                    {
+                        if (other.GetInt("game_pad_index") < player.GetInt("game_pad_index"))
+                        {
+                            // if preceding player is not ready, w8
+                            if (!other.GetBool("ready"))
+                                return;
+                        }
+                    }
+                }
+
+                if (spawnLight == null && !player.GetBool("ready"))
+                {
+                    AddSpawnLight(player);
+                }
+            }
+
             if (Game.Instance.Simulation.Phase == SimulationPhase.Intro
                 || doRespawnAnimation)
             {
@@ -225,7 +257,6 @@ namespace ProjectMagma.Simulation
             }
             #endregion
 
-            PlayerIndex playerIndex = (PlayerIndex)player.GetInt("game_pad_index");
             Vector3 playerPosition = player.GetVector3("position");
             Vector3 playerVelocity = player.GetVector3("velocity");
             Vector3 collisionPushbackVelocity = player.GetVector3("collision_pushback_velocity");
@@ -352,34 +383,43 @@ namespace ProjectMagma.Simulation
                     if (canFallFromIsland)
                     {
                         LeaveActiveIsland();
+                        // skip check below
+                        return; 
                     }
                     else
-                    {
-                        playerPosition = previousPosition;
-
-                        // check if we are still to close to island border
-                        float islandNonWalkingRangeMultiplier = constants.GetFloat("island_non_walking_range_multiplier")
-                            * activeIsland.GetVector3("scale").X / 100; // normalized to scale of 100
-                        Vector3 islandDir = (activeIsland.GetVector3("position") - playerPosition);
-                        islandDir.Y = 0;
-                        if (islandDir != Vector3.Zero)
+                        // only reset position if not already being pushed inwards
+                        if(inwardsPushVelocity == Vector3.Zero)
                         {
-                            islandDir.Normalize();
-                            Vector3 checkPos = playerPosition;
-                            checkPos.X += islandDir.X * islandNonWalkingRangeMultiplier;
-                            checkPos.Y += islandDir.Y * islandNonWalkingRangeMultiplier;
-
-                            // if checkpoint is outside of island push inwards
-                            if (!Simulation.GetPositionOnSurface(ref checkPos, activeIsland, out isectPt))
-                            {
-                                Vector3 velocity = islandDir;
-                                velocity.X *= constants.GetFloat("x_axis_run_multiplier");
-                                velocity.Z *= constants.GetFloat("z_axis_run_multiplier");
-                                inwardsPushVelocity = velocity;
-                                inwardsPushStartedAt = Game.Instance.Simulation.Time.At;
-                            }
+                            playerPosition = previousPosition;
                         }
+
+                // check if we are to close to island border
+                float islandNonWalkingRangeMultiplier = constants.GetFloat("island_non_walking_range_multiplier")
+                    * activeIsland.GetVector3("scale").X / 100; // normalized to scale of 100
+                Vector3 islandDir = (activeIsland.GetVector3("position") - playerPosition);
+                islandDir.Y = 0;
+                if (islandDir != Vector3.Zero)
+                {
+                    islandDir.Normalize();
+                    Vector3 checkPos = playerPosition;
+                    checkPos.X += islandDir.X * islandNonWalkingRangeMultiplier;
+                    checkPos.Y += islandDir.Y * islandNonWalkingRangeMultiplier;
+
+                    // if checkpoint is outside of island push inwards
+                    if (!Simulation.GetPositionOnSurface(ref checkPos, activeIsland, out isectPt))
+                    {
+                        Vector3 velocity = islandDir;
+                        velocity.X *= constants.GetFloat("x_axis_run_multiplier");
+                        velocity.Z *= constants.GetFloat("z_axis_run_multiplier");
+                        inwardsPushVelocity = velocity;
+                        inwardsPushStartedAt = Game.Instance.Simulation.Time.At;
                     }
+                    else
+                    // abort current inwards movement
+                    {
+                        inwardsPushVelocity = Vector3.Zero;
+                    }
+                }
             }
         }
 
@@ -391,9 +431,10 @@ namespace ProjectMagma.Simulation
                     && (!player.GetBool("ready") || doRespawnAnimation)) 
                 {
                     player.SetBool("ready", true);
-                    Game.Instance.Simulation.EntityManager.RemoveDeferred(introLight);
-                    introLight = null;
+                    Game.Instance.Simulation.EntityManager.RemoveDeferred(spawnLight);
+                    spawnLight = null;
                     doRespawnAnimation = false;
+                    abortSpawnAnimation = true;
                 }
                 return;
             }
@@ -404,7 +445,8 @@ namespace ProjectMagma.Simulation
             Vector3 surfacePos;
             if (Simulation.GetPositionOnSurface(ref position, activeIsland, out surfacePos))
             {
-                if (position.Y < surfacePos.Y)
+                if (position.Y < surfacePos.Y
+                    || abortSpawnAnimation)
                 {
                     position = surfacePos;
 
@@ -443,7 +485,7 @@ namespace ProjectMagma.Simulation
 
         private void PerformIslandJumpAction(ref Vector3 playerPosition, ref Vector3 playerVelocity)
         {
-            if (controllerInput.jetpackButtonPressed
+            if (controllerInput.jumpButtonPressed
                 && !repulsionActive
                 && activeIsland != null
                 && player.GetInt("frozen") <= 0)
@@ -1051,7 +1093,7 @@ namespace ProjectMagma.Simulation
                 {
                     SetActiveIsland(destinationIsland);
 
-                    player.GetProperty<BasicRenderProperty>("render").Squash();
+                    player.GetProperty<RobotRenderProperty>("render").Squash();
                     destinationIsland.GetProperty<IslandRenderProperty>("render").Squash();
 
                     playerPosition = isectPt;
@@ -1088,8 +1130,8 @@ namespace ProjectMagma.Simulation
 
         private void PerformJetpackMovement(SimulationTime simTime, float dt, ref Vector3 playerVelocity)
         {
-            if ((controllerInput.jetpackButtonPressed
-                || controllerInput.jetpackButtonHold)
+            if ((controllerInput.jumpButtonPressed
+                || controllerInput.jumpButtonHold)
                 && activeIsland == null // only in air
                 && destinationIsland == null // not while jump
                 && simpleJumpIsland == null // dito
@@ -2021,7 +2063,7 @@ namespace ProjectMagma.Simulation
                 #region action buttons
 
                 SetStates(RepulsionButtons, JetpackKey, out repulsionButtonPressed, out repulsionButtonHold, out repulsionButtonReleased);
-                SetStates(JetpackButtons, JetpackKey, out jetpackButtonPressed, out jetpackButtonHold, out jetpackButtonReleased);
+                SetStates(jumpButtons, JetpackKey, out jumpButtonPressed, out jumpButtonHold, out jumpButtonReleased);
                 SetStates(IceSpikeButtons, IceSpikeKey, out iceSpikeButtonPressed, out iceSpikeButtonHold, out iceSpikeButtonReleased);
                 SetStates(HitButtons, HitKey, out hitButtonPressed, out hitButtonHold, out hitButtonReleased);
                 SetStates(FlamethrowerButtons, FlamethrowerKey, out flamethrowerButtonPressed, out flamethrowerButtonHold, out flamethrowerButtonReleased);
@@ -2104,9 +2146,9 @@ namespace ProjectMagma.Simulation
                 dPadX = dPadY = 0;
 
                 moveStickMoved = flameStickMoved = dPadPressed = false;
-                runButtonPressed = repulsionButtonPressed = jetpackButtonPressed = flamethrowerButtonPressed = iceSpikeButtonPressed = hitButtonPressed = false;
-                runButtonReleased = repulsionButtonReleased = jetpackButtonReleased = flamethrowerButtonReleased = iceSpikeButtonReleased = hitButtonReleased = false;
-                runButtonHold = repulsionButtonHold = jetpackButtonHold = flamethrowerButtonHold = iceSpikeButtonHold = hitButtonHold = false;
+                runButtonPressed = repulsionButtonPressed = jumpButtonPressed = flamethrowerButtonPressed = iceSpikeButtonPressed = hitButtonPressed = false;
+                runButtonReleased = repulsionButtonReleased = jumpButtonReleased = flamethrowerButtonReleased = iceSpikeButtonReleased = hitButtonReleased = false;
+                runButtonHold = repulsionButtonHold = jumpButtonHold = flamethrowerButtonHold = iceSpikeButtonHold = hitButtonHold = false;
             }
 
            
@@ -2121,11 +2163,11 @@ namespace ProjectMagma.Simulation
             public float dPadX, dPadY;
 
             // buttons
-            public bool runButtonPressed, repulsionButtonPressed, jetpackButtonPressed, flamethrowerButtonPressed, 
+            public bool runButtonPressed, repulsionButtonPressed, jumpButtonPressed, flamethrowerButtonPressed, 
                 iceSpikeButtonPressed, hitButtonPressed;
-            public bool runButtonReleased, repulsionButtonReleased, jetpackButtonReleased, flamethrowerButtonReleased, 
+            public bool runButtonReleased, repulsionButtonReleased, jumpButtonReleased, flamethrowerButtonReleased, 
                 iceSpikeButtonReleased, hitButtonReleased;
-            public bool runButtonHold, repulsionButtonHold, jetpackButtonHold, flamethrowerButtonHold, 
+            public bool runButtonHold, repulsionButtonHold, jumpButtonHold, flamethrowerButtonHold, 
                 iceSpikeButtonHold, hitButtonHold;
 
             // times

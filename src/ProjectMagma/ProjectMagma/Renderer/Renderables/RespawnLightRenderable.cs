@@ -5,6 +5,7 @@ using System.Text;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using ProjectMagma.Renderer.Interface;
+using ProjectMagma.MathHelpers;
 
 namespace ProjectMagma.Renderer.Renderables
 {
@@ -16,6 +17,8 @@ namespace ProjectMagma.Renderer.Renderables
         )
         {
             this.position = new Vector3InterpolationHistory(timestamp, position);
+            this.fadeInOut = new EaseFloat(0, 0.025f);
+            this.fadeInOut.TargetValue = 120;
         }
 
         public override void LoadResources(Renderer renderer)
@@ -31,13 +34,25 @@ namespace ProjectMagma.Renderer.Renderables
 
         public override void Draw(Renderer renderer)
         {
+            fadeInOut.Update(renderer.Time.PausableDtMs);
+
             float alpha = Game.Instance.Renderer.EntityManager["respawn_spot"].GetFloat("alpha");
             Vector3 color = Game.Instance.Renderer.EntityManager["respawn_spot"].GetVector3("color");
 
             Billboard billboard = Game.Instance.Renderer.Billboard;
             billboard.Texture = texture;
-            billboard.Reposition(Position, 120, 1000, new Vector4(color.X, color.Y, color.Z, alpha));
+            billboard.Reposition(Position, fadeInOut.Value, 1000, new Vector4(color.X, color.Y, color.Z, alpha));
             billboard.Draw(Game.Instance.Renderer.Camera.View, Game.Instance.Renderer.Camera.Projection);
+        }
+
+        public override void UpdateBool(string id, double timestamp, bool value)
+        {
+            base.UpdateBool(id, timestamp, value);
+
+            if (id == "Hide")
+            {
+                fadeInOut.TargetValue = 0;
+            }
         }
 
         public override void UpdateVector3(string id, double timestamp, Vector3 value)
@@ -62,5 +77,6 @@ namespace ProjectMagma.Renderer.Renderables
 
         private Vector3InterpolationHistory position;
         private Texture2D texture;
+        private EaseFloat fadeInOut;
     }
 }

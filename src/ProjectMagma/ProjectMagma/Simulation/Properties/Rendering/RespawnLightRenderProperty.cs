@@ -22,6 +22,11 @@ namespace ProjectMagma.Simulation
                 entity.GetVector3Attribute("position").ValueChanged += PositionChanged;
             }
 
+            if (entity.HasBool("hide"))
+            {
+                entity.GetBoolAttribute("hide").ValueChanged += HideChanged;
+            }
+
             Game.Instance.Simulation.CurrentUpdateQueue.AddUpdate(new AddRenderableUpdate((Renderable)Updatable));
         }
 
@@ -32,6 +37,11 @@ namespace ProjectMagma.Simulation
             if (entity.HasVector3("position"))
             {
                 entity.GetVector3Attribute("position").ValueChanged -= PositionChanged;
+            }
+
+            if (entity.HasBool("hide"))
+            {
+                entity.GetBoolAttribute("hide").ValueChanged -= HideChanged;
             }
 
             base.OnDetached(entity);
@@ -61,6 +71,15 @@ namespace ProjectMagma.Simulation
         )
         {
             ChangeVector3("Position", newValue - new Vector3(0, 25, 10));
+        }
+
+        private void HideChanged(
+            BoolAttribute sender,
+            bool oldValue,
+            bool newValue
+        )
+        {
+            ChangeBool("Hide", newValue);
         }
     }
 }

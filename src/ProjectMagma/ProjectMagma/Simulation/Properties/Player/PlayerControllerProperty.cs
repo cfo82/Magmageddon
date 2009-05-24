@@ -440,7 +440,7 @@ namespace ProjectMagma.Simulation
         {
             if (landedAt > 0)
             {
-                if (simTime.At > landedAt + 1000 // extract constant
+                if (simTime.At > landedAt + 2000 // extract constant
                     && (!player.GetBool("ready") || doRespawnAnimation)) 
                 {
                     player.SetBool("ready", true);
@@ -449,6 +449,13 @@ namespace ProjectMagma.Simulation
                     doRespawnAnimation = false;
                     abortSpawnAnimation = true;
                 }
+                else
+                    if (simTime.At > landedAt + 1000
+                        && spawnLight != null
+                        && spawnLight.GetBool("hide") == false) // todo: extract constant
+                    {
+                        spawnLight.SetBool("hide", true);
+                    }
                 return;
             }
 
@@ -465,8 +472,6 @@ namespace ProjectMagma.Simulation
 
                     player.GetProperty<RobotRenderProperty>("render").NextOnceState = "jump_end";
                     activeIsland.GetProperty<IslandRenderProperty>("render").Squash();
-
-                    spawnLight.SetBool("hide", true);
 
                     landedAt = simTime.At;
                 }

@@ -120,7 +120,7 @@ namespace ProjectMagma.Simulation
         private void PositionOnIsland(ref Vector3 position)
         {
             this.powerup.SetVector3("position", position + this.powerup.GetVector3("relative_position")
-                            + powerup.GetFloat("surface_offset") * Vector3.UnitY);
+                * island.GetVector3("scale") + powerup.GetFloat("surface_offset") * Vector3.UnitY);
         }
 
         private void PowerupCollisionHandler(SimulationTime simTime, Contact contact)

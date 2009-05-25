@@ -39,7 +39,7 @@ namespace ProjectMagma
 
         public override void Draw(GameTime gameTime, SpriteBatch spriteBatch)
         {
-            DrawTools.DrawCenteredShadowString(spriteBatch, menu.StaticStringFont, "- A - NEXT PAGE                1 / 2               - B - BACK",
+            DrawTools.DrawCenteredShadowString(spriteBatch, menu.StaticStringFont, string.Format("- A - NEXT PAGE                - {0} -                - B - BACK", PageNumber),
                 new Vector2(640, 620), menu.StaticStringColor, 0.55f);
         }
 
@@ -48,6 +48,11 @@ namespace ProjectMagma
         }
 
         public abstract MenuScreen NextPage
+        {
+            get;
+        }
+
+        public abstract int PageNumber
         {
             get;
         }
@@ -117,6 +122,11 @@ namespace ProjectMagma
         {
             get { return menu.CreditsMenuPage2; }
         }
+
+        public override int PageNumber
+        {
+            get { return 1; }
+        }
     }
 
     class CreditsMenuPage2 : CreditsMenuBase
@@ -147,6 +157,11 @@ namespace ProjectMagma
         public override MenuScreen NextPage
         {
             get { return menu.CreditsMenuPage1; }
+        }
+
+        public override int PageNumber
+        {
+            get { return 2; }
         }
     }
 }

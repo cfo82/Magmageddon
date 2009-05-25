@@ -47,8 +47,10 @@ namespace ProjectMagma.Simulation
         {
             if (island != null)
             {
-                Vector3 playerPos = player.GetVector3("position") + Vector3.UnitY * player.GetVector3("scale").Y / 2;
-                Vector3 aimVector = island.GetVector3("position") - playerPos;
+                // take position centers
+                Vector3 playerPos = player.GetVector3("position") + Vector3.UnitY * player.GetVector3("scale").Y / 2; 
+                Vector3 islandPos = island.GetVector3("position") + Vector3.UnitY * island.GetVector3("scale").Y / 2;
+                Vector3 aimVector = islandPos - playerPos;
                 if (aimVector != Vector3.Zero)
                     aimVector.Normalize();
 
@@ -103,14 +105,11 @@ namespace ProjectMagma.Simulation
 
                 // register new island
                 island = Game.Instance.Simulation.EntityManager[newIsland];
-                positionOffset = PlayerControllerProperty.GetLandingPosition(player, island) - island.GetVector3("position");
 
                 relPos = 0;
             }
         }
 
- 
-        private Vector3 positionOffset;
         private Entity arrow;
         private Entity player;
         private Entity island;

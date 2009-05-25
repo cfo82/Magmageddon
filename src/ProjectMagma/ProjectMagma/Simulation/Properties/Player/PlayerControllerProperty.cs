@@ -138,7 +138,7 @@ namespace ProjectMagma.Simulation
             arrow.AddVector3Attribute("color1", player.GetVector3("color1"));
             arrow.AddVector3Attribute("color2", player.GetVector3("color2"));
 
-            Game.Instance.Simulation.EntityManager.AddDeferred(arrow, "arrow_base", templates);
+            Game.Instance.Simulation.EntityManager.Add(arrow, "arrow_base", templates);
 
             PositionOnRandomIsland();
 

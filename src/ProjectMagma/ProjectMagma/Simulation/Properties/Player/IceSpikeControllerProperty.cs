@@ -192,6 +192,9 @@ namespace ProjectMagma.Simulation
             iceSpike.SetBool("dead", true);
             iceSpike.GetProperty<CollisionProperty>("collision").OnContact -= IceSpikeCollisionHandler;
 
+            // make boom
+            Game.Instance.AudioPlayer.Play(Game.Instance.Simulation.SoundRegistry.IceSpikeExplosionOnEnvironment);
+
             // add explosion
             Entity iceSpikeExplosion = new Entity(iceSpike.Name+"_explosion");
             iceSpikeExplosion.AddStringAttribute("player", iceSpike.GetString("player"));

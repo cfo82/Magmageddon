@@ -12,6 +12,9 @@
 
 
   <Entity name="player_constants" extends="player_constants_base">
+    <Attributes>
+      <Attribute name="island_jump_free_range" template="float" value="150"/>
+    </Attributes>
   </Entity>
 
   <Entity name="island_constants" extends="island_constants_base">

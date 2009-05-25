@@ -86,9 +86,7 @@ namespace ProjectMagma.Simulation
         Entity spawnLight;
         Entity arrow;
 
-        private SoundEffect jetpackSound;
         private SoundEffectInstance jetpackSoundInstance;
-        private SoundEffect flameThrowerSound;
         private SoundEffectInstance flameThrowerSoundInstance;
 
         // values which get reset on each update
@@ -135,9 +133,6 @@ namespace ProjectMagma.Simulation
             Game.Instance.Simulation.EntityManager.EntityRemoved += EntityRemovedHandler;
             player.GetProperty<CollisionProperty>("collision").OnContact += PlayerCollisionHandler;
 
-            jetpackSound = Game.Instance.ContentManager.Load<SoundEffect>("Sounds/jetpack");
-            flameThrowerSound = Game.Instance.ContentManager.Load<SoundEffect>("Sounds/flamethrower");
-
             arrow = new Entity("arrow_" + player.Name);
             arrow.AddStringAttribute("player", player.Name);
 
@@ -163,6 +158,9 @@ namespace ProjectMagma.Simulation
             spawnLight.AddVector3Attribute("position", surfacePos);
 
             Game.Instance.Simulation.EntityManager.AddDeferred(spawnLight, "spawn_light_base", templates);
+
+            // and sound
+            Game.Instance.AudioPlayer.Play(Game.Instance.Simulation.SoundRegistry.Respawn);
         }
 
         public void OnDetached(AbstractEntity player)
@@ -298,10 +296,6 @@ namespace ProjectMagma.Simulation
             // apply current velocity
             playerPosition += playerVelocity * dt;
 
-//            Console.WriteLine();
-//            Console.WriteLine("at: " + (int)gameTime.TotalGameTime.TotalMilliseconds);
-//            Console.WriteLine("velocity: " + playerVelocity + " led to change from " + previousPosition + " to " + playerPosition);
-
             // pushback
             Simulation.ApplyPushback(ref playerPosition, ref collisionPushbackVelocity, 0f /*constants.GetFloat("player_pushback_deacceleration")*/);
             Simulation.ApplyPushback(ref playerPosition, ref inwardsPushVelocity, 0f /*constants.GetFloat("player_pushback_deacceleration")*/);
@@ -359,10 +353,11 @@ namespace ProjectMagma.Simulation
                 PlayerLavaCollisionHandler(simTime, player, lava);
             }
 
-            if(controllerInput.StartHitAnimation)
+            if(controllerInput.hitButtonPressed)
             {
-                controllerInput.StartHitAnimation = false;
                 player.GetProperty<RobotRenderProperty>("render").NextOnceState = "hit";
+                // todo: needs meele NOT hit here
+                Game.Instance.AudioPlayer.Play(Game.Instance.Simulation.SoundRegistry.MeleeHit);
             }
 
             Debug.Assert(!(selectedIsland == null) || !arrow.HasProperty("render"));
@@ -836,7 +831,8 @@ namespace ProjectMagma.Simulation
                     if (player.GetInt("energy") > constants.GetInt("flamethrower_warmup_energy_cost"))
                     {
                         // indicate 
-                        flameThrowerSoundInstance = flameThrowerSound.Play(Game.Instance.EffectsVolume, 1, 0, true);
+                        flameThrowerSoundInstance = Game.Instance.AudioPlayer.Play(
+                            Game.Instance.Simulation.SoundRegistry.FlameThrowerLoop);
 
                         Vector3 pos = playerPosition + constants.GetVector3("flamethrower_offset");
                         Vector3 viewVector = Vector3.Transform(new Vector3(0, 0, 1), GetRotation(player));
@@ -939,8 +935,7 @@ namespace ProjectMagma.Simulation
                 && at > iceSpikeFiredAt + constants.GetInt("ice_spike_cooldown"))
             {
                 // indicate 
-                SoundEffect soundEffect = Game.Instance.ContentManager.Load<SoundEffect>("Sounds/hit2");
-                soundEffect.Play(Game.Instance.EffectsVolume);
+                Game.Instance.AudioPlayer.Play(Game.Instance.Simulation.SoundRegistry.IceSpikeFire);
 
                 Vector3 pos = new Vector3(playerPosition.X, playerPosition.Y + player.GetVector3("scale").Y, playerPosition.Z);
 
@@ -1195,7 +1190,7 @@ namespace ProjectMagma.Simulation
 
                 if (!jetpackActive)
                 {
-                    jetpackSoundInstance = jetpackSound.Play(0.4f * Game.Instance.EffectsVolume, 1, 0, true);
+                    jetpackSoundInstance = Game.Instance.AudioPlayer.Play("Sounds/jetpack");
                     jetpackActive = true;
                 }
 
@@ -1241,9 +1236,9 @@ namespace ProjectMagma.Simulation
                     respawnStartedAt = at;
 
                     if (jetpackSoundInstance != null)
-                        jetpackSoundInstance.Stop();
+                        Game.Instance.AudioPlayer.Stop(jetpackSoundInstance);
                     if (flameThrowerSoundInstance != null)
-                        flameThrowerSoundInstance.Stop();
+                        Game.Instance.AudioPlayer.Stop(flameThrowerSoundInstance);
                     jetpackActive = false;
                     if (destinationIsland != null)
                         StopIslandJump();
@@ -1253,7 +1248,7 @@ namespace ProjectMagma.Simulation
                     if (simpleJumpIsland != null)
                         StopSimpleJump();
 
-                    Game.Instance.ContentManager.Load<SoundEffect>("Sounds/death").Play(Game.Instance.EffectsVolume);
+//                    Game.Instance.ContentManager.Load<SoundEffect>("Sounds/death").Play(Game.Instance.EffectsVolume);
                     player.SetInt("deaths", player.GetInt("deaths") + 1);
                     player.SetInt("lives", player.GetInt("lives") - 1);
 
@@ -1620,8 +1615,7 @@ namespace ProjectMagma.Simulation
                 && player.GetVector3("hit_pushback_velocity") == Vector3.Zero) // and we have not been hit ourselves
             {
                 // indicate hit!
-                SoundEffect soundEffect = Game.Instance.ContentManager.Load<SoundEffect>("Sounds/punch2");
-                soundEffect.Play(Game.Instance.EffectsVolume);
+                Game.Instance.AudioPlayer.Play(Game.Instance.Simulation.SoundRegistry.MeleeHit);
 
                 // deduct health
                 otherPlayer.SetInt("health", otherPlayer.GetInt("health") - constants.GetInt("hit_damage"));
@@ -1738,8 +1732,9 @@ namespace ProjectMagma.Simulation
                 {
                     won = true;
 
-                    if (player.HasProperty("render")
-                        && activeIsland != null)
+                    Game.Instance.AudioPlayer.Play(Game.Instance.Simulation.SoundRegistry.AndTheWinnerIs);
+
+                    if (player.HasProperty("render") && activeIsland != null)
                     {
                         player.GetProperty<RobotRenderProperty>("render").NextPermanentState = "win";
                     }
@@ -2043,8 +2038,6 @@ namespace ProjectMagma.Simulation
             private GamePadState gamePadState;
             private KeyboardState keyboardState;
 
-            public bool StartHitAnimation { set; get; }
-
             public void Update(PlayerIndex playerIndex, SimulationTime simTime)
             {
                 gamePadState = GamePad.GetState(playerIndex);
@@ -2139,7 +2132,6 @@ namespace ProjectMagma.Simulation
                 if (hitButtonPressed)
                 {
                     hitButtonPressedAt = simTime.At;
-                    StartHitAnimation = true;
                 }
 
                 oldGPState = gamePadState;

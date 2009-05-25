@@ -202,6 +202,7 @@ namespace ProjectMagma
 #else
             // initialize simulation
             LoadLevel("Level/Instances/MenuLevel/Simulation", "Level/Instances/MenuLevel/Renderer");
+            //LoadLevel("Level/Instances/StaircaseOfDoom/Simulation", "Level/Instances/StaircaseOfDoom/Renderer");
 #endif
 
             // load menu

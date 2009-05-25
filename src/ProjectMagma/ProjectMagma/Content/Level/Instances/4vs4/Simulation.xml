@@ -114,6 +114,9 @@
       <Attribute name="island_reference" template="string" value="island5"/>
       <Attribute name="relative_position" template="float3" value="-20 10 -5"/>
       <Attribute name="fixed" template="bool" value="true"/>
+
+      <Attribute name="respawn_min_time" template="float" value="12000"/>
+      <Attribute name="respawn_random_time" template="float" value="24000"/>
     </Attributes>
   </Entity>
 

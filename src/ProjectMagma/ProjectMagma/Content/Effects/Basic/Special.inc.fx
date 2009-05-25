@@ -77,7 +77,7 @@ inline void ComputeDiffSpecColorTxTo(
 	ComputeSpecularTx(specular, texCoord, lightResult);	
 	color = diffuse + float4(specular.rgb, 0);
 	color.rgb = lerp(color.rgb, FogColor, fogFactor* FogEnabled);
-	color.rgb = lerp(color.rgb, BlinkingColor, BlinkingState);
+	color.rgb = lerp(color.rgb, ToneColor, BlinkingState);
 }
 
 
@@ -106,5 +106,5 @@ inline void ComputeDiffSpecColorTxToDb(
 	ComputeSpecularTx(specular, texCoord, lightResult);	
 	color = diffuse + float4(specular.rgb, 0);
 	color.rgb = lerp(color.rgb, FogColor, fogFactor* FogEnabled);
-	color.rgb = lerp(color.rgb, BlinkingColor, BlinkingState);
+	color.rgb = lerp(color.rgb, ToneColor, BlinkingState);
 }

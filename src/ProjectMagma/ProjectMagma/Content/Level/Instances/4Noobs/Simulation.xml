@@ -12,7 +12,7 @@
 
   <Entity name="player_constants" extends="player_constants_base">
     <Attributes>
-      <Attribute name="island_jump_free_range" template="float" value=""/>
+      <Attribute name="island_jump_free_range" template="float" value="112"/>
     </Attributes>
   </Entity>
 
@@ -41,14 +41,15 @@
 
    <Entity name="main_island" extends="island_base_grass3">
     <Attributes>
-      <Attribute name="position" template="float3" value="0 150 0"/>
+      <Attribute name="position" template="float3" value="0 150 150"/>
       <Attribute name="scale" template="float3" value="400 400 400"/>
       <Attribute name="sinking_speed" template="float" value="0"/>
 
-      <Attribute name="landing_offset_p1" template="float3" value="-100 150 -100"/>
-      <Attribute name="landing_offset_p2" template="float3" value="-100 150 100"/>
-      <Attribute name="landing_offset_p3" template="float3" value="100 150 -100"/>
-      <Attribute name="landing_offset_p4" template="float3" value="100 150 100"/>
+      <Attribute name="landing_offset" template="float3" value="-150 150 100"/>
+      <Attribute name="landing_offset_p1" template="float3" value="-150 150 -100"/>
+      <Attribute name="landing_offset_p2" template="float3" value="-150 150 100"/>
+      <Attribute name="landing_offset_p3" template="float3" value="150 150 -100"/>
+      <Attribute name="landing_offset_p4" template="float3" value="150 150 100"/>
 
       <Attribute name="allow_props_collision" template="bool" value="true"/>
     </Attributes>
@@ -59,7 +60,7 @@
 
   <Entity name="outer_island1" extends="island_base_ice1">
     <Attributes>
-      <Attribute name="position" template="float3" value="400 250 0"/>
+      <Attribute name="position" template="float3" value="400 250 100"/>
       <Attribute name="scale" template="float3" value="120 120 120"/>
     </Attributes>
     <Properties>
@@ -69,7 +70,7 @@
 
   <Entity name="outer_island2" extends="island_base_ice2">
     <Attributes>
-      <Attribute name="position" template="float3" value="123 250 380"/>
+      <Attribute name="position" template="float3" value="123 250 530"/>
       <Attribute name="scale" template="float3" value="120 120 120"/>
     </Attributes>
     <Properties>
@@ -79,7 +80,7 @@
 
   <Entity name="outer_island3" extends="island_base_ice3">
     <Attributes>
-      <Attribute name="position" template="float3" value="-323 250 235"/>
+      <Attribute name="position" template="float3" value="-323 250 335"/>
       <Attribute name="scale" template="float3" value="120 120 120"/>
     </Attributes>
     <Properties>
@@ -89,7 +90,7 @@
 
   <Entity name="outer_island4" extends="island_base_ice4">
     <Attributes>
-      <Attribute name="position" template="float3" value="-323 250 -235"/>
+      <Attribute name="position" template="float3" value="-323 250 -135"/>
       <Attribute name="scale" template="float3" value="120 120 120"/>
     </Attributes>
     <Properties>
@@ -99,7 +100,7 @@
 
   <Entity name="outer_island5" extends="island_base_ice2">
     <Attributes>
-      <Attribute name="position" template="float3" value="123 250 -380"/>
+      <Attribute name="position" template="float3" value="123 250 -280"/>
       <Attribute name="scale" template="float3" value="120 120 120"/>
     </Attributes>
     <Properties>

@@ -263,6 +263,12 @@ namespace ProjectMagma.Simulation
                 }
                 else 
                 {
+                    if (kind == "island")
+                    {
+                        // play sound
+                        Game.Instance.AudioPlayer.Play(Game.Instance.Simulation.SoundRegistry.IslandHitsIsland);
+                    }
+
                     // other objects
                     Vector3 normal = CalculatePseudoNormalIsland(island, other);
 

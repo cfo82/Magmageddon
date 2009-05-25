@@ -253,6 +253,12 @@ namespace ProjectMagma.Simulation
             }
         }
 
+        public SoundRegistry SoundRegistry
+        {
+            get { return soundRegistry; }
+        }
+
+
         public SimulationTime Time
         {
             get { return simTime; }

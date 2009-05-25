@@ -49,9 +49,6 @@ namespace ProjectMagma.Simulation
             this.island.GetVector3Attribute("position").ValueChanged += OnIslandPositionChanged;
             entity.GetProperty<CollisionProperty>("collision").OnContact += PowerupCollisionHandler;
 
-            // load sound
-            pickupSound = Game.Instance.ContentManager.Load<SoundEffect>("Sounds/" + powerup.GetString("pickup_sound"));
-
             powerup.Update += OnUpdate;
         }
 
@@ -77,7 +74,8 @@ namespace ProjectMagma.Simulation
 
                 island.GetVector3Attribute("position").ValueChanged -= OnIslandPositionChanged;
 
-                respawnAt = (float)(simTime.At + rand.NextDouble() * constants.GetFloat("respawn_random_time") + constants.GetFloat("respawn_min_time"));
+                respawnAt = (float)(simTime.At + rand.NextDouble() *
+                    powerup.GetFloat("respawn_random_time") + powerup.GetFloat("respawn_min_time"));
             }
             else
                 if (powerUsed && simTime.At > respawnAt)
@@ -134,13 +132,13 @@ namespace ProjectMagma.Simulation
                 GivePower(other);
 
                 // notify hud
-                other.GetProperty<HUDProperty>("hud").NotifyPowerupPickup(powerup.GetVector3("position"), NotificationString);
+                if (other.HasProperty("hud"))
+                {
+                    other.GetProperty<HUDProperty>("hud").NotifyPowerupPickup(powerup.GetVector3("position"), NotificationString);
+                }
 
                 // check ranges
                 other.GetProperty<PlayerControllerProperty>("controller").CheckPlayerAttributeRanges(other);
-
-                // soundeffect
-                pickupSound.Play(Game.Instance.EffectsVolume);
 
                 // set to used
                 powerUsed = true;

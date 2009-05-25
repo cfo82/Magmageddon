@@ -126,9 +126,6 @@
 
   <Entity name="powerup_constants_base" extends="constants_base" abstract="true">
     <Attributes>
-      <Attribute name="respawn_min_time" template="float" value="5000"/>
-      <Attribute name="respawn_random_time" template="float" value="10000"/>
-
       <Attribute name="respawn_min_distance_to_others" template="float" value="200"/>
     </Attributes>
   </Entity>

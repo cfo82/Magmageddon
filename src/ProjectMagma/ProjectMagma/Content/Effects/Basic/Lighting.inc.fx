@@ -85,7 +85,7 @@ inline void ComputeDiffColorUni(out float4 color, in ColorPair lightResult, in f
 	float4 uniDiffuseColor = float4(lightResult.Diffuse * DiffuseColor, Alpha);
 	color = uniDiffuseColor + float4(lightResult.Specular, 0);
 	color.rgb = lerp(color.rgb, FogColor, fogFactor* FogEnabled);
-	color.rgb = lerp(color.rgb, BlinkingColor, BlinkingState);
+	color.rgb = lerp(color.rgb, ToneColor, BlinkingState);
 }
 
 inline void ComputeDiffSpecColorTx(out float4 color, in float2 texCoord, in ColorPair lightResult, in float fogFactor)
@@ -95,5 +95,5 @@ inline void ComputeDiffSpecColorTx(out float4 color, in float2 texCoord, in Colo
 	ComputeSpecularTx(specular, texCoord, lightResult);	
 	color = diffuse + float4(specular.rgb, 0);
 	color.rgb = lerp(color.rgb, FogColor, fogFactor* FogEnabled);
-	color.rgb = lerp(color.rgb, BlinkingColor, BlinkingState);
+	color.rgb = lerp(color.rgb, ToneColor, BlinkingState);
 }

@@ -14,6 +14,7 @@ namespace ProjectMagma.Simulation
         protected override void GivePower(Entity player)
         {
             player.SetInt("health", player.GetInt("health") + powerup.GetInt("value"));
+            Game.Instance.AudioPlayer.Play(Game.Instance.Simulation.SoundRegistry.PowerupHealthTaken);
         }
 
 

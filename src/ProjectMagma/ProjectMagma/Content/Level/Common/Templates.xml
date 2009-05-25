@@ -10,23 +10,23 @@
   <Entity name="sound_base" abstract="true">
     <Attributes>
       <Attribute name="background_music" template="string" value=""/>
-      <Attribute name="cave_background_loop" template="string" value=""/>
+      <Attribute name="cave_background_loop" template="string" value="Sounds/ambient/desert_wind"/>
       <Attribute name="lava_background_loop" template="string" value=""/>
-      <Attribute name="melee_hit" template="string" value=""/>
+      <Attribute name="melee_hit" template="string" value="Sounds/melee/hit1"/>
       <Attribute name="flame_thrower_start" template="string" value=""/>
-      <Attribute name="flame_thrower_loop" template="string" value=""/>
+      <Attribute name="flame_thrower_loop" template="string" value="Sounds/weapons/flamethrower"/>
       <Attribute name="flame_thrower_end" template="string" value=""/>
-      <Attribute name="ice_spike_fire" template="string" value=""/>
+      <Attribute name="ice_spike_fire" template="string" value="Sounds/weapons/Flame pass"/>
       <Attribute name="ice_spike_flying" template="string" value=""/>
-      <Attribute name="ice_spike_explosion_on_player" template="string" value=""/>
-      <Attribute name="ice_spike_explosion_on_environment" template="string" value=""/>
+      <Attribute name="ice_spike_explosion_on_player" template="string" value="Sounds/explosions/Explosion with Metal Debris"/>
+      <Attribute name="ice_spike_explosion_on_environment" template="string" value="Sounds/explosions/Explosion with Metal Debris"/>
       <Attribute name="take_damage" template="string" value=""/>
-      <Attribute name="respawn" template="string" value=""/>
-      <Attribute name="powerup_health_taken" template="string" value=""/>
-      <Attribute name="powerup_energy_taken" template="string" value=""/>
-      <Attribute name="powerup_life_taken" template="string" value=""/>
+      <Attribute name="respawn" template="string" value="Sounds/explosions/Delay swoosh"/>
+      <Attribute name="powerup_health_taken" template="string" value="Sounds/explosions/Evil crack 01"/>
+      <Attribute name="powerup_energy_taken" template="string" value="Sounds/explosions/Evil crack 02"/>
+      <Attribute name="powerup_life_taken" template="string" value="Sounds/explosions/Evil crack 03"/>
       <Attribute name="island_hits_island" template="string" value=""/>
-      <Attribute name="and_the_winner_is" template="string" value=""/>
+      <Attribute name="and_the_winner_is" template="string" value="Sounds/excplosions/applause"/>
       <Attribute name="walk" template="string" value=""/>
       <Attribute name="jump_start" template="string" value=""/>
       <Attribute name="jump_end" template="string" value=""/>
@@ -145,6 +145,9 @@
       <Attribute name="emissive_color" template="float3" value="0.0 0.0 0.0"/>
       <Attribute name="alpha" template="float" value="0.95"/>
       <Attribute name="persistent_squash" template="float2" value="1400.0 1.0"/>
+
+      <Attribute name="respawn_min_time" template="float" value="5000"/>
+      <Attribute name="respawn_random_time" template="float" value="10000"/>
     </Attributes>
     <Properties>
       <Property name="collision" type="ProjectMagma.Simulation.Collision.CollisionProperty"/>

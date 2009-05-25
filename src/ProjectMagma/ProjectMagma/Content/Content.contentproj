@@ -212,13 +212,6 @@
     </Compile>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Sounds\flamethrower.wav">
-      <Name>flamethrower</Name>
-      <Importer>WavImporter</Importer>
-      <Processor>SoundEffectProcessor</Processor>
-    </Compile>
-  </ItemGroup>
-  <ItemGroup>
     <Compile Include="Sounds\death.wav">
       <Name>death</Name>
       <Importer>WavImporter</Importer>

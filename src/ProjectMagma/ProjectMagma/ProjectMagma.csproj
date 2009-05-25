@@ -89,6 +89,7 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Audio\AudioPlayer.cs" />
     <Compile Include="Bugslayer\CrashDebugger.cs" />
     <Compile Include="DrawTools.cs" />
     <Compile Include="EntryPoint.cs" />

@@ -83,7 +83,7 @@ technique Billboards
         DestBlend = One;
 
         AlphaTestEnable = false;
-        ZEnable = false;
+        ZEnable = true;
         ZWriteEnable = false;
         CullMode = None;
     }

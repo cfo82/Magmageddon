@@ -107,7 +107,7 @@ Technique IceSpikeEffect
         AlphaTestEnable = true;
         AlphaFunc = Greater;
         AlphaRef = 0.5;
-        ZEnable = false;
+        ZEnable = true;
         ZWriteEnable = false;
         CullMode = None;
 

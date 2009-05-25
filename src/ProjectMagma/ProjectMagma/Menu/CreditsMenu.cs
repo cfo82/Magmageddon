@@ -39,7 +39,7 @@ namespace ProjectMagma
 
         public override void Draw(GameTime gameTime, SpriteBatch spriteBatch)
         {
-            DrawTools.DrawCenteredShadowString(spriteBatch, menu.StaticStringFont, "- A - NEXT PAGE                                         - B - BACK",
+            DrawTools.DrawCenteredShadowString(spriteBatch, menu.StaticStringFont, "- A - NEXT PAGE                1 / 2               - B - BACK",
                 new Vector2(640, 620), menu.StaticStringColor, 0.55f);
         }
 
@@ -70,7 +70,7 @@ namespace ProjectMagma
         {
             base.Draw(gameTime, spriteBatch);
 
-            DrawTools.DrawCenteredShadowString(spriteBatch, menu.StaticStringFont, "CREDITS (PAGE 1)",
+            DrawTools.DrawCenteredShadowString(spriteBatch, menu.StaticStringFont, "CREDITS",
                 new Vector2(620, 132), menu.StaticStringColor, 1.0f);
 
             DrawTools.DrawCenteredShadowString(spriteBatch, menu.StaticStringFont, "JANICK", new Vector2(350, 220), menu.StaticStringColor, 0.65f);
@@ -136,7 +136,7 @@ namespace ProjectMagma
         {
             base.Draw(gameTime, spriteBatch);
 
-            DrawTools.DrawCenteredShadowString(spriteBatch, menu.StaticStringFont, "CREDITS (PAGE 2)",
+            DrawTools.DrawCenteredShadowString(spriteBatch, menu.StaticStringFont, "CREDITS",
                 new Vector2(620, 132), menu.StaticStringColor, 1.0f);
         }
 

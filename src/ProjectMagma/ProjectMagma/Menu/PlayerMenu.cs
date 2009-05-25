@@ -20,9 +20,6 @@ namespace ProjectMagma
         private readonly bool[] playerActive = new bool[] { true, false, false, false };
         private readonly int[] robotSelected = new int[] { 0, 1, 2, 3 };
 
-        private readonly Texture2D[] robotSprites;
-
-        private readonly Texture2D playerBackground;
         private readonly Texture2D playerBackgroundInactive;
 
         private readonly LevelMenu levelMenu;
@@ -36,22 +33,7 @@ namespace ProjectMagma
         {
             this.levelMenu = levelMenu;
 
-            playerBackground = Game.Instance.ContentManager.Load<Texture2D>("Sprites/Menu/robot_selection_background");
             playerBackgroundInactive = Game.Instance.ContentManager.Load<Texture2D>("Sprites/Menu/robot_selection_background_inactive");
-
-            // init robot sprites
-            robotSprites = new Texture2D[Game.Instance.Robots.Count];
-            for (int i = 0; i < Game.Instance.Robots.Count; i++)
-            {
-                try
-                {
-                    robotSprites[i] = Game.Instance.ContentManager.Load<Texture2D>("Sprites/Menu/Robot/" + Game.Instance.Robots[i].Entity);
-                }
-                catch (Exception)
-                {
-                    robotSprites[i] = Game.Instance.ContentManager.Load<Texture2D>("Sprites/Menu/Robot/no_image");
-                }
-            }
 
             DrawPrevious = false;
 
@@ -255,7 +237,6 @@ namespace ProjectMagma
             for (int i = 0; i < 4; i++)
             {
                 bool active = playerActive[i];
-                //Texture2D sprite = active ? playerBackground : playerBackgroundInactive; // not needed anymore - dpk
                 Texture2D sprite = playerBackgroundInactive;
                 float scale = 200f / sprite.Width;
                 Vector2 pos = Position - new Vector2(210,0) + new Vector2((i & 1) * 210, ((i & 2) >> 1) * (sprite.Height * scale + 10));

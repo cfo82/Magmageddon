@@ -80,13 +80,6 @@
     </Compile>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Models\Primitives\powerup.fbx">
-      <Name>powerup</Name>
-      <Importer>FbxImporter</Importer>
-      <Processor>PowerUpProcessor</Processor>
-    </Compile>
-  </ItemGroup>
-  <ItemGroup>
     <Compile Include="Fonts\kootenay9.spritefont">
       <Name>kootenay9</Name>
       <Importer>FontDescriptionImporter</Importer>
@@ -344,11 +337,6 @@
     </Compile>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Sprites\Menu\robot_selection_background.png">
-      <Name>robot_selection_background</Name>
-      <Importer>TextureImporter</Importer>
-      <Processor>TextureProcessor</Processor>
-    </Compile>
     <Compile Include="Sprites\Menu\robot_selection_background_inactive.png">
       <Name>robot_selection_background_inactive</Name>
       <Importer>TextureImporter</Importer>
@@ -407,23 +395,6 @@
     </Compile>
     <Compile Include="Textures\Environment\cave_SPEC_v001.tga">
       <Name>cave_SPEC_v001</Name>
-      <Importer>TextureImporter</Importer>
-      <Processor>TextureProcessor</Processor>
-    </Compile>
-    <Compile Include="Textures\Lava\temperature.tga">
-      <Name>temperature</Name>
-      <Importer>TextureImporter</Importer>
-      <Processor>TextureProcessor</Processor>
-    </Compile>
-  </ItemGroup>
-  <ItemGroup>
-    <Compile Include="Sprites\Menu\Robot\green_animated_robot.png">
-      <Name>green_animated_robot</Name>
-      <Importer>TextureImporter</Importer>
-      <Processor>TextureProcessor</Processor>
-    </Compile>
-    <Compile Include="Sprites\Menu\Robot\yellow_animated_robot.png">
-      <Name>yellow_animated_robot</Name>
       <Importer>TextureImporter</Importer>
       <Processor>TextureProcessor</Processor>
     </Compile>
@@ -581,13 +552,6 @@
     </Compile>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Sprites\Menu\Robot\no_image.png">
-      <Name>no_image</Name>
-      <Importer>TextureImporter</Importer>
-      <Processor>TextureProcessor</Processor>
-    </Compile>
-  </ItemGroup>
-  <ItemGroup>
     <Compile Include="Sprites\Menu\help_screen.png">
       <Name>help_screen</Name>
       <Importer>TextureImporter</Importer>
@@ -683,28 +647,6 @@
     </Compile>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Sprites\Menu\Robot\blue_dwarf.jpg">
-      <Name>blue_dwarf</Name>
-      <Importer>TextureImporter</Importer>
-      <Processor>TextureProcessor</Processor>
-    </Compile>
-    <Compile Include="Sprites\Menu\Robot\green_dwarf.jpg">
-      <Name>green_dwarf</Name>
-      <Importer>TextureImporter</Importer>
-      <Processor>TextureProcessor</Processor>
-    </Compile>
-    <Compile Include="Sprites\Menu\Robot\orange_dwarf.jpg">
-      <Name>orange_dwarf</Name>
-      <Importer>TextureImporter</Importer>
-      <Processor>TextureProcessor</Processor>
-    </Compile>
-    <Compile Include="Sprites\Menu\Robot\purple_dwarf.jpg">
-      <Name>purple_dwarf</Name>
-      <Importer>TextureImporter</Importer>
-      <Processor>TextureProcessor</Processor>
-    </Compile>
-  </ItemGroup>
-  <ItemGroup>
     <None Include="Effects\Global.inc.fx">
       <Name>Global.inc</Name>
       <Importer>EffectImporter</Importer>
@@ -762,13 +704,6 @@
       <Name>menu_releasenotes</Name>
       <Importer>FontDescriptionImporter</Importer>
       <Processor>FontDescriptionProcessor</Processor>
-    </Compile>
-  </ItemGroup>
-  <ItemGroup>
-    <Compile Include="Sprites\Menu\robot_unicolor.png">
-      <Name>robot_unicolor</Name>
-      <Importer>TextureImporter</Importer>
-      <Processor>TextureProcessor</Processor>
     </Compile>
   </ItemGroup>
   <ItemGroup>

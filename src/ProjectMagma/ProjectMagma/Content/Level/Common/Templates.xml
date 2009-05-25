@@ -21,7 +21,7 @@
       <Attribute name="ice_spike_explosion_on_player" template="string" value="Sounds/explosions/Explosion_with_Metal_Debris"/>
       <Attribute name="ice_spike_explosion_on_environment" template="string" value="Sounds/explosions/Explosion_with_Metal_Debris"/>
       <Attribute name="take_damage" template="string" value=""/>
-      <Attribute name="respawn" template="string" value="Sounds/explosions/Delay_swoosh"/>
+      <Attribute name="respawn" template="string" value="Sounds/respawn/xx_Delayed_woosh"/>
       <Attribute name="powerup_health_taken" template="string" value="Sounds/explosions/Evil_crack_01"/>
       <Attribute name="powerup_energy_taken" template="string" value="Sounds/explosions/Evil_crack_02"/>
       <Attribute name="powerup_life_taken" template="string" value="Sounds/explosions/Evil_crack_03"/>

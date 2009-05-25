@@ -129,12 +129,6 @@ namespace ProjectMagma.Renderer
 
             statefulParticleResourceManager = new ProjectMagma.Renderer.ParticleSystem.Stateful.ResourceManager(wrappedContent, device);
 
-            explosionSystem = new LavaExplosion(this, Game.Instance.ContentManager, device);
-            for (int i = 0; i < 50; ++i)
-            {
-                explosionSystem.AddEmitter(new ProjectMagma.Renderer.ParticleSystem.Emitter.LavaExplosionEmitter());
-            }
-
             updateQueues = new List<RendererUpdateQueue>();
 
             billboard = new Billboard(this, new Vector3(0, 200, 0), 250, 250, Vector4.One);
@@ -148,6 +142,18 @@ namespace ProjectMagma.Renderer
             EntityManager.Load(Game.Instance.ContentManager.Load<LevelData>(levelName));
 
             LightManager = new LightManager(this);
+
+            // recreate the lava fires system using the new level parameters
+            if (explosionSystem != null)
+                { explosionSystem.UnloadResources(); }
+            explosionSystem = new LavaExplosion(this, Game.Instance.ContentManager, device,
+                entityManager["lavafire"].GetFloat("size"),
+                entityManager["lavafire"].GetFloat("rgb_multiplier"),
+                entityManager["lavafire"].GetFloat("dot_multiplier"));
+            for (int i = 0; i < 50; ++i)
+            {
+                explosionSystem.AddEmitter(new ProjectMagma.Renderer.ParticleSystem.Emitter.LavaExplosionEmitter());
+            }
 
             // recreate the snow system using the new level parameters
             if (snowSystem != null)

@@ -15,10 +15,16 @@ namespace ProjectMagma.Renderer.ParticleSystem.Stateful.Implementations
         public LavaExplosion(
             Renderer renderer,
             WrappedContentManager wrappedContent,
-            GraphicsDevice device
+            GraphicsDevice device,
+            float explosionSize,
+            float explosionRgbMultiplier,
+            float explosionDotMultiplier
         )
         :   base(renderer, wrappedContent, device)
         {
+            this.explosionSize = explosionSize;
+            this.explosionRgbMultiplier = explosionRgbMultiplier;
+            this.explosionDotMultiplier = explosionDotMultiplier;
         }
 
         private Effect LoadEffect(WrappedContentManager wrappedContent)
@@ -48,12 +54,24 @@ namespace ProjectMagma.Renderer.ParticleSystem.Stateful.Implementations
 
         protected override void SetUpdateParameters(EffectParameterCollection parameters)
         {
+            parameters["ExplosionSize"].SetValue(explosionSize);
+            parameters["ExplosionRgbMultiplier"].SetValue(explosionRgbMultiplier);
+            parameters["ExplosionDotMultiplier"].SetValue(explosionDotMultiplier);
+
             base.SetUpdateParameters(parameters);
         }
 
         protected override void SetRenderingParameters(EffectParameterCollection parameters)
         {
+            parameters["ExplosionSize"].SetValue(explosionSize);
+            parameters["ExplosionRgbMultiplier"].SetValue(explosionRgbMultiplier);
+            parameters["ExplosionDotMultiplier"].SetValue(explosionDotMultiplier);
+
             base.SetRenderingParameters(parameters);
         }
+
+        private float explosionSize;
+        private float explosionRgbMultiplier;
+        private float explosionDotMultiplier;
     }
 }

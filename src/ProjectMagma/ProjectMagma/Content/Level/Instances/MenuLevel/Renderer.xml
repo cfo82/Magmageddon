@@ -9,6 +9,9 @@
   <Entity name="respawn_spot" extends="respawn_spot_base">
   </Entity>
 
+  <Entity name="lavafire" extends="lavafire_base">
+  </Entity>
+
   <Entity name="snow" extends="snow_base">
   </Entity>
 

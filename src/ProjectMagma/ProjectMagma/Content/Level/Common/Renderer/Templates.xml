@@ -7,7 +7,7 @@
       <Attribute name="color" template="float3" value="0.25 0.25 0.33"/>
     </Attributes>
   </Entity>
-  
+
   <Entity name="snow_base" abstract="true">
     <Attributes>
       <Attribute name="particles_per_second" template="float" value="30"/>
@@ -19,7 +19,15 @@
       <Attribute name="melting_end" template="float" value="100"/>
     </Attributes>
   </Entity>
-  
+
+  <Entity name="lavafire_base" abstract="true">
+    <Attributes>
+      <Attribute name="size" template="float" value="40"/>
+      <Attribute name="rgb_multiplier" template="float" value="0.33"/>
+      <Attribute name="dot_multiplier" template="float" value="0.025"/>
+    </Attributes>
+  </Entity>
+
   <Entity name="fog_base" abstract="true">
   	<Attributes>
       <!--Attribute name="fog_z_off" template="float" value="0.37"/-->

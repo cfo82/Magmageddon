@@ -935,9 +935,7 @@ namespace ProjectMagma.Simulation
         {
             // ice spike
             if (controllerInput.iceSpikeButtonPressed && player.GetInt("energy") > constants.GetInt("ice_spike_energy_cost")
-                && at > iceSpikeFiredAt + constants.GetInt("ice_spike_cooldown")
-                || (player.GetInt("game_pad_index") == 1
-                && at > iceSpikeFiredAt + 5000))
+                && at > iceSpikeFiredAt + constants.GetInt("ice_spike_cooldown"))
             {
                 // indicate 
                 SoundEffect soundEffect = Game.Instance.ContentManager.Load<SoundEffect>("Sounds/hit2");

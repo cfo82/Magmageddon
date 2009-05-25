@@ -15,26 +15,21 @@ namespace ProjectMagma
 
         public SoundEffectInstance Play(string sound)
         {
-            EnsureEffectInstanceAvailable();
-            string chosenSound = PickOne(sound);
-            SoundEffect soundEffect = Game.Instance.ContentManager.Load<SoundEffect>(chosenSound);
-            SoundEffectInstance instance = soundEffect.Play();
-            effectInstances.Add(instance);
-            return instance;
+            return Play(sound, 1.0f);
         }
 
         public SoundEffectInstance Play(string sound, float volume)
         {
-            EnsureEffectInstanceAvailable();
-            string chosenSound = PickOne(sound);
-            SoundEffect soundEffect = Game.Instance.ContentManager.Load<SoundEffect>(chosenSound);
-            SoundEffectInstance instance = soundEffect.Play(volume * Game.Instance.EffectsVolume);
-            effectInstances.Add(instance);
-            return instance;
+            return Play(sound, volume, false);
         }
 
         public SoundEffectInstance Play(string sound, float volume, bool loop)
         {
+            if (sound.Trim().Length == 0)
+            {
+                return null;
+            }
+
             EnsureEffectInstanceAvailable();
             string chosenSound = PickOne(sound);
             SoundEffect soundEffect = Game.Instance.ContentManager.Load<SoundEffect>(chosenSound);
@@ -50,12 +45,13 @@ namespace ProjectMagma
 
         public void Stop(SoundEffectInstance instance, bool immediate)
         {
-            effectInstances.Remove(instance);
-            instance.Stop(immediate);
-            if (!instance.IsDisposed)
+            if (instance == null)
             {
-                instance.Dispose();
+                return;
             }
+
+            effectInstances.Remove(instance);
+            DisposeEffect(instance);
         }
 
         private string PickOne(string soundList)
@@ -80,10 +76,7 @@ namespace ProjectMagma
                 foreach (SoundEffectInstance instance in obsoleteInstances)
                 {
                     effectInstances.Remove(instance);
-                    if (!instance.IsDisposed)
-                    {
-                        instance.Dispose();
-                    }
+                    DisposeEffect(instance);
                 }
             }
 
@@ -91,6 +84,23 @@ namespace ProjectMagma
             {
                 throw new Exception("no more sound effect instances are available!");
             }
+        }
+
+        private void DisposeEffect(SoundEffectInstance instance)
+        {
+            try
+            {
+                if (!instance.IsDisposed && instance.State != SoundState.Stopped)
+                {
+                    instance.Stop();
+                }
+                if (!instance.IsDisposed)
+                {
+                    instance.Dispose();
+                }
+            }
+            catch (ObjectDisposedException)
+            { }
         }
 
         private static readonly int collectionThreshold = 50;

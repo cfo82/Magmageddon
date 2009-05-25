@@ -14,8 +14,14 @@ namespace ProjectMagma.Framework
         public AbstractEntityManager()
         {
             this.entities = new Dictionary<string, EntityType>();
-            this.addDeferred = new List<EntityType>();
-            this.removeDeferred = new List<EntityType>();
+            this.currentListBuffer = 0;
+            this.addDeferred = new List<EntityType>[2];
+            this.removeDeferred = new List<EntityType>[2];
+            for (int i = 0; i < 2; ++i)
+            {
+                this.addDeferred[i] = new List<EntityType>();
+                this.removeDeferred[i] = new List<EntityType>();
+            }
         }
 
         public void Load(LevelData levelData)
@@ -121,29 +127,46 @@ namespace ProjectMagma.Framework
 
         public void AddDeferred(EntityType entity)
         {
-            addDeferred.Add(entity);
+            addDeferred[currentListBuffer].Add(entity);
         }
 
         public void RemoveDeferred(EntityType entity)
         {
-            if (!removeDeferred.Contains(entity))
+            if (!removeDeferred[currentListBuffer].Contains(entity))
             {
-                removeDeferred.Add(entity);
+                removeDeferred[currentListBuffer].Add(entity);
             }
         }
 
         public void ExecuteDeferred()
         {
-            foreach (EntityType entity in removeDeferred)
+            int loopCounter = 0;
+            int lastListBuffer = currentListBuffer;
+            currentListBuffer = (currentListBuffer + 1) % 2;
+
+            while (addDeferred[lastListBuffer].Count > 0 || removeDeferred[lastListBuffer].Count > 0)
             {
-                Remove(entity);
+                foreach (EntityType entity in removeDeferred[lastListBuffer])
+                {
+                    Remove(entity);
+                }
+                foreach (EntityType entity in addDeferred[lastListBuffer])
+                {
+                    Add(entity);
+                }
+                addDeferred[lastListBuffer].Clear();
+                removeDeferred[lastListBuffer].Clear();
+
+                // if we are caught inside an infinite loop
+                if (loopCounter > 100)
+                {
+                    throw new Exception("Detected an infinite add/remove loop inside the simulation.");
+                }
+
+                // goto next step
+                lastListBuffer = currentListBuffer;
+                currentListBuffer = (currentListBuffer + 1) % 2;
             }
-            foreach (EntityType entity in addDeferred)
-            {
-                Add(entity);
-            }
-            addDeferred.Clear();
-            removeDeferred.Clear();
         }
 
         public void Clear()
@@ -219,7 +242,8 @@ namespace ProjectMagma.Framework
         public event EntityRemovedHandler<EntityType> EntityRemoved;
 
         Dictionary<string, EntityType> entities;
-        List<EntityType> addDeferred;
-        List<EntityType> removeDeferred;
+        int currentListBuffer;
+        List<EntityType>[] addDeferred;
+        List<EntityType>[] removeDeferred;
     }
 }

@@ -10,7 +10,7 @@ namespace ProjectMagma.Audio
     {
         AudioPlayer()
         {
-            handlesDistributed = new Dictionary<AudioHandle, SoundEffectInstance>();
+            this.effectInstances = new HashSet<SoundEffectInstance>();
         }
 
         public SoundEffectInstance Play(string sound)
@@ -80,7 +80,6 @@ namespace ProjectMagma.Audio
 
         private static readonly int collectionThreshold = 50;
         private static readonly int maxSoundEffectInstances = 200;
-        private Dictionary<AudioHandle, SoundEffectInstance> handlesDistributed;
         private HashSet<SoundEffectInstance> effectInstances;
         private static Random random = new Random();
     }

@@ -146,9 +146,9 @@ namespace ProjectMagma.Simulation
 
         private Vector3 GetRelativePosition(Entity powerup, Entity island)
         {
-            if (island.HasVector3("powerup_position"))
+            if (island.HasVector3(powerup.Name + "_position"))
             {
-                return island.GetVector3("powerup_position");
+                return island.GetVector3(powerup.Name + "_position");
             }
             else
             {

@@ -69,7 +69,6 @@ namespace ProjectMagma.Simulation
 
         private float islandSelectedAt = 0;
         private Entity selectedIsland = null;
-        private bool selectedIslandInFreeJumpRange = false;
         private Vector3 islandSelectionLastStickDir = Vector3.Zero;
         private Entity destinationIsland = null;
         private float destinationOrigDist = 0;
@@ -520,18 +519,13 @@ namespace ProjectMagma.Simulation
         private void PerformIslandJumpAction(ref Vector3 playerPosition, ref Vector3 playerVelocity)
         {
             if (controllerInput.jumpButtonPressed
-                && !repulsionActive
-                && activeIsland != null
-                && player.GetInt("frozen") <= 0)
+                && !repulsionActive // no jumps during repulsion
+                && activeIsland != null // and only when standing on island.. (obviously)
+                && player.GetInt("frozen") <= 0) // and not when frozen
             {
                 // island jump start
-                if (selectedIsland != null
-                    && (player.GetInt("jumps") > 0 // far ranged jumps avail?
-                    || selectedIslandInFreeJumpRange) // or only near jump?
-                )
+                if (selectedIsland != null)
                 {
-                    if (!selectedIslandInFreeJumpRange)
-                        player.SetInt("jumps", player.GetInt("jumps") - 1);
                     StartIslandJump(selectedIsland, ref playerPosition, ref playerVelocity);
                 }
                 else // only jump up
@@ -581,20 +575,16 @@ namespace ProjectMagma.Simulation
 
         private void PerformIslandSelectionAction(float at, ref Vector3 playerPosition)
         {
-            if (activeIsland != null && player.GetInt("frozen") <= 0)
+            if (activeIsland != null) 
             {
-                if (/*controllerInput.rightStickMoved
-                    &&*/
-                         activeIsland != null) // must be standing on island
+                if (player.GetInt("frozen") <= 0) // when we are frozen we cannot jump -> no selection
                 {
-                    //    Vector3 selectionDirection = new Vector3(controllerInput.rightStickX, 0, controllerInput.rightStickY);
-                    //  stickDir.Normalize();
                     Vector3 selectionDirection = Vector3.Transform(new Vector3(0, 0, 1), GetRotation(player));
 
                     // only allow reselection if stick moved slightly
                     bool stickMoved = Vector3.Dot(islandSelectionLastStickDir, selectionDirection) < constants.GetFloat("island_reselection_max_value");
                     if (/*(selectedIsland == null || stickMoved)
-                        && */
+                    && */
                               at > islandSelectedAt + constants.GetFloat("island_reselection_timeout"))
                     {
                         //                        Console.WriteLine("new selection (old: " + ((selectedIsland != null) ? selectedIsland.Name : "") + "): " + lastStickDir + "." + stickDir + " = " +
@@ -616,51 +606,21 @@ namespace ProjectMagma.Simulation
                                 arrow.AddProperty("render", new ArrowRenderProperty());
                                 //arrow.AddProperty("shadow_cast", new ShadowCastProperty());
                             }
-
-                            // reset in range indicator
-                            //selectedIslandInFreeJumpRange = false;
-                            // hacky hack hack
-                            selectedIslandInFreeJumpRange = true;
                         }
                     }
                 }
-                //                else
-                {
-                    // deselect after timeout
 
+                if ((selectedIsland != null
+                && at > islandSelectedAt + constants.GetFloat("island_deselection_timeout")))
+                {
+                    RemoveSelectionArrow();
                 }
             }
             else
             {
+                // immediately remove selection if island not active anymore
                 if (selectedIsland != null)
                     RemoveSelectionArrow();
-            }
-
-            if ((selectedIsland != null
-            && at > islandSelectedAt + constants.GetFloat("island_deselection_timeout")))
-            {
-                RemoveSelectionArrow();
-            }
-       
-            if (selectedIsland != null)
-            {
-                // check range
-                Vector3 xzdist = selectedIsland.GetVector3("position") - playerPosition;
-                xzdist.Y = 0;
-                if (xzdist.Length() < constants.GetFloat("island_jump_free_range")
-                    || player.GetInt("jumps") > 0) // arrow indicates jump 
-                {
-                    //arrow.SetVector2("persistent_squash", new Vector2(100f, 1f));
-//                    (arrow.GetProperty("render") as ArrowRenderProperty).JumpPossible = true;//SquashParams = new Vector2(100f, 1f);
-                    // hack hack hack
-//                    if(xzdist.Length() < constants.GetFloat("island_jump_free_range"))
-                        selectedIslandInFreeJumpRange = true;
-                }
-                else
-                {
-                    //arrow.SetVector2("persistent_squash", new Vector2(1000f, 0.8f));
-                    arrow.GetProperty<ArrowRenderProperty>("render").JumpPossible = false;//SquashParams = new Vector2(1000f, 0.8f);
-                }
             }
         }
 

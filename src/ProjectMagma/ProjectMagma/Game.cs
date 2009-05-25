@@ -77,6 +77,7 @@ namespace ProjectMagma
         private CrashDebugger crashDebugger;
         
         private GlobalClock globalClock;
+        private AudioPlayer audioPlayer;
 
         private Game()
         {
@@ -98,6 +99,7 @@ namespace ProjectMagma
             // needed to show Guide, which is needed for storage, which is needed for saving stuff
             this.Components.Add(new GamerServicesComponent(this));
             this.globalClock = new GlobalClock();
+            this.audioPlayer = new AudioPlayer();
         }
 
         public static Game Instance
@@ -695,6 +697,11 @@ namespace ProjectMagma
         public GlobalClock GlobalClock
         {
         	get { return globalClock; }
+        }
+
+        public AudioPlayer AudioPlayer
+        {
+            get { return audioPlayer; }
         }
     }
 }

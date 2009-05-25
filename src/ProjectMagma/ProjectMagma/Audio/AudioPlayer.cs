@@ -4,11 +4,11 @@ using System.Linq;
 using System.Text;
 using Microsoft.Xna.Framework.Audio;
 
-namespace ProjectMagma.Audio
+namespace ProjectMagma
 {
     public class AudioPlayer
     {
-        AudioPlayer()
+        public AudioPlayer()
         {
             this.effectInstances = new HashSet<SoundEffectInstance>();
         }

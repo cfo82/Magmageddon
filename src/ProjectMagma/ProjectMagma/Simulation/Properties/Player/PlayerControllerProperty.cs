@@ -935,7 +935,9 @@ namespace ProjectMagma.Simulation
         {
             // ice spike
             if (controllerInput.iceSpikeButtonPressed && player.GetInt("energy") > constants.GetInt("ice_spike_energy_cost")
-                && (at - iceSpikeFiredAt) > constants.GetInt("ice_spike_cooldown"))
+                && at > iceSpikeFiredAt + constants.GetInt("ice_spike_cooldown")
+                || (player.GetInt("game_pad_index") == 1
+                && at > iceSpikeFiredAt + 5000))
             {
                 // indicate 
                 SoundEffect soundEffect = Game.Instance.ContentManager.Load<SoundEffect>("Sounds/hit2");
@@ -986,10 +988,10 @@ namespace ProjectMagma.Simulation
                 {
                     movedAt = at;
 
-                    float frozenDivisor = 1.0f;
+                    float frozenMultiplier = 1.0f;
                     if (player.GetInt("frozen") > 0)
                     {
-                        frozenDivisor = constants.GetFloat("frozen_slowdown_divisor");
+                        frozenMultiplier = 1 / constants.GetFloat("frozen_slowdown_divisor");
                     }
 
                     // XZ movement
@@ -999,9 +1001,9 @@ namespace ProjectMagma.Simulation
                         {
                             // in air
                             playerPosition.X += controllerInput.leftStickX * dt * constants.GetFloat("x_axis_jetpack_multiplier")
-                                * frozenDivisor;
+                                * frozenMultiplier;
                             playerPosition.Z += controllerInput.leftStickY * dt * constants.GetFloat("z_axis_jetpack_multiplier")
-                                * frozenDivisor;
+                                * frozenMultiplier;
                         }
                     }
                     else
@@ -1017,18 +1019,18 @@ namespace ProjectMagma.Simulation
                                     constants.GetInt("running_energy_cost_per_second"), player.GetIntAttribute("energy"));
 
                                 playerPosition.X += controllerInput.leftStickX * dt * constants.GetFloat("x_axis_run_multiplier")
-                                    * frozenDivisor;
+                                    * frozenMultiplier;
                                 playerPosition.Z += controllerInput.leftStickY * dt * constants.GetFloat("z_axis_run_multiplier")
-                                    * frozenDivisor;
+                                    * frozenMultiplier;
 
                                 player.GetProperty<RobotRenderProperty>("render").NextPermanentState = "run";
                             }
                             else
                             {
                                 playerPosition.X += controllerInput.leftStickX * dt * constants.GetFloat("x_axis_walk_multiplier")
-                                    * frozenDivisor;
+                                    * frozenMultiplier;
                                 playerPosition.Z += controllerInput.leftStickY * dt * constants.GetFloat("z_axis_walk_multiplier")
-                                    * frozenDivisor;
+                                    * frozenMultiplier;
 
                                 player.GetProperty<RobotRenderProperty>("render").NextPermanentState = "walk";
                             }

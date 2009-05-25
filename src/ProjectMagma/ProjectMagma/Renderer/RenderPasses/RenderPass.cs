@@ -51,19 +51,34 @@ namespace ProjectMagma.Renderer
             Effect effect
         )
         {
+            Effect spriteEffect = Game.Instance.ContentManager.Load<Effect>("Effects/Sm3SpriteBatch");
+
+            Viewport viewport = Renderer.Device.Viewport;
+            Vector2 viewportSize = new Vector2(viewport.Width, viewport.Height);
+            spriteEffect.Parameters["ViewportSize"].SetValue(viewportSize);
+
             spriteBatch.Begin(SpriteBlendMode.None, SpriteSortMode.Immediate, SaveStateMode.None);
+            spriteEffect.Begin();
+            spriteEffect.CurrentTechnique.Passes[0].Begin();
+
             if (effect != null)
             {
                 effect.Begin();
                 effect.CurrentTechnique.Passes[0].Begin();
             }
+            
             spriteBatch.Draw(texture, new Rectangle(0, 0, width, height), Color.White);
+
             spriteBatch.End();
+            
             if (effect != null)
             {
                 effect.CurrentTechnique.Passes[0].End();
                 effect.End();
             }
+
+            spriteEffect.CurrentTechnique.Passes[0].End();
+            spriteEffect.End();
         }
 
         private SpriteBatch spriteBatch;

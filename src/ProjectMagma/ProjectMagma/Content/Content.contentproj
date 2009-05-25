@@ -250,8 +250,8 @@
       <Importer>EffectImporter</Importer>
       <Processor>EffectProcessor</Processor>
     </Compile>
-    <Compile Include="Effects\SpriteBatch.fx">
-      <Name>SpriteBatch</Name>
+    <Compile Include="Effects\Sm3SpriteBatch.fx">
+      <Name>Sm3SpriteBatch</Name>
       <Importer>EffectImporter</Importer>
       <Processor>EffectProcessor</Processor>
     </Compile>

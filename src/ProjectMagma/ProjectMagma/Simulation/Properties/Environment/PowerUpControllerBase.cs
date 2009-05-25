@@ -117,8 +117,7 @@ namespace ProjectMagma.Simulation
 
         private void PositionOnIsland(ref Vector3 position)
         {
-            this.powerup.SetVector3("position", position + this.powerup.GetVector3("relative_position")
-                /** island.GetVector3("scale")*/ + powerup.GetFloat("surface_offset") * Vector3.UnitY);
+            this.powerup.SetVector3("position", position + GetRelativePosition(powerup, island) + powerup.GetFloat("surface_offset") * Vector3.UnitY);
         }
 
         private void PowerupCollisionHandler(SimulationTime simTime, Contact contact)
@@ -142,6 +141,18 @@ namespace ProjectMagma.Simulation
 
                 // set to used
                 powerUsed = true;
+            }
+        }
+
+        private Vector3 GetRelativePosition(Entity powerup, Entity island)
+        {
+            if (island.HasVector3("powerup_position"))
+            {
+                return island.GetVector3("powerup_position");
+            }
+            else
+            {
+                return powerup.GetVector3("relative_position");
             }
         }
 
@@ -201,8 +212,7 @@ namespace ProjectMagma.Simulation
         {
             // get position on surface
             Vector3 islandPos = island.GetVector3("position");
-            Vector3 checkPos = islandPos + powerup.GetVector3("relative_position") 
-                /** island.GetVector3("scale")*/;
+            Vector3 checkPos = islandPos + GetRelativePosition(powerup, island);
             Vector3 surfacePos;
             Simulation.GetPositionOnSurface(ref checkPos, island, out surfacePos);
             powerup.SetFloat("surface_offset", surfacePos.Y - islandPos.Y);

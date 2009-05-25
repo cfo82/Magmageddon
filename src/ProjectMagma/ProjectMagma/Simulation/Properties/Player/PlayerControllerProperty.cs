@@ -810,7 +810,10 @@ namespace ProjectMagma.Simulation
         private void StopRepulsion()
         {
             player.GetProperty<RobotRenderProperty>("render").NextPermanentState = "idle";
-            player.GetProperty<HUDProperty>("hud").RepulsionUsable = false;
+            if (player.HasProperty("hud"))
+            {
+                player.GetProperty<HUDProperty>("hud").RepulsionUsable = false;
+            }
             activeIsland.SetString("repulsed_by", "");
             repulsionActive = false;
             repulsionPossible = false;
@@ -1382,6 +1385,11 @@ namespace ProjectMagma.Simulation
         }
 
         private Vector3 GetLandingPosition(Entity island)
+        {
+            return GetLandingPosition(player, island);
+        }
+
+        public static Vector3 GetLandingPosition(Entity player, Entity island)
         {
             Vector3 pos;
             int gpi = player.GetInt("game_pad_index");
@@ -1969,7 +1977,10 @@ namespace ProjectMagma.Simulation
                 //Console.WriteLine(player.Name+" left island");
                 if (destinationIsland == null && simpleJumpIsland == null)
                 {
-                    player.GetProperty<HUDProperty>("hud").JetpackUsable = true;
+                    if (player.HasProperty("hud"))
+                    {
+                        player.GetProperty<HUDProperty>("hud").JetpackUsable = true;
+                    }
                 }
 
                 activeIsland.GetAttribute<Vector3Attribute>("position").ValueChanged -= IslandPositionHandler;

@@ -98,12 +98,12 @@ namespace ProjectMagma.Simulation
             }
             else
             {
-                // register new island
-                island = Game.Instance.Simulation.EntityManager[newIsland];
-                positionOffset = island.GetVector3("landing_offset");
-
                 // hack hackhack. should be in onAttached, but doesnt work there...
                 this.player = Game.Instance.Simulation.EntityManager[arrow.GetString("player")];
+
+                // register new island
+                island = Game.Instance.Simulation.EntityManager[newIsland];
+                positionOffset = PlayerControllerProperty.GetLandingPosition(player, island) - island.GetVector3("position");
 
                 relPos = 0;
             }

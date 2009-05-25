@@ -51,6 +51,8 @@
       <Attribute name="landing_offset_p3" template="float3" value="150 150 -100"/>
       <Attribute name="landing_offset_p4" template="float3" value="150 150 100"/>
 
+      <Attribute name="powerup_position" template="float3" value="-100 10 100"/>
+
       <Attribute name="allow_props_collision" template="bool" value="true"/>
     </Attributes>
      <Properties>
@@ -112,14 +114,14 @@
   <Entity name="powerup1" extends="powerup_health">
     <Attributes>
       <Attribute name="island_reference" template="string" value="main_island"/>
-      <Attribute name="relative_position" template="float3" value="100 10 100"/>
+      <Attribute name="relative_position" template="float3" value="20 10 20"/>
     </Attributes>
   </Entity>
 
   <Entity name="powerup2" extends="powerup_energy">
     <Attributes>
       <Attribute name="island_reference" template="string" value="main_island"/>
-      <Attribute name="relative_position" template="float3" value="-100 10 -100"/>
+      <Attribute name="relative_position" template="float3" value="-20 10 20"/>
     </Attributes>
   </Entity>
 

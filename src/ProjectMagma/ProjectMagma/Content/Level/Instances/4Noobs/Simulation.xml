@@ -12,7 +12,7 @@
 
   <Entity name="player_constants" extends="player_constants_base">
     <Attributes>
-      <Attribute name="island_jump_free_range" template="float" value="112"/>
+      <Attribute name="island_jump_free_range" template="float" value="600"/>
     </Attributes>
   </Entity>
 
@@ -51,7 +51,8 @@
       <Attribute name="landing_offset_p3" template="float3" value="150 150 -100"/>
       <Attribute name="landing_offset_p4" template="float3" value="150 150 100"/>
 
-      <Attribute name="powerup_position" template="float3" value="-100 10 100"/>
+      <Attribute name="powerup1_position" template="float3" value="-100 10 100"/>
+      <Attribute name="powerup2_position" template="float3" value="100 10 -40"/>
 
       <Attribute name="allow_props_collision" template="bool" value="true"/>
     </Attributes>

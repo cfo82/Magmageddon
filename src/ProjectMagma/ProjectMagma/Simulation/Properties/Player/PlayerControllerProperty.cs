@@ -869,7 +869,8 @@ namespace ProjectMagma.Simulation
                         if (targetPlayer != null)
                         {
                             // correct target vector based on flame positon
-                            Vector3 targetPos = targetPlayer.GetVector3("position") + Vector3.UnitY * targetPlayer.GetVector3("scale").Y / 2;
+                            Vector3 targetPos = targetPlayer.GetVector3("position") 
+                                + Vector3.UnitY * targetPlayer.GetVector3("scale").Length() * 4; // todo: extract constant
                             aimVector = targetPos - flamePos;
                             if (aimVector != Vector3.Zero)
                                 aimVector.Normalize();

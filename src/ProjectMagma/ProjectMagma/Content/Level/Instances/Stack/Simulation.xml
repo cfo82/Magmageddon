@@ -24,7 +24,7 @@
 
   <Entity name="lava" extends="lava_base">
     <Attributes>
-      <Attribute name="firefractal_texture" template="string" value="Textures/Lava/firefractal_orange"/>
+      <Attribute name="firefractal_texture" template="string" value="Textures/Lava/firefractal_pink"/>
     </Attributes>
     <!-- don't mess with the lava, there is nothing to change here. -->
     <!-- if you know what you are doing, do it in the template. -->
@@ -38,60 +38,83 @@
 
   <Entity name="pillar1" extends="pillar_base_001">
     <Attributes>
-      <Attribute name="position" template="float3" value="0 -10 0"/>
+      <Attribute name="position" template="float3" value="0 -30 0"/>
+      <Attribute name="scale" template="float3" value="400 400 400"/>
     </Attributes>
   </Entity>
 
 
-  <Entity name="island1" extends="island_base_grass1">
+  <Entity name="island1" extends="island_base_burnt1">
     <Attributes>
-      <Attribute name="position" template="float3" value="200 80 0"/>
+      <Attribute name="position" template="float3" value="130 20 0"/>
     </Attributes>
   </Entity>
 
-  <Entity name="island2" extends="island_base_grass2">
+  <Entity name="island2" extends="island_base_burnt2">
     <Attributes>
-      <Attribute name="position" template="float3" value="0 120 400"/>
+      <Attribute name="position" template="float3" value="0 50 160"/>
     </Attributes>
   </Entity>
 
-  <Entity name="island3" extends="island_base_grass1">
+  <Entity name="island3" extends="island_base_burnt3">
     <Attributes>
-      <Attribute name="position" template="float3" value="-400 160 0"/>
+      <Attribute name="position" template="float3" value="-190 80 0"/>
     </Attributes>
   </Entity>
 
-  <Entity name="island4" extends="island_base_grass2">
+  <Entity name="island4" extends="island_base_burnt2">
     <Attributes>
-      <Attribute name="position" template="float3" value="0 200 -200"/>
+      <Attribute name="position" template="float3" value="0 110 -215"/>
     </Attributes>
   </Entity>
 
-  <Entity name="island11" extends="island_base_ice1">
+  <Entity name="island11" extends="island_base_grass1">
     <Attributes>
-      <Attribute name="position" template="float3" value="400 240 0"/>
+      <Attribute name="position" template="float3" value="280 160 120"/>
     </Attributes>
   </Entity>
 
-  <Entity name="island12" extends="island_base_ice2">
+  <Entity name="island12" extends="island_base_grass2">
     <Attributes>
-      <Attribute name="position" template="float3" value="0 280 200"/>
+      <Attribute name="position" template="float3" value="-133 190 230"/>
     </Attributes>
   </Entity>
 
-  <Entity name="island13" extends="island_base_ice1">
+  <Entity name="island13" extends="island_base_grass2">
     <Attributes>
-      <Attribute name="position" template="float3" value="-400 320 0"/>
+      <Attribute name="position" template="float3" value="-251 220 -145"/>
     </Attributes>
   </Entity>
 
-  <Entity name="island14" extends="island_base_ice2">
+  <Entity name="island14" extends="island_base_grass4">
     <Attributes>
-      <Attribute name="position" template="float3" value="0 360 -200"/>
+      <Attribute name="position" template="float3" value="157 250 -278"/>
     </Attributes>
   </Entity>
 
+  <Entity name="island21" extends="island_base_ice1">
+    <Attributes>
+      <Attribute name="position" template="float3" value="168 280 290"/>
+    </Attributes>
+  </Entity>
 
+  <Entity name="island22" extends="island_base_ice2">
+    <Attributes>
+      <Attribute name="position" template="float3" value="-168 310 290"/>
+    </Attributes>
+  </Entity>
+
+  <Entity name="island23" extends="island_base_ice3">
+    <Attributes>
+      <Attribute name="position" template="float3" value="-168 340 -290"/>
+    </Attributes>
+  </Entity>
+
+  <Entity name="island24" extends="island_base_ice1">
+    <Attributes>
+      <Attribute name="position" template="float3" value="168 370 -290"/>
+    </Attributes>
+  </Entity>
 
   <Entity name="powerup1" extends="powerup_health">
     <Attributes>

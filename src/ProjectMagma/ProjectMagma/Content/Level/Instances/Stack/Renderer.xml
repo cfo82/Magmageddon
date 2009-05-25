@@ -13,24 +13,63 @@
   </Entity>
 
   <Entity name="snow" extends="snow_base">
+    <Attributes>
+      <Attribute name="particles_per_second" template="float" value="60"/>
+      <Attribute name="particle_lifetime" template="float" value="30"/>
+      <Attribute name="max_alpha" template="float" value="0.9"/>
+      <Attribute name="base_size" template="float" value="5"/>
+      <Attribute name="random_size_modification" template="float" value="8"/>
+      <Attribute name="melting_start" template="float" value="400"/>
+      <Attribute name="melting_end" template="float" value="0"/>
+    </Attributes>
   </Entity>
 
   <Entity name="fog" extends="fog_base">
+    <Attributes>
+      <Attribute name="fog_z_off" template="float" value="0.0005"/>
+      <!-- big value: fog starts at smaller distance -->
+      <Attribute name="fog_z_mul" template="float" value="1500"/>
+      <Attribute name="fog_y_off" template="float" value="1"/>
+      <!-- big value: fog ends at greater height -->
+      <Attribute name="fog_y_mul" template="float" value="0.3"/>
+      <Attribute name="fog_glob_mul" template="float" value="1.3"/>
+      <Attribute name="fog_color" template="float3" value="0.9 0.5 0.1"/>
+    </Attributes>
   </Entity>
 
   <Entity name="lava" extends="lava_base">
   </Entity>
 
   <Entity name="environment" extends="environment_base">
+    <Attributes>
+      <Attribute name="dir_light_1_bottom_amp_max_y" template="float" value="300.0"/>
+      <Attribute name="dir_light_1_min_multiplier" template="float" value="1.0"/>
+      <Attribute name="dir_light_1_max_multiplier" template="float" value="5.0"/>
+    </Attributes>
   </Entity>
 
   <Entity name="lights" extends="lights_base">
   </Entity>
 
   <Entity name="tonemapping" extends="tonemapping_base">
+    <Attributes>
+      <Attribute name="bloom_sensitivity" template="float3" value="0.25 0.0 0.0"/>
+      <Attribute name="bloom_intensity" template="float3" value="0.25 0.7 0.0"/>
+      <Attribute name="base_intensity" template="float3" value="1.57 0.8 1.0"/>
+      <Attribute name="bloom_saturation" template="float3" value="0.25 0.8 1.0"/>
+      <Attribute name="base_saturation" template="float3" value="1.3 1 1"/>
+      <Attribute name="in1" template="float3" value="1 1.4 1"/>
+      <Attribute name="out1" template="float3" value="1 1.7 1"/>
+      <Attribute name="in2" template="float3" value="2 2.7 2"/>
+      <Attribute name="out2" template="float3" value="2 15 2"/>
+    </Attributes>
   </Entity>
 
   <Entity name="topoverlay" extends="topoverlay_base">
+    <Attributes>
+      <Attribute name="strength" template="float" value="0.5"/>
+    </Attributes>
+
   </Entity>
 
 </Level>

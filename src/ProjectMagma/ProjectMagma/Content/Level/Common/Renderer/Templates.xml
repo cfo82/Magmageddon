@@ -30,30 +30,12 @@
 
   <Entity name="fog_base" abstract="true">
   	<Attributes>
-      <!--Attribute name="fog_z_off" template="float" value="0.37"/-->
       <Attribute name="fog_z_off" template="float" value="0.0002"/> <!-- big value: fog starts at smaller distance -->
   		<Attribute name="fog_z_mul" template="float" value="1500"/>
   		<Attribute name="fog_y_off" template="float" value="1"/> <!-- big value: fog ends at greater height -->
   		<Attribute name="fog_y_mul" template="float" value="0.3"/>
   		<Attribute name="fog_glob_mul" template="float" value="1.5"/>
   		<Attribute name="fog_color" template="float3" value="1.0 0.9 0.7"/>
-
-      <!--
-            <Attribute name="fog_z_off" template="float" value="0.0002"/>
-<Attribute name="fog_z_mul" template="float" value="1500"/>
-<Attribute name="fog_y_off" template="float" value="0"/>
-<Attribute name="fog_y_mul" template="float" value="0.7"/>
-<Attribute name="fog_glob_mul" template="float" value="1.1"/>
-<Attribute name="fog_color" template="float3" value="1 0.3 0"/>
-      
-      
-      <Attribute name="fog_z_off" template="float" value="0.2"/>
-      <Attribute name="fog_z_mul" template="float" value="1.0"/>
-      <Attribute name="fog_y_off" template="float" value="0.2"/>
-      <Attribute name="fog_y_mul" template="float" value="0.1"/>
-      <Attribute name="fog_glob_mul" template="float" value="0.7"/>
-      <Attribute name="fog_color" template="float3" value="1 0.3 0"/>
--->      
     </Attributes>
   </Entity>
 
@@ -93,20 +75,6 @@
       <Attribute name="in2" template="float3" value="2 2.7 2"/>
       <Attribute name="out2" template="float3" value="2 10 2"/>
     </Attributes>    
-  </Entity>
-
-  <Entity name="tonemapping2">
-    <Attributes>
-      <Attribute name="bloom_sensitivity" template="float3" value="0.25 0.0 0.0"/>
-      <Attribute name="bloom_intensity" template="float3" value="2.8 0.7 0.0"/>
-      <Attribute name="base_intensity" template="float3" value="0.87 0.8 1.0"/>
-      <Attribute name="bloom_saturation" template="float3" value="2.5 0.8 1.0"/>
-      <Attribute name="base_saturation" template="float3" value="1 1 1"/>
-      <Attribute name="in1" template="float3" value="1 1.4 1"/>
-      <Attribute name="out1" template="float3" value="1 1.1 1"/>
-      <Attribute name="in2" template="float3" value="2 2.7 2"/>
-      <Attribute name="out2" template="float3" value="2 10 2"/>
-    </Attributes>
   </Entity>
 
   <Entity name="topoverlay_base" abstract="true">

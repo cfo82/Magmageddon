@@ -808,6 +808,11 @@
       <Importer>XmlImporter</Importer>
       <Processor>PassThroughProcessor</Processor>
     </None>
+    <Compile Include="Textures\Lava\firefractal_pink.tga">
+      <Name>firefractal_pink</Name>
+      <Importer>TextureImporter</Importer>
+      <Processor>TextureProcessor</Processor>
+    </Compile>
     <Compile Include="Textures\Sfx\respawnspot.tga">
       <Name>respawnspot</Name>
       <Importer>TextureImporter</Importer>

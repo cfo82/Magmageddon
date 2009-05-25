@@ -3,21 +3,21 @@
 <Levels>
 
   <Level>
-    <Name>4 VS 4</Name>
+    <Name>Smoky Pillars</Name>
     <Description>Hardcore Deathmatch</Description>
     <SimulationFileName>Level\Instances\4vs4\Simulation</SimulationFileName>
     <RendererFileName>Level\Instances\4vs4\Renderer</RendererFileName>
   </Level>
 
   <Level>
-    <Name>FOR NOOBS</Name>
+    <Name>The old Tree</Name>
     <Description>A beginner level</Description>
     <SimulationFileName>Level\Instances\4Noobs\Simulation</SimulationFileName>
     <RendererFileName>Level\Instances\4Noobs\Renderer</RendererFileName>
   </Level>
 
   <Level>
-    <Name>Stack</Name>
+    <Name>Heat Vortex</Name>
     <Description>Island stacked</Description>
     <SimulationFileName>Level\Instances\Stack\Simulation</SimulationFileName>
     <RendererFileName>Level\Instances\Stack\Renderer</RendererFileName>

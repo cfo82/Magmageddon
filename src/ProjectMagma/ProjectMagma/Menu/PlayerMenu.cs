@@ -80,13 +80,13 @@ namespace ProjectMagma
                 playerPreview[i] = new RenderTarget2D(Game.Instance.GraphicsDevice, 445, 445, 1, Game.Instance.GraphicsDevice.PresentationParameters.BackBufferFormat);
             }
 
-            playerTexture = Game.Instance.ContentManager.Load<Texture2D>("Textures/Player/dwarf");
+            playerTexture = Game.Instance.ContentManager.Load<Texture2D>("Textures/Player/Robot_texture10");
+            specularTexture = Game.Instance.ContentManager.Load<Texture2D>("Textures/Player/robot_spec");
 
             playerBoxSize = new SineFloat(0.96f, 1.0f, 8.0f);
             playerBoxSize.Start(0.001f);
         }
 
-        Texture2D playerTexture;
         public override void Update(GameTime gameTime)
         {
             double at = gameTime.TotalGameTime.TotalMilliseconds;
@@ -190,6 +190,7 @@ namespace ProjectMagma
                 ////////playerMesh.Effects[0].Parameters["View"].SetValue(Matrix.CreateLookAt(new);
                 playerMesh.Effects[0].Parameters["Projection"].SetValue(Matrix.CreateOrthographic(8.5f, 8.5f, 0.001f, 1000) * Matrix.CreateTranslation(Vector3.UnitX * 0.36f));
                 playerMesh.Effects[0].Parameters["DiffuseTexture"].SetValue(playerTexture);
+                playerMesh.Effects[0].Parameters["SpecularTexture"].SetValue(specularTexture);
                 playerMesh.Effects[0].Parameters["DiffuseColor"].SetValue(Vector3.One * 1.0f);
                 playerMesh.Effects[0].Parameters["SpecularColor"].SetValue(Vector3.One);
                 playerMesh.Effects[0].Parameters["SpecularPower"].SetValue(16f);
@@ -243,6 +244,8 @@ namespace ProjectMagma
         private Model playerModel;
         ModelMesh playerMesh;
         private RenderTarget2D[] playerPreview = new RenderTarget2D[4];
+        Texture2D playerTexture;
+        Texture2D specularTexture;
 
         double last = 0.0f;
 

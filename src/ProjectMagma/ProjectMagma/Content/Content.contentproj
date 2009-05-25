@@ -758,11 +758,6 @@
       <Importer>FbxImporter</Importer>
       <Processor>PowerUpProcessor</Processor>
     </Compile>
-    <Compile Include="Textures\Player\dwarf.tga">
-      <Name>dwarf</Name>
-      <Importer>TextureImporter</Importer>
-      <Processor>TextureProcessor</Processor>
-    </Compile>
     <Compile Include="Fonts\menu_releasenotes.spritefont">
       <Name>menu_releasenotes</Name>
       <Importer>FontDescriptionImporter</Importer>

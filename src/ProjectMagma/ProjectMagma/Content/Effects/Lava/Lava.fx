@@ -2,6 +2,8 @@
 #include "Textures.inc"
 #include "Params.inc"
 #include "Structs.inc"
+#include "..\Basic\Shadow.inc.fx"
+
 
 //------------------------------------------------------------
 //                COMPUTE COLOR MAP (FIRE FRACTAL)
@@ -143,6 +145,9 @@ VS_OUTPUT MultiPlaneVS(float4 inPositionOS  : POSITION,
 	float3 OutPosition = Out.position;
 	Out.pos.w = ComputeFogFactor(length(EyePosition - vPositionWS));
 	
+	float4 pos_ls = mul(vPositionWS, LightViewProjection);
+	Out.PositionLS = pos_ls;
+	
    return Out;
 }
 
@@ -209,6 +214,8 @@ PSOutput MultiPlanePS(PS_INPUT i) : COLOR0
 	
 	// cheat:
 	outp.DepthColor = float4(25/DepthClipY,i.pos.w,0,1);
+	
+	BlendWithShadow(outp.Color, i.pos, i.PositionLS, float3(0,1,0));
 	
 	return outp;	
 	

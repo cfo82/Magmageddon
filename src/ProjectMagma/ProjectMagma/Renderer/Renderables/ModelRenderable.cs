@@ -31,6 +31,7 @@ namespace ProjectMagma.Renderer
             LavaLightStrength = 1.0f;
             SpotLightStrength = 1.0f;
             RenderChannel = RenderChannelType.One;
+            IsShadowCaster = true;
         }
 
         public override void LoadResources(Renderer renderer)
@@ -369,5 +370,7 @@ namespace ProjectMagma.Renderer
         private QuaternionInterpolationHistory rotation;
 
         private Matrix[] boneTransforms;
+
+        public bool IsShadowCaster { get; set; }
     }
 }

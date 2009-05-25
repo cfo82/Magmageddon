@@ -300,6 +300,8 @@ namespace ProjectMagma.Renderer
             playerArrowEffect.Parameters["AmbientLightColor"].SetValue(Vector3.One);
             playerArrowEffect.Parameters["DiffuseColor"].SetValue(color1 * playerArrowColorBlend.Value + color2 * (1 - playerArrowColorBlend.Value));
             playerArrowEffect.Parameters["DiffuseTexture"].SetValue(playerArrowTexture);
+            playerArrowEffect.Parameters["DepthMap"].SetValue(renderer.DepthMap);
+            playerArrowEffect.Parameters["ToolMap"].SetValue(renderer.ToolTexture);
             ApplyRenderChannel(playerArrowEffect, RenderChannelType.Three);
             ApplyEyePosition(renderer, playerArrowEffect);
             renderer.Device.VertexDeclaration = vertexPositionDeclaration;

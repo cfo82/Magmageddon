@@ -3,6 +3,7 @@
 #include "..\Basic\Structs.inc.fx"
 #include "..\Basic\Textures.inc.fx"
 #include "..\Basic\Lighting.inc.fx"
+#include "..\Basic\Shadow.inc.fx"
 #include "..\Basic\Skinning.inc.fx"
 #include "..\Basic\Special.inc.fx"
 #include "..\Basic\Vertex.inc.fx"
@@ -57,7 +58,7 @@ Technique TexturedAlphaNoCullNoDepth
 	Pass 
 	{
 		VertexShader = compile vs_3_0 VSBasicPixelLightingNmTxSq();
-		PixelShader	 = compile ps_3_0 PSBasicPixelLightingTx();
+		PixelShader	 = compile ps_3_0 PSBasicPixelLightingTxIgnoreIslandDepth();
 		CullMode = None;
 		ZEnable = false;
 		AlphaBlendEnable = true;

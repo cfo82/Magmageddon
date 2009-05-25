@@ -8,9 +8,9 @@
       <Attribute name="position" template="float3" value="0 0 0"/>
       <Attribute name="scale" template="float3" value="10 10 10"/>
       <Attribute name="bv_type" template="string" value="alignedbox3tree"/>
-      <Attribute name="specular_color" template="float3" value="0.75 0.75 0.75"/>
-      <Attribute name="specular_power" template="float" value="24"/>
-      <Attribute name="emissive_color" template="float3" value="0.7 0.7 0.7"/>
+      <Attribute name="specular_color" template="float3" value="0.5 0.5 0.5"/>
+      <Attribute name="specular_power" template="float" value="30"/>
+      <Attribute name="emissive_color" template="float3" value="0.25 0.25 0.25"/>
       <Attribute name="alpha" template="float" value="1.0"/>
     </Attributes>
     <Properties>

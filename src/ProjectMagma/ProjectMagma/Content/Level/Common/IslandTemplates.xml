@@ -16,7 +16,7 @@
       <Attribute name="diffuse_texture" template="string" value="Textures/Environment/environ_diffuse"/>
       <!--Attribute name="diffuse_texture" template="string" value="Textures/xna_logo"/-->
       <Attribute name="bv_type" template="string" value="alignedbox3tree"/>
-      <Attribute name="lava_light_strength" template="float" value="1.0"/>
+      <Attribute name="lava_light_strength" template="float" value="2.0"/>
       
       <Attribute name="interactable" template="bool" value="false"/>
       <Attribute name="fixed" template="bool" value="true"/>

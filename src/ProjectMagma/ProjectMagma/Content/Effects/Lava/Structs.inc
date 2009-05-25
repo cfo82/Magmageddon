@@ -9,6 +9,7 @@ struct VS_OUTPUT
     float4 pos : TEXCOORD3;
     float3 vLightTS          : TEXCOORD1;   // light vector in tangent space, denormalized
     float3 vNormalWS         : TEXCOORD4;   // Normal vector in world space    
+    float4 PositionLS		: TEXCOORD5;
 };  
 
 //--------------------------------------------------------------------------------------
@@ -27,6 +28,7 @@ struct PS_INPUT
    float4 pos               : TEXCOORD3;
    float3 vNormalWS         : TEXCOORD4;   // Normal vector in world space
   // float depth              : DEPTH;
+  float4 PositionLS		: TEXCOORD5;
 };
 
 /*struct PSOutput

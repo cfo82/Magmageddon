@@ -798,6 +798,11 @@
       <Importer>FontDescriptionImporter</Importer>
       <Processor>FontDescriptionProcessor</Processor>
     </Compile>
+    <None Include="Effects\Basic\Shadow.inc.fx">
+      <Name>Shadow.inc</Name>
+      <Importer>EffectImporter</Importer>
+      <Processor>EffectProcessor</Processor>
+    </None>
     <None Include="Level\Common\Renderer\Templates.xml">
       <Name>Templates</Name>
       <Importer>XmlImporter</Importer>

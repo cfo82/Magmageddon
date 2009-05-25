@@ -137,8 +137,8 @@ float4 ChannelPixelShader(float2 texCoord : TEXCOORD0, int channel)
     bloom = AdjustSaturation(bloom, BloomSaturation[channel]) * BloomIntensity[channel];
     base = AdjustSaturation(base, BaseSaturation[channel]) * BaseIntensity[channel];
 
-    bloom *= BloomIntensity[channel];
-    base *= BaseIntensity[channel];
+    //bloom *= BloomIntensity[channel];
+    //base *= BaseIntensity[channel];
     
     // Darken down the base image in areas where there is a lot of bloom,
     // to prevent things looking excessively burned-out.
@@ -240,6 +240,7 @@ PostPixelShaderOutput PostPixelShader(float2 texCoord : TEXCOORD0)
 {
 	PostPixelShaderOutput result;
 	
+	
 	//result.depth = tex2D(DepthTextureSampler, texCoord).r;
 	//result.color = float4(tex2D(DepthTextureSampler, texCoord).b,0,0,1);
 	//result.color = float4(tex2D(DepthTextureSampler, texCoord).r,0,0,1);
@@ -280,6 +281,8 @@ PostPixelShaderOutput PostPixelShader(float2 texCoord : TEXCOORD0)
 		//return float4(1,0,0,1);
     //else
 	result.color = combined;
+	
+	//result.color = tex2D(ToolTextureSampler, texCoord).z;
 	return result;
 	
 	    //return channel_map;

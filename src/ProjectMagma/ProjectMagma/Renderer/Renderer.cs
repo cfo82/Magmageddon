@@ -329,7 +329,7 @@ namespace ProjectMagma.Renderer
                 hdrCombinePass.BlurGeometryRender = glowPass.BlurGeometryRender;
                 hdrCombinePass.RenderChannelColor = glowPass.BlurRenderChannelColor;
                 hdrCombinePass.ToolTexture = ToolTexture;
-                hdrCombinePass.DepthTexture = DepthTarget.GetTexture();
+                hdrCombinePass.DepthTexture = DepthMap;
 
                 Game.Instance.Profiler.BeginSection("renderer_post_hdr");
                 hdrCombinePass.Render();
@@ -361,7 +361,8 @@ namespace ProjectMagma.Renderer
             {
                 //Debug.Assert(renderable.RenderMode == RenderMode.RenderToShadowMap);
                 Debug.Assert(renderable is ModelRenderable);
-                (renderable as ModelRenderable).DrawToShadowMap(this);
+                if((renderable as ModelRenderable).IsShadowCaster)
+                    (renderable as ModelRenderable).DrawToShadowMap(this);
             }
 
             // restore stencil buffer
@@ -654,6 +655,8 @@ namespace ProjectMagma.Renderer
         private RenderTarget2D Target2 { get; set; }
         private RenderTarget2D Target3 { get; set; }
         private RenderTarget2D DepthTarget { get; set; }
+
+        public Texture2D DepthMap { get { return DepthTarget.GetTexture(); } }
 
         public Texture2D GeometryRender { get; set; }
         public Texture2D RenderChannels { get; set; }

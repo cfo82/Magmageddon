@@ -9,7 +9,7 @@ float3 BlinkingColor = float3(0.7, 0.0, 0.0);
 
 float EnvGroundWavesAmplitude;
 float EnvGroundWavesFrequency;
-float EnvGroundWavesHardness;
+float EnvGroundWavesHardness=150;
 
 float4x4 MatrixPalette[56];
 
@@ -19,6 +19,11 @@ float3 ToneColor = float3(1,1,1);
 float3 InvToneColor = float3(1,1,1);
 float BlinkingState;
 	
+
+float ShadowOpacity=0.3;
+
+
+
 //-----------------------------------------------------------------------------
 // Fog settings
 //-----------------------------------------------------------------------------

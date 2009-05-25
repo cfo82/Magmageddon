@@ -33,4 +33,5 @@ float4x4 Local;
 float4x4 View;                   // View matrix, not really used here
 float4x4 Projection; // not really used here
 
+float ShadowOpacity = 0.55;
 float TemperatureBrightnessInfluence;

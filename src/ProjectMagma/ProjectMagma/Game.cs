@@ -236,10 +236,8 @@ namespace ProjectMagma
             float aspectRatio = (float)viewport.Width / (float)viewport.Height;
 
             // play that funky musik white boy
-            MediaPlayer.Play(Game.Instance.ContentManager.Load<Song>("Sounds/music"));
+            MediaPlayer.Play(Game.Instance.ContentManager.Load<Song>("Music/background_janick"));
             MediaPlayer.Volume = MusicVolume;
-
-            MediaPlayer.IsMuted = true;
 
             // get storage device
             storageSelectionResult = Guide.BeginShowStorageDeviceSelector(PlayerIndex.One, null, null);

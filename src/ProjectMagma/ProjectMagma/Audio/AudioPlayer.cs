@@ -43,6 +43,21 @@ namespace ProjectMagma
             return instance;
         }
 
+        public void Stop(SoundEffectInstance instance)
+        {
+            Stop(instance, true);
+        }
+
+        public void Stop(SoundEffectInstance instance, bool immediate)
+        {
+            effectInstances.Remove(instance);
+            instance.Stop(immediate);
+            if (!instance.IsDisposed)
+            {
+                instance.Dispose();
+            }
+        }
+
         private string PickOne(string soundList)
         {
             string[] sounds = soundList.Split(' ');

@@ -76,8 +76,9 @@ namespace ProjectMagma
             DrawTools.DrawCenteredShadowString(spriteBatch, menu.StaticStringFont, "JANICK", new Vector2(350, 220), menu.StaticStringColor, 0.65f);
             DrawTools.DrawCenteredShadowString(spriteBatch, menu.StaticStringFont, "BERNET", new Vector2(350, 245), menu.StaticStringColor, 0.65f);
             DrawTools.DrawCenteredShadowString(spriteBatch, menu.StaticStringFontSmall, "GAMEPLAY", new Vector2(350, 275), menu.StaticStringColor, 1.0f);
-            DrawTools.DrawCenteredShadowString(spriteBatch, menu.StaticStringFontSmall, "LEVEL", new Vector2(350, 300), menu.StaticStringColor, 1.0f);
-            DrawTools.DrawCenteredShadowString(spriteBatch, menu.StaticStringFontSmall, "DESIGN", new Vector2(350, 316), menu.StaticStringColor, 1.0f);
+            DrawTools.DrawCenteredShadowString(spriteBatch, menu.StaticStringFontSmall, "PROGRAMMING", new Vector2(350, 291), menu.StaticStringColor, 1.0f);
+            DrawTools.DrawCenteredShadowString(spriteBatch, menu.StaticStringFontSmall, "LEVEL", new Vector2(350, 316), menu.StaticStringColor, 1.0f);
+            DrawTools.DrawCenteredShadowString(spriteBatch, menu.StaticStringFontSmall, "DESIGN", new Vector2(350, 332), menu.StaticStringColor, 1.0f);
 
             DrawTools.DrawCenteredShadowString(spriteBatch, menu.StaticStringFont, "DOMINIK", new Vector2(930, 220), menu.StaticStringColor, 0.7f);
             DrawTools.DrawCenteredShadowString(spriteBatch, menu.StaticStringFont, "KAESER", new Vector2(930, 245), menu.StaticStringColor, 0.7f);
@@ -96,16 +97,16 @@ namespace ProjectMagma
 
             DrawTools.DrawCenteredShadowString(spriteBatch, menu.StaticStringFont, "JOYA", new Vector2(495, 420), menu.StaticStringColor, 0.7f);
             DrawTools.DrawCenteredShadowString(spriteBatch, menu.StaticStringFont, "CLARK", new Vector2(495, 445), menu.StaticStringColor, 0.7f);
-            DrawTools.DrawCenteredShadowString(spriteBatch, menu.StaticStringFontSmall, "3D", new Vector2(495, 470), menu.StaticStringColor, 1.0f);
-            DrawTools.DrawCenteredShadowString(spriteBatch, menu.StaticStringFontSmall, "MODELING", new Vector2(495, 486), menu.StaticStringColor, 1.0f);
-            DrawTools.DrawCenteredShadowString(spriteBatch, menu.StaticStringFontSmall, "TEXTURING", new Vector2(495, 511), menu.StaticStringColor, 1.0f);
+            DrawTools.DrawCenteredShadowString(spriteBatch, menu.StaticStringFontSmall, "3D", new Vector2(495, 480), menu.StaticStringColor, 1.0f);
+            DrawTools.DrawCenteredShadowString(spriteBatch, menu.StaticStringFontSmall, "MODELING", new Vector2(495, 496), menu.StaticStringColor, 1.0f);
+            DrawTools.DrawCenteredShadowString(spriteBatch, menu.StaticStringFontSmall, "TEXTURING", new Vector2(495, 521), menu.StaticStringColor, 1.0f);
 
             DrawTools.DrawCenteredShadowString(spriteBatch, menu.StaticStringFont, "AUSTIN", new Vector2(785, 420), menu.StaticStringColor, 0.7f);
             DrawTools.DrawCenteredShadowString(spriteBatch, menu.StaticStringFont, "RODERIQUE", new Vector2(785, 445), menu.StaticStringColor, 0.7f);
-            DrawTools.DrawCenteredShadowString(spriteBatch, menu.StaticStringFontSmall, "CHARACTER", new Vector2(785, 470), menu.StaticStringColor, 1.0f);
-            DrawTools.DrawCenteredShadowString(spriteBatch, menu.StaticStringFontSmall, "MODELING", new Vector2(785, 486), menu.StaticStringColor, 1.0f);
-            DrawTools.DrawCenteredShadowString(spriteBatch, menu.StaticStringFontSmall, "CHARACTER", new Vector2(785, 511), menu.StaticStringColor, 1.0f);
-            DrawTools.DrawCenteredShadowString(spriteBatch, menu.StaticStringFontSmall, "ANIMATION", new Vector2(785, 527), menu.StaticStringColor, 1.0f);
+            DrawTools.DrawCenteredShadowString(spriteBatch, menu.StaticStringFontSmall, "CHARACTER", new Vector2(785, 480), menu.StaticStringColor, 1.0f);
+            DrawTools.DrawCenteredShadowString(spriteBatch, menu.StaticStringFontSmall, "MODELING", new Vector2(785, 496), menu.StaticStringColor, 1.0f);
+            DrawTools.DrawCenteredShadowString(spriteBatch, menu.StaticStringFontSmall, "CHARACTER", new Vector2(785, 521), menu.StaticStringColor, 1.0f);
+            DrawTools.DrawCenteredShadowString(spriteBatch, menu.StaticStringFontSmall, "ANIMATION", new Vector2(785, 537), menu.StaticStringColor, 1.0f);
         }
 
         public override void OnOpen()

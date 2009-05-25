@@ -179,6 +179,23 @@
       <Attribute name="position" template="float3" value="-210 80 20"/>
     </Attributes>
   </Entity>
-  
+
+
+  <Entity name="powerup1" extends="powerup_health">
+    <Attributes>
+      <Attribute name="island_reference" template="string" value="island_moving1"/>
+      <Attribute name="relative_position" template="float3" value="15 10 15"/>
+      <Attribute name="fixed" template="bool" value="true"/>
+    </Attributes>
+  </Entity>
+
+  <Entity name="powerup2" extends="powerup_energy">
+    <Attributes>
+      <Attribute name="island_reference" template="string" value="island_moving2"/>
+      <Attribute name="relative_position" template="float3" value="-20 10 -5"/>
+      <Attribute name="fixed" template="bool" value="true"/>
+    </Attributes>
+  </Entity>
+
 
 </Level>

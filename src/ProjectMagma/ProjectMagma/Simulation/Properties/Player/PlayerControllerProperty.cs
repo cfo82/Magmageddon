@@ -1223,7 +1223,7 @@ namespace ProjectMagma.Simulation
                     if (simpleJumpIsland != null)
                         StopSimpleJump();
 
-//                    Game.Instance.ContentManager.Load<SoundEffect>("Sounds/death").Play(Game.Instance.EffectsVolume);
+                    Game.Instance.AudioPlayer.Play("Sounds/respawn/power_out");
                     player.SetInt("deaths", player.GetInt("deaths") + 1);
                     player.SetInt("lives", player.GetInt("lives") - 1);
 

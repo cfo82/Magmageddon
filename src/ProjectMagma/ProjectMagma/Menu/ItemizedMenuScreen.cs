@@ -73,6 +73,8 @@ namespace ProjectMagma
 
         public void SelectNext()
         {
+            Game.Instance.AudioPlayer.Play(Menu.ChangeSound, 0.6f);
+
             SelectedItem.Deactivate();
 
             selected++;
@@ -85,6 +87,8 @@ namespace ProjectMagma
 
         public void SelectPrevious()
         {
+            Game.Instance.AudioPlayer.Play(Menu.ChangeSound, 0.6f);
+
             SelectedItem.Deactivate();
 
             selected--;

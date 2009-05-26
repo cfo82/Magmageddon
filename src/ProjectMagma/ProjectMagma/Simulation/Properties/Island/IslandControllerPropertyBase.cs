@@ -275,7 +275,8 @@ namespace ProjectMagma.Simulation
                 }
                 else 
                 {
-                    if (kind == "island" && simTime.At > collisionAt + 250) // don't make to much noise
+                    if (kind == "island" && simTime.At > collisionAt + 250 // don't make to much noise
+                        && state == IslandState.Repulsed) // and only if island influenced by player
                     {
                         // play sound
                         Game.Instance.AudioPlayer.Play(Game.Instance.Simulation.SoundRegistry.IslandHitsIsland);

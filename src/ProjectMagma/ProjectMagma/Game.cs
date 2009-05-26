@@ -224,6 +224,7 @@ namespace ProjectMagma
             Game.Instance.ContentManager.Load<Texture2D>("Textures/Sfx/IceSpikeTrail");
             Game.Instance.ContentManager.Load<Texture2D>("Textures/Sfx/LavaExplosion");
             Game.Instance.ContentManager.Load<Texture2D>("Textures/Sfx/Snow");
+            Game.Instance.ContentManager.Load<Texture2D>("Textures/Sfx/respawnspot");
             Game.Instance.ContentManager.Load<MagmaModel>("Models/Sfx/IceSpike");
 
             // preload sounds

@@ -230,6 +230,9 @@ namespace ProjectMagma
             Game.Instance.ContentManager.Load<SoundEffect>("Sounds/hit2");
             Game.Instance.ContentManager.Load<SoundEffect>("Sounds/sword-clash");
             Game.Instance.ContentManager.Load<SoundEffect>("Sounds/death");
+            Game.Instance.ContentManager.Load<SoundEffect>(Menu.OkSound);
+            Game.Instance.ContentManager.Load<SoundEffect>(Menu.ChangeSound);
+            Game.Instance.ContentManager.Load<SoundEffect>(Menu.BackSound);
 
             Viewport viewport = graphics.GraphicsDevice.Viewport;
 

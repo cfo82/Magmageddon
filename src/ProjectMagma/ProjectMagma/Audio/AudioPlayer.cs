@@ -33,7 +33,7 @@ namespace ProjectMagma
             EnsureEffectInstanceAvailable();
             string chosenSound = PickOne(sound);
             SoundEffect soundEffect = Game.Instance.ContentManager.Load<SoundEffect>(chosenSound);
-            SoundEffectInstance instance = soundEffect.Play(volume * Game.Instance.EffectsVolume, 1, 0, loop);
+            SoundEffectInstance instance = soundEffect.Play(volume * Game.Instance.EffectsVolume, 0, 0, loop);
             effectInstances.Add(instance);
             return instance;
         }

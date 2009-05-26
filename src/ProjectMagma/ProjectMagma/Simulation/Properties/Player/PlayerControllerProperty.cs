@@ -169,6 +169,8 @@ namespace ProjectMagma.Simulation
 
         public void OnDetached(AbstractEntity player)
         {
+            GamePad.SetVibration(playerIndex, 0, 0);
+
             (player as Entity).Update -= OnUpdate;
 
             if (arrow != null && Game.Instance.Simulation.EntityManager.ContainsEntity(arrow))

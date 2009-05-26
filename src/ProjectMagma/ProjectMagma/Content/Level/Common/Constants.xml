@@ -100,6 +100,7 @@
     <Attributes>
       <!-- all islands -->
       <Attribute name="movement_acceleration" template="float" value="600"/>
+      <Attribute name="repositioning_threshold" template="float" value="60"/>
 
       <Attribute name="rising_delay" template="int" value="800"/>
       <Attribute name="repositioning_acceleraton" template="float" value="800" />

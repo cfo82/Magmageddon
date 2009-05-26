@@ -128,16 +128,22 @@ namespace ProjectMagma.Simulation
             if (HadCollision(simTime))
             {
                 Vector3 pushbackVelocity = island.GetVector3("pushback_velocity");
-                if (pushbackVelocity.Length() > 800) // todo: extract constant
+                if (pushbackVelocity.Length() > 400) // todo: extract constant
                 {
                     pushbackVelocity.Normalize();
-                    pushbackVelocity *= 800;
+                    pushbackVelocity *= 400;
                     island.SetVector3("pushback_velocity", pushbackVelocity);
                 }
-                position += pushbackVelocity * dt;
+                Simulation.ApplyPushback(ref position, ref pushbackVelocity, 1000f, CheckDistance);
             }
             else
-                island.SetVector3("pushback_velocity", Vector3.Zero);
+            {
+                if (island.GetVector3("pushback_velocity") != Vector3.Zero)
+                {
+                    island.SetVector3("pushback_velocity", Vector3.Zero);
+                    CheckDistance();
+                }
+            }
            
             // perform repositioning
             if (state == IslandState.Repositioning)
@@ -205,11 +211,7 @@ namespace ProjectMagma.Simulation
                 {
                     position = newPosition;
 
-                    // only update velocity if no collision
-                    if (!HadCollision(simTime))
-                    {
-                        island.SetVector3("repositioning_velocity", velocity);
-                    }
+                    island.SetVector3("repositioning_velocity", velocity);
                 }
             }
             else
@@ -219,7 +221,7 @@ namespace ProjectMagma.Simulation
                 if (!HadCollision(simTime))
                 {
                     // normal movement
-                    if (state != IslandState.Influenced)
+                    if (state != IslandState.Repulsed)
                     {
                         // calculate acceleration direction in subclass
                         Vector3 dir = CalculateAccelerationDirection(island, ref position, ref velocity, constants.GetFloat("movement_acceleration"), dt);
@@ -231,8 +233,6 @@ namespace ProjectMagma.Simulation
                             velocity *= island.GetFloat("movement_speed");
                         }
 
-//                        Console.WriteLine("velocity: " + velocity);
-
                         island.SetVector3("velocity", velocity);
                     }
                 }
@@ -242,6 +242,18 @@ namespace ProjectMagma.Simulation
             island.SetVector3("position", position);
 
             lastState = state;
+        }
+
+        // checks if distance to point on path is to far away so we need repositioning
+        private void CheckDistance()
+        {
+            Vector3 pos = island.GetVector3("position");
+            Vector3 ppos = GetNearestPointOnPath(ref pos);
+            if ((pos - ppos).Length() > constants.GetFloat("repositioning_threshold")
+                && state == IslandState.Normal)
+            {
+                state = IslandState.Repositioning;
+            }
         }
 
         private void CollisionHandler(SimulationTime simTime, Contact contact)
@@ -335,7 +347,7 @@ namespace ProjectMagma.Simulation
         {
             Vector3 normal;
             String kind = entityB.GetString("kind");
-            if (kind == "pillar")
+            if (kind == "pillar" || kind == "player")
             {
                 normal = entityB.GetVector3("position")-entityA.GetVector3("position");
                 normal.Y = 0;
@@ -344,8 +356,8 @@ namespace ProjectMagma.Simulation
             if (kind == "cave")
             {
                 normal = entityA.GetVector3("position");
-                normal.Y = 0;
-            }       
+                normal.Y /= 2;
+            }
             else
             {
                 normal = entityB.GetVector3("position")-entityA.GetVector3("position");
@@ -393,7 +405,7 @@ namespace ProjectMagma.Simulation
         {
             // reset normal movement
             island.SetVector3("velocity", Vector3.Zero);
-            state = IslandState.Influenced;
+            state = IslandState.Repulsed;
         }
 
         private readonly PushBackFinishedHandler OnRepulsionEndAction;
@@ -428,7 +440,7 @@ namespace ProjectMagma.Simulation
 
         protected enum IslandState
         {
-            Influenced,             // island's track is influensed by the outside, normal movement is prohibited
+            Repulsed,             // island's track is influensed by the outside, normal movement is prohibited
             Repositioning,          // island is hovering back to original position
             Normal                  // normal movement
         }

@@ -25,11 +25,11 @@
       <Attribute name="powerup_health_taken" template="string" value="Sounds/powerup/Evil_crack_01"/>
       <Attribute name="powerup_energy_taken" template="string" value="Sounds/powerup/Evil_crack_02"/>
       <Attribute name="powerup_life_taken" template="string" value="Sounds/powerup/Evil_crack_03"/>
-      <Attribute name="island_hits_island" template="string" value=""/>
-      <Attribute name="and_the_winner_is" template="string" value="Sounds/excplosions/applause"/>
-      <Attribute name="walk" template="string" value=""/>
-      <Attribute name="jump_start" template="string" value=""/>
-      <Attribute name="jump_end" template="string" value=""/>
+      <Attribute name="island_hits_island" template="string" value="Sounds/islands/collide_Metal_drum"/>
+      <Attribute name="and_the_winner_is" template="string" value="Sounds/phase/applause"/>
+      <Attribute name="walk" template="string" value="Sounds/movement/CONCRETE_C"/>
+      <Attribute name="jump_start" template="string" value="Sounds/islands/repulsion"/>
+      <Attribute name="jump_end" template="string" value="Sounds/movement/jump_land"/>
       <Attribute name="repulsion_start" template="string" value=""/>
       <Attribute name="repulsion_loop" template="string" value=""/>
       <Attribute name="repulsion_end" template="string" value=""/>

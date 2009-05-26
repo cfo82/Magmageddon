@@ -85,7 +85,7 @@ namespace ProjectMagma.Simulation
                     if (!SelectNewIsland())
                     {
                         // if we cannot find a suitable island: wait
-//                        return;
+                        return;
                     }
                 }
                 else

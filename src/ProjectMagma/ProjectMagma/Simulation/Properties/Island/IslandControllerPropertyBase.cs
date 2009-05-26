@@ -128,13 +128,13 @@ namespace ProjectMagma.Simulation
             if (HadCollision(simTime))
             {
                 Vector3 pushbackVelocity = island.GetVector3("pushback_velocity");
-                if (pushbackVelocity.Length() > 400) // todo: extract constant
+                if (pushbackVelocity.Length() > constants.GetFloat("collision_max_speed"))
                 {
                     pushbackVelocity.Normalize();
-                    pushbackVelocity *= 400;
+                    pushbackVelocity *= constants.GetFloat("collision_max_speed");
                     island.SetVector3("pushback_velocity", pushbackVelocity);
                 }
-                Simulation.ApplyPushback(ref position, ref pushbackVelocity, 1000f, CheckDistance);
+                Simulation.ApplyPushback(ref position, ref pushbackVelocity, constants.GetFloat("collision_deacceleration"), CheckDistance);
             }
             else
             {
@@ -297,7 +297,7 @@ namespace ProjectMagma.Simulation
                                 * constants.GetFloat("collision_damping"));
                         }
                         island.SetVector3("pushback_velocity", island.GetVector3("pushback_velocity")
-                            - xznormal * 2000 * simTime.Dt); // todo: extract constant
+                            - xznormal * constants.GetFloat("collision_acceleration") * simTime.Dt); // todo: extract constant
                     }
 
                     if (state == IslandState.Repositioning)
@@ -314,7 +314,7 @@ namespace ProjectMagma.Simulation
                         {
                             // pusbhack a bit
                             island.SetVector3("pushback_velocity", island.GetVector3("pushback_velocity")
-                                - normal * 2000 * simTime.Dt); // todo: extract constant
+                                - normal * constants.GetFloat("collision_acceleration") * simTime.Dt); // todo: extract constant
 
                             // call handler of child class
                             if (!HandleCollision(simTime, island, other, contact, ref normal))

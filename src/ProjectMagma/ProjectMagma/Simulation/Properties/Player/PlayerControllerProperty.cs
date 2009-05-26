@@ -25,6 +25,7 @@ namespace ProjectMagma.Simulation
         private static readonly float StickMovementEps = 0.1f;
         
         // gamepad buttons
+        private static readonly float HitButtonTimeout = 4000;
         private static readonly Buttons[] RepulsionButtons = { Buttons.LeftTrigger };
         private static readonly Buttons[] jumpButtons = { Buttons.A };
         private static readonly Buttons[] IceSpikeButtons = { Buttons.X };
@@ -1457,7 +1458,7 @@ namespace ProjectMagma.Simulation
 
             // on top?
             // todo: extract constant
-            if ((surfacePosition.Y - 5 < playerPosition.Y
+            if ((surfacePosition.Y - 10 < playerPosition.Y
                 && activeIsland == null) // don't allow switching of islands
                 || island == simpleJumpIsland)
             {
@@ -1533,12 +1534,16 @@ namespace ProjectMagma.Simulation
                 }
                 else
                 {
+                    /*
                     // in air --> pushback
                     Vector3 acc = -contact[0].Normal * 4000; // todo: extract constant
                     if (acc.Y > 0) // hack: never push upwards
                         acc.Y = -acc.Y;
                     player.SetVector3("collision_pushback_velocity", player.GetVector3("collision_pushback_velocity")
                         + acc * simTime.Dt);
+                    Console.WriteLine("in air island collision pushback: " + acc);
+                     */
+                    player.SetVector3("velocity", Vector3.Zero);
                 }
             }
         }
@@ -2139,7 +2144,15 @@ namespace ProjectMagma.Simulation
 
                 if (hitButtonPressed)
                 {
-                    hitButtonPressedAt = simTime.At;
+                    // filter pressed events
+                    if (simTime.At < hitButtonPressedAt + HitButtonTimeout)
+                    {
+                        hitButtonPressed = false;
+                    }
+                    else
+                    {
+                        hitButtonPressedAt = simTime.At;
+                    }
                 }
 
                 oldGPState = gamePadState;

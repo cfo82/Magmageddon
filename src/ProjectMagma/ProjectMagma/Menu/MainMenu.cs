@@ -27,22 +27,22 @@ namespace ProjectMagma
 
         private void NewGameHandler(MenuItem sender)
         {
-            menu.OpenMenuScreen(menu.LevelMenu);
+            menu.OpenMenuScreen(menu.LevelMenu, true);
         }
 
         private void SettingsHandler(MenuItem sender)
         {
-            menu.OpenMenuScreen(menu.SettingsMenu);
+            menu.OpenMenuScreen(menu.SettingsMenu, true);
         }
 
         private void HelpHandler(MenuItem sender)
         {
-            menu.OpenMenuScreen(menu.HelpMenu);
+            menu.OpenMenuScreen(menu.HelpMenu, true);
         }
 
         private void CreditsHandler(MenuItem sender)
         {
-            menu.OpenMenuScreen(menu.CreditsMenuPage1);
+            menu.OpenMenuScreen(menu.CreditsMenuPage1, true);
         }
 
         private void ExitGameHandler(MenuItem sender)

@@ -29,7 +29,7 @@ namespace ProjectMagma
                     && menu.lastKBState.IsKeyUp(Keys.Enter)))
                 {
                     menu.CloseActiveMenuScreen(false);
-                    menu.OpenMenuScreen(NextPage);
+                    menu.OpenMenuScreen(NextPage, true);
                     menu.buttonPressedAt = at;
                 }
             }

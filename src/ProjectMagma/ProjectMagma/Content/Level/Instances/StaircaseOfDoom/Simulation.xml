@@ -7,7 +7,7 @@
     <Include name="Level\Common\Templates.xml"/>
   </Includes>
 
-
+  
   <Entity name="player_constants" extends="player_constants_base">
   </Entity>
 
@@ -20,6 +20,9 @@
   <!-- "unique" game entities -->
 
   <Entity name="sound" extends="sound_base">
+    <Attributes>
+      <Attribute name="background_music" template="string" value="Music/juno_reactor_vs_don_davis_navras"/>
+    </Attributes>
   </Entity>
   
   <Entity name="lava" extends="lava_base">

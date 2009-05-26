@@ -140,6 +140,8 @@ namespace ProjectMagma
         /// </summary>
         protected override void LoadContent()
         {
+            MediaPlayer.Volume = MusicVolume;
+
             crashDebugger = new CrashDebugger(GraphicsDevice, ContentManager);
 
 //            GraphicsDevice.RenderState.MultiSampleAntiAlias = true;
@@ -239,8 +241,7 @@ namespace ProjectMagma
             float aspectRatio = (float)viewport.Width / (float)viewport.Height;
 
             // play that funky musik white boy
-            MediaPlayer.Play(Game.Instance.ContentManager.Load<Song>("Music/background_janick"));
-            MediaPlayer.Volume = MusicVolume;
+            //MediaPlayer.Play(Game.Instance.ContentManager.Load<Song>("Music/background_janick"));
 
             // get storage device
             storageSelectionResult = Guide.BeginShowStorageDeviceSelector(PlayerIndex.One, null, null);
@@ -572,7 +573,7 @@ namespace ProjectMagma
         public float MusicVolume
         {
             get { return settings.musicVolume; }
-            set { settings.musicVolume = value; }
+            set { settings.musicVolume = value; MediaPlayer.Volume = value; }
         }
 
         public List<RobotInfo> Robots

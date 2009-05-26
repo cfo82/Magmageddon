@@ -198,9 +198,10 @@ namespace ProjectMagma
         public SineFloat StaticStringStrength { get; set; }
         public Color StaticStringColor { get { return new Color(Vector3.One * StaticStringStrength.Value); } }
 
-        public void OpenMenuScreen(MenuScreen screen)
+        public void OpenMenuScreen(MenuScreen screen, bool playsound)
         {
-            Game.Instance.AudioPlayer.Play(Menu.OkSound);
+            if (playsound)
+                { Game.Instance.AudioPlayer.Play(Menu.OkSound); }
             screen.OnOpen();
             screen.DrawOffset.TargetValue = 0f;
             screen.DrawOffset.Value = 0f;
@@ -233,13 +234,13 @@ namespace ProjectMagma
         public void Open()
         {
             active = true;
-            OpenMenuScreen(mainMenu);
+            OpenMenuScreen(mainMenu, true);
         }
 
         public void OpenReleaseNotes()
         {
             active = true;
-            OpenMenuScreen(releaseNotesMenu);
+            OpenMenuScreen(releaseNotesMenu, false);
         }
 
         public void Close()

@@ -40,7 +40,7 @@ namespace ProjectMagma
 
         private void LevelSelected(MenuItem sender)
         {
-            menu.OpenMenuScreen(playerMenu);
+            menu.OpenMenuScreen(playerMenu, true);
         }
 
         protected override bool ResetSelectionOnOpen

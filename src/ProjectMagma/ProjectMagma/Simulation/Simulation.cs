@@ -2,6 +2,8 @@
 using System.Collections.Generic;
 using ProjectMagma.Simulation.Collision;
 using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Audio;
+using Microsoft.Xna.Framework.Media;
 
 using ProjectMagma.Renderer.Interface;
 using ProjectMagma.Shared.LevelData;
@@ -52,6 +54,12 @@ namespace ProjectMagma.Simulation
                 entityManager.Load(levelData);
                 soundRegistry.Load();
                 OnLevelLoaded();
+
+                // start to play sounds
+                if (soundRegistry.BackgroundMusic.Trim().Length == 0)
+                    { MediaPlayer.Stop(); }
+                else
+                    { MediaPlayer.Play(Game.Instance.ContentManager.Load<Song>(soundRegistry.BackgroundMusic)); }
 
                 return EndOperation();
             }

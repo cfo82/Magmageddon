@@ -120,7 +120,8 @@
       <Attribute name="circling_strength" template="float" value="1"/>
       <Attribute name="fog_multiplier" template="float" value="1"/>
     </Attributes>
-  </Entity
+  </Entity>
+  
   <Entity name="camera">
     <Attributes>
       <Attribute name="is_moving" template="bool" value="true"/>

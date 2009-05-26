@@ -59,7 +59,10 @@ namespace ProjectMagma.Simulation
                 if (soundRegistry.BackgroundMusic.Trim().Length == 0)
                     { MediaPlayer.Stop(); }
                 else
-                    { MediaPlayer.Play(Game.Instance.ContentManager.Load<Song>(soundRegistry.BackgroundMusic)); }
+                {
+                    MediaPlayer.Play(Game.Instance.ContentManager.Load<Song>(soundRegistry.BackgroundMusic));
+                    MediaPlayer.IsRepeating = true;
+                }
 
                 return EndOperation();
             }

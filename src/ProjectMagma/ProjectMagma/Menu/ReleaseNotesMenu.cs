@@ -47,10 +47,12 @@ namespace ProjectMagma
         {
             base.Update(gameTime);
 
+            KeyboardState keyboardState = Keyboard.GetState();
             GamePadState gamePadState = GamePad.GetState(PlayerIndex.One);
 
             if (gamePadState.Buttons.Start == ButtonState.Pressed
-                || gamePadState.Buttons.A == ButtonState.Pressed)
+                || gamePadState.Buttons.A == ButtonState.Pressed
+                || keyboardState.IsKeyDown(Keys.Escape))
             {
                 menu.CloseActiveMenuScreen(true);
                 menu.buttonPressedAt = gameTime.TotalGameTime.TotalMilliseconds;

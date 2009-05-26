@@ -8,6 +8,9 @@
   </Includes>
 
   <Entity name="sound" extends="sound_base">
+    <Attributes>
+      <Attribute name="background_music" template="string" value="Music/the_old_tree"/>
+    </Attributes>
   </Entity>
 
   <Entity name="player_constants" extends="player_constants_base">

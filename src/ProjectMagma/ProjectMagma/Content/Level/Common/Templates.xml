@@ -28,9 +28,9 @@
       <Attribute name="island_hits_island" template="string" value="Sounds/islands/collide_Metal_drum"/>
       <Attribute name="and_the_winner_is" template="string" value="Sounds/phase/applause"/>
       <Attribute name="walk" template="string" value="Sounds/movement/CONCRETE_C"/>
-      <Attribute name="jump_start" template="string" value="Sounds/islands/repulsion"/>
+      <Attribute name="jump_start" template="string" value=""/>
       <Attribute name="jump_end" template="string" value="Sounds/movement/jump_land"/>
-      <Attribute name="repulsion_start" template="string" value=""/>
+      <Attribute name="repulsion_start" template="string" value="Sounds/islands/repulsion"/>
       <Attribute name="repulsion_loop" template="string" value=""/>
       <Attribute name="repulsion_end" template="string" value=""/>
     </Attributes>

@@ -48,9 +48,9 @@
       <Attribute name="scale" template="float3" value="400 400 400"/>
       <Attribute name="sinking_speed" template="float" value="0"/>
 
-      <Attribute name="landing_offset" template="float3" value="-150 150 100"/>
-      <Attribute name="landing_offset_p1" template="float3" value="-150 150 -100"/>
-      <Attribute name="landing_offset_p2" template="float3" value="-150 150 100"/>
+      <Attribute name="landing_offset" template="float3" value="0 150 150"/>
+      <Attribute name="landing_offset_p1" template="float3" value="-160 150 0"/>
+      <Attribute name="landing_offset_p2" template="float3" value="-150 150 140"/>
       <Attribute name="landing_offset_p3" template="float3" value="150 150 -100"/>
       <Attribute name="landing_offset_p4" template="float3" value="150 150 100"/>
 

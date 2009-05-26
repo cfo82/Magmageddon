@@ -28,7 +28,7 @@ namespace ProjectMagma
                     || (keyboardState.IsKeyDown(Keys.Enter)
                     && menu.lastKBState.IsKeyUp(Keys.Enter)))
                 {
-                    menu.CloseActiveMenuScreen();
+                    menu.CloseActiveMenuScreen(false);
                     menu.OpenMenuScreen(NextPage);
                     menu.buttonPressedAt = at;
                 }

@@ -52,7 +52,7 @@ namespace ProjectMagma
             if (gamePadState.Buttons.Start == ButtonState.Pressed
                 || gamePadState.Buttons.A == ButtonState.Pressed)
             {
-                menu.CloseActiveMenuScreen();
+                menu.CloseActiveMenuScreen(true);
                 menu.buttonPressedAt = gameTime.TotalGameTime.TotalMilliseconds;
             }
         }

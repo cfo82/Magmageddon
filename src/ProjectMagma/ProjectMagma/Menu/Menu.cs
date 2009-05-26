@@ -83,7 +83,7 @@ namespace ProjectMagma
                             || (keyboardState.IsKeyDown(Keys.Back)
                             && lastKBState.IsKeyUp(Keys.Back)))
                         {
-                            CloseActiveMenuScreen();
+                            CloseActiveMenuScreen(true);
                             buttonPressedAt = at;
                         }
                     }
@@ -208,9 +208,10 @@ namespace ProjectMagma
             activeScreen = screen;
         }
 
-        public void CloseActiveMenuScreen()
+        public void CloseActiveMenuScreen(bool playsound)
         {
-            Game.Instance.AudioPlayer.Play(Menu.BackSound, 0.7f);
+            if (playsound)
+                { Game.Instance.AudioPlayer.Play(Menu.BackSound, 0.7f); }
             if (activeScreen == mainMenu)
             {
                 Close();

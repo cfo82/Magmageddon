@@ -307,7 +307,7 @@ namespace ProjectMagma.Simulation
             playerPosition += playerVelocity * dt;
 
             // pushback
-            Simulation.ApplyPushback(ref playerPosition, ref collisionPushbackVelocity, 0f /*constants.GetFloat("player_pushback_deacceleration")*/);
+            Simulation.ApplyPushback(ref playerPosition, ref collisionPushbackVelocity, 1000f);
             Simulation.ApplyPushback(ref playerPosition, ref inwardsPushVelocity, 0f /*constants.GetFloat("player_pushback_deacceleration")*/);
             Simulation.ApplyPushback(ref playerPosition, ref hitPushbackVelocity, constants.GetFloat("player_pushback_deacceleration"), 
                 HitPushbackEndedHandler);
@@ -1169,14 +1169,13 @@ namespace ProjectMagma.Simulation
                     jetpackActive = true;
                 }
 
-                //                fuel -= (int)simTime.DtMs; // todo: add constant that can modify this
                 playerVelocity += constants.GetVector3("jetpack_acceleration") * dt;
 
                 // deaccelerate the higher we get
                 // todo: extract constants (450 & 5 & 10)
-                float dist = 480 - player.GetVector3("position").Y;
+                float dist = constants.GetFloat("jetpack_max_height") - player.GetVector3("position").Y;
                 Vector3 deacceleration = constants.GetVector3("jetpack_acceleration") * 6 / dist;
-                if (dist < 10)
+                if (dist < 10) // todo: extract constant
                     playerVelocity = Vector3.Zero;
                 else
                     playerVelocity -= deacceleration * dt;
@@ -1374,7 +1373,7 @@ namespace ProjectMagma.Simulation
             else
             {
                 pos = island.GetVector3("position") + island.GetVector3("landing_offset");
-                Console.WriteLine("taking default landing offset");
+//                Console.WriteLine("taking default landing offset");
             }
             return pos;
         }

@@ -31,6 +31,7 @@
       <Attribute name="fuel_recharge_multiplier_island" template="float" value="4"/>
       <Attribute name="max_jetpack_speed" template="float" value="200"/>
       <Attribute name="jetpack_acceleration" template="float3" value="0 1600 0"/>
+      <Attribute name="jetpack_max_height" template="float" value="600"/>
 
       <Attribute name="simple_jump_gravity_acceleration" template="float3" value="0 -2000 0"/>
       <Attribute name="simple_jump_height" template="float" value="100"/>

@@ -1364,14 +1364,15 @@ namespace ProjectMagma.Simulation
         public static Vector3 GetLandingPosition(Entity player, Entity island)
         {
             Vector3 pos;
-            int gpi = player.GetInt("game_pad_index");
-            if (island.HasAttribute("landing_offset_p" + gpi))
+            int pi = player.GetInt("game_pad_index") + 1;
+            if (island.HasAttribute("landing_offset_p" + pi))
             {
-                pos = island.GetVector3("position") + island.GetVector3("landing_offset_p" + gpi);
+                pos = island.GetVector3("position") + island.GetVector3("landing_offset_p" + pi);
             }
             else
             {
                 pos = island.GetVector3("position") + island.GetVector3("landing_offset");
+                Console.WriteLine("taking default landing offset");
             }
             return pos;
         }

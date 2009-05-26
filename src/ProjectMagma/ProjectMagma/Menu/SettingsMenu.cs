@@ -43,6 +43,8 @@ namespace ProjectMagma
             if (Vector2.Dot(gamePadState.ThumbSticks.Left, Vector2.UnitX) > Menu.StickDirectionSelectionMin
                 || gamePadState.DPad.Right == ButtonState.Pressed)
             {
+                Game.Instance.AudioPlayer.Play(Menu.ChangeSound, 0.7f);
+
                 if (SelectedItem.Name == "music_volume")
                     Game.Instance.MusicVolume += dt;
                 else
@@ -53,6 +55,8 @@ namespace ProjectMagma
                 if (Vector2.Dot(gamePadState.ThumbSticks.Left, Vector2.UnitX) < -Menu.StickDirectionSelectionMin
                     || gamePadState.DPad.Left == ButtonState.Pressed)
                 {
+                    Game.Instance.AudioPlayer.Play(Menu.ChangeSound, 0.7f);
+
                     if (SelectedItem.Name == "music_volume")
                         Game.Instance.MusicVolume -= dt;
                     else

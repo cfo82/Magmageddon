@@ -200,6 +200,7 @@ namespace ProjectMagma
 
         public void OpenMenuScreen(MenuScreen screen)
         {
+            Game.Instance.AudioPlayer.Play(Menu.OkSound);
             screen.OnOpen();
             screen.DrawOffset.TargetValue = 0f;
             screen.DrawOffset.Value = 0f;
@@ -209,6 +210,7 @@ namespace ProjectMagma
 
         public void CloseActiveMenuScreen()
         {
+            Game.Instance.AudioPlayer.Play(Menu.BackSound, 0.7f);
             if (activeScreen == mainMenu)
             {
                 Close();
@@ -244,6 +246,8 @@ namespace ProjectMagma
             // only allow closing of menu when players are in play
             if (Game.Instance.Simulation.PlayerManager.Count > 0)
             {
+                Game.Instance.AudioPlayer.Play(Menu.BackSound);
+
                 active = false;
                 screens.Clear();
 
@@ -277,5 +281,9 @@ namespace ProjectMagma
         private SpriteBatch spriteBatch;
 
         private Texture2D background;
+
+        public static readonly string OkSound = "Sounds/menu/ok_Car_hit";
+        public static readonly string BackSound = "Sounds/menu/back_Vibrate_hit";
+        public static readonly string ChangeSound = "Sounds/menu/change_SONAR_S";
     }
 }

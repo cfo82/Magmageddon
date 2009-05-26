@@ -45,6 +45,8 @@ namespace ProjectMagma.Simulation
         private Entity constants;
         private LevelData templates;
 
+        private PlayerIndex playerIndex;
+
         private float landedAt = -1;
         private bool won = false;
 
@@ -76,6 +78,8 @@ namespace ProjectMagma.Simulation
         private Vector3 lastIslandDir = Vector3.Zero;
         private float islandJumpPerformedAt = 0;
 
+        private float vibrationStartedAt = 0;
+
         private Entity simpleJumpIsland = null;
 
         private bool repulsionActive = false;
@@ -104,6 +108,7 @@ namespace ProjectMagma.Simulation
             this.player = player as Entity;
             this.constants = Game.Instance.Simulation.EntityManager["player_constants"];
             this.templates = Game.Instance.ContentManager.Load<LevelData>("Level/Common/DynamicTemplates");
+            this.playerIndex = (PlayerIndex)player.GetInt("game_pad_index");
 
             player.AddQuaternionAttribute("rotation", Quaternion.Identity);
             player.AddVector3Attribute("velocity", Vector3.Zero);
@@ -188,7 +193,6 @@ namespace ProjectMagma.Simulation
 
         private void OnUpdate(Entity player, SimulationTime simTime)
         {
-            PlayerIndex playerIndex = (PlayerIndex)player.GetInt("game_pad_index");
             if (Game.Instance.Simulation.Phase == SimulationPhase.Intro
                 || doRespawnAnimation)
             {
@@ -235,6 +239,11 @@ namespace ProjectMagma.Simulation
             {
                 // don't execute any other code as long as player is dead
                 return;
+            }
+
+            if (simTime.At > vibrationStartedAt + 330) // todo: extract constant
+            {
+                GamePad.SetVibration(playerIndex, 0, 0);
             }
 
             #region collision reaction
@@ -1199,6 +1208,8 @@ namespace ProjectMagma.Simulation
                 {
                     respawnStartedAt = at;
 
+                    GamePad.SetVibration(playerIndex, 0, 0);
+
                     if (jetpackSoundInstance != null)
                         Game.Instance.AudioPlayer.Stop(jetpackSoundInstance);
                     if (flameThrowerSoundInstance != null)
@@ -1646,11 +1657,14 @@ namespace ProjectMagma.Simulation
                 if (oldValue - newValue >= constants.GetInt("ice_spike_damage"))
                 {
                     player.GetProperty<RobotRenderProperty>("render").NextOnceState = "hurt_hard";
+                    GamePad.SetVibration(playerIndex, 1f, 1f);
                 }
                 else
                 {
                     player.GetProperty<RobotRenderProperty>("render").NextOnceState = "hurt_soft";
+                    GamePad.SetVibration(playerIndex, 0.5f, 0.5f);
                 }
+                vibrationStartedAt = Game.Instance.Simulation.Time.At;
             }
         }
 

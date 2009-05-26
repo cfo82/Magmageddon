@@ -128,10 +128,10 @@ namespace ProjectMagma.Simulation
             if (HadCollision(simTime))
             {
                 Vector3 pushbackVelocity = island.GetVector3("pushback_velocity");
-                if (pushbackVelocity.Length() > island.GetFloat("movement_speed"))
+                if (pushbackVelocity.Length() > 800) // todo: extract constant
                 {
                     pushbackVelocity.Normalize();
-                    pushbackVelocity *= island.GetFloat("movement_speed");
+                    pushbackVelocity *= 800;
                     island.SetVector3("pushback_velocity", pushbackVelocity);
                 }
                 position += pushbackVelocity * dt;
@@ -263,7 +263,7 @@ namespace ProjectMagma.Simulation
                 }
                 else 
                 {
-                    if (kind == "island")
+                    if (kind == "island" && simTime.At > collisionAt + 250) // don't make to much noise
                     {
                         // play sound
                         Game.Instance.AudioPlayer.Play(Game.Instance.Simulation.SoundRegistry.IslandHitsIsland);

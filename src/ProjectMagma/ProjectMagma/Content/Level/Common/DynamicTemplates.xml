@@ -64,7 +64,7 @@
       <Attribute name="position" template="float3" value="0 0 0"/>
       <Attribute name="rotation" template="quaternion" value="0 0 0 1"/>
       <Attribute name="scale" template="float3" value="0 0 0"/>
-      <Attribute name="full_scale" template="float3" value="120 120 120"/>
+      <Attribute name="full_scale" template="float3" value="130 130 130"/>
 
       <Attribute name="mesh" template="string" value="Models/Visualizations/flame_primitive"/>
       <Attribute name="diffuse_texture" template="string" value="Textures/flame"/>
@@ -74,7 +74,7 @@
     </Attributes>
     <Properties>
       <Property name="renderer" type="ProjectMagma.Simulation.FlamethrowerRenderProperty"/>
-      <!--<Property name="renderer1" type="ProjectMagma.Simulation.BasicRenderProperty"/>-->
+      <!--Property name="renderer1" type="ProjectMagma.Simulation.BasicRenderProperty"/-->
       <Property name="collision" type="ProjectMagma.Simulation.Collision.CollisionProperty"/>
       <Property name="controller" type="ProjectMagma.Simulation.FlamethrowerControllerProperty"/>
     </Properties>

@@ -164,8 +164,8 @@ namespace ProjectMagma
             //LoadLevel("Level/Instances/TestLevel/Simulation", "Level/Instances/TestLevel/Renderer");
             //LoadLevel("Level/Instances/4vs4/Simulation", "Level/Instances/4vs4/Renderer");
             //LoadLevel("Level/Instances/StaircaseOfDoom/Simulation", "Level/Instances/StaircaseOfDoom/Renderer");
-            LoadLevel("Level/Instances/Stack/Simulation", "Level/Instances/Stack/Renderer");
-            //LoadLevel("Level/Instances/4Noobs/Simulation", "Level/Instances/4Noobs/Renderer");
+            //LoadLevel("Level/Instances/Stack/Simulation", "Level/Instances/Stack/Renderer");
+            LoadLevel("Level/Instances/4Noobs/Simulation", "Level/Instances/4Noobs/Renderer");
 
             // set default player
             Entity player1 = new Entity("player1");

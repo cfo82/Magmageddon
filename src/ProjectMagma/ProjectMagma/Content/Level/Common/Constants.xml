@@ -53,7 +53,7 @@
       <Attribute name="running_energy_cost_per_second" template="int" value="12"/>
       <Attribute name="frozen_slowdown_divisor" template="float" value="6"/>
 
-      <Attribute name="flamethrower_aim_angle" template="float" value="90"/>
+      <Attribute name="flamethrower_aim_angle" template="float" value="60"/>
       <Attribute name="flamethrower_warmup_time" template="int" value="1000"/>
       <Attribute name="flamethrower_warmup_energy_cost" template="int" value="15"/>
       <Attribute name="flamethrower_energy_per_second" template="int" value="5"/>

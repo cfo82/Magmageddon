@@ -827,9 +827,15 @@ namespace ProjectMagma.Simulation
                         Entity targetPlayer = SelectBestPlayerInDirection(ref playerPosition, ref direction, maxAngle, out aimVector);
                         if (targetPlayer != null)
                         {
+                            // get angle between stick dir and aimVector 
+                            Vector3 aimVectorXZ = aimVector;
+                            aimVectorXZ.Y = 0;
+                            float a = (float)(Math.Acos(Vector3.Dot(aimVectorXZ, direction)) / Math.PI * 180);
+                            float dirM = a / maxAngle / 2;
+                            float aimM = 1 - dirM;
+
                             // correct target vector based on flame positon
-                            Vector3 targetPos = targetPlayer.GetVector3("position") 
-                                + Vector3.UnitY * targetPlayer.GetVector3("scale").Length() * 4; // todo: extract constant
+                            Vector3 targetPos = targetPlayer.GetVector3("position") + Vector3.UnitY * targetPlayer.GetVector3("scale").Length() * 2; // todo: extract constant
                             aimVector = targetPos - flamePos;
                             if (aimVector != Vector3.Zero)
                                 aimVector.Normalize();
@@ -839,12 +845,7 @@ namespace ProjectMagma.Simulation
                             if (direction != Vector3.Zero)
                                 direction.Normalize();
 
-                            // get angle between stick dir and aimVector 
-                            float a = (float)(Math.Acos(Vector3.Dot(aimVector, direction)) / Math.PI * 180);
-                            float dirM = a / maxAngle;
-                            float aimM = 1 - dirM;
-
-                            //                            Console.WriteLine("giving " + aimM + " support.");
+//                            Console.WriteLine("a: "+a+"°; max: "+maxAngle+"°; aimM: " + aimM + "; dirM: " + dirM);
 
                             // we only aim perfectly in y, but give a little support in x/z
                             aimVector.X = direction.X * dirM + aimVector.X * aimM;
@@ -1788,13 +1789,17 @@ namespace ProjectMagma.Simulation
                 {
                     Vector3 pp = p.GetVector3("position");
                     Vector3 pdir = pp - playerPosition;
-                    float a = (float)(Math.Acos(Vector3.Dot(pdir, direction) / pdir.Length()) / Math.PI * 180);
+                    Vector3 pdirxz = pdir;
+                    pdirxz.Y = 0;
+                    if (pdirxz != Vector3.Zero)
+                        pdirxz.Normalize();
+                    float a = (float)(Math.Acos(Vector3.Dot(pdirxz, direction)) / Math.PI * 180);
                     if (a < maxAngle)
                     {
                         if (a < minAngle)
                         {
                             targetPlayer = p;
-                            aimVector = pdir + Vector3.UnitY * 15; // todo: extract constant
+                            aimVector = pdir;
                             minAngle = a;
                         }
                     }
@@ -1817,7 +1822,7 @@ namespace ProjectMagma.Simulation
             Entity island = Game.Instance.Simulation.IslandManager[0];
             // try at most count*2 times
             int i = 0;
-            for(; i < cnt*2; i++)
+            for(; i < cnt*10; i++)
             {
                 bool valid = true;
                 int islandNo = rand.Next(Game.Instance.Simulation.IslandManager.Count - 1);
@@ -1852,8 +1857,8 @@ namespace ProjectMagma.Simulation
                     valid = false;
                 }
 
-                // for 2nd round (> cnt) we accept respawn on powerups
-                if (i < cnt)
+                // for 3RD round (> cnt*2) we accept respawn on powerups
+                if (i < cnt*2)
                 {
                     // check no powerup on island
                     foreach (Entity powerup in Game.Instance.Simulation.PowerupManager)

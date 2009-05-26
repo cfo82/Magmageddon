@@ -140,7 +140,7 @@ namespace ProjectMagma.Simulation
             if (other.HasProperty("burnable")
                 && other != player) // don't burn self
             {
-                other.SetFloat("burnt_at", simTime.At);                
+                other.SetFloat("burnt_at", simTime.At);
             }
         }
 

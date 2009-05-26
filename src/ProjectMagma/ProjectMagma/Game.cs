@@ -598,6 +598,7 @@ namespace ProjectMagma
 
         public void SaveSettings()
         {
+            /*
             // Open a storage container.StorageContainer container =
             StorageContainer container = device.OpenContainer(Window.Title);
 
@@ -612,7 +613,7 @@ namespace ProjectMagma
             }
 
             // Dispose the container, to commit changes.
-            container.Dispose();
+            container.Dispose();*/
         }
 
         public void LoadSettings()

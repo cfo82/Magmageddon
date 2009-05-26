@@ -12,7 +12,7 @@ using ProjectMagma.MathHelpers;
 
 namespace ProjectMagma
 {
-    class PlayerMenu : MenuScreen
+    public class PlayerMenu : MenuScreen
     {
         private readonly Rectangle PlayerIconRect = new Rectangle(30, 30, 265, 350);
 

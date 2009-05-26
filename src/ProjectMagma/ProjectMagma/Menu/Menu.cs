@@ -45,6 +45,7 @@ namespace ProjectMagma
             HelpMenu = new HelpMenu(this);
             CreditsMenuPage1 = new CreditsMenuPage1(this);
             CreditsMenuPage2 = new CreditsMenuPage2(this);
+            PlayerMenu = new PlayerMenu(this, LevelMenu);
             releaseNotesMenu = new ReleaseNotesMenu(this);
             StaticStringFont = Game.Instance.ContentManager.Load<SpriteFont>("Fonts/menu_releasenotes");
             StaticStringFontSmall = Game.Instance.ContentManager.Load<SpriteFont>("Fonts/menu_releasenotes_small");
@@ -258,11 +259,12 @@ namespace ProjectMagma
             }
         }
 
-        public MenuScreen LevelMenu;
-        public MenuScreen SettingsMenu;
-        public MenuScreen HelpMenu;
-        public MenuScreen CreditsMenuPage1;
-        public MenuScreen CreditsMenuPage2;
+        public LevelMenu LevelMenu;
+        public SettingsMenu SettingsMenu;
+        public HelpMenu HelpMenu;
+        public CreditsMenuPage1 CreditsMenuPage1;
+        public CreditsMenuPage2 CreditsMenuPage2;
+        public PlayerMenu PlayerMenu;
 
         private bool active = false;
 

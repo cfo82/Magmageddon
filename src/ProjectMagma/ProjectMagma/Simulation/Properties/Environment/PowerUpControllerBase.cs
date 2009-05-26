@@ -220,7 +220,6 @@ namespace ProjectMagma.Simulation
 
         private bool powerUsed = false;
         private float respawnAt = 0;
-        private SoundEffect pickupSound;
 
         protected Entity powerup;
         protected Entity island;

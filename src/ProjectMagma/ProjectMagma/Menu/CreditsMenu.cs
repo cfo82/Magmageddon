@@ -58,7 +58,7 @@ namespace ProjectMagma
         }
     }
 
-    class CreditsMenuPage1 : CreditsMenuBase
+    public class CreditsMenuPage1 : CreditsMenuBase
     {
         public CreditsMenuPage1(Menu menu)
         :   base(menu, new Vector2(190, 75))
@@ -129,7 +129,7 @@ namespace ProjectMagma
         }
     }
 
-    class CreditsMenuPage2 : CreditsMenuBase
+    public class CreditsMenuPage2 : CreditsMenuBase
     {
         public CreditsMenuPage2(Menu menu)
         :   base(menu, new Vector2(190, 75))

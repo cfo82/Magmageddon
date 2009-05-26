@@ -6,7 +6,7 @@ using System;
 
 namespace ProjectMagma
 {
-    abstract class ItemizedMenuScreen : MenuScreen
+    public abstract class ItemizedMenuScreen : MenuScreen
     {
         int width;
         protected int selected = 0;

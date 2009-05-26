@@ -4,10 +4,9 @@ using ProjectMagma.Shared.LevelData;
 
 namespace ProjectMagma
 {
-    class LevelMenu : ItemizedMenuScreen
+    public class LevelMenu : ItemizedMenuScreen
     {
         readonly MenuItem[] menuItems;
-        readonly MenuScreen playerMenu;
 
         public LevelMenu(Menu menu)
             : base(menu)
@@ -20,7 +19,6 @@ namespace ProjectMagma
                     new ItemSelectionHandler(LevelSelected));
                 menuItems[i].SetActivationHandler(new ItemActivationHandler(LevelActivated));
             }
-            playerMenu = new PlayerMenu(menu, this);
 
             RecomputeWidth();
         }
@@ -40,7 +38,7 @@ namespace ProjectMagma
 
         private void LevelSelected(MenuItem sender)
         {
-            menu.OpenMenuScreen(playerMenu, true);
+            menu.OpenMenuScreen(menu.PlayerMenu, true);
         }
 
         protected override bool ResetSelectionOnOpen

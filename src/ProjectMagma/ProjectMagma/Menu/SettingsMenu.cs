@@ -4,7 +4,7 @@ using Microsoft.Xna.Framework.Input;
 
 namespace ProjectMagma
 {
-    class SettingsMenu : ItemizedMenuScreen
+    public class SettingsMenu : ItemizedMenuScreen
     {
         readonly MenuItem[] menuItems;
         private readonly Texture2D volumeIndicator;

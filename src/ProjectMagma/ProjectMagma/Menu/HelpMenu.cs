@@ -8,7 +8,7 @@ using Microsoft.Xna.Framework.Input;
 
 namespace ProjectMagma
 {
-    class HelpMenu: MenuScreen
+    public class HelpMenu: MenuScreen
     {
         private readonly Texture2D helpScreen;
 

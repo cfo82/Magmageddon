@@ -3,7 +3,7 @@ using Microsoft.Xna.Framework.Graphics;
 
 namespace ProjectMagma
 {
-    class MenuItem
+    public class MenuItem
     {
         private readonly String name;
         private readonly String text;

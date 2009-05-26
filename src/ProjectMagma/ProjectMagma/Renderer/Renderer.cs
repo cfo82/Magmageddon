@@ -76,8 +76,6 @@ namespace ProjectMagma.Renderer
 
             shadowEffect = wrappedContent.Load<Effect>("Effects/ShadowEffect");
 
-            Camera = new Camera(this);
-
             lightPosition = new Vector3(0, 10000, 0); // later: replace by orthographic light, not lookAt
             lightTarget = Vector3.Zero;
             lightProjection = Matrix.CreateOrthographic(1500, 1500, 0.0f, 10000.0f);
@@ -140,6 +138,8 @@ namespace ProjectMagma.Renderer
         {
             EntityManager.Clear();
             EntityManager.Load(Game.Instance.ContentManager.Load<LevelData>(levelName));
+
+            Camera = new Camera(this);
 
             LightManager = new LightManager(this);
 
@@ -243,8 +243,13 @@ namespace ProjectMagma.Renderer
 
         private void Update()
         {
-            Camera.Update(this);
-            Camera.RecomputeFrame(ref opaqueRenderables);
+            if(Camera!=null)
+            {
+                // should only be called if a level has already been loaded
+                Camera.Update(this);
+                Camera.RecomputeFrame(ref opaqueRenderables);
+            }
+
             RendererUpdateQueue q = GetNextUpdateQueue();
             while (q != null)
             {

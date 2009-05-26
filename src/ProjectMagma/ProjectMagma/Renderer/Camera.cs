@@ -11,25 +11,31 @@ namespace ProjectMagma.Renderer
 {
     public class Camera
     {
-        private static readonly float cameraSpeed = 0.004f;
-        private static readonly Vector3 initialPosition = new Vector3(0, 450, 1065);
-        private static readonly Vector3 initialTarget = new Vector3(0, 180, 0);
+        private float cameraSpeed; //= 0.004f;
+        private Vector3 initialPosition;// = new Vector3(0, 450, 1065);
+        private Vector3 initialTarget; //= new Vector3(0, 180, 0);
+        private float circlingStrength;
 
         public bool IsMoving { get; set; }
 
         public Camera(Renderer renderer)
         {
-            IsMoving = true;
+            IsMoving = renderer.EntityManager["camera"].GetBool("is_moving");
+            cameraSpeed = renderer.EntityManager["camera"].GetFloat("moving_speed");
+            initialPosition = renderer.EntityManager["camera"].GetVector3("position");
+            initialTarget = renderer.EntityManager["camera"].GetVector3("target");
+            Up = renderer.EntityManager["camera"].GetVector3("up");
+            circlingStrength = renderer.EntityManager["camera"].GetFloat("circling_strength");
 
             //Position = new Vector3(0, 500, 1065)*1.4f;
             Position = initialPosition;
             //Position = new Vector3(0, 475, 1065)*1.2f;
 //            Target = new Vector3(0, 180, 0);
-            Up = new Vector3(0, 1, 0);
+            //Up = new Vector3(0, 1, 0);
 
-            NearClip = 1.0f;
-            FarClip = 10000.0f;
-            FovRadians = MathHelper.ToRadians(33.0f);
+            NearClip = renderer.EntityManager["camera"].GetFloat("near_clip");//1.0f;
+            FarClip = renderer.EntityManager["camera"].GetFloat("far_clip"); //10000.0f;
+            FovRadians = MathHelper.ToRadians(renderer.EntityManager["camera"].GetFloat("fov")); //MathHelper.ToRadians(33.0f);
             //FovRadians = MathHelper.ToRadians(30.0f);
             //FovRadians = MathHelper.ToRadians(27.0f);
             
@@ -64,6 +70,7 @@ namespace ProjectMagma.Renderer
 
             Vector3 circleOffset = (float)Math.Sin(renderer.Time.At * 0.002f) * 12.0f * Up
                    + (float)Math.Cos(renderer.Time.At * 0.002f) * 7.0f * Vector3.Left;
+            circleOffset *= circlingStrength;
 
             //Position = centerController.Value + circleOffset + Vector3.Up * (a + (b - maxWorldY));
             Position = centerController.Value + circleOffset;// +Vector3.Up * (a + (b - maxWorldY));
@@ -84,7 +91,7 @@ namespace ProjectMagma.Renderer
             pos.Y = Math.Max(pos.Y, 100.0f);
             pos.Y = Math.Min(pos.Y, 800.0f);
             pos.Z = Math.Max(pos.Z, 700.0f);
-            pos.Z = Math.Min(pos.Z, 1500.0f);
+            pos.Z = Math.Min(pos.Z, 1400.0f);
             centerController.TargetValue = pos;
         }
 

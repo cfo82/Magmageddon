@@ -63,8 +63,14 @@ namespace ProjectMagma.Renderer
             SetFloatFromEntity("FogZMul", "fog", "fog_z_mul");
             SetFloatFromEntity("FogYOff", "fog", "fog_y_off");
             SetFloatFromEntity("FogYMul", "fog", "fog_y_mul");
-            SetFloatFromEntity("FogGlobMul", "fog", "fog_glob_mul");
+            //SetFloatFromEntity("FogGlobMul", "fog", "fog_glob_mul");
             SetVector3FromEntity("FogColor", "fog", "fog_color");
+            //SetVector3FromEntity("CameraFogMul", "camera", "fog_multiplier");
+
+            hdrCombineEffect.Parameters["FogGlobMul"].SetValue(
+                Renderer.EntityManager["fog"].GetFloat("fog_glob_mul") *
+                Renderer.EntityManager["camera"].GetFloat("fog_multiplier")
+            );
 
             SetFloatFromEntity("BlueTopOverlayStrength", "topoverlay", "strength");
 

@@ -1,6 +1,141 @@
 ﻿<?xml version="1.0" encoding="utf-8" ?>
 <!DOCTYPE Level SYSTEM "../Levels.dtd">
 <Level>
+  <Entity name="camera_top_MAIN">
+    <Attributes>
+      <Attribute name="is_moving" template="bool" value="false"/>
+      <Attribute name="moving_speed" template="float" value="0"/>
+      <Attribute name="position" template="float3" value="0 800 0"/>
+      <Attribute name="target" template="float3" value="0 300 0"/>
+      <Attribute name="up" template="float3" value="0 0 -1"/>
+      <Attribute name="near_clip" template="float" value="1"/>
+      <Attribute name="far_clip" template="float" value="10000"/>
+      <Attribute name="fov" template="float" value="85"/>
+      <Attribute name="circling_strength" template="float" value="0.5"/>
+      <Attribute name="fog_multiplier" template="float" value="1.7"/>
+    </Attributes>
+  </Entity>
+
+  <Entity name="camera_top_STAIRCASE">
+    <Attributes>
+      <Attribute name="is_moving" template="bool" value="false"/>
+      <Attribute name="moving_speed" template="float" value="0"/>
+      <Attribute name="position" template="float3" value="0 800 -250"/>
+      <Attribute name="target" template="float3" value="0 300 -250"/>
+      <Attribute name="up" template="float3" value="0 0 -1"/>
+      <Attribute name="near_clip" template="float" value="1"/>
+      <Attribute name="far_clip" template="float" value="10000"/>
+      <Attribute name="fov" template="float" value="85"/>
+      <Attribute name="circling_strength" template="float" value="0.5"/>
+      <Attribute name="fog_multiplier" template="float" value="1.7"/>
+    </Attributes>
+  </Entity>
+
+  <Entity name="camera_iso_STAIRCASE">
+    <Attributes>
+      <Attribute name="is_moving" template="bool" value="false"/>
+      <Attribute name="moving_speed" template="float" value="0"/>
+      <Attribute name="position" template="float3" value="0 1450 2400"/>
+      <Attribute name="target" template="float3" value="0 300 0"/>
+      <Attribute name="up" template="float3" value="0 1 0"/>
+      <Attribute name="near_clip" template="float" value="1"/>
+      <Attribute name="far_clip" template="float" value="10000"/>
+      <Attribute name="fov" template="float" value="15"/>
+      <Attribute name="circling_strength" template="float" value="2.5"/>
+      <Attribute name="fog_multiplier" template="float" value="0.7"/>
+    </Attributes>
+  </Entity>
+
+  <Entity name="camera_iso_MAIN">
+    <Attributes>
+      <Attribute name="is_moving" template="bool" value="true"/>
+      <Attribute name="moving_speed" template="float" value="0"/>
+      <Attribute name="position" template="float3" value="0 1450 2400"/>
+      <Attribute name="target" template="float3" value="0 300 0"/>
+      <Attribute name="up" template="float3" value="0 1 0"/>
+      <Attribute name="near_clip" template="float" value="1"/>
+      <Attribute name="far_clip" template="float" value="10000"/>
+      <Attribute name="fov" template="float" value="15"/>
+      <Attribute name="circling_strength" template="float" value="2.5"/>
+      <Attribute name="fog_multiplier" template="float" value="0.1"/>
+    </Attributes>
+  </Entity>
+
+  <Entity name="camera_wide_STAIRCASE">
+    <Attributes>
+      <Attribute name="is_moving" template="bool" value="false"/>
+      <Attribute name="moving_speed" template="float" value="0"/>
+      <Attribute name="position" template="float3" value="0 130 300"/>
+      <Attribute name="target" template="float3" value="0 100 0"/>
+      <Attribute name="up" template="float3" value="0 1 0"/>
+      <Attribute name="near_clip" template="float" value="1"/>
+      <Attribute name="far_clip" template="float" value="10000"/>
+      <Attribute name="fov" template="float" value="65"/>
+      <Attribute name="circling_strength" template="float" value="0.5"/>
+      <Attribute name="fog_multiplier" template="float" value="1"/>
+    </Attributes>
+  </Entity>
+
+  <Entity name="camera_wide_VORTEX">
+    <Attributes>
+      <Attribute name="is_moving" template="bool" value="false"/>
+      <Attribute name="moving_speed" template="float" value="0"/>
+      <Attribute name="position" template="float3" value="-150 180 550"/>
+      <Attribute name="target" template="float3" value="0 120 0"/>
+      <Attribute name="up" template="float3" value="0 1 0"/>
+      <Attribute name="near_clip" template="float" value="1"/>
+      <Attribute name="far_clip" template="float" value="10000"/>
+      <Attribute name="fov" template="float" value="65"/>
+      <Attribute name="circling_strength" template="float" value="0.5"/>
+      <Attribute name="fog_multiplier" template="float" value="1"/>
+    </Attributes>
+  </Entity>
+
+
+  <Entity name="camera_wide_PILLARS">
+    <Attributes>
+      <Attribute name="is_moving" template="bool" value="false"/>
+      <Attribute name="moving_speed" template="float" value="0"/>
+      <Attribute name="position" template="float3" value="-100 345 480"/>
+      <Attribute name="target" template="float3" value="50 140 0"/>
+      <Attribute name="up" template="float3" value="0 1 0"/>
+      <Attribute name="near_clip" template="float" value="1"/>
+      <Attribute name="far_clip" template="float" value="10000"/>
+      <Attribute name="fov" template="float" value="65"/>
+      <Attribute name="circling_strength" template="float" value="4"/>
+      <Attribute name="fog_multiplier" template="float" value="1"/>
+    </Attributes>
+  </Entity>
+
+  <Entity name="camera_wide_TREE">
+    <Attributes>
+      <Attribute name="is_moving" template="bool" value="false"/>
+      <Attribute name="moving_speed" template="float" value="0"/>
+      <Attribute name="position" template="float3" value="0 500 600"/>
+      <Attribute name="target" template="float3" value="50 140 0"/>
+      <Attribute name="up" template="float3" value="0 1 0"/>
+      <Attribute name="near_clip" template="float" value="1"/>
+      <Attribute name="far_clip" template="float" value="10000"/>
+      <Attribute name="fov" template="float" value="85"/>
+      <Attribute name="circling_strength" template="float" value="1"/>
+      <Attribute name="fog_multiplier" template="float" value="1"/>
+    </Attributes>
+  </Entity
+  <Entity name="camera">
+    <Attributes>
+      <Attribute name="is_moving" template="bool" value="true"/>
+      <Attribute name="moving_speed" template="float" value="0.004"/>
+      <Attribute name="position" template="float3" value="0 450 1065"/>
+      <Attribute name="target" template="float3" value="0 180 0"/>
+      <Attribute name="up" template="float3" value="0 1 0"/>
+      <Attribute name="near_clip" template="float" value="1"/>
+      <Attribute name="far_clip" template="float" value="10000"/>
+      <Attribute name="fov" template="float" value="33"/>
+      <Attribute name="circling_strength" template="float" value="1"/>
+      <Attribute name="fog_multiplier" template="float" value="1"/>
+    </Attributes>
+  </Entity>
+  
   <Entity name="respawn_spot_base" abstract="true">
     <Attributes>
       <Attribute name="alpha" template="float" value="0.5"/>

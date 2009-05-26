@@ -78,7 +78,6 @@ namespace ProjectMagma
                         buttonPressedAt = at;
                     }
                     else
-                    {
                         if ((gamePadState.Buttons.B == ButtonState.Pressed
                             && lastGPState.Buttons.B == ButtonState.Released)
                             || (keyboardState.IsKeyDown(Keys.Back)
@@ -87,7 +86,18 @@ namespace ProjectMagma
                             CloseActiveMenuScreen(true);
                             buttonPressedAt = at;
                         }
-                    }
+                        else
+                            if ((gamePadState.Buttons.Y == ButtonState.Pressed
+                                && lastGPState.Buttons.Y == ButtonState.Released))
+                            {
+                                Hidden = true;
+                            }
+                            else
+                                if ((gamePadState.Buttons.Y == ButtonState.Released
+                                    && lastGPState.Buttons.Y == ButtonState.Pressed))
+                                {
+                                    Hidden = false;
+                                }
                 }
 
                 if (currentActiveScreen != activeScreen)
@@ -127,7 +137,7 @@ namespace ProjectMagma
 
         internal void Draw(GameTime gameTime)
         {
-            if (active)
+            if (Active && !Hidden)
             {
                 int screenWidth = Game.Instance.GraphicsDevice.Viewport.Width;
                 float screenscale = (float)screenWidth / 1280f;
@@ -272,6 +282,8 @@ namespace ProjectMagma
         {
             get { return active; }
         }
+
+        private bool Hidden { get; set; }
 
         public SpriteFont StaticStringFont { get; set; }
         public SpriteFont StaticStringFontSmall { get; set; }

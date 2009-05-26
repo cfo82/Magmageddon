@@ -87,11 +87,9 @@ namespace ProjectMagma
 
             this.IsFixedTimeStep = false;
             //this.TargetElapsedTime = TimeSpan.FromSeconds(1.0 / 15.0);
-            graphics.SynchronizeWithVerticalRetrace = false; 
-            graphics.ApplyChanges();
             const float multiplier = 1.0f;
-            graphics.PreferredBackBufferWidth = (int) (1280 * multiplier);
-            graphics.PreferredBackBufferHeight = (int) (720 * multiplier);
+            graphics.PreferredBackBufferWidth = (int)(1280 * multiplier);
+            graphics.PreferredBackBufferHeight = (int)(720 * multiplier);
 
             Window.Title = "Project Magma";
             ContentManager.RootDirectory = "Content";
@@ -132,6 +130,10 @@ namespace ProjectMagma
         {
             // TODO: Add your initialization logic here
             base.Initialize();
+
+            graphics.SynchronizeWithVerticalRetrace = false;
+            graphics.IsFullScreen = false;
+            graphics.ApplyChanges();
         }
 
         /// <summary>

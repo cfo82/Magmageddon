@@ -1834,12 +1834,13 @@ namespace ProjectMagma.Simulation
         {
             int cnt = Game.Instance.Simulation.IslandManager.Count;
             Entity island = Game.Instance.Simulation.IslandManager[0];
-            // try at most count*2 times
-            int i = 0;
-            for(; i < cnt*10; i++)
+            // try at most rounds times
+            const int rounds = 3;
+            int start = rand.Next(cnt - 1);
+            for (int i = 0; i < cnt * rounds; i++)
             {
                 bool valid = true;
-                int islandNo = rand.Next(Game.Instance.Simulation.IslandManager.Count - 1);
+                int islandNo = (start + i) % cnt;
                 island = Game.Instance.Simulation.IslandManager[islandNo];
 
                 // check if there is an island above this one
@@ -1849,52 +1850,67 @@ namespace ProjectMagma.Simulation
                     {
                         float radius = (island.GetVector3("scale") * new Vector3(1,0,1)).Length();
                         float otherRadius = (other.GetVector3("scale") * new Vector3(1, 0, 1)).Length();
-                        float dist = (island.GetVector3("position") - other.GetVector3("position")).Length();
+                        Vector3 pos = island.GetVector3("position");
+                        Vector3 opos = other.GetVector3("position");
+                        float dist = (pos - opos).Length();
                         // are they overlapping in xz?
-                        if (dist < radius + otherRadius)
+                        if (dist < radius + otherRadius && opos.Y > pos.Y)
                         {
+//                            Console.WriteLine("selected island "+other.Name+" above "+island.Name);
                             island = other;
                             break;
                         }
                     }
                 }
 
-                // check island is high enough
-                if (island.GetVector3("position").Y < 80) // todo: extract constant
-                {
-                    continue;
-                }
-
                 // check no players on island
                 if (island.GetInt("players_on_island") > 0)
                 {
                     valid = false;
+//                    Console.WriteLine("player: " + player.Name + " rejected island: " + island.Name + " (" + island.GetInt("players_on_island") + ")");
                 }
 
-                // for 3RD round (> cnt*2) we accept respawn on powerups
-                if (i < cnt*2)
+                // for 3rd round we accept low y islands
+                if (i < cnt * 2)
                 {
-                    // check no powerup on island
-                    foreach (Entity powerup in Game.Instance.Simulation.PowerupManager)
+                    // check island is high enough
+                    if (island.GetVector3("position").Y < 100) // todo: extract constant
                     {
-                        if (island.Name == powerup.GetString("island_reference"))
-                        {
-                            valid = false;
-                            break;
-                        }
+                        valid = false;
                     }
 
-                    // check island is far enough away from other players,
-                    foreach (Entity p in Game.Instance.Simulation.PlayerManager)
+                    // for 2nd round (> cnt*2) we accept respawn on powerups
+                    if (i < cnt)
                     {
-                        Vector3 dist = island.GetVector3("position") - p.GetVector3("position");
-                        dist.Y = 0; // ignore y component
-                        if (dist.Length() < constants.GetFloat("respawn_min_distance_to_players"))
+                        // check no powerup on island
+                        foreach (Entity powerup in Game.Instance.Simulation.PowerupManager)
                         {
-                            valid = false;
-                            break;
+                            if (island.Name == powerup.GetString("island_reference"))
+                            {
+                                valid = false;
+                                break;
+                            }
+                        }
+
+                        // check island is far enough away from other players,
+                        foreach (Entity p in Game.Instance.Simulation.PlayerManager)
+                        {
+                            Vector3 dist = island.GetVector3("position") - p.GetVector3("position");
+                            dist.Y = 0; // ignore y component
+                            if (dist.Length() < constants.GetFloat("respawn_min_distance_to_players"))
+                            {
+                                valid = false;
+                                break;
+                            }
                         }
                     }
+                }
+
+                // re-random each round
+                if (i % cnt == 0
+                    && i > 0)
+                {
+                    start = rand.Next(cnt - 1);
                 }
 
                 if (valid)

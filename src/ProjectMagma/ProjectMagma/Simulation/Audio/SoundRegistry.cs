@@ -19,6 +19,7 @@ namespace ProjectMagma.Simulation
             caveBackgroundLoop = sounds.HasString(CaveBackgroundLoopKey) ? sounds.GetString(CaveBackgroundLoopKey) : "";
             lavaBackgroundLoop = sounds.HasString(LavaBackgroundLoopKey) ? sounds.GetString(LavaBackgroundLoopKey) : "";
             meleeHit = sounds.HasString(MeleeHitKey) ? sounds.GetString(MeleeHitKey) : "";
+            meleeNotHit = sounds.HasString(MeleeNotHitKey) ? sounds.GetString(MeleeNotHitKey) : "";
             flameThrowerStart = sounds.HasString(FlameThrowerStartKey) ? sounds.GetString(FlameThrowerStartKey) : "";
             flameThrowerLoop = sounds.HasString(FlameThrowerLoopKey) ? sounds.GetString(FlameThrowerLoopKey) : "";
             flameThrowerEnd = sounds.HasString(FlameThrowerEndKey) ? sounds.GetString(FlameThrowerEndKey) : "";
@@ -27,6 +28,7 @@ namespace ProjectMagma.Simulation
             iceSpikeExplosionOnPlayer = sounds.HasString(IceSpikeExplosionOnPlayerKey) ? sounds.GetString(IceSpikeExplosionOnPlayerKey) : "";
             iceSpikeExplosionOnEnvironment = sounds.HasString(IceSpikeExplosionOnEnvironmentKey) ? sounds.GetString(IceSpikeExplosionOnEnvironmentKey) : "";
             takeDamage = sounds.HasString(TakeDamageKey) ? sounds.GetString(TakeDamageKey) : "";
+            playerDies = sounds.HasString(PlayerDiesKey) ? sounds.GetString(PlayerDiesKey) : "";
             respawn = sounds.HasString(RespawnKey) ? sounds.GetString(RespawnKey) : "";
             powerupHealthTaken = sounds.HasString(PowerupHealthTakenKey) ? sounds.GetString(PowerupHealthTakenKey) : "";
             powerupEnergyTaken = sounds.HasString(PowerupEnergyTakenKey) ? sounds.GetString(PowerupEnergyTakenKey) : "";
@@ -39,6 +41,9 @@ namespace ProjectMagma.Simulation
             repulsionStart = sounds.HasString(RepulsionStartKey) ? sounds.GetString(RepulsionStartKey) : "";
             repulsionLoop = sounds.HasString(RepulsionLoopKey) ? sounds.GetString(RepulsionLoopKey) : "";
             repulsionEnd = sounds.HasString(RepulsionEndKey) ? sounds.GetString(RepulsionEndKey) : "";
+            jetpackStart = sounds.HasString(JetpackStartKey) ? sounds.GetString(JetpackStartKey) : "";
+            jetpackLoop = sounds.HasString(JetpackLoopKey) ? sounds.GetString(JetpackLoopKey) : "";
+            jetpackEnd = sounds.HasString(JetpackEndKey) ? sounds.GetString(JetpackEndKey) : "";
         }
 
         public string BackgroundMusic
@@ -59,6 +64,11 @@ namespace ProjectMagma.Simulation
         public string MeleeHit
         {
             get { return meleeHit; }
+        }
+
+        public string MeleeNotHit
+        {
+            get { return meleeNotHit; }
         }
 
         public string FlameThrowerStart
@@ -99,6 +109,11 @@ namespace ProjectMagma.Simulation
         public string TakeDamage
         {
             get { return takeDamage; }
+        }
+
+        public string PlayerDies
+        {
+            get { return playerDies; }
         }
 
         public string Respawn
@@ -161,11 +176,27 @@ namespace ProjectMagma.Simulation
             get { return repulsionEnd; }
         }
 
+        public string JetpackStart
+        {
+            get { return jetpackStart; }
+        }
+
+        public string JetpackLoop
+        {
+            get { return jetpackLoop; }
+        }
+
+        public string JetpackEnd
+        {
+            get { return jetpackEnd; }
+        }
+
         private string backgroundMusic;
         private string caveBackgroundLoop;
         private string lavaBackgroundLoop;
 
         private string meleeHit;
+        private string meleeNotHit;
         private string flameThrowerStart;
         private string flameThrowerLoop;
         private string flameThrowerEnd;
@@ -175,6 +206,7 @@ namespace ProjectMagma.Simulation
         private string iceSpikeExplosionOnEnvironment;
 
         private string takeDamage;
+        private string playerDies;
         private string respawn;
         private string powerupHealthTaken;
         private string powerupEnergyTaken;
@@ -188,6 +220,9 @@ namespace ProjectMagma.Simulation
         private string repulsionStart;
         private string repulsionLoop;
         private string repulsionEnd;
+        private string jetpackStart;
+        private string jetpackLoop;
+        private string jetpackEnd;
 
         // menu is not maintained in this class since it is not part of 
         // the simulation!
@@ -196,6 +231,7 @@ namespace ProjectMagma.Simulation
         private static readonly string CaveBackgroundLoopKey = "cave_background_loop";
         private static readonly string LavaBackgroundLoopKey = "lava_background_loop";
         private static readonly string MeleeHitKey = "melee_hit";
+        private static readonly string MeleeNotHitKey = "melee_not_hit";
         private static readonly string FlameThrowerStartKey = "flame_thrower_start";
         private static readonly string FlameThrowerLoopKey = "flame_thrower_loop";
         private static readonly string FlameThrowerEndKey = "flame_thrower_end";
@@ -204,6 +240,7 @@ namespace ProjectMagma.Simulation
         private static readonly string IceSpikeExplosionOnPlayerKey = "ice_spike_explosion_on_player";
         private static readonly string IceSpikeExplosionOnEnvironmentKey = "ice_spike_explosion_on_environment";
         private static readonly string TakeDamageKey = "take_damage";
+        private static readonly string PlayerDiesKey = "player_dies";
         private static readonly string RespawnKey = "respawn";
         private static readonly string PowerupHealthTakenKey = "powerup_health_taken";
         private static readonly string PowerupEnergyTakenKey = "powerup_energy_taken";
@@ -216,5 +253,8 @@ namespace ProjectMagma.Simulation
         private static readonly string RepulsionStartKey = "repulsion_start";
         private static readonly string RepulsionLoopKey = "repulsion_loop";
         private static readonly string RepulsionEndKey = "repulsion_end";
+        private static readonly string JetpackStartKey = "jetpack_start";
+        private static readonly string JetpackLoopKey = "jetpack_loop";
+        private static readonly string JetpackEndKey = "jetpack_end";
     }
 }

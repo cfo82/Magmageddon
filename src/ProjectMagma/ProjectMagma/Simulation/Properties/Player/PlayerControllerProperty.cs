@@ -368,7 +368,7 @@ namespace ProjectMagma.Simulation
             {
                 player.GetProperty<RobotRenderProperty>("render").NextOnceState = "hit";
                 // todo: needs meele NOT hit here
-                Game.Instance.AudioPlayer.Play(Game.Instance.Simulation.SoundRegistry.MeleeHit);
+                Game.Instance.AudioPlayer.Play(Game.Instance.Simulation.SoundRegistry.MeleeNotHit);
             }
 
             Debug.Assert(!(selectedIsland == null) || !arrow.HasProperty("render"));
@@ -1168,7 +1168,7 @@ namespace ProjectMagma.Simulation
 
                 if (!jetpackActive)
                 {
-                    jetpackSoundInstance = Game.Instance.AudioPlayer.Play("Sounds/jetpack");
+                    jetpackSoundInstance = Game.Instance.AudioPlayer.Play(Game.Instance.Simulation.SoundRegistry.JetpackStart);
                     jetpackActive = true;
                 }
 
@@ -1227,7 +1227,7 @@ namespace ProjectMagma.Simulation
                     if (simpleJumpIsland != null)
                         StopSimpleJump();
 
-                    Game.Instance.AudioPlayer.Play("Sounds/respawn/power_out");
+                    Game.Instance.AudioPlayer.Play(Game.Instance.Simulation.SoundRegistry.PlayerDies);
                     player.SetInt("deaths", player.GetInt("deaths") + 1);
                     player.SetInt("lives", player.GetInt("lives") - 1);
 

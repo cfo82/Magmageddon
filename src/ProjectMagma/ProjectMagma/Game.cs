@@ -142,6 +142,7 @@ namespace ProjectMagma
         /// </summary>
         protected override void LoadContent()
         {
+            SoundEffect.MasterVolume = EffectsVolume;
             MediaPlayer.Volume = MusicVolume;
 
             crashDebugger = new CrashDebugger(GraphicsDevice, ContentManager);
@@ -165,9 +166,9 @@ namespace ProjectMagma
              
 #if DEBUG
             // initialize simulation
-            //LoadLevel("Level/Instances/TestLevel/Simulation", "Level/Instances/TestLevel/Renderer");
+            LoadLevel("Level/Instances/TestLevel/Simulation", "Level/Instances/TestLevel/Renderer");
             //LoadLevel("Level/Instances/4vs4/Simulation", "Level/Instances/4vs4/Renderer");
-            LoadLevel("Level/Instances/StaircaseOfDoom/Simulation", "Level/Instances/StaircaseOfDoom/Renderer");
+            //LoadLevel("Level/Instances/StaircaseOfDoom/Simulation", "Level/Instances/StaircaseOfDoom/Renderer");
             //LoadLevel("Level/Instances/Stack/Simulation", "Level/Instances/Stack/Renderer");
             //LoadLevel("Level/Instances/4Noobs/Simulation", "Level/Instances/4Noobs/Renderer");
 
@@ -181,7 +182,7 @@ namespace ProjectMagma
             // set default player
             Entity player2 = new Entity("player2");
             player2.AddIntAttribute("game_pad_index", 1);
-            player2.AddIntAttribute("lives", 100);
+            player2.AddIntAttribute("lives", 1);
             player2.AddStringAttribute("robot_entity", robots[1].Entity);
             player2.AddStringAttribute("player_name", robots[1].Name);
     #if ALWAYS_FOUR_PLAYERS
@@ -645,8 +646,8 @@ namespace ProjectMagma
 
         public class Settings
         {
-            public float effectsVolume = 0.2f;
-            public float musicVolume = 0.1f;
+            public float effectsVolume = 0.5f;
+            public float musicVolume = 0.2f;
         }
 
         #endregion 

@@ -60,9 +60,21 @@ namespace ProjectMagma.Simulation
                     { MediaPlayer.Stop(); }
                 else
                 {
-                    MediaPlayer.Play(Game.Instance.ContentManager.Load<Song>(soundRegistry.BackgroundMusic));
+                    string backgroundMusic = soundRegistry.BackgroundMusic;
+                    float volume = 1.0f;
+                    if (backgroundMusic.IndexOf(':') >= 0)
+                    {
+                        volume = float.Parse(backgroundMusic.Substring(backgroundMusic.IndexOf(':') + 1));
+                        backgroundMusic = backgroundMusic.Substring(0, backgroundMusic.IndexOf(':'));
+                    }
+
+                    MediaPlayer.Play(Game.Instance.ContentManager.Load<Song>(backgroundMusic));
+                    MediaPlayer.Volume = Game.Instance.MusicVolume * volume;
                     MediaPlayer.IsRepeating = true;
                 }
+
+                Game.Instance.AudioPlayer.Play(soundRegistry.CaveBackgroundLoop, true);
+                Game.Instance.AudioPlayer.Play(soundRegistry.LavaBackgroundLoop, true);
 
                 return EndOperation();
             }

@@ -21,11 +21,26 @@ namespace ProjectMagma
             // it may be that the sound overwrites the volume provided
             if (chosenSound.IndexOf(':') >= 0)
             {
-                chosenSound = chosenSound.Substring(0, chosenSound.IndexOf(':'));
                 volume = float.Parse(chosenSound.Substring(chosenSound.IndexOf(':') + 1));
+                chosenSound = chosenSound.Substring(0, chosenSound.IndexOf(':'));
             }
 
             return Play(chosenSound, volume);
+        }
+
+        public SoundEffectInstance Play(string sound, bool loop)
+        {
+            // let's see if the sound provides a volume...
+            float volume = 1.0f;
+            string chosenSound = PickOne(sound);
+            // it may be that the sound overwrites the volume provided
+            if (chosenSound.IndexOf(':') >= 0)
+            {
+                volume = float.Parse(chosenSound.Substring(chosenSound.IndexOf(':') + 1));
+                chosenSound = chosenSound.Substring(0, chosenSound.IndexOf(':'));
+            }
+
+            return Play(chosenSound, volume, loop);
         }
 
         public SoundEffectInstance Play(string sound, float volume)
@@ -47,7 +62,7 @@ namespace ProjectMagma
                 chosenSound = chosenSound.Substring(0, chosenSound.IndexOf(':'));
             }
             SoundEffect soundEffect = Game.Instance.ContentManager.Load<SoundEffect>(chosenSound);
-            SoundEffectInstance instance = soundEffect.Play(volume * Game.Instance.EffectsVolume, 0, 0, loop);
+            SoundEffectInstance instance = soundEffect.Play(volume, 0, 0, loop);
             effectInstances.Add(instance);
             return instance;
         }

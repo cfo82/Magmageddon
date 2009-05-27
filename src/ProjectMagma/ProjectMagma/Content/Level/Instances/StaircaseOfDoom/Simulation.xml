@@ -21,7 +21,7 @@
 
   <Entity name="sound" extends="sound_base">
     <Attributes>
-      <Attribute name="background_music" template="string" value="Music/juno_reactor_vs_don_davis_navras"/>
+      <Attribute name="background_music" template="string" value="Music/juno_reactor_vs_don_davis_navras:0.5"/>
     </Attributes>
   </Entity>
   

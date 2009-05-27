@@ -217,8 +217,7 @@ namespace ProjectMagma.Simulation
         private void IceSpikePlayerCollisionHandler(SimulationTime simTime, Entity iceSpike, Entity player)
         {
             // indicate hit
-            SoundEffect soundEffect = Game.Instance.ContentManager.Load<SoundEffect>("Sounds/sword-clash");
-            soundEffect.Play(Game.Instance.EffectsVolume);
+            Game.Instance.AudioPlayer.Play(Game.Instance.Simulation.SoundRegistry.IceSpikeExplosionOnPlayer);
         }
 
         private void OnEntityRemoved(AbstractEntityManager<Entity> manager, Entity entity)

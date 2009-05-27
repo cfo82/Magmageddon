@@ -19,6 +19,9 @@
   
   
   <Entity name="sound" extends="sound_base">
+    <Attributes>
+      <Attribute name="background_music" template="string" value="Music/menu_level1:0.8"/>
+    </Attributes>
   </Entity>
 
   <!-- "unique" game entities -->

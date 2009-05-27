@@ -868,7 +868,7 @@
     <Compile Include="Sounds\ambient\desert_wind.MP3">
       <Name>desert_wind</Name>
       <Importer>Mp3Importer</Importer>
-      <Processor>SongProcessor</Processor>
+      <Processor>SoundEffectProcessor</Processor>
     </Compile>
     <Compile Include="Sounds\ambient\howling_wind.MP3">
       <Name>howling_wind</Name>

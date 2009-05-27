@@ -9,7 +9,7 @@
 
   <Entity name="sound" extends="sound_base">
     <Attributes>
-      <Attribute name="background_music" template="string" value="Music/menu_level1"/>
+      <Attribute name="background_music" template="string" value="Music/menu_level1:1"/>
     </Attributes>
   </Entity>
 

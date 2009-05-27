@@ -89,7 +89,6 @@ namespace ProjectMagma.Renderer
             RecomputeWorldMatrix();
             RecomputeBoneTransforms();
 
-
 //            model.CopyAbsoluteBoneTransformsTo(transforms);
 
             // shadows should be floating a little above the receiving surface
@@ -97,19 +96,32 @@ namespace ProjectMagma.Renderer
             foreach (ModelMesh mesh in Model.Meshes)
             {
                 //ApplyMeshWorldViewProjection(renderer, renderer.ShadowEffect, mesh);
-                Matrix world_offset = BoneTransformMatrix(mesh) * World;
+                Matrix world_offset = World;
                 world_offset *= Matrix.CreateTranslation(new Vector3(0, 3, 0));
-
                 
                 Effect effect = renderer.ShadowEffect;
-
+                
+                // hack
+                if (this is BasicRenderable)
+                {
+                    BasicRenderable this_basic = this as BasicRenderable;
+                    if (this_basic.UseSquash) this_basic.ApplySquashParameters(effect, renderer);
+                }
+                // endhack
                 renderer.Device.RenderState.DepthBufferEnable = true;
                 effect.CurrentTechnique = effect.Techniques["DepthMap"];
                 effect.Parameters["LightPosition"].SetValue(renderer.LightPosition);
+
+                effect.Parameters["Local"].SetValue(BoneTransformMatrix(mesh));
                 effect.Parameters["World"].SetValue(world_offset);
 
-                effect.Parameters["WorldLightViewProjection"].SetValue(
-                    world_offset * renderer.LightView * renderer.LightProjection);
+                //world_offset *= Matrix.CreateTranslation(new Vector3(0, 3, 0));
+
+                //effect.Parameters["WorldLightViewProjection"].SetValue(
+                //    world_offset * renderer.LightView * renderer.LightProjection);
+
+                effect.Parameters["LightViewProjection"].SetValue(
+                    renderer.LightView * renderer.LightProjection);
 
 
                 Effect backup = mesh.MeshParts[0].Effect;

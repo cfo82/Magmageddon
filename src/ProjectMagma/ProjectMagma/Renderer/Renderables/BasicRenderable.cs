@@ -1,5 +1,6 @@
 ﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
+using System;
 
 namespace ProjectMagma.Renderer
 {
@@ -141,7 +142,7 @@ namespace ProjectMagma.Renderer
             //effect.Parameters["EyePosition"].SetValue(Game.Instance.EyePosition);
         }
 
-        private void ApplySquashParameters(Effect effect, Renderer renderer)
+        public /* hack */ void ApplySquashParameters(Effect effect, Renderer renderer)
         {
             double time_since_last_squash = renderer.Time.At - last_squash_start;
             if (time_since_last_squash > 0 && time_since_last_squash <= squash_wavelength / 2)
@@ -267,7 +268,7 @@ namespace ProjectMagma.Renderer
 
         protected bool UseLights { get; set; }
         protected bool UseMaterialParameters { get; set; }
-        protected bool UseSquash { get; set; }
+        public bool UseSquash { get; set; }
         protected bool UseBlinking { get; set; }
     }
 }

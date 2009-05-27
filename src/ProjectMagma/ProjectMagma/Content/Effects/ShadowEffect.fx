@@ -66,6 +66,19 @@ sampler shadowSampler = sampler_state
 //It's just like a normal shader, except instead of colouring the models with a texture,
 //it gives the pixels a colour based on their distance from the light.
 
+float SquashAmount;
+float4x4 squashMatrix()
+{
+	return float4x4
+	(
+		lerp(1.0f, sqrt(2.0f), SquashAmount), 0.0f, 0.0f, 0.0f,
+		0.0f, lerp(1.0f, 0.5f, SquashAmount), 0.0f, 0.0f,
+		0.0f, 0.0f, lerp(1.0f, sqrt(2.0f), SquashAmount), 0.0f,
+		0.0f, -SquashAmount*0.6f, 0.0f, 1.0f
+	);
+}
+float4x4 Local = 1;
+float4x4 LightViewProjection;
 
 DEPTH_VS_OUTPUT Depth_VS (VS_INPUT Input)
 {
@@ -73,14 +86,22 @@ DEPTH_VS_OUTPUT Depth_VS (VS_INPUT Input)
     
     // Our standard WVP multiply, using the light's 
     //View and Projection matrices
-    Output.Position = mul(Input.Position, WorldLightViewProjection);
+    //Output.Position = mul(Input.Position, WorldLightViewProjection);
+
+
+    float4 pos_ls = mul(Input.Position, Local);
+    float4 pos_ss = mul(pos_ls, squashMatrix());
+    float4 pos_ws = mul(pos_ss, World);
+    float4 pos_ps = mul(pos_ws, LightViewProjection);
+
+	Output.Position = pos_ps/pos_ps.w;
 
     // We also keep a copy of our position that is only 
     //multiplied by the world matrix. This is
     // because we do not want the camera's angle/position to 
     //affect our distance calculations
-    Output.WorldPosition = mul(Input.Position, World);
-    Output.WorldPosition /= Output.WorldPosition.w;
+    Output.WorldPosition = pos_ws/pos_ws.w;
+    //Output.WorldPosition /= Output.WorldPosition.w;
     
     return Output;
 }
@@ -95,8 +116,8 @@ void Depth_PS (in DEPTH_VS_OUTPUT Input, out float4 outcolor : COLOR0)
     // float dist = length(LightPosition - Input.WorldPosition);
     
     // special case for us: orthographic from above:
-    float dist = LightPosition.y - Input.WorldPosition.y;
-    float depth = (dist - NearClip) / (FarClip - NearClip);
+    //float dist = LightPosition.y - Input.WorldPosition.y;
+    //float depth = (dist - NearClip) / (FarClip - NearClip);
     
     //return float4(depth,depth,depth,1);
     outcolor = Input.WorldPosition.y;
@@ -121,6 +142,7 @@ technique DepthMap
 SCENE_VS_OUTPUT Scene_VS (VS_INPUT Input)
 {
     SCENE_VS_OUTPUT Output;
+   
     
     Output.Position = mul(Input.Position, WorldCameraViewProjection);
 

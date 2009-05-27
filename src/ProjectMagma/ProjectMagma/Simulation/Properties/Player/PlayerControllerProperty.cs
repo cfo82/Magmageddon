@@ -1161,8 +1161,7 @@ namespace ProjectMagma.Simulation
 
         private void PerformJetpackMovement(SimulationTime simTime, float dt, ref Vector3 playerVelocity)
         {
-            if ((controllerInput.jumpButtonPressed
-                || controllerInput.jumpButtonHold)
+            if ((controllerInput.jumpButtonPressed || controllerInput.jumpButtonHold)
                 && activeIsland == null // only in air
                 && destinationIsland == null // not while jump
                 && simpleJumpIsland == null // dito
@@ -1465,11 +1464,11 @@ namespace ProjectMagma.Simulation
             // get theoretical position on island
             Vector3 playerPosition = player.GetVector3("position");
             Vector3 surfacePosition;
-            Simulation.GetPositionOnSurface(ref playerPosition, island, out surfacePosition);
+            bool canStand = Simulation.GetPositionOnSurface(ref playerPosition, island, out surfacePosition);
 
             // on top?
-            // todo: extract constant
-            if ((surfacePosition.Y - 10 < playerPosition.Y
+            // todo: extract constants
+            if (canStand  && (surfacePosition.Y - 10 < playerPosition.Y
                 && activeIsland == null) // don't allow switching of islands
                 || island == simpleJumpIsland)
             {
@@ -1553,7 +1552,11 @@ namespace ProjectMagma.Simulation
                         acc.Y = -acc.Y;
                     player.SetVector3("collision_pushback_velocity", player.GetVector3("collision_pushback_velocity")
                         + acc * simTime.Dt);
-                    player.SetVector3("velocity", Vector3.Zero);
+
+                    // slow down jetpack
+                    Vector3 velocity = player.GetVector3("velocity");
+                    Vector3 newVelocity = velocity - velocity * 0.9f * simTime.Dt * 25;
+                    player.SetVector3("velocity", newVelocity);
                 }
             }
         }

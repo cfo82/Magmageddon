@@ -267,6 +267,7 @@ namespace ProjectMagma.Simulation
                 if (// never do collision response with player who is standing or jumping on island
                     (other.HasString("active_island") && other.GetString("active_island") == island.Name)
                     || (other.HasString("jump_island") && other.GetString("jump_island") == island.Name)
+                    || (kind == "player" && other.GetString("active_island") == "") // don't react on flying players
                     || kind == "powerup" // with powerup neather
                     || other.HasBool("dynamic") // neither with dynamic entities
                     )

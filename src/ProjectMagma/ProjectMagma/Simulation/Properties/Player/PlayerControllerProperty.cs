@@ -1306,14 +1306,24 @@ namespace ProjectMagma.Simulation
 
                         player.SetInt("frozen", 0);
 
+                        // random island selection
+                        PositionOnRandomIsland();
+
                         // activate
                         player.AddProperty("collision", new CollisionProperty());
                         player.AddProperty("render", new RobotRenderProperty());
                         //player.AddProperty("shadow_cast", new ShadowCastProperty());
                         player.GetProperty<CollisionProperty>("collision").OnContact += PlayerCollisionHandler;
 
-                        // random island selection
-                        PositionOnRandomIsland();
+                        // indicate
+                        if (won == true)
+                        {
+                            player.GetProperty<RobotRenderProperty>("render").NextPermanentState = "win";
+                        }
+                        else
+                        {
+                            player.GetProperty<RobotRenderProperty>("render").NextPermanentState = "idle";
+                        }
 
                         // reset respawn timer
                         respawnStartedAt = 0;

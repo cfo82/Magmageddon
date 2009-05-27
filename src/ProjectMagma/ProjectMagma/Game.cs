@@ -61,7 +61,7 @@ namespace ProjectMagma
         private static Game instance;
 
         StorageDevice device;
-        bool storageAvailable = false;
+        bool storageAvailable = true;
         IAsyncResult storageSelectionResult;
 
         // framecounter
@@ -95,7 +95,7 @@ namespace ProjectMagma
             ContentManager.RootDirectory = "Content";
 
             // needed to show Guide, which is needed for storage, which is needed for saving stuff
-            this.Components.Add(new GamerServicesComponent(this));
+//            this.Components.Add(new GamerServicesComponent(this));
             this.globalClock = new GlobalClock();
             this.audioPlayer = new AudioPlayer();
         }
@@ -168,7 +168,7 @@ namespace ProjectMagma
             // initialize simulation
             //LoadLevel("Level/Instances/TestLevel/Simulation", "Level/Instances/TestLevel/Renderer");
             //LoadLevel("Level/Instances/4vs4/Simulation", "Level/Instances/4vs4/Renderer");
-            //LoadLevel("Level/Instances/StaircaseOfDoom/Simulation", "Level/Instances/StaircaseOfDoom/Renderer");
+            LoadLevel("Level/Instances/StaircaseOfDoom/Simulation", "Level/Instances/StaircaseOfDoom/Renderer");
             //LoadLevel("Level/Instances/Stack/Simulation", "Level/Instances/Stack/Renderer");
             LoadLevel("Level/Instances/4Noobs/Simulation", "Level/Instances/4Noobs/Renderer");
 
@@ -248,7 +248,7 @@ namespace ProjectMagma
             //MediaPlayer.Play(Game.Instance.ContentManager.Load<Song>("Music/background_janick"));
 
             // get storage device
-            storageSelectionResult = Guide.BeginShowStorageDeviceSelector(PlayerIndex.One, null, null);
+//            storageSelectionResult = Guide.BeginShowStorageDeviceSelector(PlayerIndex.One, null, null);
 
             // open menu
 #if !DEBUG
@@ -444,12 +444,14 @@ namespace ProjectMagma
             {
 #endif
                 // get storage device as soon as selected
+            /*
                 if (!storageAvailable && storageSelectionResult.IsCompleted)
                 {
                     device = Guide.EndShowStorageDeviceSelector(storageSelectionResult);
                     storageAvailable = true;
                     LoadSettings();
                 }
+             */
 
                 profiler.TryEndFrame();
                 profiler.BeginFrame();
@@ -571,7 +573,7 @@ namespace ProjectMagma
         public float EffectsVolume
         {
             get { return settings.effectsVolume; }
-            set { settings.effectsVolume = value; }
+            set { settings.effectsVolume = value; SoundEffect.MasterVolume = value; }
         }
 
         public float MusicVolume

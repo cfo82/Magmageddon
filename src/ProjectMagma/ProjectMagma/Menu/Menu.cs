@@ -212,7 +212,7 @@ namespace ProjectMagma
         public void OpenMenuScreen(MenuScreen screen, bool playsound)
         {
             if (playsound)
-                { Game.Instance.AudioPlayer.Play(Menu.OkSound); }
+                { Game.Instance.AudioPlayer.Play(Menu.OkSound, 1.4f); }
             screen.OnOpen();
             screen.DrawOffset.TargetValue = 0f;
             screen.DrawOffset.Value = 0f;
@@ -223,7 +223,7 @@ namespace ProjectMagma
         public void CloseActiveMenuScreen(bool playsound)
         {
             if (playsound)
-                { Game.Instance.AudioPlayer.Play(Menu.BackSound, 0.7f); }
+                { Game.Instance.AudioPlayer.Play(Menu.BackSound); }
             if (activeScreen == mainMenu)
             {
                 Close();

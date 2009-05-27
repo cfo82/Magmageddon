@@ -25,7 +25,7 @@ namespace ProjectMagma.Simulation
         private static readonly float StickMovementEps = 0.1f;
         
         // gamepad buttons
-        private static readonly float HitButtonTimeout = 4000;
+        private static readonly float HitButtonTimeout = 400;
         private static readonly Buttons[] RepulsionButtons = { Buttons.LeftTrigger };
         private static readonly Buttons[] jumpButtons = { Buttons.A };
         private static readonly Buttons[] IceSpikeButtons = { Buttons.X };
@@ -533,6 +533,8 @@ namespace ProjectMagma.Simulation
             if (controllerInput.jumpButtonPressed
                 && !repulsionActive // no jumps during repulsion
                 && activeIsland != null // and only when standing on island.. (obviously)
+                && Game.Instance.Simulation.Time.At > 
+                    islandJumpPerformedAt + 200
                 && player.GetInt("frozen") <= 0) // and not when frozen
             {
                 // island jump start

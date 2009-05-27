@@ -10,12 +10,22 @@ namespace ProjectMagma
     {
         public AudioPlayer()
         {
-            this.effectInstances = new HashSet<SoundEffectInstance>();
+            this.effectInstances = new List<SoundEffectInstance>();
         }
 
         public SoundEffectInstance Play(string sound)
         {
-            return Play(sound, 1.0f);
+            // let's see if the sound provides a volume...
+            float volume = 1.0f;
+            string chosenSound = PickOne(sound);
+            // it may be that the sound overwrites the volume provided
+            if (chosenSound.IndexOf(':') >= 0)
+            {
+                chosenSound = chosenSound.Substring(0, chosenSound.IndexOf(':'));
+                volume = float.Parse(chosenSound.Substring(chosenSound.IndexOf(':') + 1));
+            }
+
+            return Play(chosenSound, volume);
         }
 
         public SoundEffectInstance Play(string sound, float volume)
@@ -32,6 +42,10 @@ namespace ProjectMagma
 
             EnsureEffectInstanceAvailable();
             string chosenSound = PickOne(sound);
+            if (chosenSound.IndexOf(':') >= 0)
+            {
+                chosenSound = chosenSound.Substring(0, chosenSound.IndexOf(':'));
+            }
             SoundEffect soundEffect = Game.Instance.ContentManager.Load<SoundEffect>(chosenSound);
             SoundEffectInstance instance = soundEffect.Play(volume * Game.Instance.EffectsVolume, 0, 0, loop);
             effectInstances.Add(instance);
@@ -105,7 +119,7 @@ namespace ProjectMagma
 
         private static readonly int collectionThreshold = 50;
         private static readonly int maxSoundEffectInstances = 200;
-        private HashSet<SoundEffectInstance> effectInstances;
+        private List<SoundEffectInstance> effectInstances;
         private static Random random = new Random();
     }
 }

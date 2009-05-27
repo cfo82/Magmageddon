@@ -208,6 +208,12 @@ namespace ProjectMagma.Renderer
         {
             // project: returns 2d vector in [-1,1]x[-1,1] independently of aspect ratio
             Vector3 pos = renderable.Position;
+
+            if (renderable is RobotRenderable)
+            {
+                pos.Y += 60;
+            }
+
             Vector3 scale = (renderable as ModelRenderable).Scale;
             //scale.Y = 0.0f; // we ignore Y for auto zoom.
             float diagonalLength = scale.Length();

@@ -245,6 +245,7 @@ namespace ProjectMagma
         public void Open()
         {
             active = true;
+            Hidden = false;
             OpenMenuScreen(mainMenu, true);
         }
 

@@ -250,6 +250,9 @@ namespace ProjectMagma.Simulation
             }
 
             #region collision reaction
+
+            Console.WriteLine(player.GetVector3("collision_pushback_velocity"));
+
             // reset collision response
             if (!HadCollision(simTime))
             {
@@ -272,6 +275,13 @@ namespace ProjectMagma.Simulation
                 // when hit we can fall!
                 canFallFromIsland = true;
             }
+
+            if (collisionPushbackVelocity.Length() > 200)
+            {
+                collisionPushbackVelocity.Normalize();
+                collisionPushbackVelocity *= 200;
+            }
+
 
             // reset some stuff
             previousPosition = playerPosition;
@@ -308,7 +318,7 @@ namespace ProjectMagma.Simulation
             playerPosition += playerVelocity * dt;
 
             // pushback
-            Simulation.ApplyPushback(ref playerPosition, ref collisionPushbackVelocity, 1000f);
+            Simulation.ApplyPushback(ref playerPosition, ref collisionPushbackVelocity, 500f);
             Simulation.ApplyPushback(ref playerPosition, ref inwardsPushVelocity, 0f /*constants.GetFloat("player_pushback_deacceleration")*/);
             Simulation.ApplyPushback(ref playerPosition, ref hitPushbackVelocity, constants.GetFloat("player_pushback_deacceleration"), 
                 HitPushbackEndedHandler);
@@ -354,9 +364,6 @@ namespace ProjectMagma.Simulation
 
             CheckPlayerAttributeRanges(player);
 
-            // reset stuff
-            collisionAt = float.MinValue;
-
             // check collision with lava
             if (playerPosition.Y <= 0) // todo: extract constant?
             {
@@ -376,7 +383,7 @@ namespace ProjectMagma.Simulation
 
         private bool HadCollision(SimulationTime simTime)
         {
-            return simTime.At < collisionAt + 200;
+            return simTime.At < collisionAt + 100;
         }
 
         private void PerformIslandPositioning(SimulationTime simTime, ref Vector3 playerPosition)
@@ -533,14 +540,15 @@ namespace ProjectMagma.Simulation
             if (controllerInput.jumpButtonPressed
                 && !repulsionActive // no jumps during repulsion
                 && activeIsland != null // and only when standing on island.. (obviously)
-                && Game.Instance.Simulation.Time.At > 
-                    islandJumpPerformedAt + 200
                 && player.GetInt("frozen") <= 0) // and not when frozen
             {
                 // island jump start
                 if (selectedIsland != null)
                 {
-                    StartIslandJump(selectedIsland, ref playerPosition, ref playerVelocity);
+                    if (Game.Instance.Simulation.Time.At > islandJumpPerformedAt + 200) // don't jump all the time
+                    {
+                        StartIslandJump(selectedIsland, ref playerPosition, ref playerVelocity);
+                    }
                 }
                 else // only jump up
                 {
@@ -1165,6 +1173,7 @@ namespace ProjectMagma.Simulation
                 LeaveActiveIsland();
 
                 player.GetProperty<HUDProperty>("hud").JetpackUsable = false;
+                player.GetProperty<RobotRenderProperty>("render").NextPermanentState = "idle";
 
                 if (!jetpackActive)
                 {
@@ -1517,8 +1526,9 @@ namespace ProjectMagma.Simulation
                     if (normal != Vector3.Zero)
                     {
                         normal.Normalize();
-                        Vector3 velocity = -normal * 100; // todo: extract constant
-                        player.SetVector3("collision_pushback_velocity", player.GetVector3("collision_pushback_velocity") + velocity);
+                        Vector3 acc = -normal * 1000; // todo: extract constant
+                        player.SetVector3("collision_pushback_velocity", player.GetVector3("collision_pushback_velocity") +
+                            acc * simTime.Dt);
                     }
                 }
                 else
@@ -1530,21 +1540,19 @@ namespace ProjectMagma.Simulation
                     normal.Z = 0;
                     if (normal != Vector3.Zero)
                     {
-                        Vector3 velocity = -normal * 100; // todo: extract constant
-                        player.SetVector3("collision_pushback_velocity", player.GetVector3("collision_pushback_velocity") + velocity);
+                        Vector3 acc = -normal * 2000; // todo: extract constant
+                        player.SetVector3("collision_pushback_velocity", player.GetVector3("collision_pushback_velocity") +
+                            acc * simTime.Dt);
                     }
                 }
                 else
                 {
-                    /*
                     // in air --> pushback
-                    Vector3 acc = -contact[0].Normal * 4000; // todo: extract constant
+                    Vector3 acc = -contact[0].Normal * 1000; // todo: extract constant
                     if (acc.Y > 0) // hack: never push upwards
                         acc.Y = -acc.Y;
                     player.SetVector3("collision_pushback_velocity", player.GetVector3("collision_pushback_velocity")
                         + acc * simTime.Dt);
-                    Console.WriteLine("in air island collision pushback: " + acc);
-                     */
                     player.SetVector3("velocity", Vector3.Zero);
                 }
             }
@@ -1560,7 +1568,7 @@ namespace ProjectMagma.Simulation
                 if (normal != Vector3.Zero)
                     normal.Normalize();
                 // todo: extract constant
-                Vector3 acc = -normal * 4000;
+                Vector3 acc = -normal * 2000;
                 player.SetVector3("collision_pushback_velocity", player.GetVector3("collision_pushback_velocity")
                     + acc * simTime.Dt);
             }
@@ -1569,11 +1577,12 @@ namespace ProjectMagma.Simulation
         private void PlayerCaveCollisionHandler(SimulationTime simTime, Entity player, Entity pillar, Contact co)
         {
             // only collide with cave when in air
+            float factor = (activeIsland != null)?4000f:1000f;
 //            if (activeIsland == null)
             {
                 Vector3 pos = player.GetVector3("position");
                 pos.Y = 0;
-                Vector3 acc = -Vector3.Normalize(pos) * 4000; // todo: extract constants
+                Vector3 acc = -Vector3.Normalize(pos) * factor; // todo: extract constants
                 player.SetVector3("collision_pushback_velocity", player.GetVector3("collision_pushback_velocity")
                     + acc * simTime.Dt);
             }

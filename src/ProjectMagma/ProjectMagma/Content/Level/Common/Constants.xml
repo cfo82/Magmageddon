@@ -110,7 +110,7 @@
 
       <Attribute name="repulsion_deacceleration" template="float" value="400"/>
 
-      <Attribute name="collision_acceleration" template="float" value="2500"/>
+      <Attribute name="collision_acceleration" template="float" value="4000"/>
       <Attribute name="collision_deacceleration" template="float" value="1000"/>
       <Attribute name="collision_max_speed" template="float" value="240"/>
       <Attribute name="collision_damping" template="float" value="0.9"/>

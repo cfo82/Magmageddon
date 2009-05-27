@@ -251,8 +251,6 @@ namespace ProjectMagma.Simulation
 
             #region collision reaction
 
-            Console.WriteLine(player.GetVector3("collision_pushback_velocity"));
-
             // reset collision response
             if (!HadCollision(simTime))
             {

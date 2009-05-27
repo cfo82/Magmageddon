@@ -45,13 +45,13 @@
     </Attributes>
   </Entity>
 
-  <Entity name="pillar2" extends="pillar_base_002">
+  <Entity name="pillar2" extends="pillar_base_003">
     <Attributes>
       <Attribute name="position" template="float3" value="200 -50 -200"/>
     </Attributes>
   </Entity>
 
-  <Entity name="pillar3" extends="pillar_base_002">
+  <Entity name="pillar3" extends="pillar_base_003">
     <Attributes>
       <Attribute name="position" template="float3" value="-200 -50 200"/>
     </Attributes>
@@ -65,25 +65,25 @@
 
   <Entity name="island1" extends="island_base_grass1">
     <Attributes>
-      <Attribute name="position" template="float3" value="330 200 330"/>
+      <Attribute name="position" template="float3" value="290 220 240"/>
     </Attributes>
   </Entity>
 
   <Entity name="island2" extends="island_base_grass1">
     <Attributes>
-      <Attribute name="position" template="float3" value="330 200 -330"/>
+      <Attribute name="position" template="float3" value="290 220 -240"/>
     </Attributes>
   </Entity>
 
   <Entity name="island3" extends="island_base_grass1">
     <Attributes>
-      <Attribute name="position" template="float3" value="-330 200 330"/>
+      <Attribute name="position" template="float3" value="-290 220 240"/>
     </Attributes>
   </Entity>
 
   <Entity name="island4" extends="island_base_grass1">
     <Attributes>
-      <Attribute name="position" template="float3" value="-330 200 -330"/>
+      <Attribute name="position" template="float3" value="-290 220 -240"/>
     </Attributes>
   </Entity>
 

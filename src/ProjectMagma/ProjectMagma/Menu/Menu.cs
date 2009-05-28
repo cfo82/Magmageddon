@@ -202,8 +202,8 @@ namespace ProjectMagma
         {
             DrawTools.DrawCenteredShadowString(spriteBatch, StaticStringFont, "- A - SELECT                                                  - B - BACK",
                 new Vector2(640, 620), StaticStringColor, 0.55f);
-            DrawTools.DrawCenteredShadowString(spriteBatch, StaticStringFont, "PROJECT MAGMA - MAY 19 RELEASE",
-                new Vector2(640, 115), StaticStringColor, 0.7f);
+            //DrawTools.DrawCenteredShadowString(spriteBatch, StaticStringFont, "PROJECT MAGMA - MAY 19 RELEASE",
+            //    new Vector2(640, 115), StaticStringColor, 0.7f);
         }
 
         public SineFloat StaticStringStrength { get; set; }

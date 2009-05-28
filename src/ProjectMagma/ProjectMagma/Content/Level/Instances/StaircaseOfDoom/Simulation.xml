@@ -82,7 +82,7 @@
   
   <Entity name="island1" extends="island_base_burnt1">
     <Attributes>
-      <Attribute name="position" template="float3" value="-200 320 -600"/>
+      <Attribute name="position" template="float3" value="-150 320 -550"/>
     </Attributes>
     <Properties>
       <Property name="controller" type="ProjectMagma.Simulation.IslandNoMovementControllerProperty"/>

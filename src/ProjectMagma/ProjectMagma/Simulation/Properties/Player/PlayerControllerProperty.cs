@@ -372,7 +372,6 @@ namespace ProjectMagma.Simulation
             if(controllerInput.hitButtonPressed)
             {
                 player.GetProperty<RobotRenderProperty>("render").NextOnceState = "hit";
-                // todo: needs meele NOT hit here
                 Game.Instance.AudioPlayer.Play(Game.Instance.Simulation.SoundRegistry.MeleeNotHit);
             }
 
@@ -557,6 +556,8 @@ namespace ProjectMagma.Simulation
 
         private void StartSimpleJump(ref Vector3 playerVelocity)
         {
+            Game.Instance.AudioPlayer.Play(Game.Instance.Simulation.SoundRegistry.JumpStart);
+
             simpleJumpIsland = activeIsland;
 
             LeaveActiveIsland();
@@ -577,6 +578,8 @@ namespace ProjectMagma.Simulation
 
         private void StartIslandJump(Entity island, ref Vector3 playerPosition, ref Vector3 playerVelocity)
         {
+            Game.Instance.AudioPlayer.Play(Game.Instance.Simulation.SoundRegistry.JumpStart);
+
             destinationIsland = island;
 
             LeaveActiveIsland();
@@ -1145,6 +1148,8 @@ namespace ProjectMagma.Simulation
 
         private void StopIslandJump()
         {
+            Game.Instance.AudioPlayer.Play(Game.Instance.Simulation.SoundRegistry.JumpEnd);
+
             if (won)
             {
                 player.GetProperty<RobotRenderProperty>("render").NextPermanentState = "win";
@@ -2030,6 +2035,8 @@ namespace ProjectMagma.Simulation
 
         private void StopSimpleJump()
         {
+            Game.Instance.AudioPlayer.Play(Game.Instance.Simulation.SoundRegistry.JumpEnd);
+
             simpleJumpIsland.GetAttribute<Vector3Attribute>("position").ValueChanged -= IslandPositionHandler;
             player.GetProperty<RobotRenderProperty>("render").NextPermanentState = "idle";
             player.SetString("jump_island", "");

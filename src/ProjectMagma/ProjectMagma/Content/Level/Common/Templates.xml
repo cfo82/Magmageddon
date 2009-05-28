@@ -10,14 +10,14 @@
   <Entity name="sound_base" abstract="true">
     <Attributes>
       <Attribute name="background_music" template="string" value=""/>
-      <Attribute name="cave_background_loop" template="string" value="Sounds/ambient/desert_wind:0.30"/>
+      <Attribute name="cave_background_loop" template="string" value="Sounds/ambient/desert_wind:0.20"/>
       <Attribute name="lava_background_loop" template="string" value=""/>
       <Attribute name="melee_hit" template="string" value="Sounds/melee/hit1:1 Sounds/melee/hit2:1 Sounds/melee/hit3:1 Sounds/melee/hit4:1"/>
       <Attribute name="melee_not_hit" template="string" value="Sounds/melee/not_hit1:0.4 Sounds/melee/not_hit2:0.4"/>
       <Attribute name="flame_thrower_start" template="string" value=""/>
-      <Attribute name="flame_thrower_loop" template="string" value="Sounds/weapons/flamethrower:1.0"/>
+      <Attribute name="flame_thrower_loop" template="string" value="Sounds/weapons/flamethrower:3.0"/>
       <Attribute name="flame_thrower_end" template="string" value=""/>
-      <Attribute name="ice_spike_fire" template="string" value="Sounds/weapons/Flame_pass:0.8"/>
+      <Attribute name="ice_spike_fire" template="string" value="Sounds/weapons/Flame_pass:10.8"/>
       <Attribute name="ice_spike_flying" template="string" value=""/>
       <Attribute name="ice_spike_explosion_on_player" template="string" value="Sounds/sword-clash:0.25"/>
       <Attribute name="ice_spike_explosion_on_environment" template="string" value="Sounds/explosions/Explosion_with_Metal_Debris:0.25"/>
@@ -31,7 +31,7 @@
       <Attribute name="and_the_winner_is" template="string" value="Sounds/phase/applause:0.5"/>
       <Attribute name="walk" template="string" value="Sounds/movement/CONCRETE_C"/>
       <Attribute name="jump_start" template="string" value=""/>
-      <Attribute name="jump_end" template="string" value="Sounds/movement/jump_land"/>
+      <Attribute name="jump_end" template="string" value="Sounds/movement/jump_land:0.4"/>
       <Attribute name="repulsion_start" template="string" value="Sounds/islands/repulsion"/>
       <Attribute name="repulsion_loop" template="string" value=""/>
       <Attribute name="repulsion_end" template="string" value=""/>

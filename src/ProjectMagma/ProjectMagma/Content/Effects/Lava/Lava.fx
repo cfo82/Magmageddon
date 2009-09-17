@@ -36,10 +36,9 @@ float stuccoFrequency = 0.7;
 float getstucco(float2 texCoord, float compression)
 {
 	float stucco;
-	float temperature = gettemperature(texCoord);
-	float4 stucco_rgba1 = tex2D(StuccoSparseSampler, texCoord*1.60*stuccoFrequency + StuccoRandomOffset1*0.15*temperature*1.5);
-	float4 stucco_rgba2 = tex2D(StuccoSparseSampler, texCoord*2.00*stuccoFrequency - StuccoRandomOffset2*0.20*temperature*1.5);
-	float4 stucco_rgba3 = tex2D(StuccoSparseSampler, texCoord*2.75*stuccoFrequency - StuccoRandomOffset3*0.30*temperature*1.5);	
+	float4 stucco_rgba1 = tex2D(StuccoSparseSampler, texCoord*1.60*stuccoFrequency);
+	float4 stucco_rgba2 = tex2D(StuccoSparseSampler, texCoord*2.00*stuccoFrequency);
+	float4 stucco_rgba3 = tex2D(StuccoSparseSampler, texCoord*2.75*stuccoFrequency);	
 	stucco = 1-(stucco_rgba1.r)*(stucco_rgba2.r)*(stucco_rgba3.r);	
 	stucco = (1-compression)*stucco+(compression)/2;
 	return stucco;
@@ -168,7 +167,9 @@ PSOutput MultiPlanePS(PS_INPUT i) : COLOR0
 //	return outp;
 
 	// compute perturbed texture coordinates
-    float4 clouds = tex2D(CloudsSampler, i.texCoord + RandomOffset[0]);
+	int index = (i.texCoord + RandomOffset[0]) * 200;
+	float4 clouds = random_array[index%200]; 
+    //float4 clouds = tex2D(CloudsSampler, i.texCoord + RandomOffset[0]);
 	float2 perturbation = clouds.gb * 2 * flickerStrength - flickerStrength;
 	float2 perturbedTexCoords = i.texCoord + perturbation;
 	

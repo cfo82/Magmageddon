@@ -16,12 +16,14 @@ namespace ProjectMagma.Renderer
 
         public ModelRenderable(
             double timestamp,
+            int renderPriority,
             Vector3 scale,
             Quaternion rotation,
             Vector3 position,
             Model model
         )
         {
+            this.renderPriority = renderPriority;
             this.Scale = scale;
             this.rotation = new QuaternionInterpolationHistory(timestamp, rotation);
             this.position = new Vector3InterpolationHistory(timestamp, position);
@@ -79,7 +81,6 @@ namespace ProjectMagma.Renderer
             {
                 PrepareMeshEffects(renderer, mesh);
                 DrawMesh(renderer, mesh);
-                //DrawShadow(ref renderer, mesh);
             }
         }
 
@@ -212,24 +213,6 @@ namespace ProjectMagma.Renderer
             }
         }
 
-        protected void SetEffect(Model model, Effect effect)
-        {
-            foreach (ModelMesh mesh in model.Meshes)
-            {
-                SetEffect(mesh, effect);
-            }
-        }
-        
-        protected void SetEffect(ModelMesh mesh, Effect effect)
-        {
-            foreach (ModelMeshPart meshPart in mesh.MeshParts)
-            {
-                //Effect oldEffect = meshPart.Effect;
-                meshPart.Effect = effect;//.Clone(oldEffect.GraphicsDevice);
-                //oldEffect.Dispose();
-            }
-        }
-
         protected void SetGlobalEffectParameter(string name, Vector3 value)
         {
             foreach (ModelMesh mesh in Model.Meshes)
@@ -253,29 +236,6 @@ namespace ProjectMagma.Renderer
         }
 
         protected abstract void PrepareMeshEffects(Renderer renderer, ModelMesh mesh);
-
-        private void DrawShadow(ref Renderer renderer, ModelMesh mesh)
-        {
-            Effect shadowEffect = renderer.ShadowEffect;
-
-            // shadows should be floating a little above the receiving surface
-            Matrix world_offset = BoneTransformMatrix(mesh) * World;// *Matrix.CreateTranslation(new Vector3(0, 3, 0));
-
-            shadowEffect.CurrentTechnique = shadowEffect.Techniques["Scene"];
-            shadowEffect.Parameters["ShadowMap"].SetValue(renderer.LightResolve);
-            shadowEffect.Parameters["WorldCameraViewProjection"].SetValue(
-                world_offset * renderer.Camera.View * renderer.Camera.Projection);
-            shadowEffect.Parameters["World"].SetValue(world_offset);
-
-            shadowEffect.Parameters["WorldLightViewProjection"].SetValue(
-                world_offset * renderer.LightView * renderer.LightProjection);
-
-            //ReplaceBasicEffect(mesh, shadowEffect);
-            SetEffect(mesh, shadowEffect);
-            mesh.Draw();
-            RestorePartEffectMapping(defaultEffectMapping);
-        }
-
 
         protected void ApplyRenderChannel(Effect effect, RenderChannelType renderChannel)
         {
@@ -365,6 +325,11 @@ namespace ProjectMagma.Renderer
         {
             get { return position.Evaluate(Game.Instance.Renderer.Time.PausableAt); }
         }
+
+        public override int RenderPriority
+        {
+            get { return renderPriority; }
+        }
         
         protected Model Model { get; set; }
         virtual protected Matrix World { get; set; }
@@ -384,5 +349,7 @@ namespace ProjectMagma.Renderer
         private Matrix[] boneTransforms;
 
         public bool IsShadowCaster { get; set; }
+
+        public int renderPriority;
     }
 }

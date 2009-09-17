@@ -13,7 +13,7 @@ namespace ProjectMagma.Simulation
 {
     public class TexturedRenderProperty : BasicRenderProperty
     {
-        protected override ModelRenderable CreateRenderable(Entity entity, Vector3 scale, Quaternion rotation, Vector3 position, Model model)
+        protected override ModelRenderable CreateRenderable(Entity entity, int renderPriority, Vector3 scale, Quaternion rotation, Vector3 position, Model model)
         {
             Texture2D diffuseTexture = null;
             Texture2D specularTexture = null;
@@ -35,14 +35,14 @@ namespace ProjectMagma.Simulation
                 normalTexture = Game.Instance.ContentManager.Load<Texture2D>(textureName);
             }
 
-            return CreateTexturedRenderable(entity, scale, rotation, position, model, diffuseTexture, specularTexture, normalTexture);
+            return CreateTexturedRenderable(entity, renderPriority, scale, rotation, position, model, diffuseTexture, specularTexture, normalTexture);
         }
 
         protected virtual TexturedRenderable CreateTexturedRenderable(
-            Entity entity, Vector3 scale, Quaternion rotation, Vector3 position, Model model,
+            Entity entity, int renderPriority, Vector3 scale, Quaternion rotation, Vector3 position, Model model,
             Texture2D diffuseTexture, Texture2D specularTexture, Texture2D normalTexture)
         {
-            return new TexturedRenderable(Game.Instance.Simulation.Time.At, scale, rotation, position, model, diffuseTexture, specularTexture, normalTexture);
+            return new TexturedRenderable(Game.Instance.Simulation.Time.At, renderPriority, scale, rotation, position, model, diffuseTexture, specularTexture, normalTexture);
         }
 
         protected override void SetUpdatableParameters(Entity entity)

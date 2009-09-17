@@ -58,14 +58,14 @@ namespace ProjectMagma.Renderer
 
         #endregion
 
-        public LavaRenderable(double timestamp, Vector3 scale, Quaternion rotation, Vector3 position, Model model,
+        public LavaRenderable(double timestamp, int renderPriority, Vector3 scale, Quaternion rotation, Vector3 position, Model model,
             Texture2D sparseStuccoTexture,
             Texture2D fireFractalTexture,
             Texture2D vectorCloudTexture,
             Texture2D graniteTexture,
             PillarInfo[] pillarInfos
             )
-        :   base(timestamp, scale, rotation, position, model)
+        :   base(timestamp, renderPriority, scale, rotation, position, model)
         {
             UseLights = false;
             UseMaterialParameters = false;
@@ -226,6 +226,8 @@ namespace ProjectMagma.Renderer
 
             effect.Parameters["TemperatureBrightnessInfluence"].SetValue(renderer.EntityManager["lava"].GetFloat("temperature_brightness_influence"));
 
+            hackEffect = effect;
+
             //effect.Parameters["FogEnabled"].SetValue(0.0f);
             //effect.Parameters["FogStart"].SetValue(1000.0f);
             //effect.Parameters["FogEnd"].SetValue(2000.0f);
@@ -233,6 +235,22 @@ namespace ProjectMagma.Renderer
             effect.Parameters["EyePosition"].SetValue(renderer.Camera.Position);
 
             UpdateRandomOffsets(effect);
+        }
+
+        protected override void DrawMesh(Renderer renderer, ModelMesh mesh)
+        {
+            /*for (int i = 0; i < 6; ++i)
+            {
+                float stepNr = (float)i;
+                float totalAmount = 0.05f;
+                float numSteps = 6.0f;
+                float offset = i * (totalAmount / (numSteps - 1.0f));
+
+                hackEffect.Parameters["yoffset"].SetValue(0.0f - offset);
+                mesh.Draw();
+            }*/
+            //hackEffect.Parameters["yoffset"].SetValue(0.0f);
+            base.DrawMesh(renderer, mesh);
         }
 
         private Texture2D sparseStuccoTexture;
@@ -250,5 +268,7 @@ namespace ProjectMagma.Renderer
         private List<PillarInfo> pillarInfos;
 
         Random offsetRand;
+
+        Effect hackEffect;
     }
 }

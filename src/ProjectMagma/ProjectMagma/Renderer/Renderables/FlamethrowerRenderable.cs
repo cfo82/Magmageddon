@@ -15,11 +15,12 @@ namespace ProjectMagma.Renderer
     {
         public FlamethrowerRenderable(
             double timestamp,
+            int renderPriority,
             Vector3 position,
             Vector3 direction,
             bool fueled
         )
-        :   base(timestamp, position)
+        :   base(timestamp, renderPriority, position)
         {
             this.direction = direction;
             this.fueled = fueled;

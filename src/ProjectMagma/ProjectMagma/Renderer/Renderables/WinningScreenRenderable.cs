@@ -10,8 +10,9 @@ namespace ProjectMagma.Renderer.Renderables
 {
     class WinningScreenRenderable : Renderable
     {
-        public WinningScreenRenderable(string name)
+        public WinningScreenRenderable(int renderPriority, string name)
         {
+            this.renderPriority = renderPriority;
             this.str = name.ToUpper() + " HAS WON!";
             scale = new SineFloat(0.9f, 1.0f, 7.0f);
         }
@@ -45,10 +46,15 @@ namespace ProjectMagma.Renderer.Renderables
 
         public override RenderMode RenderMode { get { return RenderMode.RenderOverlays;  } }
         public override Vector3 Position { get { return Vector3.Zero; } }
+        public override int RenderPriority
+        {
+            get { return renderPriority; }
+        }
         string str;
         Vector2 pos;
         SpriteFont font;
         SpriteBatch spriteBatch;
         SineFloat scale;
+        private int renderPriority;
     }
 }

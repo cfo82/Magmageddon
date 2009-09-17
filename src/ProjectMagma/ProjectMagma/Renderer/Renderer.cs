@@ -182,7 +182,7 @@ namespace ProjectMagma.Renderer
             {
                 case RendererPhase.Outro:
                     {
-                        WinningScreenRenderable renderable = new WinningScreenRenderable(winningPlayer);
+                        WinningScreenRenderable renderable = new WinningScreenRenderable(0, winningPlayer);
                         //RobotRenderable winningRobot = winningUpdatable as RobotRenderable;
                         //Debug.Assert(winningRobot != null);
                         //winningRobot.ActivatePermanentState("win");
@@ -528,8 +528,22 @@ namespace ProjectMagma.Renderer
             {
                 updateRenderables.Add(renderable);
             }
-            
-            renderables.Add(renderable);
+
+            // insertion sort!
+            int insertAtIndex = renderables.Count;
+            for (int i = 0; i < renderables.Count; ++i)
+            {
+                if (
+                    renderable.RenderPriority < renderables[i].RenderPriority &&
+                    i < insertAtIndex
+                    )
+                {
+                    insertAtIndex = i;
+                    break;
+                }
+            }
+
+            renderables.Insert(insertAtIndex, renderable);
         }
 
         public void RemoveRenderable(

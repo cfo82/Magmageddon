@@ -80,7 +80,7 @@ namespace ProjectMagma.Simulation
 
             velocity.Normalize();
 
-            return new IceSpikeRenderable(Game.Instance.Simulation.Time.At, position, velocity, dead);
+            return new IceSpikeRenderable(Game.Instance.Simulation.Time.At, 0, position, velocity, dead);
         }
 
         protected override void SetUpdatableParameters(Entity entity)

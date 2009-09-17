@@ -53,6 +53,7 @@
       <!--Attribute name="scale" template="float3" value="1200 4 1200"/-->
       <!--Attribute name="mesh" template="string" value="Models\Environment\lava6c_wrongdir"/-->
       <Attribute name="mesh" template="string" value="Models\Environment\lava6c"/>
+      <Attribute name="render_priority" template="int" value="600"/>
       <!--Attribute name="mesh" template="string" value="Models\Primitives\lava_primitive"/-->
       <Attribute name="sparsestucco_texture" template="string" value="Textures/Lava/sparsestucco"/>
       <Attribute name="vectorcloud_texture" template="string" value="Textures/Lava/vectorclouds"/>
@@ -96,6 +97,7 @@
       <!--Attribute name="scale" template="float3" value="900 1200 900"/-->
 
       <Attribute name="mesh" template="string" value="Models/Environment/cave_grp"/>
+      <Attribute name="render_priority" template="int" value="500"/>
       <Attribute name="bv_type" template="string" value="alignedbox3tree"/>
       <Attribute name="diffuse_texture" template="string" value="Textures/Environment/cave_diffuse_v001"/>
       <!--Attribute name="diffuse_texture" template="string" value="Textures/custom_uv_diag"/-->

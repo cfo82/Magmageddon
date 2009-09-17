@@ -1,4 +1,4 @@
-//#define ALWAYS_FOUR_PLAYERS
+#define ALWAYS_FOUR_PLAYERS
 
 using System;
 using System.Diagnostics;
@@ -92,7 +92,11 @@ namespace ProjectMagma
             graphics.PreferredBackBufferHeight = (int)(720 * multiplier);
 
             Window.Title = "Project Magma";
+#if XDK
+            ContentManager.RootDirectory = "_XBLA_Content";
+#else
             ContentManager.RootDirectory = "Content";
+#endif
 
             // needed to show Guide, which is needed for storage, which is needed for saving stuff
 //            this.Components.Add(new GamerServicesComponent(this));
@@ -164,7 +168,7 @@ namespace ProjectMagma
             robots = ContentManager.Load<List<RobotInfo>>("Level/Common/RobotInfo");
 
              
-#if DEBUG
+#if DEBUG || PROFILE
             // initialize simulation
             //LoadLevel("Level/Instances/TestLevel/Simulation", "Level/Instances/TestLevel/Renderer");
             //LoadLevel("Level/Instances/4vs4/Simulation", "Level/Instances/4vs4/Renderer");
@@ -251,7 +255,7 @@ namespace ProjectMagma
 //            storageSelectionResult = Guide.BeginShowStorageDeviceSelector(PlayerIndex.One, null, null);
 
             // open menu
-#if !DEBUG
+#if !DEBUG && !PROFILE
             menu.Open();
 #endif
 
@@ -554,7 +558,7 @@ namespace ProjectMagma
                 // draw stuff which should not be filtered
                 menu.Draw(gameTime);
 
-                //DrawFrameCounter(gameTime);
+                DrawFrameCounter(gameTime);
 
                 profiler.EndSection("draw");
                 profiler.EndFrame();

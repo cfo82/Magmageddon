@@ -12,6 +12,7 @@ namespace ProjectMagma.Renderer
         #region constructor and resource loading/unloading
 
         public HUDRenderable(
+            int renderPriority,
             string playerName, int gamePadIndex,                     // player identification
             int health, int maxHealth, int energy, int maxEnergy,    // displayed in bars
             int lives, int frozen,                                   // displayed as text
@@ -19,6 +20,7 @@ namespace ProjectMagma.Renderer
         )
         {
             // initialize variables
+            this.renderPriority = renderPriority;
             this.playerName = playerName;
             this.gamePadIndex = gamePadIndex;
             this.health = health;
@@ -386,6 +388,11 @@ namespace ProjectMagma.Renderer
             get { return Vector3.Zero; }
         }
 
+        public override int RenderPriority
+        {
+            get { return renderPriority; }
+        }
+
         public string PlayerName
         {
             set { playerName = value; }
@@ -459,5 +466,6 @@ namespace ProjectMagma.Renderer
 
         private List<PowerupPickupDetails> powerupPickupDetails;
 
+        private int renderPriority;
     }
 }

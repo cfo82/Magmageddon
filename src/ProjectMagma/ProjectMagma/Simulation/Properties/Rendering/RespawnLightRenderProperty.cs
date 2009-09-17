@@ -54,14 +54,19 @@ namespace ProjectMagma.Simulation
 
         protected override RendererUpdatable CreateUpdatable(Entity entity)
         {
+            int renderPriority = 0;
             Vector3 position = Vector3.Zero;
 
+            if (entity.HasInt("render_priority"))
+            {
+                renderPriority = entity.GetInt("render_priority");
+            }
             if (entity.HasVector3("position"))
             {
                 position = entity.GetVector3("position");
             }
 
-            return new RespawnLightRenderable(Game.Instance.Simulation.Time.At, position - new Vector3(0, 25, 10));
+            return new RespawnLightRenderable(Game.Instance.Simulation.Time.At, renderPriority, position - new Vector3(0, 25, 10));
         }
 
         private void PositionChanged(

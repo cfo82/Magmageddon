@@ -6,12 +6,14 @@ namespace ProjectMagma.Renderer
     public class HighlightRenderable : Renderable
     {
         public HighlightRenderable(
+            int renderPriority,
             Vector3 scale,
             Quaternion rotation,
             Vector3 position,
             Model model
         )
         {
+            this.renderPriority = renderPriority; ;
             this.scale = scale;
             this.rotation = rotation;
             this.position = position;
@@ -97,9 +99,15 @@ namespace ProjectMagma.Renderer
             get { return position; }
         }
 
+        public override int RenderPriority
+        {
+            get { return renderPriority; }
+        }
+
         private Vector3 scale;
         private Quaternion rotation;
         private Vector3 position;
         private Model model;
+        private int renderPriority;
     }
 }

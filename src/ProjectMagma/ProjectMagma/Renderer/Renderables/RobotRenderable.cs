@@ -13,11 +13,12 @@ namespace ProjectMagma.Renderer
     {
         public RobotRenderable(
             double timestamp,
+            int renderPriority,
             Vector3 scale, Quaternion rotation, Vector3 position, Model model, 
             Texture2D diffuseTexture, Texture2D specularTexture, Texture2D normalTexture,
             Vector3 color1, Vector3 color2
         )
-        :   base(timestamp, scale, rotation, position, model, diffuseTexture, specularTexture, normalTexture)
+        :   base(timestamp, renderPriority, scale, rotation, position, model, diffuseTexture, specularTexture, normalTexture)
         {
             this.color1 = color1;
             this.color2 = color2;

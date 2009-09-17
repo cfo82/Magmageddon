@@ -15,9 +15,10 @@ namespace ProjectMagma.Renderer
     {
         public PointExplosionRenderable(
             double timestamp,
+            int renderPriority,
             Vector3 position
         )
-        :   base(timestamp, position)
+        :   base(timestamp, renderPriority, position)
         {
             explosionEmitter = null;
         }

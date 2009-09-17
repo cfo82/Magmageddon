@@ -13,9 +13,11 @@ namespace ProjectMagma.Renderer.Renderables
     {
         public RespawnLightRenderable(
             double timestamp,
+            int renderPriority,
             Vector3 position
         )
         {
+            this.renderPriority = renderPriority;
             this.position = new Vector3InterpolationHistory(timestamp, position);
             this.fadeInOut = new EaseFloat(0, 0.025f);
             this.fadeInOut.TargetValue = 120;
@@ -75,8 +77,14 @@ namespace ProjectMagma.Renderer.Renderables
             get { return position.Evaluate(Game.Instance.Renderer.Time.PausableAt); }
         }
 
+        public override int RenderPriority
+        {
+            get { return renderPriority; }
+        }
+
         private Vector3InterpolationHistory position;
         private Texture2D texture;
         private EaseFloat fadeInOut;
+        private int renderPriority;
     }
 }

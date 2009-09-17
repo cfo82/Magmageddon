@@ -15,11 +15,12 @@ namespace ProjectMagma.Renderer
     {
         public IceSpikeRenderable(
             double timestamp,
+            int renderPriority,
             Vector3 position,
             Vector3 direction,
             bool dead
         )
-        :   base(timestamp, position)
+        :   base(timestamp, renderPriority, position)
         {
             this.direction = direction;
             this.dead = dead;

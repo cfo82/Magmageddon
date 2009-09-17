@@ -11,9 +11,9 @@ namespace ProjectMagma.Renderer
     public class IslandRenderable : TexturedRenderable
     {
         public IslandRenderable(
-            double timestamp, Vector3 scale, Quaternion rotation, Vector3 position, Model model,
+            double timestamp, int renderPriority, Vector3 scale, Quaternion rotation, Vector3 position, Model model,
             Texture2D diffuseTexture, Texture2D specularTexture, Texture2D normalTexture)
-            : base(timestamp, scale, rotation, position, model, diffuseTexture, specularTexture, normalTexture)
+            : base(timestamp, renderPriority, scale, rotation, position, model, diffuseTexture, specularTexture, normalTexture)
         {
             randomOffset = new DoublyIntegratedVector2
             (

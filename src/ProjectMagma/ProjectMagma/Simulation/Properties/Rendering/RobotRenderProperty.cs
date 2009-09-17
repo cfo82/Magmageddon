@@ -15,7 +15,7 @@ namespace ProjectMagma.Simulation
     public class RobotRenderProperty : TexturedRenderProperty
     {
         protected override TexturedRenderable CreateTexturedRenderable(
-            Entity entity, Vector3 scale, Quaternion rotation, Vector3 position, Model model,
+            Entity entity, int renderPriority, Vector3 scale, Quaternion rotation, Vector3 position, Model model,
             Texture2D diffuseTexture, Texture2D specularTexture, Texture2D normalTexture
         )
         {
@@ -26,7 +26,7 @@ namespace ProjectMagma.Simulation
             Vector3 color2 = entity.GetVector3("color2");
 
             return new RobotRenderable(
-                Game.Instance.Simulation.Time.At,
+                Game.Instance.Simulation.Time.At, renderPriority,
                 scale, rotation, position, model,
                 diffuseTexture, specularTexture, normalTexture,
                 color1, color2);

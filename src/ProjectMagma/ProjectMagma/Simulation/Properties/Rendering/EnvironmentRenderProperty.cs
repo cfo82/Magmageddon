@@ -15,11 +15,11 @@ namespace ProjectMagma.Simulation
     public class EnvironmentRenderProperty : TexturedRenderProperty
     {
         protected override TexturedRenderable CreateTexturedRenderable(
-            Entity entity, Vector3 scale, Quaternion rotation, Vector3 position, Model model,
+            Entity entity, int renderPriority, Vector3 scale, Quaternion rotation, Vector3 position, Model model,
             Texture2D diffuseTexture, Texture2D specularTexture, Texture2D normalTexture)
         {
             return new EnvironmentRenderable(
-                Game.Instance.Simulation.Time.At,
+                Game.Instance.Simulation.Time.At, renderPriority,
                 scale, rotation, position, model,
                 diffuseTexture, specularTexture, normalTexture);
         }

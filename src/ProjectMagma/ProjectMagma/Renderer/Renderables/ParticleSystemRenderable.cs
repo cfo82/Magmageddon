@@ -16,10 +16,12 @@ namespace ProjectMagma.Renderer
     {
         public ParticleSystemRenderable(
             double timestamp,
+            int renderPriority,
             Vector3 position
         )
         {
             this.position = new Vector3InterpolationHistory(timestamp, position);
+            this.renderPriority = renderPriority;
         }
 
         public override void LoadResources(Renderer renderer)
@@ -65,6 +67,12 @@ namespace ProjectMagma.Renderer
             get { return RenderMode.RenderToSceneAlpha; }
         }
 
+        public override int RenderPriority
+        {
+            get { return renderPriority; }
+        } 
+
         private Vector3InterpolationHistory position;
+        private int renderPriority;
     }
 }

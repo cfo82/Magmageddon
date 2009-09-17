@@ -7,9 +7,10 @@ namespace ProjectMagma.Renderer
     {
         public PowerupRenderable(
             double timestamp,
+            int renderPriority,
             Vector3 scale, Quaternion rotation, Vector3 position, Model model
         )
-        :   base(timestamp, scale, rotation, position, model)
+        :   base(timestamp, renderPriority, scale, rotation, position, model)
         {
             rotationTime = 0.0f;
         }

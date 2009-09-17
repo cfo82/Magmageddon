@@ -14,9 +14,9 @@ namespace ProjectMagma.Simulation
 {
     public class PowerupRenderProperty : BasicRenderProperty
     {
-        protected override ModelRenderable CreateRenderable(Entity entity, Vector3 scale, Quaternion rotation, Vector3 position, Model model)
+        protected override ModelRenderable CreateRenderable(Entity entity, int renderPriority, Vector3 scale, Quaternion rotation, Vector3 position, Model model)
         {
-            return new PowerupRenderable(Game.Instance.Simulation.Time.At, scale, rotation, position, model);
+            return new PowerupRenderable(Game.Instance.Simulation.Time.At, renderPriority, scale, rotation, position, model);
         }
     }
 }

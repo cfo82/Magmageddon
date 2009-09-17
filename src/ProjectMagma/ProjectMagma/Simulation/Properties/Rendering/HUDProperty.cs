@@ -65,6 +65,7 @@ namespace ProjectMagma.Simulation
             Entity playerConstants = Game.Instance.Simulation.EntityManager["player_constants"];
 
             return new HUDRenderable(
+                0,
                 entity.GetString("player_name"), entity.GetInt("game_pad_index"),
                 entity.GetInt("health"), playerConstants.GetInt("max_health"),
                 entity.GetInt("energy"), playerConstants.GetInt("max_energy"),

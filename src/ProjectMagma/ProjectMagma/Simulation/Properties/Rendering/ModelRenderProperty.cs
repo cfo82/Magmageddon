@@ -62,10 +62,15 @@ namespace ProjectMagma.Simulation
 
         protected override RendererUpdatable CreateUpdatable(Entity entity)
         {
+            int renderPriority = 0;
             Vector3 scale = Vector3.One;
             Quaternion rotation = Quaternion.Identity;
             Vector3 position = Vector3.Zero;
 
+            if (entity.HasInt("render_priority"))
+            {
+                renderPriority = entity.GetInt("render_priority");
+            }
             if (entity.HasVector3("scale"))
             {
                 scale = entity.GetVector3("scale");
@@ -83,10 +88,10 @@ namespace ProjectMagma.Simulation
             string meshName = entity.GetString("mesh");
             Model model = Game.Instance.ContentManager.Load<MagmaModel>(meshName).XnaModel;
 
-            return CreateRenderable(entity, scale, rotation, position, model);
+            return CreateRenderable(entity, renderPriority, scale, rotation, position, model);
         }
 
-        protected abstract ModelRenderable CreateRenderable(Entity entity, Vector3 scale, Quaternion rotation, Vector3 position, Model model);
+        protected abstract ModelRenderable CreateRenderable(Entity entity, int renderPriority, Vector3 scale, Quaternion rotation, Vector3 position, Model model);
 
         #region Private Change Listeners
 

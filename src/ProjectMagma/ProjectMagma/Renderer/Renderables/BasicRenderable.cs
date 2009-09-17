@@ -6,8 +6,8 @@ namespace ProjectMagma.Renderer
 {
     public class BasicRenderable : ModelRenderable
     {
-        public BasicRenderable(double timestamp, Vector3 scale, Quaternion rotation, Vector3 position, Model model)
-        :   base(timestamp, scale, rotation, position, model)
+        public BasicRenderable(double timestamp, int renderPriority, Vector3 scale, Quaternion rotation, Vector3 position, Model model)
+            : base(timestamp, renderPriority, scale, rotation, position, model)
         {
             start_squash = false;
             start_blinking = false;
@@ -61,32 +61,9 @@ namespace ProjectMagma.Renderer
 
         private void ApplyShadowMap(Renderer renderer, Effect effect)
         {
-            //effect.Parameters["ShadowMap"].SetValue(renderer.LightRenderTarget.GetTexture());
             effect.Parameters["ShadowMap"].SetValue(renderer.LightRenderTarget.GetTexture());
             effect.Parameters["LightViewProjection"].SetValue(renderer.LightView * renderer.LightProjection);
-        //    //device.SetRenderTarget(0, null);
-        //    Texture2D texture = renderer.LightRenderTarget.GetTexture();
-        //    float[] pixelData = new float[texture.Width * texture.Height];
-        //    texture.GetData(pixelData, 0, texture.Width * texture.Height);
-        // //   Console.WriteLine("start");
-        //    for (int i = 0; i < texture.Width * texture.Height; i++)
-        //        if (pixelData[i] != 0.0f)
-        //        {
-        //            float g = pixelData[i];
-        //   //         Console.WriteLine(g);
-        //        }
-        //    //Console.WriteLine("end");
-        //    int a = 0;
         }
-
-        //private void ApplyFog(Effect effect)
-        //{
-        //    effect.Parameters["FogEnabled"].SetValue(1.0f);
-        //    //effect.Parameters["FogStart"].SetValue(1000.0f);
-        //    //effect.Parameters["FogEnd"].SetValue(2000.0f);
-        //    effect.Parameters["FogColor"].SetValue(Vector3.One);
-        //    //effect.Parameters["EyePosition"].SetValue(Game.Instance.EyePosition);
-        //}
 
         
         protected void ApplyEyePosition(Renderer renderer, Effect effect)

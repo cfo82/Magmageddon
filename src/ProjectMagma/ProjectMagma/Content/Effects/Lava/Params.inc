@@ -35,3 +35,5 @@ float4x4 Projection; // not really used here
 
 float ShadowOpacity = 0.55;
 float TemperatureBrightnessInfluence;
+
+float4 random_array[200];

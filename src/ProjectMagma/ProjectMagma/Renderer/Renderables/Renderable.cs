@@ -30,5 +30,6 @@ namespace ProjectMagma.Renderer
 
         public abstract RenderMode RenderMode { get; }
         public abstract Vector3 Position { get; }
+        public abstract int RenderPriority { get; }
     }
 }

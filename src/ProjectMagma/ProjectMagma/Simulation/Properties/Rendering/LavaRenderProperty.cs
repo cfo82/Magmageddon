@@ -69,10 +69,15 @@ namespace ProjectMagma.Simulation
 
         protected override ProjectMagma.Renderer.Interface.RendererUpdatable CreateUpdatable(Entity entity)
         {
+            int renderPriority = 1000;
             Vector3 scale = Vector3.One;
             Quaternion rotation = Quaternion.Identity;
             Vector3 position = Vector3.Zero;
 
+            if (entity.HasInt("render_priority"))
+            {
+                renderPriority = entity.GetInt("render_priority");
+            }
             if (entity.HasVector3("scale"))
             {
                 scale = entity.GetVector3("scale");
@@ -88,7 +93,8 @@ namespace ProjectMagma.Simulation
 
             // load the model
             string meshName = entity.GetString("mesh");
-            Model model = Game.Instance.ContentManager.Load<MagmaModel>(meshName).XnaModel;
+            MagmaModel magmaModel = Game.Instance.ContentManager.Load<MagmaModel>(meshName);
+            Model model = magmaModel.XnaModel;
 
             // load textures
             string sparseStuccoTextureName = entity.GetString("sparsestucco_texture");
@@ -112,6 +118,7 @@ namespace ProjectMagma.Simulation
 
             return new LavaRenderable(
                 Game.Instance.Simulation.Time.At,
+                renderPriority,
                 scale, rotation, position, model, 
                 sparseStuccoTexture, fireFractalTexture, vectorCloudTexture, graniteTexture,
                 pillarData);

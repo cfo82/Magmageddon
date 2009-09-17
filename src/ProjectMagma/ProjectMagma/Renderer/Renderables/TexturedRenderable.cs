@@ -7,9 +7,10 @@ namespace ProjectMagma.Renderer
     {
         public TexturedRenderable(
             double timestamp,
+            int renderPriority,
             Vector3 scale, Quaternion rotation, Vector3 position, Model model,
             Texture2D diffuseTexture, Texture2D specularTexture, Texture2D normalTexture)
-        :   base(timestamp, scale, rotation, position, model)
+        :   base(timestamp, renderPriority, scale, rotation, position, model)
         {
             if (diffuseTexture != null)
             {

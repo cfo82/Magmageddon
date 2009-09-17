@@ -7,9 +7,10 @@ namespace ProjectMagma.Renderer
     {
         public ArrowRenderable(
             double timestamp,
+            int renderPriority,
             Vector3 scale, Quaternion rotation, Vector3 position, Model model)
             //Vector3 color1, Vector3 color2)
-        :   base(timestamp, scale, rotation, position, model)
+        :   base(timestamp, renderPriority, scale, rotation, position, model)
         {
             //Color1 = color1;
             //Color2 = color2;

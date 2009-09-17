@@ -62,6 +62,9 @@ namespace ProjectMagma
                 chosenSound = chosenSound.Substring(0, chosenSound.IndexOf(':'));
             }
             SoundEffect soundEffect = Game.Instance.ContentManager.Load<SoundEffect>(chosenSound);
+
+            if (volume < 0) { volume = 0; }
+            if (volume > 1) { volume = 1; }
             soundEffect.Play(volume, 0, 0);
             //SoundEffectInstance instance = soundEffect.Play(volume, 0, 0);//, loop);
             //effectInstances.Add(instance);

@@ -160,12 +160,6 @@
       <Name>_XBOX360_AnimationComponentLibrary</Name>
     </ProjectReference>
   </ItemGroup>
-  <ItemGroup>
-    <Folder Include="BoundingVolume\Serialization\" />
-    <Folder Include="Math\BoundingVolume\Serialization\" />
-    <Folder Include="Math\Integration\" />
-    <Folder Include="Math\Volume\Serialization\" />
-  </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <Import Project="$(MSBuildExtensionsPath)\Microsoft\XNA Game Studio\Microsoft.Xna.GameStudio.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

@@ -106,8 +106,9 @@ namespace ProjectMagma.Profiler
         [Conditional("PROFILING")]
         public void Write(StorageDevice device, string windowTitle, string filename)
         {
-            // Open a storage container.StorageContainer container =
-            StorageContainer container = device.OpenContainer(windowTitle);
+            // Open a storage container.StorageContainer container
+            bool isTransferredFromOtherPlayer;
+            StorageContainer container = device.OpenContainer(windowTitle, false, out isTransferredFromOtherPlayer);
 
             // Get the path of the save game.
             string absoluteFilename = Path.Combine(container.Path, filename);

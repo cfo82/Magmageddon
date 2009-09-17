@@ -1,0 +1,1091 @@
+﻿<Project DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003" ToolsVersion="3.5">
+  <PropertyGroup>
+    <ProjectGuid>209b3d57-464a-4999-a167-d5a348793e6c</ProjectGuid>
+    <ProjectTypeGuids>{96E2B04D-8817-42c6-938A-82C39BA4D311};{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}</ProjectTypeGuids>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">XDK</Platform>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <TargetFrameworkVersion>v3.5</TargetFrameworkVersion>
+    <XnaFrameworkVersion>v3.1</XnaFrameworkVersion>
+    <PlatformTarget>x86</PlatformTarget>
+    <OutputPath>bin\$(Platform)\$(Configuration)</OutputPath>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|XDK' ">
+    <XnaPlatform>Xbox 360</XnaPlatform>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|XDK' ">
+    <XnaPlatform>Xbox 360</XnaPlatform>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Profile|XDK' ">
+    <XnaPlatform>Xbox 360</XnaPlatform>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Submission|XDK' ">
+    <XnaPlatform>Xbox 360</XnaPlatform>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="Microsoft.Xna.Framework.Content.Pipeline.EffectImporter, Version=3.1.0.0, Culture=neutral, PublicKeyToken=6d5c3888ef60e27d, processorArchitecture=MSIL">
+      <Private>False</Private>
+    </Reference>
+    <Reference Include="Microsoft.Xna.Framework.Content.Pipeline.FBXImporter, Version=3.1.0.0, Culture=neutral, PublicKeyToken=6d5c3888ef60e27d, processorArchitecture=MSIL">
+      <Private>False</Private>
+    </Reference>
+    <Reference Include="Microsoft.Xna.Framework.Content.Pipeline.TextureImporter, Version=3.1.0.0, Culture=neutral, PublicKeyToken=6d5c3888ef60e27d, processorArchitecture=MSIL">
+      <Private>False</Private>
+    </Reference>
+    <Reference Include="Microsoft.Xna.Framework.Content.Pipeline.XImporter, Version=3.1.0.0, Culture=neutral, PublicKeyToken=6d5c3888ef60e27d, processorArchitecture=MSIL">
+      <Private>False</Private>
+    </Reference>
+    <Reference Include="Microsoft.Xna.Framework.Content.Pipeline.AudioImporters, Version=3.1.0.0, Culture=neutral, PublicKeyToken=6d5c3888ef60e27d, processorArchitecture=MSIL">
+      <Private>False</Private>
+    </Reference>
+    <Reference Include="Microsoft.Xna.Framework.Content.Pipeline.VideoImporters, Version=3.1.0.0, Culture=neutral, PublicKeyToken=6d5c3888ef60e27d, processorArchitecture=MSIL">
+      <Private>False</Private>
+    </Reference>
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="Effects\Basic\Basic.fx">
+      <Name>Basic</Name>
+      <Importer>EffectImporter</Importer>
+      <Processor>EffectProcessor</Processor>
+    </Compile>
+    <None Include="Effects\Basic\Lighting.inc.fx">
+      <Name>Lighting.inc</Name>
+      <Importer>EffectImporter</Importer>
+      <Processor>EffectProcessor</Processor>
+    </None>
+    <None Include="Effects\Basic\Params.inc.fx">
+      <Name>Params.inc</Name>
+      <Importer>EffectImporter</Importer>
+      <Processor>EffectProcessor</Processor>
+    </None>
+    <None Include="Effects\Basic\Pixel.inc.fx">
+      <Name>Pixel.inc</Name>
+      <Importer>EffectImporter</Importer>
+      <Processor>EffectProcessor</Processor>
+    </None>
+    <None Include="Effects\Basic\Shadow.inc.fx">
+      <Name>Shadow.inc</Name>
+      <Importer>EffectImporter</Importer>
+      <Processor>EffectProcessor</Processor>
+    </None>
+    <None Include="Effects\Basic\Skinning.inc.fx">
+      <Name>Skinning.inc</Name>
+      <Importer>EffectImporter</Importer>
+      <Processor>EffectProcessor</Processor>
+    </None>
+    <None Include="Effects\Basic\Special.inc.fx">
+      <Name>Special.inc</Name>
+      <Importer>EffectImporter</Importer>
+      <Processor>EffectProcessor</Processor>
+    </None>
+    <None Include="Effects\Basic\Structs.inc.fx">
+      <Name>Structs.inc</Name>
+      <Importer>EffectImporter</Importer>
+      <Processor>EffectProcessor</Processor>
+    </None>
+    <None Include="Effects\Basic\Textures.inc.fx">
+      <Name>Textures.inc</Name>
+      <Importer>EffectImporter</Importer>
+      <Processor>EffectProcessor</Processor>
+    </None>
+    <None Include="Effects\Basic\Vertex.inc.fx">
+      <Name>Vertex.inc</Name>
+      <Importer>EffectImporter</Importer>
+      <Processor>EffectProcessor</Processor>
+    </None>
+    <Compile Include="Effects\BloomCombine.fx">
+      <Name>BloomCombine</Name>
+      <Importer>EffectImporter</Importer>
+      <Processor>EffectProcessor</Processor>
+    </Compile>
+    <Compile Include="Effects\BloomExtract.fx">
+      <Name>BloomExtract</Name>
+      <Importer>EffectImporter</Importer>
+      <Processor>EffectProcessor</Processor>
+    </Compile>
+    <Compile Include="Effects\BlurModified.fx">
+      <Name>BlurModified</Name>
+      <Importer>EffectImporter</Importer>
+      <Processor>EffectProcessor</Processor>
+    </Compile>
+    <Compile Include="Effects\Environment\Cave.fx">
+      <Name>Cave</Name>
+      <Importer>EffectImporter</Importer>
+      <Processor>EffectProcessor</Processor>
+    </Compile>
+    <Compile Include="Effects\Environment\Island.fx">
+      <Name>Island</Name>
+      <Importer>EffectImporter</Importer>
+      <Processor>EffectProcessor</Processor>
+    </Compile>
+    <Compile Include="Effects\Environment\OriginalBasicEffect.fx">
+      <Name>OriginalBasicEffect</Name>
+      <Importer>EffectImporter</Importer>
+      <Processor>EffectProcessor</Processor>
+    </Compile>
+    <Compile Include="Effects\Environment\Pillar.fx">
+      <Name>Pillar</Name>
+      <Importer>EffectImporter</Importer>
+      <Processor>EffectProcessor</Processor>
+    </Compile>
+    <Compile Include="Effects\GaussianBlur.fx">
+      <Name>GaussianBlur</Name>
+      <Importer>EffectImporter</Importer>
+      <Processor>EffectProcessor</Processor>
+    </Compile>
+    <None Include="Effects\Global.inc.fx">
+      <Name>Global.inc</Name>
+      <Importer>EffectImporter</Importer>
+      <Processor>EffectProcessor</Processor>
+    </None>
+    <Compile Include="Effects\HdrCombine.fx">
+      <Name>HdrCombine</Name>
+      <Importer>EffectImporter</Importer>
+      <Processor>EffectProcessor</Processor>
+    </Compile>
+    <Compile Include="Effects\Hud\Bars.fx">
+      <Name>Bars</Name>
+      <Importer>EffectImporter</Importer>
+      <Processor>EffectProcessor</Processor>
+    </Compile>
+    <Compile Include="Effects\Lava\DeprecatedLava.fx">
+      <Name>DeprecatedLava</Name>
+      <Importer>EffectImporter</Importer>
+      <Processor>EffectProcessor</Processor>
+    </Compile>
+    <Compile Include="Effects\Lava\Lava.fx">
+      <Name>Lava</Name>
+      <Importer>EffectImporter</Importer>
+      <Processor>EffectProcessor</Processor>
+    </Compile>
+    <Compile Include="Effects\Sfx\Billboard.fx">
+      <Name>Billboard</Name>
+      <Importer>EffectImporter</Importer>
+      <Processor>EffectProcessor</Processor>
+    </Compile>
+    <Compile Include="Effects\Sfx\IceSpike.fx">
+      <Name>IceSpike</Name>
+      <Importer>EffectImporter</Importer>
+      <Processor>EffectProcessor</Processor>
+    </Compile>
+    <Compile Include="Effects\Sfx\ParticleSystem\Stateful\Default.fx">
+      <Name>Default</Name>
+      <Importer>EffectImporter</Importer>
+      <Processor>EffectProcessor</Processor>
+    </Compile>
+    <Compile Include="Effects\Sfx\ParticleSystem\Stateful\Implementations\FireExplosion.fx">
+      <Name>FireExplosion</Name>
+      <Importer>EffectImporter</Importer>
+      <Processor>EffectProcessor</Processor>
+    </Compile>
+    <Compile Include="Effects\Sfx\ParticleSystem\Stateful\Implementations\Flamethrower.fx">
+      <Name>Flamethrower</Name>
+      <Importer>EffectImporter</Importer>
+      <Processor>EffectProcessor</Processor>
+    </Compile>
+    <Compile Include="Effects\Sfx\ParticleSystem\Stateful\Implementations\IceExplosion.fx">
+      <Name>IceExplosion</Name>
+      <Importer>EffectImporter</Importer>
+      <Processor>EffectProcessor</Processor>
+    </Compile>
+    <Compile Include="Effects\Sfx\ParticleSystem\Stateful\Implementations\IceSpike.fx">
+      <Name>IceSpike</Name>
+      <Importer>EffectImporter</Importer>
+      <Processor>EffectProcessor</Processor>
+    </Compile>
+    <Compile Include="Effects\Sfx\ParticleSystem\Stateful\Implementations\LavaExplosion.fx">
+      <Name>LavaExplosion</Name>
+      <Importer>EffectImporter</Importer>
+      <Processor>EffectProcessor</Processor>
+    </Compile>
+    <Compile Include="Effects\Sfx\ParticleSystem\Stateful\Implementations\Smoke.fx">
+      <Name>Smoke</Name>
+      <Importer>EffectImporter</Importer>
+      <Processor>EffectProcessor</Processor>
+    </Compile>
+    <Compile Include="Effects\Sfx\ParticleSystem\Stateful\Implementations\Snow.fx">
+      <Name>Snow</Name>
+      <Importer>EffectImporter</Importer>
+      <Processor>EffectProcessor</Processor>
+    </Compile>
+    <Compile Include="Effects\ShadowEffect.fx">
+      <Name>ShadowEffect</Name>
+      <Importer>EffectImporter</Importer>
+      <Processor>EffectProcessor</Processor>
+    </Compile>
+    <Compile Include="Effects\skinFX.fx">
+      <Name>skinFX</Name>
+      <Importer>EffectImporter</Importer>
+      <Processor>EffectProcessor</Processor>
+    </Compile>
+    <Compile Include="Effects\Sm3SpriteBatch.fx">
+      <Name>Sm3SpriteBatch</Name>
+      <Importer>EffectImporter</Importer>
+      <Processor>EffectProcessor</Processor>
+    </Compile>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Effects\Lava\Params.inc">
+      <Name>Params</Name>
+    </None>
+    <None Include="Effects\Lava\Structs.inc">
+      <Name>Structs</Name>
+    </None>
+    <None Include="Effects\Lava\Textures.inc">
+      <Name>Textures</Name>
+    </None>
+    <None Include="Effects\Sfx\ParticleSystem\Stateful\DefaultCreateParticles.inc">
+      <Name>DefaultCreateParticles</Name>
+    </None>
+    <None Include="Effects\Sfx\ParticleSystem\Stateful\DefaultRenderParticles.inc">
+      <Name>DefaultRenderParticles</Name>
+    </None>
+    <None Include="Effects\Sfx\ParticleSystem\Stateful\DefaultUpdateParticles.inc">
+      <Name>DefaultUpdateParticles</Name>
+    </None>
+    <None Include="Effects\Sfx\ParticleSystem\Stateful\Params.inc">
+      <Name>Params</Name>
+    </None>
+    <None Include="Effects\Sfx\ParticleSystem\Stateful\Samplers.inc">
+      <Name>Samplers</Name>
+    </None>
+    <None Include="Effects\Sfx\ParticleSystem\Stateful\Structs.inc">
+      <Name>Structs</Name>
+    </None>
+    <None Include="Level\Common\Levels.dtd">
+      <Name>Levels</Name>
+    </None>
+    <None Include="Level\Common\RobotInfo.dtd">
+      <Name>RobotInfo</Name>
+    </None>
+    <None Include="Level\LevelInfo.dtd">
+      <Name>LevelInfo</Name>
+    </None>
+    <Compile Include="Fonts\fps.spritefont">
+      <Name>fps</Name>
+      <Importer>FontDescriptionImporter</Importer>
+      <Processor>FontDescriptionProcessor</Processor>
+    </Compile>
+    <Compile Include="Fonts\hud_lives.spritefont">
+      <Name>hud_lives</Name>
+      <Importer>FontDescriptionImporter</Importer>
+      <Processor>FontDescriptionProcessor</Processor>
+    </Compile>
+    <Compile Include="Fonts\hud_playername.spritefont">
+      <Name>hud_playername</Name>
+      <Importer>FontDescriptionImporter</Importer>
+      <Processor>FontDescriptionProcessor</Processor>
+    </Compile>
+    <Compile Include="Fonts\hud_powerup.spritefont">
+      <Name>hud_powerup</Name>
+      <Importer>FontDescriptionImporter</Importer>
+      <Processor>FontDescriptionProcessor</Processor>
+    </Compile>
+    <Compile Include="Fonts\hud_powerup_collect.spritefont">
+      <Name>hud_powerup_collect</Name>
+      <Importer>FontDescriptionImporter</Importer>
+      <Processor>FontDescriptionProcessor</Processor>
+    </Compile>
+    <Compile Include="Fonts\hud_powerup_status.spritefont">
+      <Name>hud_powerup_status</Name>
+      <Importer>FontDescriptionImporter</Importer>
+      <Processor>FontDescriptionProcessor</Processor>
+    </Compile>
+    <None Include="Fonts\Kootenay.ttf">
+      <Name>Kootenay</Name>
+    </None>
+    <Compile Include="Fonts\kootenay9.spritefont">
+      <Name>kootenay9</Name>
+      <Importer>FontDescriptionImporter</Importer>
+      <Processor>FontDescriptionProcessor</Processor>
+    </Compile>
+    <None Include="Fonts\Lindsey.ttf">
+      <Name>Lindsey</Name>
+    </None>
+    <Compile Include="Fonts\MenuFont.spritefont">
+      <Name>MenuFont</Name>
+      <Importer>FontDescriptionImporter</Importer>
+      <Processor>FontDescriptionProcessor</Processor>
+    </Compile>
+    <Compile Include="Fonts\menu_item.spritefont">
+      <Name>menu_item</Name>
+      <Importer>FontDescriptionImporter</Importer>
+      <Processor>FontDescriptionProcessor</Processor>
+    </Compile>
+    <Compile Include="Fonts\menu_releasenotes.spritefont">
+      <Name>menu_releasenotes</Name>
+      <Importer>FontDescriptionImporter</Importer>
+      <Processor>FontDescriptionProcessor</Processor>
+    </Compile>
+    <Compile Include="Fonts\menu_releasenotes_small.spritefont">
+      <Name>menu_releasenotes_small</Name>
+      <Importer>FontDescriptionImporter</Importer>
+      <Processor>FontDescriptionProcessor</Processor>
+    </Compile>
+    <None Include="Fonts\Miramonte.ttf">
+      <Name>Miramonte</Name>
+    </None>
+    <None Include="Fonts\MiramonteBold.ttf">
+      <Name>MiramonteBold</Name>
+    </None>
+    <None Include="Fonts\Pericles.ttf">
+      <Name>Pericles</Name>
+    </None>
+    <Compile Include="Fonts\pericles9.spritefont">
+      <Name>pericles9</Name>
+      <Importer>FontDescriptionImporter</Importer>
+      <Processor>FontDescriptionProcessor</Processor>
+    </Compile>
+    <None Include="Fonts\PericlesLight.ttf">
+      <Name>PericlesLight</Name>
+    </None>
+    <None Include="Fonts\Pescadero.ttf">
+      <Name>Pescadero</Name>
+    </None>
+    <Compile Include="Fonts\pescadero9.spritefont">
+      <Name>pescadero9</Name>
+      <Importer>FontDescriptionImporter</Importer>
+      <Processor>FontDescriptionProcessor</Processor>
+    </Compile>
+    <Compile Include="Fonts\pescadero9b.spritefont">
+      <Name>pescadero9b</Name>
+      <Importer>FontDescriptionImporter</Importer>
+      <Processor>FontDescriptionProcessor</Processor>
+    </Compile>
+    <None Include="Fonts\PescaderoBold.ttf">
+      <Name>PescaderoBold</Name>
+    </None>
+    <Compile Include="Fonts\winning_screen.spritefont">
+      <Name>winning_screen</Name>
+      <Importer>FontDescriptionImporter</Importer>
+      <Processor>FontDescriptionProcessor</Processor>
+    </Compile>
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\..\AnimationComponentLibraryContentPipeline\AnimationComponentLibraryContentPipeline.csproj">
+      <Project>{051A6D3D-B370-49EC-9459-89B0EB4CE28B}</Project>
+      <Name>AnimationComponentLibraryContentPipeline</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\ProjectMagmaContentPipeline\ProjectMagmaContentPipeline.csproj">
+      <Project>{4DEE6B6E-F234-4A9A-9159-2575FE1819DC}</Project>
+      <Name>ProjectMagmaContentPipeline</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Level\Common\Constants.xml">
+      <Name>Constants</Name>
+      <Importer>XmlImporter</Importer>
+      <Processor>PassThroughProcessor</Processor>
+    </None>
+    <Compile Include="Level\Common\DynamicTemplates.xml">
+      <Name>DynamicTemplates</Name>
+      <Importer>LevelImporter</Importer>
+      <Processor>LevelProcessor</Processor>
+    </Compile>
+    <None Include="Level\Common\IslandTemplates.xml">
+      <Name>IslandTemplates</Name>
+      <Importer>XmlImporter</Importer>
+      <Processor>PassThroughProcessor</Processor>
+    </None>
+    <None Include="Level\Common\Renderer\Templates.xml">
+      <Name>Templates</Name>
+      <Importer>XmlImporter</Importer>
+      <Processor>PassThroughProcessor</Processor>
+    </None>
+    <Compile Include="Level\Common\RobotInfo.xml">
+      <Name>RobotInfo</Name>
+      <Importer>LevelImporter</Importer>
+      <Processor>RobotInfoProcessor</Processor>
+    </Compile>
+    <Compile Include="Level\Common\RobotTemplates.xml">
+      <Name>RobotTemplates</Name>
+      <Importer>LevelImporter</Importer>
+      <Processor>LevelProcessor</Processor>
+    </Compile>
+    <None Include="Level\Common\Templates.xml">
+      <Name>Templates</Name>
+      <Importer>XmlImporter</Importer>
+      <Processor>PassThroughProcessor</Processor>
+    </None>
+    <Compile Include="Level\Instances\4Noobs\Renderer.xml">
+      <Name>Renderer</Name>
+      <Importer>LevelImporter</Importer>
+      <Processor>LevelProcessor</Processor>
+    </Compile>
+    <Compile Include="Level\Instances\4Noobs\Simulation.xml">
+      <Name>Simulation</Name>
+      <Importer>LevelImporter</Importer>
+      <Processor>LevelProcessor</Processor>
+    </Compile>
+    <Compile Include="Level\Instances\4vs4\Renderer.xml">
+      <Name>Renderer</Name>
+      <Importer>LevelImporter</Importer>
+      <Processor>LevelProcessor</Processor>
+    </Compile>
+    <Compile Include="Level\Instances\4vs4\Simulation.xml">
+      <Name>Simulation</Name>
+      <Importer>LevelImporter</Importer>
+      <Processor>LevelProcessor</Processor>
+    </Compile>
+    <Compile Include="Level\Instances\MenuLevel\Renderer.xml">
+      <Name>Renderer</Name>
+      <Importer>LevelImporter</Importer>
+      <Processor>LevelProcessor</Processor>
+    </Compile>
+    <Compile Include="Level\Instances\MenuLevel\Simulation.xml">
+      <Name>Simulation</Name>
+      <Importer>LevelImporter</Importer>
+      <Processor>LevelProcessor</Processor>
+    </Compile>
+    <Compile Include="Level\Instances\Stack\Renderer.xml">
+      <Name>Renderer</Name>
+      <Importer>LevelImporter</Importer>
+      <Processor>LevelProcessor</Processor>
+    </Compile>
+    <Compile Include="Level\Instances\Stack\Simulation.xml">
+      <Name>Simulation</Name>
+      <Importer>LevelImporter</Importer>
+      <Processor>LevelProcessor</Processor>
+    </Compile>
+    <Compile Include="Level\Instances\StaircaseOfDoom\Renderer.xml">
+      <Name>Renderer</Name>
+      <Importer>LevelImporter</Importer>
+      <Processor>LevelProcessor</Processor>
+    </Compile>
+    <Compile Include="Level\Instances\StaircaseOfDoom\Simulation.xml">
+      <Name>Simulation</Name>
+      <Importer>LevelImporter</Importer>
+      <Processor>LevelProcessor</Processor>
+    </Compile>
+    <Compile Include="Level\Instances\TestLevel\Renderer.xml">
+      <Name>Renderer</Name>
+      <Importer>LevelImporter</Importer>
+      <Processor>LevelProcessor</Processor>
+    </Compile>
+    <Compile Include="Level\Instances\TestLevel\Simulation.xml">
+      <Name>Simulation</Name>
+      <Importer>LevelImporter</Importer>
+      <Processor>LevelProcessor</Processor>
+    </Compile>
+    <Compile Include="Sprites\HUD\bar_background.tga">
+      <Name>bar_background</Name>
+      <Importer>TextureImporter</Importer>
+      <Processor>TextureProcessor</Processor>
+    </Compile>
+    <Compile Include="Sprites\HUD\bar_highlight.tga">
+      <Name>bar_highlight</Name>
+      <Importer>TextureImporter</Importer>
+      <Processor>TextureProcessor</Processor>
+    </Compile>
+    <Compile Include="Sprites\HUD\HUDFont.spritefont">
+      <Name>HUDFont</Name>
+      <Importer>FontDescriptionImporter</Importer>
+      <Processor>FontDescriptionProcessor</Processor>
+    </Compile>
+    <None Include="Sprites\Menu\background.psd">
+      <Name>background</Name>
+    </None>
+    <Compile Include="Sprites\Menu\MenuFont.spritefont">
+      <Name>MenuFont</Name>
+      <Importer>FontDescriptionImporter</Importer>
+      <Processor>FontDescriptionProcessor</Processor>
+    </Compile>
+    <Compile Include="Level\LevelInfo.xml">
+      <Name>LevelInfo</Name>
+      <Importer>LevelImporter</Importer>
+      <Processor>LevelInfoProcessor</Processor>
+    </Compile>
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="Music\background_janick.mp3">
+      <Name>background_janick</Name>
+      <Importer>Mp3Importer</Importer>
+      <Processor>SongProcessor</Processor>
+    </Compile>
+    <Compile Include="Music\juno_reactor_vs_don_davis_navras.mp3">
+      <Name>juno_reactor_vs_don_davis_navras</Name>
+      <Importer>Mp3Importer</Importer>
+      <Processor>SongProcessor</Processor>
+    </Compile>
+    <Compile Include="Music\menu_level.mp3">
+      <Name>menu_level</Name>
+      <Importer>Mp3Importer</Importer>
+      <Processor>SongProcessor</Processor>
+    </Compile>
+    <Compile Include="Music\menu_level1.mp3">
+      <Name>menu_level1</Name>
+      <Importer>Mp3Importer</Importer>
+      <Processor>SongProcessor</Processor>
+    </Compile>
+    <Compile Include="Music\stack.mp3">
+      <Name>stack</Name>
+      <Importer>Mp3Importer</Importer>
+      <Processor>SongProcessor</Processor>
+    </Compile>
+    <Compile Include="Music\the_old_tree.mp3">
+      <Name>the_old_tree</Name>
+      <Importer>Mp3Importer</Importer>
+      <Processor>SongProcessor</Processor>
+    </Compile>
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="Sounds\ambient\desert_wind.MP3">
+      <Name>desert_wind</Name>
+      <Importer>Mp3Importer</Importer>
+      <Processor>SoundEffectProcessor</Processor>
+    </Compile>
+    <Compile Include="Sounds\ambient\howling_wind.MP3">
+      <Name>howling_wind</Name>
+      <Importer>Mp3Importer</Importer>
+      <Processor>SoundEffectProcessor</Processor>
+    </Compile>
+    <Compile Include="Sounds\ambient\wind_whistles.MP3">
+      <Name>wind_whistles</Name>
+      <Importer>Mp3Importer</Importer>
+      <Processor>SoundEffectProcessor</Processor>
+    </Compile>
+    <Compile Include="Sounds\death.wav">
+      <Name>death</Name>
+      <Importer>WavImporter</Importer>
+      <Processor>SoundEffectProcessor</Processor>
+    </Compile>
+    <Compile Include="Sounds\excellent.wav">
+      <Name>excellent</Name>
+      <Importer>WavImporter</Importer>
+      <Processor>SoundEffectProcessor</Processor>
+    </Compile>
+    <Compile Include="Sounds\explosions\Explosion_01.wav">
+      <Name>Explosion_01</Name>
+      <Importer>WavImporter</Importer>
+      <Processor>SoundEffectProcessor</Processor>
+    </Compile>
+    <Compile Include="Sounds\explosions\Explosion_02.wav">
+      <Name>Explosion_02</Name>
+      <Importer>WavImporter</Importer>
+      <Processor>SoundEffectProcessor</Processor>
+    </Compile>
+    <Compile Include="Sounds\explosions\Explosion_03.wav">
+      <Name>Explosion_03</Name>
+      <Importer>WavImporter</Importer>
+      <Processor>SoundEffectProcessor</Processor>
+    </Compile>
+    <Compile Include="Sounds\explosions\Explosion_04.wav">
+      <Name>Explosion_04</Name>
+      <Importer>WavImporter</Importer>
+      <Processor>SoundEffectProcessor</Processor>
+    </Compile>
+    <Compile Include="Sounds\explosions\Explosion_with_Metal_Debris.wav">
+      <Name>Explosion_with_Metal_Debris</Name>
+      <Importer>WavImporter</Importer>
+      <Processor>SoundEffectProcessor</Processor>
+    </Compile>
+    <Compile Include="Sounds\gong1.wav">
+      <Name>gong1</Name>
+      <Importer>WavImporter</Importer>
+      <Processor>SoundEffectProcessor</Processor>
+    </Compile>
+    <Compile Include="Sounds\gong2.wav">
+      <Name>gong2</Name>
+      <Importer>WavImporter</Importer>
+      <Processor>SoundEffectProcessor</Processor>
+    </Compile>
+    <Compile Include="Sounds\hit.wav">
+      <Name>hit</Name>
+      <Importer>WavImporter</Importer>
+      <Processor>SoundEffectProcessor</Processor>
+    </Compile>
+    <Compile Include="Sounds\hit2.wav">
+      <Name>hit2</Name>
+      <Importer>WavImporter</Importer>
+      <Processor>SoundEffectProcessor</Processor>
+    </Compile>
+    <Compile Include="Sounds\islands\collide_Metal_drum.wav">
+      <Name>collide_Metal_drum</Name>
+      <Importer>WavImporter</Importer>
+      <Processor>SoundEffectProcessor</Processor>
+    </Compile>
+    <Compile Include="Sounds\islands\Metal_drum.wav">
+      <Name>Metal_drum</Name>
+      <Importer>WavImporter</Importer>
+      <Processor>SoundEffectProcessor</Processor>
+    </Compile>
+    <Compile Include="Sounds\islands\repulsion.wav">
+      <Name>repulsion</Name>
+      <Importer>WavImporter</Importer>
+      <Processor>SoundEffectProcessor</Processor>
+    </Compile>
+    <Compile Include="Sounds\jetpack.wav">
+      <Name>jetpack</Name>
+      <Importer>WavImporter</Importer>
+      <Processor>SoundEffectProcessor</Processor>
+    </Compile>
+    <Compile Include="Sounds\melee\hit1.WAV">
+      <Name>hit1</Name>
+      <Importer>WavImporter</Importer>
+      <Processor>SoundEffectProcessor</Processor>
+    </Compile>
+    <Compile Include="Sounds\melee\hit2.WAV">
+      <Name>hit2</Name>
+      <Importer>WavImporter</Importer>
+      <Processor>SoundEffectProcessor</Processor>
+    </Compile>
+    <Compile Include="Sounds\melee\hit3.WAV">
+      <Name>hit3</Name>
+      <Importer>WavImporter</Importer>
+      <Processor>SoundEffectProcessor</Processor>
+    </Compile>
+    <Compile Include="Sounds\melee\hit4.WAV">
+      <Name>hit4</Name>
+      <Importer>WavImporter</Importer>
+      <Processor>SoundEffectProcessor</Processor>
+    </Compile>
+    <Compile Include="Sounds\melee\not_hit1.WAV">
+      <Name>not_hit1</Name>
+      <Importer>WavImporter</Importer>
+      <Processor>SoundEffectProcessor</Processor>
+    </Compile>
+    <Compile Include="Sounds\melee\not_hit2.WAV">
+      <Name>not_hit2</Name>
+      <Importer>WavImporter</Importer>
+      <Processor>SoundEffectProcessor</Processor>
+    </Compile>
+    <Compile Include="Sounds\menu\back_Vibrate_hit.wav">
+      <Name>back_Vibrate_hit</Name>
+      <Importer>WavImporter</Importer>
+      <Processor>SoundEffectProcessor</Processor>
+    </Compile>
+    <Compile Include="Sounds\menu\change_SONAR_S.WAV">
+      <Name>change_SONAR_S</Name>
+      <Importer>WavImporter</Importer>
+      <Processor>SoundEffectProcessor</Processor>
+    </Compile>
+    <Compile Include="Sounds\menu\ok_Car_hit.wav">
+      <Name>ok_Car_hit</Name>
+      <Importer>WavImporter</Importer>
+      <Processor>SoundEffectProcessor</Processor>
+    </Compile>
+    <None Include="Sounds\movement\20847__plagasul__jump1.wav">
+      <Name>20847__plagasul__jump1</Name>
+      <Importer>WavImporter</Importer>
+      <Processor>SoundEffectProcessor</Processor>
+    </None>
+    <Compile Include="Textures\Environment\cave_diffuse_v001.tga">
+      <Name>cave_diffuse_v001</Name>
+      <Importer>TextureImporter</Importer>
+      <Processor>TextureProcessor</Processor>
+    </Compile>
+    <Compile Include="Textures\Environment\cave_NRM_v001.tga">
+      <Name>cave_NRM_v001</Name>
+      <Importer>TextureImporter</Importer>
+      <Processor>TextureProcessor</Processor>
+    </Compile>
+    <Compile Include="Textures\Environment\cave_SPEC_v001.tga">
+      <Name>cave_SPEC_v001</Name>
+      <Importer>TextureImporter</Importer>
+      <Processor>TextureProcessor</Processor>
+    </Compile>
+    <Compile Include="Textures\Environment\environ_diffuse.tga">
+      <Name>environ_diffuse</Name>
+      <Importer>TextureImporter</Importer>
+      <Processor>TextureProcessor</Processor>
+    </Compile>
+    <Compile Include="Textures\Environment\environ_diffuse_v003.tga">
+      <Name>environ_diffuse_v003</Name>
+      <Importer>TextureImporter</Importer>
+      <Processor>TextureProcessor</Processor>
+    </Compile>
+    <Compile Include="Textures\Environment\environ_diffuse_v005.tga">
+      <Name>environ_diffuse_v005</Name>
+      <Importer>TextureImporter</Importer>
+      <Processor>TextureProcessor</Processor>
+    </Compile>
+    <Compile Include="Textures\Lava\firefractal_orange.tga">
+      <Name>firefractal_orange</Name>
+      <Importer>TextureImporter</Importer>
+      <Processor>TextureProcessor</Processor>
+    </Compile>
+    <Compile Include="Textures\Lava\firefractal_pink.tga">
+      <Name>firefractal_pink</Name>
+      <Importer>TextureImporter</Importer>
+      <Processor>TextureProcessor</Processor>
+    </Compile>
+    <Compile Include="Textures\Lava\firefractal_red.tga">
+      <Name>firefractal_red</Name>
+      <Importer>TextureImporter</Importer>
+      <Processor>TextureProcessor</Processor>
+    </Compile>
+    <Compile Include="Textures\Lava\granite.tga">
+      <Name>granite</Name>
+      <Importer>TextureImporter</Importer>
+      <Processor>TextureProcessor</Processor>
+    </Compile>
+    <Compile Include="Textures\Lava\sparsestucco.tga">
+      <Name>sparsestucco</Name>
+      <Importer>TextureImporter</Importer>
+      <Processor>TextureProcessor</Processor>
+    </Compile>
+    <Compile Include="Textures\Lava\temperature2.tga">
+      <Name>temperature2</Name>
+      <Importer>TextureImporter</Importer>
+      <Processor>TextureProcessor</Processor>
+    </Compile>
+    <Compile Include="Textures\Lava\temperaturebase.tga">
+      <Name>temperaturebase</Name>
+      <Importer>TextureImporter</Importer>
+      <Processor>TextureProcessor</Processor>
+    </Compile>
+    <Compile Include="Textures\Lava\vectorclouds.tga">
+      <Name>vectorclouds</Name>
+      <Importer>TextureImporter</Importer>
+      <Processor>TextureProcessor</Processor>
+    </Compile>
+    <Compile Include="Textures\Player\Robot_texture10.tga">
+      <Name>Robot_texture10</Name>
+      <Importer>TextureImporter</Importer>
+      <Processor>TextureProcessor</Processor>
+    </Compile>
+    <Compile Include="Textures\Sfx\IceSpikeHead.tga">
+      <Name>IceSpikeHead</Name>
+      <Importer>TextureImporter</Importer>
+      <Processor>TextureProcessor</Processor>
+    </Compile>
+    <Compile Include="Textures\Sfx\respawnspot.tga">
+      <Name>respawnspot</Name>
+      <Importer>TextureImporter</Importer>
+      <Processor>TextureProcessor</Processor>
+    </Compile>
+    <Compile Include="Textures\Visualizations\player_arrow.tga">
+      <Name>player_arrow</Name>
+      <Importer>TextureImporter</Importer>
+      <Processor>TextureProcessor</Processor>
+    </Compile>
+    <Compile Include="Sounds\movement\CONCRETE_C.WAV">
+      <Name>CONCRETE_C</Name>
+      <Importer>WavImporter</Importer>
+      <Processor>SoundEffectProcessor</Processor>
+    </Compile>
+    <Compile Include="Sounds\movement\CONCRETE_D.WAV">
+      <Name>CONCRETE_D</Name>
+      <Importer>WavImporter</Importer>
+      <Processor>SoundEffectProcessor</Processor>
+    </Compile>
+    <Compile Include="Sounds\movement\jetpack.wav">
+      <Name>jetpack</Name>
+      <Importer>WavImporter</Importer>
+      <Processor>SoundEffectProcessor</Processor>
+    </Compile>
+    <Compile Include="Sounds\movement\jump_land.wav">
+      <Name>jump_land</Name>
+      <Importer>WavImporter</Importer>
+      <Processor>SoundEffectProcessor</Processor>
+    </Compile>
+    <Compile Include="Sounds\music.mp3">
+      <Name>music</Name>
+      <Importer>Mp3Importer</Importer>
+      <Processor>SongProcessor</Processor>
+    </Compile>
+    <Compile Include="Sounds\phase\applause.WAV">
+      <Name>applause</Name>
+      <Importer>WavImporter</Importer>
+      <Processor>SoundEffectProcessor</Processor>
+    </Compile>
+    <Compile Include="Sounds\powerup\Evil_crack_01.wav">
+      <Name>Evil_crack_01</Name>
+      <Importer>WavImporter</Importer>
+      <Processor>SoundEffectProcessor</Processor>
+    </Compile>
+    <Compile Include="Sounds\powerup\Evil_crack_02.wav">
+      <Name>Evil_crack_02</Name>
+      <Importer>WavImporter</Importer>
+      <Processor>SoundEffectProcessor</Processor>
+    </Compile>
+    <Compile Include="Sounds\powerup\Evil_crack_03.wav">
+      <Name>Evil_crack_03</Name>
+      <Importer>WavImporter</Importer>
+      <Processor>SoundEffectProcessor</Processor>
+    </Compile>
+    <Compile Include="Sounds\powerup\Evil_crack_04.wav">
+      <Name>Evil_crack_04</Name>
+      <Importer>WavImporter</Importer>
+      <Processor>SoundEffectProcessor</Processor>
+    </Compile>
+    <Compile Include="Sounds\powerup\Evil_crack_05.wav">
+      <Name>Evil_crack_05</Name>
+      <Importer>WavImporter</Importer>
+      <Processor>SoundEffectProcessor</Processor>
+    </Compile>
+    <Compile Include="Sounds\powerup\Evil_crack_06.wav">
+      <Name>Evil_crack_06</Name>
+      <Importer>WavImporter</Importer>
+      <Processor>SoundEffectProcessor</Processor>
+    </Compile>
+    <Compile Include="Sounds\powerup\Evil_crack_07.wav">
+      <Name>Evil_crack_07</Name>
+      <Importer>WavImporter</Importer>
+      <Processor>SoundEffectProcessor</Processor>
+    </Compile>
+    <Compile Include="Sounds\powerup\Laser_power_up.wav">
+      <Name>Laser_power_up</Name>
+      <Importer>WavImporter</Importer>
+      <Processor>SoundEffectProcessor</Processor>
+    </Compile>
+    <Compile Include="Sounds\punch1.wav">
+      <Name>punch1</Name>
+      <Importer>WavImporter</Importer>
+      <Processor>SoundEffectProcessor</Processor>
+    </Compile>
+    <Compile Include="Sounds\punch2.wav">
+      <Name>punch2</Name>
+      <Importer>WavImporter</Importer>
+      <Processor>SoundEffectProcessor</Processor>
+    </Compile>
+    <Compile Include="Sounds\respawn\Dark_thick_woosh.wav">
+      <Name>Dark_thick_woosh</Name>
+      <Importer>WavImporter</Importer>
+      <Processor>SoundEffectProcessor</Processor>
+    </Compile>
+    <Compile Include="Sounds\respawn\Delay_swoosh.wav">
+      <Name>Delay_swoosh</Name>
+      <Importer>WavImporter</Importer>
+      <Processor>SoundEffectProcessor</Processor>
+    </Compile>
+    <Compile Include="Sounds\respawn\Eelectronic_woosh.wav">
+      <Name>Eelectronic_woosh</Name>
+      <Importer>WavImporter</Importer>
+      <Processor>SoundEffectProcessor</Processor>
+    </Compile>
+    <Compile Include="Sounds\respawn\Heavy_swoosh.wav">
+      <Name>Heavy_swoosh</Name>
+      <Importer>WavImporter</Importer>
+      <Processor>SoundEffectProcessor</Processor>
+    </Compile>
+    <Compile Include="Sounds\respawn\power_out.wav">
+      <Name>power_out</Name>
+      <Importer>WavImporter</Importer>
+      <Processor>SoundEffectProcessor</Processor>
+    </Compile>
+    <Compile Include="Sounds\respawn\Reverse_riser_01.wav">
+      <Name>Reverse_riser_01</Name>
+      <Importer>WavImporter</Importer>
+      <Processor>SoundEffectProcessor</Processor>
+    </Compile>
+    <Compile Include="Sounds\respawn\xx_Delayed_woosh.wav">
+      <Name>xx_Delayed_woosh</Name>
+      <Importer>WavImporter</Importer>
+      <Processor>SoundEffectProcessor</Processor>
+    </Compile>
+    <Compile Include="Sounds\sword-clash.wav">
+      <Name>sword-clash</Name>
+      <Importer>WavImporter</Importer>
+      <Processor>SoundEffectProcessor</Processor>
+    </Compile>
+    <Compile Include="Sounds\weapons\flamethrower.wav">
+      <Name>flamethrower</Name>
+      <Importer>WavImporter</Importer>
+      <Processor>SoundEffectProcessor</Processor>
+    </Compile>
+    <Compile Include="Sounds\weapons\Flame_pass.wav">
+      <Name>Flame_pass</Name>
+      <Importer>WavImporter</Importer>
+      <Processor>SoundEffectProcessor</Processor>
+    </Compile>
+    <Compile Include="Sounds\weapons\no_energy_Electronic_impact.wav">
+      <Name>no_energy_Electronic_impact</Name>
+      <Importer>WavImporter</Importer>
+      <Processor>SoundEffectProcessor</Processor>
+    </Compile>
+    <Compile Include="Sounds\woosh1.wav">
+      <Name>woosh1</Name>
+      <Importer>WavImporter</Importer>
+      <Processor>SoundEffectProcessor</Processor>
+    </Compile>
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="Sprites\Menu\background.png">
+      <Name>background</Name>
+      <Importer>TextureImporter</Importer>
+      <Processor>TextureProcessor</Processor>
+    </Compile>
+    <Compile Include="Sprites\Menu\help_screen.png">
+      <Name>help_screen</Name>
+      <Importer>TextureImporter</Importer>
+      <Processor>TextureProcessor</Processor>
+    </Compile>
+    <Compile Include="Sprites\Menu\robot_selection_background_inactive.png">
+      <Name>robot_selection_background_inactive</Name>
+      <Importer>TextureImporter</Importer>
+      <Processor>TextureProcessor</Processor>
+    </Compile>
+    <Compile Include="Sprites\Menu\volume_indicator.png">
+      <Name>volume_indicator</Name>
+      <Importer>TextureImporter</Importer>
+      <Processor>TextureProcessor</Processor>
+    </Compile>
+    <Compile Include="Sprites\Menu\volume_indicator_selected.png">
+      <Name>volume_indicator_selected</Name>
+      <Importer>TextureImporter</Importer>
+      <Processor>TextureProcessor</Processor>
+    </Compile>
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="Textures\custom_uv_diag.png">
+      <Name>custom_uv_diag</Name>
+      <Importer>TextureImporter</Importer>
+      <Processor>TextureProcessor</Processor>
+    </Compile>
+    <Compile Include="Textures\Player\robot_spec.jpg">
+      <Name>robot_spec</Name>
+      <Importer>TextureImporter</Importer>
+      <Processor>TextureProcessor</Processor>
+    </Compile>
+    <Compile Include="Models\Environment\cave_apr30.fbx">
+      <Name>cave_apr30</Name>
+      <Importer>FbxImporter</Importer>
+      <Processor>CaveProcessor</Processor>
+    </Compile>
+    <Compile Include="Models\Environment\lava6c.fbx">
+      <Name>lava6c</Name>
+      <Importer>FbxImporter</Importer>
+      <Processor>LavaProcessor</Processor>
+    </Compile>
+    <Compile Include="Models\Islands\all_rend_and_col.fbx">
+      <Name>all_rend_and_col</Name>
+      <Importer>FbxImporter</Importer>
+      <Processor>IslandProcessor</Processor>
+    </Compile>
+    <Compile Include="Models\Pillars\pillar_001.fbx">
+      <Name>pillar_001</Name>
+      <Importer>FbxImporter</Importer>
+      <Processor>PillarProcessor</Processor>
+    </Compile>
+    <None Include="Models\Pillars\pillar_001_col.fbx">
+      <Name>pillar_001_col</Name>
+      <Importer>FbxImporter</Importer>
+      <Processor>ModelProcessor</Processor>
+    </None>
+    <Compile Include="Models\Pillars\pillar_002.fbx">
+      <Name>pillar_002</Name>
+      <Importer>FbxImporter</Importer>
+      <Processor>PillarProcessor</Processor>
+    </Compile>
+    <None Include="Models\Pillars\pillar_002_col.fbx">
+      <Name>pillar_002_col</Name>
+      <Importer>FbxImporter</Importer>
+      <Processor>ModelProcessor</Processor>
+    </None>
+    <Compile Include="Models\Pillars\pillar_003.fbx">
+      <Name>pillar_003</Name>
+      <Importer>FbxImporter</Importer>
+      <Processor>PillarProcessor</Processor>
+    </Compile>
+    <None Include="Models\Pillars\pillar_003_col.fbx">
+      <Name>pillar_003_col</Name>
+      <Importer>FbxImporter</Importer>
+      <Processor>ModelProcessor</Processor>
+    </None>
+    <Compile Include="Models\Player\austinrobot.x">
+      <Name>austinrobot</Name>
+      <Importer>XModelImporter</Importer>
+      <Processor>DwarfProcessor</Processor>
+    </Compile>
+    <Compile Include="Models\PowerUps\powerups_static.fbx">
+      <Name>powerups_static</Name>
+      <Importer>FbxImporter</Importer>
+      <Processor>PowerUpProcessor</Processor>
+    </Compile>
+    <Compile Include="Models\Sfx\icespike.fbx">
+      <Name>icespike</Name>
+      <Importer>FbxImporter</Importer>
+      <Processor>IceSpikeProcessor</Processor>
+    </Compile>
+    <Compile Include="Models\Sfx\icespike_explosion.fbx">
+      <Name>icespike_explosion</Name>
+      <Importer>FbxImporter</Importer>
+      <Processor>ExplosionProcessor</Processor>
+    </Compile>
+    <Compile Include="Models\Visualizations\arrow.fbx">
+      <Name>arrow</Name>
+      <Importer>FbxImporter</Importer>
+      <Processor>FlameProcessor</Processor>
+    </Compile>
+    <Compile Include="Models\Visualizations\flame_primitive.fbx">
+      <Name>flame_primitive</Name>
+      <Importer>FbxImporter</Importer>
+      <Processor>FlameProcessor</Processor>
+    </Compile>
+    <Compile Include="Models\Visualizations\icespike_primitive.fbx">
+      <Name>icespike_primitive</Name>
+      <Importer>FbxImporter</Importer>
+      <Processor>IceSpikeProcessor</Processor>
+    </Compile>
+    <None Include="Textures\Player\Robot_texture10.jpg">
+      <Name>Robot_texture10</Name>
+      <Importer>TextureImporter</Importer>
+      <Processor>TextureProcessor</Processor>
+    </None>
+    <Compile Include="Textures\Sfx\FireExplosion.bmp">
+      <Name>FireExplosion</Name>
+      <Importer>TextureImporter</Importer>
+      <Processor>TextureProcessor</Processor>
+    </Compile>
+    <Compile Include="Textures\Sfx\IceExplosion.bmp">
+      <Name>IceExplosion</Name>
+      <Importer>TextureImporter</Importer>
+      <Processor>TextureProcessor</Processor>
+    </Compile>
+    <Compile Include="Textures\Sfx\IceSpikeTrail.png">
+      <Name>IceSpikeTrail</Name>
+      <Importer>TextureImporter</Importer>
+      <Processor>TextureProcessor</Processor>
+    </Compile>
+    <Compile Include="Textures\Sfx\LavaExplosion.bmp">
+      <Name>LavaExplosion</Name>
+      <Importer>TextureImporter</Importer>
+      <Processor>TextureProcessor</Processor>
+    </Compile>
+    <None Include="Textures\Sfx\respawnspot.png">
+      <Name>respawnspot</Name>
+      <Importer>TextureImporter</Importer>
+      <Processor>TextureProcessor</Processor>
+    </None>
+    <Compile Include="Textures\Sfx\snow.png">
+      <Name>snow</Name>
+      <Importer>TextureImporter</Importer>
+      <Processor>TextureProcessor</Processor>
+    </Compile>
+    <Compile Include="Textures\uvtemplate001-lg.jpg">
+      <Name>uvtemplate001-lg</Name>
+      <Importer>TextureImporter</Importer>
+      <Processor>TextureProcessor</Processor>
+    </Compile>
+    <Compile Include="Textures\xna_logo.png">
+      <Name>xna_logo</Name>
+      <Importer>TextureImporter</Importer>
+      <Processor>TextureProcessor</Processor>
+    </Compile>
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="Models\Environment\lava_with_texcoords_fixed.fbx">
+      <Name>lava_with_texcoords_fixed</Name>
+      <Importer>FbxImporter</Importer>
+      <Processor>LavaProcessor</Processor>
+    </Compile>
+    <None Include="Models\Player\austinrobotanimation.xml">
+      <Name>austinrobotanimation</Name>
+      <Importer>XmlImporter</Importer>
+      <Processor>PassThroughProcessor</Processor>
+    </None>
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="Sprites\Menu\Player\" />
+  </ItemGroup>
+  <Import Project="$(MSBuildExtensionsPath)\Microsoft\XNA Game Studio\XDK\Microsoft.Xna.GameStudio.Xdk.ContentPipeline.targets" />
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
+</Project>

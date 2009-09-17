@@ -1,65 +1,102 @@
-<Project DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003" ToolsVersion="3.5">
+﻿<Project DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003" ToolsVersion="3.5">
   <PropertyGroup>
-    <ProjectGuid>{95D2678F-34F2-4C0E-A7F1-CD56FB987A8C}</ProjectGuid>
+    <ProjectGuid>{0BD2EB0A-7994-4D23-B8D2-6B07526BCFE3}</ProjectGuid>
     <ProjectTypeGuids>{6D335F3A-9D43-41b4-9D22-F6F17C4BE596};{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}</ProjectTypeGuids>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
-    <Platform Condition=" '$(Platform)' == '' ">Xbox 360</Platform>
-    <OutputType>WinExe</OutputType>
+    <Platform Condition=" '$(Platform)' == '' ">XDK</Platform>
+    <OutputType>Exe</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>ProjectMagma</RootNamespace>
-    <AssemblyName>ProjectMagma</AssemblyName>
     <TargetFrameworkVersion>v3.5</TargetFrameworkVersion>
     <XnaFrameworkVersion>v3.1</XnaFrameworkVersion>
-    <XnaPlatform>Xbox 360</XnaPlatform>
-    <XnaCrossPlatformGroupID>1237e529-9444-43ca-95d2-f2845fa8b43f</XnaCrossPlatformGroupID>
-    <ApplicationIcon>Game.ico</ApplicationIcon>
-    <Thumbnail>GameThumbnail.png</Thumbnail>
-    <IsWebBootstrapper>false</IsWebBootstrapper>
-    <PublishUrl>publish\</PublishUrl>
-    <Install>true</Install>
-    <InstallFrom>Disk</InstallFrom>
-    <UpdateEnabled>false</UpdateEnabled>
-    <UpdateMode>Foreground</UpdateMode>
-    <UpdateInterval>7</UpdateInterval>
-    <UpdateIntervalUnits>Days</UpdateIntervalUnits>
-    <UpdatePeriodically>false</UpdatePeriodically>
-    <UpdateRequired>false</UpdateRequired>
-    <MapFileExtensions>true</MapFileExtensions>
-    <ApplicationRevision>0</ApplicationRevision>
-    <ApplicationVersion>1.0.0.%2a</ApplicationVersion>
-    <UseApplicationTrust>false</UseApplicationTrust>
-    <BootstrapperEnabled>true</BootstrapperEnabled>
+    <XnaPlatform>XDK</XnaPlatform>
+    <XdkRuntimeFlavor Condition=" '$(XdkRuntimeFlavor)' == '' ">Release</XdkRuntimeFlavor>
+    <XnaCrossPlatformGroupID>5749f906-04b9-486a-bfb6-d046e85ab234</XnaCrossPlatformGroupID>
+    <AssemblyName>game</AssemblyName>
+    <AssemblyName Condition=" '$(AssemblyName)' == '' ">ProjectMagma</AssemblyName>
   </PropertyGroup>
-  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|Xbox 360' ">
-    <OutputPath>bin\Xbox 360\Debug\</OutputPath>
-    <ErrorReport>prompt</ErrorReport>
-    <WarningLevel>4</WarningLevel>
-    <NoStdLib>true</NoStdLib>
-    <UseVSHostingProcess>false</UseVSHostingProcess>
-    <PlatformTarget>x86</PlatformTarget>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|XDK' ">
     <DebugSymbols>true</DebugSymbols>
     <DebugType>full</DebugType>
     <Optimize>false</Optimize>
-    <DefineConstants>DEBUG;TRACE;XBOX;XBOX360</DefineConstants>
-    <XnaCompressContent>true</XnaCompressContent>
-  </PropertyGroup>
-  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|Xbox 360' ">
-    <OutputPath>bin\Xbox 360\Release</OutputPath>
+    <OutputPath>bin\XDK\Debug</OutputPath>
+    <DefineConstants>DEBUG;TRACE;XDK;XBOX;XBOX360</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
     <NoStdLib>true</NoStdLib>
     <UseVSHostingProcess>false</UseVSHostingProcess>
-    <PlatformTarget>x86</PlatformTarget>
+    <XnaCompressContent>true</XnaCompressContent>
+    <XdkRuntimeFlavor>Profile</XdkRuntimeFlavor>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|XDK' ">
     <DebugType>pdbonly</DebugType>
     <Optimize>true</Optimize>
-    <DefineConstants>TRACE;XBOX;XBOX360</DefineConstants>
+    <OutputPath>bin\XDK\Release</OutputPath>
+    <DefineConstants>TRACE;XDK;XBOX;XBOX360</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <NoStdLib>true</NoStdLib>
+    <UseVSHostingProcess>false</UseVSHostingProcess>
     <XnaCompressContent>true</XnaCompressContent>
+    <XdkRuntimeFlavor>Release</XdkRuntimeFlavor>
   </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Profile|XDK' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\XDK\Profile</OutputPath>
+    <DefineConstants>TRACE;XDK;XBOX;XBOX360</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <NoStdLib>true</NoStdLib>
+    <UseVSHostingProcess>false</UseVSHostingProcess>
+    <XnaCompressContent>true</XnaCompressContent>
+    <XdkRuntimeFlavor>Profile</XdkRuntimeFlavor>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Submission|XDK' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\XDK\Submission</OutputPath>
+    <DefineConstants>TRACE;XDK;XBOX;XBOX360</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <NoStdLib>true</NoStdLib>
+    <UseVSHostingProcess>false</UseVSHostingProcess>
+    <XnaCompressContent>true</XnaCompressContent>
+    <XdkRuntimeFlavor>Submission</XdkRuntimeFlavor>
+    <SubmissionBuild>true</SubmissionBuild>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="Microsoft.Xna.Framework">
+      <Private>False</Private>
+    </Reference>
+    <Reference Include="Microsoft.Xna.Framework.Game">
+      <Private>False</Private>
+    </Reference>
+    <Reference Include="mscorlib">
+      <Private>False</Private>
+    </Reference>
+    <Reference Include="System">
+      <Private>False</Private>
+    </Reference>
+    <Reference Include="System.Xml">
+      <Private>False</Private>
+    </Reference>
+    <Reference Include="System.Core">
+      <RequiredTargetFramework>3.5</RequiredTargetFramework>
+      <Private>False</Private>
+    </Reference>
+    <Reference Include="System.Xml.Linq">
+      <RequiredTargetFramework>3.5</RequiredTargetFramework>
+      <Private>False</Private>
+    </Reference>
+  </ItemGroup>
   <ItemGroup>
     <Compile Include="Audio\AudioPlayer.cs" />
     <Compile Include="Bugslayer\CrashDebugger.cs" />
     <Compile Include="DrawTools.cs" />
     <Compile Include="EntryPoint.cs" />
+    <Compile Include="Framework\AbstractEntity.cs" />
+    <Compile Include="Framework\AbstractEntityManager.cs" />
     <Compile Include="Framework\Attributes\Base\Attribute.cs" />
     <Compile Include="Framework\Attributes\Base\AttributeTypes.cs" />
     <Compile Include="Framework\Attributes\Concrete\BoolAttribute.cs" />
@@ -78,18 +115,13 @@
     <Compile Include="Framework\Attributes\Events\StringChangeHandler.cs" />
     <Compile Include="Framework\Attributes\Events\Vector2ChangeHandler.cs" />
     <Compile Include="Framework\Attributes\Events\Vector3ChangeHandler.cs" />
+    <Compile Include="Framework\Event\EntityAddedHandler.cs" />
+    <Compile Include="Framework\Event\EntityRemovedHandler.cs" />
+    <Compile Include="Framework\Event\PropertyAddedHandler.cs" />
+    <Compile Include="Framework\Properties\Base\Property.cs" />
+    <Compile Include="Game.cs" />
     <Compile Include="GlobalClock.cs" />
     <Compile Include="Menu\CreditsMenu.cs" />
-    <Compile Include="Renderer\Billboard.cs" />
-    <Compile Include="Renderer\Interface\InterpolationHistory.cs" />
-    <Compile Include="Renderer\Interface\QuaternionInterpolationHistory.cs" />
-    <Compile Include="Renderer\Interface\Vector3InterpolationHistory.cs" />
-    <Compile Include="Renderer\MathHelpers\DoublyIntegratedFloat.cs" />
-    <Compile Include="Renderer\MathHelpers\DoublyIntegratedVector2.cs" />
-    <Compile Include="Renderer\MathHelpers\DoublyIntegratedVector3.cs" />
-    <Compile Include="Renderer\MathHelpers\EaseFloat.cs" />
-    <Compile Include="Renderer\MathHelpers\EaseVector3.cs" />
-    <Compile Include="Renderer\MathHelpers\SineFloat.cs" />
     <Compile Include="Menu\HelpMenu.cs" />
     <Compile Include="Menu\ItemHandlers.cs" />
     <Compile Include="Menu\ItemizedMenuScreen.cs" />
@@ -105,14 +137,23 @@
     <Compile Include="Profiler\Profiler.cs" />
     <Compile Include="Profiler\Section.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Game.cs" />
+    <Compile Include="Renderer\Billboard.cs" />
     <Compile Include="Renderer\Camera.cs" />
+    <Compile Include="Renderer\Interface\InterpolationHistory.cs" />
+    <Compile Include="Renderer\Interface\QuaternionInterpolationHistory.cs" />
     <Compile Include="Renderer\Interface\RendererInterface.cs" />
     <Compile Include="Renderer\Interface\RendererUpdatable.cs" />
     <Compile Include="Renderer\Interface\RendererUpdate.cs" />
     <Compile Include="Renderer\Interface\RendererUpdateQueue.cs" />
-    <Compile Include="Renderer\ParallelLight.cs" />
+    <Compile Include="Renderer\Interface\Vector3InterpolationHistory.cs" />
     <Compile Include="Renderer\LightManager.cs" />
+    <Compile Include="Renderer\MathHelpers\DoublyIntegratedFloat.cs" />
+    <Compile Include="Renderer\MathHelpers\DoublyIntegratedVector2.cs" />
+    <Compile Include="Renderer\MathHelpers\DoublyIntegratedVector3.cs" />
+    <Compile Include="Renderer\MathHelpers\EaseFloat.cs" />
+    <Compile Include="Renderer\MathHelpers\EaseVector3.cs" />
+    <Compile Include="Renderer\MathHelpers\SineFloat.cs" />
+    <Compile Include="Renderer\ParallelLight.cs" />
     <Compile Include="Renderer\ParticleSystem\CreateVertex.cs" />
     <Compile Include="Renderer\ParticleSystem\CreateVertexArray.cs" />
     <Compile Include="Renderer\ParticleSystem\Emitter\FireExplosionEmitter.cs" />
@@ -137,21 +178,21 @@
     <Compile Include="Renderer\ParticleSystem\Stateful\ResourceManager.cs" />
     <Compile Include="Renderer\ParticleSystem\Stateful\Size.cs" />
     <Compile Include="Renderer\ParticleSystem\Stateful\StatefulParticleSystem.cs" />
-    <Compile Include="Renderer\Renderables\BasicRenderable.cs" />
     <Compile Include="Renderer\Renderables\ArrowRenderable.cs" />
-    <Compile Include="Renderer\Renderables\PowerupRenderable.cs" />
+    <Compile Include="Renderer\Renderables\BasicRenderable.cs" />
     <Compile Include="Renderer\Renderables\EnvironmentRenderable.cs" />
     <Compile Include="Renderer\Renderables\FireExplosionRenderable.cs" />
     <Compile Include="Renderer\Renderables\FlamethrowerRenderable.cs" />
     <Compile Include="Renderer\Renderables\HighlightRenderable.cs" />
+    <Compile Include="Renderer\Renderables\HUDRenderable.cs" />
     <Compile Include="Renderer\Renderables\IceExplosionRenderable.cs" />
     <Compile Include="Renderer\Renderables\IceSpikeRenderable.cs" />
     <Compile Include="Renderer\Renderables\IslandRenderable.cs" />
     <Compile Include="Renderer\Renderables\LavaRenderable.cs" />
-    <Compile Include="Renderer\Renderables\HUDRenderable.cs" />
     <Compile Include="Renderer\Renderables\ModelRenderable.cs" />
     <Compile Include="Renderer\Renderables\ParticleSystemRenderable.cs" />
     <Compile Include="Renderer\Renderables\PointExplosionRenderable.cs" />
+    <Compile Include="Renderer\Renderables\PowerupRenderable.cs" />
     <Compile Include="Renderer\Renderables\Renderable.cs" />
     <Compile Include="Renderer\Renderables\RespawnLightRenderable.cs" />
     <Compile Include="Renderer\Renderables\RobotRenderable.cs" />
@@ -162,9 +203,7 @@
     <Compile Include="Renderer\RendererEntityManager.cs" />
     <Compile Include="Renderer\RenderMode.cs" />
     <Compile Include="Renderer\RenderPasses\GlowPass.cs" />
-    <Compile Include="Renderer\RenderPasses\HDRCombinePass.cs">
-      <SubType>Code</SubType>
-    </Compile>
+    <Compile Include="Renderer\RenderPasses\HdrCombinePass.cs" />
     <Compile Include="Renderer\RenderPasses\RenderPass.cs" />
     <Compile Include="Renderer\RenderTime.cs" />
     <Compile Include="Simulation\Audio\SoundRegistry.cs" />
@@ -187,18 +226,12 @@
     <Compile Include="Simulation\Collision\Contact.cs" />
     <Compile Include="Simulation\Collision\ContactPoint.cs" />
     <Compile Include="Simulation\Collision\TestList.cs" />
-    <Compile Include="Framework\AbstractEntity.cs" />
     <Compile Include="Simulation\Entity.cs" />
     <Compile Include="Simulation\EntityKindManager.cs" />
-    <Compile Include="Framework\AbstractEntityManager.cs" />
-    <Compile Include="Framework\Event\EntityAddedHandler.cs" />
-    <Compile Include="Framework\Event\EntityRemovedHandler.cs" />
     <Compile Include="Simulation\EntityManager.cs" />
     <Compile Include="Simulation\Event\LevelLoadedHandler.cs" />
-    <Compile Include="Framework\Event\PropertyAddedHandler.cs" />
     <Compile Include="Simulation\Event\UpdateHandler.cs" />
     <Compile Include="Simulation\OrientationHelper.cs" />
-    <Compile Include="Framework\Properties\Base\Property.cs" />
     <Compile Include="Simulation\Properties\Base\RendererUpdatableProperty.cs" />
     <Compile Include="Simulation\Properties\Environment\CameraProperty.cs" />
     <Compile Include="Simulation\Properties\Environment\ExplosionControllerProperty.cs" />
@@ -222,17 +255,17 @@
     <Compile Include="Simulation\Properties\Player\RespawnLightControllerProperty.cs" />
     <Compile Include="Simulation\Properties\Rendering\ArrowRenderProperty.cs" />
     <Compile Include="Simulation\Properties\Rendering\BasicRenderProperty.cs" />
-    <Compile Include="Simulation\Properties\Rendering\PowerupRenderProperty.cs" />
     <Compile Include="Simulation\Properties\Rendering\EnvironmentRenderProperty.cs" />
     <Compile Include="Simulation\Properties\Rendering\FireExplosionRenderProperty.cs" />
     <Compile Include="Simulation\Properties\Rendering\FlamethrowerRenderProperty.cs" />
+    <Compile Include="Simulation\Properties\Rendering\HUDProperty.cs" />
     <Compile Include="Simulation\Properties\Rendering\IceExplosionRenderProperty.cs" />
     <Compile Include="Simulation\Properties\Rendering\IceSpikeRenderProperty.cs" />
     <Compile Include="Simulation\Properties\Rendering\IslandRenderProperty.cs" />
     <Compile Include="Simulation\Properties\Rendering\LavaRenderProperty.cs" />
-    <Compile Include="Simulation\Properties\Rendering\HUDProperty.cs" />
     <Compile Include="Simulation\Properties\Rendering\ModelRenderProperty.cs" />
     <Compile Include="Simulation\Properties\Rendering\PointExplosionRenderProperty.cs" />
+    <Compile Include="Simulation\Properties\Rendering\PowerupRenderProperty.cs" />
     <Compile Include="Simulation\Properties\Rendering\RespawnLightRenderProperty.cs" />
     <Compile Include="Simulation\Properties\Rendering\RobotRenderProperty.cs" />
     <Compile Include="Simulation\Properties\Rendering\TexturedRenderProperty.cs" />
@@ -243,96 +276,47 @@
     <Compile Include="WrappedContentManager.cs" />
   </ItemGroup>
   <ItemGroup>
-    <Content Include="Game.ico" />
-    <Content Include="GameThumbnail.png" />
+    <ContentXlast Include="Content.xlast" />
   </ItemGroup>
   <ItemGroup>
-    <NestedContentProject Include="Content\Content.contentproj">
-      <Project>40e4caf0-0f79-43c3-85f2-3a79d2038879</Project>
+    <TitleXlast Include="LiveFiles\Title.xlast" />
+  </ItemGroup>
+  <ItemGroup>
+    <XdkLiveFile Include="LiveFiles\Achievement01.png" />
+    <XdkLiveFile Include="LiveFiles\Achievement02.png" />
+    <XdkLiveFile Include="LiveFiles\Achievement03.png" />
+    <XdkLiveFile Include="LiveFiles\Achievement04.png" />
+    <XdkLiveFile Include="LiveFiles\Achievement05.png" />
+    <XdkLiveFile Include="LiveFiles\Achievement06.png" />
+    <XdkLiveFile Include="LiveFiles\Achievement07.png" />
+    <XdkLiveFile Include="LiveFiles\Achievement08.png" />
+    <XdkLiveFile Include="LiveFiles\Achievement09.png" />
+    <XdkLiveFile Include="LiveFiles\Achievement10.png" />
+    <XdkLiveFile Include="LiveFiles\Achievement11.png" />
+    <XdkLiveFile Include="LiveFiles\Achievement12.png" />
+    <XdkLiveFile Include="LiveFiles\DashboardIcon.png" />
+    <XdkLiveFile Include="LiveFiles\GameIcon.png" />
+    <XdkLiveFile Include="LiveFiles\OfferBanner.png" />
+    <XdkLiveFile Include="LiveFiles\TitleImage.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <NestedContentProject Include="Content\_XBLA_Content.contentproj">
+      <Project>209b3d57-464a-4999-a167-d5a348793e6c</Project>
       <Visible>False</Visible>
     </NestedContentProject>
   </ItemGroup>
   <ItemGroup>
-    <BootstrapperPackage Include="Microsoft.Net.Client.3.5">
-      <Visible>False</Visible>
-      <ProductName>.NET Framework Client Profile</ProductName>
-      <Install>false</Install>
-    </BootstrapperPackage>
-    <BootstrapperPackage Include="Microsoft.Net.Framework.2.0">
-      <Visible>False</Visible>
-      <ProductName>.NET Framework 2.0 %28x86%29</ProductName>
-      <Install>false</Install>
-    </BootstrapperPackage>
-    <BootstrapperPackage Include="Microsoft.Net.Framework.3.0">
-      <Visible>False</Visible>
-      <ProductName>.NET Framework 3.0 %28x86%29</ProductName>
-      <Install>false</Install>
-    </BootstrapperPackage>
-    <BootstrapperPackage Include="Microsoft.Net.Framework.3.5">
-      <Visible>False</Visible>
-      <ProductName>.NET Framework 3.5</ProductName>
-      <Install>false</Install>
-    </BootstrapperPackage>
-    <BootstrapperPackage Include="Microsoft.Net.Framework.3.5.SP1">
-      <Visible>False</Visible>
-      <ProductName>.NET Framework 3.5 SP1</ProductName>
-      <Install>true</Install>
-    </BootstrapperPackage>
-    <BootstrapperPackage Include="Microsoft.Windows.Installer.3.1">
-      <Visible>False</Visible>
-      <ProductName>Windows Installer 3.1</ProductName>
-      <Install>true</Install>
-    </BootstrapperPackage>
-    <BootstrapperPackage Include="Microsoft.Xna.Framework.3.0">
-      <Visible>False</Visible>
-      <ProductName>Microsoft XNA Framework Redistributable 3.0</ProductName>
-      <Install>true</Install>
-    </BootstrapperPackage>
-  </ItemGroup>
-  <ItemGroup>
-    <Reference Include="Microsoft.Xna.Framework">
-      <Private>False</Private>
-    </Reference>
-    <Reference Include="Microsoft.Xna.Framework.Game">
-      <Private>False</Private>
-    </Reference>
-    <Reference Include="mscorlib">
-      <Private>False</Private>
-    </Reference>
-    <Reference Include="System">
-      <Private>False</Private>
-    </Reference>
-    <Reference Include="System.Core">
-      <Private>False</Private>
-      <RequiredTargetFramework>3.5</RequiredTargetFramework>
-    </Reference>
-    <Reference Include="System.Xml">
-      <Private>False</Private>
-    </Reference>
-    <Reference Include="System.Xml.Linq">
-      <Private>False</Private>
-      <RequiredTargetFramework>3.5</RequiredTargetFramework>
-    </Reference>
-  </ItemGroup>
-  <ItemGroup>
-    <ProjectReference Include="..\AnimationComponentLibrary\_XBOX360_AnimationComponentLibrary.csproj">
-      <Project>{7358AC46-F593-429F-AD44-E4475FFC8058}</Project>
-      <Name>_XBOX360_AnimationComponentLibrary</Name>
+    <ProjectReference Include="..\AnimationComponentLibrary\_XBLA_AnimationComponentLibrary.csproj">
+      <Project>{52F7E4A1-6538-46C3-8AFA-576CC6B7A84B}</Project>
+      <Name>_XBLA_AnimationComponentLibrary</Name>
     </ProjectReference>
-    <ProjectReference Include="..\ProjectMagmaContentPipeline\ProjectMagmaContentPipeline.csproj">
-      <Project>{41D8590B-0AD9-4E4A-B1ED-9E6E571364A2}</Project>
-      <Name>ProjectMagmaContentPipeline</Name>
+    <ProjectReference Include="..\ProjectMagmaShared\_XBLA_ProjectMagmaShared.csproj">
+      <Project>{3982C9BE-420A-487B-9C7F-67257A5C1FCE}</Project>
+      <Name>_XBLA_ProjectMagmaShared</Name>
     </ProjectReference>
-    <ProjectReference Include="..\ProjectMagmaShared\_XBOX360_ProjectMagmaShared.csproj">
-      <Project>{9D08F9E6-E783-43F1-B9B8-C448B482A73D}</Project>
-      <Name>_XBOX360_ProjectMagmaShared</Name>
-    </ProjectReference>
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="ProjectMagma_TemporaryKey.pfx" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
-  <Import Project="$(MSBuildExtensionsPath)\Microsoft\XNA Game Studio\Microsoft.Xna.GameStudio.targets" />
+  <Import Project="$(MSBuildExtensionsPath)\Microsoft\XNA Game Studio\XDK\Microsoft.Xna.GameStudio.Xdk.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.
   <Target Name="BeforeBuild">

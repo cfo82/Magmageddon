@@ -107,8 +107,12 @@ namespace ProjectMagma.Profiler
         public void Write(StorageDevice device, string windowTitle, string filename)
         {
             // Open a storage container.StorageContainer container
+#if XDK
             bool isTransferredFromOtherPlayer;
             StorageContainer container = device.OpenContainer(windowTitle, false, out isTransferredFromOtherPlayer);
+#else
+            StorageContainer container = device.OpenContainer(windowTitle);
+#endif
 
             // Get the path of the save game.
             string absoluteFilename = Path.Combine(container.Path, filename);

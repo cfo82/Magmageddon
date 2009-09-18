@@ -55,7 +55,8 @@
       <Attribute name="mesh" template="string" value="Models\Environment\lava6c"/>
       <Attribute name="render_priority" template="int" value="600"/>
       <!--Attribute name="mesh" template="string" value="Models\Primitives\lava_primitive"/-->
-      <Attribute name="sparsestucco_texture" template="string" value="Textures/Lava/sparsestucco"/>
+      <Attribute name="sparsestucco_texture" template="string" value="Textures/Lava/newstucco_chans"/>
+      <!--Attribute name="sparsestucco_texture" template="string" value="Textures/Lava/sparsestucco"/-->
       <Attribute name="vectorcloud_texture" template="string" value="Textures/Lava/vectorclouds"/>
       <Attribute name="granite_texture" template="string" value="Textures/Lava/granite"/>
       <Attribute name="firefractal_texture" template="string" value="Textures/Lava/firefractal_orange"/>

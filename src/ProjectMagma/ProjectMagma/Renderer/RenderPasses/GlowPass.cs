@@ -6,81 +6,75 @@ namespace ProjectMagma.Renderer
 {
     public class GlowPass : RenderPass
     {
-        public GlowPass(Renderer renderer, RenderTarget2D target0, RenderTarget2D target1)
-            : base(renderer, target0, target1)
+        public GlowPass(
+            Renderer renderer,
+            RenderTarget2D targetBlurredHDRColorBuffer,
+            RenderTarget2D targetBlurredRenderChannel
+            )
+        : base(renderer)
         {
-            originalBlurEffect = Game.Instance.ContentManager.Load<Effect>("Effects/GaussianBlur");
             gaussianBlurEffect = Game.Instance.ContentManager.Load<Effect>("Effects/BlurModified");
+            this.targetBlurredHDRColorBuffer = targetBlurredHDRColorBuffer;
+            this.targetBlurredRenderChannel = targetBlurredRenderChannel;
         }
 
-        public override void Render()
+        public void Render(
+            Texture2D hdrColorBuffer, Texture2D renderChannelBuffer,
+            RenderTarget2D targetIntermediateBlurredHDRColorBuffer, RenderTarget2D targetIntermediateBlurredRenderChannelBuffer,
+            RenderTarget2D targetBlurredHDRColorBuffer, RenderTarget2D targetBlurredREnderChannelBuffer
+            )
         {
-            //SetBlurEffectParameters(1.0f / Renderer.Device.Viewport.Width, 0);
-            //DrawFullscreenQuad(Renderer.RenderChannels, Renderer.Device.Viewport.Width, Renderer.Device.Viewport.Height / 2, gaussianBlurEffect);
-            //SetBlurEffectParameters(0, 1.0f / Renderer.Device.Viewport.Height);
-            //DrawFullscreenQuad(Renderer.ResolveTarget, Renderer.Device.Viewport.Width / 2, Renderer.Device.Viewport.Height, gaussianBlurEffect);
+            // pass 1 horizontal blur
+            SetBlurEffectParameters(
+                1.0f / hdrColorBuffer.Width,
+                0,
+                gaussianBlurEffect,
+                hdrColorBuffer,
+                renderChannelBuffer
+                );
+            DrawFullscreenQuad(
+                hdrColorBuffer,
+                targetIntermediateBlurredHDRColorBuffer, targetIntermediateBlurredRenderChannelBuffer,
+                gaussianBlurEffect
+                );
 
-            //SetBlurEffectParameters(1.0f / Renderer.Device.Viewport.Width, 0, originalBlurEffect, null);
-            //DrawFullscreenQuad(Renderer.RenderChannels, Renderer.Target1, originalBlurEffect);
-            //SetBlurEffectParameters(0, 1.0f / Renderer.Device.Viewport.Height, originalBlurEffect, null);
-            //DrawFullscreenQuad(Renderer.Target1.GetTexture(), Renderer.Target1, originalBlurEffect);
-            ////DrawFullscreenQuad(Renderer.Target1.GetTexture(), originalBlurEffect);
+            // result
+            Texture2D intermediateBlurredHDRColorBuffer = targetIntermediateBlurredHDRColorBuffer.GetTexture();
+            Texture2D intermediateBlurredRenderChannelBuffer = targetIntermediateBlurredRenderChannelBuffer.GetTexture();
 
-            //gaussianBlurEffect.Parameters["geom"].SetValue(Renderer.ResolveTarget);
-            //SetBlurEffectParameters(1.0f / Renderer.Device.Viewport.Width, 0, gaussianBlurEffect, Renderer.Target1.GetTexture());
-            //DrawFullscreenQuad(Renderer.Target1.GetTexture(), Renderer.Target1, gaussianBlurEffect);
-            //SetBlurEffectParameters(0, 1.0f / Renderer.Device.Viewport.Height, gaussianBlurEffect, Renderer.Target1.GetTexture());
-            //DrawFullscreenQuad(Renderer.Target1.GetTexture(), gaussianBlurEffect);
-            ////DrawFullscreenQuad(Renderer.ResolveTarget, gaussianBlurEffect);
+            Renderer.Device.SetRenderTarget(0, targetBlurredHDRColorBuffer);
+            Renderer.Device.SetRenderTarget(0, targetBlurredREnderChannelBuffer);
 
-
-            gaussianBlurEffect.Parameters["GeometryRender"].SetValue(GeometryRender);
-            SetBlurEffectParameters(1.0f / Renderer.Device.Viewport.Width, 0, gaussianBlurEffect, Renderer.RenderChannels);
-            DrawFullscreenQuad(Renderer.GeometryRender, Target0, Target1, gaussianBlurEffect);
-
-            gaussianBlurEffect.Parameters["GeometryRender"].SetValue(Target0.GetTexture());
-            SetBlurEffectParameters(0, 1.0f / Renderer.Device.Viewport.Height, gaussianBlurEffect, Target1.GetTexture());
-            DrawFullscreenQuad(Renderer.GeometryRender, Target0, Target1, gaussianBlurEffect);
-
-            BlurGeometryRender = Target0.GetTexture();
-            BlurRenderChannelColor = Target1.GetTexture();
-
-            //DrawFullscreenQuad(BlurRenderChannelColor, null);
-
-            //gaussianBlurEffect.Parameters["geom"].SetValue(Renderer.ResolveTarget);
-            //SetBlurEffectParameters(1.0f / Renderer.Device.Viewport.Width, 0, gaussianBlurEffect, Renderer.RenderChannels);
-            //DrawFullscreenQuad(Renderer.GeometryRender, gaussianBlurEffect);
-
-//            gaussianBlurEffect.Parameters["geom"].SetValue(Renderer.GeometryRender);
-
-
-            //// Pass 2: draw from rendertarget 1 into rendertarget 2,
-            //// using a shader to apply a horizontal gaussian blur filter.
-
-            //DrawFullscreenQuad(renderTarget1.GetTexture(), renderTarget2,
-            //                   gaussianBlurEffect,
-            //                   IntermediateBuffer.BlurredHorizontally);
-
-            //// Pass 3: draw from rendertarget 2 back into rendertarget 1,
-            //// using a shader to apply a vertical gaussian blur filter.
-
-            //DrawFullscreenQuad(renderTarget2.GetTexture(), renderTarget1,
-            //                   gaussianBlurEffect,
-            //                   IntermediateBuffer.BlurredBothWays);
-
-
+            // pass 2 vertical blukr
+            gaussianBlurEffect.Parameters["GeometryRender"].SetValue(targetBlurredHDRColorBuffer.GetTexture());
+            SetBlurEffectParameters(
+                0,
+                1.0f / hdrColorBuffer.Height,
+                gaussianBlurEffect,
+                intermediateBlurredHDRColorBuffer,
+                intermediateBlurredRenderChannelBuffer
+                );
+            DrawFullscreenQuad(
+                intermediateBlurredHDRColorBuffer,
+                targetBlurredHDRColorBuffer, targetBlurredREnderChannelBuffer,
+                gaussianBlurEffect
+                );
         }
 
-
-
-        void SetBlurEffectParameters(float dx, float dy, Effect effect, Texture2D pRenderChannelColor)
+        private void SetBlurEffectParameters(
+            float dx,
+            float dy,
+            Effect effect,
+            Texture2D hdrColorBuffer,
+            Texture2D renderChannelBuffer
+            )
         {
+            gaussianBlurEffect.Parameters["GeometryRender"].SetValue(hdrColorBuffer);
+            effect.Parameters["RenderChannelColor"].SetValue(renderChannelBuffer);
+
             // Look up the sample weight and offset effect parameters.
-            EffectParameter weightsParameter, offsetsParameter, renderChannelColor;
-
-            weightsParameter = effect.Parameters["SampleWeights"];
-            offsetsParameter = effect.Parameters["SampleOffsets"];
-            renderChannelColor = effect.Parameters["RenderChannelColor"];
+            EffectParameter weightsParameter = effect.Parameters["SampleWeights"];
+            EffectParameter offsetsParameter = effect.Parameters["SampleOffsets"];
 
             // Look up how many samples our gaussian blur effect supports.
             int sampleCount = weightsParameter.Elements.Count;
@@ -134,8 +128,6 @@ namespace ProjectMagma.Renderer
             // Tell the effect about our new filter settings.
             weightsParameter.SetValue(sampleWeights);
             offsetsParameter.SetValue(sampleOffsets);
-            if(effect==gaussianBlurEffect) // HACK
-                renderChannelColor.SetValue(pRenderChannelColor);            
         }
 
 
@@ -152,10 +144,8 @@ namespace ProjectMagma.Renderer
         }
 
 
-        private Effect originalBlurEffect, gaussianBlurEffect;
-
-        public Texture2D GeometryRender { get; set; }
-        public Texture2D BlurGeometryRender { get; set; }
-        public Texture2D BlurRenderChannelColor { get; set; }
+        private Effect gaussianBlurEffect;
+        private RenderTarget2D targetBlurredHDRColorBuffer;
+        private RenderTarget2D targetBlurredRenderChannel;
     }
 }

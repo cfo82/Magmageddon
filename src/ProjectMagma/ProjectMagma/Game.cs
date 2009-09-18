@@ -1,4 +1,5 @@
 #define ALWAYS_FOUR_PLAYERS
+#define TEST_RELEASE
 
 using System;
 using System.Diagnostics;
@@ -167,8 +168,8 @@ namespace ProjectMagma
             // load list of available robots
             robots = ContentManager.Load<List<RobotInfo>>("Level/Common/RobotInfo");
 
-             
-#if DEBUG || PROFILE
+
+#if DEBUG || PROFILE || TEST_RELEASE
             // initialize simulation
             //LoadLevel("Level/Instances/TestLevel/Simulation", "Level/Instances/TestLevel/Renderer");
             //LoadLevel("Level/Instances/4vs4/Simulation", "Level/Instances/4vs4/Renderer");
@@ -255,7 +256,7 @@ namespace ProjectMagma
 //            storageSelectionResult = Guide.BeginShowStorageDeviceSelector(PlayerIndex.One, null, null);
 
             // open menu
-#if !DEBUG && !PROFILE
+#if !DEBUG && !PROFILE && !TEST_RELEASE
             menu.Open();
 #endif
 

@@ -1071,6 +1071,11 @@
       <Importer>FbxImporter</Importer>
       <Processor>LavaProcessor</Processor>
     </Compile>
+    <Compile Include="Effects\Downscale.fx">
+      <Name>Downscale</Name>
+      <Importer>EffectImporter</Importer>
+      <Processor>EffectProcessor</Processor>
+    </Compile>
     <None Include="Models\Player\austinrobotanimation.xml">
       <Name>austinrobotanimation</Name>
       <Importer>XmlImporter</Importer>

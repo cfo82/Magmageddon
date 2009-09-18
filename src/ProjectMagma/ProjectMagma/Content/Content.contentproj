@@ -943,6 +943,11 @@
       <Importer>WavImporter</Importer>
       <Processor>SoundEffectProcessor</Processor>
     </Compile>
+    <Compile Include="Effects\Downscale.fx">
+      <Name>Downscale</Name>
+      <Importer>EffectImporter</Importer>
+      <Processor>EffectProcessor</Processor>
+    </Compile>
     <None Include="Sounds\movement\20847__plagasul__jump1.wav">
       <Name>20847__plagasul__jump1</Name>
       <Importer>WavImporter</Importer>

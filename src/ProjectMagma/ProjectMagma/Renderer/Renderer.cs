@@ -116,13 +116,22 @@ namespace ProjectMagma.Renderer
             if (EnablePostProcessing)
             {
                 //ResolveTarget = new ResolveTexture2D(Device, width, height, 1, format);
-                Target0 = new RenderTarget2D(Device, width, height, 1, SurfaceFormat.HalfVector4);
-                Target1 = new RenderTarget2D(Device, width, height, 1, format);
-                Target2 = new RenderTarget2D(Device, width, height, 1, SurfaceFormat.HalfVector4);
-                Target3 = new RenderTarget2D(Device, width, height, 1, format);
-                DepthTarget = new RenderTarget2D(Device, width, height, 1, SurfaceFormat.Single);
-                glowPass = new GlowPass(this, Target2, Target1);
-                hdrCombinePass = new HdrCombinePass(this, Target0, Target1);
+                targetHDRColorBuffer = new RenderTarget2D(Device, width, height, 1, SurfaceFormat.HalfVector4);
+                targetDownscaledHDRColorBuffer = new RenderTarget2D(Device, width / 2, height / 2, 1, SurfaceFormat.HalfVector4);
+                targetHorizontalBlurredHDRColorBuffer = new RenderTarget2D(Device, width / 2, height / 2, 1, SurfaceFormat.HalfVector4);
+                targetBlurredHDRColorBuffer = new RenderTarget2D(Device, width / 2, height / 2, 1, SurfaceFormat.HalfVector4);
+
+                targetRenderChannels = new RenderTarget2D(Device, width, height, 1, SurfaceFormat.HalfVector4);
+                targetDownscaledRenderChannels = new RenderTarget2D(Device, width / 2, height / 2, 1, SurfaceFormat.HalfVector4);
+                targetHorizontalBlurredRenderChannels = new RenderTarget2D(Device, width / 2, height / 2, 1, SurfaceFormat.HalfVector4);
+                targetBlurredRenderChannels = new RenderTarget2D(Device, width / 2, height / 2, 1, SurfaceFormat.HalfVector4);
+
+                TargetTool = new RenderTarget2D(Device, width, height, 1, SurfaceFormat.HalfVector4);
+                TargetDepth = new RenderTarget2D(Device, width, height, 1, SurfaceFormat.Single);
+
+                downscalePass = new DownscalePass(this);
+                glowPass = new GlowPass(this, targetBlurredHDRColorBuffer, targetRenderChannels);
+                hdrCombinePass = new HdrCombinePass(this);
             }
 
             statefulParticleResourceManager = new ProjectMagma.Renderer.ParticleSystem.Stateful.ResourceManager(wrappedContent, device);
@@ -324,15 +333,24 @@ namespace ProjectMagma.Renderer
             if (EnablePostProcessing)
             {
                 Game.Instance.Profiler.BeginSection("renderer_post");
-                RenderChannels = Target1.GetTexture();
-                glowPass.GeometryRender = GeometryRender;
+
+                // downscale
+                downscalePass.Render(
+                    targetHDRColorBuffer.GetTexture(), targetRenderChannels.GetTexture(),
+                    targetDownscaledHDRColorBuffer, targetDownscaledRenderChannels
+                    );
+
                 Game.Instance.Profiler.BeginSection("renderer_post_glow");
-                glowPass.Render();
+                glowPass.Render(
+                    targetDownscaledHDRColorBuffer.GetTexture(), targetDownscaledRenderChannels.GetTexture(),
+                    targetHorizontalBlurredHDRColorBuffer, targetHorizontalBlurredRenderChannels,
+                    targetBlurredHDRColorBuffer, targetBlurredRenderChannels
+                    );
                 Game.Instance.Profiler.EndSection("renderer_post_glow");
 
                 hdrCombinePass.GeometryRender = GeometryRender;
-                hdrCombinePass.BlurGeometryRender = glowPass.BlurGeometryRender;
-                hdrCombinePass.RenderChannelColor = glowPass.BlurRenderChannelColor;
+                hdrCombinePass.BlurGeometryRender = targetBlurredHDRColorBuffer.GetTexture();
+                hdrCombinePass.RenderChannelColor = targetBlurredRenderChannels.GetTexture();
                 hdrCombinePass.ToolTexture = ToolTexture;
                 hdrCombinePass.DepthTexture = DepthMap;
 
@@ -407,10 +425,10 @@ namespace ProjectMagma.Renderer
             //Device.SetRenderTarget(1, oldRenderTarget0);
             if (EnablePostProcessing)
             {
-                Device.SetRenderTarget(0, Target0);
-                Device.SetRenderTarget(1, Target1);
-                Device.SetRenderTarget(2, Target3);
-                Device.SetRenderTarget(3, DepthTarget);
+                Device.SetRenderTarget(0, targetHDRColorBuffer);
+                Device.SetRenderTarget(1, targetRenderChannels);
+                Device.SetRenderTarget(2, TargetTool);
+                Device.SetRenderTarget(3, TargetDepth);
             }
 
             Device.Clear(Color.White);
@@ -430,12 +448,11 @@ namespace ProjectMagma.Renderer
                 Device.SetRenderTarget(1, null);
                 Device.SetRenderTarget(2, null);
                 Device.SetRenderTarget(3, null);
-                GeometryRender = Target0.GetTexture();
-                RenderChannels = Target1.GetTexture();
-                ToolTexture = Target3.GetTexture();
+                GeometryRender = targetHDRColorBuffer.GetTexture();
+                ToolTexture = TargetTool.GetTexture();
             }
 
-            //Texture2D texture = DepthTarget.GetTexture();
+            //Texture2D texture = TargetDepth.GetTexture();
             //float[] pixelData = new float[texture.Width * texture.Height];
             //texture.GetData(pixelData, 0, texture.Width * texture.Height);
             //Console.WriteLine("start");
@@ -669,16 +686,21 @@ namespace ProjectMagma.Renderer
 
         public Camera Camera { get; set; }
 
-        private RenderTarget2D Target0 { get; set; }
-        private RenderTarget2D Target1 { get; set; }
-        private RenderTarget2D Target2 { get; set; }
-        private RenderTarget2D Target3 { get; set; }
-        private RenderTarget2D DepthTarget { get; set; }
+        private RenderTarget2D targetHDRColorBuffer;
+        private RenderTarget2D targetDownscaledHDRColorBuffer;
+        private RenderTarget2D targetHorizontalBlurredHDRColorBuffer;
+        private RenderTarget2D targetBlurredHDRColorBuffer;
+        private RenderTarget2D targetRenderChannels;
+        private RenderTarget2D targetDownscaledRenderChannels;
+        private RenderTarget2D targetHorizontalBlurredRenderChannels;
+        private RenderTarget2D targetBlurredRenderChannels;
 
-        public Texture2D DepthMap { get { return DepthTarget.GetTexture(); } }
+        private RenderTarget2D TargetTool { get; set; }
+        private RenderTarget2D TargetDepth { get; set; }
+
+        public Texture2D DepthMap { get { return TargetDepth.GetTexture(); } }
 
         public Texture2D GeometryRender { get; set; }
-        public Texture2D RenderChannels { get; set; }
         public Texture2D ToolTexture { get; set; }
 
         public ResolveTexture2D ResolveTarget { get; set; }
@@ -692,7 +714,8 @@ namespace ProjectMagma.Renderer
         {
             get { return billboard; }
         }
-        
+
+        private DownscalePass downscalePass;
         private GlowPass glowPass;
         private HdrCombinePass hdrCombinePass;
 

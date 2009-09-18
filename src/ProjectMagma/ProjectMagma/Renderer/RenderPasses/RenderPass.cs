@@ -5,15 +5,11 @@ namespace ProjectMagma.Renderer
 {
     public abstract class RenderPass
     {
-        public RenderPass(Renderer renderer, RenderTarget2D target0, RenderTarget2D target1)
+        public RenderPass(Renderer renderer)
         {
             this.Renderer = renderer;
-            this.Target0 = target0;
-            this.Target1 = target1;
             this.spriteBatch = new SpriteBatch(renderer.Device);
         }
-
-        public abstract void Render();
 
         protected Renderer Renderer { get; set; }
 
@@ -82,7 +78,5 @@ namespace ProjectMagma.Renderer
         }
 
         private SpriteBatch spriteBatch;
-        protected RenderTarget2D Target0 { get; set; }
-        protected RenderTarget2D Target1 { get; set; }
     }
 }

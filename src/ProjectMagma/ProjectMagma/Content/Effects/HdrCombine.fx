@@ -65,17 +65,6 @@ sampler2D DepthTextureSampler = sampler_state
 	AddressU = Clamp;
 	AddressV = Clamp;
 };  
-//
-//texture ShadowTargetTexture;
-//sampler2D ShadowMapSampler = sampler_state
-//{
-	//Texture = <DepthTexture>;
-	//MinFilter = Point;
-	//MagFilter = Point;
-	//MipFilter = Point;
-	//AddressU = Clamp;
-	//AddressV = Clamp;
-//};  
   
 float BloomSensitivity[3];
 
@@ -87,8 +76,11 @@ float BaseSaturation[3];
 
 float In1[3];
 float Out1[3];
+float In1_Precomp[3];
+
 float In2[3];
 float Out2[3];
+float In2_Precomp[3];
 
 float2 RandomOffset;
 
@@ -98,8 +90,6 @@ float4 AdjustSaturation(float4 color, float saturation)
     // The constants 0.3, 0.59, and 0.11 are chosen because the
     // human eye is more sensitive to green light, and less to blue.
     float grey = dot(color, float3(0.3, 0.59, 0.11));
-
-	//return color;
 
     return lerp(grey, color, saturation);
 }
@@ -111,18 +101,20 @@ float4 ToneMap(float4 color, int channel)
     float in1 = In1[channel]; float out1 = Out1[channel];
     float in2 = In2[channel]; float out2 = Out2[channel];
 
+	float in1_precomp = In1_Precomp[channel]; // == out1 / (in1*(in1-in2))
+	float in2_precomp = In2_Precomp[channel]; // == out2 / (in2*(in2-in1))
+
     // 2nd order lagrangian polynomial, could be simplified to monic 
     // basis but then the coefficients are harder to determine.    
+    //float weight =
+	//	(out1*amplitude*(amplitude-in2))/(in1*(in1-in2)) +
+	//	(out2*amplitude*(amplitude-in1))/(in2*(in2-in1));	
     float weight =
-		(out1*amplitude*(amplitude-in2))/(in1*(in1-in2)) +
-		(out2*amplitude*(amplitude-in1))/(in2*(in2-in1));	
+		amplitude*(amplitude-in2)*in1_precomp +
+		amplitude*(amplitude-in1)*in2_precomp;	
 
 	return weight*normalize(color);	
 }
-
-		//(out2*ll*(ll-in3))/(in2*(in2-in3)) +
-		//(out3*ll*(ll-in2))/(in3*(in3-in2));	
-
 
 float4 ChannelPixelShader(float2 texCoord : TEXCOORD0, int channel)
 {
@@ -155,11 +147,9 @@ inline float GradientY(float2 texCoord)
 	return saturate(yRaw * 2 - 1.1); // higher value: blue tone starts at higher altitude
 }
 
-
 float BlueTopOverlayStrength = 1;
 inline float4 GradientYBlueMap(float4 input, float2 texCoord, float weight)
 {
-	//return GradientY(texCoord);
 	float y = GradientY(texCoord);
 	
 	float newRed = input.r;
@@ -170,19 +160,12 @@ inline float4 GradientYBlueMap(float4 input, float2 texCoord, float weight)
 	float4 newColor = float4(newRed, newGreen, newBlue, newAlpha);
 	newColor = saturate(newColor * 2.5);
 	
-	//input = float4(0,0,0,1);
-	//newColor = float4(1,1,1,1);
-	
 	return lerp(input, newColor, y*weight*BlueTopOverlayStrength);
-	//return newColor;
 }
 
 //float4 orangeFogColor = float4(1,0.3,0,1);
 float4 orangeFogColor = float4(1,1,1,1);
 float4 blueFogColor = float4(0,0.7,1,1);
-
-//float FogZOff=0.2, FogZMul=1.0, FogYOff=0.2, FogYMul=0.1, FogGlobMul=1.0;
-//float FogColor=float4(1,1,1,1);
 
 float FogZOff, FogZMul, FogYOff, FogYMul, FogGlobMul;
 float3 FogColor;//=float4(0,0,1,1);
@@ -198,27 +181,20 @@ inline void ApplyFog(inout float4 img, in float2 texCoord, in float weight)
 	// compute vertical intensity
 	float yRaw = tex2D(ToolTextureSampler, texCoord).x;
 	float y = saturate((1-yRaw*2+FogYOff)*FogYMul);
-	//float y2 = saturate((1-yRaw));
 
 	// compute total intensity
 	float grad = GradientY(texCoord);
-	//float fogIntensity = saturate((z*y)*FogGlobMul*(1-grad));
 	float fogIntensity = saturate((z*y)*FogGlobMul);
 
-	// compute fog color
-	//float4 fogColor=float4(1,0.9,0.7,1);
-	//float4 fogColor = lerp(blueFogColor, orangeFogColor,y2);
-	//float4 fogColor = lerp(float4(FogColor,1),float4(0,0.5,1.0,1),0);
-	
 	// compute final image
-	img = lerp(img, float4(FogColor,1), saturate(fogIntensity*weight
-	));
-	//img = float4(fogIntensity,0,0,1);
+	img = lerp(img, float4(FogColor,1), saturate(fogIntensity*weight));
 }
 
 const float flickerStrength                                                                                                                                                                                                                                                                                                                    = 0.0025;
 inline float2 PerturbTexCoord(in float2 texCoord)
 {
+	return texCoord; // TODO: find some better way for randomness than some cloud texture...
+
 	float yRaw = tex2D(ToolTextureSampler, texCoord).x;
 	float y = saturate((1-yRaw*2));
 	
@@ -229,7 +205,6 @@ inline float2 PerturbTexCoord(in float2 texCoord)
 	return lerp(texCoord, perturbedTexCoord, y);	
 }
 
-
 struct PostPixelShaderOutput
 {
 	float4 color : COLOR0;
@@ -239,17 +214,7 @@ struct PostPixelShaderOutput
 PostPixelShaderOutput PostPixelShader(float2 texCoord : TEXCOORD0)
 {
 	PostPixelShaderOutput result;
-	
-	
-	//result.depth = tex2D(DepthTextureSampler, texCoord).r;
-	//result.color = float4(tex2D(DepthTextureSampler, texCoord).b,0,0,1);
-	//result.color = float4(tex2D(DepthTextureSampler, texCoord).r,0,0,1);
-	//result.depth = tex2D(DepthTextureSampler, texCoord).r;
-	//result.color = pow(tex2D(DepthTextureSampler, texCoord).r,1000)*3-1;
-	//result.color = float4(1-(1-tex2D(DepthTextureSampler, texCoord).r-0.0002)*1500,0,0,1);
-	//if(result.color.r<=0) result.color = float4(1,0,0,1);
-	//return result;
-	
+
 	float2 perturbedTexCoord = PerturbTexCoord(texCoord);
 
 	float4 channel1 = ChannelPixelShader(perturbedTexCoord, 0);
@@ -267,31 +232,10 @@ PostPixelShaderOutput PostPixelShader(float2 texCoord : TEXCOORD0)
     ApplyFog(combined, perturbedTexCoord, fogWeight);
     
     result.depth = tex2D(DepthTextureSampler, texCoord).r;
-    
-    
-    //--- perturbation tester
-   	//float4 clouds = tex2D(CloudTextureSampler, texCoord + RandomOffset);
-	//float2 perturbation = clouds.gb * 2 * flickerStrength - flickerStrength;
-	//return float4(perturbation*100,0,0);
-	///---
-	
-	
-	
-    //if( (combined.x>=1 || combined.y>=1 || combined.z>=1) && !(combined.x>=1 && combined.y>=1 && combined.z>=1) )
-		//return float4(1,0,0,1);
-    //else
 	result.color = combined;
 	
-	//result.color = tex2D(ToolTextureSampler, texCoord).z;
 	return result;
-	
-	    //return channel_map;
-    //return tex2D(ToolTextureSampler, texCoord);
-
-    // Combine the two images.
-
 }
-
 
 technique BloomCombine
 {

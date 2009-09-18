@@ -50,21 +50,11 @@ PSOutput PixelShader(float2 texCoord : TEXCOORD0) : COLOR0
     // Combine a number of weighted image filter taps.
     for (int i = 0; i < SAMPLE_COUNT; i++)
     {
-		//if(tex2D(RenderChannelSampler, texCoord).r>0.5)
-		//{
-		//c += tex2D(TextureSampler, texCoord + SampleOffsets[i]*1.5) * SampleWeights[i] * tex2D(RenderChannelSampler, texCoord+ SampleOffsets[i]*1.5).r;
-		//c += tex2D(TextureSampler, texCoord + SampleOffsets[i]*0.3) * SampleWeights[i] * tex2D(RenderChannelSampler, texCoord+ SampleOffsets[i]*0.3).g;
-		////} else {
 		outp.Color += tex2D(GeometryRenderSampler, texCoord + SampleOffsets[i]) * SampleWeights[i];
 		outp.RenderChannelColor += tex2D(RenderChannelSampler, texCoord + SampleOffsets[i]) * SampleWeights[i];
-		//}
     }	
 	    
-    //return tex2D(RenderChannelSampler, texCoord);
-    //if(tex2D(RenderChannelSampler, texCoord).g>0.5)
 	return outp;
-	//else
-		//return tex2D(TextureSampler, texCoord);
 }
 
 

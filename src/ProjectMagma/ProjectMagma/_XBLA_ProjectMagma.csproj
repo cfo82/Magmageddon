@@ -202,6 +202,7 @@
     <Compile Include="Renderer\RendererEntity.cs" />
     <Compile Include="Renderer\RendererEntityManager.cs" />
     <Compile Include="Renderer\RenderMode.cs" />
+    <Compile Include="Renderer\RenderPasses\DownscalePass.cs" />
     <Compile Include="Renderer\RenderPasses\GlowPass.cs" />
     <Compile Include="Renderer\RenderPasses\HdrCombinePass.cs" />
     <Compile Include="Renderer\RenderPasses\RenderPass.cs" />

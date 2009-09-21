@@ -16,16 +16,19 @@ namespace ProjectMagma.Renderer
             );
         }
 
-        public void Render()
+        public void Render(
+            Texture2D hdrColorBuffer, Texture2D blurredHdrColorBuffer, Texture2D blurredRenderChannelBuffer,
+            Texture2D toolTexture, Texture2D depthTexture
+        )
         {
             randomOffset.RandomlyIntegrate(Renderer.Time.DtMs, 0.2f, 0.0f);
 
-            hdrCombineEffect.Parameters["GeometryRender"].SetValue(GeometryRender);
-            hdrCombineEffect.Parameters["BlurGeometryRender"].SetValue(BlurGeometryRender);
-            hdrCombineEffect.Parameters["RenderChannelColor"].SetValue(RenderChannelColor);
-            hdrCombineEffect.Parameters["ToolTexture"].SetValue(ToolTexture);
+            hdrCombineEffect.Parameters["GeometryRender"].SetValue(hdrColorBuffer);
+            hdrCombineEffect.Parameters["BlurGeometryRender"].SetValue(blurredHdrColorBuffer);
+            hdrCombineEffect.Parameters["RenderChannelColor"].SetValue(blurredRenderChannelBuffer);
+            hdrCombineEffect.Parameters["ToolTexture"].SetValue(toolTexture);
             hdrCombineEffect.Parameters["CloudTexture"].SetValue(Renderer.VectorCloudTexture);
-            hdrCombineEffect.Parameters["DepthTexture"].SetValue(DepthTexture);
+            hdrCombineEffect.Parameters["DepthTexture"].SetValue(depthTexture);
 
             hdrCombineEffect.Parameters["RandomOffset"].SetValue(randomOffset.Value);
 
@@ -63,7 +66,7 @@ namespace ProjectMagma.Renderer
 
             SetFloatFromEntity("BlueTopOverlayStrength", "topoverlay", "strength");
 
-            DrawFullscreenQuad(BlurGeometryRender, hdrCombineEffect);
+            DrawFullscreenQuad(blurredHdrColorBuffer, hdrCombineEffect);
         }
 
         private void SetFloatFromEntity(string paramName, string entityName, string attributeName)
@@ -95,11 +98,5 @@ namespace ProjectMagma.Renderer
 
         private DoublyIntegratedVector2 randomOffset;
         private Effect hdrCombineEffect;
-
-        public Texture2D GeometryRender { get; set; }
-        public Texture2D BlurGeometryRender { get; set; }
-        public Texture2D RenderChannelColor { get; set; }
-        public Texture2D ToolTexture { get; set; }
-        public Texture2D DepthTexture { get; set; }
     }
 }

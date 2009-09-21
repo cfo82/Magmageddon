@@ -55,7 +55,7 @@ UpdateParticlesPixelShaderOutput UpdateIceSpikePixelShader(
 	
 	float4 position_sample = tex2D(PositionSampler, ParticleCoordinate);
 	float4 velocity_sample = tex2D(VelocitySampler, ParticleCoordinate);
-	float4 random_sample = tex2D(RandomSampler, float2(ParticleCoordinate.x*31, ParticleCoordinate.y*57));
+	//float4 random_sample = tex2D(RandomSampler, float2(ParticleCoordinate.x*31, ParticleCoordinate.y*57));
 	
 	float current_time_to_death = position_sample.w;
 	float age = IceSpikeParticleLifetime-current_time_to_death;
@@ -70,8 +70,8 @@ UpdateParticlesPixelShaderOutput UpdateIceSpikePixelShader(
 	float3 normalized_to_position = normalize(to_position);
 	float3 normal = cross(normalized_to_position, -IceSpikeDirection);
 	// calculate the force to apply in object space!
-	float rotation_speed = random_sample.a*IceSpikeRotationSpeed;
-	float centralize_force = IceSpikeRotationSpeed/2 + random_sample.g*IceSpikeRotationSpeed*2.5;
+	float rotation_speed = /*random_sample.a*/IceSpikeRotationSpeed;
+	float centralize_force = IceSpikeRotationSpeed/2 + /*random_sample.g*/IceSpikeRotationSpeed*2.5;
 	float3 rotation_force = (normal * rotation_speed - normalized_to_position * centralize_force);
 	// apply rotation force only for n seconds... and make it weaker towards the end...
 	float rotation_age = min(age,IceSpikeRotationTime);

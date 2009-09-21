@@ -84,7 +84,7 @@ namespace ProjectMagma.Renderer
             }
         }
 
-        public void DrawToShadowMap(Renderer renderer)
+        public virtual void DrawToShadowMap(Renderer renderer)
         {
             // TODO: should only be done once per frame.
             RecomputeWorldMatrix();

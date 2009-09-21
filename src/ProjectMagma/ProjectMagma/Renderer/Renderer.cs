@@ -335,27 +335,24 @@ namespace ProjectMagma.Renderer
                 Game.Instance.Profiler.BeginSection("renderer_post");
 
                 // downscale
-                downscalePass.Render(
-                    targetHDRColorBuffer.GetTexture(), targetRenderChannels.GetTexture(),
-                    targetDownscaledHDRColorBuffer, targetDownscaledRenderChannels
-                    );
+                //downscalePass.Render(
+                //    targetHDRColorBuffer.GetTexture(), targetRenderChannels.GetTexture(),
+                //    targetDownscaledHDRColorBuffer, targetDownscaledRenderChannels
+                //    );
 
                 Game.Instance.Profiler.BeginSection("renderer_post_glow");
                 glowPass.Render(
-                    targetDownscaledHDRColorBuffer.GetTexture(), targetDownscaledRenderChannels.GetTexture(),
+                    targetHDRColorBuffer.GetTexture(), targetRenderChannels.GetTexture(),
                     targetHorizontalBlurredHDRColorBuffer, targetHorizontalBlurredRenderChannels,
                     targetBlurredHDRColorBuffer, targetBlurredRenderChannels
                     );
                 Game.Instance.Profiler.EndSection("renderer_post_glow");
 
-                hdrCombinePass.GeometryRender = GeometryRender;
-                hdrCombinePass.BlurGeometryRender = targetBlurredHDRColorBuffer.GetTexture();
-                hdrCombinePass.RenderChannelColor = targetBlurredRenderChannels.GetTexture();
-                hdrCombinePass.ToolTexture = ToolTexture;
-                hdrCombinePass.DepthTexture = DepthMap;
-
                 Game.Instance.Profiler.BeginSection("renderer_post_hdr");
-                hdrCombinePass.Render();
+                hdrCombinePass.Render(
+                    GeometryRender, targetBlurredHDRColorBuffer.GetTexture(), targetRenderChannels.GetTexture(),
+                    ToolTexture, DepthMap
+                    );
                 Game.Instance.Profiler.EndSection("renderer_post_hdr");
                 Game.Instance.Profiler.EndSection("renderer_post");
             }

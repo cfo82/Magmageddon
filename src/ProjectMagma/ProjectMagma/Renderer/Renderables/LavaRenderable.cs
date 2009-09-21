@@ -237,6 +237,11 @@ namespace ProjectMagma.Renderer
             UpdateRandomOffsets(effect);
         }
 
+        // no shadow for the lava!
+        public override void DrawToShadowMap(Renderer renderer)
+        {
+        }
+
         protected override void DrawMesh(Renderer renderer, ModelMesh mesh)
         {
             /*for (int i = 0; i < 6; ++i)

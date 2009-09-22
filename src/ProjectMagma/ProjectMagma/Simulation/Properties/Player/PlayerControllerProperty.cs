@@ -1,4 +1,6 @@
-﻿using System;
+﻿#define DEMO_MODE
+
+using System;
 using System.Collections.Generic;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Input;
@@ -374,7 +376,9 @@ namespace ProjectMagma.Simulation
                 player.GetProperty<RobotRenderProperty>("render").NextOnceState = "hit";
                 Game.Instance.AudioPlayer.Play(Game.Instance.Simulation.SoundRegistry.MeleeNotHit);
             }
-
+           #if DEMO_MODE
+            player.SetInt("energy", 100);
+#endif
             Debug.Assert(!(selectedIsland == null) || !arrow.HasProperty("render"));
         }
 
@@ -2171,6 +2175,28 @@ namespace ProjectMagma.Simulation
 
                 #endregion
 
+                #if DEMO_MODE
+                Random rand = new Random();
+                if (simTime.At < iceSpikeShotAt + 2000 + rand.Next(500))
+                {
+                    iceSpikeButtonPressed = true;
+                    iceSpikeShotAt = simTime.At;
+                }
+                if (simTime.At < flameThrowerActivatedAt + 200 + rand.Next(100))
+                {
+                    flamethrowerButtonHold = true;
+                    flameThrowerActivatedAt = simTime.At;
+                }
+                if (simTime.At < jumpButtonPressedAt + 1000 + rand.Next(1000))
+                {
+                    jumpButtonPressed = true;
+                    jumpButtonPressedAt = simTime.At;
+                }
+                moveStickMoved = true;
+                leftStickX = (float) rand.NextDouble();
+                leftStickY = (float) rand.NextDouble();
+                #endif
+
                 if (hitButtonPressed)
                 {
                     // filter pressed events
@@ -2280,6 +2306,9 @@ namespace ProjectMagma.Simulation
             // times
             public float hitButtonPressedAt = float.NegativeInfinity;
 
+#if DEMO_MODE
+            public float iceSpikeShotAt, flameThrowerActivatedAt, jumpButtonPressedAt = float.NegativeInfinity;
+#endif
             //private static float gamepadEmulationValue = -1f;
         }
 

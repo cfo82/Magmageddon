@@ -41,12 +41,12 @@ namespace ProjectMagma.Renderer
             this.transforms = new Matrix[iceSpikeModel.Bones.Count];
         }
 
-        public override void UnloadResources()
+        public override void UnloadResources(Renderer renderer)
         {
             iceSpikeSystem.UnloadResources();
             iceSpikeEffect.Dispose();
 
-            base.UnloadResources();
+            base.UnloadResources(renderer);
         }
 
         public override void Update(Renderer renderer)

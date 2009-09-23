@@ -26,21 +26,16 @@ namespace ProjectMagma.Renderer
             this.fueled = fueled;
 
             flamethrowerEmitter = null;
-            flamethrowerSystem = null;
         }
 
         public override void LoadResources(Renderer renderer)
         {
             base.LoadResources(renderer);
-
-            flamethrowerSystem = new Flamethrower(Game.Instance.Renderer, Game.Instance.ContentManager, Game.Instance.GraphicsDevice);
         }
 
-        public override void UnloadResources()
+        public override void UnloadResources(Renderer renderer)
         {
-            flamethrowerSystem.UnloadResources();
-
-            base.UnloadResources();
+            base.UnloadResources(renderer);
         }
 
         public override void Update(Renderer renderer)
@@ -50,12 +45,12 @@ namespace ProjectMagma.Renderer
             if (fueled && flamethrowerEmitter == null)
             {
                 flamethrowerEmitter = new FlamethrowerEmitter(Position, Direction, 2500);
-                flamethrowerSystem.AddEmitter(flamethrowerEmitter);
+                renderer.FlamethrowerSystem.AddEmitter(flamethrowerEmitter);
             }
 
             if (!fueled && flamethrowerEmitter != null)
             {
-                flamethrowerSystem.RemoveEmitter(flamethrowerEmitter);
+                renderer.FlamethrowerSystem.RemoveEmitter(flamethrowerEmitter);
                 flamethrowerEmitter = null;
             }
 
@@ -64,13 +59,11 @@ namespace ProjectMagma.Renderer
                 flamethrowerEmitter.Point = Position;
                 flamethrowerEmitter.Direction = Direction;
             }
-
-            flamethrowerSystem.Update(renderer.Time.PausableLast / 1000d, renderer.Time.PausableAt / 1000d);
         }
 
         public override void Draw(Renderer renderer)
         {
-            flamethrowerSystem.Render(renderer.Time.PausableLast / 1000d, renderer.Time.PausableAt / 1000d);
+            base.Draw(renderer);
         }
 
         public override void UpdateBool(string id, double timestamp, bool value)
@@ -106,6 +99,5 @@ namespace ProjectMagma.Renderer
         private Vector3 direction;
         private bool fueled;
         private FlamethrowerEmitter flamethrowerEmitter;
-        private Flamethrower flamethrowerSystem;
     }
 }

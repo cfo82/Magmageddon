@@ -22,9 +22,9 @@ namespace ProjectMagma.Renderer
         {
         }
 
-        protected override PointExplosion CreateExplosionSystem()
+        protected override PointExplosion GetExplosionSystem(Renderer renderer)
         {
-            return new IceExplosion(Game.Instance.Renderer, Game.Instance.ContentManager, Game.Instance.GraphicsDevice);
+            return renderer.IceExplosionSystem;
         }
 
         protected override PointExplosionEmitter CreateExplosionEmitter(Vector3 position, double currentFrameTime)

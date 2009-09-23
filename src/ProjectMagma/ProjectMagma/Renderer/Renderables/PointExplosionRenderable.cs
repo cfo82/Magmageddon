@@ -23,21 +23,22 @@ namespace ProjectMagma.Renderer
             explosionEmitter = null;
         }
 
-        protected abstract PointExplosion CreateExplosionSystem();
+        protected abstract PointExplosion GetExplosionSystem(Renderer renderer);
         protected abstract PointExplosionEmitter CreateExplosionEmitter(Vector3 position, double currentFrameTime);
 
         public override void LoadResources(Renderer renderer)
         {
             base.LoadResources(renderer);
 
-            explosionSystem = CreateExplosionSystem();
+            explosionSystem = GetExplosionSystem(renderer);
         }
 
-        public override void UnloadResources()
+        public override void UnloadResources(Renderer renderer)
         {
-            explosionSystem.UnloadResources();
+            if (explosionEmitter != null)
+                { explosionSystem.RemoveEmitter(explosionEmitter); }
 
-            base.UnloadResources();
+            base.UnloadResources(renderer);
         }
 
         public override void Update(Renderer renderer)
@@ -49,13 +50,11 @@ namespace ProjectMagma.Renderer
                 explosionEmitter = CreateExplosionEmitter(Position, renderer.Time.PausableAt / 1000d);
                 explosionSystem.AddEmitter(explosionEmitter);
             }
-
-            explosionSystem.Update(renderer.Time.PausableLast / 1000d, renderer.Time.PausableAt / 1000d);
         }
 
         public override void Draw(Renderer renderer)
         {
-            explosionSystem.Render(renderer.Time.PausableLast / 1000d, renderer.Time.PausableAt / 1000d);
+            base.Draw(renderer);
         }
 
         private PointExplosionEmitter explosionEmitter;

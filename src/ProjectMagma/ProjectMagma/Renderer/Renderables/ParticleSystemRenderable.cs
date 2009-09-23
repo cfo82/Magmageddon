@@ -29,9 +29,9 @@ namespace ProjectMagma.Renderer
             base.LoadResources(renderer);
         }
 
-        public override void UnloadResources()
+        public override void UnloadResources(Renderer renderer)
         {
-            base.UnloadResources();
+            base.UnloadResources(renderer);
         }
 
         public override void Update(Renderer renderer)

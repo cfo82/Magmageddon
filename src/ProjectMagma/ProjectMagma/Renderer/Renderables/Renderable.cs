@@ -9,7 +9,7 @@ namespace ProjectMagma.Renderer
         {
         }
 
-        public virtual void UnloadResources()
+        public virtual void UnloadResources(Renderer renderer)
         {
         }
 

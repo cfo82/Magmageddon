@@ -94,11 +94,11 @@ namespace ProjectMagma.Renderer
             this.temperatureTexture = new Texture2D(renderer.Device, temperatureTemplate.Width, temperatureTemplate.Height);
         }
 
-        public override void UnloadResources()
+        public override void UnloadResources(Renderer renderer)
         {
             this.temperatureTexture.Dispose();
 
-            base.UnloadResources();
+            base.UnloadResources(renderer);
         }
 
         public void AddPillarInfo(PillarInfo info)

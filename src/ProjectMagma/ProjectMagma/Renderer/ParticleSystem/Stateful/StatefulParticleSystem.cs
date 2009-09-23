@@ -113,10 +113,10 @@ namespace ProjectMagma.Renderer.ParticleSystem.Stateful
             ParticleEmitter emitter
         )
         {
+            if (emitter == null)
+                { return; }
             if (!this.emitters.Contains(emitter))
-            {
-                throw new ArgumentException("the given emitter is not registered!");
-            }
+                { throw new ArgumentException("the given emitter is not registered!"); }
 
             this.emitters.Remove(emitter);
         }

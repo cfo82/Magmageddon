@@ -135,6 +135,7 @@ namespace ProjectMagma.Renderer
             }
 
             statefulParticleResourceManager = new ProjectMagma.Renderer.ParticleSystem.Stateful.ResourceManager(wrappedContent, device);
+            
 
             updateQueues = new List<RendererUpdateQueue>();
 
@@ -179,6 +180,18 @@ namespace ProjectMagma.Renderer
             {
                 snowSystem.Update(-30d / 1000d + i * -30d / 1000d, -30d / 1000d + i * -30d / 1000d + 30d / 1000d);
             }
+
+            if (iceExplosionSystem != null)
+                { iceExplosionSystem.UnloadResources(); }
+            iceExplosionSystem = new IceExplosion(this, Game.Instance.ContentManager, device);
+
+            if (fireExplosionSystem != null)
+                { fireExplosionSystem.UnloadResources(); }
+            fireExplosionSystem = new FireExplosion(this, Game.Instance.ContentManager, device);
+
+            if (flamethrowerSystem != null)
+                { flamethrowerSystem.UnloadResources(); }
+            flamethrowerSystem = new Flamethrower(this, Game.Instance.ContentManager, device);
         }
 
         protected void ChangeToPhase(
@@ -276,13 +289,15 @@ namespace ProjectMagma.Renderer
             }
 
             if (explosionSystem != null)
-            {
-                explosionSystem.Update(Time.Last / 1000d, Time.At / 1000d);
-            }
+                { explosionSystem.Update(Time.Last / 1000d, Time.At / 1000d); }
             if (snowSystem != null)
-            {
-                snowSystem.Update(Time.Last/1000d, Time.At/1000d);
-            }
+                { snowSystem.Update(Time.Last/1000d, Time.At/1000d); }
+            if (iceExplosionSystem != null)
+                { iceExplosionSystem.Update(Time.Last / 1000d, Time.At / 1000d); }
+            if (fireExplosionSystem != null)
+                { fireExplosionSystem.Update(Time.Last / 1000d, Time.At / 1000d); }
+            if (flamethrowerSystem != null)
+                { flamethrowerSystem.Update(Time.Last / 1000d, Time.At / 1000d); }
         }
         
         public void Render()
@@ -475,13 +490,15 @@ namespace ProjectMagma.Renderer
         {
             //transparentRenderables.Sort(TransparentRenderableComparison);
             if (explosionSystem != null)
-            {
-                explosionSystem.Render(lastFrameTime, currentFrameTime);
-            }
+                { explosionSystem.Render(lastFrameTime, currentFrameTime); }
             if (snowSystem != null)
-            {
-                snowSystem.Render(lastFrameTime, currentFrameTime);
-            }
+                { snowSystem.Render(lastFrameTime, currentFrameTime); }
+            if (iceExplosionSystem != null)
+                { iceExplosionSystem.Render(lastFrameTime, currentFrameTime); }
+            if (fireExplosionSystem != null)
+                { fireExplosionSystem.Render(lastFrameTime, currentFrameTime); }
+            if (flamethrowerSystem != null)
+                { flamethrowerSystem.Render(lastFrameTime, currentFrameTime); }
 
             foreach (Renderable renderable in transparentRenderables)
             {
@@ -574,7 +591,7 @@ namespace ProjectMagma.Renderer
                 throw new Exception("renderer does not contain the given renderable!");
             }
 
-            renderable.UnloadResources();
+            renderable.UnloadResources(this);
 
             if (updateRenderables.Contains(renderable))
             {
@@ -712,12 +729,30 @@ namespace ProjectMagma.Renderer
             get { return billboard; }
         }
 
+        public IceExplosion IceExplosionSystem
+        {
+            get { return iceExplosionSystem; }
+        }
+
+        public FireExplosion FireExplosionSystem
+        {
+            get { return fireExplosionSystem; }
+        }
+
+        public Flamethrower FlamethrowerSystem
+        {
+            get { return flamethrowerSystem; }
+        }
+
         private DownscalePass downscalePass;
         private GlowPass glowPass;
         private HdrCombinePass hdrCombinePass;
 
         private ParticleSystem.Stateful.Implementations.LavaExplosion explosionSystem;
         private ParticleSystem.Stateful.Implementations.Snow snowSystem;
+        private ParticleSystem.Stateful.Implementations.IceExplosion iceExplosionSystem;
+        private ParticleSystem.Stateful.Implementations.FireExplosion fireExplosionSystem;
+        private ParticleSystem.Stateful.Implementations.Flamethrower flamethrowerSystem;
         private ParticleSystem.Stateful.ResourceManager statefulParticleResourceManager;
         
         //private LightManager lightManager;

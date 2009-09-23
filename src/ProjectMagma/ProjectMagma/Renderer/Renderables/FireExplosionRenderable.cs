@@ -14,7 +14,7 @@ namespace ProjectMagma.Renderer
     public class FireExplosionRenderable : PointExplosionRenderable
     {
         public FireExplosionRenderable(
-            double timestamp, 
+            double timestamp,
             int renderPriority,
             Vector3 position
         )
@@ -22,9 +22,9 @@ namespace ProjectMagma.Renderer
         {
         }
 
-        protected override PointExplosion CreateExplosionSystem()
+        protected override PointExplosion GetExplosionSystem(Renderer renderer)
         {
-            return new FireExplosion(Game.Instance.Renderer, Game.Instance.ContentManager, Game.Instance.GraphicsDevice);
+            return renderer.FireExplosionSystem;
         }
 
         protected override PointExplosionEmitter CreateExplosionEmitter(Vector3 position, double currentFrameTime)

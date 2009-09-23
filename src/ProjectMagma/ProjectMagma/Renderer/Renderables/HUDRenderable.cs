@@ -61,10 +61,10 @@ namespace ProjectMagma.Renderer
             statusColorStrength.Start(renderer.Time.At);
         }
 
-        public override void UnloadResources()
+        public override void UnloadResources(Renderer renderer)
         {
             spriteBatch.Dispose();
-            base.UnloadResources();
+            base.UnloadResources(renderer);
         }
 
 

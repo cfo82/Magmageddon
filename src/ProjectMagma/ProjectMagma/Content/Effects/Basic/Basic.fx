@@ -24,6 +24,7 @@ Technique Unicolored
 		SrcBlend = SrcAlpha;
 		DestBlend = InvSrcAlpha;
 		ZEnable = true;
+		ZWriteEnable = true;
 	}
 }
 
@@ -38,6 +39,7 @@ Technique UnicoloredAlpha
 		SrcBlend = SrcAlpha;
 		DestBlend = InvSrcAlpha;
 		ZEnable = true;
+		ZWriteEnable = true;
 	}
 }
 
@@ -48,6 +50,7 @@ Technique Textured
 		VertexShader = compile vs_3_0 VSBasicPixelLightingNmTxSq();
 		PixelShader	 = compile ps_3_0 PSBasicPixelLightingTx();
 		ZEnable = true;
+		ZWriteEnable = true;
 		AlphaBlendEnable = false;
 		AlphaTestEnable = false;						
 	}
@@ -76,6 +79,7 @@ Technique Island
 		VertexShader = compile vs_3_0 VSBasicPixelLightingNmTxSq();
 		PixelShader	 = compile ps_3_0 PSIsland();
 		ZEnable = true;		
+		ZWriteEnable = true;
 		AlphaBlendEnable = false;
 		AlphaTestEnable = false;
 	}
@@ -88,6 +92,7 @@ Technique Environment
 		VertexShader = compile vs_3_0 VSBasicPixelLightingNmTxSq();
 		PixelShader	 = compile ps_3_0 PSEnvironment();
 		ZEnable = true;
+		ZWriteEnable = true;
 		AlphaBlendEnable = false;
 		AlphaTestEnable = true;		
 		AlphaFunc = Greater;
@@ -102,6 +107,7 @@ Technique AnimatedPlayer
 		VertexShader = compile vs_3_0 VSBasicPixelLightingNmTxSqSk();
 		PixelShader = compile ps_3_0 PSBasicPixelLightingTxTo();
 		ZEnable = true;		
+		ZWriteEnable = true;
 		AlphaBlendEnable = false;
 		AlphaTestEnable = false;		
 	}
@@ -115,6 +121,7 @@ Technique DoublyColoredAnimatedPlayer
 		VertexShader = compile vs_3_0 VSBasicPixelLightingNmTxSqSk();
 		PixelShader = compile ps_3_0 PSBasicPixelLightingTxToDb();
 		ZEnable = true;		
+		ZWriteEnable = true;
 		AlphaBlendEnable = false;
 		AlphaTestEnable = false;				
 	}

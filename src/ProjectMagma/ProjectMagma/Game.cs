@@ -187,7 +187,7 @@ namespace ProjectMagma
             // set default player
             Entity player2 = new Entity("player2");
             player2.AddIntAttribute("game_pad_index", 1);
-            player2.AddIntAttribute("lives", 1);
+            player2.AddIntAttribute("lives", 100);
             player2.AddStringAttribute("robot_entity", robots[1].Entity);
             player2.AddStringAttribute("player_name", robots[1].Name);
     #if ALWAYS_FOUR_PLAYERS

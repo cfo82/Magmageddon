@@ -88,7 +88,7 @@ namespace ProjectMagma.Renderer
                 Matrix position = Matrix.CreateWorld(renderer.IceSpikeSystem.GetPosition(iceSpikeEmitter.EmitterIndex), right, up);
                 Matrix world = Matrix.Multiply(scale, position);
 
-                //DrawIceSpike(renderer, world, renderer.Camera.View, renderer.Camera.Projection);
+                DrawIceSpike(renderer, world, renderer.Camera.View, renderer.Camera.Projection);
             }
         }
 

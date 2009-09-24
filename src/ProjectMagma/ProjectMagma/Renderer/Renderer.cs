@@ -192,6 +192,10 @@ namespace ProjectMagma.Renderer
             if (flamethrowerSystem != null)
                 { flamethrowerSystem.UnloadResources(); }
             flamethrowerSystem = new Flamethrower(this, Game.Instance.ContentManager, device);
+
+            if (iceSpikeSystem != null)
+                { iceSpikeSystem.UnloadResources(); }
+            iceSpikeSystem = new IceSpike(this, Game.Instance.ContentManager, device);
         }
 
         protected void ChangeToPhase(
@@ -298,6 +302,8 @@ namespace ProjectMagma.Renderer
                 { fireExplosionSystem.Update(Time.Last / 1000d, Time.At / 1000d); }
             if (flamethrowerSystem != null)
                 { flamethrowerSystem.Update(Time.Last / 1000d, Time.At / 1000d); }
+            if (iceSpikeSystem != null)
+                { iceSpikeSystem.Update(Time.Last / 1000d, Time.At / 1000d); }
         }
         
         public void Render()
@@ -499,6 +505,8 @@ namespace ProjectMagma.Renderer
                 { fireExplosionSystem.Render(lastFrameTime, currentFrameTime); }
             if (flamethrowerSystem != null)
                 { flamethrowerSystem.Render(lastFrameTime, currentFrameTime); }
+            if (iceSpikeSystem != null)
+                { iceSpikeSystem.Render(lastFrameTime, currentFrameTime); }
 
             foreach (Renderable renderable in transparentRenderables)
             {
@@ -744,6 +752,11 @@ namespace ProjectMagma.Renderer
             get { return flamethrowerSystem; }
         }
 
+        public IceSpike IceSpikeSystem
+        {
+            get { return iceSpikeSystem; }
+        }
+
         private DownscalePass downscalePass;
         private GlowPass glowPass;
         private HdrCombinePass hdrCombinePass;
@@ -753,6 +766,7 @@ namespace ProjectMagma.Renderer
         private ParticleSystem.Stateful.Implementations.IceExplosion iceExplosionSystem;
         private ParticleSystem.Stateful.Implementations.FireExplosion fireExplosionSystem;
         private ParticleSystem.Stateful.Implementations.Flamethrower flamethrowerSystem;
+        private ParticleSystem.Stateful.Implementations.IceSpike iceSpikeSystem;
         private ParticleSystem.Stateful.ResourceManager statefulParticleResourceManager;
         
         //private LightManager lightManager;

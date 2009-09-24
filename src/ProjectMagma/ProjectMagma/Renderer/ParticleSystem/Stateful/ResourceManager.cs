@@ -130,7 +130,7 @@ namespace ProjectMagma.Renderer.ParticleSystem.Stateful
         private VertexBuffer[] renderingVertexBuffers;
         private VertexDeclaration renderingVertexDeclaration;
         private List<RenderTarget2D>[] stateMapLists;
-        private static readonly int[] SizeMap = new int[] { 16, 32, 48, 64, 96, 128 };
+        private static readonly int[] SizeMap = new int[] { 16, 32, 48, 64, 96, 128, 256 };
         private List<CreateVertexArray> createVertexArrays;
         private static readonly int CreateVertexArraySize = 1000;
         private static readonly int CreateVertexArrayMaxPoolSize = 100;

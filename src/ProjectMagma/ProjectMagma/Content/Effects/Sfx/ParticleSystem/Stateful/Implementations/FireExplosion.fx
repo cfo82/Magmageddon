@@ -131,9 +131,13 @@ float4 RenderExplosionPixelShader(
 #endif
 ) : COLOR0
 {
-	int spriteNumber = ceil(input.PositionCopy.x*6) - 1;
-	int horizontalIndex = spriteNumber/4;
-	int verticalIndex = spriteNumber%4;
+	//int spriteNumber = ceil(input.PositionCopy.x*6) - 1;
+	//int horizontalIndex = spriteNumber/4;
+	//int verticalIndex = spriteNumber%4;
+	
+	float spriteNumber = ceil(input.PositionCopy.x*6) - 1;
+	float horizontalIndex = floor(spriteNumber*0.25);
+	float verticalIndex = spriteNumber - horizontalIndex*4;
 
 	float2 modifiedTextureCoordinates = float2(particleCoordinate.x/4 + horizontalIndex*0.25, particleCoordinate.y/4 + verticalIndex*0.25);
 

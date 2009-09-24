@@ -66,6 +66,7 @@ namespace ProjectMagma.Renderer.ParticleSystem.Emitter
 
                 array[start + i].ParticlePosition = point;
                 array[start + i].ParticleVelocity = velocity;
+                array[start + i].EmitterIndex = EmitterIndex;
             }
         }
 
@@ -80,6 +81,8 @@ namespace ProjectMagma.Renderer.ParticleSystem.Emitter
             get { return direction; }
             set { direction = value; }
         }
+
+        public int EmitterIndex { set; get; }
 
         private Vector3 point;
         private Vector3 direction;

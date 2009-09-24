@@ -38,6 +38,7 @@ namespace ProjectMagma.Renderer.ParticleSystem.Emitter
             {
                 array[start + i].ParticlePosition = RandomPoint();
                 array[start + i].ParticleVelocity = Vector3.Zero;
+                array[start + i].EmitterIndex = EmitterIndex;
             }
         }
 
@@ -53,6 +54,8 @@ namespace ProjectMagma.Renderer.ParticleSystem.Emitter
                 ((float)random.NextDouble() - 0.5f) * planeSizeZ
                 );
         }
+
+        public int EmitterIndex { set; get; }
 
         private double particlesPerSecond;
         private double fragmentLost = 0.0;

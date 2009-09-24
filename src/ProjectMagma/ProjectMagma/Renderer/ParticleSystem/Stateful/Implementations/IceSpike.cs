@@ -12,6 +12,12 @@ namespace ProjectMagma.Renderer.ParticleSystem.Stateful.Implementations
         )
         :   base(renderer, wrappedContent, device)
         {
+            Effect effect = LoadEffect(wrappedContent);
+            int rowCount = effect.Parameters["IceSpikePositionArray"].Elements.Count;
+            positionArray = new Vector3[rowCount];
+            directionArray = new Vector3[rowCount];
+            deadArray = new bool[rowCount];
+            gravityStartArray = new float[rowCount];
         }
 
         protected override void LoadResources(Renderer renderer, WrappedContentManager wrappedContent, GraphicsDevice device)
@@ -58,16 +64,18 @@ namespace ProjectMagma.Renderer.ParticleSystem.Stateful.Implementations
             }
         }
 
+        protected override Size GetSystemSize()
+        {
+            return Size.Max65536;
+        }
+
         protected override void SetUpdateParameters(EffectParameterCollection parameters)
         {
             base.SetUpdateParameters(parameters);
 
-            parameters["IceSpikePosition"].SetValue(position);
-            parameters["IceSpikeDirection"].SetValue(direction);
-            if (dead)
-            {
-                parameters["IceSpikeGravityStart"].SetValue(0.0f);
-            }
+            parameters["IceSpikePositionArray"].SetValue(positionArray);
+            parameters["IceSpikeDirectionArray"].SetValue(directionArray);
+            parameters["IceSpikeGravityStartArray"].SetValue(gravityStartArray);
         }
 
         protected override void SetRenderingParameters(EffectParameterCollection parameters)
@@ -75,26 +83,40 @@ namespace ProjectMagma.Renderer.ParticleSystem.Stateful.Implementations
             base.SetRenderingParameters(parameters);
         }
 
-        public Vector3 Position
+        public void SetPosition(int emitterIndex, Vector3 position)
         {
-            get { return position; }
-            set { position = value; }
+            positionArray[emitterIndex] = position;
         }
 
-        public Vector3 Direction
+        public Vector3 GetPosition(int emitterIndex)
         {
-            get { return direction; }
-            set { direction = value; direction.Normalize(); }
+            return positionArray[emitterIndex];
         }
 
-        public bool Dead
+        public void SetDirection(int emitterIndex, Vector3 direction)
         {
-            get { return dead; }
-            set { dead = true; }
+            directionArray[emitterIndex] = direction;
         }
 
-        private Vector3 position;
-        private Vector3 direction;
-        private bool dead;
+        public Vector3 GetDirection(int emitterIndex)
+        {
+            return directionArray[emitterIndex]; 
+        }
+
+        public void SetDead(int emitterIndex, bool dead)
+        {
+            deadArray[emitterIndex] = dead;
+            gravityStartArray[emitterIndex] = dead ? 0.0f : 0.1f;
+        }
+
+        public bool IsDead(int emitterIndex)
+        {
+            return deadArray[emitterIndex];
+        }
+
+        private Vector3[] positionArray;
+        private Vector3[] directionArray;
+        private bool[] deadArray;
+        private float[] gravityStartArray;
     }
 }

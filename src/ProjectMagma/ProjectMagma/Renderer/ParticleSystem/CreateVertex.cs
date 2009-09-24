@@ -12,17 +12,20 @@ namespace ProjectMagma.Renderer.ParticleSystem
         public CreateVertex(
             Vector3 particlePosition,
             Vector3 particleVelocity,
-            Vector2 particleCoordinate
+            Vector2 particleCoordinate,
+            float emitterIndex
             )
         {
             this.ParticlePosition = particlePosition;
             this.ParticleVelocity = particleVelocity;
             this.ParticleCoordinate = particleCoordinate;
+            this.EmitterIndex = emitterIndex;
         }
 
         public Vector3 ParticlePosition;
         public Vector3 ParticleVelocity;
         public Vector2 ParticleCoordinate;
+        public float EmitterIndex;
 
         public static readonly VertexElement[] VertexElements =
         {
@@ -38,8 +41,12 @@ namespace ProjectMagma.Renderer.ParticleSystem
                                     VertexElementMethod.Default,
                                     VertexElementUsage.TextureCoordinate, 0),
 
+            new VertexElement(0, 32, VertexElementFormat.Single,
+                                    VertexElementMethod.Default,
+                                    VertexElementUsage.TextureCoordinate, 1),
+
         };
 
-        public const int SizeInBytes = 32;
+        public const int SizeInBytes = 36;
     }
 }

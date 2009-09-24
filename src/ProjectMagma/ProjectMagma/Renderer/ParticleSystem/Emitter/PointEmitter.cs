@@ -63,8 +63,9 @@ namespace ProjectMagma.Renderer.ParticleSystem.Emitter
                     (float)(System.Math.Sin(horizontalAngle) * System.Math.Cos(verticalAngle)));
                 velocity = velocity * 75;
 
-                array[start+i].ParticlePosition = point;
-                array[start+i].ParticleVelocity = velocity;
+                array[start + i].ParticlePosition = point;
+                array[start + i].ParticleVelocity = velocity;
+                array[start + i].EmitterIndex = EmitterIndex;
             }
         }
 
@@ -84,6 +85,8 @@ namespace ProjectMagma.Renderer.ParticleSystem.Emitter
         {
             get { return times; }
         }
+
+        public int EmitterIndex { set; get; }
 
         private double[] times = new double[2];
         private Vector3[] points = new Vector3[2];

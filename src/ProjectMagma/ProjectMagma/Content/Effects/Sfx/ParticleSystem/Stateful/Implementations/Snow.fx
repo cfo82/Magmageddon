@@ -118,7 +118,8 @@ RenderSnowParticlesVertexShaderOutput RenderSnowVertexShader(
 	if (position_sampler_value.w > 0)
 	{
 		float3 position = position_sampler_value.xyz;
-		float4 random_sampler_value = tex2Dlod(RandomSampler, float4(input.ParticleCoordinate.x*31, input.ParticleCoordinate.y*57, 0, 0));
+		//float4 random_sampler_value = tex2Dlod(RandomSampler, float4(input.ParticleCoordinate.x*31, input.ParticleCoordinate.y*57, 0, 0));
+		float random_sampler_value = float4(0.323, 0.584, 0.9823, 0.239);
 
 		float4 world_position = float4(position,1);
 		float4 view_position = mul(world_position, View);
@@ -165,9 +166,13 @@ float4 RenderSnowPixelShader(
 #endif
 ) : COLOR0
 {
-	int spriteNumber = ceil(input.RandomValues.y*4) - 1;
-	int horizontalIndex = spriteNumber/2;
-	int verticalIndex = spriteNumber%2;
+	//int spriteNumber = ceil(input.RandomValues.y*4) - 1;
+	//int horizontalIndex = spriteNumber/2;
+	//int verticalIndex = spriteNumber%2;
+
+	float spriteNumber = ceil(input.RandomValues.y*4) - 1;
+	float horizontalIndex = floor(spriteNumber*0.5);
+	float verticalIndex = spriteNumber - horizontalIndex*2;
 
 	float2 modifiedTextureCoordinates = float2(particleCoordinate.x/2 + horizontalIndex*0.5, particleCoordinate.y/2 + verticalIndex*0.5);
     return input.Color*tex2D(SpriteSampler, modifiedTextureCoordinates);

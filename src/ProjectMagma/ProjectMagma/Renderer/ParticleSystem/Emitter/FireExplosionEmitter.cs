@@ -88,6 +88,7 @@ namespace ProjectMagma.Renderer.ParticleSystem.Emitter
             {
                 array[currentOffset].ParticlePosition = currentPoint + RandomOffset();
                 array[currentOffset].ParticleVelocity = RandomVelocity();
+                array[currentOffset].EmitterIndex = EmitterIndex;
                 ++currentOffset;
             }
 
@@ -97,6 +98,7 @@ namespace ProjectMagma.Renderer.ParticleSystem.Emitter
                 {
                     array[currentOffset].ParticlePosition = secondaryEmitters[i].point + RandomOffset();
                     array[currentOffset].ParticleVelocity = RandomVelocity();
+                    array[currentOffset].EmitterIndex = EmitterIndex;
                     ++currentOffset;
                 }
             }
@@ -134,6 +136,8 @@ namespace ProjectMagma.Renderer.ParticleSystem.Emitter
                 (float)System.Math.Abs(System.Math.Sin(verticalAngle) * (random.NextDouble() * speed)),
                 (float)(System.Math.Sin(horizontalAngle) * System.Math.Cos(verticalAngle) * (random.NextDouble() * speed)));
         }
+
+        public override int EmitterIndex { set; get; }
 
         private double explosionTime = 0.0;
         private static Random random = new Random();

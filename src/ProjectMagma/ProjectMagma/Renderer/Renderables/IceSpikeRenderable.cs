@@ -32,7 +32,6 @@ namespace ProjectMagma.Renderer
         {
             base.LoadResources(renderer);
 
-            iceSpikeSystem = new IceSpike(Game.Instance.Renderer, Game.Instance.ContentManager, Game.Instance.GraphicsDevice);
             iceSpikeModel = Game.Instance.ContentManager.Load<MagmaModel>("Models/Sfx/IceSpike").XnaModel;
             iceSpikeTexture = Game.Instance.ContentManager.Load<Texture2D>("Textures/Sfx/IceSpikeHead");
 
@@ -43,7 +42,6 @@ namespace ProjectMagma.Renderer
 
         public override void UnloadResources(Renderer renderer)
         {
-            iceSpikeSystem.UnloadResources();
             iceSpikeEffect.Dispose();
 
             base.UnloadResources(renderer);
@@ -56,26 +54,27 @@ namespace ProjectMagma.Renderer
             if (!dead && iceSpikeEmitter == null)
             {
                 iceSpikeEmitter = new PointEmitter(renderer.Time.PausableLast / 1000d, Position, 2500.0f);
-                iceSpikeSystem.AddEmitter(iceSpikeEmitter);
+                renderer.IceSpikeSystem.AddEmitter(iceSpikeEmitter);
             }
 
             if (dead && iceSpikeEmitter != null)
             {
-                iceSpikeSystem.RemoveEmitter(iceSpikeEmitter);
+                renderer.IceSpikeSystem.RemoveEmitter(iceSpikeEmitter);
                 iceSpikeEmitter = null;
             }
 
             if (iceSpikeEmitter != null)
             {
+                Console.WriteLine(Position);
+
                 iceSpikeEmitter.SetPoint(renderer.Time.PausableAt / 1000d, Position);
                 Debug.Assert(iceSpikeEmitter.Times[0] == renderer.Time.PausableLast / 1000d);
                 Debug.Assert(iceSpikeEmitter.Times[1] == renderer.Time.PausableAt / 1000d);
-            }
 
-            iceSpikeSystem.Position = Position;
-            iceSpikeSystem.Direction = direction;
-            iceSpikeSystem.Dead = dead;
-            iceSpikeSystem.Update(renderer.Time.PausableLast / 1000d, renderer.Time.PausableAt / 1000d);
+                renderer.IceSpikeSystem.SetPosition(iceSpikeEmitter.EmitterIndex, Position);
+                renderer.IceSpikeSystem.SetDirection(iceSpikeEmitter.EmitterIndex, direction);
+                renderer.IceSpikeSystem.SetDead(iceSpikeEmitter.EmitterIndex, dead);
+            }
         }
 
         public override void Draw(Renderer renderer)
@@ -83,17 +82,16 @@ namespace ProjectMagma.Renderer
             if (!dead)
             {
                 Vector3 up = Vector3.Up;
-                Vector3 direction = iceSpikeSystem.Direction;
+                Vector3 direction = renderer.IceSpikeSystem.GetDirection(iceSpikeEmitter.EmitterIndex);
                 Vector3 right = Vector3.Cross(up, direction);
                 up = Vector3.Cross(direction, right);
 
                 Matrix scale = Matrix.CreateScale(iceSpikeModelScale);
-                Matrix position = Matrix.CreateWorld(iceSpikeSystem.Position, right, up);
+                Matrix position = Matrix.CreateWorld(renderer.IceSpikeSystem.GetPosition(iceSpikeEmitter.EmitterIndex), right, up);
                 Matrix world = Matrix.Multiply(scale, position);
 
-                DrawIceSpike(renderer, world, renderer.Camera.View, renderer.Camera.Projection);
+                //DrawIceSpike(renderer, world, renderer.Camera.View, renderer.Camera.Projection);
             }
-            iceSpikeSystem.Render(renderer.Time.PausableLast / 1000d, renderer.Time.PausableAt / 1000d);
         }
 
         private void DrawIceSpike(Renderer renderer, Matrix world, Matrix view, Matrix projection)
@@ -153,7 +151,6 @@ namespace ProjectMagma.Renderer
 
         private float iceSpikeModelScale = 60;
         private PointEmitter iceSpikeEmitter;
-        private IceSpike iceSpikeSystem;
         Model iceSpikeModel;
         private Effect iceSpikeEffect;
         private Texture2D iceSpikeTexture;

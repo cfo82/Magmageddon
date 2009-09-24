@@ -106,6 +106,9 @@ namespace ProjectMagma.Profiler
         [Conditional("PROFILING")]
         public void Write(StorageDevice device, string windowTitle, string filename)
         {
+            if (device == null)
+                { return; }
+
             // Open a storage container.StorageContainer container
 #if XDK
             bool isTransferredFromOtherPlayer;

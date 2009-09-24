@@ -36,6 +36,7 @@ namespace ProjectMagma.Renderer.Renderables
 
         public override void Draw(Renderer renderer)
         {
+            return;
             fadeInOut.Update(renderer.Time.PausableDtMs);
 
             float alpha = Game.Instance.Renderer.EntityManager["respawn_spot"].GetFloat("alpha");

@@ -13,6 +13,7 @@ namespace ProjectMagma.Renderer.ParticleSystem.Stateful
         Max4096  = 3,   // 64x64 texture
         Max9308  = 4,   // 96x96 texture
         Max16384 = 5,   // 128x128 texture
-        SizeCount = 6
+        Max65536 = 6,   // 256x256 texture
+        SizeCount = 7
     }
 }

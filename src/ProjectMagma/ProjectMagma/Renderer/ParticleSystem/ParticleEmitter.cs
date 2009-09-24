@@ -11,5 +11,6 @@ namespace ProjectMagma.Renderer.ParticleSystem
         int CalculateParticleCount(double lastFrameTime, double currentFrameTime);
         //NewParticle[] CreateParticles(double lastFrameTime, double currentFrameTime);
         void CreateParticles(double lastFrameTime, double currentFrameTime, CreateVertex[] array, int start, int length);
+        int EmitterIndex { set; get; }
     }
 }

@@ -12,5 +12,6 @@ namespace ProjectMagma.Renderer.ParticleSystem.Emitter
         public abstract int CalculateParticleCount(double lastFrameTime, double currentFrameTime);
         //NewParticle[] CreateParticles(double lastFrameTime, double currentFrameTime);
         public abstract void CreateParticles(double lastFrameTime, double currentFrameTime, CreateVertex[] array, int start, int length);
+        public abstract int EmitterIndex { set; get; }
     }
 }

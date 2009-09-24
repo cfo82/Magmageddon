@@ -8,12 +8,18 @@
 
 
 //-----------------------------------------------------------------------------------------------------------
+#define MAX_ICESPIKE_COUNT 30
+
+
+
+
+//-----------------------------------------------------------------------------------------------------------
 float IceSpikeParticleLifetime = 1.2;
 float IceSpikeRotationTime = 0.5;
-float IceSpikeGravityStart = 0.1;
+float IceSpikeGravityStartArray[MAX_ICESPIKE_COUNT];
 float IceSpikeDamping = 0.8;
-float3 IceSpikePosition;
-float3 IceSpikeDirection;
+float3 IceSpikePositionArray[MAX_ICESPIKE_COUNT];
+float3 IceSpikeDirectionArray[MAX_ICESPIKE_COUNT];
 float IceSpikeRotationSpeed = 3000;
 
 
@@ -26,7 +32,7 @@ CreateParticlesPixelShaderOutput CreateIceSpikePixelShader(
 {
 	CreateParticlesPixelShaderOutput output;
 	output.PositionTimeToDeath = float4(input.ParticlePosition, IceSpikeParticleLifetime);
-	output.Velocity = float4(input.ParticleVelocity, 0);
+	output.Velocity = float4(input.ParticleVelocity, input.EmitterIndex);
 	return output;
 }
 
@@ -57,6 +63,11 @@ UpdateParticlesPixelShaderOutput UpdateIceSpikePixelShader(
 	float4 velocity_sample = tex2D(VelocitySampler, ParticleCoordinate);
 	//float4 random_sample = tex2D(RandomSampler, float2(ParticleCoordinate.x*31, ParticleCoordinate.y*57));
 	
+	int emitter_index = floor(velocity_sample.w);
+	float3 ice_spike_position = IceSpikePositionArray[emitter_index];
+	float3 ice_spike_direction = IceSpikeDirectionArray[emitter_index];
+	float ice_spike_gravity_start = IceSpikeGravityStartArray[emitter_index];
+	
 	float current_time_to_death = position_sample.w;
 	float age = IceSpikeParticleLifetime-current_time_to_death;
 	float normalized_age = age/IceSpikeParticleLifetime;
@@ -65,10 +76,10 @@ UpdateParticlesPixelShaderOutput UpdateIceSpikePixelShader(
 	float3 current_velocity = velocity_sample.xyz;
 	
 	// calculate in world-space...
-	float3 projected_position = IceSpikePosition + dot(-IceSpikeDirection, current_position - IceSpikePosition) * (-IceSpikeDirection);
+	float3 projected_position = ice_spike_position + dot(-ice_spike_direction, current_position - ice_spike_position) * (-ice_spike_direction);
 	float3 to_position = current_position - projected_position;
 	float3 normalized_to_position = normalize(to_position);
-	float3 normal = cross(normalized_to_position, -IceSpikeDirection);
+	float3 normal = cross(normalized_to_position, -ice_spike_direction);
 	// calculate the force to apply in object space!
 	float rotation_speed = /*random_sample.a*/IceSpikeRotationSpeed;
 	float centralize_force = IceSpikeRotationSpeed/2 + /*random_sample.g*/IceSpikeRotationSpeed*2.5;
@@ -80,8 +91,8 @@ UpdateParticlesPixelShaderOutput UpdateIceSpikePixelShader(
 	rotation_force = rotation_force * (1-normalized_rotation_age_4);
 	
 	// calculate gravity... blend in slowly at the end of the rotation force
-	float gravity_age = max(0,age-IceSpikeGravityStart);
-	float normalized_gravity_age = gravity_age/(IceSpikeParticleLifetime-IceSpikeGravityStart);
+	float gravity_age = max(0,age-ice_spike_gravity_start);
+	float normalized_gravity_age = gravity_age/(IceSpikeParticleLifetime-ice_spike_gravity_start);
 	float3 gravity_force = float3(0,-9.81,0) * 1000 * pow(normalized_gravity_age,2);
 	
 	float3 force = rotation_force + gravity_force;
@@ -91,7 +102,7 @@ UpdateParticlesPixelShaderOutput UpdateIceSpikePixelShader(
 	float next_time_to_death = current_time_to_death + Dt*-1;
 	
 	output.PositionTimeToDeath = float4(next_position, next_time_to_death);
-	output.Velocity = float4(next_velocity, 0);
+	output.Velocity = float4(next_velocity, emitter_index);
 
     return output;
 }
@@ -104,7 +115,7 @@ technique UpdateParticles
 {
     pass Pass1
     {
-        PixelShader = compile ps_2_0 UpdateIceSpikePixelShader();
+        PixelShader = compile ps_3_0 UpdateIceSpikePixelShader();
     }
 }
 

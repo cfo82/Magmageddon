@@ -30,6 +30,8 @@ namespace ProjectMagma.Renderer.ParticleSystem.Stateful
             this.particleRenderingEffect = null;
             this.createVertexLists = new List<CreateVertexArray>(32);
             spriteBatch = new SpriteBatch(device);
+            this.nextEmitterId = 0;
+            this.freeEmitterIds = new List<int>();
 
             LoadResources(renderer, wrappedContent, device);
         }
@@ -44,11 +46,11 @@ namespace ProjectMagma.Renderer.ParticleSystem.Stateful
             activeTexture = 0;
 
             positionTextures = new RenderTarget2D[2];
-            positionTextures[0] = renderer.StatefulParticleResourceManager.AllocateStateTexture(systemSize);
-            positionTextures[1] = renderer.StatefulParticleResourceManager.AllocateStateTexture(systemSize);
+            positionTextures[0] = renderer.StatefulParticleResourceManager.AllocateStateTexture(GetSystemSize());
+            positionTextures[1] = renderer.StatefulParticleResourceManager.AllocateStateTexture(GetSystemSize());
             velocityTextures = new RenderTarget2D[2];
-            velocityTextures[0] = renderer.StatefulParticleResourceManager.AllocateStateTexture(systemSize);
-            velocityTextures[1] = renderer.StatefulParticleResourceManager.AllocateStateTexture(systemSize);
+            velocityTextures[0] = renderer.StatefulParticleResourceManager.AllocateStateTexture(GetSystemSize());
+            velocityTextures[1] = renderer.StatefulParticleResourceManager.AllocateStateTexture(GetSystemSize());
 
             // initialize the first two textures
             RenderTarget2D currentRenderTarget0 = (RenderTarget2D)device.GetRenderTarget(0);
@@ -83,10 +85,10 @@ namespace ProjectMagma.Renderer.ParticleSystem.Stateful
         public virtual void UnloadResources()
         {
             // release texture maps
-            renderer.StatefulParticleResourceManager.FreeStateTexture(systemSize, positionTextures[0]);
-            renderer.StatefulParticleResourceManager.FreeStateTexture(systemSize, positionTextures[1]);
-            renderer.StatefulParticleResourceManager.FreeStateTexture(systemSize, velocityTextures[0]);
-            renderer.StatefulParticleResourceManager.FreeStateTexture(systemSize, velocityTextures[1]);
+            renderer.StatefulParticleResourceManager.FreeStateTexture(GetSystemSize(), positionTextures[0]);
+            renderer.StatefulParticleResourceManager.FreeStateTexture(GetSystemSize(), positionTextures[1]);
+            renderer.StatefulParticleResourceManager.FreeStateTexture(GetSystemSize(), velocityTextures[0]);
+            renderer.StatefulParticleResourceManager.FreeStateTexture(GetSystemSize(), velocityTextures[1]);
 
             // release the other resources
             spriteBatch.Dispose();
@@ -106,6 +108,8 @@ namespace ProjectMagma.Renderer.ParticleSystem.Stateful
                 throw new ArgumentException("the given emitter is already registered!");
             }
 
+            emitter.EmitterIndex = GetNextEmitterId();
+
             this.emitters.Add(emitter);
         }
 
@@ -118,11 +122,18 @@ namespace ProjectMagma.Renderer.ParticleSystem.Stateful
             if (!this.emitters.Contains(emitter))
                 { throw new ArgumentException("the given emitter is not registered!"); }
 
+            FreeEmitterId(emitter.EmitterIndex);
+
             this.emitters.Remove(emitter);
         }
 
         public void ClearEmitters()
         {
+            for (int i = 0; i < emitters.Count; ++i)
+            {
+                FreeEmitterId(emitters[i].EmitterIndex);
+            }
+
             this.emitters.Clear();
         }
 
@@ -195,12 +206,14 @@ namespace ProjectMagma.Renderer.ParticleSystem.Stateful
                     index = 0;
                 }
 
+                int textureSize = textureSizes[(int)GetSystemSize()];
                 int x = index % textureSize;
                 int y = index / textureSize;
 
                 vertices.Array[i] = new CreateVertex(Vector3.Zero, Vector3.Zero, new Vector2(
                     -1.0f + 2.0f * positionHalfPixel.X + 2.0f * 2.0f * x * positionHalfPixel.X,
-                    -1.0f + 2.0f * positionHalfPixel.Y + 2.0f * 2.0f * y * positionHalfPixel.Y)
+                    -1.0f + 2.0f * positionHalfPixel.Y + 2.0f * 2.0f * y * positionHalfPixel.Y),
+                    0 // emitterIndex
                 );
 
                 ++index;
@@ -342,7 +355,7 @@ namespace ProjectMagma.Renderer.ParticleSystem.Stateful
         {
             SetParticleRenderStates(device.RenderState);
 
-            VertexBuffer renderingVertexBuffer = renderer.StatefulParticleResourceManager.GetRenderingVertexBuffer(systemSize);
+            VertexBuffer renderingVertexBuffer = renderer.StatefulParticleResourceManager.GetRenderingVertexBuffer(GetSystemSize());
             VertexDeclaration renderingVertexDeclaration = renderer.StatefulParticleResourceManager.GetRenderingVertexDeclaration();
 
             device.Vertices[0].SetSource(renderingVertexBuffer, 0, RenderVertex.SizeInBytes);
@@ -372,6 +385,7 @@ namespace ProjectMagma.Renderer.ParticleSystem.Stateful
             {
                 pass.Begin();
 
+                int textureSize = textureSizes[(int)GetSystemSize()];
                 device.DrawPrimitives(PrimitiveType.PointList, 0, textureSize * textureSize);
 
                 pass.End();
@@ -456,7 +470,33 @@ namespace ProjectMagma.Renderer.ParticleSystem.Stateful
             get { return simulationStep; }
         }
 
+        protected virtual Size GetSystemSize()
+        {
+            return Size.Max9308;
+        }
+
         #endregion
+
+        private void FreeEmitterId(int id)
+        {
+            freeEmitterIds.Add(id);
+        }
+
+        private int GetNextEmitterId()
+        {
+            if (freeEmitterIds.Count == 0)
+            {
+                int id = nextEmitterId;
+                ++nextEmitterId;
+                return id;
+            }
+            else
+            {
+                int id = freeEmitterIds[freeEmitterIds.Count - 1];
+                freeEmitterIds.RemoveAt(freeEmitterIds.Count - 1);
+                return id;
+            }
+        }
 
         protected Renderer renderer;
         private List<ParticleEmitter> emitters;
@@ -466,8 +506,7 @@ namespace ProjectMagma.Renderer.ParticleSystem.Stateful
         private double remainingDt;
         private static readonly double simulationStep = 1.0 / 30.0;
 
-        private static readonly int textureSize = 96;
-        private static readonly Size systemSize = Size.Max9308;
+        private static readonly int[] textureSizes = { 16, 32, 48, 64, 96, 128, 256 };
         private int activeTexture;
         private RenderTarget2D[] positionTextures;
         private RenderTarget2D[] velocityTextures;
@@ -487,5 +526,9 @@ namespace ProjectMagma.Renderer.ParticleSystem.Stateful
         private List<CreateVertexArray> createVertexLists;
 
         private Texture2D spriteTexture;
+
+        // emitter Id management
+        private int nextEmitterId = 0;
+        private List<int> freeEmitterIds;
     }
 }

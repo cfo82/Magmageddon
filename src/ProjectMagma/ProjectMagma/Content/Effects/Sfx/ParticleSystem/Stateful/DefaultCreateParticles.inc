@@ -8,6 +8,7 @@ CreateParticlesVertexShaderOutput CreateParticlesVertexShader(
 	output.ParticleCoordinate = float4(input.ParticleCoordinate, 0, 1);
 	output.ParticlePosition = input.ParticlePosition;
 	output.ParticleVelocity = input.ParticleVelocity;
+	output.EmitterIndex = input.EmitterIndex;
 	output.Size = 1;
 
     return output;

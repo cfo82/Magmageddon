@@ -73,6 +73,13 @@ namespace ProjectMagma.Renderer.ParticleSystem.Stateful.Implementations
         {
             base.SetUpdateParameters(parameters);
 
+            /*for (int i = 0; i < positionArray.Length; ++i)
+            {
+                positionArray[i] = Vector3.Zero;
+                directionArray[i] = Vector3.Zero;
+                gravityStartArray[i] = 0.0f;
+            }*/
+
             parameters["IceSpikePositionArray"].SetValue(positionArray);
             parameters["IceSpikeDirectionArray"].SetValue(directionArray);
             parameters["IceSpikeGravityStartArray"].SetValue(gravityStartArray);
@@ -88,19 +95,10 @@ namespace ProjectMagma.Renderer.ParticleSystem.Stateful.Implementations
             positionArray[emitterIndex] = position;
         }
 
-        public Vector3 GetPosition(int emitterIndex)
-        {
-            return positionArray[emitterIndex];
-        }
-
         public void SetDirection(int emitterIndex, Vector3 direction)
         {
             directionArray[emitterIndex] = direction;
-        }
-
-        public Vector3 GetDirection(int emitterIndex)
-        {
-            return directionArray[emitterIndex]; 
+            directionArray[emitterIndex].Normalize();
         }
 
         public void SetDead(int emitterIndex, bool dead)

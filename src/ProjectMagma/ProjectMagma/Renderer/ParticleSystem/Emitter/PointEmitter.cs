@@ -18,6 +18,7 @@ namespace ProjectMagma.Renderer.ParticleSystem.Emitter
             this.times[1] = time;
             this.points[1] = point;
             this.particlesPerSecond = particlesPerSecond;
+            this.Active = true;
         }
 
         public int CalculateParticleCount(
@@ -25,17 +26,24 @@ namespace ProjectMagma.Renderer.ParticleSystem.Emitter
             double currentFrameTime
         )
         {
-            Debug.Assert(currentFrameTime >= times[0]);
-            double amount = currentFrameTime - times[0];
-            double interval = times[1] - times[0];
-            double interpolation = amount / interval;
-            Vector3 point = points[0] + (points[1] - points[0]) * (float)interpolation;
+            if (Active)
+            {
+                Debug.Assert(currentFrameTime >= times[0]);
+                double amount = currentFrameTime - times[0];
+                double interval = times[1] - times[0];
+                double interpolation = amount / interval;
+                Vector3 point = points[0] + (points[1] - points[0]) * (float)interpolation;
 
-            double exactNumParticles = (currentFrameTime - lastFrameTime) * particlesPerSecond + fragmentLost;
-            double floorNumParticles = System.Math.Floor(exactNumParticles);
-            fragmentLost = exactNumParticles - floorNumParticles;
-            int numParticles = (int)floorNumParticles;
-            return numParticles;
+                double exactNumParticles = (currentFrameTime - lastFrameTime) * particlesPerSecond + fragmentLost;
+                double floorNumParticles = System.Math.Floor(exactNumParticles);
+                fragmentLost = exactNumParticles - floorNumParticles;
+                int numParticles = (int)floorNumParticles;
+                return numParticles;
+            }
+            else
+            {
+                return 0;
+            }
         }
 
         public void CreateParticles(
@@ -87,6 +95,7 @@ namespace ProjectMagma.Renderer.ParticleSystem.Emitter
         }
 
         public int EmitterIndex { set; get; }
+        public bool Active { set; get; }
 
         private double[] times = new double[2];
         private Vector3[] points = new Vector3[2];

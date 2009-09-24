@@ -43,6 +43,8 @@ namespace ProjectMagma.Renderer
         public override void UnloadResources(Renderer renderer)
         {
             iceSpikeEffect.Dispose();
+            renderer.IceSpikeSystem.RemoveEmitter(iceSpikeEmitter);
+            iceSpikeEmitter = null;
 
             base.UnloadResources(renderer);
         }
@@ -59,8 +61,7 @@ namespace ProjectMagma.Renderer
 
             if (dead && iceSpikeEmitter != null)
             {
-                renderer.IceSpikeSystem.RemoveEmitter(iceSpikeEmitter);
-                iceSpikeEmitter = null;
+                iceSpikeEmitter.Active = false;
             }
 
             if (iceSpikeEmitter != null)
@@ -80,12 +81,12 @@ namespace ProjectMagma.Renderer
             if (!dead)
             {
                 Vector3 up = Vector3.Up;
-                Vector3 direction = renderer.IceSpikeSystem.GetDirection(iceSpikeEmitter.EmitterIndex);
+                Vector3 direction = this.direction;
                 Vector3 right = Vector3.Cross(up, direction);
                 up = Vector3.Cross(direction, right);
 
                 Matrix scale = Matrix.CreateScale(iceSpikeModelScale);
-                Matrix position = Matrix.CreateWorld(renderer.IceSpikeSystem.GetPosition(iceSpikeEmitter.EmitterIndex), right, up);
+                Matrix position = Matrix.CreateWorld(Position, right, up);
                 Matrix world = Matrix.Multiply(scale, position);
 
                 DrawIceSpike(renderer, world, renderer.Camera.View, renderer.Camera.Projection);

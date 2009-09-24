@@ -65,8 +65,6 @@ namespace ProjectMagma.Renderer
 
             if (iceSpikeEmitter != null)
             {
-                Console.WriteLine(Position);
-
                 iceSpikeEmitter.SetPoint(renderer.Time.PausableAt / 1000d, Position);
                 Debug.Assert(iceSpikeEmitter.Times[0] == renderer.Time.PausableLast / 1000d);
                 Debug.Assert(iceSpikeEmitter.Times[1] == renderer.Time.PausableAt / 1000d);

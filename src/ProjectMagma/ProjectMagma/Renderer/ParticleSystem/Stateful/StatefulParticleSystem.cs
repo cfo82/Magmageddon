@@ -99,7 +99,7 @@ namespace ProjectMagma.Renderer.ParticleSystem.Stateful
             particleRenderingEffect.Dispose();
         }
 
-        public void AddEmitter(
+        public virtual void AddEmitter(
             ParticleEmitter emitter
         )
         {
@@ -113,7 +113,7 @@ namespace ProjectMagma.Renderer.ParticleSystem.Stateful
             this.emitters.Add(emitter);
         }
 
-        public void RemoveEmitter(
+        public virtual void RemoveEmitter(
             ParticleEmitter emitter
         )
         {
@@ -125,6 +125,14 @@ namespace ProjectMagma.Renderer.ParticleSystem.Stateful
             FreeEmitterId(emitter.EmitterIndex);
 
             this.emitters.Remove(emitter);
+        }
+
+        public int EmitterCount
+        {
+            get
+            {
+                return emitters.Count;
+            }
         }
 
         public void ClearEmitters()
@@ -210,6 +218,9 @@ namespace ProjectMagma.Renderer.ParticleSystem.Stateful
                 int x = index % textureSize;
                 int y = index / textureSize;
 
+                Debug.Assert(textureSize == positionTextures[0].Width);
+                Debug.Assert(textureSize == positionTextures[0].Height);
+
                 vertices.Array[i] = new CreateVertex(Vector3.Zero, Vector3.Zero, new Vector2(
                     -1.0f + 2.0f * positionHalfPixel.X + 2.0f * 2.0f * x * positionHalfPixel.X,
                     -1.0f + 2.0f * positionHalfPixel.Y + 2.0f * 2.0f * y * positionHalfPixel.Y),
@@ -267,6 +278,8 @@ namespace ProjectMagma.Renderer.ParticleSystem.Stateful
                 {
                     FlushCreateParticles(localCreateVerticesIndex, currentFrameTime, dt);
                 }
+
+                createVertexLists.Clear();
             }
         }
 
@@ -332,7 +345,7 @@ namespace ProjectMagma.Renderer.ParticleSystem.Stateful
                 pass.End();
                 particleUpdateEffect.End();
 
-                CreateParticles(intermediateLastFrameTime, intermediateCurrentFrameTime, SimulationStep, true);//(intermediateCurrentFrameTime + SimulationStep) > currentFrameTime);
+                CreateParticles(intermediateLastFrameTime, intermediateCurrentFrameTime, SimulationStep, true);
 
                 device.SetRenderTarget(1, oldRenderTarget1);
                 device.SetRenderTarget(0, oldRenderTarget0);
@@ -499,7 +512,7 @@ namespace ProjectMagma.Renderer.ParticleSystem.Stateful
         }
 
         protected Renderer renderer;
-        private List<ParticleEmitter> emitters;
+        protected List<ParticleEmitter> emitters;
         private int index;
         private GraphicsDevice device;
 

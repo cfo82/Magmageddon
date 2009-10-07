@@ -15,10 +15,13 @@ namespace ProjectMagma.Renderer.ParticleSystem.Emitter
             float particlesPerSecond
         )
         {
+            this.times = new double[2];
+            this.points = new Vector3[2];
             this.times[1] = time;
             this.points[1] = point;
             this.particlesPerSecond = particlesPerSecond;
             this.Active = true;
+            this.random = new Random();
         }
 
         public int CalculateParticleCount(
@@ -97,10 +100,10 @@ namespace ProjectMagma.Renderer.ParticleSystem.Emitter
         public int EmitterIndex { set; get; }
         public bool Active { set; get; }
 
-        private double[] times = new double[2];
-        private Vector3[] points = new Vector3[2];
+        private double[] times;
+        private Vector3[] points;
         private double particlesPerSecond;
         private double fragmentLost = 0.0;
-        private Random random = new Random();
+        private Random random;
     }
 }

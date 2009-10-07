@@ -36,21 +36,33 @@ namespace ProjectMagma.Renderer
         public override void UnloadResources(Renderer renderer)
         {
             base.UnloadResources(renderer);
+
+            if (flamethrowerEmitter != null)
+            {
+                renderer.FlamethrowerSystem.RemoveEmitter(flamethrowerEmitter);
+                //Console.WriteLine("Remove Emitter");
+                flamethrowerEmitter = null;
+            }
         }
 
         public override void Update(Renderer renderer)
         {
             base.Update(renderer);
 
-            if (fueled && flamethrowerEmitter == null)
+            if (fueled &&
+                flamethrowerEmitter == null &&
+                renderer.FlamethrowerSystem.EmitterCount < 6 // safety check...
+                )
             {
                 flamethrowerEmitter = new FlamethrowerEmitter(Position, Direction, 2500);
+                //Console.WriteLine("Add Emitter");
                 renderer.FlamethrowerSystem.AddEmitter(flamethrowerEmitter);
             }
 
             if (!fueled && flamethrowerEmitter != null)
             {
                 renderer.FlamethrowerSystem.RemoveEmitter(flamethrowerEmitter);
+                //Console.WriteLine("Remove Emitter");
                 flamethrowerEmitter = null;
             }
 

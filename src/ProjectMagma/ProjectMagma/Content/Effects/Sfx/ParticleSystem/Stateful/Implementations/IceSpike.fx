@@ -16,10 +16,13 @@
 //-----------------------------------------------------------------------------------------------------------
 float IceSpikeParticleLifetime = 1.2;
 float IceSpikeRotationTime = 0.5;
-float IceSpikeGravityStartArray[MAX_ICESPIKE_COUNT];
 float IceSpikeDamping = 0.8;
+//float3 IceSpikePosition;
+//float3 IceSpikeDirection;
+//float IceSpikeGravityStart = 0.1;
 float3 IceSpikePositionArray[MAX_ICESPIKE_COUNT];
 float3 IceSpikeDirectionArray[MAX_ICESPIKE_COUNT];
+float IceSpikeGravityStartArray[MAX_ICESPIKE_COUNT];
 float IceSpikeRotationSpeed = 3000;
 
 
@@ -63,11 +66,6 @@ UpdateParticlesPixelShaderOutput UpdateIceSpikePixelShader(
 	float4 velocity_sample = tex2D(VelocitySampler, ParticleCoordinate);
 	//float4 random_sample = tex2D(RandomSampler, float2(ParticleCoordinate.x*31, ParticleCoordinate.y*57));
 	
-	int emitter_index = floor(velocity_sample.w);
-	float3 ice_spike_position = IceSpikePositionArray[emitter_index];
-	float3 ice_spike_direction = IceSpikeDirectionArray[emitter_index];
-	float ice_spike_gravity_start = IceSpikeGravityStartArray[emitter_index];
-	
 	float current_time_to_death = position_sample.w;
 	float age = IceSpikeParticleLifetime-current_time_to_death;
 	float normalized_age = age/IceSpikeParticleLifetime;
@@ -75,6 +73,11 @@ UpdateParticlesPixelShaderOutput UpdateIceSpikePixelShader(
 	float3 current_position = position_sample.xyz;
 	float3 current_velocity = velocity_sample.xyz;
 	
+	int emitter_index = floor(velocity_sample.w);
+	float3 ice_spike_position = IceSpikePositionArray[emitter_index];
+	float3 ice_spike_direction = IceSpikeDirectionArray[emitter_index];
+	float ice_spike_gravity_start = IceSpikeGravityStartArray[emitter_index];
+
 	// calculate in world-space...
 	float3 projected_position = ice_spike_position + dot(-ice_spike_direction, current_position - ice_spike_position) * (-ice_spike_direction);
 	float3 to_position = current_position - projected_position;

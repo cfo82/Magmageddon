@@ -23,6 +23,7 @@ namespace ProjectMagma.Renderer
         :   base(timestamp, renderPriority, position)
         {
             this.direction = direction;
+            this.direction.Normalize();
             this.dead = dead;
 
             iceSpikeEmitter = null;
@@ -43,8 +44,12 @@ namespace ProjectMagma.Renderer
         public override void UnloadResources(Renderer renderer)
         {
             iceSpikeEffect.Dispose();
-            renderer.IceSpikeSystem.RemoveEmitter(iceSpikeEmitter);
-            iceSpikeEmitter = null;
+
+            if (iceSpikeEmitter != null)
+            {
+                renderer.IceSpikeSystem.RemoveEmitter(iceSpikeEmitter);
+                iceSpikeEmitter = null;
+            }
 
             base.UnloadResources(renderer);
         }
@@ -53,13 +58,16 @@ namespace ProjectMagma.Renderer
         {
             base.Update(renderer);
 
-            if (!dead && iceSpikeEmitter == null)
+            if (iceSpikeEmitter == null &&
+                renderer.IceSpikeSystem.EmitterCount < 30 // safety number...
+                )
             {
                 iceSpikeEmitter = new PointEmitter(renderer.Time.PausableLast / 1000d, Position, 2500.0f);
                 renderer.IceSpikeSystem.AddEmitter(iceSpikeEmitter);
             }
 
-            if (dead && iceSpikeEmitter != null)
+            if (dead &&
+                iceSpikeEmitter != null)
             {
                 iceSpikeEmitter.Active = false;
             }
@@ -69,6 +77,8 @@ namespace ProjectMagma.Renderer
                 iceSpikeEmitter.SetPoint(renderer.Time.PausableAt / 1000d, Position);
                 Debug.Assert(iceSpikeEmitter.Times[0] == renderer.Time.PausableLast / 1000d);
                 Debug.Assert(iceSpikeEmitter.Times[1] == renderer.Time.PausableAt / 1000d);
+
+                //Console.WriteLine("Emitter {0}: {1}, {2}", iceSpikeEmitter.EmitterIndex, Position, direction);
 
                 renderer.IceSpikeSystem.SetPosition(iceSpikeEmitter.EmitterIndex, Position);
                 renderer.IceSpikeSystem.SetDirection(iceSpikeEmitter.EmitterIndex, direction);
@@ -142,6 +152,7 @@ namespace ProjectMagma.Renderer
             if (id == "Direction")
             {
                 direction = value;
+                direction.Normalize();
             }
         }
 

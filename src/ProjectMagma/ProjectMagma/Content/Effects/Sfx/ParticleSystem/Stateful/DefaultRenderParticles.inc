@@ -48,15 +48,12 @@ RenderParticlesVertexShaderOutput RenderParticlesVertexShader(
 
 	if (position_sampler_value.w > 0)
 	{
-
 		float3 position = position_sampler_value.xyz;
-
 		float4 world_position = float4(position,1);
 		float4 view_position = mul(world_position, View);
+		output.PositionCopy = output.Position = mul(view_position, Projection);
 	    
 		float normalizedAge = 1.0 - position_sampler_value.w/7.0f;
-	    
-		output.PositionCopy = output.Position = mul(view_position, Projection);
 		output.Size = ComputeParticleSize(output.Position, 0.5, normalizedAge);
 		output.Color = ComputeParticleColor(0.25, normalizedAge);
 	}

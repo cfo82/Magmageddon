@@ -297,13 +297,13 @@ namespace ProjectMagma.Renderer
             if (snowSystem != null)
                 { snowSystem.Update(Time.Last/1000d, Time.At/1000d); }
             if (iceExplosionSystem != null)
-                { iceExplosionSystem.Update(Time.Last / 1000d, Time.At / 1000d); }
+                { iceExplosionSystem.Update(Time.PausableLast / 1000d, Time.PausableAt / 1000d); }
             if (fireExplosionSystem != null)
-                { fireExplosionSystem.Update(Time.Last / 1000d, Time.At / 1000d); }
+                { fireExplosionSystem.Update(Time.PausableLast / 1000d, Time.PausableAt / 1000d); }
             if (flamethrowerSystem != null)
-                { flamethrowerSystem.Update(Time.Last / 1000d, Time.At / 1000d); }
+                { flamethrowerSystem.Update(Time.PausableLast / 1000d, Time.PausableAt / 1000d); }
             if (iceSpikeSystem != null)
-                { iceSpikeSystem.Update(Time.Last / 1000d, Time.At / 1000d); }
+                { iceSpikeSystem.Update(Time.PausableLast / 1000d, Time.PausableAt / 1000d); }
         }
         
         public void Render()
@@ -495,18 +495,6 @@ namespace ProjectMagma.Renderer
         private void RenderParticles()
         {
             //transparentRenderables.Sort(TransparentRenderableComparison);
-            if (explosionSystem != null)
-                { explosionSystem.Render(lastFrameTime, currentFrameTime); }
-            if (snowSystem != null)
-                { snowSystem.Render(lastFrameTime, currentFrameTime); }
-            if (iceExplosionSystem != null)
-                { iceExplosionSystem.Render(lastFrameTime, currentFrameTime); }
-            if (fireExplosionSystem != null)
-                { fireExplosionSystem.Render(lastFrameTime, currentFrameTime); }
-            if (flamethrowerSystem != null)
-                { flamethrowerSystem.Render(lastFrameTime, currentFrameTime); }
-            if (iceSpikeSystem != null)
-                { iceSpikeSystem.Render(lastFrameTime, currentFrameTime); }
 
             foreach (Renderable renderable in transparentRenderables)
             {
@@ -514,6 +502,18 @@ namespace ProjectMagma.Renderer
                 renderable.Draw(this);
             }
 
+            if (explosionSystem != null)
+                { explosionSystem.Render(lastFrameTime, currentFrameTime); }
+            if (snowSystem != null)
+                { snowSystem.Render(lastFrameTime, currentFrameTime); }
+            if (iceExplosionSystem != null)
+                { iceExplosionSystem.Render(Time.PausableLast / 1000d, Time.PausableAt / 1000d); }
+            if (fireExplosionSystem != null)
+                { fireExplosionSystem.Render(Time.PausableLast / 1000d, Time.PausableAt / 1000d); }
+            if (flamethrowerSystem != null)
+                { flamethrowerSystem.Render(Time.PausableLast / 1000d, Time.PausableAt / 1000d); }
+            if (iceSpikeSystem != null)
+                { iceSpikeSystem.Render(Time.PausableLast / 1000d, Time.PausableAt / 1000d); }
         }
 
         private void RenderOverlays()

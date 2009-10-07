@@ -1,4 +1,5 @@
-﻿using Microsoft.Xna.Framework;
+﻿using System;
+using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 
 namespace ProjectMagma.Renderer.ParticleSystem.Stateful.Implementations
@@ -29,6 +30,18 @@ namespace ProjectMagma.Renderer.ParticleSystem.Stateful.Implementations
         {
             // no need to release the trailSprite since its managed by the resource manager!
             base.UnloadResources();
+        }
+
+        public override void AddEmitter(ParticleEmitter emitter)
+        {
+            base.AddEmitter(emitter);
+            //Console.WriteLine("AddEmitter with index {0}", emitter.EmitterIndex);
+        }
+
+        public override void RemoveEmitter(ParticleEmitter emitter)
+        {
+            base.RemoveEmitter(emitter);
+            //Console.WriteLine("RemoveEmitter");
         }
 
         private Effect LoadEffect(WrappedContentManager wrappedContent)
@@ -73,13 +86,13 @@ namespace ProjectMagma.Renderer.ParticleSystem.Stateful.Implementations
         {
             base.SetUpdateParameters(parameters);
 
-            /*for (int i = 0; i < positionArray.Length; ++i)
-            {
-                positionArray[i] = Vector3.Zero;
-                directionArray[i] = Vector3.Zero;
-                gravityStartArray[i] = 0.0f;
-            }*/
+            //if (emitters.Count > 0)
+            //{
+            //    Console.WriteLine("System   : {0}, {1}", positionArray[0], directionArray[0]);
+            //}
 
+            //parameters["IceSpikePosition"].SetValue(positionArray[0]);
+            //parameters["IceSpikeDirection"].SetValue(directionArray[0]);
             parameters["IceSpikePositionArray"].SetValue(positionArray);
             parameters["IceSpikeDirectionArray"].SetValue(directionArray);
             parameters["IceSpikeGravityStartArray"].SetValue(gravityStartArray);
@@ -105,11 +118,6 @@ namespace ProjectMagma.Renderer.ParticleSystem.Stateful.Implementations
         {
             deadArray[emitterIndex] = dead;
             gravityStartArray[emitterIndex] = dead ? 0.0f : 0.1f;
-        }
-
-        public bool IsDead(int emitterIndex)
-        {
-            return deadArray[emitterIndex];
         }
 
         private Vector3[] positionArray;

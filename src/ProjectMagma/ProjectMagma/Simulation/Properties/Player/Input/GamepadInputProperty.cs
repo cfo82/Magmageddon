@@ -54,16 +54,7 @@ namespace ProjectMagma.Simulation
 
         private void OnUpdate(Entity player, SimulationTime simTime)
         {
-            // update input
-            if (Game.Instance.Simulation.Phase == SimulationPhase.Game)
-            {
-                controllerInput.Update(simTime);
-            }
-            else
-            {
-                // don't take any new input events
-                controllerInput.Reset();
-            }
+            controllerInput.Update(simTime);
         }
 
         private class GamePadControllerInput: ControllerInput

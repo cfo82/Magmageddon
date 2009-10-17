@@ -1,6 +1,4 @@
-﻿#define DEMO_MODE
-
-using System;
+﻿using System;
 using System.Collections.Generic;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Input;
@@ -17,36 +15,15 @@ namespace ProjectMagma.Simulation
     public class PlayerControllerProperty : Property
     {
         #region flags
-        private static readonly bool RightStickFlame = false;
-        private static readonly bool LeftStickSelection = true;
+        public static readonly bool RightStickFlame = false;
+        public static readonly bool LeftStickSelection = true;
         public static readonly bool ImuneToIslandPush = true;
         #endregion
-
-        #region button assignments
-        // eps for registering move
-        private static readonly float StickMovementEps = 0.1f;
-        
-        // gamepad buttons
-        private static readonly float HitButtonTimeout = 400;
-        private static readonly Buttons[] RepulsionButtons = { Buttons.LeftTrigger };
-        private static readonly Buttons[] jumpButtons = { Buttons.A };
-        private static readonly Buttons[] IceSpikeButtons = { Buttons.X };
-        private static readonly Buttons[] FlamethrowerButtons = { Buttons.Y };
-        private static readonly Buttons[] HitButtons = { Buttons.B };
-        private static readonly Buttons[] RunButtons = { Buttons.RightTrigger };
-
-        // keyboard keys
-        private static readonly Keys JetpackKey = Keys.Space;
-        private static readonly Keys IceSpikeKey = Keys.Q;
-        private static readonly Keys HitKey = Keys.E;
-        private static readonly Keys FlamethrowerKey = Keys.R;
-        private static readonly Keys RunKey = Keys.LeftControl;
-        #endregion
-
 
         private Entity player;
         private Entity constants;
         private LevelData templates;
+        private ControllerInput controllerInput;
 
         private PlayerIndex playerIndex;
 
@@ -56,8 +33,6 @@ namespace ProjectMagma.Simulation
         private Entity activeIsland = null;
 
         private readonly Random rand = new Random(DateTime.Now.Millisecond);
-        private bool doRespawnAnimation = false;
-        private bool abortSpawnAnimation = false;
         private double respawnStartedAt = 0;
         private Entity deathExplosion = null;
 
@@ -112,6 +87,10 @@ namespace ProjectMagma.Simulation
             this.constants = Game.Instance.Simulation.EntityManager["player_constants"];
             this.templates = Game.Instance.ContentManager.Load<LevelData>("Level/Common/DynamicTemplates");
             this.playerIndex = (PlayerIndex)player.GetInt("game_pad_index");
+            this.controllerInput = player.GetProperty<InputProperty>("input").ControllerInput;
+
+            player.AddBoolAttribute("isRespawning", false);
+            player.AddBoolAttribute("abortRespawning", false);
 
             player.AddQuaternionAttribute("rotation", Quaternion.Identity);
             player.AddVector3Attribute("velocity", Vector3.Zero);
@@ -199,12 +178,11 @@ namespace ProjectMagma.Simulation
         private void OnUpdate(Entity player, SimulationTime simTime)
         {
             if (Game.Instance.Simulation.Phase == SimulationPhase.Intro
-                || doRespawnAnimation)
+                || player.GetBool("isRespawning"))
             {
-                controllerInput.Update(playerIndex, simTime);
                 if (controllerInput.jumpButtonPressed)
                 {
-                    abortSpawnAnimation = true;
+                    player.SetBool("abortRespawning", true);
                 }
             }
 
@@ -231,7 +209,7 @@ namespace ProjectMagma.Simulation
             }
 
             if (Game.Instance.Simulation.Phase == SimulationPhase.Intro
-                || doRespawnAnimation)
+                || player.GetBool("isRespawning"))
             {
                 PerformSpawnMovement(player, simTime);
                 return;
@@ -285,17 +263,6 @@ namespace ProjectMagma.Simulation
 
             // reset some stuff
             previousPosition = playerPosition;
-
-            // get input
-            if (Game.Instance.Simulation.Phase == SimulationPhase.Game)
-            {
-                controllerInput.Update(playerIndex, simTime);
-            }
-            else
-            {
-                // don't take any new input events
-                controllerInput.Reset();
-            }
 
             #region movement
 
@@ -376,9 +343,7 @@ namespace ProjectMagma.Simulation
                 player.GetProperty<RobotRenderProperty>("render").NextOnceState = "hit";
                 Game.Instance.AudioPlayer.Play(Game.Instance.Simulation.SoundRegistry.MeleeNotHit);
             }
-           #if DEMO_MODE
-            player.SetInt("energy", 100);
-#endif
+
             Debug.Assert(!(selectedIsland == null) || !arrow.HasProperty("render"));
         }
 
@@ -462,13 +427,13 @@ namespace ProjectMagma.Simulation
             if (landedAt > 0)
             {
                 if (simTime.At > landedAt + 2500 // extract constant
-                    && (!player.GetBool("ready") || doRespawnAnimation)) 
+                    && (!player.GetBool("ready") || player.GetBool("isRespawning"))) 
                 {
                     player.SetBool("ready", true);
                     Game.Instance.Simulation.EntityManager.RemoveDeferred(spawnLight);
                     spawnLight = null;
-                    doRespawnAnimation = false;
-                    abortSpawnAnimation = true;
+                    player.SetBool("isRespawning", false);
+                    player.SetBool("abortRespawning", true);
                 }
                 else
                     if (simTime.At > landedAt + 1000
@@ -486,8 +451,8 @@ namespace ProjectMagma.Simulation
             Vector3 surfacePos;
             if (Simulation.GetPositionOnSurface(ref position, activeIsland, out surfacePos))
             {
-                if (position.Y < surfacePos.Y 
-                    || abortSpawnAnimation)
+                if (position.Y < surfacePos.Y
+                    || player.GetBool("abortRespawning"))
                 {
                     position = surfacePos;
 
@@ -1337,7 +1302,7 @@ namespace ProjectMagma.Simulation
                         // reset respawn timer
                         respawnStartedAt = 0;
                         landedAt = -1;
-                        doRespawnAnimation = true;
+                        player.SetBool("isRespawning", true);
 
                         // add light
                         AddSpawnLight(player);
@@ -1354,7 +1319,7 @@ namespace ProjectMagma.Simulation
 
         public void CheckPlayerAttributeRanges(Entity player)
         {
-            if (doRespawnAnimation)
+            if (player.GetBool("isRespawning"))
             {
                 // we cannot take damage on respawn
                 player.SetInt("health", constants.GetInt("max_health"));
@@ -2075,246 +2040,6 @@ namespace ProjectMagma.Simulation
                 return Quaternion.Identity;
             }
         }
-
-        class ControllerInput
-        {
-            private GamePadState oldGPState;
-            private KeyboardState oldKBState;
-
-            private GamePadState gamePadState;
-            private KeyboardState keyboardState;
-
-            public void Update(PlayerIndex playerIndex, SimulationTime simTime)
-            {
-                gamePadState = GamePad.GetState(playerIndex);
-                keyboardState = Keyboard.GetState(playerIndex);
-
-                #region joysticks
-
-                leftStickX = gamePadState.ThumbSticks.Left.X;
-                leftStickY = -gamePadState.ThumbSticks.Left.Y;
-                if (PlayerControllerProperty.LeftStickSelection)
-                {
-                    rightStickX = leftStickX;
-                    rightStickY = leftStickY;
-                }
-                else
-                {
-                    rightStickX = gamePadState.ThumbSticks.Right.X;
-                    rightStickY = -gamePadState.ThumbSticks.Right.Y;
-                }
-
-                flameStickX = gamePadState.ThumbSticks.Right.X;
-                flameStickY = -gamePadState.ThumbSticks.Right.Y;
-
-                dPadX = (gamePadState.DPad.Right == ButtonState.Pressed)? 1.0f : 0.0f
-                    - ((gamePadState.DPad.Left == ButtonState.Pressed) ? 1.0f : 0.0f);
-                dPadY = (gamePadState.DPad.Down == ButtonState.Pressed) ? 1.0f : 0.0f
-                    - ((gamePadState.DPad.Up == ButtonState.Pressed) ? 1.0f : 0.0f);
-                dPadPressed = dPadX != 0 || dPadY != 0;
-
-                /*
-                if (keyboardState.IsKeyDown(Keys.A))
-                {
-                    leftStickX = gamepadEmulationValue;
-                }
-                else
-                    if (keyboardState.IsKeyDown(Keys.D))
-                    {
-                        leftStickX = -gamepadEmulationValue;
-                    }
-
-                if (keyboardState.IsKeyDown(Keys.W))
-                {
-                    leftStickY = gamepadEmulationValue;
-                }
-                else
-                    if (keyboardState.IsKeyDown(Keys.S))
-                    {
-                        leftStickY = -gamepadEmulationValue;
-                    }
-
-                if (keyboardState.IsKeyDown(Keys.Left))
-                {
-                    rightStickX = gamepadEmulationValue;
-                }
-                else
-                    if (keyboardState.IsKeyDown(Keys.Right))
-                    {
-                        rightStickX = -gamepadEmulationValue;
-                    }
-
-                if (keyboardState.IsKeyDown(Keys.Up))
-                {
-                    rightStickY = -gamepadEmulationValue;
-                }
-                else
-                    if (keyboardState.IsKeyDown(Keys.Down))
-                    {
-                        rightStickY = gamepadEmulationValue;
-                    }
-                */
-
-                moveStickMoved = leftStickX > StickMovementEps || leftStickX < -StickMovementEps
-                    || leftStickY > StickMovementEps || leftStickY < -StickMovementEps;
-                rightStickMoved = rightStickX > StickMovementEps || rightStickX < -StickMovementEps
-                    || rightStickY > StickMovementEps || rightStickY < -StickMovementEps;
-                flameStickMoved = flameStickX > StickMovementEps || flameStickX < -StickMovementEps
-                    || flameStickY > StickMovementEps || flameStickY < -StickMovementEps;
-
-                #endregion
-
-                #region action buttons
-
-                SetStates(RepulsionButtons, JetpackKey, out repulsionButtonPressed, out repulsionButtonHold, out repulsionButtonReleased);
-                SetStates(jumpButtons, JetpackKey, out jumpButtonPressed, out jumpButtonHold, out jumpButtonReleased);
-                SetStates(IceSpikeButtons, IceSpikeKey, out iceSpikeButtonPressed, out iceSpikeButtonHold, out iceSpikeButtonReleased);
-                SetStates(HitButtons, HitKey, out hitButtonPressed, out hitButtonHold, out hitButtonReleased);
-                SetStates(FlamethrowerButtons, FlamethrowerKey, out flamethrowerButtonPressed, out flamethrowerButtonHold, out flamethrowerButtonReleased);
-                SetStates(RunButtons, RunKey, out runButtonPressed, out runButtonHold, out runButtonReleased);
-
-                #endregion
-
-                #if DEMO_MODE
-                Random rand = new Random();
-                if (simTime.At < iceSpikeShotAt + 2000 + rand.Next(500))
-                {
-                    iceSpikeButtonPressed = true;
-                    iceSpikeShotAt = simTime.At;
-                }
-                if (simTime.At < flameThrowerActivatedAt + 200 + rand.Next(100))
-                {
-                    flamethrowerButtonHold = true;
-                    flameThrowerActivatedAt = simTime.At;
-                }
-                if (simTime.At < jumpButtonPressedAt + 1000 + rand.Next(1000))
-                {
-                    jumpButtonPressed = true;
-                    jumpButtonPressedAt = simTime.At;
-                }
-                moveStickMoved = true;
-                leftStickX = (float) rand.NextDouble();
-                leftStickY = (float) rand.NextDouble();
-                #endif
-
-                if (hitButtonPressed)
-                {
-                    // filter pressed events
-                    if (simTime.At < hitButtonPressedAt + HitButtonTimeout)
-                    {
-                        hitButtonPressed = false;
-                    }
-                    else
-                    {
-                        hitButtonPressedAt = simTime.At;
-                    }
-                }
-
-                oldGPState = gamePadState;
-                oldKBState = keyboardState;
-            }
-
-            private void SetStates(Buttons[] buttons, Keys key,
-                out bool pressedIndicator,
-                out bool holdIndicator,
-                out bool releasedIndicator)
-            {
-                pressedIndicator = false;
-                releasedIndicator = false;
-                holdIndicator = false;
-
-                for (int i = 0; i < buttons.Length; i++)
-                {
-                    pressedIndicator |= GetPressed(buttons[i]);
-                    releasedIndicator |= GetReleased(buttons[i]);
-                    holdIndicator |= GetHold(buttons[i]);
-                }
-
-                pressedIndicator |= GetPressed(key);
-                releasedIndicator |= GetReleased(key);
-                holdIndicator |= GetHold(key);
-            }
-
-            private bool GetPressed(Buttons button)
-            {
-                return gamePadState.IsButtonDown(button)
-                    && oldGPState.IsButtonUp(button);
-            }
-
-            private bool GetReleased(Buttons button)
-            {
-                return gamePadState.IsButtonUp(button)
-                    && oldGPState.IsButtonDown(button);
-            }
-
-            private bool GetHold(Buttons button)
-            {
-                return gamePadState.IsButtonDown(button)
-                    && oldGPState.IsButtonDown(button);
-            }
-
-            private bool GetPressed(Keys key)
-            {
-                return keyboardState.IsKeyDown(key)
-                    && oldKBState.IsKeyUp(key);
-            }
-
-            private bool GetReleased(Keys key)
-            {
-                return keyboardState.IsKeyUp(key)
-                    && oldKBState.IsKeyDown(key);
-            }
-
-            private bool GetHold(Keys key)
-            {
-                return keyboardState.IsKeyDown(key)
-                    && oldKBState.IsKeyDown(key);
-            }
-
-            public void Reset()
-            {
-                leftStickX = leftStickY = 0;
-                rightStickX = rightStickY = 0;
-                flameStickX = flameStickY = 0;
-                dPadX = dPadY = 0;
-
-                moveStickMoved = flameStickMoved = dPadPressed = false;
-                runButtonPressed = repulsionButtonPressed = jumpButtonPressed = flamethrowerButtonPressed = iceSpikeButtonPressed = hitButtonPressed = false;
-                runButtonReleased = repulsionButtonReleased = jumpButtonReleased = flamethrowerButtonReleased = iceSpikeButtonReleased = hitButtonReleased = false;
-                runButtonHold = repulsionButtonHold = jumpButtonHold = flamethrowerButtonHold = iceSpikeButtonHold = hitButtonHold = false;
-            }
-
-           
-            // joystick
-            public float leftStickX, leftStickY;
-            public bool moveStickMoved;
-            public float rightStickX, rightStickY;
-            public bool rightStickMoved;
-            public float flameStickX, flameStickY;
-            public bool flameStickMoved;
-            public bool dPadPressed;
-            public float dPadX, dPadY;
-
-            // buttons
-            public bool runButtonPressed, repulsionButtonPressed, jumpButtonPressed, flamethrowerButtonPressed, 
-                iceSpikeButtonPressed, hitButtonPressed;
-            public bool runButtonReleased, repulsionButtonReleased, jumpButtonReleased, flamethrowerButtonReleased, 
-                iceSpikeButtonReleased, hitButtonReleased;
-            public bool runButtonHold, repulsionButtonHold, jumpButtonHold, flamethrowerButtonHold, 
-                iceSpikeButtonHold, hitButtonHold;
-
-            // times
-            public float hitButtonPressedAt = float.NegativeInfinity;
-
-#if DEMO_MODE
-            public float iceSpikeShotAt, flameThrowerActivatedAt, jumpButtonPressedAt = float.NegativeInfinity;
-#endif
-            //private static float gamepadEmulationValue = -1f;
-        }
-
-        private readonly ControllerInput controllerInput = new ControllerInput();
     }
-
-
 }
 

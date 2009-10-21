@@ -219,6 +219,9 @@
     <Compile Include="Simulation\Properties\Player\DeathProperty.cs" />
     <Compile Include="Simulation\Properties\Player\FlamethrowerControllerProperty.cs" />
     <Compile Include="Simulation\Properties\Player\IceSpikeControllerProperty.cs" />
+    <Compile Include="Simulation\Properties\Player\Input\GamepadInputProperty.cs" />
+    <Compile Include="Simulation\Properties\Player\Input\InputProperty.cs" />
+    <Compile Include="Simulation\Properties\Player\Input\RandomInputProperty.cs" />
     <Compile Include="Simulation\Properties\Player\PlayerControllerProperty.cs" />
     <Compile Include="Simulation\Properties\Player\RespawnLightControllerProperty.cs" />
     <Compile Include="Simulation\Properties\Rendering\ArrowRenderProperty.cs" />

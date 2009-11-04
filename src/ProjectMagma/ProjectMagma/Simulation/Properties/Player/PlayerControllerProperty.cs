@@ -12,20 +12,13 @@ using ProjectMagma.Shared.LevelData;
 
 namespace ProjectMagma.Simulation
 {
-    public class PlayerControllerProperty : Property
+    public class PlayerControllerProperty : PlayerBaseProperty
     {
         #region flags
         public static readonly bool RightStickFlame = false;
         public static readonly bool LeftStickSelection = true;
         public static readonly bool ImuneToIslandPush = true;
         #endregion
-
-        private Entity player;
-        private Entity constants;
-        private LevelData templates;
-        private ControllerInput controllerInput;
-
-        private PlayerIndex playerIndex;
 
         private float landedAt = -1;
         private bool won = false;
@@ -56,8 +49,6 @@ namespace ProjectMagma.Simulation
         private Vector3 lastIslandDir = Vector3.Zero;
         private float islandJumpPerformedAt = 0;
 
-        private float vibrationStartedAt = 0;
-
         private Entity simpleJumpIsland = null;
 
         private bool repulsionActive = false;
@@ -79,18 +70,14 @@ namespace ProjectMagma.Simulation
         {
         }
 
-        public void OnAttached(AbstractEntity player)
+        public override void OnAttached(AbstractEntity player)
         {
-            (player as Entity).Update += OnUpdate;
-
-            this.player = player as Entity;
-            this.constants = Game.Instance.Simulation.EntityManager["player_constants"];
-            this.templates = Game.Instance.ContentManager.Load<LevelData>("Level/Common/DynamicTemplates");
-            this.playerIndex = (PlayerIndex)player.GetInt("game_pad_index");
-            this.controllerInput = player.GetProperty<InputProperty>("input").ControllerInput;
+            base.OnAttached(player);
 
             player.AddBoolAttribute("isRespawning", false);
             player.AddBoolAttribute("abortRespawning", false);
+
+            player.AddFloatAttribute("vibrateStartetAt", 0);
 
             player.AddQuaternionAttribute("rotation", Quaternion.Identity);
             player.AddVector3Attribute("velocity", Vector3.Zero);
@@ -132,28 +119,9 @@ namespace ProjectMagma.Simulation
             this.previousPosition = player.GetVector3("position");
         }
 
-        private void AddSpawnLight(AbstractEntity player)
+        public override void OnDetached(AbstractEntity player)
         {
-            spawnLight = new Entity("spawn_light_" + player.Name);
-            spawnLight.AddStringAttribute("player", player.Name);
-            spawnLight.AddStringAttribute("island", activeIsland.Name);
-
-            Vector3 position = player.GetVector3("position");
-            Vector3 surfacePos;
-            Simulation.GetPositionOnSurface(ref position, activeIsland, out surfacePos);
-            spawnLight.AddVector3Attribute("position", surfacePos);
-
-            Game.Instance.Simulation.EntityManager.AddDeferred(spawnLight, "spawn_light_base", templates);
-
-            // and sound
-            Game.Instance.AudioPlayer.Play(Game.Instance.Simulation.SoundRegistry.Respawn);
-        }
-
-        public void OnDetached(AbstractEntity player)
-        {
-            GamePad.SetVibration(playerIndex, 0, 0);
-
-            (player as Entity).Update -= OnUpdate;
+            base.OnDetached(player);
 
             if (arrow != null && Game.Instance.Simulation.EntityManager.ContainsEntity(arrow))
             {
@@ -175,17 +143,25 @@ namespace ProjectMagma.Simulation
             }
         }
 
-        private void OnUpdate(Entity player, SimulationTime simTime)
+        private void AddSpawnLight(AbstractEntity player)
         {
-            if (Game.Instance.Simulation.Phase == SimulationPhase.Intro
-                || player.GetBool("isRespawning"))
-            {
-                if (controllerInput.jumpButtonPressed)
-                {
-                    player.SetBool("abortRespawning", true);
-                }
-            }
+            spawnLight = new Entity("spawn_light_" + player.Name);
+            spawnLight.AddStringAttribute("player", player.Name);
+            spawnLight.AddStringAttribute("island", activeIsland.Name);
 
+            Vector3 position = player.GetVector3("position");
+            Vector3 surfacePos;
+            Simulation.GetPositionOnSurface(ref position, activeIsland, out surfacePos);
+            spawnLight.AddVector3Attribute("position", surfacePos);
+
+            Game.Instance.Simulation.EntityManager.AddDeferred(spawnLight, "spawn_light_base", templates);
+
+            // and sound
+            Game.Instance.AudioPlayer.Play(Game.Instance.Simulation.SoundRegistry.Respawn);
+        }
+
+        protected override void OnRespawn(Entity player, SimulationTime simTime)
+        {
             if (Game.Instance.Simulation.Phase == SimulationPhase.Intro)
             {
                 // wait for preciding player to be ready
@@ -208,13 +184,16 @@ namespace ProjectMagma.Simulation
                 }
             }
 
-            if (Game.Instance.Simulation.Phase == SimulationPhase.Intro
-                || player.GetBool("isRespawning"))
-            {
-                PerformSpawnMovement(player, simTime);
-                return;
-            }
+            PerformSpawnMovement(player, simTime);
 
+            if (controllerInput.jumpButtonPressed)
+            {
+                player.SetBool("abortRespawning", true);
+            }
+        }
+
+        protected override void OnPlaying(Entity player, SimulationTime simTime)
+        {
             float dt = simTime.Dt;
             float at = simTime.At;
 
@@ -222,11 +201,6 @@ namespace ProjectMagma.Simulation
             {
                 // don't execute any other code as long as player is dead
                 return;
-            }
-
-            if (simTime.At > vibrationStartedAt + 330) // todo: extract constant
-            {
-                GamePad.SetVibration(playerIndex, 0, 0);
             }
 
             #region collision reaction
@@ -328,8 +302,6 @@ namespace ProjectMagma.Simulation
             player.SetVector3("velocity", playerVelocity);
             player.SetVector3("collision_pushback_velocity", collisionPushbackVelocity);
             player.SetVector3("hit_pushback_velocity", hitPushbackVelocity);
-
-            CheckPlayerAttributeRanges(player);
 
             // check collision with lava
             if (playerPosition.Y <= 0) // todo: extract constant?
@@ -786,8 +758,7 @@ namespace ProjectMagma.Simulation
                     if (player.GetInt("energy") > constants.GetInt("flamethrower_warmup_energy_cost"))
                     {
                         // indicate 
-                        flameThrowerSoundInstance = Game.Instance.AudioPlayer.Play(
-                            Game.Instance.Simulation.SoundRegistry.FlameThrowerLoop);
+                        flameThrowerSoundInstance = Game.Instance.AudioPlayer.Play(Game.Instance.Simulation.SoundRegistry.FlameThrowerLoop, true);
 
                         Vector3 pos = playerPosition + constants.GetVector3("flamethrower_offset");
                         Vector3 viewVector = Vector3.Transform(new Vector3(0, 0, 1), GetRotation(player));
@@ -1192,7 +1163,7 @@ namespace ProjectMagma.Simulation
                 {
                     respawnStartedAt = at;
 
-                    GamePad.SetVibration(playerIndex, 0, 0);
+                    ResetVibration();
 
                     if (jetpackSoundInstance != null)
                         Game.Instance.AudioPlayer.Stop(jetpackSoundInstance);
@@ -1660,14 +1631,13 @@ namespace ProjectMagma.Simulation
                 if (oldValue - newValue >= constants.GetInt("ice_spike_damage"))
                 {
                     player.GetProperty<RobotRenderProperty>("render").NextOnceState = "hurt_hard";
-                    GamePad.SetVibration(playerIndex, 1f, 1f);
+                    Vibrate(1f, 1f);
                 }
                 else
                 {
                     player.GetProperty<RobotRenderProperty>("render").NextOnceState = "hurt_soft";
-                    GamePad.SetVibration(playerIndex, 0.5f, 0.5f);
+                    Vibrate(0.5f, 0.5f);
                 }
-                vibrationStartedAt = Game.Instance.Simulation.Time.At;
             }
         }
 

@@ -40,7 +40,7 @@
     <DebugType>full</DebugType>
     <Optimize>false</Optimize>
     <OutputPath>bin\x86\Debug\</OutputPath>
-    <DefineConstants>TRACE;DEBUG;WINDOWS;PROFILING</DefineConstants>
+    <DefineConstants>TRACE;DEBUG;WINDOWS</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
     <NoStdLib>true</NoStdLib>
@@ -237,8 +237,9 @@
     <Compile Include="Simulation\Properties\Environment\PowerUpControllerHealth.cs" />
     <Compile Include="Simulation\Properties\Environment\ExplosionControllerProperty.cs" />
     <Compile Include="Simulation\Properties\Player\BurnableProperty.cs" />
-    <Compile Include="Simulation\Properties\Player\Input\GamepadInputProperty.cs" />
+    <Compile Include="Simulation\Properties\Player\PlayerBaseProperty.cs" />
     <Compile Include="Simulation\Properties\Player\Input\InputProperty.cs" />
+    <Compile Include="Simulation\Properties\Player\Input\GamePadInputProperty.cs" />
     <Compile Include="Simulation\Properties\Player\Input\RandomInputProperty.cs" />
     <Compile Include="Simulation\Properties\Player\RespawnLightControllerProperty.cs" />
     <Compile Include="Simulation\Properties\Player\DeathProperty.cs" />

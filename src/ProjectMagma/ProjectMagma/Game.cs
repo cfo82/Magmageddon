@@ -62,7 +62,7 @@ namespace ProjectMagma
         private static Game instance;
 
         StorageDevice device;
-        bool storageAvailable = true;
+        bool storageAvailable = false;
         IAsyncResult storageSelectionResult;
 
         // framecounter
@@ -123,6 +123,12 @@ namespace ProjectMagma
             }
 
             Game.instance = null;
+        }
+
+        protected override void OnExiting(object sender, EventArgs args)
+        {
+            SaveSettings();
+            base.OnExiting(sender, args);
         }
 
         /// <summary>
@@ -253,7 +259,7 @@ namespace ProjectMagma
             //MediaPlayer.Play(Game.Instance.ContentManager.Load<Song>("Music/background_janick"));
 
             // get storage device
-//            storageSelectionResult = Guide.BeginShowStorageDeviceSelector(PlayerIndex.One, null, null);
+            storageSelectionResult = Guide.BeginShowStorageDeviceSelector(PlayerIndex.One, null, null);
 
             // open menu
 #if !DEBUG && !PROFILE && !TEST_RELEASE
@@ -449,14 +455,12 @@ namespace ProjectMagma
             {
 #endif
                 // get storage device as soon as selected
-            /*
                 if (!storageAvailable && storageSelectionResult.IsCompleted)
                 {
                     device = Guide.EndShowStorageDeviceSelector(storageSelectionResult);
                     storageAvailable = true;
                     LoadSettings();
                 }
-             */
 
                 profiler.TryEndFrame();
                 profiler.BeginFrame();
@@ -609,12 +613,11 @@ namespace ProjectMagma
 
         public void SaveSettings()
         {
-            /*
             // Open a storage container.StorageContainer container =
             StorageContainer container = device.OpenContainer(Window.Title);
 
             // Get the path of the save game.
-            string filename = Path.Combine(container.Path, "settings.sav");
+            string filename = Path.Combine(container.Path, "settings.xml");
 
             // Open the file, creating it if necessary.
             using (FileStream stream = File.Open(filename, FileMode.Create))
@@ -624,18 +627,16 @@ namespace ProjectMagma
             }
 
             // Dispose the container, to commit changes.
-            container.Dispose();*/
+            container.Dispose();
         }
 
         public void LoadSettings()
         {
-            return; 
-
-            /*// Open a storage container.StorageContainer container =
+            // Open a storage container.StorageContainer container =
             StorageContainer container = device.OpenContainer(Window.Title);
 
             // Get the path of the save game.
-            string filename = Path.Combine(container.Path, "settings.sav");
+            string filename = Path.Combine(container.Path, "settings.xml");
 
             // Open the file, creating it if necessary.
             if (File.Exists(filename))
@@ -648,7 +649,7 @@ namespace ProjectMagma
             }
 
             // Dispose the container, to commit changes.
-            container.Dispose();*/
+            container.Dispose();
         }
 
         public class Settings

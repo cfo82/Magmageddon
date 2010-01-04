@@ -72,13 +72,13 @@ namespace ProjectMagma.Simulation
                     flame.SetVector3("scale", flame.GetVector3("full_scale") * ((float)((at - flameThrowerStateChangedAt) / warmupTime)));
                     if (at >= flameThrowerStateChangedAt + flameThrowerWarmupDeducted * (warmupTime / warmupCost))
                     {
-                        player.SetInt("energy", player.GetInt("energy") - 1);
+                        player.SetFloat("energy", player.GetFloat("energy") - 1);
                         flameThrowerWarmupDeducted++;
                     }
                 }
                 else
                 {
-                    player.SetInt("energy", player.GetInt("energy") - (warmupCost-flameThrowerWarmupDeducted));
+                    player.SetFloat("energy", player.GetFloat("energy") - (warmupCost-flameThrowerWarmupDeducted));
                     flameThrowerState = FlameThrowerState.Active;
                     flameThrowerStateChangedAt = at;
                 }
@@ -86,8 +86,9 @@ namespace ProjectMagma.Simulation
             else
             if(flameThrowerState == FlameThrowerState.Active)
             {
-                Game.Instance.Simulation.ApplyPerSecondSubstraction(flame, "energy_deducation", constants.GetInt("flamethrower_energy_per_second"),
-                    player.GetIntAttribute("energy"));
+                //Game.Instance.Simulation.ApplyPerSecondSubstraction(flame, "energy_deducation", constants.GetInt("flamethrower_energy_per_second"),
+                //    player.GetFloatAttribute("energy"));
+                player.SetFloat("energy", player.GetFloat("energy") - Game.Instance.Simulation.Time.Dt * constants.GetFloat("flamethrower_energy_per_second"));
             }
             // else cooldown -> do nothing
 

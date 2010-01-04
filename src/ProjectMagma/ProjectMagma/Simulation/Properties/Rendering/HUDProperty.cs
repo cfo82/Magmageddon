@@ -43,13 +43,13 @@ namespace ProjectMagma.Simulation
             {
                 playerConstants.GetIntAttribute("max_health").ValueChanged += MaxHealthChanged;
             }
-            if (entity.HasInt("energy"))
+            if (entity.HasFloat("energy"))
             {
-                entity.GetIntAttribute("energy").ValueChanged += EnergyChanged;
+                entity.GetFloatAttribute("energy").ValueChanged += EnergyChanged;
             }
-            if (playerConstants.HasInt("max_energy"))
+            if (playerConstants.HasFloat("max_energy"))
             {
-                playerConstants.GetIntAttribute("max_energy").ValueChanged += MaxEnergyChanged;
+                playerConstants.GetFloatAttribute("max_energy").ValueChanged += MaxEnergyChanged;
             }
             if (entity.HasInt("frozen"))
             {
@@ -68,7 +68,7 @@ namespace ProjectMagma.Simulation
                 0,
                 entity.GetString("player_name"), entity.GetInt("game_pad_index"),
                 entity.GetInt("health"), playerConstants.GetInt("max_health"),
-                entity.GetInt("energy"), playerConstants.GetInt("max_energy"),
+                entity.GetFloat("energy"), playerConstants.GetFloat("max_energy"),
                 entity.GetInt("lives"), entity.GetInt("frozen"),
                 entity.GetVector3("color1"), entity.GetVector3("color2")
             );
@@ -106,13 +106,13 @@ namespace ProjectMagma.Simulation
             {
                 playerConstants.GetIntAttribute("max_health").ValueChanged -= MaxHealthChanged;
             }
-            if (entity.HasInt("energy"))
+            if (entity.HasFloat("energy"))
             {
-                entity.GetIntAttribute("energy").ValueChanged -= EnergyChanged;
+                entity.GetFloatAttribute("energy").ValueChanged -= EnergyChanged;
             }
-            if (playerConstants != null && playerConstants.HasInt("max_energy"))
+            if (playerConstants != null && playerConstants.HasFloat("max_energy"))
             {
-                playerConstants.GetIntAttribute("max_energy").ValueChanged -= MaxEnergyChanged;
+                playerConstants.GetFloatAttribute("max_energy").ValueChanged -= MaxEnergyChanged;
             }
             if (entity.HasInt("frozen"))
             {
@@ -160,21 +160,21 @@ namespace ProjectMagma.Simulation
         }
 
         private void EnergyChanged(
-            IntAttribute sender,
-            int oldValue,
-            int newValue
+            FloatAttribute sender,
+            float oldValue,
+            float newValue
         )
         {
-            ChangeInt("Energy", newValue);
+            ChangeFloat("Energy", newValue);
         }
 
         private void MaxEnergyChanged(
-            IntAttribute sender,
-            int oldValue,
-            int newValue
+            FloatAttribute sender,
+            float oldValue,
+            float newValue
         )
         {
-            ChangeInt("MaxEnergy", newValue);
+            ChangeFloat("MaxEnergy", newValue);
         }
 
         private void MaxFuelChanged(

@@ -14,7 +14,7 @@ namespace ProjectMagma.Renderer
         public HUDRenderable(
             int renderPriority,
             string playerName, int gamePadIndex,                     // player identification
-            int health, int maxHealth, int energy, int maxEnergy,    // displayed in bars
+            int health, int maxHealth, float energy, float maxEnergy,    // displayed in bars
             int lives, int frozen,                                   // displayed as text
             Vector3 color1, Vector3 color2                           // player color specifices
         )
@@ -88,14 +88,6 @@ namespace ProjectMagma.Renderer
             {
                 maxHealth = value;
             }
-            else if (id == "Energy")
-            {
-                energy = value;
-            }
-            else if (id == "MaxEnergy")
-            {
-                maxEnergy = value;
-            }
             else if (id == "Frozen")
             {
                 frozen = value;
@@ -141,6 +133,14 @@ namespace ProjectMagma.Renderer
             if (id == "RepulsionSeconds")
             {
                 repulsion_seconds = value;
+            }
+            else if (id == "Energy")
+            {
+                energy = value;
+            }
+            else if (id == "MaxEnergy")
+            {
+                maxEnergy = value;
             }
         }
 
@@ -405,8 +405,8 @@ namespace ProjectMagma.Renderer
         private int gamePadIndex;
         private int health;
         private int maxHealth;
-        private int energy;
-        private int maxEnergy;
+        private float energy;
+        private float maxEnergy;
         private int frozen; // remaining time in milliseconds
         private int jumps;
         private int lives;

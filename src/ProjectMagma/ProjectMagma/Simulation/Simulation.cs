@@ -336,20 +336,8 @@ namespace ProjectMagma.Simulation
 
         public void ApplyPerSecondAddition(Entity source, String identifier, int perSecond, IntAttribute attr)
         {
-            float interval = 1000f / perSecond;
+            float interval = 1000f / (float)perSecond;
             ApplyIntervalAddition(source, identifier, interval, attr);
-        }
-
-        public void ApplyPerSecondSubstractrion(Entity source, String identifier, int perSecond, ref int value)
-        {
-            float interval = 1000f / perSecond;
-            ApplyIntervalSubstraction(source, identifier, interval, ref value);
-        }
-
-        public void ApplyPerSecondSubstraction(Entity source, String identifier, int perSecond, IntAttribute attr)
-        {
-            float interval = 1000f / perSecond;
-            ApplyIntervalSubstraction(source, identifier, interval, attr);
         }
 
         public void ApplyIntervalAddition(Entity source, String identifier, float interval, IntAttribute attr)
@@ -364,6 +352,18 @@ namespace ProjectMagma.Simulation
             int val = value;
             ExecuteAtInterval(source, identifier, interval, delegate(int diff) { val += diff; });
             value = val;
+        }
+
+        public void ApplyPerSecondSubstractrion(Entity source, String identifier, int perSecond, ref int value)
+        {
+            float interval = 1000f / perSecond;
+            ApplyIntervalSubstraction(source, identifier, interval, ref value);
+        }
+
+        public void ApplyPerSecondSubstraction(Entity source, String identifier, int perSecond, IntAttribute attr)
+        {
+            float interval = 1000f / perSecond;
+            ApplyIntervalSubstraction(source, identifier, interval, attr);
         }
 
         public void ApplyIntervalSubstraction(Entity source, String identifier, float interval, IntAttribute attr)

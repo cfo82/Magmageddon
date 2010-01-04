@@ -292,18 +292,39 @@ namespace ProjectMagma.Renderer
                 renderable.Update(this);
             }
 
+            Game.Instance.Profiler.BeginSection("particle_systems");
+
+            Game.Instance.Profiler.BeginSection("explosion_system");
             if (explosionSystem != null)
                 { explosionSystem.Update(Time.Last / 1000d, Time.At / 1000d); }
+            Game.Instance.Profiler.EndSection("explosion_system");
+            
+            Game.Instance.Profiler.BeginSection("snow_system");
             if (snowSystem != null)
                 { snowSystem.Update(Time.Last/1000d, Time.At/1000d); }
+            Game.Instance.Profiler.EndSection("snow_system");
+            
+            Game.Instance.Profiler.BeginSection("ice_explosion_system");
             if (iceExplosionSystem != null)
                 { iceExplosionSystem.Update(Time.PausableLast / 1000d, Time.PausableAt / 1000d); }
+            Game.Instance.Profiler.EndSection("ice_explosion_system");
+            
+            Game.Instance.Profiler.BeginSection("fire_explosion_system");
             if (fireExplosionSystem != null)
                 { fireExplosionSystem.Update(Time.PausableLast / 1000d, Time.PausableAt / 1000d); }
+            Game.Instance.Profiler.EndSection("fire_explosion_system");
+            
+            Game.Instance.Profiler.BeginSection("flamethrower_system");
             if (flamethrowerSystem != null)
                 { flamethrowerSystem.Update(Time.PausableLast / 1000d, Time.PausableAt / 1000d); }
+            Game.Instance.Profiler.EndSection("flamethrower_system");
+            
+            Game.Instance.Profiler.BeginSection("ice_spike_system");
             if (iceSpikeSystem != null)
                 { iceSpikeSystem.Update(Time.PausableLast / 1000d, Time.PausableAt / 1000d); }
+            Game.Instance.Profiler.EndSection("ice_spike_system");
+            
+            Game.Instance.Profiler.EndSection("particle_systems");
         }
         
         public void Render()

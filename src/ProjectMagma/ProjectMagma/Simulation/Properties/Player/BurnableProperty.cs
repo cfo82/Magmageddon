@@ -23,8 +23,7 @@ namespace ProjectMagma.Simulation
             float burntAt = entity.GetFloat("burnt_at");
             if (simTime.At < burntAt + entity.GetInt("burn_time"))
             {
-                Game.Instance.Simulation.ApplyPerSecondSubstraction(entity, "flamethrower_burn", constants.GetInt("flamethrower_damage_per_second"),
-                    entity.GetIntAttribute("health"));
+                entity.SetFloat("health", entity.GetFloat("health") - simTime.Dt * constants.GetFloat("flamethrower_damage_per_second"));
                 if(entity.GetString("kind") == "player")
                 {
                     entity.SetInt("frozen", 0);

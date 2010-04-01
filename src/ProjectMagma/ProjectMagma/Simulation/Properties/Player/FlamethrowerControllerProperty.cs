@@ -86,8 +86,6 @@ namespace ProjectMagma.Simulation
             else
             if(flameThrowerState == FlameThrowerState.Active)
             {
-                //Game.Instance.Simulation.ApplyPerSecondSubstraction(flame, "energy_deducation", constants.GetInt("flamethrower_energy_per_second"),
-                //    player.GetFloatAttribute("energy"));
                 player.SetFloat("energy", player.GetFloat("energy") - Game.Instance.Simulation.Time.Dt * constants.GetFloat("flamethrower_energy_per_second"));
             }
             // else cooldown -> do nothing

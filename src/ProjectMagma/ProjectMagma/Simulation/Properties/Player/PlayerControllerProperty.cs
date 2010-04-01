@@ -88,10 +88,8 @@ namespace ProjectMagma.Simulation
             player.AddVector3Attribute("island_jump_velocity", Vector3.Zero);
 
             player.AddFloatAttribute("energy", constants.GetFloat("max_energy"));
-            player.AddIntAttribute("health", constants.GetInt("max_health"));
-            player.GetAttribute<IntAttribute>("health").ValueChanged += HealthChangeHandler;
-
-            player.AddIntAttribute("fuel", constants.GetInt("max_fuel"));
+            player.AddFloatAttribute("health", constants.GetFloat("max_health"));
+            player.GetAttribute<FloatAttribute>("health").ValueChanged += HealthChangeHandler;
 
             player.AddIntAttribute("jumps", 0);
             player.AddFloatAttribute("repulsion_seconds", 0);
@@ -135,7 +133,7 @@ namespace ProjectMagma.Simulation
 
             Game.Instance.Simulation.EntityManager.EntityRemoved -= EntityRemovedHandler;
 
-            player.GetAttribute<IntAttribute>("health").ValueChanged -= HealthChangeHandler;
+            player.GetAttribute<FloatAttribute>("health").ValueChanged -= HealthChangeHandler;
 
             if (player.HasProperty("collision"))
             {
@@ -283,7 +281,6 @@ namespace ProjectMagma.Simulation
             #region recharge
             // recharge energy
 
-            //Game.Instance.Simulation.ApplyPerSecondAddition(player, "energy_recharge", constants.GetInt("energy_recharge_per_second"), player.GetFloatAttribute("energy"));
             player.SetFloat("energy", player.GetFloat("energy") + simTime.Dt * constants.GetFloat("energy_recharge_per_second"));
 
             // count dow
@@ -694,8 +691,6 @@ namespace ProjectMagma.Simulation
                         activeIsland.SetVector3("repulsion_velocity", currentVelocity +
                             dir * constants.GetFloat("island_repulsion_acceleration") * simTime.Dt);
 
-                        /*Game.Instance.Simulation.ApplyPerSecondSubstraction(player, "repulsion_energy_cost",
-                            constants.GetInt("island_repulsion_energy_cost_per_second"), player.GetFloatAttribute("energy"));*/
                         player.SetFloat("energy", player.GetFloat("energy") - simTime.Dt * constants.GetFloat("island_repulsion_energy_cost_per_second"));
 
                         if (player.GetFloat("energy") <= 0)
@@ -936,8 +931,6 @@ namespace ProjectMagma.Simulation
                             // on island ground
                             if (controllerInput.runButtonHold)
                             {
-                                //Game.Instance.Simulation.ApplyPerSecondSubstraction(player, "running_energy_cost",
-                                //    constants.GetInt("running_energy_cost_per_second"), player.GetFloatAttribute("energy"));
                                 player.SetFloat("energy", player.GetFloat("energy") - Game.Instance.Simulation.Time.Dt * constants.GetFloat("running_energy_cost_per_second"));
 
                                 playerPosition.X += controllerInput.leftStickX * dt * constants.GetFloat("x_axis_run_multiplier")
@@ -1158,7 +1151,7 @@ namespace ProjectMagma.Simulation
         /// <returns>wheter the player is currently dead or not</returns>
         private bool CheckAndPerformDeath(Entity player, float at)
         {
-            if (player.GetInt("health") <= 0)
+            if (player.GetFloat("health") <= 0)
             {
                 if (respawnStartedAt == 0)
                 {
@@ -1247,8 +1240,7 @@ namespace ProjectMagma.Simulation
                         player.SetVector3("hit_pushback_velocity", Vector3.Zero);
 
                         player.SetFloat("energy", constants.GetFloat("max_energy"));
-                        player.SetInt("health", constants.GetInt("max_health"));
-                        player.SetInt("fuel", constants.GetInt("max_fuel"));
+                        player.SetFloat("health", constants.GetFloat("max_health"));
 
                         player.SetInt("frozen", 0);
 
@@ -1287,39 +1279,6 @@ namespace ProjectMagma.Simulation
 
             // not dead
             return false;
-        }
-
-        public void CheckPlayerAttributeRanges(Entity player)
-        {
-            if (player.GetBool("isRespawning"))
-            {
-                // we cannot take damage on respawn
-                player.SetInt("health", constants.GetInt("max_health"));
-                player.SetFloat("energy", constants.GetFloat("max_energy"));
-                player.SetInt("frozen", 0);
-                return;
-            }
-
-            int health = player.GetInt("health");
-            if(health < 0)
-                player.SetInt("health", 0);
-            else
-                if (health > constants.GetInt("max_health"))
-                    player.SetInt("health", constants.GetInt("max_health"));
-
-            float energy = player.GetFloat("energy");
-            if (energy < 0f)
-                player.SetFloat("energy", 0);
-            else
-                if (energy > constants.GetFloat("max_energy"))
-                    player.SetFloat("energy", constants.GetFloat("max_energy"));
-
-            int fuel = player.GetInt("fuel");
-            if (fuel < 0)
-                player.SetInt("fuel", 0);
-            else
-            if (fuel > constants.GetInt("max_fuel"))
-                player.SetInt("fuel", constants.GetInt("max_fuel"));
         }
 
         private Vector3 GetLandingPosition(Entity island)
@@ -1553,8 +1512,8 @@ namespace ProjectMagma.Simulation
                 // todo: extract constant
                 player.SetVector3("velocity", velocity - velocity * 0.9f * simTime.Dt * 25);
             }
-            Game.Instance.Simulation.ApplyPerSecondSubstraction(player, "lava_damage", constants.GetInt("lava_damage_per_second"),
-                player.GetIntAttribute("health"));
+
+            player.SetFloat("health", player.GetFloat("health") - simTime.Dt * constants.GetFloat("lava_damage_per_second"));
         }
 
         private void PlayerPlayerCollisionHandler(SimulationTime simTime, Entity player, Entity otherPlayer, Contact c)
@@ -1573,7 +1532,7 @@ namespace ProjectMagma.Simulation
                 Game.Instance.AudioPlayer.Play(Game.Instance.Simulation.SoundRegistry.MeleeHit);
 
                 // deduct health
-                otherPlayer.SetInt("health", otherPlayer.GetInt("health") - constants.GetInt("hit_damage"));
+                otherPlayer.SetFloat("health", otherPlayer.GetFloat("health") - constants.GetFloat("hit_damage"));
                 CheckPlayerAttributeRanges(otherPlayer);
 
                 // set values
@@ -1622,14 +1581,14 @@ namespace ProjectMagma.Simulation
             player.SetVector3("position", position);
         }
 
-        private void HealthChangeHandler(IntAttribute sender, int oldValue, int newValue)
+        private void HealthChangeHandler(FloatAttribute sender, float oldValue, float newValue)
         {
             if (newValue < oldValue
-                && oldValue <= constants.GetInt("max_health")
+                && oldValue <= constants.GetFloat("max_health")
                 && oldValue > 0) // and not dead yet
             {
                 // damage taken
-                if (oldValue - newValue >= constants.GetInt("ice_spike_damage"))
+                if (oldValue - newValue >= constants.GetFloat("ice_spike_damage"))
                 {
                     player.GetProperty<RobotRenderProperty>("render").NextOnceState = "hurt_hard";
                     Vibrate(1f, 1f);

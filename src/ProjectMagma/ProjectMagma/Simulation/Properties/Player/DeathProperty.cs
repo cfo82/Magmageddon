@@ -19,7 +19,7 @@ namespace ProjectMagma.Simulation
 
         private void OnUpdate(Entity entity, SimulationTime simTime)
         {
-            if (entity.GetInt("health") <= 0)
+            if (entity.GetFloat("health") <= 0)
             {
                 Game.Instance.Simulation.EntityManager.RemoveDeferred(entity);
                 return;

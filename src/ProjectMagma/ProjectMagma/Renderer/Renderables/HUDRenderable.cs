@@ -14,7 +14,7 @@ namespace ProjectMagma.Renderer
         public HUDRenderable(
             int renderPriority,
             string playerName, int gamePadIndex,                     // player identification
-            int health, int maxHealth, float energy, float maxEnergy,    // displayed in bars
+            float health, float maxHealth, float energy, float maxEnergy,    // displayed in bars
             int lives, int frozen,                                   // displayed as text
             Vector3 color1, Vector3 color2                           // player color specifices
         )
@@ -80,14 +80,6 @@ namespace ProjectMagma.Renderer
             {
                 gamePadIndex = value;
             }
-            else if (id == "Health")
-            {
-                health = value;
-            }
-            else if (id == "MaxHealth")
-            {
-                maxHealth = value;
-            }
             else if (id == "Frozen")
             {
                 frozen = value;
@@ -142,6 +134,14 @@ namespace ProjectMagma.Renderer
             {
                 maxEnergy = value;
             }
+            else if (id == "Health")
+            {
+                health = value;
+            }
+            else if (id == "MaxHealth")
+            {
+                maxHealth = value;
+            }
         }
 
         public override void UpdateBool(string id, double timestamp, bool value)
@@ -179,8 +179,8 @@ namespace ProjectMagma.Renderer
         private void UpdateDisplayedValues(Renderer renderer)
         {
             const float c = 0.15f;
-            displayedHealth = MathHelper.Lerp(displayedHealth, (float)health, c);
-            displayedEnergy = MathHelper.Lerp(displayedEnergy, (float)energy, c);
+            displayedHealth = MathHelper.Lerp(displayedHealth, health, c);
+            displayedEnergy = MathHelper.Lerp(displayedEnergy, energy, c);
             if (displayedHealth - health > 0.01)
                 healthBlink = !healthBlink;
             else
@@ -403,8 +403,8 @@ namespace ProjectMagma.Renderer
 
         private string playerName;
         private int gamePadIndex;
-        private int health;
-        private int maxHealth;
+        private float health;
+        private float maxHealth;
         private float energy;
         private float maxEnergy;
         private int frozen; // remaining time in milliseconds

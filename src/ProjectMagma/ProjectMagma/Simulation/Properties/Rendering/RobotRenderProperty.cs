@@ -36,9 +36,9 @@ namespace ProjectMagma.Simulation
         {
             base.OnAttached(entity);
 
-            if (entity.HasInt("health"))
+            if (entity.HasFloat("health"))
             {
-                entity.GetIntAttribute("health").ValueChanged += HealthChanged;
+                entity.GetFloatAttribute("health").ValueChanged += HealthChanged;
             }
             if (entity.HasInt("frozen"))
             {
@@ -50,9 +50,9 @@ namespace ProjectMagma.Simulation
         {
             base.OnDetached(entity);
 
-            if (entity.HasInt("health"))
+            if (entity.HasFloat("health"))
             {
-                entity.GetIntAttribute("health").ValueChanged -= HealthChanged;
+                entity.GetFloatAttribute("health").ValueChanged -= HealthChanged;
             }
             if (entity.HasInt("frozen"))
             {
@@ -85,9 +85,9 @@ namespace ProjectMagma.Simulation
         }
 
         private void HealthChanged(
-            IntAttribute sender,
-            int oldValue,
-            int newValue
+            FloatAttribute sender,
+            float oldValue,
+            float newValue
         )
         {
             if(oldValue > newValue && newValue < 100) // hack, this should be maxhealth but where do i get it?

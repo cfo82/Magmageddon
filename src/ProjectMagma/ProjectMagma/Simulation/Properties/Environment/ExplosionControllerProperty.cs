@@ -51,7 +51,7 @@ namespace ProjectMagma.Simulation
                 // apply damage to player
                 if (explosion.HasAttribute("damage"))
                 {
-                    other.SetInt("health", other.GetInt("health") - explosion.GetInt("damage"));
+                    other.SetFloat("health", other.GetFloat("health") - explosion.GetFloat("damage"));
                 }
                 if(explosion.HasAttribute("freeze_time"))
                 {

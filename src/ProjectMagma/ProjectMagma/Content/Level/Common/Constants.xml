@@ -16,15 +16,14 @@
       <Attribute name="respawn_time" template="int" value="1000"/>
       <Attribute name="respawn_min_distance_to_players" template="float" value="150"/>
 
-      <Attribute name="max_health" template="int" value="100"/>
+      <Attribute name="max_health" template="float" value="100"/>
       <Attribute name="max_energy" template="float" value="100"/>
-      <Attribute name="max_fuel" template="int" value="2500"/>
 
       <Attribute name="arrow_island_min_distance_factor" template="float" value="0.2"/>
       <Attribute name="arrow_island_max_distance_factor" template="float" value="0.90"/>
       <Attribute name="arrows_per_second" template="float" value="2.2"/>
 
-      <Attribute name="lava_damage_per_second" template="int" value="100"/>
+      <Attribute name="lava_damage_per_second" template="float" value="100"/>
       <!--Attribute name="energy_recharge_per_second" template="float" value="8"/-->
       <Attribute name="energy_recharge_per_second" template="float" value="200000"/>
 
@@ -37,7 +36,7 @@
       
       <Attribute name="ice_spike_aim_angle" template="float" value="60"/>
       <Attribute name="ice_spike_energy_cost" template="int" value="35"/>
-      <Attribute name="ice_spike_damage" template="int" value="25"/>
+      <Attribute name="ice_spike_damage" template="float" value="25"/>
       <Attribute name="ice_spike_freeze_time" template="int" value="2000"/>
       <Attribute name="ice_spike_cooldown" template="int" value="1200"/>
       <Attribute name="ice_spike_rising_time" template="int" value="500"/>
@@ -64,7 +63,7 @@
       <Attribute name="flamethrower_after_burn_time" template="int" value="300"/>
       <Attribute name="flamethrower_offset" template="float3" value="-12 45 -20"/>
 
-      <Attribute name="hit_damage" template="int" value="20"/>
+      <Attribute name="hit_damage" template="float" value="20"/>
       <Attribute name="hit_cooldown" template="int" value="250"/>
       <Attribute name="hit_pushback_velocity_multiplier" template="float3" value="500 200 500"/>
       <Attribute name="player_pushback_deacceleration" template="float" value="600"/>

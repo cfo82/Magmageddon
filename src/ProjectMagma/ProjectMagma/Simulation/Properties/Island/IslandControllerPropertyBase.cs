@@ -25,8 +25,10 @@ namespace ProjectMagma.Simulation
             this.playerConstants = Game.Instance.Simulation.EntityManager["player_constants"];
 
             if (!entity.HasAttribute("max_health"))
-                entity.AddIntAttribute("max_health", (int) (entity.GetVector3("scale").Length() * constants.GetFloat("scale_health_multiplier")));
-            entity.AddIntAttribute("health", entity.GetInt("max_health"));
+            {
+                entity.AddFloatAttribute("max_health", (entity.GetVector3("scale").Length() * constants.GetFloat("scale_health_multiplier")));
+            }
+            entity.AddFloatAttribute("health", entity.GetFloat("max_health"));
 
             hasFixedMovementPath = entity.GetBool("fixed");
 

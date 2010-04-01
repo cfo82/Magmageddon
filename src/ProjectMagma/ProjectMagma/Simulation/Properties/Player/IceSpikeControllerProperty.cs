@@ -80,7 +80,7 @@ namespace ProjectMagma.Simulation
             if (state == IceSpikeState.Targeting)
             {
                 if (targetPlayer != null
-                    && targetPlayer.GetInt("health") <= 0)
+                    && targetPlayer.GetFloat("health") <= 0)
                 {
                     AbortPlayerTargeting();
                 }
@@ -202,7 +202,7 @@ namespace ProjectMagma.Simulation
             // only do damage when in targeting mode
             if (state == IceSpikeState.Targeting)
             {
-                iceSpikeExplosion.AddIntAttribute("damage", constants.GetInt("ice_spike_damage"));
+                iceSpikeExplosion.AddFloatAttribute("damage", constants.GetFloat("ice_spike_damage"));
                 iceSpikeExplosion.AddIntAttribute("freeze_time", constants.GetInt("ice_spike_freeze_time"));
             }
 

@@ -73,32 +73,31 @@ namespace ProjectMagma.Simulation
             if (player.GetBool("isRespawning"))
             {
                 // we cannot take damage on respawn
-                player.SetInt("health", constants.GetInt("max_health"));
-                player.SetInt("energy", constants.GetInt("max_energy"));
+                player.SetFloat("health", constants.GetFloat("max_health"));
+                player.SetFloat("energy", constants.GetFloat("max_energy"));
                 player.SetInt("frozen", 0);
                 return;
             }
 
-            int health = player.GetInt("health");
+            float health = player.GetFloat("health");
             if (health < 0)
-                player.SetInt("health", 0);
+            {
+                player.SetFloat("health", 0);
+            }
             else
-                if (health > constants.GetInt("max_health"))
-                    player.SetInt("health", constants.GetInt("max_health"));
+            {
+                if (health > constants.GetFloat("max_health"))
+                {
+                    player.SetFloat("health", constants.GetFloat("max_health"));
+                }
+            }
 
-            int energy = player.GetInt("energy");
+            float energy = player.GetFloat("energy");
             if (energy < 0)
-                player.SetInt("energy", 0);
+                player.SetFloat("energy", 0);
             else
-                if (energy > constants.GetInt("max_energy"))
-                    player.SetInt("energy", constants.GetInt("max_energy"));
-
-            int fuel = player.GetInt("fuel");
-            if (fuel < 0)
-                player.SetInt("fuel", 0);
-            else
-                if (fuel > constants.GetInt("max_fuel"))
-                    player.SetInt("fuel", constants.GetInt("max_fuel"));
+                if (energy > constants.GetFloat("max_energy"))
+                    player.SetFloat("energy", constants.GetFloat("max_energy"));
         }
 
         protected void Vibrate(float left, float right)

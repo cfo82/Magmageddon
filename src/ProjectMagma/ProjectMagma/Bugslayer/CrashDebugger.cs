@@ -19,7 +19,7 @@ namespace ProjectMagma.Bugslayer
 
         public CrashDebugger(GraphicsDevice device, WrappedContentManager wrappedContent)
         {
-            font = wrappedContent.Load<SpriteFont>("Fonts/kootenay9");
+            font = wrappedContent.Load<SpriteFont>("Fonts/kootenay16");
             spriteBatch = new SpriteBatch(device);
         }
 

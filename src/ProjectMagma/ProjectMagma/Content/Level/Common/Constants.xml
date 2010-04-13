@@ -59,7 +59,7 @@
       <Attribute name="flamethrower_cooldown_time" template="int" value="600"/>
       <Attribute name="flamethrower_turn_flame_increase" template="float" value="1"/>
       <Attribute name="flamethrower_turn_scale" template="float" value="0.6"/>
-      <Attribute name="flamethrower_damage_per_second" template="int" value="40"/>
+      <Attribute name="flamethrower_damage_per_second" template="float" value="40"/>
       <Attribute name="flamethrower_after_burn_time" template="int" value="300"/>
       <Attribute name="flamethrower_offset" template="float3" value="-12 45 -20"/>
 

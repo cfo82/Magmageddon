@@ -101,9 +101,11 @@ namespace ProjectMagma
 #endif
 
             // needed to show Guide, which is needed for storage, which is needed for saving stuff
-//            this.Components.Add(new GamerServicesComponent(this));
+            Components.Add(new GamerServicesComponent(this));
+
             this.globalClock = new GlobalClock();
             this.audioPlayer = new AudioPlayer();
+
         }
 
         public static Game Instance
@@ -259,8 +261,8 @@ namespace ProjectMagma
             // play that funky musik white boy
             //MediaPlayer.Play(Game.Instance.ContentManager.Load<Song>("Music/background_janick"));
 
-            // get storage device
-            storageSelectionResult = Guide.BeginShowStorageDeviceSelector(PlayerIndex.One, null, null);
+            // get storage device => moved to the update loop
+            //storageSelectionResult = Guide.BeginShowStorageDeviceSelector(PlayerIndex.One, null, null);
 
             // open menu
 #if !DEBUG && !PROFILE && !TEST_RELEASE
@@ -457,8 +459,14 @@ namespace ProjectMagma
             try
             {
 #endif
+                // get storage device => moved
+                if (!Guide.IsVisible && storageSelectionResult == null)
+                {
+                    storageSelectionResult = Guide.BeginShowStorageDeviceSelector(PlayerIndex.One, null, null);
+                }
+
                 // get storage device as soon as selected
-                if (!storageAvailable && storageSelectionResult.IsCompleted)
+                if (storageSelectionResult != null && !storageAvailable && storageSelectionResult.IsCompleted)
                 {
                     device = Guide.EndShowStorageDeviceSelector(storageSelectionResult);
                     storageAvailable = true;

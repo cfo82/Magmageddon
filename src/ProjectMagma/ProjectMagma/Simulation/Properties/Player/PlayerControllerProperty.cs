@@ -624,7 +624,7 @@ namespace ProjectMagma.Simulation
                             constants.GetFloat("island_repulsion_start_velocity_multiplier");
                         activeIsland.SetVector3("repulsion_velocity", currentVelocity + velocity);
 
-                        player.SetFloat("energy", player.GetInt("energy") - constants.GetInt("island_repulsion_start_energy_cost"));
+                        player.SetFloat("energy", player.GetFloat("energy") - constants.GetInt("island_repulsion_start_energy_cost"));
 
                         StartRepulsion();
                     }

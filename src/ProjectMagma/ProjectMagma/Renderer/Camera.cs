@@ -21,6 +21,7 @@ namespace ProjectMagma.Renderer
         public Camera(Renderer renderer)
         {
             IsMoving = renderer.EntityManager["camera"].GetBool("is_moving");
+            IsMoving = false;
             cameraSpeed = renderer.EntityManager["camera"].GetFloat("moving_speed");
             initialPosition = renderer.EntityManager["camera"].GetVector3("position");
             initialTarget = renderer.EntityManager["camera"].GetVector3("target");

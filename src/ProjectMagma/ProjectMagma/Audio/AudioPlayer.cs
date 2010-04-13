@@ -74,6 +74,7 @@ namespace ProjectMagma
                 SoundEffectInstance instance = soundEffect.CreateInstance();
                 instance.Volume = volume;
                 instance.Play();
+                effectInstances.Add(instance);
                 return instance;
             }
         }
@@ -92,6 +93,22 @@ namespace ProjectMagma
 
             effectInstances.Remove(instance);
             DisposeEffect(instance);
+        }
+
+        public void PauseAll()
+        {
+            foreach(SoundEffectInstance instance in effectInstances) 
+            {
+                instance.Pause();
+            }
+        }
+
+        public void ResumeAll()
+        {
+            foreach (SoundEffectInstance instance in effectInstances)
+            {
+                instance.Resume();
+            }
         }
 
         private string PickOne(string soundList)

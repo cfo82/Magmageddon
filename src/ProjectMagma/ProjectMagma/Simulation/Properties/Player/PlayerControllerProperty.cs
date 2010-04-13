@@ -131,6 +131,9 @@ namespace ProjectMagma.Simulation
                 Game.Instance.Simulation.EntityManager.Remove(flame);
             }
 
+            if (flameThrowerSoundInstance != null)
+                Game.Instance.AudioPlayer.Stop(flameThrowerSoundInstance);
+
             Game.Instance.Simulation.EntityManager.EntityRemoved -= EntityRemovedHandler;
 
             player.GetAttribute<FloatAttribute>("health").ValueChanged -= HealthChangeHandler;

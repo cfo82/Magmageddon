@@ -247,6 +247,7 @@ namespace ProjectMagma
             active = true;
             Hidden = false;
             OpenMenuScreen(mainMenu, true);
+            Game.Instance.AudioPlayer.PauseAll();
         }
 
         public void OpenReleaseNotes()
@@ -261,6 +262,7 @@ namespace ProjectMagma
             if (Game.Instance.Simulation.PlayerManager.Count > 0)
             {
                 Game.Instance.AudioPlayer.Play(Menu.BackSound);
+                Game.Instance.AudioPlayer.ResumeAll();
 
                 active = false;
                 screens.Clear();

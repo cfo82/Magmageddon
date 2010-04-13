@@ -91,6 +91,7 @@ namespace ProjectMagma
             const float multiplier = 1.0f;
             graphics.PreferredBackBufferWidth = (int)(1280 * multiplier);
             graphics.PreferredBackBufferHeight = (int)(720 * multiplier);
+            graphics.ApplyChanges();
 
             Window.Title = "Project Magma";
 #if XDK
@@ -369,6 +370,7 @@ namespace ProjectMagma
         public void Pause()
         {
             simulationThread.Join();
+            AudioPlayer.PauseAll();
             paused = true;
             globalClock.Pause();
             simulation.Pause();
@@ -382,6 +384,7 @@ namespace ProjectMagma
         public void Resume()
         {
             simulation.Resume();
+            AudioPlayer.ResumeAll();
             paused = false;
             globalClock.Resume();
             simulationThread.Start();

@@ -24,8 +24,8 @@
       <Attribute name="arrows_per_second" template="float" value="2.2"/>
 
       <Attribute name="lava_damage_per_second" template="float" value="100"/>
-      <!--Attribute name="energy_recharge_per_second" template="float" value="8"/-->
-      <Attribute name="energy_recharge_per_second" template="float" value="200000"/>
+      <Attribute name="energy_recharge_per_second" template="float" value="8"/>
+      <!--Attribute name="energy_recharge_per_second" template="float" value="200000"/-->
 
       <Attribute name="max_jetpack_speed" template="float" value="200"/>
       <Attribute name="jetpack_acceleration" template="float3" value="0 1600 0"/>
@@ -54,8 +54,8 @@
 
       <Attribute name="flamethrower_aim_angle" template="float" value="60"/>
       <Attribute name="flamethrower_warmup_time" template="int" value="1000"/>
-      <Attribute name="flamethrower_warmup_energy_cost" template="int" value="15"/>
-      <Attribute name="flamethrower_energy_per_second" template="float" value="5"/>
+      <Attribute name="flamethrower_warmup_energy_cost" template="int" value="20"/>
+      <Attribute name="flamethrower_energy_per_second" template="float" value="14"/>
       <Attribute name="flamethrower_cooldown_time" template="int" value="600"/>
       <Attribute name="flamethrower_turn_flame_increase" template="float" value="1"/>
       <Attribute name="flamethrower_turn_scale" template="float" value="0.6"/>

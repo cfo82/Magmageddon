@@ -96,7 +96,6 @@
     <Compile Include="GlobalClock.cs" />
     <Compile Include="Menu\CreditsMenu.cs" />
     <Compile Include="Menu\ReleaseNotesMenu.cs" />
-    <Compile Include="PlayerControllerProperty.cs" />
     <Compile Include="Renderer\Billboard.cs" />
     <Compile Include="Renderer\Interface\InterpolationHistory.cs" />
     <Compile Include="Renderer\Interface\QuaternionInterpolationHistory.cs" />

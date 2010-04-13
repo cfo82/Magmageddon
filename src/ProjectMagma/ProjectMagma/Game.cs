@@ -74,7 +74,6 @@ namespace ProjectMagma
 
         private SimulationThread simulationThread;
 
-        private Exception exceptionThrown;
         private CrashDebugger crashDebugger;
         
         private GlobalClock globalClock;
@@ -159,7 +158,7 @@ namespace ProjectMagma
             SoundEffect.MasterVolume = EffectsVolume;
             MediaPlayer.Volume = MusicVolume;
 
-            crashDebugger = new CrashDebugger(GraphicsDevice, ContentManager);
+            crashDebugger = new CrashDebugger(GraphicsDevice, ContentManager, "Fonts/kootenay20", "dpk@student.ethz.ch");
 
 //            GraphicsDevice.RenderState.MultiSampleAntiAlias = true;
             //            GraphicsDevice.PresentationParameters.MultiSampleType = MultiSampleType.FourSamples;
@@ -436,7 +435,7 @@ namespace ProjectMagma
         /// <param name="gameTime">Provides a snapshot of timing values.</param>
         protected override void Update(GameTime gameTime)
         {
-            if (ExceptionThrown != null)
+            if (CrashDebugger.Crashed)
             {
                 if (!Paused)
                 {
@@ -446,7 +445,7 @@ namespace ProjectMagma
                     simulationThread.Abort();
                 }
 
-                crashDebugger.SetException(ExceptionThrown);
+                crashDebugger.Update(GraphicsDevice);
 
                 if (GamePad.GetState(PlayerIndex.One).Buttons.Back == ButtonState.Pressed)
                 {
@@ -505,7 +504,7 @@ namespace ProjectMagma
             }
             catch (Exception e)
             {
-                exceptionThrown = e;
+                crashDebugger.Crash(e);
             }
 #endif
         }
@@ -553,7 +552,7 @@ namespace ProjectMagma
         /// <param name="gameTime">Provides a snapshot of timing values.</param>
         protected override void Draw(GameTime gameTime)
         {
-            if (exceptionThrown != null)
+            if (crashDebugger.Crashed)
             {
                 crashDebugger.Draw(GraphicsDevice);
                 return;
@@ -582,7 +581,7 @@ namespace ProjectMagma
             }
             catch (Exception e)
             {
-                exceptionThrown = e;
+                crashDebugger.Crash(e);
             }
 #endif
         }
@@ -702,23 +701,9 @@ namespace ProjectMagma
             }
         }*/
 
-        public Exception ExceptionThrown
+        public CrashDebugger CrashDebugger
         {
-            set
-            {
-                lock (this)
-                {
-                    exceptionThrown = value;
-                }
-            }
-
-            get
-            {
-                lock (this)
-                {
-                    return exceptionThrown;
-                }
-            }
+            get { return crashDebugger; }
         }
         
         public GlobalClock GlobalClock

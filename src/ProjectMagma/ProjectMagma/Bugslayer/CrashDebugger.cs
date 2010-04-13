@@ -11,89 +11,168 @@ namespace ProjectMagma.Bugslayer
 {
     public class CrashDebugger
     {
-        private SpriteBatch spriteBatch;
+        // resources allocated to render the crash debugger
         private SpriteFont font;
+        private SpriteBatch spriteBatch;
+        //private Texture2D testTexture;
+
+        // data to be shown by the crash debugger
+        private string userMail;
         private string message;
-        private static readonly int MAX_LINE_LENGTH = 100;
         private Exception exception;
 
-        public CrashDebugger(GraphicsDevice device, WrappedContentManager wrappedContent)
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="device"></param>
+        /// <param name="wrappedContent"></param>
+        /// <param name="fontName"></param>
+        /// <param name="userMail"></param>
+        public CrashDebugger(
+            GraphicsDevice device,
+            WrappedContentManager wrappedContent,
+            string fontName,
+            string userMail
+        )
         {
-            font = wrappedContent.Load<SpriteFont>("Fonts/kootenay16");
+            font = wrappedContent.Load<SpriteFont>(fontName);
+            //testTexture = wrappedContent.Load<Texture2D>("Textures/custom_uv_diag");
             spriteBatch = new SpriteBatch(device);
+            this.userMail = userMail;
         }
 
-        public void SetException(Exception exception)
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="device"></param>
+        public void Update(GraphicsDevice device)
         {
-            if (exception == this.exception)
-                { return; }
-
-            this.exception = exception;
-
-            message = string.Format(
-                "**** CRASH LOG (Please take a picture of this and send it to dpk@student.ethz.ch!) ****\n" + 
-                "Press Back to Exit\n" + 
-                "Exception: {0}\n" + 
-                "Stack Trace:\n{1}",
-                exception.Message,
-                exception.StackTrace);
-
-            if (exception.InnerException != null)
+            lock (this)
             {
-                message += 
-                    "\n\nInner exception: " +
-                    exception.Message +
-                    "\nInner Stack Trace:\n" +
-                    exception.StackTrace
-                ;
-            }
+                if (this.message != null)
+                    { return; }
 
-            string[] lines = message.Split('\n');
-            StringBuilder builder = new StringBuilder();
-            foreach (string line in lines)
-            {
-                string currentLine = line;
+                message = string.Format(
+                    "**** CRASH LOG (Please take a picture of this and send it to {0}!) ****\n" +
+                    "Press Back to Exit\n" +
+                    "Exception: {1}\n" +
+                    "Stack Trace:\n{2}",
+                    userMail,
+                    exception.Message,
+                    exception.StackTrace);
 
-                while (currentLine.Length > MAX_LINE_LENGTH)
+                if (exception.InnerException != null)
                 {
-                    builder.Append(currentLine.Substring(0, MAX_LINE_LENGTH));
-                    builder.Append("\n");
-                    currentLine = "      " + currentLine.Substring(MAX_LINE_LENGTH);
+                    message +=
+                        "\n\nInner exception: " +
+                        exception.Message +
+                        "\nInner Stack Trace:\n" +
+                        exception.StackTrace
+                    ;
                 }
 
-                builder.Append(currentLine);
-                builder.Append("\n");
-            }
-
-            message = builder.ToString();
-
-            char[] messageArray = message.ToCharArray();
-            for (int i = 0; i < messageArray.Length; ++i)
-            {
-                if ((messageArray[i] < 32 || messageArray[i] > 126) &&
-                    messageArray[i] != '\n' &&
-                    messageArray[i] != '\r' &&
-                    messageArray[i] != '\t')
+                string[] lines = message.Split('\n');
+                StringBuilder builder = new StringBuilder();
+                foreach (string line in lines)
                 {
-                    messageArray[i] = ' ';
+                    // some funny string manipulation until it fits into the
+                    // title safe area
+                    string currentLine = line;
+                    bool lineAdded = false;
+                    do
+                    {
+                        Vector2 size = font.MeasureString(currentLine);
+                        string nextline = "";
+                        while (size.X > device.Viewport.TitleSafeArea.Width)
+                        {
+                            char c = currentLine[currentLine.Length - 1];
+                            currentLine = currentLine.Substring(0, currentLine.Length - 1);
+                            nextline = c + nextline;
+                            size = font.MeasureString(currentLine);
+                        }
+
+                        builder.Append(currentLine);
+                        builder.Append("\n");
+
+                        if (nextline.Length > 0)
+                        {
+                            currentLine = nextline;
+                        }
+                        else
+                        {
+                            lineAdded = true;
+                        }
+                    } while (!lineAdded);
                 }
+
+                message = builder.ToString();
+
+                char[] messageArray = message.ToCharArray();
+                for (int i = 0; i < messageArray.Length; ++i)
+                {
+                    if ((messageArray[i] < 32 || messageArray[i] > 126) &&
+                        messageArray[i] != '\n' &&
+                        messageArray[i] != '\r' &&
+                        messageArray[i] != '\t')
+                    {
+                        messageArray[i] = ' ';
+                    }
+                }
+                message = new string(messageArray);
             }
-            message = new string(messageArray);
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="graphics"></param>
         public void Draw(GraphicsDevice graphics)
         {
-            graphics.Clear(Color.Blue);
+            lock (this)
+            {
+                graphics.Clear(Color.Blue);
 
-            spriteBatch.Begin();
-            spriteBatch.DrawString(font, this.message, new Vector2(10f, 10f), Color.White);
+                int x = graphics.Viewport.TitleSafeArea.Left;
+                int y = graphics.Viewport.TitleSafeArea.Top;
+                int width = graphics.Viewport.TitleSafeArea.Width;
+                int height = graphics.Viewport.TitleSafeArea.Height;
 
-            spriteBatch.End();
+                spriteBatch.Begin();
+                //spriteBatch.Draw(testTexture, graphics.Viewport.TitleSafeArea, Color.Black);
+                spriteBatch.DrawString(
+                    font,
+                    message == null ? "Draw without a message being specified!" : message,
+                    new Vector2(x, y),
+                    Color.White
+                    );
+                spriteBatch.End();
+            }
         }
 
+        public void Crash(Exception exception)
+        {
+            lock (this)
+            {
+                if (this.exception != null)
+                    { return; } // already crashed... fix first exception...
+                this.exception = exception;
+            }
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        public bool Crashed
+        {
+            get { lock (this) { return exception != null; } }
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
         public Exception Exception
         {
-            get { return exception; }
+            get { lock (this) { return exception; } }
         }
     }
 }

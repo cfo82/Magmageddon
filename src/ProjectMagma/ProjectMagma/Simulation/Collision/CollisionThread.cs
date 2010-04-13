@@ -130,7 +130,7 @@ namespace ProjectMagma.Simulation.Collision
                 if (!this.aborted)
                 {
                     System.Console.WriteLine("unexpected Exception {0}\n{1}\n{2}", ex.GetType().Name, ex.Message, ex.StackTrace);
-                    Game.Instance.ExceptionThrown = ex;
+                    Game.Instance.CrashDebugger.Crash(ex);
                     finishedEvent.Set(); // => the simulationthread should be able to proceed!
                 }
             }

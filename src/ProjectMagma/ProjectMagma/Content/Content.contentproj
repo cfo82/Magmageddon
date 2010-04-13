@@ -953,6 +953,11 @@
       <Importer>FontDescriptionImporter</Importer>
       <Processor>FontDescriptionProcessor</Processor>
     </Compile>
+    <Compile Include="Fonts\kootenay20.spritefont">
+      <Name>kootenay20</Name>
+      <Importer>FontDescriptionImporter</Importer>
+      <Processor>FontDescriptionProcessor</Processor>
+    </Compile>
     <None Include="Sounds\movement\20847__plagasul__jump1.wav">
       <Name>20847__plagasul__jump1</Name>
       <Importer>WavImporter</Importer>

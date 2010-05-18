@@ -270,7 +270,7 @@ namespace ProjectMagma
 
             this.profiler = null;
 #if PROFILING
-            this.profiler = ProjectMagma.Profiler.Profiler.CreateProfiler("main_profiler");
+            this.profiler = ProjectMagma.Profiler.Profiler.CreateProfiler(Game.Instance.ContentManager, "rendering_profiler");
 #endif
 
             fpsFont = Game.Instance.ContentManager.Load<SpriteFont>("Fonts/fps");
@@ -488,6 +488,8 @@ namespace ProjectMagma
                         graphics.ApplyChanges();
                     }
 
+                    profiler.HandleInput(gameTime);
+
                     //simulationThread.Join();
 
                     // update menu
@@ -572,6 +574,9 @@ namespace ProjectMagma
 
                 // draw stuff which should not be filtered
                 menu.Draw(gameTime);
+
+                // let the profiler draw its overlay
+                profiler.DrawOverlay(GraphicsDevice);
 
                 DrawFrameCounter(gameTime);
 

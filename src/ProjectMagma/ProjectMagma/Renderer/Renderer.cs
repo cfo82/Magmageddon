@@ -342,6 +342,8 @@ namespace ProjectMagma.Renderer
             device.SetRenderTarget(0, lightRenderTarget);
             Game.Instance.Profiler.EndSection("beginning_stuff");
 
+            Game.Instance.Profiler.BeginSection("rendering");
+
             // 2) Render the scene from the perspective of the light
             Game.Instance.Profiler.BeginSection("renderer_shadow");
             RenderShadow();
@@ -402,6 +404,8 @@ namespace ProjectMagma.Renderer
             RenderParticles();
             RenderSceneAfterPost();
 
+
+            Game.Instance.Profiler.EndSection("rendering");
 
             // 6) Render overlays
             Game.Instance.Profiler.BeginSection("overlay");

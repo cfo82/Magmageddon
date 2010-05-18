@@ -20,7 +20,7 @@ namespace ProjectMagma.Simulation
             //this.contentManager.RootDirectory = "Content";
 
             this.thread = null;
-            this.profiler = new Profiler.Profiler();
+            this.profiler = ProjectMagma.Profiler.Profiler.CreateProfiler(null, "simulation_profiler"); 
         }
 
         public void Reinitialize(

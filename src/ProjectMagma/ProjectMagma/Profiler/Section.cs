@@ -20,8 +20,10 @@ namespace ProjectMagma.Profiler
             this.profiler = profiler;
             this.parent = parent;
             this.name = name;
+            this.fullName = String.Format("{0}{1}", (parent != null ? string.Format("{0}.", parent.FullName) : ""), name);
             this.allocatedAtFrame = profiler.FrameNumber;
-            this.children = new Dictionary<string, Section>();
+            this.childrenMap = new Dictionary<string, Section>();
+            this.childrenList = new List<Section>();
             frameStatistics = new FrameStatistics[NumFrameStatistics];
             for (int i = 0; i < NumFrameStatistics; ++i)
             {
@@ -35,19 +37,20 @@ namespace ProjectMagma.Profiler
 
         public Section AllocateChild(string name)
         {
-            if (children.ContainsKey(name))
+            if (childrenMap.ContainsKey(name))
             {
                 throw new Exception(string.Format("a sub-section with name {0} exists already!", name));
             }
 
             Section newSection = new Section(this.profiler, this, name);
-            children.Add(name, newSection);
+            childrenMap.Add(name, newSection);
+            childrenList.Add(newSection);
             return newSection;
         }
 
         public void BeginFrame()
         {
-            foreach (Section child in children.Values)
+            foreach (Section child in childrenMap.Values)
             {
                 child.BeginFrame();
             }
@@ -89,7 +92,7 @@ namespace ProjectMagma.Profiler
 
             currentStatistics = (currentStatistics + 1) % NumFrameStatistics;
             
-            foreach (Section child in children.Values)
+            foreach (Section child in childrenMap.Values)
             {
                 child.EndFrame();
             }
@@ -100,7 +103,7 @@ namespace ProjectMagma.Profiler
             get
             {
                 Section value;
-                if (children.TryGetValue(name, out value))
+                if (childrenMap.TryGetValue(name, out value))
                 {
                     return value;
                 }
@@ -109,6 +112,19 @@ namespace ProjectMagma.Profiler
                     return null;
                 }
             }
+        }
+
+        public Section this[int index]
+        {
+            get
+            {
+                return childrenList[index];
+            }
+        }
+
+        public int ChildCount
+        {
+            get { return childrenList.Count; }
         }
 
         public string Name
@@ -146,7 +162,7 @@ namespace ProjectMagma.Profiler
                 writer.WriteLine("{0}+-- {1}: {2}, {3}", GenerateIndent(indent), name, stats.CallCount, stats.AccumulatedTime);
             }
 
-            foreach (Section child in children.Values)
+            foreach (Section child in childrenMap.Values)
             {
                 child.WriteFrame(writer, indent + 1, frameNumber);
             }
@@ -166,7 +182,7 @@ namespace ProjectMagma.Profiler
             writer.WriteLine("{0}      Average CallCount: {1}", indentString, (double)totalStatistics.CallCount / (double)totalFrameCount);
             writer.WriteLine("{0}      Average Time:      {1}", indentString, (double)totalStatistics.AccumulatedTime / (double)totalFrameCount);
 
-            foreach (Section child in children.Values)
+            foreach (Section child in childrenMap.Values)
             {
                 child.WriteGeneral(writer, indent + 1);
             }
@@ -180,11 +196,50 @@ namespace ProjectMagma.Profiler
             return val;
         }
 
+        public int TotalFrameCount
+        {
+            get { return totalFrameCount; }
+        }
+
+        public FrameStatistics TotalStatistics
+        {
+            get { return totalStatistics; }
+        }
+
+        public FrameStatistics PeakStatistics
+        {
+            get { return peakStatistics; }
+        }
+
+        public FrameStatistics CurrentStatistics
+        {
+            get
+            {
+                FrameStatistics stats = new FrameStatistics();
+                for (int i = 0; i < frameStatistics.Length; ++i)
+                {
+                    if (frameStatistics[i].Initialized)
+                    {
+                        stats.CallCount += frameStatistics[i].CallCount;
+                        stats.AccumulatedTime += frameStatistics[i].AccumulatedTime;
+                    }
+                }
+                return stats;
+            }
+        }
+
+        public string FullName
+        {
+            get { return fullName; }
+        }
+
         private Profiler profiler;
         private Section parent;
         private string name;
+        private string fullName;
         private long allocatedAtFrame;
-        private Dictionary<string, Section> children;
+        private Dictionary<string, Section> childrenMap;
+        private List<Section> childrenList;
         private FrameStatistics[] frameStatistics;
         private int currentStatistics;
         private FrameStatistics totalStatistics;

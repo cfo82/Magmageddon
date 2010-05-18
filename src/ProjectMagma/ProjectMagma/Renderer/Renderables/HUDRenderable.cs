@@ -323,8 +323,9 @@ namespace ProjectMagma.Renderer
 
             barAreaSize = new Vector2(271, 52);
             Vector2 TotalSize = barAreaSize + new Vector2(0, 50);
-            int horOff = (int)(100);
-            int vertOff = (int)(50);
+            Rectangle titleSafeArea = Game.Instance.GraphicsDevice.Viewport.TitleSafeArea;
+            int horOff = (int)titleSafeArea.X>100?titleSafeArea.X:100;
+            int vertOff = (int)titleSafeArea.Y>50?titleSafeArea.Y:50;
 
             playerMirror = Matrix.Identity;
             multiplier = new Vector2(0, 0);

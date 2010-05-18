@@ -4,24 +4,53 @@ using System.Diagnostics;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Storage;
+using Microsoft.Xna.Framework.Graphics;
+using Microsoft.Xna.Framework.Input;
 
 namespace ProjectMagma.Profiler
 {
     public class Profiler
     {
-        public Profiler()
+        public Profiler(WrappedContentManager wrappedContent, string name)
         {
             rootSection = new Section(this, null, "root");
             sectionStack = new List<Section>(100);
             frameNumber = 0;
             inBeginFrame = false;
+            this.name = name;
+
+            filterList = new List<string>();
+            filterList.Add("root");
+            filterList.Add("root.draw");
+            filterList.Add("root.draw.beginning_stuff");
+            filterList.Add("root.draw.beginning_stuff.particle_systems.*");
+            filterList.Add("root.draw.rendering");
+
+            if (wrappedContent != null)
+            {
+                overlayBackground = new Texture2D(Game.Instance.GraphicsDevice, 32, 32);
+                Color[] colorData = new Color[overlayBackground.Width * overlayBackground.Height];
+                for (int i = 0; i < overlayBackground.Width * overlayBackground.Height; ++i)
+                { colorData[i] = Color.Black; }
+                overlayBackground.SetData<Color>(colorData);
+
+                overlayBackground2 = new Texture2D(Game.Instance.GraphicsDevice, 32, 32);
+                for (int i = 0; i < overlayBackground2.Width * overlayBackground2.Height; ++i)
+                { colorData[i] = Color.Yellow; }
+                overlayBackground2.SetData<Color>(colorData);
+
+                spriteBatch = new SpriteBatch(Game.Instance.GraphicsDevice);
+
+                font = wrappedContent.Load<SpriteFont>("Fonts/kootenay20");
+            }
         }
 
-        public static Profiler CreateProfiler(string debuginfo)
+        public static Profiler CreateProfiler(WrappedContentManager wrappedContent, string name)
         {
-            Console.WriteLine("profiling code using {0}!", debuginfo);
-            return new Profiler();
+            Console.WriteLine("profiling code using {0}!", name);
+            return new Profiler(wrappedContent, name);
         }
 
         [Conditional("PROFILING")]
@@ -149,9 +178,117 @@ namespace ProjectMagma.Profiler
             rootSection.WriteGeneral(writer, 1);
         }
 
+        [Conditional("PROFILING")]
+        public void HandleInput(GameTime gameTime)
+        {
+            if (Keyboard.GetState().IsKeyDown(Keys.Enter) ||
+                GamePad.GetState(0).IsButtonDown(Buttons.LeftShoulder))
+            {
+                double at = gameTime.TotalGameTime.TotalMilliseconds;
+                if (at > lastChange + OverlaySwitchTimeout)
+                { 
+                    renderOverlay = !renderOverlay;
+                    lastChange = at;
+                }
+            }
+        }
+
+        private int DrawSection(GraphicsDevice graphics, Section section, int x, int y, int titleSafeX, bool showAlways)
+        {
+            int sectionHeight = 0;
+
+            if (filterList.Contains(section.FullName) || showAlways)
+            {
+                spriteBatch.DrawString(font, section.Name, new Vector2(x, y), Color.Yellow);
+                sectionHeight += (int)font.MeasureString(section.Name).Y + 2;
+
+                FrameStatistics totalStats = section.TotalStatistics;
+                FrameStatistics peakStats = section.PeakStatistics;
+                FrameStatistics currentStats = section.CurrentStatistics;
+
+                spriteBatch.DrawString(
+                    font,
+                    string.Format("{0:0.00000000}", currentStats.AccumulatedTime / (double)currentStats.CallCount),
+                    new Vector2(titleSafeX + 500, y), Color.Yellow);
+                spriteBatch.DrawString(
+                    font,
+                    string.Format("{0:0.00000000}", totalStats.AccumulatedTime / (double)totalStats.CallCount),
+                    new Vector2(titleSafeX + 750, y), Color.Yellow);
+                spriteBatch.DrawString(
+                    font,
+                    string.Format("{0:0.00000000}", peakStats.AccumulatedTime / (double)peakStats.CallCount),
+                    new Vector2(titleSafeX + 1000, y), Color.Yellow);
+            }
+
+            showAlways = showAlways || filterList.Contains(string.Format("{0}.*", section.FullName));
+
+            for (int i = 0; i < section.ChildCount; ++i)
+                { sectionHeight += DrawSection(graphics, section[i], x + 20, y + sectionHeight, titleSafeX, showAlways); }
+
+            return sectionHeight;
+        }
+
+        [Conditional("PROFILING")]
+        public void DrawOverlay(GraphicsDevice graphics)
+        {
+            int x = graphics.Viewport.TitleSafeArea.Left;
+            int y = graphics.Viewport.TitleSafeArea.Top;
+            int width = graphics.Viewport.TitleSafeArea.Width;
+            int height = graphics.Viewport.TitleSafeArea.Height;
+
+            spriteBatch.Begin();
+            if (renderOverlay)
+            {
+                spriteBatch.Draw(overlayBackground, new Rectangle(x, y, width, height), new Color(Color.Black, 192));
+                x += 10;
+                y += 10;
+                width -= 20;
+                height -= 20;
+                
+                spriteBatch.DrawString(font, "Section", new Vector2(x, y), Color.Yellow);
+                spriteBatch.DrawString(font, "Avg. 20 frames", new Vector2(x+500, y), Color.Yellow);
+                spriteBatch.DrawString(font, "Avg. total frames", new Vector2(x+750, y), Color.Yellow);
+                spriteBatch.DrawString(font, "Max", new Vector2(x+1000, y), Color.Yellow);
+
+                spriteBatch.End();
+                spriteBatch.Begin();
+                int lineY = y + (int)font.MeasureString("Section").Y + 2;
+                spriteBatch.Draw(overlayBackground2, new Rectangle(x, lineY, width, 1), new Color(Color.Yellow, 255));
+
+                spriteBatch.Draw(overlayBackground2, new Rectangle(x+490, y, 1, height), new Color(Color.Yellow, 255));
+                spriteBatch.Draw(overlayBackground2, new Rectangle(x+740, y, 1, height), new Color(Color.Yellow, 255));
+                spriteBatch.Draw(overlayBackground2, new Rectangle(x+990, y, 1, height), new Color(Color.Yellow, 255));
+
+                DrawSection(graphics, rootSection, x, lineY +2, x, false);
+            }
+            else
+            {
+                //spriteBatch.Draw(testTexture, graphics.Viewport.TitleSafeArea, Color.Black);
+                spriteBatch.DrawString(
+                    font,
+                    String.Format("Profiler: {0}. Press (ENTER) to display overlay.", name),
+                    new Vector2(x, y),
+                    Color.White
+                    );
+            }
+            spriteBatch.End();
+        }
+
         private Section rootSection;
         private List<Section> sectionStack;
-        long frameNumber;
-        bool inBeginFrame;
+        private long frameNumber;
+        private bool inBeginFrame;
+        private string name;
+
+        // rendering stuff
+        private Texture2D overlayBackground;
+        private Texture2D overlayBackground2;
+        private SpriteBatch spriteBatch;
+        private SpriteFont font;
+        private double lastChange;
+        private bool renderOverlay;
+        public const float OverlaySwitchTimeout = 100;
+
+        private List<string> filterList;
     }
 }

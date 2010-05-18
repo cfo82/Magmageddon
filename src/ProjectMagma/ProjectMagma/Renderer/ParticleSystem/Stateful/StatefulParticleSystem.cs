@@ -345,7 +345,11 @@ namespace ProjectMagma.Renderer.ParticleSystem.Stateful
                 pass.End();
                 particleUpdateEffect.End();
 
+                Game.Instance.Profiler.BeginSection("create_particles");
+
                 CreateParticles(intermediateLastFrameTime, intermediateCurrentFrameTime, SimulationStep, true);
+
+                Game.Instance.Profiler.EndSection("create_particles");
 
                 device.SetRenderTarget(1, oldRenderTarget1);
                 device.SetRenderTarget(0, oldRenderTarget0);

@@ -194,7 +194,9 @@ namespace ProjectMagma.Renderer.ParticleSystem.Stateful
             bool render
         )
         {
-            Vector2 positionHalfPixel = new Vector2(1.0f / (2.0f * positionTextures[0].Width), 1.0f / (2.0f * positionTextures[0].Height));
+            Game.Instance.Profiler.BeginSection("particle_system_emmiters");
+
+            Vector2 positionPixel = new Vector2(1.0f / (positionTextures[0].Width), 1.0f / (positionTextures[0].Height));
 
             int[] particleCount = new int[emitters.Count];
 
@@ -205,11 +207,15 @@ namespace ProjectMagma.Renderer.ParticleSystem.Stateful
                 particleCount[emitterIndex] = emitter.CalculateParticleCount(lastFrameTime, currentFrameTime);
                 sumParticleCount += particleCount[emitterIndex];
             }
+            Game.Instance.Profiler.EndSection("particle_system_emmiters");
+
+            Game.Instance.Profiler.BeginSection("particle_system_vertices");
 
             CreateVertexArray vertices = renderer.StatefulParticleResourceManager.AllocateCreateVertexArray(sumParticleCount);
+            int maxindex = positionTextures[0].Width * positionTextures[0].Height;
             for (int i = 0; i < vertices.OccupiedSize; ++i)
             {
-                if (index >= positionTextures[0].Width * positionTextures[0].Height)
+                if (index >= maxindex)
                 {
                     index = 0;
                 }
@@ -222,13 +228,16 @@ namespace ProjectMagma.Renderer.ParticleSystem.Stateful
                 Debug.Assert(textureSize == positionTextures[0].Height);
 
                 vertices.Array[i] = new CreateVertex(Vector3.Zero, Vector3.Zero, new Vector2(
-                    -1.0f + 2.0f * positionHalfPixel.X + 2.0f * 2.0f * x * positionHalfPixel.X,
-                    -1.0f + 2.0f * positionHalfPixel.Y + 2.0f * 2.0f * y * positionHalfPixel.Y),
+                    -1.0f + positionPixel.X + 2.0f * x * positionPixel.X,
+                    -1.0f + positionPixel.Y + 2.0f * y * positionPixel.Y),
                     0 // emitterIndex
                 );
 
                 ++index;
             }
+
+            Game.Instance.Profiler.EndSection("particle_system_vertices");
+            Game.Instance.Profiler.BeginSection("particle_system_particles");
 
             int vertexIndex = 0;
             for (int emitterIndex = 0; emitterIndex < emitters.Count; ++emitterIndex)
@@ -239,9 +248,12 @@ namespace ProjectMagma.Renderer.ParticleSystem.Stateful
             }
 
             createVertexLists.Add(vertices);
+            Game.Instance.Profiler.EndSection("particle_system_particles");
 
             if (render)
             {
+                Game.Instance.Profiler.BeginSection("particle_system_renderer");
+
                 int localCreateVerticesIndex = 0;
                 for (int i = 0; i < createVertexLists.Count; ++i)
                 {
@@ -280,6 +292,8 @@ namespace ProjectMagma.Renderer.ParticleSystem.Stateful
                 }
 
                 createVertexLists.Clear();
+
+                Game.Instance.Profiler.EndSection("particle_system_renderer");
             }
         }
 

@@ -14,6 +14,10 @@ namespace ProjectMagma.Renderer.ParticleSystem.Emitter
             float particlesPerSecond
         )
         {
+            for (int i = 0; i < CalculatedValues; ++i)
+            {
+                this.randoms[i] = (float)random.NextDouble();
+            }
             this.point = point;
             this.direction = direction;
             this.particlesPerSecond = particlesPerSecond;
@@ -50,19 +54,19 @@ namespace ProjectMagma.Renderer.ParticleSystem.Emitter
                 float angle = 0.125f;
                 //double horizontalAngle = random.NextDouble() * MathHelper.Pi * angle - MathHelper.Pi * (angle/2);
                 //double verticalAngle = random.NextDouble() * MathHelper.Pi * angle - MathHelper.Pi * (angle/2);
-                double circleAngle = random.NextDouble() * MathHelper.Pi * 2;
+                double circleAngle = getRandom() * MathHelper.Pi * 2;
 
                 Vector3 up = Vector3.Up;
                 Vector3 right = Vector3.Cross(up, direction);
                 up = Vector3.Cross(direction, right);
 
                 Vector3 displacement =
-                    right * (float)System.Math.Cos(circleAngle) * (float)random.NextDouble() * angle +
-                    up * (float)System.Math.Sin(circleAngle) * (float)random.NextDouble() * angle;
+                    right * (float)System.Math.Cos(circleAngle) * getRandom() * angle +
+                    up * (float)System.Math.Sin(circleAngle) * getRandom() * angle;
                 float amount = displacement.Length() / angle;
 
                 Vector3 velocity = direction + displacement;
-                velocity *= ((1f - amount) * innerSpeed + amount * outerSpeed) * (0.7f + (float)random.NextDouble() * 0.3f);
+                velocity *= ((1f - amount) * innerSpeed + amount * outerSpeed) * (0.7f + getRandom() * 0.3f);
 
                 array[start + i].ParticlePosition = point;
                 array[start + i].ParticleVelocity = velocity;
@@ -82,12 +86,21 @@ namespace ProjectMagma.Renderer.ParticleSystem.Emitter
             set { direction = value; }
         }
 
+        private float getRandom() 
+        {
+            return randoms[nextRandom = (nextRandom + 1) % CalculatedValues];
+        }
+
         public int EmitterIndex { set; get; }
 
         private Vector3 point;
         private Vector3 direction;
         private double particlesPerSecond;
         private double fragmentLost = 0.0;
+        private float[] randoms = new float[CalculatedValues];
+        private int nextRandom = 0;
+
         private static Random random = new Random();
+        private const int CalculatedValues = 1024;
     }
 }

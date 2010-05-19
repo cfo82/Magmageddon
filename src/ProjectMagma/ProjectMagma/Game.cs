@@ -521,27 +521,33 @@ namespace ProjectMagma
             // only start after 2 sec "warm-up"
             if (totalMilliSeconds > 2000)
             {
+                Rectangle titleSafeArea = GraphicsDevice.Viewport.TitleSafeArea;
+
                 float fps = (float)(1000f / gameTime.ElapsedGameTime.TotalMilliseconds);
                 if (fps > maxFPS)
                     maxFPS = fps;
                 if (fps < minFPS)
                     minFPS = fps;
+
+                String renderingText = string.Format("rendering\n- cur: {0:000.0}\n- avg: {1:00.0}", fps, (1000.0f * numFrames / totalMilliSeconds));
+                String simulationText = string.Format("simulation\n- cur: {0:000.0}\n- avg: {1:00.0}",
+                    (simulationThread != null ? simulationThread.Sps : 0),
+                    (simulationThread != null ? simulationThread.AvgSps : 0));
+
+                Vector2 renderingTextSize = fpsFont.MeasureString(renderingText);
+                Vector2 simulationTextSize = fpsFont.MeasureString(simulationText);
+
                 spriteBatch.DrawString(
                     fpsFont,
-                    "rendering\n" +
-                    String.Format("- cur: {0:000.0}", fps) + "\n" +
-                    String.Format("- avg: {0:00.0}", (1000.0f * numFrames / totalMilliSeconds)) + "\n",
-                    // is min/max really necessary?
-                    //String.Format("- min: {0:00.0}", minFPS) + "\n" +
-                    //String.Format("- max: {0:00.0}", maxFPS),
-                    new Vector2(4, 7), new Color(Color.White, 0.7f)
-                );
+                    renderingText,
+                    new Vector2(titleSafeArea.X + 4, titleSafeArea.Y + titleSafeArea.Height / 2.0f - renderingTextSize.Y / 2.0f),
+                    new Color(Color.White, 0.7f)
+                    );
                 spriteBatch.DrawString(
                    fpsFont,
-                   "simulation\n" +
-                   String.Format("- cur: {0:000.0}", (simulationThread != null ? simulationThread.Sps : 0)) + "\n" +
-                   String.Format("- avg: {0:00.0}", (simulationThread != null ? simulationThread.AvgSps : 0)) + "\n",
-                   new Vector2(GraphicsDevice.Viewport.Width-120, 7), new Color(Color.White, 0.7f)
+                   simulationText,
+                   new Vector2(titleSafeArea.X + titleSafeArea.Width - simulationTextSize.X - 4, titleSafeArea.Y + titleSafeArea.Height / 2.0f - simulationTextSize.Y / 2.0f),
+                   new Color(Color.White, 0.7f)
                );
             }
 

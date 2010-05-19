@@ -263,12 +263,24 @@ namespace ProjectMagma.Profiler
             }
             else
             {
+                string text1 = string.Format("Profiler: {0}.", name);
+                string text2 = "Press (ENTER) or (LS) to display overlay.";
+
+                Vector2 text1Size = font.MeasureString(text1);
+                Vector2 text2Size = font.MeasureString(text2);
+
                 //spriteBatch.Draw(testTexture, graphics.Viewport.TitleSafeArea, Color.Black);
                 spriteBatch.DrawString(
                     font,
-                    String.Format("Profiler: {0}. Press (ENTER) to display overlay.", name),
-                    new Vector2(x, y),
-                    Color.White
+                    text1,
+                    new Vector2((float)x + (float)width / 2.0f - text1Size.X / 2.0f, (float)y + 2),
+                    new Color(Color.White, 0.7f)
+                    );
+                spriteBatch.DrawString(
+                    font,
+                    text2,
+                    new Vector2((float)x + (float)width / 2.0f - text2Size.X / 2.0f, (float)y + 2 + text1Size.Y + 2),
+                    new Color(Color.White, 0.7f)
                     );
             }
             spriteBatch.End();

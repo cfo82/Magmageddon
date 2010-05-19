@@ -519,7 +519,7 @@ namespace ProjectMagma
             totalMilliSeconds += gameTime.ElapsedGameTime.TotalMilliseconds;
 
             // only start after 2 sec "warm-up"
-            if (totalMilliSeconds > 2000)
+            if (totalMilliSeconds > 10000)
             {
                 Rectangle titleSafeArea = GraphicsDevice.Viewport.TitleSafeArea;
 
@@ -529,7 +529,7 @@ namespace ProjectMagma
                 if (fps < minFPS)
                     minFPS = fps;
 
-                String renderingText = string.Format("rendering\n- cur: {0:000.0}\n- avg: {1:00.0}", fps, (1000.0f * numFrames / totalMilliSeconds));
+                String renderingText = string.Format("rendering\n- cur: {0:000.0}\n- avg: {1:00.0}\n- min: {2:00.0}", fps, (1000.0f * numFrames / totalMilliSeconds), minFPS);
                 String simulationText = string.Format("simulation\n- cur: {0:000.0}\n- avg: {1:00.0}",
                     (simulationThread != null ? simulationThread.Sps : 0),
                     (simulationThread != null ? simulationThread.AvgSps : 0));

@@ -15,8 +15,8 @@
     </Attributes>
     <Properties>
       <Property name="collision" type="ProjectMagma.Simulation.Collision.CollisionProperty"/>
-      <Property name="input" type="ProjectMagma.Simulation.RandomInputProperty"/>
-      <!--Property name="input" type="ProjectMagma.Simulation.GamePadInputProperty"/-->
+      <!--Property name="input" type="ProjectMagma.Simulation.RandomInputProperty"/-->
+      <Property name="input" type="ProjectMagma.Simulation.GamePadInputProperty"/>
       <Property name="controller" type="ProjectMagma.Simulation.PlayerControllerProperty"/>
       <Property name="burnable" type="ProjectMagma.Simulation.BurnableProperty"/>
       <Property name="hud" type="ProjectMagma.Simulation.HUDProperty"/>

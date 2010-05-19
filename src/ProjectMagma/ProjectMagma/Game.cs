@@ -511,6 +511,10 @@ namespace ProjectMagma
 #endif
         }
 
+        float[] lastFPS = new float[1000];
+        bool[] lastFPSValid = new bool[1000];
+        int currentFPS = 0;
+
         private void DrawFrameCounter(GameTime gameTime)
         {
             spriteBatch.Begin();
@@ -529,7 +533,28 @@ namespace ProjectMagma
                 if (fps < minFPS)
                     minFPS = fps;
 
-                String renderingText = string.Format("rendering\n- cur: {0:000.0}\n- avg: {1:00.0}\n- min: {2:00.0}", fps, (1000.0f * numFrames / totalMilliSeconds), minFPS);
+                lastFPS[currentFPS] = fps;
+                lastFPSValid[currentFPS] = true;
+                currentFPS = (currentFPS + 1) % lastFPS.Length;
+
+                float framesCount = 0;
+                float framesLT30Count = 0;
+                for (int i = 0; i < lastFPS.Length; ++i)
+                {
+                    if (lastFPSValid[i])
+                    {
+                        ++framesCount;
+                        if (lastFPS[i] < 30)
+                            ++framesLT30Count;
+                    }
+                }
+                if (framesCount == 0)
+                {
+                    framesCount = 1;
+                    framesLT30Count = 0;
+                }
+
+                String renderingText = string.Format("rendering\n- cur: {0:000.0}\n- avg: {1:00.0}\n- min: {2:00.0}\n- <30fps: {3:00.00}%", fps, (1000.0f * numFrames / totalMilliSeconds), minFPS, (framesLT30Count / framesCount) * 100.0f);
                 String simulationText = string.Format("simulation\n- cur: {0:000.0}\n- avg: {1:00.0}",
                     (simulationThread != null ? simulationThread.Sps : 0),
                     (simulationThread != null ? simulationThread.AvgSps : 0));

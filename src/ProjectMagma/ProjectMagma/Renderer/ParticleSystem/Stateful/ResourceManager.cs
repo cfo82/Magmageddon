@@ -1,4 +1,6 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Diagnostics;
+using System.Collections.Generic;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 
@@ -86,10 +88,14 @@ namespace ProjectMagma.Renderer.ParticleSystem.Stateful
 
         public CreateVertexArray AllocateCreateVertexArray(int size)
         {
+            Debug.Assert(size > 0);
+
+            //Console.WriteLine("AllocateCreateVertexArray.");
             // if the desired array is of a size not managed... return a new list which will never be
             // managed and later automatically garbage collected
             if (size > CreateVertexArraySize)
             {
+                Console.WriteLine("exception case a: {0}", size);
                 return new CreateVertexArray(size, size);
             }
 
@@ -102,6 +108,7 @@ namespace ProjectMagma.Renderer.ParticleSystem.Stateful
             }
             else
             {
+                Console.WriteLine("exception case b: {0}", size);
                 return new CreateVertexArray(CreateVertexArraySize, size);
             }
         }

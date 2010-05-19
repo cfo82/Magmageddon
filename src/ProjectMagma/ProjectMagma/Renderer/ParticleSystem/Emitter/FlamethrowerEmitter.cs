@@ -89,6 +89,7 @@ namespace ProjectMagma.Renderer.ParticleSystem.Emitter
         private float getRandom() 
         {
             return randoms[nextRandom = (nextRandom + 1) % CalculatedValues];
+            //return (float)random.NextDouble();
         }
 
         public int EmitterIndex { set; get; }

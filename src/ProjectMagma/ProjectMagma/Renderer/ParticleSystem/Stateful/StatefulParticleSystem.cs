@@ -28,7 +28,6 @@ namespace ProjectMagma.Renderer.ParticleSystem.Stateful
             this.particleCreateEffect = null;
             this.particleUpdateEffect = null;
             this.particleRenderingEffect = null;
-            this.createVertexLists = new List<CreateVertexArray>(32);
             spriteBatch = new SpriteBatch(device);
             this.nextEmitterId = 0;
             this.freeEmitterIds = new List<int>();
@@ -187,14 +186,16 @@ namespace ProjectMagma.Renderer.ParticleSystem.Stateful
             device.Vertices[0].SetSource(null, 0, 0);
         }
 
-        void CreateParticles(
+        private void CreateParticles(
             double lastFrameTime,
             double currentFrameTime,
-            double dt,
-            bool render
+            double dt
         )
         {
-            Game.Instance.Profiler.BeginSection("particle_system_emmiters");
+            Game.Instance.Profiler.BeginSection("create_particles");
+
+            Game.Instance.Profiler.BeginSection("count");
+            Vector2 positionHalfPixel = new Vector2(1.0f / (2.0f * positionTextures[0].Width), 1.0f / (2.0f * positionTextures[0].Height));
 
             Vector2 positionPixel = new Vector2(1.0f / (positionTextures[0].Width), 1.0f / (positionTextures[0].Height));
 
@@ -207,11 +208,20 @@ namespace ProjectMagma.Renderer.ParticleSystem.Stateful
                 particleCount[emitterIndex] = emitter.CalculateParticleCount(lastFrameTime, currentFrameTime);
                 sumParticleCount += particleCount[emitterIndex];
             }
-            Game.Instance.Profiler.EndSection("particle_system_emmiters");
+            Game.Instance.Profiler.EndSection("count");
 
-            Game.Instance.Profiler.BeginSection("particle_system_vertices");
+            // nothing to do if there are no new particles!
+            if (sumParticleCount == 0)
+            {
+                Game.Instance.Profiler.EndSection("create_particles");
+                return;
+            }
 
+            Game.Instance.Profiler.BeginSection("allocate");
             CreateVertexArray vertices = renderer.StatefulParticleResourceManager.AllocateCreateVertexArray(sumParticleCount);
+            Game.Instance.Profiler.EndSection("allocate");
+
+            Game.Instance.Profiler.BeginSection("create");
             int maxindex = positionTextures[0].Width * positionTextures[0].Height;
             for (int i = 0; i < vertices.OccupiedSize; ++i)
             {
@@ -235,66 +245,58 @@ namespace ProjectMagma.Renderer.ParticleSystem.Stateful
 
                 ++index;
             }
+            Game.Instance.Profiler.EndSection("create");
 
-            Game.Instance.Profiler.EndSection("particle_system_vertices");
-            Game.Instance.Profiler.BeginSection("particle_system_particles");
-
+            Game.Instance.Profiler.BeginSection("emit");
             int vertexIndex = 0;
             for (int emitterIndex = 0; emitterIndex < emitters.Count; ++emitterIndex)
             {
                 ParticleEmitter emitter = emitters[emitterIndex];
+
                 emitter.CreateParticles(lastFrameTime, currentFrameTime, vertices.Array, vertexIndex, particleCount[emitterIndex]);
                 vertexIndex += particleCount[emitterIndex];
             }
+            Game.Instance.Profiler.EndSection("emit");
 
-            createVertexLists.Add(vertices);
-            Game.Instance.Profiler.EndSection("particle_system_particles");
+            Game.Instance.Profiler.BeginSection("render");
+            int localCreateVerticesIndex = 0;
 
-            if (render)
+            int verticesCopied = 0;
+            while (verticesCopied < vertices.OccupiedSize)
             {
-                Game.Instance.Profiler.BeginSection("particle_system_renderer");
-
-                int localCreateVerticesIndex = 0;
-                for (int i = 0; i < createVertexLists.Count; ++i)
+                int passVerticesCount = vertices.OccupiedSize - verticesCopied;
+                int passVerticesAvailable = createVertexBufferSize - localCreateVerticesIndex;
+                if (passVerticesCount > passVerticesAvailable)
                 {
-                    CreateVertexArray currentVertices = createVertexLists[i];
-
-                    int verticesCopied = 0;
-                    while (verticesCopied < currentVertices.OccupiedSize)
-                    {
-                        int passVerticesCount = currentVertices.OccupiedSize - verticesCopied;
-                        int passVerticesAvailable = createVertexBufferSize - localCreateVerticesIndex;
-                        if (passVerticesCount > passVerticesAvailable)
-                        {
-                            passVerticesCount = passVerticesAvailable;
-                        }
-
-                        for (int j = 0; j < passVerticesCount; ++j)
-                        {
-                            localCreateVertices[localCreateVerticesIndex + j] = currentVertices.Array[verticesCopied + j];
-                        }
-
-                        verticesCopied += passVerticesCount;
-                        localCreateVerticesIndex += passVerticesCount;
-
-                        if (localCreateVerticesIndex >= createVertexBufferSize - createVertexBufferIndex)
-                        {
-                            FlushCreateParticles(verticesCopied, currentFrameTime, dt);
-                            localCreateVerticesIndex = 0;
-                            createVertexBufferIndex = 0;
-                        }
-                    }
+                    passVerticesCount = passVerticesAvailable;
                 }
 
-                if (localCreateVerticesIndex > 0)
+                for (int j = 0; j < passVerticesCount; ++j)
                 {
-                    FlushCreateParticles(localCreateVerticesIndex, currentFrameTime, dt);
+                    localCreateVertices[localCreateVerticesIndex + j] = vertices.Array[verticesCopied + j];
                 }
 
-                createVertexLists.Clear();
+                verticesCopied += passVerticesCount;
+                localCreateVerticesIndex += passVerticesCount;
 
-                Game.Instance.Profiler.EndSection("particle_system_renderer");
+                if (localCreateVerticesIndex >= createVertexBufferSize - createVertexBufferIndex)
+                {
+                    FlushCreateParticles(verticesCopied, currentFrameTime, dt);
+                    localCreateVerticesIndex = 0;
+                    createVertexBufferIndex = 0;
+                }
             }
+
+            renderer.StatefulParticleResourceManager.FreeCreateVertexArray(vertices);
+
+            if (localCreateVerticesIndex > 0)
+            {
+                FlushCreateParticles(localCreateVerticesIndex, currentFrameTime, dt);
+            }
+
+            Game.Instance.Profiler.EndSection("render");
+
+            Game.Instance.Profiler.EndSection("create_particles");
         }
 
         public void Update(
@@ -303,12 +305,6 @@ namespace ProjectMagma.Renderer.ParticleSystem.Stateful
         )
         {
             //Console.WriteLine("update {0}", this);
-
-            for (int i = 0; i < createVertexLists.Count; ++i)
-            {
-                renderer.StatefulParticleResourceManager.FreeCreateVertexArray(createVertexLists[i]);
-            }
-            createVertexLists.Clear();
 
             // calculate the timestep to make
             double intermediateLastFrameTime = lastFrameTime - remainingDt;
@@ -359,11 +355,7 @@ namespace ProjectMagma.Renderer.ParticleSystem.Stateful
                 pass.End();
                 particleUpdateEffect.End();
 
-                Game.Instance.Profiler.BeginSection("create_particles");
-
-                CreateParticles(intermediateLastFrameTime, intermediateCurrentFrameTime, SimulationStep, true);
-
-                Game.Instance.Profiler.EndSection("create_particles");
+                CreateParticles(intermediateLastFrameTime, intermediateCurrentFrameTime, SimulationStep);
 
                 device.SetRenderTarget(1, oldRenderTarget1);
                 device.SetRenderTarget(0, oldRenderTarget0);
@@ -554,7 +546,6 @@ namespace ProjectMagma.Renderer.ParticleSystem.Stateful
         private Effect particleRenderingEffect;
 
         private SpriteBatch spriteBatch;
-        private List<CreateVertexArray> createVertexLists;
 
         private Texture2D spriteTexture;
 

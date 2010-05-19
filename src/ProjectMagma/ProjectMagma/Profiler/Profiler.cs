@@ -25,7 +25,7 @@ namespace ProjectMagma.Profiler
             filterList.Add("root");
             filterList.Add("root.draw");
             filterList.Add("root.draw.beginning_stuff");
-            filterList.Add("root.draw.beginning_stuff.particle_systems.*");
+            filterList.Add("root.draw.beginning_stuff.particle_systems.flamethrower_system.*");
             filterList.Add("root.draw.rendering");
 
             if (wrappedContent != null)
@@ -197,6 +197,8 @@ namespace ProjectMagma.Profiler
         {
             int sectionHeight = 0;
 
+            showAlways = showAlways || filterList.Contains(string.Format("{0}.*", section.FullName));
+
             if (filterList.Contains(section.FullName) || showAlways)
             {
                 spriteBatch.DrawString(font, section.Name, new Vector2(x, y), Color.Yellow);
@@ -219,8 +221,6 @@ namespace ProjectMagma.Profiler
                     string.Format("{0:0.00000000}", peakStats.AccumulatedTime / (double)peakStats.CallCount),
                     new Vector2(titleSafeX + 1000, y), Color.Yellow);
             }
-
-            showAlways = showAlways || filterList.Contains(string.Format("{0}.*", section.FullName));
 
             for (int i = 0; i < section.ChildCount; ++i)
                 { sectionHeight += DrawSection(graphics, section[i], x + 20, y + sectionHeight, titleSafeX, showAlways); }

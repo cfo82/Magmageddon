@@ -14,10 +14,6 @@ namespace ProjectMagma.Renderer.ParticleSystem.Emitter
             float particlesPerSecond
         )
         {
-            for (int i = 0; i < CalculatedValues; ++i)
-            {
-                this.randoms[i] = (float)random.NextDouble();
-            }
             this.point = point;
             this.direction = direction;
             this.particlesPerSecond = particlesPerSecond;
@@ -86,10 +82,17 @@ namespace ProjectMagma.Renderer.ParticleSystem.Emitter
             set { direction = value; }
         }
 
-        private float getRandom() 
+        private static float getRandom() 
         {
             return randoms[nextRandom = (nextRandom + 1) % CalculatedValues];
-            //return (float)random.NextDouble();
+        }
+
+        static FlamethrowerEmitter ()
+        {
+            for (int i = 0; i < CalculatedValues; ++i)
+            {
+                randoms[i] = (float)random.NextDouble();
+            }
         }
 
         public int EmitterIndex { set; get; }
@@ -98,9 +101,9 @@ namespace ProjectMagma.Renderer.ParticleSystem.Emitter
         private Vector3 direction;
         private double particlesPerSecond;
         private double fragmentLost = 0.0;
-        private float[] randoms = new float[CalculatedValues];
-        private int nextRandom = 0;
 
+        private static float[] randoms = new float[CalculatedValues];
+        private static int nextRandom = 0;
         private static Random random = new Random();
         private const int CalculatedValues = 1024;
     }

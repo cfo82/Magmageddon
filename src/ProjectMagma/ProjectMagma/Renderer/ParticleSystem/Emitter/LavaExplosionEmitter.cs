@@ -51,38 +51,62 @@ namespace ProjectMagma.Renderer.ParticleSystem.Emitter
             }
         }
 
-        /// <summary>
-        /// Helper used by the UpdateFire method. Chooses a random location
-        /// around a circle, at which a fire particle will be created.
-        /// </summary>
-        private Vector3 RandomPoint()
+
+        const int Prerandom = 1024;
+        static int nextRandomOffset = 0;
+        static readonly Vector3[] randomPositions = new Vector3[Prerandom];
+        static readonly Vector3[] randomOffsets = new Vector3[Prerandom];
+        static readonly Vector3[] velocities = new Vector3[Prerandom];
+
+        static LavaExplosionEmitter()
         {
             const float radius = 1200;
             const float height = 0;
-            return new Vector3(
-                (float)(random.NextDouble()-0.5) * 2 * radius, height, (float)(random.NextDouble()-0.8) * radius);
-        }
+            for (int i = 0; i < Prerandom; ++i)
+            {
+                randomPositions[i] = new Vector3(
+                    (float)(random.NextDouble()-0.5) * 2 * radius, height, (float)(random.NextDouble()-0.8) * radius);
+            }
 
-        private Vector3 RandomOffset()
-        {
             const float offset = 40;
-            return new Vector3(
-                (float)random.NextDouble() * 2 * offset - offset,
-                (float)random.NextDouble() * 2 * offset - offset,
-                (float)random.NextDouble() * 2 * offset - offset);
-        }
+            for (int i = 0; i < Prerandom; ++i)
+            {
+                randomOffsets[i] = new Vector3(
+                    (float)(random.NextDouble() - 0.5) * 2 * offset,
+                    (float)(random.NextDouble() - 0.5) * 2 * offset,
+                    (float)(random.NextDouble() - 0.5) * 2 * offset);
+            }
 
-        private Vector3 RandomVelocity()
-        {
             const float speed = 150;
 
             double horizontalAngle = random.NextDouble() * MathHelper.Pi * 2.0;
             double verticalAngle = random.NextDouble() * MathHelper.Pi * 2.0;
 
-            return new Vector3(
-                (float)(System.Math.Cos(horizontalAngle) * System.Math.Cos(verticalAngle) * (random.NextDouble() * speed)),
-                (float)System.Math.Abs(System.Math.Sin(verticalAngle) * (random.NextDouble() * speed)),
-                (float)(System.Math.Sin(horizontalAngle) * System.Math.Cos(verticalAngle) * (random.NextDouble() * speed)));
+            for (int i = 0; i < Prerandom; ++i)
+            {
+                velocities[i] = new Vector3(
+                    (float)(System.Math.Cos(horizontalAngle) * System.Math.Cos(verticalAngle) * (random.NextDouble() * speed)),
+                    (float)System.Math.Abs(System.Math.Sin(verticalAngle) * (random.NextDouble() * speed)),
+                    (float)(System.Math.Sin(horizontalAngle) * System.Math.Cos(verticalAngle) * (random.NextDouble() * speed)));
+            }
+        }
+
+        private static Vector3 RandomPoint()
+        {
+            nextRandomOffset = (nextRandomOffset + 1) % Prerandom;
+            return randomPositions[nextRandomOffset];
+        }
+
+        private static Vector3 RandomOffset()
+        {
+            nextRandomOffset = (nextRandomOffset + 1) % Prerandom;
+            return randomOffsets[nextRandomOffset];
+        }
+
+        private Vector3 RandomVelocity()
+        {
+            nextRandomOffset = (nextRandomOffset + 1) % Prerandom;
+            return velocities[nextRandomOffset];
         }
 
         public int EmitterIndex { set; get; }

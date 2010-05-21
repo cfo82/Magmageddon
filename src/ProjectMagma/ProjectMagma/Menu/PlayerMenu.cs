@@ -119,6 +119,7 @@ namespace ProjectMagma
 
                 if (at > menu.elementSelectedAt + Menu.StickRepeatTimeout)
                 {
+                    int oldRobotSelected = robotSelected[i];
                     if (Vector2.Dot(gamePadState.ThumbSticks.Left, Vector2.UnitY) > Menu.StickDirectionSelectionMin
                         || gamePadState.DPad.Up == ButtonState.Pressed)
                     {
@@ -138,6 +139,14 @@ namespace ProjectMagma
                                 robotSelected[i] = 0;
                             menu.elementSelectedAt = at;
                         }
+                    for (int j = 0; j < MaxPlayers; ++j)
+                    {
+                        if(robotSelected[j] == robotSelected[i] && i != j)
+                            if(GamePad.GetCapabilities((PlayerIndex)j).IsConnected)
+                                robotSelected[i] = oldRobotSelected;
+                            else
+                                robotSelected[j] = oldRobotSelected;
+                    }
                 }
 
                 previousState[i] = gamePadState;

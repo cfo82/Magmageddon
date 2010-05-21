@@ -148,6 +148,7 @@
     <Compile Include="Renderer\ParticleSystem\Stateful\ResourceManager.cs" />
     <Compile Include="Renderer\ParticleSystem\Stateful\StatefulParticleSystem.cs" />
     <Compile Include="Renderer\Renderables\ArrowRenderable.cs" />
+    <Compile Include="Renderer\Renderables\AlphaIslandRenderable.cs" />
     <Compile Include="Renderer\Renderables\FlamethrowerRenderable.cs" />
     <Compile Include="Renderer\Renderables\FireExplosionRenderable.cs" />
     <Compile Include="Renderer\Renderables\PointExplosionRenderable.cs" />
@@ -173,6 +174,7 @@
     <Compile Include="Renderer\RendererEntity.cs" />
     <Compile Include="Renderer\RendererEntityManager.cs" />
     <Compile Include="Renderer\RenderMode.cs" />
+    <Compile Include="Renderer\RenderPasses\CombinePass.cs" />
     <Compile Include="Renderer\RenderPasses\DownscalePass.cs" />
     <Compile Include="Renderer\RenderPasses\HdrCombinePass.cs" />
     <Compile Include="Renderer\RenderPasses\RenderPass.cs" />
@@ -256,6 +258,7 @@
     <Compile Include="Simulation\Properties\Rendering\BasicRenderProperty.cs">
       <SubType>Code</SubType>
     </Compile>
+    <Compile Include="Simulation\Properties\Rendering\AlphaIslandRenderProperty.cs" />
     <Compile Include="Simulation\Properties\Rendering\EnvironmentRenderProperty.cs">
       <SubType>Code</SubType>
     </Compile>

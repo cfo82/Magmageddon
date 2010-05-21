@@ -7,21 +7,17 @@ namespace ProjectMagma.Renderer
     public class GlowPass : RenderPass
     {
         public GlowPass(
-            Renderer renderer,
-            RenderTarget2D targetBlurredHDRColorBuffer,
-            RenderTarget2D targetBlurredRenderChannel
+            Renderer renderer
             )
         : base(renderer)
         {
             gaussianBlurEffect = Game.Instance.ContentManager.Load<Effect>("Effects/BlurModified");
-            this.targetBlurredHDRColorBuffer = targetBlurredHDRColorBuffer;
-            this.targetBlurredRenderChannel = targetBlurredRenderChannel;
         }
 
         public void Render(
             Texture2D hdrColorBuffer, Texture2D renderChannelBuffer,
             RenderTarget2D targetIntermediateBlurredHDRColorBuffer, RenderTarget2D targetIntermediateBlurredRenderChannelBuffer,
-            RenderTarget2D targetBlurredHDRColorBuffer, RenderTarget2D targetBlurredREnderChannelBuffer
+            RenderTarget2D targetBlurredHDRColorBuffer, RenderTarget2D targetBlurredRenderChannelBuffer
             )
         {
             // pass 1 horizontal blur
@@ -42,11 +38,7 @@ namespace ProjectMagma.Renderer
             Texture2D intermediateBlurredHDRColorBuffer = targetIntermediateBlurredHDRColorBuffer.GetTexture();
             Texture2D intermediateBlurredRenderChannelBuffer = targetIntermediateBlurredRenderChannelBuffer.GetTexture();
 
-            Renderer.Device.SetRenderTarget(0, targetBlurredHDRColorBuffer);
-            Renderer.Device.SetRenderTarget(0, targetBlurredREnderChannelBuffer);
-
-            // pass 2 vertical blukr
-            gaussianBlurEffect.Parameters["GeometryRender"].SetValue(targetBlurredHDRColorBuffer.GetTexture());
+            // pass 2 vertical blurr
             SetBlurEffectParameters(
                 0,
                 1.0f / hdrColorBuffer.Height,
@@ -56,7 +48,7 @@ namespace ProjectMagma.Renderer
                 );
             DrawFullscreenQuad(
                 intermediateBlurredHDRColorBuffer,
-                targetBlurredHDRColorBuffer, targetBlurredREnderChannelBuffer,
+                targetBlurredHDRColorBuffer, targetBlurredRenderChannelBuffer,
                 gaussianBlurEffect
                 );
         }
@@ -145,7 +137,5 @@ namespace ProjectMagma.Renderer
 
 
         private Effect gaussianBlurEffect;
-        private RenderTarget2D targetBlurredHDRColorBuffer;
-        private RenderTarget2D targetBlurredRenderChannel;
     }
 }

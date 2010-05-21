@@ -2,7 +2,7 @@
 // The following will be executed for every pixel shader, they are required
 // for most of the invoked lighting functions.
 //-----------------------------------------------------------------------------
-#define PS_START                                           \
+/*#define PS_START                                           \
 	PSOutput Output;                                       \
 	Output.RenderChannelColor = RenderChannelColor;        \
 	Output.DepthColor = float4(pin.PositionWS.y/DepthClipY, ComputeFogFactor(length(EyePosition - pin.PositionWS.xyz)), 0.0, 1.0); \
@@ -10,7 +10,15 @@
 	ColorPair lightResult;                                 \
 	float3 normal;                                         
 	//Output.DepthColor = float4(pin.PositionWS.y/DepthClipY, pin.PositionWS.w, 0.0, 1.0);
-	//Output.DepthColor = float4(pin.PositionWS.y/DepthClipY, pin.PositionWS.w, 0.0, 1.0);
+	//Output.DepthColor = float4(pin.PositionWS.y/DepthClipY, pin.PositionWS.w, 0.0, 1.0);*/
+
+#define PS_START                                           \
+	PSOutput Output;                                       \
+	Output.RenderChannelColor = RenderChannelColor;        \
+	Output.DepthColor = float4(pin.PositionWS.y/DepthClipY, 0, 0.0, 1.0); \
+	Output.RealDepth = pin.PositionPSP.z/pin.PositionPSP.w;                                \
+	ColorPair lightResult;                                 \
+	float3 normal;                                         
 
 
 
@@ -70,8 +78,16 @@ PSOutput PSIsland(PixelLightingPSInputTx pin) : COLOR
 	ComputeDiffSpecColorTx(Output.Color, texCoord, lightResult, pin.PositionWS.w);
 	PerturbIslandGroundAlpha(Output.Color.a, pin.PositionWS);
 	BlendWithShadow(Output.Color, pin.PositionWS, pin.PositionLS, pin.NormalWS);	
-	Output.DepthColor.z = 1;
+	//Output.DepthColor.z = 1;
 	return Output;
+}
+float4 PSIslandAlphaColor(PixelLightingPSInputTx pin) : COLOR0
+{
+	return PSIsland(pin).Color;
+}
+float4 PSIslandAlphaRenderChannel(PixelLightingPSInputTx pin) : COLOR0
+{
+	return PSIsland(pin).RenderChannelColor;
 }
 
 

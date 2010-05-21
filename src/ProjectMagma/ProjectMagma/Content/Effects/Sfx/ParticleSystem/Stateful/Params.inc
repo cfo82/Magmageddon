@@ -18,4 +18,3 @@ texture PositionTexture;
 texture VelocityTexture;
 texture SpriteTexture;
 texture RandomTexture;
-texture DepthTexture;

@@ -34,6 +34,23 @@ namespace ProjectMagma.Renderer
         }
 
         protected void DrawFullscreenQuad(
+            Texture2D texture,
+            RenderTarget2D renderTarget0,
+            Effect effect
+        )
+        {
+            Renderer.Device.SetRenderTarget(0, renderTarget0);
+            DrawFullscreenQuad
+            (
+                texture,
+                renderTarget0.Width,
+                renderTarget0.Height,
+                effect
+            );
+            Renderer.Device.SetRenderTarget(0, null);
+        }
+
+        protected void DrawFullscreenQuad(
            Texture2D texture,
            Effect effect
         )

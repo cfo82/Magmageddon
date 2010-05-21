@@ -73,7 +73,7 @@
   </Entity>
 
 
-  
+
   <Entity name="island1" extends="island_base_burnt1">
     <Attributes>
       <Attribute name="position" template="float3" value="-150 65 120"/>
@@ -84,34 +84,65 @@
     </Properties>
   </Entity>
 
+  <Entity name="island1a" extends="island_base_burnt1">
+    <Attributes>
+      <Attribute name="position" template="float3" value="-0 65 120"/>
+      <Attribute name="fixed" template="bool" value="false"/>
+
+      <!-- new test texture -->
+      <Attribute name="diffuse_texture" template="string" value="Textures/Environment/environ_diffuse_test_alpha"/>
+    </Attributes>
+    <Properties>
+      <Property name="controller" type="ProjectMagma.Simulation.IslandNoMovementControllerProperty"/>
+
+      <!-- test alpha rendering -->
+      <Property name="render" type="ProjectMagma.Simulation.AlphaIslandRenderProperty"/>
+    </Properties>
+  </Entity>
+
   <Entity name="island2" extends="island_base_burnt2">
     <Attributes>
       <Attribute name="position" template="float3" value="150 100 160"/>
     </Attributes>
+    <Properties>
+      <Property name="controller" type="ProjectMagma.Simulation.IslandNoMovementControllerProperty"/>
+    </Properties>
   </Entity>
 
   <Entity name="island4" extends="island_base_grass1">
     <Attributes>
       <Attribute name="position" template="float3" value="350 180 120"/>
     </Attributes>
+    <Properties>
+      <Property name="controller" type="ProjectMagma.Simulation.IslandNoMovementControllerProperty"/>
+    </Properties>
   </Entity>
 
   <Entity name="island6" extends="island_base_grass1">
     <Attributes>
       <Attribute name="position" template="float3" value="60 200 -30"/>
     </Attributes>
+    <Properties>
+      <Property name="controller" type="ProjectMagma.Simulation.IslandNoMovementControllerProperty"/>
+    </Properties>
   </Entity>
 
   <Entity name="island8" extends="island_base_grass3">
     <Attributes>
       <Attribute name="position" template="float3" value="-250 240 220"/>
     </Attributes>
+    <Properties>
+      <Property name="controller" type="ProjectMagma.Simulation.IslandNoMovementControllerProperty"/>
+    </Properties>
   </Entity>
 
   <Entity name="island10" extends="island_base_grass2">
     <Attributes>
       <Attribute name="position" template="float3" value="-90 280 -280"/>
     </Attributes>
+    <Properties>
+      <Property name="controller" type="ProjectMagma.Simulation.IslandNoMovementControllerProperty"/>
+    </Properties>
   </Entity>
 
   <Entity name="island12" extends="island_base_ice2">
@@ -119,6 +150,9 @@
       <Attribute name="position" template="float3" value="-140 400 -240"/>
       <Attribute name="fixed" template="bool" value="false"/>
     </Attributes>
+    <Properties>
+      <Property name="controller" type="ProjectMagma.Simulation.IslandNoMovementControllerProperty"/>
+    </Properties>
   </Entity>
 
   <Entity name="island13" extends="island_base_ice3">

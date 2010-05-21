@@ -958,11 +958,21 @@
       <Importer>FontDescriptionImporter</Importer>
       <Processor>FontDescriptionProcessor</Processor>
     </Compile>
+    <Compile Include="Effects\Combine.fx">
+      <Name>Combine</Name>
+      <Importer>EffectImporter</Importer>
+      <Processor>EffectProcessor</Processor>
+    </Compile>
     <None Include="Sounds\movement\20847__plagasul__jump1.wav">
       <Name>20847__plagasul__jump1</Name>
       <Importer>WavImporter</Importer>
       <Processor>SoundEffectProcessor</Processor>
     </None>
+    <Compile Include="Textures\Environment\environ_diffuse_test_alpha.tga">
+      <Name>environ_diffuse_test_alpha</Name>
+      <Importer>TextureImporter</Importer>
+      <Processor>TextureProcessor</Processor>
+    </Compile>
     <Compile Include="Textures\Lava\newstucco_chans.tga">
       <Name>newstucco_chans</Name>
       <Importer>TextureImporter</Importer>

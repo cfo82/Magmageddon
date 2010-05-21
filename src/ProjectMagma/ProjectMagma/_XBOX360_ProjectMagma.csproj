@@ -137,6 +137,7 @@
     <Compile Include="Renderer\ParticleSystem\Stateful\ResourceManager.cs" />
     <Compile Include="Renderer\ParticleSystem\Stateful\Size.cs" />
     <Compile Include="Renderer\ParticleSystem\Stateful\StatefulParticleSystem.cs" />
+    <Compile Include="Renderer\Renderables\AlphaIslandRenderable.cs" />
     <Compile Include="Renderer\Renderables\BasicRenderable.cs" />
     <Compile Include="Renderer\Renderables\ArrowRenderable.cs" />
     <Compile Include="Renderer\Renderables\PowerupRenderable.cs" />
@@ -161,6 +162,7 @@
     <Compile Include="Renderer\RendererEntity.cs" />
     <Compile Include="Renderer\RendererEntityManager.cs" />
     <Compile Include="Renderer\RenderMode.cs" />
+    <Compile Include="Renderer\RenderPasses\CombinePass.cs" />
     <Compile Include="Renderer\RenderPasses\DownscalePass.cs" />
     <Compile Include="Renderer\RenderPasses\GlowPass.cs" />
     <Compile Include="Renderer\RenderPasses\HDRCombinePass.cs">
@@ -225,6 +227,7 @@
     <Compile Include="Simulation\Properties\Player\PlayerBaseProperty.cs" />
     <Compile Include="Simulation\Properties\Player\PlayerControllerProperty.cs" />
     <Compile Include="Simulation\Properties\Player\RespawnLightControllerProperty.cs" />
+    <Compile Include="Simulation\Properties\Rendering\AlphaIslandRenderProperty.cs" />
     <Compile Include="Simulation\Properties\Rendering\ArrowRenderProperty.cs" />
     <Compile Include="Simulation\Properties\Rendering\BasicRenderProperty.cs" />
     <Compile Include="Simulation\Properties\Rendering\PowerupRenderProperty.cs" />

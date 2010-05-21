@@ -6,6 +6,7 @@ namespace ProjectMagma.Renderer
         RenderToShadowMap,
         RenderToScene,
         RenderToSceneAlpha,
+        RenderToSceneAlphaTEST,
         RenderOverlays
     }
 }

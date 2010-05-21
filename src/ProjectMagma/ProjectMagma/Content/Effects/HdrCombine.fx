@@ -229,7 +229,7 @@ PostPixelShaderOutput PostPixelShader(float2 texCoord : TEXCOORD0)
     float fogWeight = saturate(channel_map.r * 0.75 + channel_map.g * 1 + channel_map.b * 1); // players should be less affected
     
     combined = GradientYBlueMap(combined, perturbedTexCoord, gradientWeight);
-    ApplyFog(combined, perturbedTexCoord, fogWeight);
+    //ApplyFog(combined, perturbedTexCoord, fogWeight);
     
     result.depth = tex2D(DepthTextureSampler, texCoord).r;
 	result.color = combined;

@@ -42,14 +42,3 @@ sampler SpriteSampler = sampler_state
     AddressU = Clamp;
     AddressV = Clamp;
 };
-sampler DepthSampler = sampler_state
-{
-    Texture = (DepthTexture);
-    
-    MinFilter = Point;
-    MagFilter = Point;
-    MipFilter = Point;
-    
-    AddressU = Clamp;
-    AddressV = Clamp;
-};

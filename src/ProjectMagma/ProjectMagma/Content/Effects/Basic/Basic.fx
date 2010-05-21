@@ -85,6 +85,38 @@ Technique Island
 	}
 }
 
+Technique IslandAlphaColor
+{
+	Pass 
+	{
+		VertexShader = compile vs_3_0 VSBasicPixelLightingNmTxSq();
+		PixelShader	 = compile ps_3_0 PSIslandAlphaColor();
+		ZEnable = true;		
+		ZWriteEnable = true;
+		AlphaTestEnable = false;
+
+		AlphaBlendEnable = true;
+		DestBlend = INVSRCALPHA;
+		SrcBlend = SRCALPHA;
+		
+	}
+}
+Technique IslandAlphaRenderChannel
+{
+	Pass 
+	{
+		VertexShader = compile vs_3_0 VSBasicPixelLightingNmTxSq();
+		PixelShader	 = compile ps_3_0 PSIslandAlphaRenderChannel();
+		ZEnable = true;		
+		ZWriteEnable = false;
+		AlphaTestEnable = false;
+
+		AlphaBlendEnable = true;
+		DestBlend = INVSRCALPHA;
+		SrcBlend = SRCALPHA;
+	}
+}
+
 Technique Environment
 {
 	Pass

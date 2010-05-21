@@ -167,7 +167,6 @@ namespace ProjectMagma.Renderer.ParticleSystem.Stateful
             particleCreateEffect.Parameters["VelocityTexture"].SetValue(velocityTextures[activeTexture].GetTexture());
             particleCreateEffect.Parameters["RandomTexture"].SetValue(renderer.VectorCloudTexture);
             particleCreateEffect.Parameters["SpriteTexture"].SetValue(spriteTexture);
-            particleCreateEffect.Parameters["DepthTexture"].SetValue(renderer.ToolTexture);
             SetCreateParameters(particleCreateEffect.Parameters);
 
             particleCreateEffect.Begin();
@@ -335,7 +334,6 @@ namespace ProjectMagma.Renderer.ParticleSystem.Stateful
                 particleUpdateEffect.Parameters["VelocityTexture"].SetValue(velocityTextures[activeTexture].GetTexture());
                 particleUpdateEffect.Parameters["RandomTexture"].SetValue(renderer.VectorCloudTexture);
                 particleUpdateEffect.Parameters["SpriteTexture"].SetValue(spriteTexture);
-                particleUpdateEffect.Parameters["DepthTexture"].SetValue(renderer.ToolTexture);
                 SetUpdateParameters(particleUpdateEffect.Parameters);
 
                 Debug.Assert(particleUpdateEffect.CurrentTechnique.Passes.Count == 1);
@@ -398,7 +396,6 @@ namespace ProjectMagma.Renderer.ParticleSystem.Stateful
             particleRenderingEffect.Parameters["VelocityTexture"].SetValue(velocityTextures[activeTexture].GetTexture());
             particleRenderingEffect.Parameters["RandomTexture"].SetValue(renderer.VectorCloudTexture);
             particleRenderingEffect.Parameters["SpriteTexture"].SetValue(spriteTexture);
-            particleRenderingEffect.Parameters["DepthTexture"].SetValue(renderer.ToolTexture);
 
             SetRenderingParameters(particleRenderingEffect.Parameters);
 

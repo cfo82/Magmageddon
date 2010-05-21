@@ -1,4 +1,4 @@
-#define ALWAYS_FOUR_PLAYERS
+//#define ALWAYS_FOUR_PLAYERS
 #define TEST_RELEASE
 
 using System;
@@ -179,11 +179,11 @@ namespace ProjectMagma
 
 #if DEBUG || PROFILE || TEST_RELEASE
             // initialize simulation
-            //LoadLevel("Level/Instances/TestLevel/Simulation", "Level/Instances/TestLevel/Renderer");
+            LoadLevel("Level/Instances/TestLevel/Simulation", "Level/Instances/TestLevel/Renderer");
             //LoadLevel("Level/Instances/4vs4/Simulation", "Level/Instances/4vs4/Renderer");
             //LoadLevel("Level/Instances/StaircaseOfDoom/Simulation", "Level/Instances/StaircaseOfDoom/Renderer");
             //LoadLevel("Level/Instances/Stack/Simulation", "Level/Instances/Stack/Renderer");
-            LoadLevel("Level/Instances/4Noobs/Simulation", "Level/Instances/4Noobs/Renderer");
+            //LoadLevel("Level/Instances/4Noobs/Simulation", "Level/Instances/4Noobs/Renderer");
 
             // set default player
             Entity player1 = new Entity("player1");
@@ -691,11 +691,18 @@ namespace ProjectMagma
                 {
                     XmlSerializer serializer = new XmlSerializer(typeof(Settings));
                     settings = (Settings) serializer.Deserialize(stream);
+                    ApplySettings();
                 }
             }
 
             // Dispose the container, to commit changes.
             container.Dispose();
+        }
+
+        private void ApplySettings()
+        {
+            EffectsVolume = settings.effectsVolume;
+            MusicVolume = settings.musicVolume;
         }
 
         public class Settings

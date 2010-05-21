@@ -57,8 +57,8 @@ namespace ProjectMagma
             Game.Instance.Profiler.BeginSection("menu_update");
 
             double at = gameTime.TotalGameTime.TotalMilliseconds;
-            int i = 1;
-            while(!GamePad.GetState((PlayerIndex)i).IsConnected && i < 4)
+            int i = 0;
+            while(i < 3 && !GamePad.GetState((PlayerIndex)i).IsConnected)
                 i++;
             GamePadState gamePadState = GamePad.GetState((PlayerIndex)i);
             KeyboardState keyboardState = Keyboard.GetState();

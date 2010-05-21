@@ -269,15 +269,8 @@ namespace ProjectMagma
                 Vector3 color1 = entity.GetVector3("color1");
                 Vector3 color2 = entity.GetVector3("color2");
 
-                //if (active)
-                //{
-                //    // TODO: replace by real colors
-                //    if (i == 0) backgroundColor = Color.Red;
-                //    if (i == 1) backgroundColor = Color.Green;
-                //    if (i == 2) backgroundColor = Color.Blue;
-                //    if (i == 3) backgroundColor = Color.Yellow;
-                //}
-                backgroundColor = new Color(color1 * 0.8f);
+                if (active)
+                    backgroundColor = new Color(color2 * 0.8f);
 
                 Vector2 halfSpriteDim = new Vector2(sprite.Width, sprite.Height) / 4;
                 spriteBatch.Draw(sprite, pos - halfSpriteDim * (playerBoxSize.Value-1f), 

@@ -181,7 +181,7 @@ namespace ProjectMagma.Profiler
         [Conditional("PROFILING")]
         public void HandleInput(GameTime gameTime)
         {
-            if (Keyboard.GetState().IsKeyDown(Keys.Enter) ||
+            if (Keyboard.GetState().IsKeyDown(Keys.F10) ||
                 GamePad.GetState(0).IsButtonDown(Buttons.LeftShoulder))
             {
                 double at = gameTime.TotalGameTime.TotalMilliseconds;
@@ -264,7 +264,7 @@ namespace ProjectMagma.Profiler
             else
             {
                 string text1 = string.Format("Profiler: {0}.", name);
-                string text2 = "Press (ENTER) or (LS) to display overlay.";
+                string text2 = "Press (F10) or (LS) to display overlay.";
 
                 Vector2 text1Size = font.MeasureString(text1);
                 Vector2 text2Size = font.MeasureString(text2);

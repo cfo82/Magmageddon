@@ -23,7 +23,13 @@
   <Robot>
     <Name>Marvin</Name>
     <Description>Gugus.</Description>
-    <EntityName>purple_robot</EntityName>
+    <EntityName>white_robot</EntityName>
   </Robot>
 
+  <Robot>
+    <Name>Fembot</Name>
+    <Description>Yeah, baby.</Description>
+    <EntityName>pink_robot</EntityName>
+  </Robot>
+  
 </Robots> 

@@ -14,6 +14,8 @@ namespace ProjectMagma
 {
     public class PlayerMenu : MenuScreen
     {
+        private const int MaxPlayers = 4;
+
         private readonly Rectangle PlayerIconRect = new Rectangle(30, 30, 265, 350);
 
         private readonly double[] playerButtonPressedAt = new double[] { 0, 0, 0, 0 };
@@ -24,7 +26,7 @@ namespace ProjectMagma
 
         private readonly LevelMenu levelMenu;
 
-        private readonly GamePadState[] previousState = new GamePadState[4];
+        private readonly GamePadState[] previousState = new GamePadState[MaxPlayers];
 
         private SineFloat playerBoxSize;
 
@@ -57,9 +59,11 @@ namespace ProjectMagma
                 p.BlendFactor = 0.0f;
             }
 
-            for (int i = 0; i < 4; ++i)
+            playerPreview = new RenderTarget2D[MaxPlayers];
+            for (int i = 0; i < MaxPlayers; ++i)
             {
-                playerPreview[i] = new RenderTarget2D(Game.Instance.GraphicsDevice, 445, 445, 1, Game.Instance.GraphicsDevice.PresentationParameters.BackBufferFormat);
+                playerPreview[i] = new RenderTarget2D(Game.Instance.GraphicsDevice, 445, 445, 1, 
+                    Game.Instance.GraphicsDevice.PresentationParameters.BackBufferFormat);
             }
 
             playerTexture = Game.Instance.ContentManager.Load<Texture2D>("Textures/Player/Robot_texture10");
@@ -81,14 +85,13 @@ namespace ProjectMagma
                 || (Keyboard.GetState().IsKeyDown(Keys.Enter)
                     && menu.lastKBState.IsKeyUp(Keys.Enter))))
             {
-                List<Entity> players = new List<Entity>(4);
-                for (int i = 0; i < 4; i++)
+                List<Entity> players = new List<Entity>(MaxPlayers);
+                for (int i = 0; i < MaxPlayers; i++)
                 {
                     if (playerActive[i])
                     {
                         Entity player = new Entity("player" + (players.Count + 1));
                         player.AddIntAttribute("game_pad_index", i);
-                        player.AddIntAttribute("lives", 5);
                         player.AddStringAttribute("robot_entity", Game.Instance.Robots[robotSelected[i]].Entity);
                         player.AddStringAttribute("player_name", Game.Instance.Robots[robotSelected[i]].Name);
                         players.Add(player);
@@ -101,7 +104,7 @@ namespace ProjectMagma
                 return;
             }
 
-            for (int i = 0; i < 4; i++)
+            for (int i = 0; i < MaxPlayers; i++)
             {
                 GamePadState gamePadState = GamePad.GetState((PlayerIndex)i);
 
@@ -114,7 +117,6 @@ namespace ProjectMagma
                     playerButtonPressedAt[i] = at;
                 }
 
-                /*
                 if (at > menu.elementSelectedAt + Menu.StickRepeatTimeout)
                 {
                     if (Vector2.Dot(gamePadState.ThumbSticks.Left, Vector2.UnitY) > Menu.StickDirectionSelectionMin
@@ -137,12 +139,11 @@ namespace ProjectMagma
                             menu.elementSelectedAt = at;
                         }
                 }
-                */
 
                 previousState[i] = gamePadState;
             }
 
-            for (int i = 0; i < 4; ++i)
+            for (int i = 0; i < MaxPlayers; ++i)
             {
                 // load templates
                 LevelData levelData = Game.Instance.ContentManager.Load<LevelData>("Level/Common/RobotTemplates");
@@ -225,7 +226,7 @@ namespace ProjectMagma
 
         private Model playerModel;
         ModelMesh playerMesh;
-        private RenderTarget2D[] playerPreview = new RenderTarget2D[4];
+        private RenderTarget2D[] playerPreview;
         Texture2D playerTexture;
         Texture2D specularTexture;
 
@@ -234,7 +235,7 @@ namespace ProjectMagma
         public override void Draw(GameTime gameTime, SpriteBatch spriteBatch)
         {
 
-            for (int i = 0; i < 4; i++)
+            for (int i = 0; i < MaxPlayers; i++)
             {
                 bool active = playerActive[i];
                 Texture2D sprite = playerBackgroundInactive;
@@ -267,14 +268,15 @@ namespace ProjectMagma
                 //    if (i == 2) backgroundColor = Color.Blue;
                 //    if (i == 3) backgroundColor = Color.Yellow;
                 //}
-                backgroundColor = new Color(entity.GetVector3("color1")*0.8f);
+                backgroundColor = new Color(color1 * 0.8f);
 
                 Vector2 halfSpriteDim = new Vector2(sprite.Width, sprite.Height) / 4;
-                spriteBatch.Draw(sprite, pos - halfSpriteDim * (playerBoxSize.Value-1f), null, backgroundColor, 0, Vector2.Zero, scale * playerBoxSize.Value, SpriteEffects.None, 0);
+                spriteBatch.Draw(sprite, pos - halfSpriteDim * (playerBoxSize.Value-1f), 
+                    null, backgroundColor, 0, Vector2.Zero, scale * playerBoxSize.Value, SpriteEffects.None, 0);
 
                 if (active)
                 {
-                    Texture2D robot = playerPreview[robotSelected[i]].GetTexture();
+                    Texture2D robot = playerPreview[i].GetTexture();
                     float width = PlayerIconRect.Width * scale;
                     float rscale = width / robot.Width;
                     //spriteBatch.Draw(robot, pos + new Vector2(PlayerIconRect.Left, PlayerIconRect.Top) * scale,
@@ -294,7 +296,7 @@ namespace ProjectMagma
         public override void OnOpen()
         {
             // deactivate players who's gamepad was unplugged
-            for (int i = 1; i < 4; i++)
+            for (int i = 1; i < MaxPlayers; i++)
             {
                 playerActive[i] = playerActive[i] && GamePad.GetCapabilities((PlayerIndex)i).IsConnected;
             }

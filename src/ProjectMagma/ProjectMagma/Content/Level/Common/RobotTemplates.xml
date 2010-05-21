@@ -12,11 +12,12 @@
       <Attribute name="specular_power" template="float" value="30"/>
       <Attribute name="emissive_color" template="float3" value="0.25 0.25 0.25"/>
       <Attribute name="alpha" template="float" value="1.0"/>
+      <Attribute name="lives" template="int" value="5"/>
     </Attributes>
     <Properties>
       <Property name="collision" type="ProjectMagma.Simulation.Collision.CollisionProperty"/>
-      <Property name="input" type="ProjectMagma.Simulation.RandomInputProperty"/>
-      <!--Property name="input" type="ProjectMagma.Simulation.GamePadInputProperty"/-->
+      <!--Property name="input" type="ProjectMagma.Simulation.RandomInputProperty"/-->
+      <Property name="input" type="ProjectMagma.Simulation.GamePadInputProperty"/>
       <Property name="controller" type="ProjectMagma.Simulation.PlayerControllerProperty"/>
       <Property name="burnable" type="ProjectMagma.Simulation.BurnableProperty"/>
       <Property name="hud" type="ProjectMagma.Simulation.HUDProperty"/>
@@ -55,11 +56,18 @@
     </Attributes>
   </Entity>
 
-  <Entity name="purple_robot" extends="rendered_robot_base" abstract="true" >
+  <Entity name="pink_robot" extends="rendered_robot_base" abstract="true" >
     <Attributes>
       <Attribute name="color1" template="float3" value="0.91 0.08 0.64"/>
       <Attribute name="color2" template="float3" value="0.77 0.08 0.86"/>
     </Attributes>
-  </Entity>  
-  
+  </Entity>
+
+  <Entity name="white_robot" extends="rendered_robot_base" abstract="true" >
+    <Attributes>
+      <Attribute name="color1" template="float3" value=".9 .9 0.8"/>
+      <Attribute name="color2" template="float3" value=".7 .7 .6"/>
+    </Attributes>
+  </Entity>
+
 </Level>

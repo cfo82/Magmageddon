@@ -142,7 +142,7 @@ namespace ProjectMagma
                     for (int j = 0; j < MaxPlayers; ++j)
                     {
                         if(robotSelected[j] == robotSelected[i] && i != j)
-                            if(GamePad.GetCapabilities((PlayerIndex)j).IsConnected)
+                            if(playerActive[j])
                                 robotSelected[i] = oldRobotSelected;
                             else
                                 robotSelected[j] = oldRobotSelected;

@@ -171,10 +171,13 @@ float3 FogColor;//=float4(0,0,1,1);
 
 inline void ApplyFog(inout float4 img, in float2 texCoord, in float weight, in float alpha)
 {
+	// zRescaled.g seems to be correct on a pc but may be wrong on the xbox. we need
+	// to check as soon as the ToolTexture has been replaced.
+
 	// compute depth intensity
 	float2 zRaw = tex2D(DepthTextureSampler, texCoord).rg;
 	float2 zRescaled = 1-(1-tex2D(DepthTextureSampler, texCoord).rg-FogZOff)*FogZMul;
-	float z = saturate((1-alpha)*zRescaled.r+alpha*zRescaled.g);
+	float z = saturate(zRescaled.r);//saturate((1-alpha)*zRescaled.r+alpha*zRescaled.g);
 
 	// compute vertical intensity
 	float yRaw = tex2D(ToolTextureSampler, texCoord).x;

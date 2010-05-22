@@ -94,10 +94,10 @@ namespace ProjectMagma.Simulation
                 for (int i = 0; i < models.Length; i++)
                 {
                     Entity player = players[i];
-                    Debug.Assert(player.HasInt("game_pad_index"));
-                    Debug.Assert(player.HasInt("lives"));
+                    Debug.Assert(player.HasInt(CommonNames.GamePadIndex));
+                    Debug.Assert(player.HasInt(CommonNames.Lives));
                     Debug.Assert(player.HasString("robot_entity"));
-                    Debug.Assert(player.HasString("player_name"));
+                    Debug.Assert(player.HasString(CommonNames.PlayerName));
                     player.AddBoolAttribute("ready", false);
                     player.GetAttribute<BoolAttribute>("ready").ValueChanged += OnPlayerReady;
                     models[i] = player.GetString("robot_entity");

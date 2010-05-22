@@ -17,14 +17,14 @@ namespace ProjectMagma.Simulation
         {
             base.OnAttached(entity);
 
-            if (entity.HasVector3("position"))
+            if (entity.HasVector3(CommonNames.Position))
             {
-                entity.GetVector3Attribute("position").ValueChanged += PositionChanged;
+                entity.GetVector3Attribute(CommonNames.Position).ValueChanged += PositionChanged;
             }
 
-            if (entity.HasBool("hide"))
+            if (entity.HasBool(CommonNames.Hide))
             {
-                entity.GetBoolAttribute("hide").ValueChanged += HideChanged;
+                entity.GetBoolAttribute(CommonNames.Hide).ValueChanged += HideChanged;
             }
 
             Game.Instance.Simulation.CurrentUpdateQueue.AddUpdate(new AddRenderableUpdate((Renderable)Updatable));
@@ -34,14 +34,14 @@ namespace ProjectMagma.Simulation
         {
             Game.Instance.Simulation.CurrentUpdateQueue.AddUpdate(new RemoveRenderableUpdate((Renderable)Updatable));
 
-            if (entity.HasVector3("position"))
+            if (entity.HasVector3(CommonNames.Position))
             {
-                entity.GetVector3Attribute("position").ValueChanged -= PositionChanged;
+                entity.GetVector3Attribute(CommonNames.Position).ValueChanged -= PositionChanged;
             }
 
-            if (entity.HasBool("hide"))
+            if (entity.HasBool(CommonNames.Hide))
             {
-                entity.GetBoolAttribute("hide").ValueChanged -= HideChanged;
+                entity.GetBoolAttribute(CommonNames.Hide).ValueChanged -= HideChanged;
             }
 
             base.OnDetached(entity);
@@ -57,13 +57,13 @@ namespace ProjectMagma.Simulation
             int renderPriority = 0;
             Vector3 position = Vector3.Zero;
 
-            if (entity.HasInt("render_priority"))
+            if (entity.HasInt(CommonNames.RenderPriority))
             {
-                renderPriority = entity.GetInt("render_priority");
+                renderPriority = entity.GetInt(CommonNames.RenderPriority);
             }
-            if (entity.HasVector3("position"))
+            if (entity.HasVector3(CommonNames.Position))
             {
-                position = entity.GetVector3("position");
+                position = entity.GetVector3(CommonNames.Position);
             }
 
             return new RespawnLightRenderable(Game.Instance.Simulation.Time.At, renderPriority, position - new Vector3(0, 25, 10));

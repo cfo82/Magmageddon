@@ -28,21 +28,21 @@ namespace ProjectMagma.Simulation
         {
             base.SetUpdatableParameters(entity);
 
-            if (entity.HasFloat("env_ground_waves_amplitude"))
+            if (entity.HasFloat(CommonNames.EnvGroundWavesAplitude))
             {
-                ChangeFloat("EnvGroundWavesAmplitude", entity.GetFloat("env_ground_waves_amplitude"));
+                ChangeFloat("EnvGroundWavesAmplitude", entity.GetFloat(CommonNames.EnvGroundWavesAplitude));
             }
-            if (entity.HasFloat("env_ground_waves_frequency"))
+            if (entity.HasFloat(CommonNames.EnvGroundWavesFrequency))
             {
-                ChangeFloat("EnvGroundWavesFrequency", entity.GetFloat("env_ground_waves_frequency"));
+                ChangeFloat("EnvGroundWavesFrequency", entity.GetFloat(CommonNames.EnvGroundWavesFrequency));
             }
-            if (entity.HasFloat("env_ground_waves_hardness"))
+            if (entity.HasFloat(CommonNames.EnvGroundWavesHardness))
             {
-                ChangeFloat("EnvGroundWavesHardness", entity.GetFloat("env_ground_waves_hardness"));
+                ChangeFloat("EnvGroundWavesHardness", entity.GetFloat(CommonNames.EnvGroundWavesHardness));
             }
-            if (entity.HasFloat("env_ground_waves_velocity"))
+            if (entity.HasFloat(CommonNames.EnvGroundWavesVelocity))
             {
-                ChangeFloat("EnvGroundWavesVelocity", entity.GetFloat("env_ground_waves_velocity"));
+                ChangeFloat("EnvGroundWavesVelocity", entity.GetFloat(CommonNames.EnvGroundWavesVelocity));
             }
         }
     }

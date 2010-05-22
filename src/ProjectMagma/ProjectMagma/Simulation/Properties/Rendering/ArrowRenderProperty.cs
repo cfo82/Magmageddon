@@ -24,25 +24,25 @@ namespace ProjectMagma.Simulation
         {
             base.SetUpdatableParameters(entity);
 
-            //Debug.Assert(entity.HasVector3("color1"));
-            //Debug.Assert(entity.HasVector3("color2"));
-            ChangeVector3("DiffuseColor", entity.GetVector3("color1"));
-            ChangeVector3("SpecularColor", entity.GetVector3("color2"));
-            ChangeVector3("EmissiveColor", entity.GetVector3("color1"));
+            //Debug.Assert(entity.HasVector3(CommonNames.Color1));
+            //Debug.Assert(entity.HasVector3(CommonNames.Color2));
+            ChangeVector3("DiffuseColor", entity.GetVector3(CommonNames.Color1));
+            ChangeVector3("SpecularColor", entity.GetVector3(CommonNames.Color2));
+            ChangeVector3("EmissiveColor", entity.GetVector3(CommonNames.Color1));
             //ChangeFloat("SpecularPower", 16.0f);
             
             //}
-            //if (entity.HasVector2("persistent_squash"))
+            //if (entity.HasVector2(CommonNames.PersistentSquash))
             //{
-            //    ChangeVector2("SquashParams", entity.GetVector2("persistent_squash"));
+            //    ChangeVector2("SquashParams", entity.GetVector2(CommonNames.PersistentSquash));
             //    ChangeBool("PersistentSquash", true);
             //}
 
-            //arrow.AddVector3Attribute("diffuse_color", player.GetVector3("color2"));
-            //arrow.AddVector3Attribute("specular_color", Vector3.One);
-            //arrow.AddFloatAttribute("alpha", 0.6f);
-            //arrow.AddFloatAttribute("specular_power", 0.3f);
-            //arrow.AddVector2Attribute("persistent_squash", new Vector2(1000, 0.8f));
+            //arrow.AddVector3Attribute(CommonNames.DiffuseColor, player.GetVector3(CommonNames.Color2));
+            //arrow.AddVector3Attribute(CommonNames.SpecularColor, Vector3.One);
+            //arrow.AddFloatAttribute(CommonNames.Alpha, 0.6f);
+            //arrow.AddFloatAttribute(CommonNames.SpecularPower, 0.3f);
+            //arrow.AddVector2Attribute(CommonNames.PersistentSquash, new Vector2(1000, 0.8f));
             //ChangeFloat("Alpha", 0.8f);
             PersistentSquash = false;
             JumpPossible = false;

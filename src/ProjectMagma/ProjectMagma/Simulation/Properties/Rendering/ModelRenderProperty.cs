@@ -24,17 +24,17 @@ namespace ProjectMagma.Simulation
         {
             base.OnAttached(entity);
 
-            if (entity.HasVector3("position"))
+            if (entity.HasVector3(CommonNames.Position))
             {
-                entity.GetVector3Attribute("position").ValueChanged += PositionChanged;
+                entity.GetVector3Attribute(CommonNames.Position).ValueChanged += PositionChanged;
             }
-            if (entity.HasQuaternion("rotation"))
+            if (entity.HasQuaternion(CommonNames.Rotation))
             {
-                entity.GetQuaternionAttribute("rotation").ValueChanged += RotationChanged;
+                entity.GetQuaternionAttribute(CommonNames.Rotation).ValueChanged += RotationChanged;
             }
-            if (entity.HasVector3("scale"))
+            if (entity.HasVector3(CommonNames.Scale))
             {
-                entity.GetVector3Attribute("scale").ValueChanged += ScaleChanged;
+                entity.GetVector3Attribute(CommonNames.Scale).ValueChanged += ScaleChanged;
             }
 
             Game.Instance.Simulation.CurrentUpdateQueue.AddUpdate(new AddRenderableUpdate((Renderable)Updatable));
@@ -44,17 +44,17 @@ namespace ProjectMagma.Simulation
         {
             Game.Instance.Simulation.CurrentUpdateQueue.AddUpdate(new RemoveRenderableUpdate((Renderable)Updatable));
 
-            if (entity.HasVector3("position"))
+            if (entity.HasVector3(CommonNames.Position))
             {
-                entity.GetVector3Attribute("position").ValueChanged -= PositionChanged;
+                entity.GetVector3Attribute(CommonNames.Position).ValueChanged -= PositionChanged;
             }
-            if (entity.HasQuaternion("rotation"))
+            if (entity.HasQuaternion(CommonNames.Rotation))
             {
-                entity.GetQuaternionAttribute("rotation").ValueChanged -= RotationChanged;
+                entity.GetQuaternionAttribute(CommonNames.Rotation).ValueChanged -= RotationChanged;
             }
-            if (entity.HasVector3("scale"))
+            if (entity.HasVector3(CommonNames.Scale))
             {
-                entity.GetVector3Attribute("scale").ValueChanged -= ScaleChanged;
+                entity.GetVector3Attribute(CommonNames.Scale).ValueChanged -= ScaleChanged;
             }
 
             base.OnDetached(entity);
@@ -67,27 +67,27 @@ namespace ProjectMagma.Simulation
             Quaternion rotation = Quaternion.Identity;
             Vector3 position = Vector3.Zero;
 
-            if (entity.HasInt("render_priority"))
+            if (entity.HasInt(CommonNames.RenderPriority))
             {
-                renderPriority = entity.GetInt("render_priority");
+                renderPriority = entity.GetInt(CommonNames.RenderPriority);
             }
-            if (entity.HasVector3("scale"))
+            if (entity.HasVector3(CommonNames.Scale))
             {
-                scale = entity.GetVector3("scale");
+                scale = entity.GetVector3(CommonNames.Scale);
             }
-            if (entity.HasQuaternion("rotation"))
+            if (entity.HasQuaternion(CommonNames.Rotation))
             {
-                rotation = entity.GetQuaternion("rotation");
+                rotation = entity.GetQuaternion(CommonNames.Rotation);
             }
-            if (entity.HasVector3("position"))
+            if (entity.HasVector3(CommonNames.Position))
             {
-                position = entity.GetVector3("position");
+                position = entity.GetVector3(CommonNames.Position);
             }
 
             // load the model
-            if (!entity.HasString("mesh"))
+            if (!entity.HasString(CommonNames.Mesh))
                 { throw new Exception(string.Format("missing 'mesh' attribute on entity '{0}'", entity.Name)); }
-            string meshName = entity.GetString("mesh");
+            string meshName = entity.GetString(CommonNames.Mesh);
             Model model = Game.Instance.ContentManager.Load<MagmaModel>(meshName).XnaModel;
 
             return CreateRenderable(entity, renderPriority, scale, rotation, position, model);

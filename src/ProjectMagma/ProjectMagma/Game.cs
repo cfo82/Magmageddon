@@ -187,34 +187,34 @@ namespace ProjectMagma
 
             // set default player
             Entity player1 = new Entity("player1");
-            player1.AddIntAttribute("game_pad_index", 0);
-            player1.AddIntAttribute("lives", 100);
+            player1.AddIntAttribute(CommonNames.GamePadIndex, 0);
+            player1.AddIntAttribute(CommonNames.Lives, 100);
             player1.AddStringAttribute("robot_entity", robots[0].Entity);
-            player1.AddStringAttribute("player_name", robots[0].Name);
+            player1.AddStringAttribute(CommonNames.PlayerName, robots[0].Name);
 
             // set default player
             Entity player2 = new Entity("player2");
-            player2.AddIntAttribute("game_pad_index", 1);
-            player2.AddIntAttribute("lives", 100);
+            player2.AddIntAttribute(CommonNames.GamePadIndex, 1);
+            player2.AddIntAttribute(CommonNames.Lives, 100);
             player2.AddStringAttribute("robot_entity", robots[1].Entity);
-            player2.AddStringAttribute("player_name", robots[1].Name);
+            player2.AddStringAttribute(CommonNames.PlayerName, robots[1].Name);
     #if ALWAYS_FOUR_PLAYERS
             // set default player
             Entity player3 = new Entity("player3");
-            player3.AddIntAttribute("game_pad_index", 2);
-            player3.AddIntAttribute("lives", 100);
+            player3.AddIntAttribute(CommonNames.GamePadIndex, 2);
+            player3.AddIntAttribute(CommonNames.Lives, 100);
             player3.AddStringAttribute("robot_entity", robots[2].Entity);
-            player3.AddStringAttribute("player_name", robots[2].Name);
+            player3.AddStringAttribute(CommonNames.PlayerName, robots[2].Name);
             
             // set default player
             Entity player4 = new Entity("player4");
-            player4.AddIntAttribute("game_pad_index", 3);
-            player4.AddIntAttribute("lives", 100);
+            player4.AddIntAttribute(CommonNames.GamePadIndex, 3);
+            player4.AddIntAttribute(CommonNames.Lives, 100);
             player4.AddStringAttribute("robot_entity", robots[3].Entity);
-            player4.AddStringAttribute("player_name", robots[3].Name);
+            player4.AddStringAttribute(CommonNames.PlayerName, robots[3].Name);
 
             AddPlayers(new Entity[] { player1, player2, player3, player4 });
-    #else
+#else
             AddPlayers(new Entity[] { player1, player2 });
     #endif
 #else

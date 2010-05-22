@@ -35,12 +35,12 @@ namespace ProjectMagma.Simulation
             #region update view matrix
 
             // preconditions
-            Debug.Assert(entity.HasAttribute("position"));
+            Debug.Assert(entity.HasAttribute(CommonNames.Position));
             Debug.Assert(entity.HasAttribute("target"));
             Debug.Assert(entity.HasAttribute("up"));
 
             Vector3 movingPosition =
-                entity.GetVector3("position") +
+                entity.GetVector3(CommonNames.Position) +
                 //entity.GetVector3("up") * (float)Math.Sin(simTime.At * 0.002f) * 10.0f;
                 entity.GetVector3("up") * (float)Math.Sin(1 * 0.002f) * 10.0f;
 

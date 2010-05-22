@@ -35,9 +35,9 @@ namespace ProjectMagma.Simulation
             this.flame = flame as Entity;
             this.player = Game.Instance.Simulation.EntityManager[flame.GetString("player")];
 
-            player.GetVector3Attribute("position").ValueChanged += PlayerPositionHandler;
+            player.GetVector3Attribute(CommonNames.Position).ValueChanged += PlayerPositionHandler;
 
-            flame.GetBoolAttribute("fueled").ValueChanged += FlameFuelChangeHandler;
+            flame.GetBoolAttribute(CommonNames.Fueled).ValueChanged += FlameFuelChangeHandler;
 
             flame.GetProperty<CollisionProperty>("collision").OnContact += FlamethrowerCollisionHandler;
 
@@ -48,8 +48,8 @@ namespace ProjectMagma.Simulation
         {
             (flame as Entity).Update -= OnUpdate;
             flame.GetProperty<CollisionProperty>("collision").OnContact -= FlamethrowerCollisionHandler;
-            flame.GetBoolAttribute("fueled").ValueChanged -= FlameFuelChangeHandler;
-            player.GetVector3Attribute("position").ValueChanged -= PlayerPositionHandler;
+            flame.GetBoolAttribute(CommonNames.Fueled).ValueChanged -= FlameFuelChangeHandler;
+            player.GetVector3Attribute(CommonNames.Position).ValueChanged -= PlayerPositionHandler;
         }
 
         private void OnUpdate(Entity flame, SimulationTime simTime)
@@ -69,16 +69,16 @@ namespace ProjectMagma.Simulation
                 int warmupCost = constants.GetInt("flamethrower_warmup_energy_cost");
                 if (at < flameThrowerStateChangedAt + warmupTime)
                 {
-                    flame.SetVector3("scale", flame.GetVector3("full_scale") * ((float)((at - flameThrowerStateChangedAt) / warmupTime)));
+                    flame.SetVector3(CommonNames.Scale, flame.GetVector3("full_scale") * ((float)((at - flameThrowerStateChangedAt) / warmupTime)));
                     if (at >= flameThrowerStateChangedAt + flameThrowerWarmupDeducted * (warmupTime / warmupCost))
                     {
-                        player.SetFloat("energy", player.GetFloat("energy") - 1);
+                        player.SetFloat(CommonNames.Energy, player.GetFloat(CommonNames.Energy) - 1);
                         flameThrowerWarmupDeducted++;
                     }
                 }
                 else
                 {
-                    player.SetFloat("energy", player.GetFloat("energy") - (warmupCost-flameThrowerWarmupDeducted));
+                    player.SetFloat(CommonNames.Energy, player.GetFloat(CommonNames.Energy) - (warmupCost - flameThrowerWarmupDeducted));
                     flameThrowerState = FlameThrowerState.Active;
                     flameThrowerStateChangedAt = at;
                 }
@@ -86,7 +86,7 @@ namespace ProjectMagma.Simulation
             else
             if(flameThrowerState == FlameThrowerState.Active)
             {
-                player.SetFloat("energy", player.GetFloat("energy") - Game.Instance.Simulation.Time.Dt * constants.GetFloat("flamethrower_energy_per_second"));
+                player.SetFloat(CommonNames.Energy, player.GetFloat(CommonNames.Energy) - Game.Instance.Simulation.Time.Dt * constants.GetFloat("flamethrower_energy_per_second"));
             }
             // else cooldown -> do nothing
 
@@ -97,7 +97,7 @@ namespace ProjectMagma.Simulation
                 int cooldownTime = constants.GetInt("flamethrower_cooldown_time");
                 if (at < flameThrowerStateChangedAt + constants.GetInt("flamethrower_cooldown_time"))
                 {
-                    flame.SetVector3("scale", flame.GetVector3("full_scale") * ((float)(1 - (at - flameThrowerStateChangedAt) / cooldownTime)));
+                    flame.SetVector3(CommonNames.Scale, flame.GetVector3("full_scale") * ((float)(1 - (at - flameThrowerStateChangedAt) / cooldownTime)));
                 }
                 else
                 {
@@ -108,7 +108,7 @@ namespace ProjectMagma.Simulation
 
             if (flameThrowerState == FlameThrowerState.Active)
             {
-                flame.SetVector3("scale", flame.GetVector3("full_scale") * scaleFactor);
+                flame.SetVector3(CommonNames.Scale, flame.GetVector3("full_scale") * scaleFactor);
                 if (scaleFactor < 1)
                     scaleFactor += constants.GetFloat("flamethrower_turn_flame_increase") * dt;
                 else
@@ -118,10 +118,10 @@ namespace ProjectMagma.Simulation
 
         private void PlayerPositionHandler(Vector3Attribute sender, Vector3 oldValue, Vector3 newValue)
         {
-            Vector3 position = flame.GetVector3("position");
+            Vector3 position = flame.GetVector3(CommonNames.Position);
             Vector3 delta = newValue - oldValue;
             position += delta;
-            flame.SetVector3("position", position);
+            flame.SetVector3(CommonNames.Position, position);
         }
 
         private void FlameFuelChangeHandler(BoolAttribute sender, bool oldValue, bool newValue)

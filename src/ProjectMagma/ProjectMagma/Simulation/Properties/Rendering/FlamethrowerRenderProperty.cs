@@ -19,19 +19,19 @@ namespace ProjectMagma.Simulation
         {
             base.OnAttached(entity);
 
-            if (entity.HasVector3("position"))
+            if (entity.HasVector3(CommonNames.Position))
             {
-                entity.GetVector3Attribute("position").ValueChanged += PositionChanged;
+                entity.GetVector3Attribute(CommonNames.Position).ValueChanged += PositionChanged;
             }
 
-            if (entity.HasQuaternion("rotation"))
+            if (entity.HasQuaternion(CommonNames.Rotation))
             {
-                entity.GetQuaternionAttribute("rotation").ValueChanged += RotationChanged;
+                entity.GetQuaternionAttribute(CommonNames.Rotation).ValueChanged += RotationChanged;
             }
 
-            if (entity.HasBool("fueled"))
+            if (entity.HasBool(CommonNames.Fueled))
             {
-                entity.GetBoolAttribute("fueled").ValueChanged += FueledChanged;
+                entity.GetBoolAttribute(CommonNames.Fueled).ValueChanged += FueledChanged;
             }
 
             Game.Instance.Simulation.CurrentUpdateQueue.AddUpdate(new AddRenderableUpdate((Renderable)Updatable));
@@ -41,19 +41,19 @@ namespace ProjectMagma.Simulation
         {
             Game.Instance.Simulation.CurrentUpdateQueue.AddUpdate(new RemoveRenderableUpdate((Renderable)Updatable));
 
-            if (entity.HasVector3("position"))
+            if (entity.HasVector3(CommonNames.Position))
             {
-                entity.GetVector3Attribute("position").ValueChanged -= PositionChanged;
+                entity.GetVector3Attribute(CommonNames.Position).ValueChanged -= PositionChanged;
             }
 
-            if (entity.HasQuaternion("rotation"))
+            if (entity.HasQuaternion(CommonNames.Rotation))
             {
-                entity.GetQuaternionAttribute("rotation").ValueChanged -= RotationChanged;
+                entity.GetQuaternionAttribute(CommonNames.Rotation).ValueChanged -= RotationChanged;
             }
 
-            if (entity.HasBool("fueled"))
+            if (entity.HasBool(CommonNames.Fueled))
             {
-                entity.GetBoolAttribute("fueled").ValueChanged -= FueledChanged;
+                entity.GetBoolAttribute(CommonNames.Fueled).ValueChanged -= FueledChanged;
             }
 
             base.OnDetached(entity);
@@ -65,19 +65,19 @@ namespace ProjectMagma.Simulation
             Quaternion rotation = Quaternion.Identity;
             bool fueled = true;
 
-            if (entity.HasVector3("position"))
+            if (entity.HasVector3(CommonNames.Position))
             {
-                position = entity.GetVector3("position");
+                position = entity.GetVector3(CommonNames.Position);
             }
 
-            if (entity.HasQuaternion("rotation"))
+            if (entity.HasQuaternion(CommonNames.Rotation))
             {
-                rotation = entity.GetQuaternion("rotation");
+                rotation = entity.GetQuaternion(CommonNames.Rotation);
             }
 
-            if (entity.HasBool("fueled"))
+            if (entity.HasBool(CommonNames.Fueled))
             {
-                fueled = entity.GetBool("fueled");
+                fueled = entity.GetBool(CommonNames.Fueled);
             }
 
             return new FlamethrowerRenderable(Game.Instance.Simulation.Time.At, 0, position, CalculateDirection(ref rotation), fueled);

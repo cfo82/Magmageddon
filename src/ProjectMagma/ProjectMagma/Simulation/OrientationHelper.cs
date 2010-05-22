@@ -41,7 +41,7 @@ namespace ProjectMagma.Simulation
             out Vector3 translation
         )
         {
-            translation = entity.GetVector3("position");
+            translation = entity.GetVector3(CommonNames.Position);
         }
 
         public static void GetScale(
@@ -49,9 +49,9 @@ namespace ProjectMagma.Simulation
             out Vector3 scale
         )
         {
-            if (entity.HasVector3("scale"))
+            if (entity.HasVector3(CommonNames.Scale))
             {
-                scale = entity.GetVector3("scale");
+                scale = entity.GetVector3(CommonNames.Scale);
             }
             else
             {
@@ -64,9 +64,9 @@ namespace ProjectMagma.Simulation
             out Quaternion rotation
         )
         {
-            if (entity.HasQuaternion("rotation"))
+            if (entity.HasQuaternion(CommonNames.Rotation))
             {
-                rotation = entity.GetQuaternion("rotation");
+                rotation = entity.GetQuaternion(CommonNames.Rotation);
             }
             else
             {

@@ -19,9 +19,9 @@ namespace ProjectMagma.Simulation
         {
             base.OnAttached(entity);
 
-            if (entity.HasVector3("position"))
+            if (entity.HasVector3(CommonNames.Position))
             {
-                entity.GetVector3Attribute("position").ValueChanged += PositionChanged;
+                entity.GetVector3Attribute(CommonNames.Position).ValueChanged += PositionChanged;
             }
 
             Game.Instance.Simulation.CurrentUpdateQueue.AddUpdate(new AddRenderableUpdate((Renderable)Updatable));
@@ -31,9 +31,9 @@ namespace ProjectMagma.Simulation
         {
             Game.Instance.Simulation.CurrentUpdateQueue.AddUpdate(new RemoveRenderableUpdate((Renderable)Updatable));
 
-            if (entity.HasVector3("position"))
+            if (entity.HasVector3(CommonNames.Position))
             {
-                entity.GetVector3Attribute("position").ValueChanged -= PositionChanged;
+                entity.GetVector3Attribute(CommonNames.Position).ValueChanged -= PositionChanged;
             }
 
             base.OnDetached(entity);
@@ -45,9 +45,9 @@ namespace ProjectMagma.Simulation
         {
             Vector3 position = Vector3.Zero;
 
-            if (entity.HasVector3("position"))
+            if (entity.HasVector3(CommonNames.Position))
             {
-                position = entity.GetVector3("position");
+                position = entity.GetVector3(CommonNames.Position);
             }
 
             return CreateExplosionRenderable(entity, position);

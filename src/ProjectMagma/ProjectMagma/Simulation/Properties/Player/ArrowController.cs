@@ -26,7 +26,7 @@ namespace ProjectMagma.Simulation
             // register island change handler
             arrow.GetStringAttribute("island").ValueChanged += OnIslandChanged;
 
-            arrow.AddQuaternionAttribute("rotation", Quaternion.Identity);
+            arrow.AddQuaternionAttribute(CommonNames.Rotation, Quaternion.Identity);
 
             relPos = constants.GetFloat("arrow_island_min_distance_factor");
 
@@ -48,14 +48,14 @@ namespace ProjectMagma.Simulation
             if (island != null)
             {
                 // take position centers
-                Vector3 playerPos = player.GetVector3("position") + Vector3.UnitY * player.GetVector3("scale").Y / 2; 
-                Vector3 islandPos = island.GetVector3("position") + Vector3.UnitY * island.GetVector3("scale").Y / 2;
+                Vector3 playerPos = player.GetVector3(CommonNames.Position) + Vector3.UnitY * player.GetVector3(CommonNames.Scale).Y / 2;
+                Vector3 islandPos = island.GetVector3(CommonNames.Position) + Vector3.UnitY * island.GetVector3(CommonNames.Scale).Y / 2;
                 Vector3 aimVector = islandPos - playerPos;
                 if (aimVector != Vector3.Zero)
                     aimVector.Normalize();
 
                 // also adapt playerpos with radius away
-                playerPos += aimVector * (player.GetVector3("scale")).Length();
+                playerPos += aimVector * (player.GetVector3(CommonNames.Scale)).Length();
 
                 // get intersection
                 Ray3 ray = new Ray3(playerPos, aimVector);
@@ -63,7 +63,7 @@ namespace ProjectMagma.Simulation
                 if (Game.Instance.Simulation.CollisionManager.GetIntersectionPoint(ref ray, island, out surfacePos))
                 {
                     Vector3 delta = (surfacePos - playerPos) * relPos;
-                    arrow.SetVector3("position", playerPos + delta);
+                    arrow.SetVector3(CommonNames.Position, playerPos + delta);
                 }
 
                 // rotate arrow from player -> island
@@ -79,7 +79,7 @@ namespace ProjectMagma.Simulation
 
                 Quaternion targetQ = Quaternion.CreateFromAxisAngle(cross, theta);
 
-                arrow.SetQuaternion("rotation", targetQ);
+                arrow.SetQuaternion(CommonNames.Rotation, targetQ);
 
                 relPos += simTime.Dt * constants.GetFloat("arrows_per_second");
 

@@ -23,10 +23,10 @@ namespace ProjectMagma.Simulation
             float burntAt = entity.GetFloat("burnt_at");
             if (simTime.At < burntAt + entity.GetInt("burn_time"))
             {
-                entity.SetFloat("health", entity.GetFloat("health") - simTime.Dt * constants.GetFloat("flamethrower_damage_per_second"));
-                if(entity.GetString("kind") == "player")
+                entity.SetFloat(CommonNames.Health, entity.GetFloat(CommonNames.Health) - simTime.Dt * constants.GetFloat("flamethrower_damage_per_second"));
+                if (entity.GetString(CommonNames.Kind) == "player")
                 {
-                    entity.SetInt("frozen", 0);
+                    entity.SetInt(CommonNames.Frozen, 0);
                     entity.GetProperty<PlayerControllerProperty>("controller").CheckPlayerAttributeRanges(entity);
                 }
             }

@@ -28,7 +28,7 @@ namespace ProjectMagma.Simulation
                 pillar = Game.Instance.Simulation.EntityManager[entity.GetString("pillar")];
 
                 // get radius
-                Vector3 radiusV = (island.GetVector3("position") - pillar.GetVector3("position"));
+                Vector3 radiusV = (island.GetVector3(CommonNames.Position) - pillar.GetVector3(CommonNames.Position));
                 radiusV.Y = 0;
                 radius = radiusV.Length();
             }
@@ -43,7 +43,7 @@ namespace ProjectMagma.Simulation
         {
             // get positions (ignore y component)
             Vector3 islandPos = position;
-            Vector3 pillarPos = pillar.GetVector3("position");
+            Vector3 pillarPos = pillar.GetVector3(CommonNames.Position);
             islandPos.Y = 0;
             pillarPos.Y = 0;
 
@@ -81,7 +81,7 @@ namespace ProjectMagma.Simulation
         protected override Vector3 GetNearestPointOnPath(ref Vector3 position)
         {
             // get direction of pillar
-            Vector3 pillarPos = pillar.GetVector3("position");
+            Vector3 pillarPos = pillar.GetVector3(CommonNames.Position);
             Vector3 dir = position - pillarPos;
             Debug.Assert(dir != Vector3.Zero);
             dir.Y = 0; // y is ignored
@@ -95,7 +95,7 @@ namespace ProjectMagma.Simulation
         protected override void OnRepositioningEnded(Vector3 dir)
         {
             // set direction of circular motion so movements seems smooth
-            Vector3 radiusDir = island.GetVector3("position") - pillar.GetVector3("position");
+            Vector3 radiusDir = island.GetVector3(CommonNames.Position) - pillar.GetVector3(CommonNames.Position);
             this.dir = Math.Sign(Vector3.Dot(dir, radiusDir));
             if (this.dir == 0)
                 this.dir = 1;
@@ -104,9 +104,9 @@ namespace ProjectMagma.Simulation
         protected override bool HandleCollision(SimulationTime simTime, Entity island, Entity other, Contact co, ref Vector3 normal)
         {
             // change dir
-            if (other.HasAttribute("kind")
-                && other.GetString("kind") != "island" // we don't change direction for other islands
-                && other.GetString("kind") != "player" // or players
+            if (other.HasAttribute(CommonNames.Kind)
+                && other.GetString(CommonNames.Kind) != "island" // we don't change direction for other islands
+                && other.GetString(CommonNames.Kind) != "player" // or players
                 && simTime.At > dirChangedAt + 1000) // todo: extract constant
             {
                 dir = -dir;
@@ -126,7 +126,7 @@ namespace ProjectMagma.Simulation
             Entity nearest = null;
             foreach (Entity pillar in Game.Instance.Simulation.PillarManager)
             {
-                Vector3 dir = pillar.GetVector3("position") - island.GetVector3("position");
+                Vector3 dir = pillar.GetVector3(CommonNames.Position) - island.GetVector3(CommonNames.Position);
                 float d = dir.Length();
                 if (d < dist)
                 {

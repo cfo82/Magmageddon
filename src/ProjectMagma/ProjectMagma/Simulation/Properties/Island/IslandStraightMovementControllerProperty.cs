@@ -51,9 +51,9 @@ namespace ProjectMagma.Simulation
         {
             if (simTime.At > directionChangedAt + 1000)
             {
-                if (other.HasAttribute("kind")
-                    && other.GetString("kind") != "island" // we don't change direction for other islands
-                    && other.GetString("kind") != "player") // or players
+                if (other.HasAttribute(CommonNames.Kind)
+                    && other.GetString(CommonNames.Kind) != "island" // we don't change direction for other islands
+                    && other.GetString(CommonNames.Kind) != "player") // or players
                 {
                     direction = -direction;
                     directionChangedAt = simTime.At;

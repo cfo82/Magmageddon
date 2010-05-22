@@ -21,41 +21,41 @@ namespace ProjectMagma.Simulation
 
         public override void OnAttached(AbstractEntity entity)
         {
-            Debug.Assert(entity.HasAttribute("kind") && entity.GetString("kind") == "player");
+            Debug.Assert(entity.HasAttribute(CommonNames.Kind) && entity.GetString(CommonNames.Kind) == "player");
 
             base.OnAttached(entity);
 
             Entity playerConstants = Game.Instance.Simulation.EntityManager["player_constants"];
 
-            if (entity.HasString("player_name"))
+            if (entity.HasString(CommonNames.PlayerName))
             {
-                entity.GetStringAttribute("player_name").ValueChanged += PlayerNameChanged;
+                entity.GetStringAttribute(CommonNames.PlayerName).ValueChanged += PlayerNameChanged;
             }
-            if (entity.HasInt("game_pad_index"))
+            if (entity.HasInt(CommonNames.GamePadIndex))
             {
-                entity.GetIntAttribute("game_pad_index").ValueChanged += GamePadIndexChanged;
+                entity.GetIntAttribute(CommonNames.GamePadIndex).ValueChanged += GamePadIndexChanged;
             }
-            if (entity.HasFloat("health"))
+            if (entity.HasFloat(CommonNames.Health))
             {
-                entity.GetFloatAttribute("health").ValueChanged += HealthChanged;
+                entity.GetFloatAttribute(CommonNames.Health).ValueChanged += HealthChanged;
             }
-            if (playerConstants.HasFloat("max_health"))
+            if (playerConstants.HasFloat(CommonNames.MaxHealth))
             {
-                playerConstants.GetFloatAttribute("max_health").ValueChanged += MaxHealthChanged;
+                playerConstants.GetFloatAttribute(CommonNames.MaxHealth).ValueChanged += MaxHealthChanged;
             }
-            if (entity.HasFloat("energy"))
+            if (entity.HasFloat(CommonNames.Energy))
             {
-                entity.GetFloatAttribute("energy").ValueChanged += EnergyChanged;
+                entity.GetFloatAttribute(CommonNames.Energy).ValueChanged += EnergyChanged;
             }
-            if (playerConstants.HasFloat("max_energy"))
+            if (playerConstants.HasFloat(CommonNames.MaxEnergy))
             {
-                playerConstants.GetFloatAttribute("max_energy").ValueChanged += MaxEnergyChanged;
+                playerConstants.GetFloatAttribute(CommonNames.MaxEnergy).ValueChanged += MaxEnergyChanged;
             }
-            if (entity.HasInt("frozen"))
+            if (entity.HasInt(CommonNames.Frozen))
             {
-                entity.GetIntAttribute("frozen").ValueChanged += FrozenChanged;
+                entity.GetIntAttribute(CommonNames.Frozen).ValueChanged += FrozenChanged;
             }
-            entity.GetIntAttribute("lives").ValueChanged += LivesChanged;
+            entity.GetIntAttribute(CommonNames.Lives).ValueChanged += LivesChanged;
 
             Game.Instance.Simulation.CurrentUpdateQueue.AddUpdate(new AddRenderableUpdate((Renderable)Updatable));
         }
@@ -66,11 +66,11 @@ namespace ProjectMagma.Simulation
 
             return new HUDRenderable(
                 0,
-                entity.GetString("player_name"), entity.GetInt("game_pad_index"),
-                entity.GetFloat("health"), playerConstants.GetFloat("max_health"),
-                entity.GetFloat("energy"), playerConstants.GetFloat("max_energy"),
-                entity.GetInt("lives"), entity.GetInt("frozen"),
-                entity.GetVector3("color1"), entity.GetVector3("color2")
+                entity.GetString(CommonNames.PlayerName), entity.GetInt(CommonNames.GamePadIndex),
+                entity.GetFloat(CommonNames.Health), playerConstants.GetFloat(CommonNames.MaxHealth),
+                entity.GetFloat(CommonNames.Energy), playerConstants.GetFloat(CommonNames.MaxEnergy),
+                entity.GetInt(CommonNames.Lives), entity.GetInt(CommonNames.Frozen),
+                entity.GetVector3(CommonNames.Color1), entity.GetVector3(CommonNames.Color2)
             );
         }
 
@@ -90,35 +90,35 @@ namespace ProjectMagma.Simulation
 
             Entity playerConstants = Game.Instance.Simulation.EntityManager["player_constants"];
 
-            if (entity.HasString("player_name"))
+            if (entity.HasString(CommonNames.PlayerName))
             {
-                entity.GetStringAttribute("player_name").ValueChanged -= PlayerNameChanged;
+                entity.GetStringAttribute(CommonNames.PlayerName).ValueChanged -= PlayerNameChanged;
             }
-            if (entity.HasInt("game_pad_index"))
+            if (entity.HasInt(CommonNames.GamePadIndex))
             {
-                entity.GetIntAttribute("game_pad_index").ValueChanged -= GamePadIndexChanged;
+                entity.GetIntAttribute(CommonNames.GamePadIndex).ValueChanged -= GamePadIndexChanged;
             }
-            if (entity.HasFloat("health"))
+            if (entity.HasFloat(CommonNames.Health))
             {
-                entity.GetFloatAttribute("health").ValueChanged -= HealthChanged;
+                entity.GetFloatAttribute(CommonNames.Health).ValueChanged -= HealthChanged;
             }
-            if (playerConstants != null && playerConstants.HasFloat("max_health"))
+            if (playerConstants != null && playerConstants.HasFloat(CommonNames.MaxHealth))
             {
-                playerConstants.GetFloatAttribute("max_health").ValueChanged -= MaxHealthChanged;
+                playerConstants.GetFloatAttribute(CommonNames.MaxHealth).ValueChanged -= MaxHealthChanged;
             }
-            if (entity.HasFloat("energy"))
+            if (entity.HasFloat(CommonNames.Energy))
             {
-                entity.GetFloatAttribute("energy").ValueChanged -= EnergyChanged;
+                entity.GetFloatAttribute(CommonNames.Energy).ValueChanged -= EnergyChanged;
             }
-            if (playerConstants != null && playerConstants.HasFloat("max_energy"))
+            if (playerConstants != null && playerConstants.HasFloat(CommonNames.MaxEnergy))
             {
-                playerConstants.GetFloatAttribute("max_energy").ValueChanged -= MaxEnergyChanged;
+                playerConstants.GetFloatAttribute(CommonNames.MaxEnergy).ValueChanged -= MaxEnergyChanged;
             }
-            if (entity.HasInt("frozen"))
+            if (entity.HasInt(CommonNames.Frozen))
             {
-                entity.GetIntAttribute("frozen").ValueChanged -= FrozenChanged;
+                entity.GetIntAttribute(CommonNames.Frozen).ValueChanged -= FrozenChanged;
             }
-            entity.GetIntAttribute("lives").ValueChanged -= LivesChanged;
+            entity.GetIntAttribute(CommonNames.Lives).ValueChanged -= LivesChanged;
 
             base.OnDetached(entity);
         }

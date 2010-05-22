@@ -193,6 +193,7 @@
     <Compile Include="Simulation\Collision\ContactPoint.cs" />
     <Compile Include="Simulation\Collision\TestList.cs" />
     <Compile Include="Framework\AbstractEntity.cs" />
+    <Compile Include="Simulation\CommonNames.cs" />
     <Compile Include="Simulation\Entity.cs" />
     <Compile Include="Simulation\EntityKindManager.cs" />
     <Compile Include="Framework\AbstractEntityManager.cs" />

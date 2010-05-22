@@ -44,7 +44,7 @@ namespace ProjectMagma.Simulation
         public override void OnAttached(AbstractEntity player)
         {
             (player as Entity).Update += OnUpdate;
-            this.controllerInput = new GamePadControllerInput((PlayerIndex)player.GetInt("game_pad_index"));
+            this.controllerInput = new GamePadControllerInput((PlayerIndex)player.GetInt(CommonNames.GamePadIndex));
         }
 
         public override void OnDetached(AbstractEntity player)

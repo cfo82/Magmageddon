@@ -106,16 +106,16 @@ namespace ProjectMagma.Simulation.Collision
                 for (int i = 0; i < t.ContactCount; ++i)
                 {
                     Contact contact = t.GetContact(i);
-
+                    
                     //System.Console.WriteLine(contact.Count);
                     //if (
-                    //    entry.EntityA.entity.HasString("kind") && entry.EntityB.entity.HasString("kind") &&(
-                    //        entry.EntityA.entity.GetString("kind") == "pillar" ||
-                    //        entry.EntityB.entity.GetString("kind") == "pillar" ||
-                    //        (entry.EntityA.entity.GetString("kind") == "island" && entry.EntityB.entity.GetString("kind") == "island")
+                    //    entry.EntityA.entity.HasString(CommonNames.Kind) && entry.EntityB.entity.HasString(CommonNames.Kind) &&(
+                    //        entry.EntityA.entity.GetString(CommonNames.Kind) == "pillar" ||
+                    //        entry.EntityB.entity.GetString(CommonNames.Kind) == "pillar" ||
+                    //        (entry.EntityA.entity.GetString(CommonNames.Kind) == "island" && entry.EntityB.entity.GetString(CommonNames.Kind) == "island")
                     //    ))
-                    //if ((contact.EntityA.HasString("kind") && contact.EntityA.GetString("kind") == "cave") ||
-                    //    (contact.EntityB.HasString("kind") && contact.EntityB.GetString("kind") == "cave"))
+                    //if ((contact.EntityA.HasString(CommonNames.Kind) && contact.EntityA.GetString(CommonNames.Kind) == "cave") ||
+                    //    (contact.EntityB.HasString(CommonNames.Kind) && contact.EntityB.GetString(CommonNames.Kind) == "cave"))
                     //{
                     //    System.Console.WriteLine("Collision {0,4}: between {1} and {2}!", collisionCount, contact.EntityA.Name, contact.EntityB.Name);
                     //    ++collisionCount;

@@ -46,16 +46,16 @@ namespace ProjectMagma.Simulation
         {
             Entity explosion = contact.EntityA;
             Entity other = contact.EntityB;
-            if (other.HasAttribute("kind") && other.GetString("kind") == "player")
+            if (other.HasAttribute(CommonNames.Kind) && other.GetString(CommonNames.Kind) == "player")
             {
                 // apply damage to player
                 if (explosion.HasAttribute("damage"))
                 {
-                    other.SetFloat("health", other.GetFloat("health") - explosion.GetFloat("damage"));
+                    other.SetFloat(CommonNames.Health, other.GetFloat(CommonNames.Health) - explosion.GetFloat("damage"));
                 }
                 if(explosion.HasAttribute("freeze_time"))
                 {
-                    other.SetInt("frozen", explosion.GetInt("freeze_time"));
+                    other.SetInt(CommonNames.Frozen, explosion.GetInt("freeze_time"));
                 }
                 other.GetProperty<PlayerControllerProperty>("controller").CheckPlayerAttributeRanges(other);
             }

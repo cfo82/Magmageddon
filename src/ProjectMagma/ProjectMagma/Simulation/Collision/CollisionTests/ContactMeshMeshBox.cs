@@ -75,15 +75,15 @@ namespace ProjectMagma.Simulation.Collision.CollisionTests
                         break;
                     }
                 }
-                 
+
                 /*
 //                Contact c = new Contact(context.entity1, context.entity2);
 
                 Vector3 dir = Vector3.Normalize(box2.Center -  box1.Center);
                 Vector3 p = box1.Center+box2.Center/2;
                 /*
-                Vector3 p1 = context.entity1.GetVector3("position");
-                Vector3 p2 = context.entity2.GetVector3("position");
+                Vector3 p1 = context.entity1.GetVector3(CommonNames.Position);
+                Vector3 p2 = context.entity2.GetVector3(CommonNames.Position);
                 Vector3 dir = Vector3.Normalize(p2-p1);
                   Vector3 p = p2+p1/2;
                  /

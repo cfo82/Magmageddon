@@ -62,8 +62,8 @@ namespace ProjectMagma.Simulation
             }
 
             // fetch required values
-            Vector3 pos = iceSpike.GetVector3("position");
-            Vector3 v = iceSpike.GetVector3("velocity");
+            Vector3 pos = iceSpike.GetVector3(CommonNames.Position);
+            Vector3 v = iceSpike.GetVector3(CommonNames.Velocity);
             float dt = simTime.Dt;
 
             // accumulate forces
@@ -80,7 +80,7 @@ namespace ProjectMagma.Simulation
             if (state == IceSpikeState.Targeting)
             {
                 if (targetPlayer != null
-                    && targetPlayer.GetFloat("health") <= 0)
+                    && targetPlayer.GetFloat(CommonNames.Health) <= 0)
                 {
                     AbortPlayerTargeting();
                 }
@@ -89,7 +89,7 @@ namespace ProjectMagma.Simulation
                 if (targetPlayer != null)
                 {
                     // incorporate homing effect towards targeted player
-                    Vector3 targetPlayerPos = targetPlayer.GetVector3("position");
+                    Vector3 targetPlayerPos = targetPlayer.GetVector3(CommonNames.Position);
                     dir = Vector3.Normalize(targetPlayerPos - pos);
                 }
                 else
@@ -119,7 +119,7 @@ namespace ProjectMagma.Simulation
                             && targetPlayer.GetString("active_island") == island.Name)
                             continue;
 
-                        Vector3 idir = island.GetVector3("position") - pos;
+                        Vector3 idir = island.GetVector3(CommonNames.Position) - pos;
                         float dist = idir.Length();
                         idir.Normalize();
                         Vector3 ia = -idir * acc * (islandForceRadius * islandForceRadius / dist / dist);
@@ -129,7 +129,7 @@ namespace ProjectMagma.Simulation
                     float pillarForceRadius = constants.GetFloat("ice_spike_pillar_force_radius");
                     foreach (Entity island in Game.Instance.Simulation.PillarManager)
                     {
-                        Vector3 idir = island.GetVector3("position") - pos;
+                        Vector3 idir = island.GetVector3(CommonNames.Position) - pos;
                         idir.Y = 0;
                         float dist = idir.Length();
                         idir.Normalize();
@@ -152,15 +152,15 @@ namespace ProjectMagma.Simulation
             }
 
             // remove if in lava
-            if (pos.Y < Game.Instance.Simulation.EntityManager["lava"].GetVector3("position").Y - 20)
+            if (pos.Y < Game.Instance.Simulation.EntityManager["lava"].GetVector3(CommonNames.Position).Y - 20)
             {
                 SetDead(iceSpike, simTime);
                 return;
             }
 
             // store computed values;
-            iceSpike.SetVector3("position", pos);
-            iceSpike.SetVector3("velocity", v);
+            iceSpike.SetVector3(CommonNames.Position, pos);
+            iceSpike.SetVector3(CommonNames.Velocity, v);
         }
 
         private void IceSpikeCollisionHandler(SimulationTime simTime, Contact contact)
@@ -181,7 +181,7 @@ namespace ProjectMagma.Simulation
                 && !other.HasAttribute("dynamic") // don't collide with moving other spikes, explosions, etc.
                 ) // don't collide with other explosions
             {
-                if (other.GetString("kind") == "player")
+                if (other.GetString(CommonNames.Kind) == "player")
                     IceSpikePlayerCollisionHandler(simTime, iceSpike, other);
                 SetDead(iceSpike, simTime);
             }
@@ -189,7 +189,7 @@ namespace ProjectMagma.Simulation
 
         private void SetDead(Entity iceSpike, SimulationTime simTime)
         {
-            iceSpike.SetBool("dead", true);
+            iceSpike.SetBool(CommonNames.Dead, true);
             iceSpike.GetProperty<CollisionProperty>("collision").OnContact -= IceSpikeCollisionHandler;
 
             // make boom
@@ -206,7 +206,7 @@ namespace ProjectMagma.Simulation
                 iceSpikeExplosion.AddIntAttribute("freeze_time", constants.GetInt("ice_spike_freeze_time"));
             }
 
-            iceSpikeExplosion.AddVector3Attribute("position", iceSpike.GetVector3("position"));
+            iceSpikeExplosion.AddVector3Attribute(CommonNames.Position, iceSpike.GetVector3(CommonNames.Position));
 
             Game.Instance.Simulation.EntityManager.AddDeferred(iceSpikeExplosion, "ice_spike_explosion_base", templates);
 
@@ -231,7 +231,7 @@ namespace ProjectMagma.Simulation
         private void AbortPlayerTargeting()
         {
             targetPlayer = null;
-            Vector3 dir = iceSpike.GetVector3("velocity");
+            Vector3 dir = iceSpike.GetVector3(CommonNames.Velocity);
             if (dir != Vector3.Zero)
                 dir.Normalize();
             else
@@ -241,14 +241,14 @@ namespace ProjectMagma.Simulation
 
         private Vector3 GetPosition(Entity entity)
         {
-            return entity.GetVector3("position");
+            return entity.GetVector3(CommonNames.Position);
         }
 
         private Vector3 GetScale(Entity entity)
         {
-            if (entity.HasVector3("scale"))
+            if (entity.HasVector3(CommonNames.Scale))
             {
-                return entity.GetVector3("scale");
+                return entity.GetVector3(CommonNames.Scale);
             }
             else
             {
@@ -258,9 +258,9 @@ namespace ProjectMagma.Simulation
 
         private Quaternion GetRotation(Entity entity)
         {
-            if (entity.HasQuaternion("rotation"))
+            if (entity.HasQuaternion(CommonNames.Rotation))
             {
-                return entity.GetQuaternion("rotation");
+                return entity.GetQuaternion(CommonNames.Rotation);
             }
             else
             {

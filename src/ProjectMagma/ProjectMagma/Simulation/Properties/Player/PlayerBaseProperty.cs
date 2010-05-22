@@ -33,7 +33,7 @@ namespace ProjectMagma.Simulation
             this.player = player as Entity;
             this.constants = Game.Instance.Simulation.EntityManager["player_constants"];
             this.templates = Game.Instance.ContentManager.Load<LevelData>("Level/Common/DynamicTemplates");
-            this.playerIndex = (PlayerIndex)player.GetInt("game_pad_index");
+            this.playerIndex = (PlayerIndex)player.GetInt(CommonNames.GamePadIndex);
             this.controllerInput = player.GetProperty<InputProperty>("input").ControllerInput;
         }
 
@@ -73,31 +73,31 @@ namespace ProjectMagma.Simulation
             if (player.GetBool("isRespawning"))
             {
                 // we cannot take damage on respawn
-                player.SetFloat("health", constants.GetFloat("max_health"));
-                player.SetFloat("energy", constants.GetFloat("max_energy"));
-                player.SetInt("frozen", 0);
+                player.SetFloat(CommonNames.Health, constants.GetFloat(CommonNames.MaxHealth));
+                player.SetFloat(CommonNames.Energy, constants.GetFloat(CommonNames.MaxEnergy));
+                player.SetInt(CommonNames.Frozen, 0);
                 return;
             }
 
-            float health = player.GetFloat("health");
+            float health = player.GetFloat(CommonNames.Health);
             if (health < 0)
             {
-                player.SetFloat("health", 0);
+                player.SetFloat(CommonNames.Health, 0);
             }
             else
             {
-                if (health > constants.GetFloat("max_health"))
+                if (health > constants.GetFloat(CommonNames.MaxHealth))
                 {
-                    player.SetFloat("health", constants.GetFloat("max_health"));
+                    player.SetFloat(CommonNames.Health, constants.GetFloat(CommonNames.MaxHealth));
                 }
             }
 
-            float energy = player.GetFloat("energy");
+            float energy = player.GetFloat(CommonNames.Energy);
             if (energy < 0)
-                player.SetFloat("energy", 0);
+                player.SetFloat(CommonNames.Energy, 0);
             else
-                if (energy > constants.GetFloat("max_energy"))
-                    player.SetFloat("energy", constants.GetFloat("max_energy"));
+                if (energy > constants.GetFloat(CommonNames.MaxEnergy))
+                    player.SetFloat(CommonNames.Energy, constants.GetFloat(CommonNames.MaxEnergy));
         }
 
         protected void Vibrate(float left, float right)

@@ -57,9 +57,9 @@ namespace ProjectMagma.Simulation
 
         private void OnEntityAdded(AbstractEntityManager<Entity> manager, Entity entity)
         {
-            if (entity.HasString("kind"))
+            if (entity.HasString(CommonNames.Kind))
             {
-                if (kind == entity.GetString("kind"))
+                if (kind == entity.GetString(CommonNames.Kind))
                 {
                     entities.Add(entity);
                 }

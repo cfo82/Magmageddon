@@ -28,18 +28,18 @@ namespace ProjectMagma.Simulation
         {
             base.OnAttached(entity);
 
-            if (entity.HasBool("interactable"))
+            if (entity.HasBool(CommonNames.Interactable))
             {
-                entity.GetBoolAttribute("interactable").ValueChanged += InteractableChanged;
+                entity.GetBoolAttribute(CommonNames.Interactable).ValueChanged += InteractableChanged;
             }
         }
 
         public override void OnDetached(AbstractEntity entity)
         {
-            if (entity.HasVector3("interactable"))
+            if (entity.HasVector3(CommonNames.Interactable))
 
             {
-                entity.GetBoolAttribute("interactable").ValueChanged -= InteractableChanged;
+                entity.GetBoolAttribute(CommonNames.Interactable).ValueChanged -= InteractableChanged;
             }
 
             base.OnDetached(entity);

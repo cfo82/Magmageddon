@@ -38,25 +38,25 @@ namespace ProjectMagma.Simulation.Collision
 
             foreach (CollisionEntity otherEntity in entityList)
             {
-                /*if (entity.Entity.HasString("kind") && entity.Entity.GetString("kind") == "pillar" &&
-                    otherEntity.Entity.HasString("kind") && otherEntity.Entity.GetString("kind") == "pillar")
+                /*if (entity.Entity.HasString(CommonNames.Kind) && entity.Entity.GetString(CommonNames.Kind) == "pillar" &&
+                    otherEntity.Entity.HasString(CommonNames.Kind) && otherEntity.Entity.GetString(CommonNames.Kind) == "pillar")
                 {
                     continue;
                 }
                 if (
                     (
-                        entity.Entity.HasString("kind") && entity.Entity.GetString("kind") == "pillar" &&
-                        otherEntity.Entity.HasString("kind") && otherEntity.Entity.GetString("kind") == "powerup") ||
-                    (otherEntity.Entity.HasString("kind") && otherEntity.Entity.GetString("kind") == "pillar" &&
-                    entity.Entity.HasString("kind") && entity.Entity.GetString("kind") == "powerup"))
+                        entity.Entity.HasString(CommonNames.Kind) && entity.Entity.GetString(CommonNames.Kind) == "pillar" &&
+                        otherEntity.Entity.HasString(CommonNames.Kind) && otherEntity.Entity.GetString(CommonNames.Kind) == "powerup") ||
+                    (otherEntity.Entity.HasString(CommonNames.Kind) && otherEntity.Entity.GetString(CommonNames.Kind) == "pillar" &&
+                    entity.Entity.HasString(CommonNames.Kind) && entity.Entity.GetString(CommonNames.Kind) == "powerup"))
                 {
                     continue;
                 }
                 if (
-                    (entity.Entity.HasString("kind") && entity.Entity.GetString("kind") == "island" &&
-                    otherEntity.Entity.HasString("kind") && otherEntity.Entity.GetString("kind") == "powerup") ||
-                    (otherEntity.Entity.HasString("kind") && otherEntity.Entity.GetString("kind") == "island" &&
-                    entity.Entity.HasString("kind") && entity.Entity.GetString("kind") == "powerup"))
+                    (entity.Entity.HasString(CommonNames.Kind) && entity.Entity.GetString(CommonNames.Kind) == "island" &&
+                    otherEntity.Entity.HasString(CommonNames.Kind) && otherEntity.Entity.GetString(CommonNames.Kind) == "powerup") ||
+                    (otherEntity.Entity.HasString(CommonNames.Kind) && otherEntity.Entity.GetString(CommonNames.Kind) == "island" &&
+                    entity.Entity.HasString(CommonNames.Kind) && entity.Entity.GetString(CommonNames.Kind) == "powerup"))
                 {
                     continue;
                 }*/

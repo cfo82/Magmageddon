@@ -19,11 +19,11 @@ namespace ProjectMagma.Simulation
             Texture2D diffuseTexture, Texture2D specularTexture, Texture2D normalTexture
         )
         {
-            Debug.Assert(entity.HasVector3("color1"));
-            Vector3 color1 = entity.GetVector3("color1");
+            Debug.Assert(entity.HasVector3(CommonNames.Color1));
+            Vector3 color1 = entity.GetVector3(CommonNames.Color1);
 
-            Debug.Assert(entity.HasVector3("color2"));
-            Vector3 color2 = entity.GetVector3("color2");
+            Debug.Assert(entity.HasVector3(CommonNames.Color2));
+            Vector3 color2 = entity.GetVector3(CommonNames.Color2);
 
             return new RobotRenderable(
                 Game.Instance.Simulation.Time.At, renderPriority,
@@ -36,13 +36,13 @@ namespace ProjectMagma.Simulation
         {
             base.OnAttached(entity);
 
-            if (entity.HasFloat("health"))
+            if (entity.HasFloat(CommonNames.Health))
             {
-                entity.GetFloatAttribute("health").ValueChanged += HealthChanged;
+                entity.GetFloatAttribute(CommonNames.Health).ValueChanged += HealthChanged;
             }
-            if (entity.HasInt("frozen"))
+            if (entity.HasInt(CommonNames.Frozen))
             {
-                entity.GetIntAttribute("frozen").ValueChanged += FrozenChanged;
+                entity.GetIntAttribute(CommonNames.Frozen).ValueChanged += FrozenChanged;
             }
         }
 
@@ -50,13 +50,13 @@ namespace ProjectMagma.Simulation
         {
             base.OnDetached(entity);
 
-            if (entity.HasFloat("health"))
+            if (entity.HasFloat(CommonNames.Health))
             {
-                entity.GetFloatAttribute("health").ValueChanged -= HealthChanged;
+                entity.GetFloatAttribute(CommonNames.Health).ValueChanged -= HealthChanged;
             }
-            if (entity.HasInt("frozen"))
+            if (entity.HasInt(CommonNames.Frozen))
             {
-                entity.GetIntAttribute("frozen").ValueChanged -= FrozenChanged;
+                entity.GetIntAttribute(CommonNames.Frozen).ValueChanged -= FrozenChanged;
             }
         }
 

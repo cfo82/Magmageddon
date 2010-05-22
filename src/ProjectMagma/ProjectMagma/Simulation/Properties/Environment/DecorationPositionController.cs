@@ -24,10 +24,6 @@ namespace ProjectMagma.Simulation
     /// </summary>
     public class DecorationPositionController : Property
     {
-        public static readonly string AttachmentPoint = "attachment_point";
-        public static readonly string Position = "position";
-        public static readonly string AttachedTo = "attached_to";
-
         public DecorationPositionController()
         {
         }
@@ -37,22 +33,22 @@ namespace ProjectMagma.Simulation
         )
         {
             decoration = entity as Entity;
-            attachedTo = Game.Instance.Simulation.EntityManager[entity.GetString(AttachedTo)];
+            attachedTo = Game.Instance.Simulation.EntityManager[entity.GetString(CommonNames.AttachedTo)];
 
-            Debug.Assert(decoration.HasString(AttachmentPoint), "must specify to which point this entity is to be attached");
-            attachmentPointName = decoration.GetString(AttachmentPoint);
+            Debug.Assert(decoration.HasString(CommonNames.AttachmentPoint), "must specify to which point this entity is to be attached");
+            attachmentPointName = decoration.GetString(CommonNames.AttachmentPoint);
 
             Debug.Assert(attachedTo.HasVector3(attachmentPointName), "attachedTo must have the attachment point desired.");
             if (!attachedTo.HasVector3(attachmentPointName))
                 { throw new Exception(string.Format("attachedTo {0} is missing the attachment point '{1}'", attachedTo.Name, attachmentPointName)); }
 
-            attachedTo.GetVector3Attribute(Position).ValueChanged += OnAttachedToPositionChanged;
+            attachedTo.GetVector3Attribute(CommonNames.Position).ValueChanged += OnAttachedToPositionChanged;
 
             // initialize properties
-            if (!decoration.HasAttribute(Position))
-                { decoration.AddVector3Attribute(Position, Vector3.Zero); }
+            if (!decoration.HasAttribute(CommonNames.Position))
+                { decoration.AddVector3Attribute(CommonNames.Position, Vector3.Zero); }
 
-            Vector3 islandPos = attachedTo.GetVector3(Position);
+            Vector3 islandPos = attachedTo.GetVector3(CommonNames.Position);
             PositionOnIsland(ref islandPos);
         }
 
@@ -60,7 +56,7 @@ namespace ProjectMagma.Simulation
             AbstractEntity entity
         )
         {
-            attachedTo.GetVector3Attribute(Position).ValueChanged -= OnAttachedToPositionChanged;
+            attachedTo.GetVector3Attribute(CommonNames.Position).ValueChanged -= OnAttachedToPositionChanged;
         }
 
         private void OnAttachedToPositionChanged(
@@ -75,7 +71,7 @@ namespace ProjectMagma.Simulation
         private void PositionOnIsland(ref Vector3 position)
         {
             Vector3 attachmentPoint = attachedTo.GetVector3(attachmentPointName);
-            decoration.SetVector3(Position, position + attachmentPoint);
+            decoration.SetVector3(CommonNames.Position, position + attachmentPoint);
         }
 
         protected Entity decoration;

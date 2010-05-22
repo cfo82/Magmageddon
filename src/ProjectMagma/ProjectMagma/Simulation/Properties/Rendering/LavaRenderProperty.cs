@@ -23,19 +23,19 @@ namespace ProjectMagma.Simulation
         {
             base.OnAttached(entity);
 
-            if (entity.HasVector3("scale"))
+            if (entity.HasVector3(CommonNames.Scale))
             {
-                entity.GetVector3Attribute("scale").ValueChanged += ScaleChanged;
+                entity.GetVector3Attribute(CommonNames.Scale).ValueChanged += ScaleChanged;
             }
 
-            if (entity.HasQuaternion("rotation"))
+            if (entity.HasQuaternion(CommonNames.Rotation))
             {
-                entity.GetQuaternionAttribute("rotation").ValueChanged += RotationChanged;
+                entity.GetQuaternionAttribute(CommonNames.Rotation).ValueChanged += RotationChanged;
             }
 
-            if (entity.HasVector3("position"))
+            if (entity.HasVector3(CommonNames.Position))
             {
-                entity.GetVector3Attribute("position").ValueChanged += PositionChanged;
+                entity.GetVector3Attribute(CommonNames.Position).ValueChanged += PositionChanged;
             }
 
             Game.Instance.Simulation.LevelLoaded += LevelLoaded;
@@ -51,17 +51,17 @@ namespace ProjectMagma.Simulation
             Game.Instance.Simulation.EntityManager.EntityAdded -= EntityAdded;
             Game.Instance.Simulation.LevelLoaded -= LevelLoaded;
 
-            if (entity.HasVector3("position"))
+            if (entity.HasVector3(CommonNames.Position))
             {
-                entity.GetVector3Attribute("position").ValueChanged -= PositionChanged;
+                entity.GetVector3Attribute(CommonNames.Position).ValueChanged -= PositionChanged;
             }
-            if (entity.HasQuaternion("rotation"))
+            if (entity.HasQuaternion(CommonNames.Rotation))
             {
-                entity.GetQuaternionAttribute("rotation").ValueChanged -= RotationChanged;
+                entity.GetQuaternionAttribute(CommonNames.Rotation).ValueChanged -= RotationChanged;
             }
-            if (entity.HasVector3("scale"))
+            if (entity.HasVector3(CommonNames.Scale))
             {
-                entity.GetVector3Attribute("scale").ValueChanged -= ScaleChanged;
+                entity.GetVector3Attribute(CommonNames.Scale).ValueChanged -= ScaleChanged;
             }
 
             base.OnDetached(entity);
@@ -74,25 +74,25 @@ namespace ProjectMagma.Simulation
             Quaternion rotation = Quaternion.Identity;
             Vector3 position = Vector3.Zero;
 
-            if (entity.HasInt("render_priority"))
+            if (entity.HasInt(CommonNames.RenderPriority))
             {
-                renderPriority = entity.GetInt("render_priority");
+                renderPriority = entity.GetInt(CommonNames.RenderPriority);
             }
-            if (entity.HasVector3("scale"))
+            if (entity.HasVector3(CommonNames.Scale))
             {
-                scale = entity.GetVector3("scale");
+                scale = entity.GetVector3(CommonNames.Scale);
             }
-            if (entity.HasQuaternion("rotation"))
+            if (entity.HasQuaternion(CommonNames.Rotation))
             {
-                rotation = entity.GetQuaternion("rotation");
+                rotation = entity.GetQuaternion(CommonNames.Rotation);
             }
-            if (entity.HasVector3("position"))
+            if (entity.HasVector3(CommonNames.Position))
             {
-                position = entity.GetVector3("position");
+                position = entity.GetVector3(CommonNames.Position);
             }
 
             // load the model
-            string meshName = entity.GetString("mesh");
+            string meshName = entity.GetString(CommonNames.Mesh);
             MagmaModel magmaModel = Game.Instance.ContentManager.Load<MagmaModel>(meshName);
             Model model = magmaModel.XnaModel;
 
@@ -112,8 +112,8 @@ namespace ProjectMagma.Simulation
             for (int i = 0; i < pillarData.Length; ++i)
             {
                 Entity pillar = Game.Instance.Simulation.PillarManager[i];
-                pillarData[i].Position = pillar.HasVector3("position") ? pillar.GetVector3("position") : Vector3.Zero;
-                pillarData[i].Scale = pillar.HasVector3("scale") ? pillar.GetVector3("scale") : Vector3.One;
+                pillarData[i].Position = pillar.HasVector3(CommonNames.Position) ? pillar.GetVector3(CommonNames.Position) : Vector3.Zero;
+                pillarData[i].Scale = pillar.HasVector3(CommonNames.Scale) ? pillar.GetVector3("scale") : Vector3.One;
             }
 
             return new LavaRenderable(
@@ -160,15 +160,15 @@ namespace ProjectMagma.Simulation
             Entity entity
         )
         {
-            if (entity.HasString("kind") && entity.GetString("kind") == "pillar")
+            if (entity.HasString(CommonNames.Kind) && entity.GetString(CommonNames.Kind) == "pillar")
             {
-                Debug.Assert(entity.HasVector3("position"));
+                Debug.Assert(entity.HasVector3(CommonNames.Position));
 
                 LavaRenderable.PillarInfo info = new LavaRenderable.PillarInfo();
-                info.Position = entity.GetVector3("position");
-                if (entity.HasVector3("scale"))
+                info.Position = entity.GetVector3(CommonNames.Position);
+                if (entity.HasVector3(CommonNames.Scale))
                 {
-                    info.Scale = entity.GetVector3("scale");
+                    info.Scale = entity.GetVector3(CommonNames.Scale);
                 }
 
                 Game.Instance.Simulation.CurrentUpdateQueue.AddUpdate(new LavaRenderable.LavaPillarUpdate(Updatable, info));

@@ -18,17 +18,17 @@ namespace ProjectMagma.Simulation
 
         public virtual void OnAttached(AbstractEntity entity)
         {
-            Debug.Assert(entity.HasVector3("position"));
+            Debug.Assert(entity.HasVector3(CommonNames.Position));
 
             this.island = entity as Entity;
             this.constants = Game.Instance.Simulation.EntityManager["island_constants"];
             this.playerConstants = Game.Instance.Simulation.EntityManager["player_constants"];
 
-            if (!entity.HasAttribute("max_health"))
+            if (!entity.HasAttribute(CommonNames.MaxHealth))
             {
-                entity.AddFloatAttribute("max_health", (entity.GetVector3("scale").Length() * constants.GetFloat("scale_health_multiplier")));
+                entity.AddFloatAttribute(CommonNames.MaxHealth, (entity.GetVector3(CommonNames.Scale).Length() * constants.GetFloat("scale_health_multiplier")));
             }
-            entity.AddFloatAttribute("health", entity.GetFloat("max_health"));
+            entity.AddFloatAttribute(CommonNames.Health, entity.GetFloat(CommonNames.MaxHealth));
 
             hasFixedMovementPath = entity.GetBool("fixed");
 
@@ -40,7 +40,7 @@ namespace ProjectMagma.Simulation
             entity.AddIntAttribute("players_on_island", 0);
 
             // approximation of island's radius and height
-            Vector3 scale = island.GetVector3("scale");
+            Vector3 scale = island.GetVector3(CommonNames.Scale);
             entity.AddFloatAttribute("height", scale.Y);
             scale.Y = 0;
             entity.AddFloatAttribute("radius", scale.Length());
@@ -52,7 +52,7 @@ namespace ProjectMagma.Simulation
             entity.GetAttribute<StringAttribute>("repulsed_by").ValueChanged += RepulsedByChangeHandler;
             entity.GetAttribute<IntAttribute>("players_on_island").ValueChanged += PlayersOnIslandChangeHandler;
 
-            originalPosition = entity.GetVector3("position");
+            originalPosition = entity.GetVector3(CommonNames.Position);
         }
 
         public virtual void OnDetached(AbstractEntity entity)
@@ -74,7 +74,7 @@ namespace ProjectMagma.Simulation
             float dt = simTime.Dt;
 
             int playersOnIsland = island.GetInt("players_on_island");
-            Vector3 position = island.GetVector3("position");
+            Vector3 position = island.GetVector3(CommonNames.Position);
 
             // check if any player can interact with this island to provide an attribute so dominik is happy
             bool interactable;
@@ -85,7 +85,7 @@ namespace ProjectMagma.Simulation
                 {
                     foreach (Entity player in Game.Instance.Simulation.PlayerManager)
                     {
-                        float dist = (position - player.GetVector3("position")).Length();
+                        float dist = (position - player.GetVector3(CommonNames.Position)).Length();
                         if (dist < playerConstants.GetFloat("island_jump_free_range"))
                             interactable = true;
                     }
@@ -96,7 +96,7 @@ namespace ProjectMagma.Simulation
                 // islands are interactable only during game phase
                 interactable = false;
             }
-            island.SetBool("interactable", interactable);
+            island.SetBool(CommonNames.Interactable, interactable);
 
             // implement sinking islands
             if (!HadCollision(simTime)
@@ -218,7 +218,7 @@ namespace ProjectMagma.Simulation
             }
             else
             {
-                Vector3 velocity = island.GetVector3("velocity");
+                Vector3 velocity = island.GetVector3(CommonNames.Velocity);
                 // apply movement only if no collision
                 if (!HadCollision(simTime))
                 {
@@ -235,13 +235,13 @@ namespace ProjectMagma.Simulation
                             velocity *= island.GetFloat("movement_speed");
                         }
 
-                        island.SetVector3("velocity", velocity);
+                        island.SetVector3(CommonNames.Velocity, velocity);
                     }
                 }
                 position += velocity * dt;
             }
 
-            island.SetVector3("position", position);
+            island.SetVector3(CommonNames.Position, position);
 
             lastState = state;
         }
@@ -249,7 +249,7 @@ namespace ProjectMagma.Simulation
         // checks if distance to point on path is to far away so we need repositioning
         private void CheckDistance()
         {
-            Vector3 pos = island.GetVector3("position");
+            Vector3 pos = island.GetVector3(CommonNames.Position);
             Vector3 ppos = GetNearestPointOnPath(ref pos);
             if ((pos - ppos).Length() > constants.GetFloat("repositioning_threshold")
                 && state == IslandState.Normal)
@@ -262,9 +262,9 @@ namespace ProjectMagma.Simulation
         {
             Entity island = contact.EntityA;
             Entity other = contact.EntityB;
-            if(other.HasString("kind"))
+            if (other.HasString(CommonNames.Kind))
             {
-                String kind = other.GetString("kind");
+                String kind = other.GetString(CommonNames.Kind);
 
                 if (// never do collision response with player who is standing or jumping on island
                     (other.HasString("active_island") && other.GetString("active_island") == island.Name)
@@ -330,12 +330,12 @@ namespace ProjectMagma.Simulation
                                 if (xznormal != Vector3.Zero)
                                     xznormal.Normalize();
                                 // reflect velocity
-                                Vector3 velocity = island.GetVector3("velocity");
+                                Vector3 velocity = island.GetVector3(CommonNames.Velocity);
                                 if (velocity != Vector3.Zero)
                                 {
                                     if (Vector3.Dot(Vector3.Normalize(velocity), xznormal) > 0)
                                     {
-                                        island.SetVector3("velocity", Vector3.Reflect(velocity, xznormal)
+                                        island.SetVector3(CommonNames.Velocity, Vector3.Reflect(velocity, xznormal)
                                             * constants.GetFloat("collision_damping"));
                                     }
                                 }
@@ -350,21 +350,21 @@ namespace ProjectMagma.Simulation
         private Vector3 CalculatePseudoNormalIsland(Entity entityA, Entity entityB)
         {
             Vector3 normal;
-            String kind = entityB.GetString("kind");
+            String kind = entityB.GetString(CommonNames.Kind);
             if (kind == "pillar" || kind == "player")
             {
-                normal = entityB.GetVector3("position")-entityA.GetVector3("position");
+                normal = entityB.GetVector3(CommonNames.Position) - entityA.GetVector3(CommonNames.Position);
                 normal.Y = 0;
             }
             else
             if (kind == "cave")
             {
-                normal = entityA.GetVector3("position");
+                normal = entityA.GetVector3(CommonNames.Position);
                 normal.Y /= 2;
             }
             else
             {
-                normal = entityB.GetVector3("position")-entityA.GetVector3("position");
+                normal = entityB.GetVector3(CommonNames.Position) - entityA.GetVector3(CommonNames.Position);
             }
             if (normal != Vector3.Zero)
                 normal.Normalize();
@@ -408,7 +408,7 @@ namespace ProjectMagma.Simulation
         protected virtual void OnRepulsionStart()
         {
             // reset normal movement
-            island.SetVector3("velocity", Vector3.Zero);
+            island.SetVector3(CommonNames.Velocity, Vector3.Zero);
             state = IslandState.Repulsed;
         }
 

@@ -91,9 +91,9 @@ namespace ProjectMagma
                     if (playerActive[i])
                     {
                         Entity player = new Entity("player" + (players.Count + 1));
-                        player.AddIntAttribute("game_pad_index", i);
+                        player.AddIntAttribute(CommonNames.GamePadIndex, i);
                         player.AddStringAttribute("robot_entity", Game.Instance.Robots[robotSelected[i]].Entity);
-                        player.AddStringAttribute("player_name", Game.Instance.Robots[robotSelected[i]].Name);
+                        player.AddStringAttribute(CommonNames.PlayerName, Game.Instance.Robots[robotSelected[i]].Name);
                         players.Add(player);
                     }
                 }
@@ -167,8 +167,8 @@ namespace ProjectMagma
                     entity.AddAttribute(attributeData.name, attributeData.template, attributeData.value);
                 }
 
-                Vector3 color1 = entity.GetVector3("color1");
-                Vector3 color2 = entity.GetVector3("color2");
+                Vector3 color1 = entity.GetVector3(CommonNames.Color1);
+                Vector3 color2 = entity.GetVector3(CommonNames.Color2);
 
                 RenderTarget2D oldRenderTarget = (RenderTarget2D)Game.Instance.GraphicsDevice.GetRenderTarget(0);
                 Game.Instance.GraphicsDevice.SetRenderTarget(0, playerPreview[i]);
@@ -187,15 +187,15 @@ namespace ProjectMagma
                 playerMesh.Effects[0].Parameters["SpecularColor"].SetValue(Vector3.One);
                 playerMesh.Effects[0].Parameters["SpecularPower"].SetValue(16f);
                 playerMesh.Effects[0].Parameters["EmissiveColor"].SetValue(Vector3.One * 0.2f);
-                playerMesh.Effects[0].Parameters["ToneColor"].SetValue(entity.GetVector3("color1"));
+                playerMesh.Effects[0].Parameters["ToneColor"].SetValue(entity.GetVector3(CommonNames.Color1));
                 playerMesh.Effects[0].Parameters["DirLight0Direction"].SetValue(-Vector3.One);
-                playerMesh.Effects[0].Parameters["DirLight0DiffuseColor"].SetValue(entity.GetVector3("color1") * 0.5f);
+                playerMesh.Effects[0].Parameters["DirLight0DiffuseColor"].SetValue(entity.GetVector3(CommonNames.Color1) * 0.5f);
                 playerMesh.Effects[0].Parameters["DirLight0SpecularColor"].SetValue(Vector3.One/3);
                 playerMesh.Effects[0].Parameters["DirLight1Direction"].SetValue(new Vector3(-1,1,-1));
                 playerMesh.Effects[0].Parameters["DirLight1DiffuseColor"].SetValue(new Vector3(1,1,1)*0.75f);
                 playerMesh.Effects[0].Parameters["DirLight1SpecularColor"].SetValue(Vector3.One/3);
                 playerMesh.Effects[0].Parameters["DirLight2Direction"].SetValue(new Vector3(-1, -1, 1));
-                playerMesh.Effects[0].Parameters["DirLight2DiffuseColor"].SetValue(entity.GetVector3("color2") * 0.75f);
+                playerMesh.Effects[0].Parameters["DirLight2DiffuseColor"].SetValue(entity.GetVector3(CommonNames.Color2) * 0.75f);
                 playerMesh.Effects[0].Parameters["DirLight2SpecularColor"].SetValue(Vector3.One/3);
 
                 Viewport oldViewport = Game.Instance.GraphicsDevice.Viewport;
@@ -266,8 +266,8 @@ namespace ProjectMagma
                     entity.AddAttribute(attributeData.name, attributeData.template, attributeData.value);
                 }
 
-                Vector3 color1 = entity.GetVector3("color1");
-                Vector3 color2 = entity.GetVector3("color2");
+                Vector3 color1 = entity.GetVector3(CommonNames.Color1);
+                Vector3 color2 = entity.GetVector3(CommonNames.Color2);
 
                 if (active)
                     backgroundColor = new Color(color2 * 0.8f);

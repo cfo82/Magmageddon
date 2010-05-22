@@ -29,9 +29,9 @@ namespace ProjectMagma.Simulation
 
             // initialize properties
             Debug.Assert(this.powerup.HasVector3("relative_position"), "must have a relative translation attribute");
-            if (!this.powerup.HasAttribute("position"))
+            if (!this.powerup.HasAttribute(CommonNames.Position))
             {
-                this.powerup.AddVector3Attribute("position", Vector3.Zero);
+                this.powerup.AddVector3Attribute(CommonNames.Position, Vector3.Zero);
             }
 
             Debug.Assert(powerup.HasBool("fixed"));
@@ -39,14 +39,14 @@ namespace ProjectMagma.Simulation
             // get position on surface
             powerup.AddFloatAttribute("surface_offset", 0f);
             CalculateSurfaceOffset();
-            Vector3 islandPos = island.GetVector3("position");
+            Vector3 islandPos = island.GetVector3(CommonNames.Position);
             PositionOnIsland(ref islandPos);
 
             // add timeout respawn attribute
             this.powerup.AddFloatAttribute("respawn_at", 0);
 
             // register handlers
-            this.island.GetVector3Attribute("position").ValueChanged += OnIslandPositionChanged;
+            this.island.GetVector3Attribute(CommonNames.Position).ValueChanged += OnIslandPositionChanged;
             entity.GetProperty<CollisionProperty>("collision").OnContact += PowerupCollisionHandler;
 
             powerup.Update += OnUpdate;
@@ -57,7 +57,7 @@ namespace ProjectMagma.Simulation
         )
         {
             powerup.Update -= OnUpdate;
-            this.island.GetVector3Attribute("position").ValueChanged -= OnIslandPositionChanged;
+            this.island.GetVector3Attribute(CommonNames.Position).ValueChanged -= OnIslandPositionChanged;
             if(entity.HasProperty("collision"))
                 entity.GetProperty<CollisionProperty>("collision").OnContact -= PowerupCollisionHandler;
         }
@@ -72,7 +72,7 @@ namespace ProjectMagma.Simulation
                 powerup.RemoveProperty("render");
                 powerup.RemoveProperty("shadow_cast");
 
-                island.GetVector3Attribute("position").ValueChanged -= OnIslandPositionChanged;
+                island.GetVector3Attribute(CommonNames.Position).ValueChanged -= OnIslandPositionChanged;
 
                 respawnAt = (float)(simTime.At + rand.NextDouble() *
                     powerup.GetFloat("respawn_random_time") + powerup.GetFloat("respawn_min_time"));
@@ -90,7 +90,7 @@ namespace ProjectMagma.Simulation
                 }
                 else
                 {
-                    Vector3 pos = island.GetVector3("position");
+                    Vector3 pos = island.GetVector3(CommonNames.Position);
                     PositionOnIsland(ref pos);
                 }
 
@@ -98,7 +98,7 @@ namespace ProjectMagma.Simulation
                 powerup.AddProperty("render", new PowerupRenderProperty());
                 //powerup.AddProperty("shadow_cast", new ShadowCastProperty());
 
-                this.island.GetVector3Attribute("position").ValueChanged += OnIslandPositionChanged;
+                this.island.GetVector3Attribute(CommonNames.Position).ValueChanged += OnIslandPositionChanged;
                 powerup.GetProperty<CollisionProperty>("collision").OnContact += PowerupCollisionHandler;
 
                 respawnAt = 0;
@@ -117,14 +117,14 @@ namespace ProjectMagma.Simulation
 
         private void PositionOnIsland(ref Vector3 position)
         {
-            this.powerup.SetVector3("position", position + GetRelativePosition(powerup, island) + powerup.GetFloat("surface_offset") * Vector3.UnitY);
+            this.powerup.SetVector3(CommonNames.Position, position + GetRelativePosition(powerup, island) + powerup.GetFloat("surface_offset") * Vector3.UnitY);
         }
 
         private void PowerupCollisionHandler(SimulationTime simTime, Contact contact)
         {
             Entity other = contact.EntityB;
-            if (other.HasAttribute("kind")
-                && "player".Equals(other.GetString("kind"))
+            if (other.HasAttribute(CommonNames.Kind)
+                && "player".Equals(other.GetString(CommonNames.Kind))
                 && !powerUsed)
             {
                 // use the power
@@ -133,7 +133,7 @@ namespace ProjectMagma.Simulation
                 // notify hud
                 if (other.HasProperty("hud"))
                 {
-                    other.GetProperty<HUDProperty>("hud").NotifyPowerupPickup(powerup.GetVector3("position"), NotificationString);
+                    other.GetProperty<HUDProperty>("hud").NotifyPowerupPickup(powerup.GetVector3(CommonNames.Position), NotificationString);
                 }
 
                 // check ranges
@@ -179,7 +179,7 @@ namespace ProjectMagma.Simulation
                 // check we are far enough away from other powerups
                 foreach (Entity p in Game.Instance.Simulation.PowerupManager)
                 {
-                    if ((p.GetVector3("position") - island.GetVector3("position")).Length()
+                    if ((p.GetVector3(CommonNames.Position) - island.GetVector3(CommonNames.Position)).Length()
                         < constants.GetFloat("respawn_min_distance_to_others"))
                     {
                         valid = false;
@@ -203,7 +203,7 @@ namespace ProjectMagma.Simulation
             this.island = island;
             powerup.SetString("island_reference", island.Name);
             CalculateSurfaceOffset();
-            Vector3 islandPos = island.GetVector3("position");
+            Vector3 islandPos = island.GetVector3(CommonNames.Position);
             PositionOnIsland(ref islandPos);
             return true;
         }
@@ -211,7 +211,7 @@ namespace ProjectMagma.Simulation
         private void CalculateSurfaceOffset()
         {
             // get position on surface
-            Vector3 islandPos = island.GetVector3("position");
+            Vector3 islandPos = island.GetVector3(CommonNames.Position);
             Vector3 checkPos = islandPos + GetRelativePosition(powerup, island);
             Vector3 surfacePos;
             Simulation.GetPositionOnSurface(ref checkPos, island, out surfacePos);

@@ -34,7 +34,7 @@ namespace ProjectMagma.Simulation
 
     //        // control this island
     //        // read out attributes
-    //        Vector3 v = island.GetVector3("velocity");
+    //        Vector3 v = island.GetVector3(CommonNames.Velocity);
 
     //        // first force contribution: random               
     //        Vector3 a = new Vector3(
@@ -45,30 +45,30 @@ namespace ProjectMagma.Simulation
 
 
     //        // second force contribution: collision with pillars
-    //        Vector3 islandPosition = island.GetVector3("position");
+    //        Vector3 islandPosition = island.GetVector3(CommonNames.Position);
     //        bool collided = false;
 
     //        foreach (Entity pillar in Game.Instance.Simulation.PillarManager)
     //        {
-    //            Vector3 pillarPosition = pillar.GetVector3("position");
+    //            Vector3 pillarPosition = pillar.GetVector3(CommonNames.Position);
     //            Vector3 dist = pillarPosition - islandPosition;
     //            dist.Y = 0;
     //            Vector3 pillarContribution;
 
     //            /*BoundingBox pillarBox = (BoundingBox)Game.Instance.ContentManager.Load<Model>("Models/pillar_primitive").Tag;
     //            float pillarScale = pillarBox.Max.X;
-    //            if (pillar.HasVector3("scale"))
+    //            if (pillar.HasVector3(CommonNames.Scale))
     //            {
-    //                Vector3 scale = pillar.GetVector3("scale");
+    //                Vector3 scale = pillar.GetVector3(CommonNames.Scale);
     //                Debug.Assert(scale.X == scale.Z);
     //                pillarScale *= scale.X;
     //            }*/
 
     //            /*BoundingBox islandBox = (BoundingBox)Game.Instance.ContentManager.Load<Model>("Models/island_primitive").Tag;
     //            float islandScale = islandBox.Max.X;
-    //            if (island.HasVector3("scale"))
+    //            if (island.HasVector3(CommonNames.Scale))
     //            {
-    //                Vector3 scale = island.GetVector3("scale");
+    //                Vector3 scale = island.GetVector3(CommonNames.Scale);
     //                Debug.Assert(scale.X == scale.Z);
     //                islandScale *= scale.X;
     //            }*/
@@ -124,10 +124,10 @@ namespace ProjectMagma.Simulation
     //        {
     //            v_applied *= constants.GetFloat("max_velocity") / velocityLength;
     //        }
-    //        island.SetVector3("velocity", v);
+    //        island.SetVector3(CommonNames.Velocity, v);
 
     //        // compute final position
-    //        island.SetVector3("position", island.GetVector3("position") + dt * v_applied);
+    //        island.SetVector3(CommonNames.Position, island.GetVector3(CommonNames.Position) + dt * v_applied);
 
 
     //        base.OnUpdate(island, simTime);
@@ -135,7 +135,7 @@ namespace ProjectMagma.Simulation
 
     //    protected override void CollisionHandler(SimulationTime simTime, Entity island, Entity other, Contact co)
     //    {
-    //        if (other.HasString("kind") && other.GetString("kind") == "pillar")
+    //        if (other.HasString(CommonNames.Kind) && other.GetString(CommonNames.Kind) == "pillar")
     //        {
     //            // todo: code here
 

@@ -19,19 +19,19 @@ namespace ProjectMagma.Simulation
         {
             base.OnAttached(entity);
 
-            if (entity.HasVector3("position"))
+            if (entity.HasVector3(CommonNames.Position))
             {
-                entity.GetVector3Attribute("position").ValueChanged += PositionChanged;
+                entity.GetVector3Attribute(CommonNames.Position).ValueChanged += PositionChanged;
             }
 
-            if (entity.HasVector3("velocity"))
+            if (entity.HasVector3(CommonNames.Velocity))
             {
-                entity.GetVector3Attribute("velocity").ValueChanged += VelocityChanged;
+                entity.GetVector3Attribute(CommonNames.Velocity).ValueChanged += VelocityChanged;
             }
 
-            if (entity.HasBool("dead"))
+            if (entity.HasBool(CommonNames.Dead))
             {
-                entity.GetBoolAttribute("dead").ValueChanged += DeadChanged;
+                entity.GetBoolAttribute(CommonNames.Dead).ValueChanged += DeadChanged;
             }
 
             Game.Instance.Simulation.CurrentUpdateQueue.AddUpdate(new AddRenderableUpdate((Renderable)Updatable));
@@ -41,17 +41,17 @@ namespace ProjectMagma.Simulation
         {
             Game.Instance.Simulation.CurrentUpdateQueue.AddUpdate(new RemoveRenderableUpdate((Renderable)Updatable));
 
-            if (entity.HasVector3("position"))
+            if (entity.HasVector3(CommonNames.Position))
             {
-                entity.GetVector3Attribute("position").ValueChanged -= PositionChanged;
+                entity.GetVector3Attribute(CommonNames.Position).ValueChanged -= PositionChanged;
             }
-            if (entity.HasVector3("velocity"))
+            if (entity.HasVector3(CommonNames.Velocity))
             {
-                entity.GetVector3Attribute("velocity").ValueChanged -= VelocityChanged;
+                entity.GetVector3Attribute(CommonNames.Velocity).ValueChanged -= VelocityChanged;
             }
-            if (entity.HasBool("dead"))
+            if (entity.HasBool(CommonNames.Dead))
             {
-                entity.GetBoolAttribute("dead").ValueChanged -= DeadChanged;
+                entity.GetBoolAttribute(CommonNames.Dead).ValueChanged -= DeadChanged;
             }
 
             base.OnDetached(entity);
@@ -63,19 +63,19 @@ namespace ProjectMagma.Simulation
             Vector3 velocity = Vector3.UnitZ;
             bool dead = false;
 
-            if (entity.HasVector3("position"))
+            if (entity.HasVector3(CommonNames.Position))
             {
-                position = entity.GetVector3("position");
+                position = entity.GetVector3(CommonNames.Position);
             }
 
-            if (entity.HasVector3("velocity"))
+            if (entity.HasVector3(CommonNames.Velocity))
             {
-                velocity = entity.GetVector3("velocity");
+                velocity = entity.GetVector3(CommonNames.Velocity);
             }
 
-            if (entity.HasBool("dead"))
+            if (entity.HasBool(CommonNames.Dead))
             {
-                dead = entity.GetBool("dead");
+                dead = entity.GetBool(CommonNames.Dead);
             }
 
             velocity.Normalize();

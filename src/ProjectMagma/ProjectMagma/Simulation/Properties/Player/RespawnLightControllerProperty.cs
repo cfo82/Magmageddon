@@ -19,9 +19,9 @@ namespace ProjectMagma.Simulation
             this.island = Game.Instance.Simulation.EntityManager[light.GetString("island")];
 
             // register island change handler
-            island.GetVector3Attribute("position").ValueChanged += OnIslandPositionChanged;
+            island.GetVector3Attribute(CommonNames.Position).ValueChanged += OnIslandPositionChanged;
 
-            positionOffset = light.GetVector3("position") - island.GetVector3("position");
+            positionOffset = light.GetVector3(CommonNames.Position) - island.GetVector3(CommonNames.Position);
 
 //            (light as Entity).Update += OnUpdate;
         }
@@ -32,7 +32,7 @@ namespace ProjectMagma.Simulation
         {
 //            (light as Entity).Update -= OnUpdate;
 
-            island.GetVector3Attribute("position").ValueChanged -= OnIslandPositionChanged;
+            island.GetVector3Attribute(CommonNames.Position).ValueChanged -= OnIslandPositionChanged;
         }
 
 
@@ -44,7 +44,7 @@ namespace ProjectMagma.Simulation
         private void OnIslandPositionChanged(Vector3Attribute sender,
             Vector3 oldValue, Vector3 newValue)
         {
-            light.SetVector3("position", newValue + positionOffset);
+            light.SetVector3(CommonNames.Position, newValue + positionOffset);
         }
 
         private Vector3 positionOffset;

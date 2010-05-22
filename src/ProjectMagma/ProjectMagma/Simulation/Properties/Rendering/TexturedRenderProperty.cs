@@ -19,19 +19,19 @@ namespace ProjectMagma.Simulation
             Texture2D specularTexture = null;
             Texture2D normalTexture = null;
 
-            if (entity.HasString("diffuse_texture"))
+            if (entity.HasString(CommonNames.DiffuseTexture))
             {
-                string textureName = entity.GetString("diffuse_texture");
+                string textureName = entity.GetString(CommonNames.DiffuseTexture);
                 diffuseTexture = Game.Instance.ContentManager.Load<Texture2D>(textureName);
             }
-            if (entity.HasString("specular_texture"))
+            if (entity.HasString(CommonNames.SpecularTexture))
             {
-                string textureName = entity.GetString("specular_texture");
+                string textureName = entity.GetString(CommonNames.SpecularTexture);
                 specularTexture = Game.Instance.ContentManager.Load<Texture2D>(textureName);
             }
-            if (entity.HasString("normal_texture"))
+            if (entity.HasString(CommonNames.NormalTexture))
             {
-                string textureName = entity.GetString("normal_texture");
+                string textureName = entity.GetString(CommonNames.NormalTexture);
                 normalTexture = Game.Instance.ContentManager.Load<Texture2D>(textureName);
             }
 

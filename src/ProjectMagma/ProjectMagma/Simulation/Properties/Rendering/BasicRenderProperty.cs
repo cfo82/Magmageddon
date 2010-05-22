@@ -21,41 +21,41 @@ namespace ProjectMagma.Simulation
 
         protected override void SetUpdatableParameters(Entity entity)
         {
-            if (entity.HasFloat("lava_light_strength"))
+            if (entity.HasFloat(CommonNames.LavaLightStrength))
             {
-                ChangeFloat("LavaLightStrength", entity.GetFloat("lava_light_strength"));
+                ChangeFloat("LavaLightStrength", entity.GetFloat(CommonNames.LavaLightStrength));
             }
-            if (entity.HasFloat("sky_light_strength"))
+            if (entity.HasFloat(CommonNames.SkyLightStrength))
             {
-                ChangeFloat("SkyLightStrength", entity.GetFloat("sky_light_strength"));
+                ChangeFloat("SkyLightStrength", entity.GetFloat(CommonNames.SkyLightStrength));
             }
-            if (entity.HasFloat("spot_light_strength"))
+            if (entity.HasFloat(CommonNames.SpotLightStrength))
             {
-                ChangeFloat("SpotLightStrength", entity.GetFloat("spot_light_strength"));
+                ChangeFloat("SpotLightStrength", entity.GetFloat(CommonNames.SpotLightStrength));
             }
-            if (entity.HasVector3("diffuse_color"))
+            if (entity.HasVector3(CommonNames.DiffuseColor))
             {
-                ChangeVector3("DiffuseColor", entity.GetVector3("diffuse_color"));
+                ChangeVector3("DiffuseColor", entity.GetVector3(CommonNames.DiffuseColor));
             }
-            if (entity.HasVector3("emissive_color"))
+            if (entity.HasVector3(CommonNames.EmissiveColor))
             {
-                ChangeVector3("EmissiveColor", entity.GetVector3("emissive_color"));
+                ChangeVector3("EmissiveColor", entity.GetVector3(CommonNames.EmissiveColor));
             }
-            if (entity.HasVector3("specular_color"))
+            if (entity.HasVector3(CommonNames.SpecularColor))
             {
-                ChangeVector3("SpecularColor", entity.GetVector3("specular_color"));
+                ChangeVector3("SpecularColor", entity.GetVector3(CommonNames.SpecularColor));
             }
-            if (entity.HasFloat("specular_power"))
+            if (entity.HasFloat(CommonNames.SpecularPower))
             {
-                ChangeFloat("SpecularPower", entity.GetFloat("specular_power"));
+                ChangeFloat("SpecularPower", entity.GetFloat(CommonNames.SpecularPower));
             }
-            if (entity.HasFloat("alpha"))
+            if (entity.HasFloat(CommonNames.Alpha))
             {
-                ChangeFloat("Alpha", entity.GetFloat("alpha"));
+                ChangeFloat("Alpha", entity.GetFloat(CommonNames.Alpha));
             }
-            if (entity.HasVector2("persistent_squash"))
+            if (entity.HasVector2(CommonNames.PersistentSquash))
             {
-                ChangeVector2("SquashParams", entity.GetVector2("persistent_squash"));
+                ChangeVector2("SquashParams", entity.GetVector2(CommonNames.PersistentSquash));
                 ChangeBool("PersistentSquash", true);
             }
         }

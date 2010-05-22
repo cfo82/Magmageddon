@@ -8,10 +8,10 @@
 // by just assining s0 to the appropriate sampler below.
 sampler i_hate_microsoft_dont_remove_this_it_wont_work : register(s0);
 
-texture OpaqueColorBuffer;
-sampler2D OpaqueColorSampler = sampler_state
+texture OpaqueDepthBuffer;
+sampler2D OpaqueDepthSampler = sampler_state
 {
-	Texture = <OpaqueColorBuffer>;
+	Texture = <OpaqueDepthBuffer>;
 	MinFilter = Linear;
 	MagFilter = Linear;
 	MipFilter = Linear;
@@ -19,10 +19,10 @@ sampler2D OpaqueColorSampler = sampler_state
 	AddressV = Clamp;
 };
 
-texture TransparentColorBuffer;
-sampler2D TransparentColorSampler = sampler_state
+texture TransparentDepthBuffer;
+sampler2D TransparentDepthSampler = sampler_state
 {
-	Texture = <TransparentColorBuffer>;
+	Texture = <TransparentDepthBuffer>;
 	MinFilter = Linear;
 	MagFilter = Linear;
 	MipFilter = Linear;
@@ -32,10 +32,9 @@ sampler2D TransparentColorSampler = sampler_state
 
 float4 ps_main(float2 texCoord : TEXCOORD0) : COLOR0
 {
-	float4 opaqueColor = tex2D(OpaqueColorSampler, texCoord);
-	float4 transparentColor = tex2D(TransparentColorSampler, texCoord);
-	// setting transparentColor.a is important since we later need this to calculate fog values!
-	return float4(transparentColor.a * transparentColor.rgb + (1-transparentColor.a) * opaqueColor.rgb, transparentColor.a);
+	float opaqueDepth = tex2D(OpaqueDepthSampler, texCoord).x;
+	float transparentDepth = tex2D(TransparentDepthSampler, texCoord).x;
+	return float4(opaqueDepth, transparentDepth, 0, 0);
 }
 
 technique Combine

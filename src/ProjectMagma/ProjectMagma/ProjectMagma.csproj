@@ -175,6 +175,7 @@
     <Compile Include="Renderer\RendererEntityManager.cs" />
     <Compile Include="Renderer\RenderMode.cs" />
     <Compile Include="Renderer\RenderPasses\CombinePass.cs" />
+    <Compile Include="Renderer\RenderPasses\CombineDepthPass.cs" />
     <Compile Include="Renderer\RenderPasses\RestoreDepthBufferPass.cs" />
     <Compile Include="Renderer\RenderPasses\DownscalePass.cs" />
     <Compile Include="Renderer\RenderPasses\HdrCombinePass.cs" />
@@ -229,6 +230,7 @@
     <Compile Include="Simulation\Event\UpdateHandler.cs" />
     <Compile Include="Simulation\OrientationHelper.cs" />
     <Compile Include="Simulation\Properties\Base\RendererUpdatableProperty.cs" />
+    <Compile Include="Simulation\Properties\Environment\DecorationController.cs" />
     <Compile Include="Simulation\Properties\Environment\PowerUpControllerLives.cs" />
     <Compile Include="Simulation\Properties\Island\IslandStraightMovementControllerProperty.cs" />
     <Compile Include="Simulation\Properties\Island\IslandNoMovementControllerProperty.cs" />

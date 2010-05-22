@@ -968,11 +968,26 @@
       <Importer>EffectImporter</Importer>
       <Processor>EffectProcessor</Processor>
     </Compile>
+    <Compile Include="Effects\CombineDepth.fx">
+      <Name>CombineDepth</Name>
+      <Importer>EffectImporter</Importer>
+      <Processor>EffectProcessor</Processor>
+    </Compile>
+    <Compile Include="Models\Environment\farn.fbx">
+      <Name>farn</Name>
+      <Importer>FbxImporter</Importer>
+      <Processor>Default</Processor>
+    </Compile>
     <None Include="Sounds\movement\20847__plagasul__jump1.wav">
       <Name>20847__plagasul__jump1</Name>
       <Importer>WavImporter</Importer>
       <Processor>SoundEffectProcessor</Processor>
     </None>
+    <Compile Include="Textures\Environment\environ_diffuse_v005.tga">
+      <Name>environ_diffuse_v005</Name>
+      <Importer>TextureImporter</Importer>
+      <Processor>TextureProcessor</Processor>
+    </Compile>
     <Compile Include="Textures\Environment\environ_diffuse_test_alpha.tga">
       <Name>environ_diffuse_test_alpha</Name>
       <Importer>TextureImporter</Importer>

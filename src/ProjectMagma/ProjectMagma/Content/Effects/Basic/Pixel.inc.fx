@@ -89,6 +89,10 @@ float4 PSIslandAlphaRenderChannel(PixelLightingPSInputTx pin) : COLOR0
 {
 	return PSIsland(pin).RenderChannelColor;
 }
+float4 PSIslandAlphaDepth(PixelLightingPSInputTx pin) : COLOR0
+{
+	return PSIsland(pin).RealDepth;
+}
 
 
 //-----------------------------------------------------------------------------

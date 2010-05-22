@@ -69,7 +69,7 @@ namespace ProjectMagma.Renderer
 
             this.device = device;
             updateRenderables = new List<Renderable>();
-//            shadowCaster = new List<Renderable>();
+            //            shadowCaster = new List<Renderable>();
             opaqueRenderables = new List<Renderable>();
             transparentRenderablesTEST = new List<Renderable>();
             transparentRenderables = new List<Renderable>();
@@ -129,17 +129,21 @@ namespace ProjectMagma.Renderer
                 targetHorizontalBlurredRenderChannels = new RenderTarget2D(Device, width / 2, height / 2, 1, SurfaceFormat.HalfVector4);
                 targetBlurredRenderChannels = new RenderTarget2D(Device, width / 2, height / 2, 1, SurfaceFormat.HalfVector4);
 
-                targetTool = new RenderTarget2D(Device, width, height, 1, SurfaceFormat.HalfVector4);
+                targetOpaqueDepth = new RenderTarget2D(Device, width, height, 1, SurfaceFormat.Vector2);
+                targetAlphaDepth = new RenderTarget2D(Device, width, height, 1, SurfaceFormat.Single);
                 targetDepth = new RenderTarget2D(Device, width, height, 1, SurfaceFormat.Vector2);
+
+                targetTool = new RenderTarget2D(Device, width, height, 1, SurfaceFormat.HalfVector4);
 
                 restoreDepthBufferPass = new RestoreDepthBufferPass(this);
                 combinePass = new CombinePass(this);
+                combineDepthPass = new CombineDepthPass(this);
                 glowPass = new GlowPass(this);
                 hdrCombinePass = new HdrCombinePass(this);
             }
 
             statefulParticleResourceManager = new ProjectMagma.Renderer.ParticleSystem.Stateful.ResourceManager(wrappedContent, device);
-            
+
 
             updateQueues = new List<RendererUpdateQueue>();
 
@@ -159,7 +163,7 @@ namespace ProjectMagma.Renderer
 
             // recreate the lava fires system using the new level parameters
             if (explosionSystem != null)
-                { explosionSystem.UnloadResources(); }
+            { explosionSystem.UnloadResources(); }
             explosionSystem = new LavaExplosion(this, Game.Instance.ContentManager, device,
                 entityManager["lavafire"].GetFloat("size"),
                 entityManager["lavafire"].GetFloat("rgb_multiplier"),
@@ -171,7 +175,7 @@ namespace ProjectMagma.Renderer
 
             // recreate the snow system using the new level parameters
             if (snowSystem != null)
-                { snowSystem.UnloadResources(); }
+            { snowSystem.UnloadResources(); }
             snowSystem = new Snow(this, Game.Instance.ContentManager, device,
                 entityManager["snow"].GetFloat("particle_lifetime"),
                 entityManager["snow"].GetFloat("max_alpha"),
@@ -186,19 +190,19 @@ namespace ProjectMagma.Renderer
             }
 
             if (iceExplosionSystem != null)
-                { iceExplosionSystem.UnloadResources(); }
+            { iceExplosionSystem.UnloadResources(); }
             iceExplosionSystem = new IceExplosion(this, Game.Instance.ContentManager, device);
 
             if (fireExplosionSystem != null)
-                { fireExplosionSystem.UnloadResources(); }
+            { fireExplosionSystem.UnloadResources(); }
             fireExplosionSystem = new FireExplosion(this, Game.Instance.ContentManager, device);
 
             if (flamethrowerSystem != null)
-                { flamethrowerSystem.UnloadResources(); }
+            { flamethrowerSystem.UnloadResources(); }
             flamethrowerSystem = new Flamethrower(this, Game.Instance.ContentManager, device);
 
             if (iceSpikeSystem != null)
-                { iceSpikeSystem.UnloadResources(); }
+            { iceSpikeSystem.UnloadResources(); }
             iceSpikeSystem = new IceSpike(this, Game.Instance.ContentManager, device);
         }
 
@@ -208,7 +212,7 @@ namespace ProjectMagma.Renderer
             RendererUpdatable winningUpdatable
         )
         {
-            switch(phase)
+            switch (phase)
             {
                 case RendererPhase.Outro:
                     {
@@ -258,7 +262,7 @@ namespace ProjectMagma.Renderer
             lock (updateQueues)
             {
                 if (updateQueues.Count == 0)
-                    { return null; }
+                { return null; }
 
                 ValicateUpdateQueueCount();
 
@@ -273,7 +277,7 @@ namespace ProjectMagma.Renderer
 
         private void Update()
         {
-            if(Camera!=null)
+            if (Camera != null)
             {
                 // should only be called if a level has already been loaded
                 Camera.Update(this);
@@ -300,37 +304,37 @@ namespace ProjectMagma.Renderer
 
             Game.Instance.Profiler.BeginSection("explosion_system");
             if (explosionSystem != null)
-                { explosionSystem.Update(Time.Last / 1000d, Time.At / 1000d); }
+            { explosionSystem.Update(Time.Last / 1000d, Time.At / 1000d); }
             Game.Instance.Profiler.EndSection("explosion_system");
-            
+
             Game.Instance.Profiler.BeginSection("snow_system");
             if (snowSystem != null)
-                { snowSystem.Update(Time.Last/1000d, Time.At/1000d); }
+            { snowSystem.Update(Time.Last / 1000d, Time.At / 1000d); }
             Game.Instance.Profiler.EndSection("snow_system");
-            
+
             Game.Instance.Profiler.BeginSection("ice_explosion_system");
             if (iceExplosionSystem != null)
-                { iceExplosionSystem.Update(Time.PausableLast / 1000d, Time.PausableAt / 1000d); }
+            { iceExplosionSystem.Update(Time.PausableLast / 1000d, Time.PausableAt / 1000d); }
             Game.Instance.Profiler.EndSection("ice_explosion_system");
-            
+
             Game.Instance.Profiler.BeginSection("fire_explosion_system");
             if (fireExplosionSystem != null)
-                { fireExplosionSystem.Update(Time.PausableLast / 1000d, Time.PausableAt / 1000d); }
+            { fireExplosionSystem.Update(Time.PausableLast / 1000d, Time.PausableAt / 1000d); }
             Game.Instance.Profiler.EndSection("fire_explosion_system");
-            
+
             Game.Instance.Profiler.BeginSection("flamethrower_system");
             if (flamethrowerSystem != null)
-                { flamethrowerSystem.Update(Time.PausableLast / 1000d, Time.PausableAt / 1000d); }
+            { flamethrowerSystem.Update(Time.PausableLast / 1000d, Time.PausableAt / 1000d); }
             Game.Instance.Profiler.EndSection("flamethrower_system");
-            
+
             Game.Instance.Profiler.BeginSection("ice_spike_system");
             if (iceSpikeSystem != null)
-                { iceSpikeSystem.Update(Time.PausableLast / 1000d, Time.PausableAt / 1000d); }
+            { iceSpikeSystem.Update(Time.PausableLast / 1000d, Time.PausableAt / 1000d); }
             Game.Instance.Profiler.EndSection("ice_spike_system");
-            
+
             Game.Instance.Profiler.EndSection("particle_systems");
         }
-        
+
         public void Render()
         {
             renderTime.Update();
@@ -378,6 +382,7 @@ namespace ProjectMagma.Renderer
                 Game.Instance.Profiler.BeginSection("combine");
                 combinePass.Render(targetOpaqueColorBuffer.GetTexture(), targetAlphaColorBuffer.GetTexture(), targetHDRColorBuffer);
                 combinePass.Render(targetOpaqueRenderChannels.GetTexture(), targetAlphaRenderChannels.GetTexture(), targetRenderChannels);
+                combineDepthPass.Render(targetOpaqueDepth.GetTexture(), targetAlphaDepth.GetTexture(), targetDepth);
                 Game.Instance.Profiler.EndSection("combine");
 
                 Game.Instance.Profiler.BeginSection("renderer_post_glow");
@@ -388,10 +393,13 @@ namespace ProjectMagma.Renderer
                     );
                 Game.Instance.Profiler.EndSection("renderer_post_glow");
 
+                // FIXME: do we really need to downscale and blur the renderchannels? we don't use
+                // the blurred version.
+
                 Game.Instance.Profiler.BeginSection("renderer_post_hdr");
                 hdrCombinePass.Render(
                     targetHDRColorBuffer.GetTexture(), targetBlurredHDRColorBuffer.GetTexture(), targetRenderChannels.GetTexture(),
-                    targetTool.GetTexture(), DepthMap
+                    targetTool.GetTexture(), targetDepth.GetTexture()
                     );
                 Game.Instance.Profiler.EndSection("renderer_post_hdr");
                 Game.Instance.Profiler.EndSection("postprocessing");
@@ -417,12 +425,12 @@ namespace ProjectMagma.Renderer
 
             device.DepthStencilBuffer = shadowStencilBuffer;
             device.Clear(Color.Black);
-            
+
             foreach (Renderable renderable in opaqueRenderables)
             {
                 //Debug.Assert(renderable.RenderMode == RenderMode.RenderToShadowMap);
                 Debug.Assert(renderable is ModelRenderable);
-                if((renderable as ModelRenderable).IsShadowCaster)
+                if ((renderable as ModelRenderable).IsShadowCaster)
                     (renderable as ModelRenderable).DrawToShadowMap(this);
             }
 
@@ -466,7 +474,7 @@ namespace ProjectMagma.Renderer
                 Device.SetRenderTarget(0, targetOpaqueColorBuffer);
                 Device.SetRenderTarget(1, targetOpaqueRenderChannels);
                 Device.SetRenderTarget(2, targetTool);
-                Device.SetRenderTarget(3, targetDepth);
+                Device.SetRenderTarget(3, targetOpaqueDepth);
             }
 
             Device.Clear(Color.White);
@@ -507,8 +515,8 @@ namespace ProjectMagma.Renderer
             if (EnablePostProcessing)
             {
                 Device.SetRenderTarget(0, targetAlphaColorBuffer);
-                Device.Clear(ClearOptions.Target|ClearOptions.DepthBuffer, new Color(Color.Black, 0), 1, 0);
-                restoreDepthBufferPass.Render(targetDepth.GetTexture());
+                Device.Clear(ClearOptions.Target | ClearOptions.DepthBuffer, new Color(Color.Black, 0), 1, 0);
+                restoreDepthBufferPass.Render(targetOpaqueDepth.GetTexture());
             }
 
             foreach (Renderable renderable in transparentRenderablesTEST)
@@ -523,14 +531,27 @@ namespace ProjectMagma.Renderer
 
             if (EnablePostProcessing)
             {
+                // draw render channel
                 Device.SetRenderTarget(0, targetAlphaRenderChannels);
                 Device.Clear(ClearOptions.Target, new Color(Color.Black, 0), 0, 0);
-                restoreDepthBufferPass.Render(targetDepth.GetTexture());
+                restoreDepthBufferPass.Render(targetOpaqueDepth.GetTexture());
 
                 foreach (Renderable renderable in transparentRenderablesTEST)
                 {
                     Debug.Assert(renderable.RenderMode == RenderMode.RenderToSceneAlphaTEST);
                     (renderable as AlphaIslandRenderable).CurrentPass = "IslandAlphaRenderChannel";
+                    renderable.Draw(this);
+                }
+
+                // render depth
+                Device.SetRenderTarget(0, targetAlphaDepth);
+                Device.Clear(ClearOptions.Target, new Color(Color.Black, 0), 0, 0);
+                restoreDepthBufferPass.Render(targetOpaqueDepth.GetTexture());
+
+                foreach (Renderable renderable in transparentRenderablesTEST)
+                {
+                    Debug.Assert(renderable.RenderMode == RenderMode.RenderToSceneAlphaTEST);
+                    (renderable as AlphaIslandRenderable).CurrentPass = "IslandAlphaDepth";
                     renderable.Draw(this);
                 }
 
@@ -557,17 +578,17 @@ namespace ProjectMagma.Renderer
             }
 
             if (explosionSystem != null)
-                { explosionSystem.Render(lastFrameTime, currentFrameTime); }
+            { explosionSystem.Render(lastFrameTime, currentFrameTime); }
             if (snowSystem != null)
-                { snowSystem.Render(lastFrameTime, currentFrameTime); }
+            { snowSystem.Render(lastFrameTime, currentFrameTime); }
             if (iceExplosionSystem != null)
-                { iceExplosionSystem.Render(Time.PausableLast / 1000d, Time.PausableAt / 1000d); }
+            { iceExplosionSystem.Render(Time.PausableLast / 1000d, Time.PausableAt / 1000d); }
             if (fireExplosionSystem != null)
-                { fireExplosionSystem.Render(Time.PausableLast / 1000d, Time.PausableAt / 1000d); }
+            { fireExplosionSystem.Render(Time.PausableLast / 1000d, Time.PausableAt / 1000d); }
             if (flamethrowerSystem != null)
-                { flamethrowerSystem.Render(Time.PausableLast / 1000d, Time.PausableAt / 1000d); }
+            { flamethrowerSystem.Render(Time.PausableLast / 1000d, Time.PausableAt / 1000d); }
             if (iceSpikeSystem != null)
-                { iceSpikeSystem.Render(Time.PausableLast / 1000d, Time.PausableAt / 1000d); }
+            { iceSpikeSystem.Render(Time.PausableLast / 1000d, Time.PausableAt / 1000d); }
         }
 
         private void RenderOverlays()
@@ -645,7 +666,7 @@ namespace ProjectMagma.Renderer
         )
         {
             List<Renderable> renderables = GetMatchingRenderableList(renderable);
-            
+
             if (
                 !renderables.Contains(renderable) ||
                 (renderable.NeedsUpdate && !updateRenderables.Contains(renderable))
@@ -670,9 +691,9 @@ namespace ProjectMagma.Renderer
             {
                 Vector3 result = Vector3.Zero;
                 int n = 0;
-                foreach(Renderable renderable in updateRenderables)
+                foreach (Renderable renderable in updateRenderables)
                 {
-                    if(renderable is RobotRenderable)
+                    if (renderable is RobotRenderable)
                     {
                         result += renderable.Position;
                         n++;
@@ -763,7 +784,7 @@ namespace ProjectMagma.Renderer
         }
 
         public Camera Camera { get; set; }
-        
+
         // render
         private RenderTarget2D targetOpaqueColorBuffer;                 // opaque object colours are rendered into this buffer
         private RenderTarget2D targetAlphaColorBuffer;                  // transparent object colours are rendered into this buffer (in LDR)
@@ -778,8 +799,12 @@ namespace ProjectMagma.Renderer
         private RenderTarget2D targetHorizontalBlurredRenderChannels;   // quarter sized target containing horizontally blurred render-channels
         private RenderTarget2D targetBlurredRenderChannels;             // quarter-sized target containing horizontally and vertically blurred render-channels
 
-        private RenderTarget2D targetTool;
+        private RenderTarget2D targetOpaqueDepth;
+        private RenderTarget2D targetAlphaDepth;
         private RenderTarget2D targetDepth;
+
+        // TODO: eliminate
+        private RenderTarget2D targetTool;
 
 
         public Texture2D DepthMap { get { return targetDepth.GetTexture(); } }
@@ -820,6 +845,7 @@ namespace ProjectMagma.Renderer
 
         private RestoreDepthBufferPass restoreDepthBufferPass;
         private CombinePass combinePass;
+        private CombineDepthPass combineDepthPass;
         private GlowPass glowPass;
         private HdrCombinePass hdrCombinePass;
 
@@ -830,7 +856,7 @@ namespace ProjectMagma.Renderer
         private ParticleSystem.Stateful.Implementations.Flamethrower flamethrowerSystem;
         private ParticleSystem.Stateful.Implementations.IceSpike iceSpikeSystem;
         private ParticleSystem.Stateful.ResourceManager statefulParticleResourceManager;
-        
+
         //private LightManager lightManager;
 
         // ACCESS TO THIS LIST ONLY FOR SYNCHRONIZED THINGS!!

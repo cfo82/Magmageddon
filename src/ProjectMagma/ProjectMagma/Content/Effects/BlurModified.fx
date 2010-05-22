@@ -15,9 +15,9 @@ texture RenderChannelColor;
 sampler2D RenderChannelSampler = sampler_state
 {
 	Texture = <RenderChannelColor>;
-	MinFilter = Linear;
-	MagFilter = Linear;
-	MipFilter = Linear;
+	MinFilter = Point;
+	MagFilter = Point;
+	MipFilter = Point;
 	AddressU = Clamp;
 	AddressV = Clamp;
 };
@@ -26,9 +26,9 @@ texture GeometryRender;
 sampler2D GeometryRenderSampler = sampler_state
 {
 	Texture = <GeometryRender>;
-	MinFilter = Linear;
-	MagFilter = Linear;
-	MipFilter = Linear;
+	MinFilter = Point;
+	MagFilter = Point;
+	MipFilter = Point;
 	AddressU = Clamp;
 	AddressV = Clamp;
 };

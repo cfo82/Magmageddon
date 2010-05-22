@@ -4,9 +4,9 @@ texture GeometryRender;
 sampler2D GeometryRenderSampler = sampler_state
 {
 	Texture = <GeometryRender>;
-	MinFilter = Linear;
-	MagFilter = Linear;
-	MipFilter = Linear;
+	MinFilter = Point;
+	MagFilter = Point;
+	MipFilter = Point;
 	AddressU = Clamp;
 	AddressV = Clamp;
 };
@@ -15,9 +15,9 @@ texture BlurGeometryRender;
 sampler2D BlurGeometryRenderSampler = sampler_state
 {
 	Texture = <BlurGeometryRender>;
-	MinFilter = Linear;
-	MagFilter = Linear;
-	MipFilter = Linear;
+	MinFilter = Point;
+	MagFilter = Point;
+	MipFilter = Point;
 	AddressU = Clamp;
 	AddressV = Clamp;
 };
@@ -26,9 +26,9 @@ texture RenderChannelColor;
 sampler2D RenderChannelColorSampler = sampler_state
 {
 	Texture = <RenderChannelColor>;
-	MinFilter = Linear;
-	MagFilter = Linear;
-	MipFilter = Linear;
+	MinFilter = Point;
+	MagFilter = Point;
+	MipFilter = Point;
 	AddressU = Clamp;
 	AddressV = Clamp;
 };
@@ -37,9 +37,9 @@ texture ToolTexture;
 sampler2D ToolTextureSampler = sampler_state
 {
 	Texture = <ToolTexture>;
-	MinFilter = Linear;
-	MagFilter = Linear;
-	MipFilter = Linear;
+	MinFilter = Point;
+	MagFilter = Point;
+	MipFilter = Point;
 	AddressU = Clamp;
 	AddressV = Clamp;
 };
@@ -48,9 +48,9 @@ texture CloudTexture;
 sampler2D CloudTextureSampler = sampler_state
 {
 	Texture = <CloudTexture>;
-	MinFilter = Linear;
-	MagFilter = Linear;
-	MipFilter = Linear;
+	MinFilter = Point;
+	MagFilter = Point;
+	MipFilter = Point;
 	AddressU = Mirror;
 	AddressV = Mirror;
 };
@@ -116,11 +116,9 @@ float4 ToneMap(float4 color, int channel)
 	return weight*normalize(color);	
 }
 
-float4 ChannelPixelShader(float2 texCoord : TEXCOORD0, int channel)
+float4 ChannelPixelShader(int channel, float4 bloom, float4 base)
 {
-    // Look up the bloom and original base image colors.
-    float4 bloom = tex2D(BlurGeometryRenderSampler, texCoord);
-    float4 base = tex2D(GeometryRenderSampler, texCoord);
+    // Look up the bloom and original base image colors. (get them passed into the function)
     
     // Weight Bloom component according to sensitivity
     bloom = saturate(bloom/(1.0f-BloomSensitivity[channel]) - 2*BloomSensitivity[channel]);
@@ -171,12 +169,12 @@ float FogZOff, FogZMul, FogYOff, FogYMul, FogGlobMul;
 float3 FogColor;//=float4(0,0,1,1);
 
 
-inline void ApplyFog(inout float4 img, in float2 texCoord, in float weight)
+inline void ApplyFog(inout float4 img, in float2 texCoord, in float weight, in float alpha)
 {
 	// compute depth intensity
-	float zRaw = tex2D(DepthTextureSampler, texCoord).r;
-	float zRescaled = float4(1-(1-tex2D(DepthTextureSampler, texCoord).r-FogZOff)*FogZMul,0,0,1);
-	float z = saturate(zRescaled);
+	float2 zRaw = tex2D(DepthTextureSampler, texCoord).rg;
+	float2 zRescaled = 1-(1-tex2D(DepthTextureSampler, texCoord).rg-FogZOff)*FogZMul;
+	float z = saturate((1-alpha)*zRescaled.r+alpha*zRescaled.g);
 
 	// compute vertical intensity
 	float yRaw = tex2D(ToolTextureSampler, texCoord).x;
@@ -217,9 +215,12 @@ PostPixelShaderOutput PostPixelShader(float2 texCoord : TEXCOORD0)
 
 	float2 perturbedTexCoord = PerturbTexCoord(texCoord);
 
-	float4 channel1 = ChannelPixelShader(perturbedTexCoord, 0);
-	float4 channel2 = ChannelPixelShader(perturbedTexCoord, 1);
-	float4 channel3 = ChannelPixelShader(perturbedTexCoord, 2);
+    float4 bloom = tex2D(BlurGeometryRenderSampler, texCoord);
+    float4 base = tex2D(GeometryRenderSampler, texCoord);
+
+	float4 channel1 = ChannelPixelShader(0, float4(bloom.rgb, 1), float4(base.rgb, 1));
+	float4 channel2 = ChannelPixelShader(1, float4(bloom.rgb, 1), float4(base.rgb, 1));
+	float4 channel3 = ChannelPixelShader(2, float4(bloom.rgb, 1), float4(base.rgb, 1));
 		
 	float4 channel_map = tex2D(RenderChannelColorSampler, perturbedTexCoord);
     
@@ -229,7 +230,7 @@ PostPixelShaderOutput PostPixelShader(float2 texCoord : TEXCOORD0)
     float fogWeight = saturate(channel_map.r * 0.75 + channel_map.g * 1 + channel_map.b * 1); // players should be less affected
     
     combined = GradientYBlueMap(combined, perturbedTexCoord, gradientWeight);
-    ApplyFog(combined, perturbedTexCoord, fogWeight);
+    ApplyFog(combined, perturbedTexCoord, fogWeight, base.a);
     
     result.depth = tex2D(DepthTextureSampler, texCoord).r;
 	result.color = combined;

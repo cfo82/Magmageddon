@@ -85,6 +85,8 @@ namespace ProjectMagma.Simulation
             }
 
             // load the model
+            if (!entity.HasString("mesh"))
+                { throw new Exception(string.Format("missing 'mesh' attribute on entity '{0}'", entity.Name)); }
             string meshName = entity.GetString("mesh");
             Model model = Game.Instance.ContentManager.Load<MagmaModel>(meshName).XnaModel;
 

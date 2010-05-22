@@ -116,6 +116,21 @@ Technique IslandAlphaRenderChannel
 		SrcBlend = SRCALPHA;
 	}
 }
+Technique IslandAlphaDepth
+{
+	Pass 
+	{
+		VertexShader = compile vs_3_0 VSBasicPixelLightingNmTxSq();
+		PixelShader	 = compile ps_3_0 PSIslandAlphaDepth();
+		ZEnable = true;		
+		ZWriteEnable = false;
+		AlphaTestEnable = false;
+
+		AlphaBlendEnable = true;
+		DestBlend = INVSRCALPHA;
+		SrcBlend = SRCALPHA;
+	}
+}
 
 Technique Environment
 {

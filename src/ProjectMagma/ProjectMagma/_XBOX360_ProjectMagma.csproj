@@ -162,6 +162,7 @@
     <Compile Include="Renderer\RendererEntity.cs" />
     <Compile Include="Renderer\RendererEntityManager.cs" />
     <Compile Include="Renderer\RenderMode.cs" />
+    <Compile Include="Renderer\RenderPasses\CombineDepthPass.cs" />
     <Compile Include="Renderer\RenderPasses\CombinePass.cs" />
     <Compile Include="Renderer\RenderPasses\DownscalePass.cs" />
     <Compile Include="Renderer\RenderPasses\GlowPass.cs" />
@@ -205,6 +206,7 @@
     <Compile Include="Framework\Properties\Base\Property.cs" />
     <Compile Include="Simulation\Properties\Base\RendererUpdatableProperty.cs" />
     <Compile Include="Simulation\Properties\Environment\CameraProperty.cs" />
+    <Compile Include="Simulation\Properties\Environment\DecorationController.cs" />
     <Compile Include="Simulation\Properties\Environment\ExplosionControllerProperty.cs" />
     <Compile Include="Simulation\Properties\Environment\PowerUpControllerBase.cs" />
     <Compile Include="Simulation\Properties\Environment\PowerUpControllerEnergy.cs" />

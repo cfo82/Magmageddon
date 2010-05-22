@@ -86,7 +86,7 @@
 
   <Entity name="decoration1">
     <Attributes>
-      <Attribute name="island_reference" template="string" value="island1"/>
+      <Attribute name="attached_to" template="string" value="island1"/>
       <Attribute name="attachment_point" template="string" value="decoration_point_1"/>
       <Attribute name="position" template="float3" value="0 80 120"/>
       <Attribute name="scale" template="float3" value="50 50 50"/>
@@ -94,7 +94,7 @@
       <Attribute name="diffuse_texture" template="string" value="Textures/Environment/environ_diffuse_v005"/>
     </Attributes>
     <Properties>
-      <Property name="controller" type="ProjectMagma.Simulation.DecorationController"/>
+      <Property name="position_controller" type="ProjectMagma.Simulation.DecorationPositionController"/>
       <Property name="render" type="ProjectMagma.Simulation.AlphaIslandRenderProperty"/>
     </Properties>
   </Entity>

@@ -230,7 +230,7 @@
     <Compile Include="Simulation\Event\UpdateHandler.cs" />
     <Compile Include="Simulation\OrientationHelper.cs" />
     <Compile Include="Simulation\Properties\Base\RendererUpdatableProperty.cs" />
-    <Compile Include="Simulation\Properties\Environment\DecorationController.cs" />
+    <Compile Include="Simulation\Properties\Environment\DecorationPositionController.cs" />
     <Compile Include="Simulation\Properties\Environment\PowerUpControllerLives.cs" />
     <Compile Include="Simulation\Properties\Island\IslandStraightMovementControllerProperty.cs" />
     <Compile Include="Simulation\Properties\Island\IslandNoMovementControllerProperty.cs" />

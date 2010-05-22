@@ -79,6 +79,7 @@ PSOutput PSIsland(PixelLightingPSInputTx pin) : COLOR
 	PerturbIslandGroundAlpha(Output.Color.a, pin.PositionWS);
 	BlendWithShadow(Output.Color, pin.PositionWS, pin.PositionLS, pin.NormalWS);	
 	//Output.DepthColor.z = 1;
+	Output.RenderChannelColor.a = Output.Color.a;
 	return Output;
 }
 float4 PSIslandAlphaColor(PixelLightingPSInputTx pin) : COLOR0

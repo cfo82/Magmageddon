@@ -92,7 +92,7 @@ Technique IslandAlphaColor
 		VertexShader = compile vs_3_0 VSBasicPixelLightingNmTxSq();
 		PixelShader	 = compile ps_3_0 PSIslandAlphaColor();
 		ZEnable = true;		
-		ZWriteEnable = true;
+		ZWriteEnable = false;
 		AlphaTestEnable = false;
 
 		AlphaBlendEnable = true;

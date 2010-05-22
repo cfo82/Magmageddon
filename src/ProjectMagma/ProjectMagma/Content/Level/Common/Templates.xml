@@ -79,9 +79,9 @@
       <Attribute name="diffuse_color" template="float3" value="1.0 1.0 1.0"/>
       <Attribute name="specular_color" template="float3" value="0.05 0.05 0.05"/>
       <Attribute name="env_ground_waves_amplitude" template="float" value="15.0"/>
-      <Attribute name="env_ground_waves_frequency" template="float" value="0.002"/>
+      <Attribute name="env_ground_waves_frequency" template="float" value="0.00025"/>
       <Attribute name="env_ground_waves_hardness" template="float" value="5.5"/>
-      <Attribute name="env_ground_waves_velocity" template="float" value="0.003"/>
+      <Attribute name="env_ground_waves_velocity" template="float" value="0.00015"/>
     </Attributes>
     <Properties>
       <Property name="collision" type="ProjectMagma.Simulation.Collision.CollisionProperty"/>
@@ -108,10 +108,10 @@
       <Attribute name="diffuse_color" template="float3" value="1.0 1.0 1.0"/>
       <Attribute name="specular_color" template="float3" value="0 0 0"/>
       <Attribute name="specular_texture" template="string" value="Textures/Environment/cave_SPEC_v001"/>
-      <Attribute name="env_ground_waves_amplitude" template="float" value="70"/>
+      <Attribute name="env_ground_waves_amplitude" template="float" value="100"/>
       <Attribute name="env_ground_waves_frequency" template="float" value="0.00025"/>
-      <Attribute name="env_ground_waves_hardness" template="float" value="150"/>
-      <Attribute name="env_ground_waves_velocity" template="float" value="0.0005"/>
+      <Attribute name="env_ground_waves_hardness" template="float" value="100"/>
+      <Attribute name="env_ground_waves_velocity" template="float" value="0.00005"/>
     </Attributes>
     <Properties>
       <Property name="render" type="ProjectMagma.Simulation.EnvironmentRenderProperty"/>

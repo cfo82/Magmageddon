@@ -963,6 +963,11 @@
       <Importer>EffectImporter</Importer>
       <Processor>EffectProcessor</Processor>
     </Compile>
+    <Compile Include="Effects\RestoreDepthBuffer.fx">
+      <Name>RestoreDepthBuffer</Name>
+      <Importer>EffectImporter</Importer>
+      <Processor>EffectProcessor</Processor>
+    </Compile>
     <None Include="Sounds\movement\20847__plagasul__jump1.wav">
       <Name>20847__plagasul__jump1</Name>
       <Importer>WavImporter</Importer>

@@ -1,6 +1,7 @@
 ﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using System;
+using ProjectMagma.MathHelpers;
 
 namespace ProjectMagma.Renderer
 {
@@ -16,6 +17,9 @@ namespace ProjectMagma.Renderer
             squash_wavelength = 170;
             squash_amplitude = 0.2f;
             BlinkingLength = 1000;
+            // FIXME: tune blinking strength here. maybe use a configuration file?
+            // replace 0.55f by whatever strength is needed and 25.0f with the interval
+            blinkingState = new SineFloat(0.0f, 0.55f, 25.0f);
             UseLights = true;
             UseMaterialParameters = true;
             UseSquash = true;
@@ -40,6 +44,8 @@ namespace ProjectMagma.Renderer
             if (start_blinking)
             {
                 last_blinking_start = renderer.Time.At;
+                if (!blinkingState.Running)
+                    { blinkingState.Start(renderer.Time.At); }
                 start_blinking = false;
             }
             foreach (Effect effect in mesh.Effects)
@@ -142,16 +148,19 @@ namespace ProjectMagma.Renderer
 
         private void ApplyBlinkingParameters(Effect effect, Renderer renderer)
         {
-            double time_since_last_blinking = renderer.Time.At - last_blinking_start;
-            if (time_since_last_blinking > 0 && time_since_last_blinking <= BlinkingLength)
+            blinkingState.Update(renderer.Time.At);
+            
+            double blinkDelta = renderer.Time.At - last_blinking_start;
+            if (blinkDelta > BlinkingLength)
             {
-                blinking_state = !blinking_state;
-                effect.Parameters["BlinkingState"].SetValue(blinking_state ? 0.25f : 0.0f);
+                blinkingState.StopAfterCurrentPhase();
             }
             else
             {
-                effect.Parameters["BlinkingState"].SetValue(0.0f);
+                Console.WriteLine("blinking value: {0}, {1}", blinkingState.Running, blinkingState.Value);
             }
+
+            effect.Parameters["BlinkingState"].SetValue(blinkingState.Value);
         }
 
         protected void ApplyMaterialParameters(Effect effect)
@@ -224,11 +233,12 @@ namespace ProjectMagma.Renderer
         }
 
         private bool start_squash, start_blinking;
-        private double last_squash_start, last_blinking_start;
+        private double last_squash_start;
+        private double last_blinking_start;
+        private SineFloat blinkingState;
 
         private float squash_wavelength;
         protected float BlinkingLength { get; set; }
-        private bool blinking_state;
         private float squash_amplitude;
         protected Vector2 SquashParams
         {

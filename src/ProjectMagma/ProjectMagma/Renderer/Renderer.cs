@@ -132,6 +132,7 @@ namespace ProjectMagma.Renderer
                 targetTool = new RenderTarget2D(Device, width, height, 1, SurfaceFormat.HalfVector4);
                 targetDepth = new RenderTarget2D(Device, width, height, 1, SurfaceFormat.Vector2);
 
+                restoreDepthBufferPass = new RestoreDepthBufferPass(this);
                 combinePass = new CombinePass(this);
                 glowPass = new GlowPass(this);
                 hdrCombinePass = new HdrCombinePass(this);
@@ -399,7 +400,6 @@ namespace ProjectMagma.Renderer
             RenderParticles();
             RenderSceneAfterPost();
 
-
             Game.Instance.Profiler.EndSection("rendering");
 
             // 6) Render overlays
@@ -507,7 +507,8 @@ namespace ProjectMagma.Renderer
             if (EnablePostProcessing)
             {
                 Device.SetRenderTarget(0, targetAlphaColorBuffer);
-                Device.Clear(new Color(Color.Black, 0));
+                Device.Clear(ClearOptions.Target|ClearOptions.DepthBuffer, new Color(Color.Black, 0), 1, 0);
+                restoreDepthBufferPass.Render(targetDepth.GetTexture());
             }
 
             foreach (Renderable renderable in transparentRenderablesTEST)
@@ -523,7 +524,8 @@ namespace ProjectMagma.Renderer
             if (EnablePostProcessing)
             {
                 Device.SetRenderTarget(0, targetAlphaRenderChannels);
-                Device.Clear(new Color(Color.Black, 0));
+                Device.Clear(ClearOptions.Target, new Color(Color.Black, 0), 0, 0);
+                restoreDepthBufferPass.Render(targetDepth.GetTexture());
 
                 foreach (Renderable renderable in transparentRenderablesTEST)
                 {
@@ -816,6 +818,7 @@ namespace ProjectMagma.Renderer
             get { return iceSpikeSystem; }
         }
 
+        private RestoreDepthBufferPass restoreDepthBufferPass;
         private CombinePass combinePass;
         private GlowPass glowPass;
         private HdrCombinePass hdrCombinePass;

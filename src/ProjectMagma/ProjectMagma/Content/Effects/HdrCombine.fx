@@ -190,7 +190,7 @@ inline void ApplyFog(inout float4 img, in float2 texCoord, in float weight)
 	img = lerp(img, float4(FogColor,1), saturate(fogIntensity*weight));
 }
 
-const float flickerStrength                                                                                                                                                                                                                                                                                                                    = 0.0025;
+const float flickerStrength = 0.0025;
 inline float2 PerturbTexCoord(in float2 texCoord)
 {
 	return texCoord; // TODO: find some better way for randomness than some cloud texture...
@@ -229,7 +229,7 @@ PostPixelShaderOutput PostPixelShader(float2 texCoord : TEXCOORD0)
     float fogWeight = saturate(channel_map.r * 0.75 + channel_map.g * 1 + channel_map.b * 1); // players should be less affected
     
     combined = GradientYBlueMap(combined, perturbedTexCoord, gradientWeight);
-    //ApplyFog(combined, perturbedTexCoord, fogWeight);
+    ApplyFog(combined, perturbedTexCoord, fogWeight);
     
     result.depth = tex2D(DepthTextureSampler, texCoord).r;
 	result.color = combined;

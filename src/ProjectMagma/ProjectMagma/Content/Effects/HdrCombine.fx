@@ -220,6 +220,10 @@ float2 ProjectionWH;
 
 float3 GetWorldSpacePosition(float2 texCoord, float2 vpos)
 {
+	float3 s = float3(texCoord.x*2-1,(1-texCoord.y)*2-1,tex2D(DepthTextureSampler, texCoord).r);
+	float3 v = mul(s, InverseProjection);
+	return mul(v,InverseView);
+
 	float z = tex2D(DepthTextureSampler, texCoord).r;
 	float x = texCoord.x*2-1;
 	float y = (1-texCoord.y)*2-1;
@@ -227,7 +231,7 @@ float3 GetWorldSpacePosition(float2 texCoord, float2 vpos)
 	float4 vPositionVS = mul(vProjectedPos,InverseProjection);
 	vPositionVS.xyz = vPositionVS.xyz/vPositionVS.w;
 	float4 vPositionWS = mul(float4(vPositionVS.xyz,1),InverseView);
-	return vPositionWS.xyz/vPositionWS.w;
+	return vPositionWS.xyz;
 
 	float3 v0 = texCoord.x*FrustumCorners[0] + (1-texCoord.x)*FrustumCorners[1];
 	float3 v1 = texCoord.x*FrustumCorners[2] + (1-texCoord.x)*FrustumCorners[3];
@@ -275,7 +279,7 @@ PostPixelShaderOutput PostPixelShader(
     ApplyFog(combined, perturbedTexCoord, fogWeight, base.a);
     
     float yDebug = tex2D(ToolTextureSampler, texCoord).x;
-    float debugDiff = abs(worldPosition.y - yDebug)/10;
+    float debugDiff = abs(worldPosition.y - yDebug);
     
     result.depth = tex2D(DepthTextureSampler, texCoord).r;
 	result.color = float4(debugDiff,debugDiff,debugDiff,1);

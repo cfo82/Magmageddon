@@ -212,11 +212,50 @@ struct PostPixelShaderOutput
 	float depth  : DEPTH;
 };
 
-PostPixelShaderOutput PostPixelShader(float2 texCoord : TEXCOORD0)
+float3 FrustumCorners[4];
+float2 Planes;
+float4x4 InverseView;
+float4x4 InverseProjection;
+float2 ProjectionWH;
+
+float3 GetWorldSpacePosition(float2 texCoord, float2 vpos)
+{
+	float z = tex2D(DepthTextureSampler, texCoord).r;
+	float x = texCoord.x*2-1;
+	float y = (1-texCoord.y)*2-1;
+	float4 vProjectedPos = float4(x,y,z,1);
+	float4 vPositionVS = mul(vProjectedPos,InverseProjection);
+	vPositionVS.xyz = vPositionVS.xyz/vPositionVS.w;
+	float4 vPositionWS = mul(float4(vPositionVS.xyz,1),InverseView);
+	return vPositionWS.xyz/vPositionWS.w;
+
+	float3 v0 = texCoord.x*FrustumCorners[0] + (1-texCoord.x)*FrustumCorners[1];
+	float3 v1 = texCoord.x*FrustumCorners[2] + (1-texCoord.x)*FrustumCorners[3];
+	float3 dir = texCoord.y*v0 + (1-texCoord.y)*v1;
+
+	float depth = tex2D(DepthTextureSampler, texCoord).r;
+	float2 planes = float2(1000/(1-1000), 1000*1/(1-1000));
+	
+	float3 pos_vs;
+	pos_vs.z = -planes.y / (depth + planes.x);
+	pos_vs.xy = 2*(vpos/float2(1279,719))-float2(1,1);
+	pos_vs.xy = pos_vs.xy*float2(-pos_vs.z,-pos_vs.z) / ProjectionWH;
+	return mul(pos_vs, InverseView);
+	
+	
+	//float modifier = dir.z / abs(distance);
+	//float3 viewSpacePosition = dir*modifier;
+}
+
+PostPixelShaderOutput PostPixelShader(
+	float2 texCoord : TEXCOORD0,
+	float2 vpos : VPOS
+)
 {
 	PostPixelShaderOutput result;
 
 	float2 perturbedTexCoord = PerturbTexCoord(texCoord);
+	float3 worldPosition = GetWorldSpacePosition(texCoord, vpos);
 
     float4 bloom = tex2D(BlurGeometryRenderSampler, texCoord);
     float4 base = tex2D(GeometryRenderSampler, texCoord);
@@ -235,8 +274,11 @@ PostPixelShaderOutput PostPixelShader(float2 texCoord : TEXCOORD0)
     combined = GradientYBlueMap(combined, perturbedTexCoord, gradientWeight);
     ApplyFog(combined, perturbedTexCoord, fogWeight, base.a);
     
+    float yDebug = tex2D(ToolTextureSampler, texCoord).x;
+    float debugDiff = abs(worldPosition.y - yDebug)/10;
+    
     result.depth = tex2D(DepthTextureSampler, texCoord).r;
-	result.color = combined;
+	result.color = float4(debugDiff,debugDiff,debugDiff,1);
 	
 	return result;
 }

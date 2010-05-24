@@ -1,4 +1,4 @@
-//#define ALWAYS_FOUR_PLAYERS
+#define ALWAYS_FOUR_PLAYERS
 #define TEST_RELEASE
 
 using System;

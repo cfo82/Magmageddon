@@ -546,7 +546,9 @@ namespace ProjectMagma.Renderer
                 // render depth
                 Device.SetRenderTarget(0, targetAlphaDepth);
                 Device.Clear(ClearOptions.Target, new Color(Color.Black, 0), 0, 0);
-                restoreDepthBufferPass.Render(targetOpaqueDepth.GetTexture());
+
+                // the depth restore is not necessary here. it may add too many details later
+                // but they can be filtered when the new depth-buffer is used.
 
                 foreach (Renderable renderable in transparentRenderablesTEST)
                 {

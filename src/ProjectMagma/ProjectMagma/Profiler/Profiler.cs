@@ -25,8 +25,7 @@ namespace ProjectMagma.Profiler
             filterList.Add("root");
             filterList.Add("root.draw");
             filterList.Add("root.draw.beginning_stuff");
-            filterList.Add("root.draw.beginning_stuff.particle_systems.flamethrower_system.*");
-            filterList.Add("root.draw.rendering");
+            filterList.Add("root.draw.rendering.*");
 
             if (wrappedContent != null)
             {

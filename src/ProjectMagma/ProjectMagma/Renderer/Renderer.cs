@@ -368,8 +368,12 @@ namespace ProjectMagma.Renderer
             RenderScene();
             Game.Instance.Profiler.EndSection("renderer_scene");
 
+            bool hasAlphaObjects = transparentRenderablesTEST.Count > 0;
             Game.Instance.Profiler.BeginSection("render_scene_alpha");
-            RenderSceneAlpha();
+            if (hasAlphaObjects)
+            {
+                RenderSceneAlpha();
+            }
             Game.Instance.Profiler.EndSection("render_scene_alpha");
 
             if (EnablePostProcessing)
@@ -377,29 +381,53 @@ namespace ProjectMagma.Renderer
                 Game.Instance.Profiler.BeginSection("postprocessing");
 
                 // downscaling is done as part of the blur during the glow-pass
-                Game.Instance.Profiler.BeginSection("combine");
-                combinePass.Render(targetOpaqueColorBuffer.GetTexture(), targetAlphaColorBuffer.GetTexture(), targetHDRColorBuffer);
-                combinePass.Render(targetOpaqueRenderChannels.GetTexture(), targetAlphaRenderChannels.GetTexture(), targetRenderChannels);
-                combineDepthPass.Render(targetOpaqueDepth.GetTexture(), targetAlphaDepth.GetTexture(), targetDepth);
-                Game.Instance.Profiler.EndSection("combine");
+                if (hasAlphaObjects)
+                {
+                    Game.Instance.Profiler.BeginSection("combine");
+                    combinePass.Render(targetOpaqueColorBuffer.GetTexture(), targetAlphaColorBuffer.GetTexture(), targetHDRColorBuffer);
+                    combinePass.Render(targetOpaqueRenderChannels.GetTexture(), targetAlphaRenderChannels.GetTexture(), targetRenderChannels);
+                    combineDepthPass.Render(targetOpaqueDepth.GetTexture(), targetAlphaDepth.GetTexture(), targetDepth);
+                    Game.Instance.Profiler.EndSection("combine");
 
-                Game.Instance.Profiler.BeginSection("renderer_post_glow");
-                glowPass.Render(
-                    targetHDRColorBuffer.GetTexture(), targetRenderChannels.GetTexture(),
-                    targetHorizontalBlurredHDRColorBuffer, targetHorizontalBlurredRenderChannels,
-                    targetBlurredHDRColorBuffer, targetBlurredRenderChannels
-                    );
-                Game.Instance.Profiler.EndSection("renderer_post_glow");
+                    Game.Instance.Profiler.BeginSection("renderer_post_glow");
+                    glowPass.Render(
+                        targetHDRColorBuffer.GetTexture(), targetRenderChannels.GetTexture(),
+                        targetHorizontalBlurredHDRColorBuffer, targetHorizontalBlurredRenderChannels,
+                        targetBlurredHDRColorBuffer, targetBlurredRenderChannels
+                        );
+                    Game.Instance.Profiler.EndSection("renderer_post_glow");
 
-                // FIXME: do we really need to downscale and blur the renderchannels? we don't use
-                // the blurred version.
+                    // FIXME: do we really need to downscale and blur the renderchannels? we don't use
+                    // the blurred version.
 
-                Game.Instance.Profiler.BeginSection("renderer_post_hdr");
-                hdrCombinePass.Render(
-                    targetHDRColorBuffer.GetTexture(), targetBlurredHDRColorBuffer.GetTexture(), targetRenderChannels.GetTexture(),
-                    targetDepth.GetTexture()
-                    );
-                Game.Instance.Profiler.EndSection("renderer_post_hdr");
+                    Game.Instance.Profiler.BeginSection("renderer_post_hdr");
+                    hdrCombinePass.Render(
+                        targetHDRColorBuffer.GetTexture(), targetBlurredHDRColorBuffer.GetTexture(), targetRenderChannels.GetTexture(),
+                        targetDepth.GetTexture()
+                        );
+                    Game.Instance.Profiler.EndSection("renderer_post_hdr");
+                }
+                else
+                {
+                    Game.Instance.Profiler.BeginSection("renderer_post_glow");
+                    glowPass.Render(
+                        targetOpaqueColorBuffer.GetTexture(), targetOpaqueRenderChannels.GetTexture(),
+                        targetHorizontalBlurredHDRColorBuffer, targetHorizontalBlurredRenderChannels,
+                        targetBlurredHDRColorBuffer, targetBlurredRenderChannels
+                        );
+                    Game.Instance.Profiler.EndSection("renderer_post_glow");
+
+                    // FIXME: do we really need to downscale and blur the renderchannels? we don't use
+                    // the blurred version.
+
+                    Game.Instance.Profiler.BeginSection("renderer_post_hdr");
+                    hdrCombinePass.Render(
+                        targetOpaqueColorBuffer.GetTexture(), targetBlurredHDRColorBuffer.GetTexture(), targetOpaqueRenderChannels.GetTexture(),
+                        targetOpaqueDepth.GetTexture()
+                        );
+                    Game.Instance.Profiler.EndSection("renderer_post_hdr");
+                }
+
                 Game.Instance.Profiler.EndSection("postprocessing");
             }
 

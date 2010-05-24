@@ -133,8 +133,6 @@ namespace ProjectMagma.Renderer
                 targetAlphaDepth = new RenderTarget2D(Device, width, height, 1, SurfaceFormat.Single);
                 targetDepth = new RenderTarget2D(Device, width, height, 1, SurfaceFormat.Vector2);
 
-                targetTool = new RenderTarget2D(Device, width, height, 1, SurfaceFormat.HalfVector4);
-
                 restoreDepthBufferPass = new RestoreDepthBufferPass(this);
                 combinePass = new CombinePass(this);
                 combineDepthPass = new CombineDepthPass(this);
@@ -399,7 +397,7 @@ namespace ProjectMagma.Renderer
                 Game.Instance.Profiler.BeginSection("renderer_post_hdr");
                 hdrCombinePass.Render(
                     targetHDRColorBuffer.GetTexture(), targetBlurredHDRColorBuffer.GetTexture(), targetRenderChannels.GetTexture(),
-                    targetTool.GetTexture(), targetDepth.GetTexture()
+                    targetDepth.GetTexture()
                     );
                 Game.Instance.Profiler.EndSection("renderer_post_hdr");
                 Game.Instance.Profiler.EndSection("postprocessing");
@@ -473,8 +471,7 @@ namespace ProjectMagma.Renderer
             {
                 Device.SetRenderTarget(0, targetOpaqueColorBuffer);
                 Device.SetRenderTarget(1, targetOpaqueRenderChannels);
-                Device.SetRenderTarget(2, targetTool);
-                Device.SetRenderTarget(3, targetOpaqueDepth);
+                Device.SetRenderTarget(2, targetOpaqueDepth);
             }
 
             Device.Clear(Color.White);
@@ -493,7 +490,6 @@ namespace ProjectMagma.Renderer
                 Device.SetRenderTarget(0, null);
                 Device.SetRenderTarget(1, null);
                 Device.SetRenderTarget(2, null);
-                Device.SetRenderTarget(3, null);
             }
 
             //Texture2D texture = TargetDepth.GetTexture();
@@ -804,10 +800,6 @@ namespace ProjectMagma.Renderer
         private RenderTarget2D targetOpaqueDepth;
         private RenderTarget2D targetAlphaDepth;
         private RenderTarget2D targetDepth;
-
-        // TODO: eliminate
-        private RenderTarget2D targetTool;
-
 
         public Texture2D DepthMap { get { return targetDepth.GetTexture(); } }
 

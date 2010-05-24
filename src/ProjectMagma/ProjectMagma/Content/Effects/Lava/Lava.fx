@@ -181,10 +181,6 @@ PSOutput MultiPlanePS(PS_INPUT i) : COLOR0
 	outp.RenderChannelColor = RenderChannelColor;
 	outp.RealDepth = i.positionPSP.z / i.positionPSP.w;
 	
-	// cheat:
-	//outp.DepthColor = float4(25/DepthClipY,i.pos.w,0,1);
-	outp.DepthColor = float4(25/DepthClipY,0,0,1);
-	
 	BlendWithShadow(outp.Color, i.pos, i.PositionLS, float3(0,1,0));
 	
 	return outp;	

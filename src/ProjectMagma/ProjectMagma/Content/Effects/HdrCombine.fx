@@ -33,16 +33,16 @@ sampler2D RenderChannelColorSampler = sampler_state
 	AddressV = Clamp;
 };
 
-texture ToolTexture;
-sampler2D ToolTextureSampler = sampler_state
-{
-	Texture = <ToolTexture>;
-	MinFilter = Point;
-	MagFilter = Point;
-	MipFilter = Point;
-	AddressU = Clamp;
-	AddressV = Clamp;
-};
+//texture ToolTexture;
+//sampler2D ToolTextureSampler = sampler_state
+//{
+//	Texture = <ToolTexture>;
+//	MinFilter = Point;
+//	MagFilter = Point;
+//	MipFilter = Point;
+//	AddressU = Clamp;
+//	AddressV = Clamp;
+//};
 
 texture CloudTexture;
 sampler2D CloudTextureSampler = sampler_state
@@ -83,6 +83,8 @@ float Out2[3];
 float In2_Precomp[3];
 
 float2 RandomOffset;
+float4x4 InverseView;
+float4x4 InverseProjection;
 
 // Helper for modifying the saturation of a color.
 float4 AdjustSaturation(float4 color, float saturation)
@@ -139,16 +141,15 @@ float4 ChannelPixelShader(int channel, float4 bloom, float4 base)
     return tonemapped;
 }
 
-inline float GradientY(float2 texCoord)
+inline float GradientY(float2 texCoord, in float yRaw)
 {
-	float yRaw = tex2D(ToolTextureSampler, texCoord).x;
 	return saturate(yRaw * 2 - 1.1); // higher value: blue tone starts at higher altitude
 }
 
 float BlueTopOverlayStrength = 1;
-inline float4 GradientYBlueMap(float4 input, float2 texCoord, float weight)
+inline float4 GradientYBlueMap(float4 input, float2 texCoord, float weight, float yRaw)
 {
-	float y = GradientY(texCoord);
+	float y = GradientY(texCoord, yRaw);
 	
 	float newRed = input.r;
 	float newGreen = saturate(input.g / 0.6) + 0.03;
@@ -169,7 +170,7 @@ float FogZOff, FogZMul, FogYOff, FogYMul, FogGlobMul;
 float3 FogColor;//=float4(0,0,1,1);
 
 
-inline void ApplyFog(inout float4 img, in float2 texCoord, in float weight, in float alpha)
+inline void ApplyFog(inout float4 img, in float2 texCoord, in float weight, in float alpha, in float yRaw)
 {
 	// zRescaled.g seems to be correct on a pc but may be wrong on the xbox. we need
 	// to check as soon as the ToolTexture has been replaced.
@@ -180,11 +181,10 @@ inline void ApplyFog(inout float4 img, in float2 texCoord, in float weight, in f
 	float z = saturate(zRescaled.r);//saturate((1-alpha)*zRescaled.r+alpha*zRescaled.g);
 
 	// compute vertical intensity
-	float yRaw = tex2D(ToolTextureSampler, texCoord).x;
 	float y = saturate((1-yRaw*2+FogYOff)*FogYMul);
 
 	// compute total intensity
-	float grad = GradientY(texCoord);
+	float grad = GradientY(texCoord, yRaw);
 	float fogIntensity = saturate((z*y)*FogGlobMul);
 
 	// compute final image
@@ -196,14 +196,14 @@ inline float2 PerturbTexCoord(in float2 texCoord)
 {
 	return texCoord; // TODO: find some better way for randomness than some cloud texture...
 
-	float yRaw = tex2D(ToolTextureSampler, texCoord).x;
-	float y = saturate((1-yRaw*2));
+	//float yRaw = tex2D(ToolTextureSampler, texCoord).x;
+	//float y = saturate((1-yRaw*2));
 	
-	float4 clouds = tex2D(CloudTextureSampler, texCoord + RandomOffset);
-	float2 perturbation = clouds.gb * 2 * flickerStrength - flickerStrength;
-	float2 perturbedTexCoord = texCoord + perturbation;
+	//float4 clouds = tex2D(CloudTextureSampler, texCoord + RandomOffset);
+	//float2 perturbation = clouds.gb * 2 * flickerStrength - flickerStrength;
+	//float2 perturbedTexCoord = texCoord + perturbation;
 	
-	return lerp(texCoord, perturbedTexCoord, y);	
+	//return lerp(texCoord, perturbedTexCoord, y);	
 }
 
 struct PostPixelShaderOutput
@@ -212,19 +212,13 @@ struct PostPixelShaderOutput
 	float depth  : DEPTH;
 };
 
-float3 FrustumCorners[4];
-float2 Planes;
-float4x4 InverseView;
-float4x4 InverseProjection;
-float2 ProjectionWH;
-
 float3 GetWorldSpacePosition(float2 texCoord, float2 vpos)
 {
 	float3 s = float3(texCoord.x*2-1,(1-texCoord.y)*2-1,tex2D(DepthTextureSampler, texCoord).r);
 	float3 v = mul(s, InverseProjection);
 	return mul(v,InverseView);
 
-	float z = tex2D(DepthTextureSampler, texCoord).r;
+	/*float z = tex2D(DepthTextureSampler, texCoord).r;
 	float x = texCoord.x*2-1;
 	float y = (1-texCoord.y)*2-1;
 	float4 vProjectedPos = float4(x,y,z,1);
@@ -248,7 +242,7 @@ float3 GetWorldSpacePosition(float2 texCoord, float2 vpos)
 	
 	
 	//float modifier = dir.z / abs(distance);
-	//float3 viewSpacePosition = dir*modifier;
+	//float3 viewSpacePosition = dir*modifier;*/
 }
 
 PostPixelShaderOutput PostPixelShader(
@@ -275,14 +269,11 @@ PostPixelShaderOutput PostPixelShader(
     float gradientWeight = saturate(channel_map.r * 0.3 + channel_map.g * 1 + channel_map.b * 1); // players should be less affected
     float fogWeight = saturate(channel_map.r * 0.75 + channel_map.g * 1 + channel_map.b * 1); // players should be less affected
     
-    combined = GradientYBlueMap(combined, perturbedTexCoord, gradientWeight);
-    ApplyFog(combined, perturbedTexCoord, fogWeight, base.a);
-    
-    float yDebug = tex2D(ToolTextureSampler, texCoord).x;
-    float debugDiff = abs(worldPosition.y - yDebug);
+    combined = GradientYBlueMap(combined, perturbedTexCoord, gradientWeight, worldPosition.y);
+    ApplyFog(combined, perturbedTexCoord, fogWeight, base.a, worldPosition.y);
     
     result.depth = tex2D(DepthTextureSampler, texCoord).r;
-	result.color = float4(debugDiff,debugDiff,debugDiff,1);
+	result.color = combined;
 	
 	return result;
 }

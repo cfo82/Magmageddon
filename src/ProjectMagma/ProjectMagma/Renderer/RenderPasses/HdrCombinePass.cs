@@ -17,8 +17,10 @@ namespace ProjectMagma.Renderer
         }
 
         public void Render(
-            Texture2D hdrColorBuffer, Texture2D blurredHdrColorBuffer, Texture2D blurredRenderChannelBuffer,
-            Texture2D toolTexture, Texture2D depthTexture
+            Texture2D hdrColorBuffer,
+            Texture2D blurredHdrColorBuffer,
+            Texture2D blurredRenderChannelBuffer,
+            Texture2D depthTexture
         )
         {
             randomOffset.RandomlyIntegrate(Renderer.Time.DtMs, 0.2f, 0.0f);
@@ -26,7 +28,7 @@ namespace ProjectMagma.Renderer
             hdrCombineEffect.Parameters["GeometryRender"].SetValue(hdrColorBuffer);
             hdrCombineEffect.Parameters["BlurGeometryRender"].SetValue(blurredHdrColorBuffer);
             hdrCombineEffect.Parameters["RenderChannelColor"].SetValue(blurredRenderChannelBuffer);
-            hdrCombineEffect.Parameters["ToolTexture"].SetValue(toolTexture);
+            //hdrCombineEffect.Parameters["ToolTexture"].SetValue(toolTexture);
             hdrCombineEffect.Parameters["CloudTexture"].SetValue(Renderer.VectorCloudTexture);
             hdrCombineEffect.Parameters["DepthTexture"].SetValue(depthTexture);
 
@@ -42,17 +44,17 @@ namespace ProjectMagma.Renderer
             SetArray3FromEntity("In2", "tonemapping", "in2");
             SetArray3FromEntity("Out2", "tonemapping", "out2");
 
-            BoundingFrustum frustum = new BoundingFrustum(Renderer.Camera.View * Renderer.Camera.Projection);
-            Vector3[] corners = frustum.GetCorners();
-            for (int i = 0; i < 4; ++i)
-                { corners[0] = Vector3.Transform(corners[0] - Renderer.Camera.Position, Renderer.Camera.View); }
+            //BoundingFrustum frustum = new BoundingFrustum(Renderer.Camera.View * Renderer.Camera.Projection);
+            //Vector3[] corners = frustum.GetCorners();
+            //for (int i = 0; i < 4; ++i)
+            //    { corners[0] = Vector3.Transform(corners[0] - Renderer.Camera.Position, Renderer.Camera.View); }
 
-            Matrix proj = Renderer.Camera.Projection;
+            //Matrix proj = Renderer.Camera.Projection;
             Matrix inverseView = Matrix.Invert(Renderer.Camera.View);
             Matrix inverseProjection = Matrix.Invert(Renderer.Camera.Projection);
-            hdrCombineEffect.Parameters["FrustumCorners"].SetValue(corners);
-            hdrCombineEffect.Parameters["Planes"].SetValue(new Vector2(proj.M33, proj.M43));
-            hdrCombineEffect.Parameters["ProjectionWH"].SetValue(new Vector2(1.0f/proj.M11, 1.0f/proj.M22));
+            //hdrCombineEffect.Parameters["FrustumCorners"].SetValue(corners);
+            //hdrCombineEffect.Parameters["Planes"].SetValue(new Vector2(proj.M33, proj.M43));
+            //hdrCombineEffect.Parameters["ProjectionWH"].SetValue(new Vector2(1.0f/proj.M11, 1.0f/proj.M22));
             hdrCombineEffect.Parameters["InverseView"].SetValue(inverseView);
             hdrCombineEffect.Parameters["InverseProjection"].SetValue(inverseProjection);
 

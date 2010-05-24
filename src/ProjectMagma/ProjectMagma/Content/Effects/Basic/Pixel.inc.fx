@@ -2,22 +2,11 @@
 // The following will be executed for every pixel shader, they are required
 // for most of the invoked lighting functions.
 //-----------------------------------------------------------------------------
-/*#define PS_START                                           \
-	PSOutput Output;                                       \
-	Output.RenderChannelColor = RenderChannelColor;        \
-	Output.DepthColor = float4(pin.PositionWS.y/DepthClipY, ComputeFogFactor(length(EyePosition - pin.PositionWS.xyz)), 0.0, 1.0); \
-	Output.RealDepth = pin.PositionPSP.z/pin.PositionPSP.w;                                \
-	ColorPair lightResult;                                 \
-	float3 normal;                                         
-	//Output.DepthColor = float4(pin.PositionWS.y/DepthClipY, pin.PositionWS.w, 0.0, 1.0);
-	//Output.DepthColor = float4(pin.PositionWS.y/DepthClipY, pin.PositionWS.w, 0.0, 1.0);*/
-
-#define PS_START                                           \
-	PSOutput Output;                                       \
-	Output.RenderChannelColor = RenderChannelColor;        \
-	Output.DepthColor = float4(pin.PositionWS.y/DepthClipY, 0, 0.0, 1.0); \
-	Output.RealDepth = pin.PositionPSP.z/pin.PositionPSP.w;                                \
-	ColorPair lightResult;                                 \
+#define PS_START                                            \
+	PSOutput Output;                                        \
+	Output.RenderChannelColor = RenderChannelColor;         \
+	Output.RealDepth = pin.PositionPSP.z/pin.PositionPSP.w; \
+	ColorPair lightResult;                                  \
 	float3 normal;                                         
 
 

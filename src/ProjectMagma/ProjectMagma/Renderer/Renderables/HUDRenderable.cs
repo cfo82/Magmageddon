@@ -35,7 +35,12 @@ namespace ProjectMagma.Renderer
 
             displayedEnergy = energy;
             displayedHealth = health;
-            
+
+            // FIXME: tune blinking strength here. maybe use a configuration file?
+            // replace 0.55f by whatever strength is needed and 25.0f with the interval
+            healthBlinkState = new SineFloat(0.0f, 0.7f, 25.0f);
+            energyBlinkState = new SineFloat(0.0f, 0.7f, 25.0f);
+
             frozenColorStrength = new SineFloat(0.0f, 0.85f, 5.0f);
             statusColorStrength = new SineFloat(0.6f, 1.0f, 13.0f);
             powerupPickupDetails = new List<PowerupPickupDetails>();
@@ -179,16 +184,29 @@ namespace ProjectMagma.Renderer
         private void UpdateDisplayedValues(Renderer renderer)
         {
             const float c = 0.15f;
+            // FIXME: maybe make this lerp also dependant of the time?
             displayedHealth = MathHelper.Lerp(displayedHealth, health, c);
             displayedEnergy = MathHelper.Lerp(displayedEnergy, energy, c);
+            healthBlinkState.Update(renderer.Time.At);
+            energyBlinkState.Update(renderer.Time.At);
             if (displayedHealth - health > 0.01)
-                healthBlink = !healthBlink;
+            {
+                if (!healthBlinkState.Running)
+                    { healthBlinkState.Start(renderer.Time.At); }
+            }
             else
-                healthBlink = false;
+            {
+                healthBlinkState.StopAfterCurrentPhase();
+            }
             if (displayedEnergy - energy > 0.01)
-                energyBlink = !energyBlink;
+            {
+                if (!energyBlinkState.Running)
+                    { energyBlinkState.Start(renderer.Time.At); }
+            }
             else
-                energyBlink = false;
+            {
+                energyBlinkState.StopAfterCurrentPhase();
+            }
 
             if (frozen > 0 && !frozenColorStrength.Running)
                 frozenColorStrength.Start(renderer.Time.At);
@@ -372,8 +390,8 @@ namespace ProjectMagma.Renderer
             barEffect.Parameters["Size"].SetValue(barAreaSize);
             barEffect.Parameters["HealthValue"].SetValue(displayedHealth / maxHealth);
             barEffect.Parameters["EnergyValue"].SetValue(displayedEnergy / maxEnergy);
-            barEffect.Parameters["HealthBlink"].SetValue(healthBlink);
-            barEffect.Parameters["EnergyBlink"].SetValue(energyBlink);
+            barEffect.Parameters["HealthBlink"].SetValue(healthBlinkState.Value);
+            barEffect.Parameters["EnergyBlink"].SetValue(energyBlinkState.Value);
             barEffect.Parameters["PlayerColor1"].SetValue(color1);
             barEffect.Parameters["PlayerColor2"].SetValue(color2);
             barEffect.Parameters["PlayerMirror"].SetValue(playerMirror);
@@ -421,7 +439,8 @@ namespace ProjectMagma.Renderer
 
         private Effect barEffect;
 
-        private bool healthBlink, energyBlink;
+        private SineFloat healthBlinkState;
+        private SineFloat energyBlinkState;
 
 
         private Texture2D barBackgroundTexture;

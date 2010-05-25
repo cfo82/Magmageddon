@@ -155,10 +155,6 @@ namespace ProjectMagma.Renderer
             {
                 blinkingState.StopAfterCurrentPhase();
             }
-            else
-            {
-                Console.WriteLine("blinking value: {0}, {1}", blinkingState.Running, blinkingState.Value);
-            }
 
             effect.Parameters["BlinkingState"].SetValue(blinkingState.Value);
         }

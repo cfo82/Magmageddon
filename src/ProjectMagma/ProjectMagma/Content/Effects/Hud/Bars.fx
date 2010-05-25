@@ -41,10 +41,10 @@ const float3 EnergyColor2 = float3(0.84, 0.84, 0.86);
 
 const float BevelStrength = 0.7;
 
-bool HealthBlink;
-bool EnergyBlink;
+float HealthBlink;
+float EnergyBlink;
 
-float4 BarColor(float2 texCoord, float3 beginColor, float3 endColor, float value, bool blink)
+float4 BarColor(float2 texCoord, float3 beginColor, float3 endColor, float value, float blink)
 {
 	// load four-channel texture containing individual components in each channel
 	float4 components = tex2D(ComponentSampler, texCoord);
@@ -66,10 +66,7 @@ float4 BarColor(float2 texCoord, float3 beginColor, float3 endColor, float value
 	float highlight = components.r * BevelStrength;
 	float shadow = components.g * BevelStrength;
 	float3 contentColor = color + highlight - shadow;
-	if(blink)
-	{
-		contentColor = lerp(contentColor, float3(1, 1, 1), 0.7);
-	}
+	contentColor = lerp(contentColor, float3(1, 1, 1), blink);
 	
 	// compute final color
 	float notch = (components.a - 0.4) * 0.75;

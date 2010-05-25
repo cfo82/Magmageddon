@@ -477,7 +477,16 @@ namespace ProjectMagma
                 // get storage device => moved
                 if (!Guide.IsVisible && storageSelectionResult == null)
                 {
-                    storageSelectionResult = Guide.BeginShowStorageDeviceSelector(PlayerIndex.One, null, null);
+                    try
+                    {
+                        storageSelectionResult = Guide.BeginShowStorageDeviceSelector(PlayerIndex.One, null, null);
+                    }
+                    catch (GuideAlreadyVisibleException)
+                    {
+                        // FIXME. see also
+                        //    http://forums.xna.com/forums/p/19874/103843.aspx
+                        //    http://blog.nickgravelyn.com/2009/07/storage-device-management-20/
+                    }
                 }
 
                 // get storage device as soon as selected

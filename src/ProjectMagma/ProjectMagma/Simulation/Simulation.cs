@@ -56,22 +56,7 @@ namespace ProjectMagma.Simulation
                 OnLevelLoaded();
 
                 // start to play sounds
-                if (soundRegistry.BackgroundMusic.Trim().Length == 0)
-                    { MediaPlayer.Stop(); }
-                else
-                {
-                    string backgroundMusic = soundRegistry.BackgroundMusic;
-                    float volume = 1.0f;
-                    if (backgroundMusic.IndexOf(':') >= 0)
-                    {
-                        volume = float.Parse(backgroundMusic.Substring(backgroundMusic.IndexOf(':') + 1));
-                        backgroundMusic = backgroundMusic.Substring(0, backgroundMusic.IndexOf(':'));
-                    }
-
-                    MediaPlayer.Play(Game.Instance.ContentManager.Load<Song>(backgroundMusic));
-                    MediaPlayer.Volume = Game.Instance.MusicVolume * volume;
-                    MediaPlayer.IsRepeating = true;
-                }
+                MusicSettingsLoaded();
 
                 Game.Instance.AudioPlayer.Play(soundRegistry.CaveBackgroundLoop, true);
                 Game.Instance.AudioPlayer.Play(soundRegistry.LavaBackgroundLoop, true);
@@ -81,6 +66,26 @@ namespace ProjectMagma.Simulation
             finally
             {
                 currentUpdateQueue = null;
+            }
+        }
+
+        public void MusicSettingsLoaded()
+        {
+            if (soundRegistry.BackgroundMusic.Trim().Length == 0)
+                { MediaPlayer.Stop(); }
+            else
+            {
+                string backgroundMusic = soundRegistry.BackgroundMusic;
+                float volume = 1.0f;
+                if (backgroundMusic.IndexOf(':') >= 0)
+                {
+                    volume = float.Parse(backgroundMusic.Substring(backgroundMusic.IndexOf(':') + 1));
+                    backgroundMusic = backgroundMusic.Substring(0, backgroundMusic.IndexOf(':'));
+                }
+
+                MediaPlayer.Play(Game.Instance.ContentManager.Load<Song>(backgroundMusic));
+                MediaPlayer.Volume = Game.Instance.MusicVolume * volume;
+                MediaPlayer.IsRepeating = true;
             }
         }
 

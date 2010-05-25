@@ -85,6 +85,20 @@ namespace ProjectMagma
             menu = Menu.Instance;
             wrappedContentManager = new WrappedContentManager(Content);
 
+            // FIXME:
+            //   If we do 720p with our three rendertargets and the depth/stencil buffer
+            //   we'll use (in case we can use 32bpp rendertargets) 16*720*1280 bytes
+            //   which results in 14.0625MB. The Xenon EDRAM is 10MB therefore the
+            //   chip will do at least two tiles. 
+            //   if we go down to a resolution of 1120:630 we'll need less than 
+            //   10MB of memory for our backbuffers. Thus only one tile will be needed.
+            // We should try two things:
+            //   *) Check if the lower resolution leads to a speedup which is worth the
+            //      potentially lower quality
+            //   *) Check all settings with Multisampling. (May not be possible with MRTs?)
+            //      Maybe we could do it without MRT's?
+
+
             this.IsFixedTimeStep = false;
             //this.TargetElapsedTime = TimeSpan.FromSeconds(1.0 / 15.0);
             const float multiplier = 1.0f;

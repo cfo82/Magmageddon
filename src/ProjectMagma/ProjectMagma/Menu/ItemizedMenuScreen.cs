@@ -106,8 +106,8 @@ namespace ProjectMagma
 
         public override void Update(GameTime gameTime)
         {
-            selectedSize.Update(gameTime.TotalGameTime.TotalMilliseconds);
-            unselectedSize.Update(gameTime.TotalGameTime.TotalMilliseconds);
+            selectedSize.Update(Game.Instance.GlobalClock.ContinuousMilliseconds);
+            unselectedSize.Update(Game.Instance.GlobalClock.ContinuousMilliseconds);
 
             double at = gameTime.TotalGameTime.TotalMilliseconds;
             GamePadState gamePadState = GamePad.GetState(PlayerIndex.One);

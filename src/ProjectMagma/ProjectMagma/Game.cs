@@ -1,5 +1,5 @@
-#define ALWAYS_FOUR_PLAYERS
-#define TEST_RELEASE
+//#define ALWAYS_FOUR_PLAYERS
+//#define TEST_RELEASE
 
 using System;
 using System.Diagnostics;
@@ -191,7 +191,7 @@ namespace ProjectMagma
             robots = ContentManager.Load<List<RobotInfo>>("Level/Common/RobotInfo");
 
 
-#if DEBUG || PROFILE || TEST_RELEASE
+#if DEBUG || TEST_RELEASE
             // initialize simulation
             LoadLevel("Level/Instances/TestLevel/Simulation", "Level/Instances/TestLevel/Renderer");
             //LoadLevel("Level/Instances/4vs4/Simulation", "Level/Instances/4vs4/Renderer");
@@ -623,7 +623,9 @@ namespace ProjectMagma
                 // let the profiler draw its overlay
                 profiler.DrawOverlay(GraphicsDevice);
 
+#if DEBUG || TEST_RELEASE
                 DrawFrameCounter(gameTime);
+#endif
 
                 profiler.EndSection("draw");
                 profiler.EndFrame();

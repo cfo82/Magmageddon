@@ -71,6 +71,8 @@ namespace ProjectMagma
         private float maxFPS = 0;
         private static int numFrames = 0;
         private static double totalMilliSeconds = 0;
+        private static readonly float DefaultEffectsVolume = 0.5f;
+        private static readonly float DefaultMusicVolume = 0.2f;
 
         private SimulationThread simulationThread;
 
@@ -706,9 +708,15 @@ namespace ProjectMagma
                 using (FileStream stream = File.Open(filename, FileMode.Open))
                 {
                     XmlSerializer serializer = new XmlSerializer(typeof(Settings));
-                    settings = (Settings) serializer.Deserialize(stream);
+                    settings = (Settings)serializer.Deserialize(stream);
                     ApplySettings();
                 }
+            }
+            else
+            {
+                settings.effectsVolume = DefaultEffectsVolume;
+                settings.musicVolume = DefaultMusicVolume;
+                ApplySettings();
             }
 
             // Dispose the container, to commit changes.
@@ -719,12 +727,14 @@ namespace ProjectMagma
         {
             EffectsVolume = settings.effectsVolume;
             MusicVolume = settings.musicVolume;
+            if (simulation != null)
+                { simulation.MusicSettingsLoaded(); }
         }
 
         public class Settings
         {
-            public float effectsVolume = 0.5f;
-            public float musicVolume = 0.2f;
+            public float effectsVolume = 0.0f;
+            public float musicVolume = 0.0f;
         }
 
         #endregion 

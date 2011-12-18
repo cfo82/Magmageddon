@@ -10,10 +10,8 @@ namespace ProjectMagma.Simulation
     {
 
         #region button assignments
-        // eps for registering move
         private static readonly float StickMovementEps = 0.1f;
 
-        // gamepad buttons
         private static readonly float HitButtonTimeout = 400;
         private static readonly Buttons[] RepulsionButtons = { Buttons.LeftTrigger };
         private static readonly Buttons[] jumpButtons = { Buttons.A };
@@ -21,13 +19,6 @@ namespace ProjectMagma.Simulation
         private static readonly Buttons[] FlamethrowerButtons = { Buttons.Y };
         private static readonly Buttons[] HitButtons = { Buttons.B };
         private static readonly Buttons[] RunButtons = { Buttons.RightTrigger };
-
-        // keyboard keys
-        private static readonly Keys JetpackKey = Keys.Space;
-        private static readonly Keys IceSpikeKey = Keys.Q;
-        private static readonly Keys HitKey = Keys.E;
-        private static readonly Keys FlamethrowerKey = Keys.R;
-        private static readonly Keys RunKey = Keys.LeftControl;
         #endregion
 
         private GamePadControllerInput controllerInput;
@@ -67,15 +58,11 @@ namespace ProjectMagma.Simulation
             private readonly PlayerIndex playerIndex;
 
             private GamePadState oldGPState;
-            private KeyboardState oldKBState;
-
             private GamePadState gamePadState;
-            private KeyboardState keyboardState;
 
             public void Update(SimulationTime simTime)
             {
                 gamePadState = GamePad.GetState(playerIndex);
-                keyboardState = Keyboard.GetState(playerIndex);
 
                 #region joysticks
 
@@ -112,12 +99,12 @@ namespace ProjectMagma.Simulation
 
                 #region action buttons
 
-                SetStates(RepulsionButtons, JetpackKey, out repulsionButtonPressed, out repulsionButtonHold, out repulsionButtonReleased);
-                SetStates(jumpButtons, JetpackKey, out jumpButtonPressed, out jumpButtonHold, out jumpButtonReleased);
-                SetStates(IceSpikeButtons, IceSpikeKey, out iceSpikeButtonPressed, out iceSpikeButtonHold, out iceSpikeButtonReleased);
-                SetStates(HitButtons, HitKey, out hitButtonPressed, out hitButtonHold, out hitButtonReleased);
-                SetStates(FlamethrowerButtons, FlamethrowerKey, out flamethrowerButtonPressed, out flamethrowerButtonHold, out flamethrowerButtonReleased);
-                SetStates(RunButtons, RunKey, out runButtonPressed, out runButtonHold, out runButtonReleased);
+                SetStates(RepulsionButtons, out repulsionButtonPressed, out repulsionButtonHold, out repulsionButtonReleased);
+                SetStates(jumpButtons, out jumpButtonPressed, out jumpButtonHold, out jumpButtonReleased);
+                SetStates(IceSpikeButtons, out iceSpikeButtonPressed, out iceSpikeButtonHold, out iceSpikeButtonReleased);
+                SetStates(HitButtons, out hitButtonPressed, out hitButtonHold, out hitButtonReleased);
+                SetStates(FlamethrowerButtons, out flamethrowerButtonPressed, out flamethrowerButtonHold, out flamethrowerButtonReleased);
+                SetStates(RunButtons, out runButtonPressed, out runButtonHold, out runButtonReleased);
 
                 #endregion
 
@@ -135,10 +122,9 @@ namespace ProjectMagma.Simulation
                 }
 
                 oldGPState = gamePadState;
-                oldKBState = keyboardState;
             }
 
-            private void SetStates(Buttons[] buttons, Keys key,
+            private void SetStates(Buttons[] buttons,
                 out bool pressedIndicator,
                 out bool holdIndicator,
                 out bool releasedIndicator)
@@ -153,10 +139,6 @@ namespace ProjectMagma.Simulation
                     releasedIndicator |= GetReleased(buttons[i]);
                     holdIndicator |= GetHold(buttons[i]);
                 }
-
-                pressedIndicator |= GetPressed(key);
-                releasedIndicator |= GetReleased(key);
-                holdIndicator |= GetHold(key);
             }
 
             private bool GetPressed(Buttons button)
@@ -175,24 +157,6 @@ namespace ProjectMagma.Simulation
             {
                 return gamePadState.IsButtonDown(button)
                     && oldGPState.IsButtonDown(button);
-            }
-
-            private bool GetPressed(Keys key)
-            {
-                return keyboardState.IsKeyDown(key)
-                    && oldKBState.IsKeyUp(key);
-            }
-
-            private bool GetReleased(Keys key)
-            {
-                return keyboardState.IsKeyUp(key)
-                    && oldKBState.IsKeyDown(key);
-            }
-
-            private bool GetHold(Keys key)
-            {
-                return keyboardState.IsKeyDown(key)
-                    && oldKBState.IsKeyDown(key);
             }
 
         }

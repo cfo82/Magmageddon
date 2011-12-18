@@ -243,6 +243,7 @@
     <Compile Include="Simulation\Properties\Environment\PowerUpControllerHealth.cs" />
     <Compile Include="Simulation\Properties\Environment\ExplosionControllerProperty.cs" />
     <Compile Include="Simulation\Properties\Player\BurnableProperty.cs" />
+    <Compile Include="Simulation\Properties\Player\Input\KeyboardInputProperty.cs" />
     <Compile Include="Simulation\Properties\Player\PlayerBaseProperty.cs" />
     <Compile Include="Simulation\Properties\Player\Input\InputProperty.cs" />
     <Compile Include="Simulation\Properties\Player\Input\GamePadInputProperty.cs" />

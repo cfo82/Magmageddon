@@ -102,7 +102,7 @@ namespace ProjectMagma.Simulation
 
             Game.Instance.Simulation.EntityManager.Add(arrow, "arrow_base", templates);
 
-            player.SetVector3(CommonNames.PreviousPosition, player.GetVector3(CommonNames.Position));
+            player.AddVector3Attribute(CommonNames.PreviousPosition, player.GetVector3(CommonNames.Position));
         }
 
         public override void OnDetached(AbstractEntity player)
@@ -1049,6 +1049,8 @@ namespace ProjectMagma.Simulation
         /// <returns>wheter the player is currently dead or not</returns>
         private bool CheckAndPerformDeath(Entity player, float at)
         {
+            return false; // FIXME: FOR NOW, we are invincible
+
             if (player.GetFloat(CommonNames.Health) <= 0)
             {
                 if (false/*respawnStartedAt == 0*/)

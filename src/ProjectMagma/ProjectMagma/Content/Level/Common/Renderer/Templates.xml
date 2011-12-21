@@ -1,5 +1,5 @@
 ﻿<?xml version="1.0" encoding="utf-8" ?>
-<!DOCTYPE Level SYSTEM "..\Levels.dtd">
+<!DOCTYPE Level SYSTEM "../Levels.dtd">
 <Level>
   <Entity name="camera_top_MAIN">
     <Attributes>

@@ -12,9 +12,8 @@ using ProjectMagma.Shared.LevelData;
 
 namespace ProjectMagma.Simulation
 {
-    public abstract class SpawnControllerProperty : RobotBaseProperty
+    public class SpawnControllerProperty : RobotBaseProperty
     {
-        private double respawnStartedAt = 0;
         private float landedAt = -1;
 
         Entity spawnLight;
@@ -27,8 +26,10 @@ namespace ProjectMagma.Simulation
         {
             base.OnAttached(player);
 
-            player.AddBoolAttribute("isRespawning", false);
             player.AddBoolAttribute("abortRespawning", false);
+
+            this.OnActivated += OnSelfActivated;
+            this.OnDeactivated += OnSelfDectivated;
         }
 
         public override void OnDetached(AbstractEntity player)
@@ -36,28 +37,33 @@ namespace ProjectMagma.Simulation
             base.OnDetached(player);
         }
 
+        public void OnSelfDectivated(Property property)
+        {
+            player.GetProperty<Property>("controller").Activate();
+            player.GetProperty<Property>("burnable").Activate();
+            player.GetProperty<Property>("hud").Activate();
+        }
+
+        public void OnSelfActivated(Property property)
+        {
+            player.SetBool("abortRespawning", false);
+
+            if (spawnLight == null && !player.GetBool("ready"))
+            {
+                PositionOnRandomIsland();
+                AddSpawnLight(player);
+            }
+        }
+
         protected override void OnUpdate(Entity player, SimulationTime simTime)
         {
-            if (Game.Instance.Simulation.Phase == SimulationPhase.Intro)
+            if (player.GetBoolAttribute("ready").Value)
             {
-                // wait for preciding player to be ready
-                if ((PlayerIndex)player.GetInt(CommonNames.GamePadIndex) != PlayerIndex.One)
+                if (Game.Instance.Simulation.Phase != SimulationPhase.Intro)
                 {
-                    foreach (Entity other in Game.Instance.Simulation.PlayerManager)
-                    {
-                        if (other.GetInt(CommonNames.GamePadIndex) < player.GetInt("game_pad_index"))
-                        {
-                            // if preceding player is not ready, w8
-                            if (!other.GetBool("ready"))
-                                return;
-                        }
-                    }
+                    Deactivate();
                 }
-
-                if (spawnLight == null && !player.GetBool("ready"))
-                {
-                    AddSpawnLight(player);
-                }
+                return;
             }
 
             PerformSpawnMovement(player, simTime);
@@ -187,14 +193,12 @@ namespace ProjectMagma.Simulation
         {
             if (landedAt > 0)
             {
-                if (simTime.At > landedAt + 2500 // extract constant
-                    && (!player.GetBool("ready") || player.GetBool("isRespawning")))
+                if (simTime.At > landedAt + 2500) // extract constant
                 {
                     player.SetBool("ready", true);
+                    Debug.Assert(spawnLight != null);
                     Game.Instance.Simulation.EntityManager.RemoveDeferred(spawnLight);
                     spawnLight = null;
-                    player.SetBool("isRespawning", false);
-                    player.SetBool("abortRespawning", true);
                 }
                 else
                     if (simTime.At > landedAt + 1000
@@ -230,7 +234,6 @@ namespace ProjectMagma.Simulation
 
             player.SetVector3(CommonNames.Position, position);
         }
-
 
     }
 }

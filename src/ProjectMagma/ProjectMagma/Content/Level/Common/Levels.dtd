@@ -22,6 +22,6 @@
 <!ATTLIST Property
   name CDATA #REQUIRED
   type CDATA #REQUIRED
-  active CDATA "false"
+  active CDATA "true"
 >
 

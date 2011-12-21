@@ -1,5 +1,5 @@
 ﻿<?xml version="1.0" encoding="utf-8" ?>
-<!DOCTYPE Level SYSTEM "..\..\Common\Levels.dtd">
+<!DOCTYPE Level SYSTEM "../../Common/Levels.dtd">
 <Level>
 
   <Includes>

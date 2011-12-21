@@ -17,7 +17,7 @@ namespace ProjectMagma.Simulation
         {
         }
 
-        public void OnAttached(
+        public override void OnAttached(
             AbstractEntity entity
         )
         {
@@ -49,14 +49,14 @@ namespace ProjectMagma.Simulation
             this.island.GetVector3Attribute(CommonNames.Position).ValueChanged += OnIslandPositionChanged;
             entity.GetProperty<CollisionProperty>("collision").OnContact += PowerupCollisionHandler;
 
-            powerup.Update += OnUpdate;
+            powerup.OnUpdate += OnUpdate;
         }
 
-        public void OnDetached(
+        public override void OnDetached(
             AbstractEntity entity
         )
         {
-            powerup.Update -= OnUpdate;
+            powerup.OnUpdate -= OnUpdate;
             this.island.GetVector3Attribute(CommonNames.Position).ValueChanged -= OnIslandPositionChanged;
             if(entity.HasProperty("collision"))
                 entity.GetProperty<CollisionProperty>("collision").OnContact -= PowerupCollisionHandler;
@@ -94,8 +94,8 @@ namespace ProjectMagma.Simulation
                     PositionOnIsland(ref pos);
                 }
 
-                powerup.AddProperty("collision", new CollisionProperty());
-                powerup.AddProperty("render", new PowerupRenderProperty());
+                powerup.AddProperty("collision", new CollisionProperty(), true);
+                powerup.AddProperty("render", new PowerupRenderProperty(), true);
                 //powerup.AddProperty("shadow_cast", new ShadowCastProperty());
 
                 this.island.GetVector3Attribute(CommonNames.Position).ValueChanged += OnIslandPositionChanged;

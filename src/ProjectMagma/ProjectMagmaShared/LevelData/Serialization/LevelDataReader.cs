@@ -31,6 +31,7 @@ namespace ProjectMagma.Shared.LevelData.Serialization
 
             existingInstance.name = input.ReadString();
             existingInstance.type = input.ReadString();
+            existingInstance.active = input.ReadBoolean();
 
             return existingInstance;
         }

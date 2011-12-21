@@ -17,7 +17,7 @@ namespace ProjectMagma.Simulation
         {
         }
 
-        public void OnAttached(AbstractEntity entity)
+        public override void OnAttached(AbstractEntity entity)
         {
             this.iceSpike = entity as Entity;
             this.constants = Game.Instance.Simulation.EntityManager["player_constants"];
@@ -38,16 +38,16 @@ namespace ProjectMagma.Simulation
 
             createdAt = Game.Instance.Simulation.Time.At;
 
-            (entity as Entity).Update += OnUpdate;
+            (entity as Entity).OnUpdate += OnUpdate;
         }
 
         private float createdAt;
 
-        public void OnDetached(AbstractEntity entity)
+        public override void OnDetached(AbstractEntity entity)
         {
             entity.GetProperty<CollisionProperty>("collision").OnContact -= IceSpikeCollisionHandler;
             Game.Instance.Simulation.EntityManager.EntityRemoved -= OnEntityRemoved; 
-            (entity as Entity).Update -= OnUpdate;
+            (entity as Entity).OnUpdate -= OnUpdate;
         }
 
         private void OnUpdate(Entity iceSpike, SimulationTime simTime)

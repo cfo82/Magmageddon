@@ -68,11 +68,6 @@ namespace ProjectMagma.Simulation
         {
             get; 
         }
-
-        public abstract void OnAttached(AbstractEntity entity);
-
-        public abstract void OnDetached(AbstractEntity entity);
-
     }
 }
 

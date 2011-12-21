@@ -8,15 +8,15 @@ namespace ProjectMagma
         private readonly String name;
         private readonly String text;
 
-        private event ItemSelectionHandler itemSelected;
-        private event ItemActivationHandler itemActivated = null;
-        private event ItemDeactivationHandler itemDeactivated = null;
+        private event ItemSelectionHandler OnItemSelected;
+        private event ItemActivationHandler OnItemActivated = null;
+        private event ItemDeactivationHandler OnItemDeactivated = null;
 
         public MenuItem(String name, String text, ItemSelectionHandler itemSelected)
         {
             this.name = name;
             this.text = text;
-            this.itemSelected = itemSelected;
+            this.OnItemSelected = itemSelected;
         }
 
         public String Name
@@ -31,29 +31,33 @@ namespace ProjectMagma
 
         public void PerformAction()
         {
-            itemSelected(this);
+            OnItemSelected(this);
         }
 
         public void Activate()
         {
-            if (itemActivated != null)
-                itemActivated(this);
+            if (OnItemActivated != null)
+            {
+                OnItemActivated(this);
+            }
         }
 
         public void Deactivate()
         {
-            if (itemDeactivated != null)
-                itemDeactivated(this);
+            if (OnItemDeactivated != null)
+            {
+                OnItemDeactivated(this);
+            }
         }
 
         public void SetActivationHandler(ItemActivationHandler handler)
         {
-            itemActivated = handler;
+            OnItemActivated = handler;
         }
 
         public void SetActivationHandler(ItemDeactivationHandler handler)
         {
-            itemDeactivated = handler;
+            OnItemDeactivated = handler;
         }
     }
 }

@@ -373,25 +373,24 @@ namespace ProjectMagma.Framework
 
         #region Property Handling
 
-        public void AddProperty(string name, string typeName)
+        public void AddProperty(string name, string typeName, bool active)
         {
             System.Type type = System.Type.GetType(typeName);
             ConstructorInfo constructorInfo = type.GetConstructor(AbstractEntity.zeroTypeArray);
             Property property = constructorInfo.Invoke(AbstractEntity.zeroObjectArray) as Property;
-            AddProperty(name, property);
+            AddProperty(name, property, active);
         }
 
-        public void AddProperty(string name, Property property)
+        public void AddProperty(string name, Property property, bool active)
         {
             if (properties.ContainsKey(name))
             {
                 throw new System.ArgumentException(string.Format("a property with the name '{0}' is already registered", name));
             }
-            else
-            {
-                properties.Add(name, property);
-                property.OnAttached(this);
-            }
+
+            properties.Add(name, property);
+            property.OnAttached(this);
+            property.IsActive = active;
         }
 
         public void RemoveProperty(string name)

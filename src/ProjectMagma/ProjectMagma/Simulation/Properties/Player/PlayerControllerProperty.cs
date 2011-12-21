@@ -566,7 +566,7 @@ namespace ProjectMagma.Simulation
 
                             if (!arrow.HasProperty("render"))
                             {
-                                arrow.AddProperty("render", new ArrowRenderProperty());
+                                arrow.AddProperty("render", new ArrowRenderProperty(), true);
                                 //arrow.AddProperty("shadow_cast", new ShadowCastProperty());
                             }
                         }
@@ -1251,8 +1251,8 @@ namespace ProjectMagma.Simulation
                         PositionOnRandomIsland();
 
                         // activate
-                        player.AddProperty("collision", new CollisionProperty());
-                        player.AddProperty("render", new RobotRenderProperty());
+                        player.AddProperty("collision", new CollisionProperty(), true);
+                        player.AddProperty("render", new RobotRenderProperty(), true);
                         //player.AddProperty("shadow_cast", new ShadowCastProperty());
                         player.GetProperty<CollisionProperty>("collision").OnContact += PlayerCollisionHandler;
 

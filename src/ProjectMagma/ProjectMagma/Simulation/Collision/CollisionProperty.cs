@@ -15,7 +15,7 @@ namespace ProjectMagma.Simulation.Collision
         {
         }
 
-        public void OnAttached(
+        public override void OnAttached(
             AbstractEntity entity
         )
         {
@@ -62,7 +62,7 @@ namespace ProjectMagma.Simulation.Collision
             }
         }
 
-        public void OnDetached(
+        public override void OnDetached(
             AbstractEntity entity
         )
         {

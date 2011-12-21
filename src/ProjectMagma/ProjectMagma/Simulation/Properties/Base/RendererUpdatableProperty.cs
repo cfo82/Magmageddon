@@ -14,13 +14,13 @@ namespace ProjectMagma.Simulation
         {
         }
 
-        public virtual void OnAttached(AbstractEntity entity)
+        public override void OnAttached(AbstractEntity entity)
         {
             updatable = CreateUpdatable(entity as Entity);
             SetUpdatableParameters(entity as Entity);
         }
 
-        public virtual void OnDetached(AbstractEntity entity)
+        public override void OnDetached(AbstractEntity entity)
         {
         }
 

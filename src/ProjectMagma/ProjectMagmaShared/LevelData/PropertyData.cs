@@ -11,9 +11,11 @@ namespace ProjectMagma.Shared.LevelData
         {
             name = "";
             type = "";
+            active = false;
         }
 
         public string name;
         public string type;
+        public bool active;
     }
 }

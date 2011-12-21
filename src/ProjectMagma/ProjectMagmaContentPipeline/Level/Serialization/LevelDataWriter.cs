@@ -39,6 +39,7 @@ namespace ProjectMagma.ContentPipeline.Level.Serialization
         {
             output.Write(value.name);
             output.Write(value.type);
+            output.Write(value.active);
         }
 
         public override string GetRuntimeReader(TargetPlatform targetPlatform)

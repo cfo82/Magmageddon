@@ -26,9 +26,9 @@ namespace ProjectMagma.Simulation
         {
         }
 
-        public virtual void OnAttached(AbstractEntity player)
+        public override void OnAttached(AbstractEntity player)
         {
-            (player as Entity).Update += OnUpdate;
+            (player as Entity).OnUpdate += OnUpdate;
 
             this.player = player as Entity;
             this.constants = Game.Instance.Simulation.EntityManager["player_constants"];
@@ -37,11 +37,11 @@ namespace ProjectMagma.Simulation
             this.controllerInput = player.GetProperty<InputProperty>("input").ControllerInput;
         }
 
-        public virtual void OnDetached(AbstractEntity player)
+        public override void OnDetached(AbstractEntity player)
         {
             ResetVibration();
 
-            (player as Entity).Update -= OnUpdate;
+            (player as Entity).OnUpdate -= OnUpdate;
         }
 
         private void OnUpdate(Entity player, SimulationTime simTime)

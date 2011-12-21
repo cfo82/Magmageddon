@@ -13,7 +13,7 @@ namespace ProjectMagma.Simulation
         {
         }
 
-        public void OnAttached(AbstractEntity light)
+        public override void OnAttached(AbstractEntity light)
         {
             this.light = light as Entity;
             this.island = Game.Instance.Simulation.EntityManager[light.GetString("island")];
@@ -26,7 +26,7 @@ namespace ProjectMagma.Simulation
 //            (light as Entity).Update += OnUpdate;
         }
 
-        public void OnDetached(
+        public override void OnDetached(
             AbstractEntity light
         )
         {

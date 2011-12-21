@@ -19,12 +19,12 @@ namespace ProjectMagma.Simulation
 
         public override void OnAttached(AbstractEntity player)
         {
-            (player as Entity).Update += OnUpdate;
+            (player as Entity).OnUpdate += OnUpdate;
         }
 
         public override void OnDetached(AbstractEntity player)
         {
-            (player as Entity).Update -= OnUpdate;
+            (player as Entity).OnUpdate -= OnUpdate;
         }
 
         private void OnUpdate(Entity player, SimulationTime simTime)

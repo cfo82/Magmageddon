@@ -53,7 +53,7 @@ namespace ProjectMagma.Simulation
                 levelData = wrappedContent.Load<LevelData>(simulationLevel);
                 entityManager.Load(levelData);
                 soundRegistry.Load();
-                OnLevelLoaded();
+                LevelLoaded();
 
                 // start to play sounds
                 MusicSettingsLoaded();
@@ -170,7 +170,7 @@ namespace ProjectMagma.Simulation
                     // update all entities
                     foreach (Entity e in entityManager)
                     {
-                        e.OnUpdate(simTime);
+                        e.Update(simTime);
                     }
 
                     // perform collision detection
@@ -396,15 +396,15 @@ namespace ProjectMagma.Simulation
             }
         }
 
-        private void OnLevelLoaded()
+        private void LevelLoaded()
         {
-            if (LevelLoaded != null)
+            if (OnLevelLoaded != null)
             {
-                LevelLoaded(this);
+                OnLevelLoaded(this);
             }
         }
 
-        public event LevelLoadedHandler LevelLoaded;
+        public event LevelLoadedHandler OnLevelLoaded;
 
         private readonly EntityManager entityManager;
         private EntityKindManager pillarManager;

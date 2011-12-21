@@ -38,7 +38,7 @@ namespace ProjectMagma.Simulation
                 entity.GetVector3Attribute(CommonNames.Position).ValueChanged += PositionChanged;
             }
 
-            Game.Instance.Simulation.LevelLoaded += LevelLoaded;
+            Game.Instance.Simulation.OnLevelLoaded += LevelLoaded;
             Game.Instance.Simulation.EntityManager.EntityAdded += EntityAdded;
 
             Game.Instance.Simulation.CurrentUpdateQueue.AddUpdate(new AddRenderableUpdate((Renderable)Updatable));
@@ -49,7 +49,7 @@ namespace ProjectMagma.Simulation
             Game.Instance.Simulation.CurrentUpdateQueue.AddUpdate(new RemoveRenderableUpdate((Renderable)Updatable));
 
             Game.Instance.Simulation.EntityManager.EntityAdded -= EntityAdded;
-            Game.Instance.Simulation.LevelLoaded -= LevelLoaded;
+            Game.Instance.Simulation.OnLevelLoaded -= LevelLoaded;
 
             if (entity.HasVector3(CommonNames.Position))
             {

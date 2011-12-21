@@ -28,7 +28,7 @@ namespace ProjectMagma.Simulation
         {
         }
 
-        public void OnAttached(
+        public override void OnAttached(
             AbstractEntity entity
         )
         {
@@ -52,7 +52,7 @@ namespace ProjectMagma.Simulation
             PositionOnIsland(ref islandPos);
         }
 
-        public void OnDetached(
+        public override void OnDetached(
             AbstractEntity entity
         )
         {

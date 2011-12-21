@@ -16,14 +16,14 @@ namespace ProjectMagma.Simulation
         {
         }
 
-        public void OnUpdate(SimulationTime simTime)
+        public void Update(SimulationTime simTime)
         {
-            if (Update != null)
+            if (OnUpdate != null)
             {
-                Update(this, simTime);
+                OnUpdate(this, simTime);
             }
         }
 
-        public event UpdateHandler Update;
+        public event UpdateHandler OnUpdate;
     }
 }

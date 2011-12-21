@@ -53,6 +53,7 @@ namespace ProjectMagma.ContentPipeline.Level
                     PropertyData propertyData = new PropertyData();
                     propertyData.name = propertyElement.GetAttribute("name");
                     propertyData.type = propertyElement.GetAttribute("type");
+                    propertyData.active = propertyElement.GetAttribute("active") == "true";
                     entityData.properties.Add(propertyData);
                 }
             }

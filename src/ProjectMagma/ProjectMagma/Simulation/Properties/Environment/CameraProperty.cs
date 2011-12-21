@@ -18,16 +18,16 @@ namespace ProjectMagma.Simulation
         {
         }
 
-        public void OnAttached(AbstractEntity entity)
+        public override void OnAttached(AbstractEntity entity)
         {
-            (entity as Entity).Update += OnUpdate;
+            (entity as Entity).OnUpdate += OnUpdate;
             entity.AddMatrixAttribute("view", Matrix.Identity);
             entity.AddMatrixAttribute("projection", Matrix.Identity);
         }
 
-        public void OnDetached(AbstractEntity entity)
+        public override void OnDetached(AbstractEntity entity)
         {
-            (entity as Entity).Update -= OnUpdate;
+            (entity as Entity).OnUpdate -= OnUpdate;
         }
 
         private void OnUpdate(Entity entity, SimulationTime simTime)

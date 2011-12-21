@@ -16,7 +16,7 @@ namespace ProjectMagma.Simulation
             OnRepulsionEndAction = new PushBackFinishedHandler(OnRepulsionEnd);
         }
 
-        public virtual void OnAttached(AbstractEntity entity)
+        public override void OnAttached(AbstractEntity entity)
         {
             Debug.Assert(entity.HasVector3(CommonNames.Position));
 
@@ -45,7 +45,7 @@ namespace ProjectMagma.Simulation
             scale.Y = 0;
             entity.AddFloatAttribute("radius", scale.Length());
 
-            (entity as Entity).Update += OnUpdate;
+            (entity as Entity).OnUpdate += OnUpdate;
 
             entity.GetProperty<CollisionProperty>("collision").OnContact += CollisionHandler;
 //            ((Vector3Attribute)entity.GetAttribute("repulsion_velocity")).ValueChanged += RepulsionChangeHandler;
@@ -55,9 +55,9 @@ namespace ProjectMagma.Simulation
             originalPosition = entity.GetVector3(CommonNames.Position);
         }
 
-        public virtual void OnDetached(AbstractEntity entity)
+        public override void OnDetached(AbstractEntity entity)
         {
-            (entity as Entity).Update -= OnUpdate;
+            (entity as Entity).OnUpdate -= OnUpdate;
             entity.GetProperty<CollisionProperty>("collision").OnContact -= CollisionHandler;
 //            ((Vector3Attribute)entity.GetAttribute("repulsion_velocity")).ValueChanged -= RepulsionChangeHandler;
             entity.GetAttribute<StringAttribute>("repulsed_by").ValueChanged -= RepulsedByChangeHandler;

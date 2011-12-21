@@ -43,7 +43,7 @@ namespace ProjectMagma.Framework
                 }
                 foreach (PropertyData propertyData in properties)
                 {
-                    entity.AddProperty(propertyData.name, propertyData.type);
+                    entity.AddProperty(propertyData.name, propertyData.type, propertyData.active);
                 }
                 Add(entity);
             }
@@ -80,7 +80,7 @@ namespace ProjectMagma.Framework
             foreach (PropertyData propertyData in properties)
             {
                 if (!entity.HasProperty(propertyData.name))
-                    entity.AddProperty(propertyData.name, propertyData.type);
+                    entity.AddProperty(propertyData.name, propertyData.type, propertyData.active);
             }
         }
 

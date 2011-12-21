@@ -1,7 +1,7 @@
 ﻿
 namespace ProjectMagma.Framework
 {
-    public delegate void ActivationStateChangedHandler(Property property, bool isActive);
+    public delegate void ActivationStateChangedHandler(Property property);
     public delegate void DeactivationHandler();
 
     public abstract class Property
@@ -16,9 +16,9 @@ namespace ProjectMagma.Framework
             if (!isActive)
             {
                 isActive = true;
-                if (OnActiveStateChanged != null)
+                if (OnActivated != null)
                 {
-                    OnActiveStateChanged(this, isActive);
+                    OnActivated(this);
                 }
             }
         }
@@ -28,9 +28,9 @@ namespace ProjectMagma.Framework
             if (isActive)
             {
                 isActive = false;
-                if (OnActiveStateChanged != null)
+                if (OnDeactivated != null)
                 {
-                    OnActiveStateChanged(this, isActive);
+                    OnDeactivated(this);
                 }
             }
         }
@@ -55,7 +55,8 @@ namespace ProjectMagma.Framework
             }
         }
 
-        public event ActivationStateChangedHandler OnActiveStateChanged;
+        public event ActivationStateChangedHandler OnActivated;
+        public event ActivationStateChangedHandler OnDeactivated;
 
         public abstract void OnAttached(AbstractEntity entity);
         public abstract void OnDetached(AbstractEntity entity);

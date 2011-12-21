@@ -1,6 +1,6 @@
 ﻿
-Microsoft Visual Studio Solution File, Format Version 10.00
-# Visual Studio 2008
+Microsoft Visual Studio Solution File, Format Version 11.00
+# Visual Studio 2010
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ProjectMagma", "ProjectMagma\ProjectMagma.csproj", "{37D28D35-F31F-4A83-9DB4-94D3E8461A77}"
 	ProjectSection(ProjectDependencies) = postProject
 		{70808508-17E8-421C-B29A-F7F310FA2171} = {70808508-17E8-421C-B29A-F7F310FA2171}
@@ -40,6 +40,10 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AnimationComponentLibraryCo
 	EndProjectSection
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "_XBOX360_AnimationComponentLibrary", "AnimationComponentLibrary\_XBOX360_AnimationComponentLibrary.csproj", "{7358AC46-F593-429F-AD44-E4475FFC8058}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ProjectMagmaContent", "ProjectMagma\Content\ProjectMagmaContent.contentproj", "{40E4CAF0-0F79-43C3-85F2-3A79D2038879}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ProjectMagmaContentPipelineDebugging", "DebugPipeline1\ProjectMagmaContentPipelineDebugging.csproj", "{12B787C8-2FC6-474C-BEAB-A73B4D3E5016}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -161,14 +165,6 @@ Global
 		{7358AC46-F593-429F-AD44-E4475FFC8058}.Release|Xbox 360.ActiveCfg = Release|Xbox 360
 		{7358AC46-F593-429F-AD44-E4475FFC8058}.Release|Xbox 360.Build.0 = Release|Xbox 360
 		{7358AC46-F593-429F-AD44-E4475FFC8058}.Release|Zune.ActiveCfg = Release|Xbox 360
-		{BEB6EA29-91F8-4460-B52C-FC9C19B6541B}.Debug|Mixed Platforms.ActiveCfg = Debug|Xbox 360
-		{BEB6EA29-91F8-4460-B52C-FC9C19B6541B}.Debug|x86.ActiveCfg = Debug|x86
-		{BEB6EA29-91F8-4460-B52C-FC9C19B6541B}.Debug|Xbox 360.ActiveCfg = Debug|Xbox 360
-		{BEB6EA29-91F8-4460-B52C-FC9C19B6541B}.Debug|Zune.ActiveCfg = Debug|Xbox 360
-		{BEB6EA29-91F8-4460-B52C-FC9C19B6541B}.Release|Mixed Platforms.ActiveCfg = Release|Xbox 360
-		{BEB6EA29-91F8-4460-B52C-FC9C19B6541B}.Release|x86.ActiveCfg = Release|x86
-		{BEB6EA29-91F8-4460-B52C-FC9C19B6541B}.Release|Xbox 360.ActiveCfg = Release|Xbox 360
-		{BEB6EA29-91F8-4460-B52C-FC9C19B6541B}.Release|Zune.ActiveCfg = Release|Xbox 360
 		{40E4CAF0-0F79-43C3-85F2-3A79D2038879}.Debug|Mixed Platforms.ActiveCfg = Debug|x86
 		{40E4CAF0-0F79-43C3-85F2-3A79D2038879}.Debug|x86.ActiveCfg = Debug|x86
 		{40E4CAF0-0F79-43C3-85F2-3A79D2038879}.Debug|Xbox 360.ActiveCfg = Debug|x86
@@ -177,6 +173,18 @@ Global
 		{40E4CAF0-0F79-43C3-85F2-3A79D2038879}.Release|x86.ActiveCfg = Release|x86
 		{40E4CAF0-0F79-43C3-85F2-3A79D2038879}.Release|Xbox 360.ActiveCfg = Release|x86
 		{40E4CAF0-0F79-43C3-85F2-3A79D2038879}.Release|Zune.ActiveCfg = Release|x86
+		{12B787C8-2FC6-474C-BEAB-A73B4D3E5016}.Debug|Mixed Platforms.ActiveCfg = Debug|x86
+		{12B787C8-2FC6-474C-BEAB-A73B4D3E5016}.Debug|Mixed Platforms.Build.0 = Debug|x86
+		{12B787C8-2FC6-474C-BEAB-A73B4D3E5016}.Debug|x86.ActiveCfg = Debug|x86
+		{12B787C8-2FC6-474C-BEAB-A73B4D3E5016}.Debug|x86.Build.0 = Debug|x86
+		{12B787C8-2FC6-474C-BEAB-A73B4D3E5016}.Debug|Xbox 360.ActiveCfg = Debug|x86
+		{12B787C8-2FC6-474C-BEAB-A73B4D3E5016}.Debug|Zune.ActiveCfg = Debug|x86
+		{12B787C8-2FC6-474C-BEAB-A73B4D3E5016}.Release|Mixed Platforms.ActiveCfg = Release|x86
+		{12B787C8-2FC6-474C-BEAB-A73B4D3E5016}.Release|Mixed Platforms.Build.0 = Release|x86
+		{12B787C8-2FC6-474C-BEAB-A73B4D3E5016}.Release|x86.ActiveCfg = Release|x86
+		{12B787C8-2FC6-474C-BEAB-A73B4D3E5016}.Release|x86.Build.0 = Release|x86
+		{12B787C8-2FC6-474C-BEAB-A73B4D3E5016}.Release|Xbox 360.ActiveCfg = Release|x86
+		{12B787C8-2FC6-474C-BEAB-A73B4D3E5016}.Release|Zune.ActiveCfg = Release|x86
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

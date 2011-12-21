@@ -123,13 +123,3 @@ void SpritePixelShader(inout float4 color : COLOR0, float2 texCoord : TEXCOORD0)
 {
     color *= tex2D(TextureSampler, texCoord);
 }
-
-
-technique SpriteBatch
-{
-	pass
-	{
-		VertexShader = compile vs_3_0 SpriteVertexShader();
-		PixelShader  = compile ps_3_0 SpritePixelShader();
-	}
-}

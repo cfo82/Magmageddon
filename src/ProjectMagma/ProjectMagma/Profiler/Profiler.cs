@@ -142,14 +142,16 @@ namespace ProjectMagma.Profiler
             bool isTransferredFromOtherPlayer;
             StorageContainer container = device.OpenContainer(windowTitle, false, out isTransferredFromOtherPlayer);
 #else
-            StorageContainer container = device.OpenContainer(windowTitle);
+            IAsyncResult result = device.BeginOpenContainer(windowTitle, null, null);
+
+            // wait for the waithandle to become signaled
+            result.AsyncWaitHandle.WaitOne();
+
+            StorageContainer container = device.EndOpenContainer(result);
 #endif
 
-            // Get the path of the save game.
-            string absoluteFilename = Path.Combine(container.Path, filename);
-
             // Open the file, creating it if necessary.
-            using (FileStream stream = File.Open(absoluteFilename, FileMode.Create))
+            using (Stream stream = container.OpenFile(filename, FileMode.Create))
             {
                 StreamWriter writer = new StreamWriter(stream);
                 Write(writer);
@@ -238,7 +240,7 @@ namespace ProjectMagma.Profiler
             spriteBatch.Begin();
             if (renderOverlay)
             {
-                spriteBatch.Draw(overlayBackground, new Rectangle(x, y, width, height), new Color(Color.Black, 192));
+                spriteBatch.Draw(overlayBackground, new Rectangle(x, y, width, height), Color.Black * 0.75f);
                 x += 10;
                 y += 10;
                 width -= 20;
@@ -252,11 +254,11 @@ namespace ProjectMagma.Profiler
                 spriteBatch.End();
                 spriteBatch.Begin();
                 int lineY = y + (int)font.MeasureString("Section").Y + 2;
-                spriteBatch.Draw(overlayBackground2, new Rectangle(x, lineY, width, 1), new Color(Color.Yellow, 255));
+                spriteBatch.Draw(overlayBackground2, new Rectangle(x, lineY, width, 1), Color.Yellow);
 
-                spriteBatch.Draw(overlayBackground2, new Rectangle(x+490, y, 1, height), new Color(Color.Yellow, 255));
-                spriteBatch.Draw(overlayBackground2, new Rectangle(x+740, y, 1, height), new Color(Color.Yellow, 255));
-                spriteBatch.Draw(overlayBackground2, new Rectangle(x+990, y, 1, height), new Color(Color.Yellow, 255));
+                spriteBatch.Draw(overlayBackground2, new Rectangle(x+490, y, 1, height), Color.Yellow);
+                spriteBatch.Draw(overlayBackground2, new Rectangle(x+740, y, 1, height), Color.Yellow);
+                spriteBatch.Draw(overlayBackground2, new Rectangle(x+990, y, 1, height), Color.Yellow);
 
                 DrawSection(graphics, rootSection, x, lineY +2, x, false);
             }
@@ -273,13 +275,13 @@ namespace ProjectMagma.Profiler
                     font,
                     text1,
                     new Vector2((float)x + (float)width / 2.0f - text1Size.X / 2.0f, (float)y + 2),
-                    new Color(Color.White, 0.7f)
+                    Color.White * 0.7F
                     );
                 spriteBatch.DrawString(
                     font,
                     text2,
                     new Vector2((float)x + (float)width / 2.0f - text2Size.X / 2.0f, (float)y + 2 + text1Size.Y + 2),
-                    new Color(Color.White, 0.7f)
+                    Color.White * 0.7f
                     );
             }
             spriteBatch.End();

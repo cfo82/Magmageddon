@@ -355,33 +355,37 @@ namespace Xclna.Xna.Animation
                         }
                     }
                     int numParts = mesh.MeshParts.Count-2; // HACK: -1 added
-                    GraphicsDevice device = mesh.VertexBuffer.GraphicsDevice;
-                    device.Indices = mesh.IndexBuffer;
+                    if (numParts <= 0)
+                        { continue; }
+
                     for (int j = 0; j < numParts; j++ )
                     {
                         ModelMeshPart currentPart = mesh.MeshParts[j];
                         if (currentPart.NumVertices == 0 || currentPart.PrimitiveCount == 0)
                             continue;
                         Effect currentEffect = modelEffects[effectStartIndex+j];
-      
 
-                        device.VertexDeclaration = currentPart.VertexDeclaration;
+                        GraphicsDevice device = currentPart.VertexBuffer.GraphicsDevice;
+                        device.Indices = currentPart.IndexBuffer;
+
+                        /*device.VertexDeclaration = currentPart.VertexDeclaration;
                         device.Vertices[0].SetSource(mesh.VertexBuffer, currentPart.StreamOffset,
-                            currentPart.VertexStride);
+                            currentPart.VertexStride);*/
+                        device.SetVertexBuffer(currentPart.VertexBuffer, currentPart.VertexOffset);
 
-                        currentEffect.Begin();
+                        //currentEffect.Begin();
                         EffectPassCollection passes = currentEffect.CurrentTechnique.Passes;
                         int numPasses = passes.Count;
                         for (int k = 0; k < numPasses; k++)
                         {
                             EffectPass pass = passes[k];
-                            pass.Begin();
-                            device.DrawIndexedPrimitives(PrimitiveType.TriangleList, currentPart.BaseVertex,
+                            pass.Apply();
+                            device.DrawIndexedPrimitives(PrimitiveType.TriangleList, 0,
                                 0, currentPart.NumVertices, currentPart.StartIndex, currentPart.PrimitiveCount);
-                            pass.End();
+                            //pass.End();
                         }
 
-                        currentEffect.End();
+                        //currentEffect.End();
                     }
                 }
             }

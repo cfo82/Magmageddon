@@ -192,9 +192,9 @@ technique RenderParticles
         SrcBlend = SrcAlpha;
         DestBlend = InvSrcAlpha;
         BlendOp = Add;
-        AlphaTestEnable = false;
-        AlphaFunc = Greater;
-        AlphaRef = 0.25;
+        //AlphaTestEnable = false;
+        //AlphaFunc = Greater;
+        //AlphaRef = 0.25;
         ZEnable = false;
         ZWriteEnable = false;
         CullMode = None;

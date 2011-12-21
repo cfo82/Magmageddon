@@ -25,10 +25,13 @@
 using System;
 using System.Collections.Generic;
 using System.Text;
-using Microsoft.Xna.Framework.Content.Pipeline.Graphics;
-using Microsoft.Xna.Framework;
-using Microsoft.Xna.Framework.Content.Pipeline.Serialization.Compiler;
 using Microsoft.Xna.Framework.Graphics;
+using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Content;
+using Microsoft.Xna.Framework.Content.Pipeline;
+using Microsoft.Xna.Framework.Content.Pipeline.Graphics;
+using Microsoft.Xna.Framework.Content.Pipeline.Serialization.Compiler;
+using Microsoft.Xna.Framework.Content.Pipeline.Processors;
 
 namespace Xclna.Xna.Animation.Content
 {
@@ -73,11 +76,11 @@ namespace Xclna.Xna.Animation.Content
         /// </summary>
         /// <param name="elements">The vertex elements.</param>
         /// <returns>Info on what type of skinning the elements contain.</returns>
-        public static SkinningType GetSkinningType(VertexElement[] elements)
+        public static SkinningType GetSkinningType(VertexDeclarationContent vertexDeclaration)
         {
             int numIndexChannels = 0;
             int numWeightChannels = 0;
-            foreach (VertexElement e in elements)
+            foreach (VertexElement e in vertexDeclaration.VertexElements)
             {
                 if (e.VertexElementUsage == VertexElementUsage.BlendIndices)
                     numIndexChannels++;
@@ -91,7 +94,6 @@ namespace Xclna.Xna.Animation.Content
             else if (numIndexChannels == 1 || numWeightChannels == 1)
                 return SkinningType.FourBonesPerVertex;
             return SkinningType.None;
-
         }
 
 

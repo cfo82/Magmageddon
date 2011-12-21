@@ -15,6 +15,9 @@ namespace ProjectMagma.Renderer.ParticleSystem.Stateful
         {
             this.device = device;
 
+            // create the vertex declaration for rendering
+            renderingVertexDeclaration = new VertexDeclaration(RenderVertex.SizeInBytes, RenderVertex.VertexElements);
+
             // Create vertexbuffers. One for each particle map size
             renderingVertexBuffers = new VertexBuffer[(int)Size.SizeCount];
             for (int i = 0; i < (int)Size.SizeCount; ++i)
@@ -30,12 +33,10 @@ namespace ProjectMagma.Renderer.ParticleSystem.Stateful
                             positionHalfPixel.Y + 2 * y * positionHalfPixel.Y);
                     }
                 }
-                renderingVertexBuffers[i] = new VertexBuffer(device, RenderVertex.SizeInBytes * vertices.Length, BufferUsage.WriteOnly | BufferUsage.Points);
+                // TODO: no more point sprites :-(
+                renderingVertexBuffers[i] = new VertexBuffer(device, renderingVertexDeclaration, RenderVertex.SizeInBytes * vertices.Length, BufferUsage.WriteOnly/* | BufferUsage.Points*/);
                 renderingVertexBuffers[i].SetData<RenderVertex>(vertices);
             }
-
-            // create the vertex declaration for rendering
-            renderingVertexDeclaration = new VertexDeclaration(device, RenderVertex.VertexElements);
 
             // allocate the stateMapLists
             stateMapLists = new List<RenderTarget2D>[(int)Size.SizeCount];
@@ -66,7 +67,7 @@ namespace ProjectMagma.Renderer.ParticleSystem.Stateful
             List<RenderTarget2D> list = GetStateMapList(size);
             if (list.Count == 0)
             {
-                RenderTarget2D stateMap = new RenderTarget2D(device, SizeMap[(int)size], SizeMap[(int)size], 1, SurfaceFormat.HalfVector4);
+                RenderTarget2D stateMap = new RenderTarget2D(device, SizeMap[(int)size], SizeMap[(int)size], false, SurfaceFormat.HalfVector4, DepthFormat.Depth24Stencil8);
                 return stateMap;
             }
             else

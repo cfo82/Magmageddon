@@ -2,12 +2,12 @@
 // The following will be executed for every pixel shader, they are required
 // for most of the invoked lighting functions.
 //-----------------------------------------------------------------------------
-#define PS_START                                            \
-	PSOutput Output;                                        \
-	Output.RenderChannelColor = RenderChannelColor;         \
-	Output.RealDepth = pin.PositionPSP.z/pin.PositionPSP.w; \
-	ColorPair lightResult;                                  \
-	float3 normal;                                         
+#define PS_START                                                             \
+	PSOutput Output;                                                         \
+	Output.RenderChannelColor = RenderChannelColor;                          \
+	Output.RealDepth = float4(pin.PositionPSP.z/pin.PositionPSP.w, 0, 0, 1); \
+	ColorPair lightResult;                                                   \
+	float3 normal;
 
 
 

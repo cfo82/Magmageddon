@@ -75,7 +75,7 @@ float4 BarColor(float2 texCoord, float3 beginColor, float3 endColor, float value
 }
 
 
-float4 PixelShader(float2 texCoord : TEXCOORD0) : COLOR0
+float4 PixelShaderMain(float2 texCoord : TEXCOORD0) : COLOR0
 {
 	// different players want their huds in different mirroring configurations
 	float2 healthBarCoord = mul(PlayerMirror, float3(texCoord,1)).xy;
@@ -95,6 +95,6 @@ technique BloomCombine
 {
     pass Pass1
     {
-        PixelShader = compile ps_2_0 PixelShader();	
+        PixelShader = compile ps_2_0 PixelShaderMain();	
     }
 }

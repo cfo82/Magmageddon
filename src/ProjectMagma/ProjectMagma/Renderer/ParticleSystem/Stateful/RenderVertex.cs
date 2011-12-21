@@ -13,9 +13,7 @@ namespace ProjectMagma.Renderer.ParticleSystem.Stateful
 
         public static readonly VertexElement[] VertexElements =
         {
-            new VertexElement(0, 0, VertexElementFormat.Vector2,
-                                    VertexElementMethod.Default,
-                                    VertexElementUsage.TextureCoordinate, 0)
+            new VertexElement(0, VertexElementFormat.Vector2, VertexElementUsage.TextureCoordinate, 0)
         };
 
         public const int SizeInBytes = 8;

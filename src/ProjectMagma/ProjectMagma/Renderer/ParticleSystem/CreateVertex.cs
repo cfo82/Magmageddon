@@ -29,21 +29,10 @@ namespace ProjectMagma.Renderer.ParticleSystem
 
         public static readonly VertexElement[] VertexElements =
         {
-            new VertexElement(0, 0, VertexElementFormat.Vector3,
-                                    VertexElementMethod.Default,
-                                    VertexElementUsage.Position, 0),
-
-            new VertexElement(0, 12, VertexElementFormat.Vector3,
-                                    VertexElementMethod.Default,
-                                    VertexElementUsage.Normal, 0),
-
-            new VertexElement(0, 24, VertexElementFormat.Vector2,
-                                    VertexElementMethod.Default,
-                                    VertexElementUsage.TextureCoordinate, 0),
-
-            new VertexElement(0, 32, VertexElementFormat.Single,
-                                    VertexElementMethod.Default,
-                                    VertexElementUsage.TextureCoordinate, 1),
+            new VertexElement(0,  VertexElementFormat.Vector3, VertexElementUsage.Position, 0),
+            new VertexElement(12, VertexElementFormat.Vector3, VertexElementUsage.Normal, 0),
+            new VertexElement(24, VertexElementFormat.Vector2, VertexElementUsage.TextureCoordinate, 0),
+            new VertexElement(32, VertexElementFormat.Single, VertexElementUsage.TextureCoordinate, 1),
 
         };
 

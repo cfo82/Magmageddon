@@ -36,7 +36,7 @@ namespace ProjectMagma.Renderer
             iceSpikeModel = Game.Instance.ContentManager.Load<MagmaModel>("Models/Sfx/IceSpike").XnaModel;
             iceSpikeTexture = Game.Instance.ContentManager.Load<Texture2D>("Textures/Sfx/IceSpikeHead");
 
-            iceSpikeEffect = Game.Instance.ContentManager.Load<Effect>("Effects/Sfx/IceSpike").Clone(Game.Instance.GraphicsDevice);
+            iceSpikeEffect = Game.Instance.ContentManager.Load<Effect>("Effects/Sfx/IceSpike").Clone();
 
             this.transforms = new Matrix[iceSpikeModel.Bones.Count];
         }
@@ -107,7 +107,8 @@ namespace ProjectMagma.Renderer
         {
             GraphicsDevice device = renderer.Device;
 
-            CullMode saveCullMode = device.RenderState.CullMode;
+            // TODO: fix
+            //CullMode saveCullMode = device.RenderState.CullMode;
 
             float aspectRatio = device.Viewport.Width / device.Viewport.Height;
             iceSpikeModel.CopyAbsoluteBoneTransformsTo(transforms);
@@ -132,7 +133,8 @@ namespace ProjectMagma.Renderer
                 mesh.Draw();
             }
 
-            device.RenderState.CullMode = saveCullMode;
+            // TODO: fix
+            //device.RenderState.CullMode = saveCullMode;
         }
 
         public override void UpdateBool(string id, double timestamp, bool value)

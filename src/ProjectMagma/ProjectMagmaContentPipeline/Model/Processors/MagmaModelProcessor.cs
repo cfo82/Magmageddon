@@ -316,6 +316,7 @@ namespace ProjectMagma.ContentPipeline.ModelProcessors
             foreach (NodeContent input in inputNodes)
             {
                 RemoveTextureReferences(input, context);
+                CalculateTangentFrames(input, context);
             }
 
             // first center the models (I think they are actually already centered...
@@ -368,6 +369,24 @@ namespace ProjectMagma.ContentPipeline.ModelProcessors
             foreach (NodeContent child in input.Children)
             {
                 RemoveTextureReferences(child, context);
+            }
+        }
+
+        private void CalculateTangentFrames(
+            NodeContent input,
+            ContentProcessorContext context
+        )
+        {
+            MeshContent mesh = input as MeshContent;
+            if (mesh != null && !IsCollisionNode(input))
+            {
+                MeshHelper.CalculateTangentFrames(mesh, "TextureCoordinate0", "Tangent0", "Binormal0");
+            }
+
+            // Go through all children
+            foreach (NodeContent child in input.Children)
+            {
+                CalculateTangentFrames(child, context);
             }
         }
 
@@ -650,7 +669,10 @@ namespace ProjectMagma.ContentPipeline.ModelProcessors
             NodeContent node
         )
         {
-            return node.Name != null && node.Name.EndsWith("_col");
+            return
+                node.Name != null &&
+                node.Name.Contains("_col") // someone was really funny and added a col2 (and other colN) thingies...
+                ;
         }
 
         private NodeContent GetChild(

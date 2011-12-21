@@ -109,7 +109,8 @@ namespace ProjectMagma.Renderer
                     if (this_basic.UseSquash) this_basic.ApplySquashParameters(effect, renderer);
                 }
                 // endhack
-                renderer.Device.RenderState.DepthBufferEnable = true;
+                //renderer.Device.RenderState.DepthBufferEnable = true;
+                renderer.Device.DepthStencilState = DepthStencilState.Default;
                 effect.CurrentTechnique = effect.Techniques["DepthMap"];
                 effect.Parameters["LightPosition"].SetValue(renderer.LightPosition);
 
@@ -130,13 +131,15 @@ namespace ProjectMagma.Renderer
                 {
                     meshPart.Effect = effect;
                 }
-                renderer.Device.RenderState.AlphaBlendEnable = false;
-                renderer.Device.RenderState.SourceBlend = Blend.SourceAlpha;
-                renderer.Device.RenderState.DestinationBlend = Blend.DestinationColor;
+                // TODO: fix if necessary...
+                //renderer.Device.RenderState.AlphaBlendEnable = false;
+                //renderer.Device.RenderState.SourceBlend = Blend.SourceAlpha;
+                //renderer.Device.RenderState.DestinationBlend = Blend.DestinationColor;
 
                 mesh.Draw();
 
-                renderer.Device.RenderState.AlphaBlendEnable = false;
+                // TODO: fix if necessary...
+                //renderer.Device.RenderState.AlphaBlendEnable = false;
 
                 foreach (ModelMeshPart meshPart in mesh.MeshParts)
                 {
@@ -207,7 +210,7 @@ namespace ProjectMagma.Renderer
                 if (meshPart.Effect is BasicPaletteEffect || meshPart.Effect is BasicEffect)
                 {
                     Effect oldEffect = meshPart.Effect;
-                    meshPart.Effect = effect.Clone(oldEffect.GraphicsDevice);
+                    meshPart.Effect = effect.Clone();
                     oldEffect.Dispose();
                 }
             }

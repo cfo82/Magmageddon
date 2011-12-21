@@ -22,14 +22,8 @@ namespace ProjectMagma.Renderer
 
             public static readonly VertexElement[] VertexElements =
             {
-                new VertexElement(0, 0, VertexElementFormat.Vector3,
-                                        VertexElementMethod.Default,
-                                        VertexElementUsage.Position, 0),
-
-                new VertexElement(0, 12, VertexElementFormat.Vector2,
-                                        VertexElementMethod.Default,
-                                        VertexElementUsage.TextureCoordinate, 0),
-
+                new VertexElement(0,  VertexElementFormat.Vector3, VertexElementUsage.Position, 0),
+                new VertexElement(12, VertexElementFormat.Vector2, VertexElementUsage.TextureCoordinate, 0),
             };
 
             public const int SizeInBytes = 20;
@@ -57,11 +51,11 @@ namespace ProjectMagma.Renderer
                 new Vertex(position, new Vector2(1, 1)),
                 new Vertex(position, new Vector2(0, 1))
             };
-            vertexBuffer = new VertexBuffer(renderer.Device, Vertex.SizeInBytes * vertices.Length, BufferUsage.WriteOnly);
+            vertexDeclaration = new VertexDeclaration(Vertex.SizeInBytes, Vertex.VertexElements);
+            vertexBuffer = new VertexBuffer(renderer.Device, vertexDeclaration, Vertex.SizeInBytes * vertices.Length, BufferUsage.WriteOnly);
             vertexBuffer.SetData<Vertex>(vertices);
-            vertexDeclaration = new VertexDeclaration(renderer.Device, Vertex.VertexElements);
 
-            effect = Game.Instance.ContentManager.Load<Effect>("Effects/Sfx/Billboard").Clone(renderer.Device);
+            effect = Game.Instance.ContentManager.Load<Effect>("Effects/Sfx/Billboard").Clone();
             Texture = Game.Instance.ContentManager.Load<Texture2D>("Textures/xna_logo");
         }
 
@@ -88,20 +82,16 @@ namespace ProjectMagma.Renderer
             effect.Parameters["BillboardColor"].SetValue(color);
             effect.Parameters["BillboardTexture"].SetValue(Texture);
 
-            renderer.Device.Vertices[0].SetSource(vertexBuffer, 0, Vertex.SizeInBytes);
-            renderer.Device.VertexDeclaration = vertexDeclaration;
+            renderer.Device.SetVertexBuffer(vertexBuffer, 0);
+            //renderer.Device.VertexDeclaration = vertexDeclaration;
 
             effect.CurrentTechnique = effect.Techniques["Billboards"];
-            effect.Begin();
             foreach (EffectPass pass in effect.CurrentTechnique.Passes)
             {
-                pass.Begin();
+                pass.Apply();
 
                 renderer.Device.DrawPrimitives(PrimitiveType.TriangleList, 0, 2);
-
-                pass.End();
             }
-            effect.End();
         }
 
         public Texture2D Texture { set; get; }

@@ -1,4 +1,5 @@
 ﻿using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Content.Pipeline;
 using Microsoft.Xna.Framework.Content.Pipeline.Serialization.Compiler;
 using ProjectMagma.Shared.Math.Primitives;
 using ProjectMagma.Shared.Math.Primitives.Serialization;

@@ -67,7 +67,7 @@ namespace ProjectMagma.Renderer
 
         private void ApplyShadowMap(Renderer renderer, Effect effect)
         {
-            effect.Parameters["ShadowMap"].SetValue(renderer.LightRenderTarget.GetTexture());
+            effect.Parameters["ShadowMap"].SetValue(renderer.LightRenderTarget);
             effect.Parameters["LightViewProjection"].SetValue(renderer.LightView * renderer.LightProjection);
         }
 

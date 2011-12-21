@@ -8,7 +8,14 @@ namespace ProjectMagma.Renderer
         public RenderPass(Renderer renderer)
         {
             this.Renderer = renderer;
+
             this.spriteBatch = new SpriteBatch(renderer.Device);
+
+            testSamplerState = new SamplerState();
+            testSamplerState.Filter = TextureFilter.Point;
+            testSamplerState.AddressU = TextureAddressMode.Clamp;
+            testSamplerState.AddressV = TextureAddressMode.Clamp;
+            testSamplerState.AddressW = TextureAddressMode.Clamp;
         }
 
         protected Renderer Renderer { get; set; }
@@ -20,8 +27,7 @@ namespace ProjectMagma.Renderer
             Effect effect
         )
         {
-            Renderer.Device.SetRenderTarget(0, renderTarget0);
-            Renderer.Device.SetRenderTarget(1, renderTarget1);
+            Renderer.Device.SetRenderTargets(renderTarget0, renderTarget1);
             DrawFullscreenQuad
             (
                 texture,
@@ -29,8 +35,7 @@ namespace ProjectMagma.Renderer
                 renderTarget0.Height,
                 effect
             );
-            Renderer.Device.SetRenderTarget(0, null);
-            Renderer.Device.SetRenderTarget(1, null);
+            Renderer.Device.SetRenderTarget(null);
         }
 
         protected void DrawFullscreenQuad(
@@ -39,7 +44,7 @@ namespace ProjectMagma.Renderer
             Effect effect
         )
         {
-            Renderer.Device.SetRenderTarget(0, renderTarget0);
+            Renderer.Device.SetRenderTargets(renderTarget0);
             DrawFullscreenQuad
             (
                 texture,
@@ -47,7 +52,7 @@ namespace ProjectMagma.Renderer
                 renderTarget0.Height,
                 effect
             );
-            Renderer.Device.SetRenderTarget(0, null);
+            Renderer.Device.SetRenderTargets(null);
         }
 
         protected void DrawFullscreenQuad(
@@ -64,36 +69,23 @@ namespace ProjectMagma.Renderer
             Effect effect
         )
         {
-            Effect spriteEffect = Game.Instance.ContentManager.Load<Effect>("Effects/Sm3SpriteBatch");
+            //Effect spriteEffect = Game.Instance.ContentManager.Load<Effect>("Effects/Sm3SpriteBatch");
 
             Viewport viewport = Renderer.Device.Viewport;
             Vector2 viewportSize = new Vector2(viewport.Width, viewport.Height);
-            spriteEffect.Parameters["ViewportSize"].SetValue(viewportSize);
-
-            spriteBatch.Begin(SpriteBlendMode.None, SpriteSortMode.Immediate, SaveStateMode.None);
-            spriteEffect.Begin();
-            spriteEffect.CurrentTechnique.Passes[0].Begin();
-
-            if (effect != null)
+            if (effect.Parameters["ViewportSize"] != null)
             {
-                effect.Begin();
-                effect.CurrentTechnique.Passes[0].Begin();
+                effect.Parameters["ViewportSize"].SetValue(viewportSize);
             }
-            
+
+            spriteBatch.Begin(SpriteSortMode.Immediate, BlendState.Opaque, SamplerState.PointClamp, null, null, effect);
+
             spriteBatch.Draw(texture, new Rectangle(0, 0, width, height), Color.White);
 
             spriteBatch.End();
-            
-            if (effect != null)
-            {
-                effect.CurrentTechnique.Passes[0].End();
-                effect.End();
-            }
-
-            spriteEffect.CurrentTechnique.Passes[0].End();
-            spriteEffect.End();
         }
 
         private SpriteBatch spriteBatch;
+        private SamplerState testSamplerState;
     }
 }

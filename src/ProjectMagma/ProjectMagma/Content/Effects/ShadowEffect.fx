@@ -236,8 +236,8 @@ technique Scene
         //SrcBlend = SrcAlpha;
         //DestBlend = InvSrcAlpha;
         
-        AlphaTestEnable = true;
-		AlphaFunc = Greater;
-        AlphaRef = 0.5;
+        //AlphaTestEnable = true;
+		//AlphaFunc = Greater;
+        //AlphaRef = 0.5;
     }
 }

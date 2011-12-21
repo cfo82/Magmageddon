@@ -63,7 +63,8 @@ namespace ProjectMagma
             GamePadState gamePadState = GamePad.GetState((PlayerIndex)i);
             KeyboardState keyboardState = Keyboard.GetState();
 
-            StaticStringStrength.Update(gameTime.TotalRealTime.TotalMilliseconds);
+            //StaticStringStrength.Update(gameTime.TotalRealTime.TotalMilliseconds);
+            StaticStringStrength.Update(gameTime.TotalGameTime.TotalMilliseconds);
             if (active)
             {
                 MenuScreen currentActiveScreen = activeScreen;
@@ -146,8 +147,10 @@ namespace ProjectMagma
                 float screenscale = (float)screenWidth / 1280f;
                 Matrix spriteScale = Matrix.CreateScale(screenscale, screenscale, 1);
 
-                spriteBatch.Begin(SpriteBlendMode.AlphaBlend, SpriteSortMode.Deferred,
-                    SaveStateMode.None, spriteScale);
+                // TODO: fix
+                //spriteBatch.Begin(SpriteBlendMode.AlphaBlend, SpriteSortMode.Deferred,
+                //    SaveStateMode.None, spriteScale);
+                spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend);
 
                 spriteBatch.Draw(background, new Vector2(0, 0), new Color(125,125,125,160));
                 //spriteBatch.Draw(

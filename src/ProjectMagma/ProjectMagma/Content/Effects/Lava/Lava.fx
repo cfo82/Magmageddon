@@ -149,6 +149,9 @@ float4 ComputeIlluminationCombo(
 PSOutput MultiPlanePS(PS_INPUT i) : COLOR0
 {
 	PSOutput outp;
+	float minPlaneYb = 45;
+	float maxPlaneYb = 0;
+	float planeFraction = (i.pos.y - minPlaneYb) / (maxPlaneYb - minPlaneYb);
 
 	// compute perturbed texture coordinates
 	int index = (i.texCoord + RandomOffset[0]) * RANDOM_ARRAY_SIZE;
@@ -161,28 +164,31 @@ PSOutput MultiPlanePS(PS_INPUT i) : COLOR0
 	SharedTextures shared_tex;
 	shared_tex.stucco_granite = tex2D(StuccoSparseSampler, perturbedTexCoords);
 	
-	// evaluate phong model to get RGB value
-	float3 vLightTS  = normalize( i.vLightTS );
-	float4 cResultColor = ComputeIlluminationCombo(perturbedTexCoords, vLightTS, 1, shared_tex);
-    
     // compute alpha channel to get A value
 	float alphaStucco = 1-shared_tex.stucco_granite.b;
 	if(invert) alphaStucco = 1 - alphaStucco;
+
+	// Using the clip instruction to do alpha testing. They removed the alpha test
+	// state for the new xna4... But since there is a lot going on in ComputeIlluminationCombo
+	// this might turn out to be a nice little optimization here!
+	float alpha = alphaStucco >= planeFraction ? 1 : 0;
+	clip(alpha-0.5);
+
+	// evaluate phong model to get RGB value
+	float3 vLightTS  = normalize( i.vLightTS );
+	float4 cResultColor = ComputeIlluminationCombo(perturbedTexCoords, vLightTS, 1, shared_tex);
 	
 	// compute composite RGBA color
 	float3 cResultColor_rgb = lerp(cResultColor.rgb,FogColor, i.pos.w* FogEnabled);
 	float yy = i.pos.y;
 	outp.Color.r=yy/2;
-	float minPlaneYb = 45;
-	float maxPlaneYb = 0;
 
-	float planeFraction = (i.pos.y - minPlaneYb) / (maxPlaneYb - minPlaneYb);
 	outp.Color = float4(cResultColor_rgb*0.7, alphaStucco >= planeFraction ? 1 : 0);
 	outp.RenderChannelColor = RenderChannelColor;
-	outp.RealDepth = i.positionPSP.z / i.positionPSP.w;
+	outp.RealDepth = float4(i.positionPSP.z / i.positionPSP.w, 0, 0, 1);
 	
 	BlendWithShadow(outp.Color, i.pos, i.PositionLS, float3(0,1,0));
-	
+
 	return outp;	
 }
 
@@ -194,18 +200,14 @@ technique MultiPlaneLava
     {
         VertexShader = compile vs_3_0 MultiPlaneVS();
         PixelShader = compile ps_3_0 MultiPlanePS();
-        AlphaBlendEnable = false;
-        AlphaTestEnable = true;
-        AlphaFunc = Greater;
-        AlphaRef = 0.5;
-        
-        //AlphaTestEnable = false;
-        //AlphaBlendEnable = true;
-        //SrcBlend = SrcAlpha;
-        //DestBlend = InvSrcAlpha;
-        
-        
+
+		// can't do alpha testing anymore. See the comment at the
+		// clip instruction in the pixel shader!
+		//AlphaTestEnable = true;
+		//AlphaFunc = Greater;
+		//AlphaRef = 0.5;
+
         ZEnable = true;
-        ZWriteEnable = true;        
+        ZWriteEnable = true;
     }
 }

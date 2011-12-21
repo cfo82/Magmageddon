@@ -107,7 +107,7 @@ namespace Xclna.Xna.Animation.Visualization
             this.sideLength = sideLength;
             this.graphics = (IGraphicsDeviceService)game.Services.GetService(
                 typeof(IGraphicsDeviceService));
-            effect = new BasicEffect(graphics.GraphicsDevice, null);
+            effect = new BasicEffect(graphics.GraphicsDevice);
 
 
             indices = new int[]
@@ -151,9 +151,7 @@ namespace Xclna.Xna.Animation.Visualization
                 originalVerts[i].Y *= sideLength / 2;
                 originalVerts[i].Z *= sideLength / 2;
             }
-            vertexDeclaration = new VertexDeclaration(
-                graphics.GraphicsDevice,
-                VertexPositionColor.VertexElements);
+            vertexDeclaration = VertexPositionColor.VertexDeclaration;
             verts = new VertexPositionColor[8];
             buffer = new Vector3[8];
             for (int i = 0; i < verts.Length; i++)
@@ -203,11 +201,11 @@ namespace Xclna.Xna.Animation.Visualization
         public override void Draw(GameTime gameTime)
         {
 
-            effect.Begin();
+            //effect.Begin();
             foreach (EffectPass pass in effect.CurrentTechnique.Passes)
             {
-                pass.Begin();
-                graphics.GraphicsDevice.VertexDeclaration = vertexDeclaration;
+                pass.Apply();
+                //graphics.GraphicsDevice.VertexDeclaration = vertexDeclaration;
                 graphics.GraphicsDevice.DrawUserIndexedPrimitives<VertexPositionColor>(
                     PrimitiveType.TriangleList,
                     verts,
@@ -217,9 +215,9 @@ namespace Xclna.Xna.Animation.Visualization
                     0,
                     12);
 
-                pass.End();
+                //pass.End();
             }
-            effect.End();
+            //effect.End();
         }
 
         #region IAttachable Members

@@ -8,6 +8,7 @@ using ProjectMagma.Renderer.Interface;
 using ProjectMagma.Renderer.ParticleSystem.Emitter;
 using ProjectMagma.Renderer.ParticleSystem.Stateful.Implementations;
 using ProjectMagma.Renderer.Renderables;
+using ProjectMagma.Bugslayer;
 
 namespace ProjectMagma.Renderer
 {
@@ -93,16 +94,10 @@ namespace ProjectMagma.Renderer
                                  device,
                                  shadowMapSize,
                                  shadowMapSize,
-                                 1,
-                                 SurfaceFormat.Single);
-
-            // Create out depth stencil buffer, using the shadow map size, 
-            //and the same format as our regular depth stencil buffer.
-            shadowStencilBuffer = new DepthStencilBuffer(
-                        device,
-                        shadowMapSize,
-                        shadowMapSize,
-                        device.DepthStencilBuffer.Format);
+                                 false,
+                                 SurfaceFormat.Single,
+                                 DepthFormat.Depth24Stencil8
+                                 );
 
             vectorCloudTexture = wrappedContent.Load<Texture2D>("Textures/Lava/vectorclouds");
 
@@ -117,21 +112,21 @@ namespace ProjectMagma.Renderer
             if (EnablePostProcessing)
             {
                 //ResolveTarget = new ResolveTexture2D(Device, width, height, 1, format);
-                targetOpaqueColorBuffer = new RenderTarget2D(Device, width, height, 1, SurfaceFormat.HalfVector4);
-                targetAlphaColorBuffer = new RenderTarget2D(Device, width, height, 1, SurfaceFormat.Color);
-                targetHDRColorBuffer = new RenderTarget2D(Device, width, height, 1, SurfaceFormat.HalfVector4);
-                targetHorizontalBlurredHDRColorBuffer = new RenderTarget2D(Device, width / 2, height / 2, 1, SurfaceFormat.HalfVector4);
-                targetBlurredHDRColorBuffer = new RenderTarget2D(Device, width / 2, height / 2, 1, SurfaceFormat.HalfVector4);
+                targetOpaqueColorBuffer = new RenderTarget2D(Device, width, height, false, SurfaceFormat.HalfVector4, DepthFormat.Depth24Stencil8);
+                targetAlphaColorBuffer = new RenderTarget2D(Device, width, height, false, SurfaceFormat.Color, DepthFormat.Depth24Stencil8);
+                targetHDRColorBuffer = new RenderTarget2D(Device, width, height, false, SurfaceFormat.HalfVector4, DepthFormat.Depth24Stencil8);
+                targetHorizontalBlurredHDRColorBuffer = new RenderTarget2D(Device, width / 2, height / 2, false, SurfaceFormat.HalfVector4, DepthFormat.Depth24Stencil8);
+                targetBlurredHDRColorBuffer = new RenderTarget2D(Device, width / 2, height / 2, false, SurfaceFormat.HalfVector4, DepthFormat.Depth24Stencil8);
 
-                targetOpaqueRenderChannels = new RenderTarget2D(Device, width, height, 1, SurfaceFormat.HalfVector4);
-                targetAlphaRenderChannels = new RenderTarget2D(Device, width, height, 1, SurfaceFormat.Color);
-                targetRenderChannels = new RenderTarget2D(Device, width, height, 1, SurfaceFormat.HalfVector4);
-                targetHorizontalBlurredRenderChannels = new RenderTarget2D(Device, width / 2, height / 2, 1, SurfaceFormat.HalfVector4);
-                targetBlurredRenderChannels = new RenderTarget2D(Device, width / 2, height / 2, 1, SurfaceFormat.HalfVector4);
+                targetOpaqueRenderChannels = new RenderTarget2D(Device, width, height, false, SurfaceFormat.HalfVector4, DepthFormat.Depth24Stencil8);
+                targetAlphaRenderChannels = new RenderTarget2D(Device, width, height, false, SurfaceFormat.Color, DepthFormat.Depth24Stencil8);
+                targetRenderChannels = new RenderTarget2D(Device, width, height, false, SurfaceFormat.HalfVector4, DepthFormat.Depth24Stencil8);
+                targetHorizontalBlurredRenderChannels = new RenderTarget2D(Device, width / 2, height / 2, false, SurfaceFormat.HalfVector4, DepthFormat.Depth24Stencil8);
+                targetBlurredRenderChannels = new RenderTarget2D(Device, width / 2, height / 2, false, SurfaceFormat.HalfVector4, DepthFormat.Depth24Stencil8);
 
-                targetOpaqueDepth = new RenderTarget2D(Device, width, height, 1, SurfaceFormat.Vector2);
-                targetAlphaDepth = new RenderTarget2D(Device, width, height, 1, SurfaceFormat.Single);
-                targetDepth = new RenderTarget2D(Device, width, height, 1, SurfaceFormat.Vector2);
+                targetOpaqueDepth = new RenderTarget2D(Device, width, height, false, SurfaceFormat.Vector2, DepthFormat.Depth24Stencil8);
+                targetAlphaDepth = new RenderTarget2D(Device, width, height, false, SurfaceFormat.Single, DepthFormat.Depth24Stencil8);
+                targetDepth = new RenderTarget2D(Device, width, height, false, SurfaceFormat.Vector2, DepthFormat.Depth24Stencil8);
 
                 restoreDepthBufferPass = new RestoreDepthBufferPass(this);
                 combinePass = new CombinePass(this);
@@ -299,7 +294,8 @@ namespace ProjectMagma.Renderer
             }
 
             Game.Instance.Profiler.BeginSection("particle_systems");
-
+            PIXHelper.BeginEvent("Update Particles");
+            
             Game.Instance.Profiler.BeginSection("explosion_system");
             if (explosionSystem != null)
             { explosionSystem.Update(Time.Last / 1000d, Time.At / 1000d); }
@@ -330,11 +326,14 @@ namespace ProjectMagma.Renderer
             { iceSpikeSystem.Update(Time.PausableLast / 1000d, Time.PausableAt / 1000d); }
             Game.Instance.Profiler.EndSection("ice_spike_system");
 
+            PIXHelper.EndEvent();
             Game.Instance.Profiler.EndSection("particle_systems");
         }
 
         public void Render()
         {
+            PIXHelper.BeginEvent("Render Frame");
+
             renderTime.Update();
             //Console.WriteLine("rendering {0}", renderTime.PausableAt);
 
@@ -345,7 +344,7 @@ namespace ProjectMagma.Renderer
             device.Clear(Color.White);
 
             // 1) Set the light's render target
-            device.SetRenderTarget(0, lightRenderTarget);
+            device.SetRenderTargets(lightRenderTarget);
             Game.Instance.Profiler.EndSection("beginning_stuff");
 
             Game.Instance.Profiler.BeginSection("rendering");
@@ -358,8 +357,8 @@ namespace ProjectMagma.Renderer
             // 3) Set our render target back to the screen, and get the 
             //depth texture created by step 2
             Game.Instance.Profiler.BeginSection("change_render_target");
-            device.SetRenderTarget(0, null);
-            lightResolve = lightRenderTarget.GetTexture();
+            device.SetRenderTargets(null);
+            lightResolve = lightRenderTarget;
             Game.Instance.Profiler.EndSection("change_render_target");
 
             // 4) Render the scene from the view of the camera, 
@@ -368,7 +367,8 @@ namespace ProjectMagma.Renderer
             RenderScene();
             Game.Instance.Profiler.EndSection("renderer_scene");
 
-            bool hasAlphaObjects = transparentRenderablesTEST.Count > 0;
+            // TODO: alpha blended objects...
+            bool hasAlphaObjects = false;// transparentRenderablesTEST.Count > 0;
             Game.Instance.Profiler.BeginSection("render_scene_alpha");
             if (hasAlphaObjects)
             {
@@ -379,19 +379,20 @@ namespace ProjectMagma.Renderer
             if (EnablePostProcessing)
             {
                 Game.Instance.Profiler.BeginSection("postprocessing");
+                PIXHelper.BeginEvent("PostProcessing");
 
                 // downscaling is done as part of the blur during the glow-pass
                 if (hasAlphaObjects)
                 {
                     Game.Instance.Profiler.BeginSection("combine");
-                    combinePass.Render(targetOpaqueColorBuffer.GetTexture(), targetAlphaColorBuffer.GetTexture(), targetHDRColorBuffer);
-                    combinePass.Render(targetOpaqueRenderChannels.GetTexture(), targetAlphaRenderChannels.GetTexture(), targetRenderChannels);
-                    combineDepthPass.Render(targetOpaqueDepth.GetTexture(), targetAlphaDepth.GetTexture(), targetDepth);
+                    combinePass.Render(targetOpaqueColorBuffer, targetAlphaColorBuffer, targetHDRColorBuffer);
+                    combinePass.Render(targetOpaqueRenderChannels, targetAlphaRenderChannels, targetRenderChannels);
+                    combineDepthPass.Render(targetOpaqueDepth, targetAlphaDepth, targetDepth);
                     Game.Instance.Profiler.EndSection("combine");
 
                     Game.Instance.Profiler.BeginSection("renderer_post_glow");
                     glowPass.Render(
-                        targetHDRColorBuffer.GetTexture(), targetRenderChannels.GetTexture(),
+                        targetHDRColorBuffer, targetRenderChannels,
                         targetHorizontalBlurredHDRColorBuffer, targetHorizontalBlurredRenderChannels,
                         targetBlurredHDRColorBuffer, targetBlurredRenderChannels
                         );
@@ -402,36 +403,41 @@ namespace ProjectMagma.Renderer
 
                     Game.Instance.Profiler.BeginSection("renderer_post_hdr");
                     hdrCombinePass.Render(
-                        targetHDRColorBuffer.GetTexture(), targetBlurredHDRColorBuffer.GetTexture(), targetRenderChannels.GetTexture(),
-                        targetDepth.GetTexture()
+                        targetHDRColorBuffer, targetBlurredHDRColorBuffer, targetRenderChannels,
+                        targetDepth
                         );
                     Game.Instance.Profiler.EndSection("renderer_post_hdr");
                 }
                 else
                 {
                     Game.Instance.Profiler.BeginSection("renderer_post_glow");
+                    PIXHelper.BeginEvent("Glow Pass");
                     glowPass.Render(
-                        targetOpaqueColorBuffer.GetTexture(), targetOpaqueRenderChannels.GetTexture(),
+                        targetOpaqueColorBuffer, targetOpaqueRenderChannels,
                         targetHorizontalBlurredHDRColorBuffer, targetHorizontalBlurredRenderChannels,
                         targetBlurredHDRColorBuffer, targetBlurredRenderChannels
                         );
+                    PIXHelper.EndEvent();
                     Game.Instance.Profiler.EndSection("renderer_post_glow");
 
                     // FIXME: do we really need to downscale and blur the renderchannels? we don't use
                     // the blurred version.
 
                     Game.Instance.Profiler.BeginSection("renderer_post_hdr");
+                    PIXHelper.BeginEvent("HDR Combine Pass");
                     hdrCombinePass.Render(
-                        targetOpaqueColorBuffer.GetTexture(), targetBlurredHDRColorBuffer.GetTexture(), targetOpaqueRenderChannels.GetTexture(),
-                        targetOpaqueDepth.GetTexture()
+                        targetOpaqueColorBuffer, targetBlurredHDRColorBuffer, targetOpaqueRenderChannels,
+                        targetOpaqueDepth
                         );
+                    PIXHelper.EndEvent();
                     Game.Instance.Profiler.EndSection("renderer_post_hdr");
                 }
 
+                PIXHelper.EndEvent();
                 Game.Instance.Profiler.EndSection("postprocessing");
             }
 
-            RenderParticles();
+            //RenderParticles();
             RenderSceneAfterPost();
 
             Game.Instance.Profiler.EndSection("rendering");
@@ -440,16 +446,12 @@ namespace ProjectMagma.Renderer
             Game.Instance.Profiler.BeginSection("overlay");
             RenderOverlays();
             Game.Instance.Profiler.EndSection("overlay");
+
+            PIXHelper.EndEvent();
         }
 
         private void RenderShadow()
         {
-            //return;
-            // backup stencil buffer
-            DepthStencilBuffer oldStencilBuffer
-                = device.DepthStencilBuffer;
-
-            device.DepthStencilBuffer = shadowStencilBuffer;
             device.Clear(Color.Black);
 
             foreach (Renderable renderable in opaqueRenderables)
@@ -459,10 +461,6 @@ namespace ProjectMagma.Renderer
                 if ((renderable as ModelRenderable).IsShadowCaster)
                     (renderable as ModelRenderable).DrawToShadowMap(this);
             }
-
-            // restore stencil buffer
-            device.DepthStencilBuffer = oldStencilBuffer;
-
         }
 
         private int TransparentRenderableComparison(
@@ -491,15 +489,11 @@ namespace ProjectMagma.Renderer
 
         private void RenderScene()
         {
-            //RenderTarget2D oldRenderTarget0 = (RenderTarget2D) Device.GetRenderTarget(0);
-            //RenderTarget2D oldRenderTarget1 = (RenderTarget2D) Device.GetRenderTarget(1);
-            //Device.SetRenderTarget(0, oldRenderTarget1);
-            //Device.SetRenderTarget(1, oldRenderTarget0);
+            PIXHelper.BeginEvent("Render Scene");
+
             if (EnablePostProcessing)
             {
-                Device.SetRenderTarget(0, targetOpaqueColorBuffer);
-                Device.SetRenderTarget(1, targetOpaqueRenderChannels);
-                Device.SetRenderTarget(2, targetOpaqueDepth);
+                Device.SetRenderTargets(targetOpaqueColorBuffer, targetOpaqueRenderChannels, targetOpaqueDepth);
             }
 
             Device.Clear(Color.White);
@@ -515,9 +509,7 @@ namespace ProjectMagma.Renderer
 
             if (EnablePostProcessing)
             {
-                Device.SetRenderTarget(0, null);
-                Device.SetRenderTarget(1, null);
-                Device.SetRenderTarget(2, null);
+                Device.SetRenderTargets(null);
             }
 
             //Texture2D texture = TargetDepth.GetTexture();
@@ -532,15 +524,17 @@ namespace ProjectMagma.Renderer
             //    }
             //Console.WriteLine("end");
             //int a = 0;
+
+            PIXHelper.EndEvent();
         }
 
         private void RenderSceneAlpha()
         {
             if (EnablePostProcessing)
             {
-                Device.SetRenderTarget(0, targetAlphaColorBuffer);
-                Device.Clear(ClearOptions.Target | ClearOptions.DepthBuffer, new Color(Color.Black, 0), 1, 0);
-                restoreDepthBufferPass.Render(targetOpaqueDepth.GetTexture());
+                Device.SetRenderTargets(targetAlphaColorBuffer);
+                Device.Clear(ClearOptions.Target | ClearOptions.DepthBuffer, Color.Black, 1, 0);
+                restoreDepthBufferPass.Render(targetOpaqueDepth);
             }
 
             foreach (Renderable renderable in transparentRenderablesTEST)
@@ -556,9 +550,9 @@ namespace ProjectMagma.Renderer
             if (EnablePostProcessing)
             {
                 // draw render channel
-                Device.SetRenderTarget(0, targetAlphaRenderChannels);
-                Device.Clear(ClearOptions.Target, new Color(Color.Black, 0), 0, 0);
-                restoreDepthBufferPass.Render(targetOpaqueDepth.GetTexture());
+                Device.SetRenderTargets(targetAlphaRenderChannels);
+                Device.Clear(ClearOptions.Target, Color.Black, 0, 0);
+                restoreDepthBufferPass.Render(targetOpaqueDepth);
 
                 foreach (Renderable renderable in transparentRenderablesTEST)
                 {
@@ -568,8 +562,8 @@ namespace ProjectMagma.Renderer
                 }
 
                 // render depth
-                Device.SetRenderTarget(0, targetAlphaDepth);
-                Device.Clear(ClearOptions.Target, new Color(Color.Black, 0), 0, 0);
+                Device.SetRenderTargets(targetAlphaDepth);
+                Device.Clear(ClearOptions.Target, Color.Black, 0, 0);
 
                 // the depth restore is not necessary here. it may add too many details later
                 // but they can be filtered when the new depth-buffer is used.
@@ -581,7 +575,7 @@ namespace ProjectMagma.Renderer
                     renderable.Draw(this);
                 }
 
-                Device.SetRenderTarget(0, null);
+                Device.SetRenderTargets(null);
             }
         }
 
@@ -745,11 +739,6 @@ namespace ProjectMagma.Renderer
             get { return lightRenderTarget; }
         }
 
-        public DepthStencilBuffer ShadowStencilBuffer
-        {
-            get { return shadowStencilBuffer; }
-        }
-
         public Effect ShadowEffect
         {
             get { return shadowEffect; }
@@ -797,7 +786,6 @@ namespace ProjectMagma.Renderer
         private Texture2D lightResolve;
         private Effect shadowEffect;
         private int shadowMapSize = 1024;
-        private DepthStencilBuffer shadowStencilBuffer;
         private RenderTarget2D lightRenderTarget;
 
         private Texture2D vectorCloudTexture;
@@ -829,11 +817,11 @@ namespace ProjectMagma.Renderer
         private RenderTarget2D targetAlphaDepth;
         private RenderTarget2D targetDepth;
 
-        public Texture2D DepthMap { get { return targetDepth.GetTexture(); } }
+        public Texture2D DepthMap { get { return targetDepth; } }
 
         //public Texture2D ToolTexture { get; set; }
 
-        public ResolveTexture2D ResolveTarget { get; set; }
+        //public ResolveTexture2D ResolveTarget { get; set; }
 
         public RendererEntityManager EntityManager
         {

@@ -247,12 +247,11 @@ namespace ProjectMagma.Renderer
         private void DrawBars()
         {
             Rectangle barRect = new Rectangle(xStart, (int) (yStart + 30), (int)barAreaSize.X, (int)barAreaSize.Y);
-            spriteBatch.Begin(SpriteBlendMode.AlphaBlend, SpriteSortMode.Immediate, SaveStateMode.None, spriteScale);
-            barEffect.Begin();
-            barEffect.CurrentTechnique.Passes[0].Begin();
+            //spriteBatch.Begin(SpriteBlendMode.AlphaBlend, SpriteSortMode.Immediate, SaveStateMode.None, spriteScale);
+            spriteBatch.Begin(SpriteSortMode.Immediate, BlendState.AlphaBlend);
+            // TODO: fix
+            barEffect.CurrentTechnique.Passes[0].Apply();
             spriteBatch.Draw(barBackgroundTexture, barRect, Color.White);
-            barEffect.CurrentTechnique.Passes[0].End();
-            barEffect.End();
             spriteBatch.End();
         }
 
@@ -260,7 +259,9 @@ namespace ProjectMagma.Renderer
         {
             double dt = currentFrameTime - lastFrameTime;
 
-            spriteBatch.Begin(SpriteBlendMode.AlphaBlend, SpriteSortMode.Immediate, SaveStateMode.None, spriteScale);
+            // TODO: fix
+            //spriteBatch.Begin(SpriteBlendMode.AlphaBlend, SpriteSortMode.Immediate, SaveStateMode.None, spriteScale);
+            spriteBatch.Begin(SpriteSortMode.Immediate, BlendState.AlphaBlend);
             Vector3 textColor = defaultTextColor * (1 - frozenColorStrength.Value) + frozenTextColor * frozenColorStrength.Value;
 
 
@@ -286,7 +287,7 @@ namespace ProjectMagma.Renderer
             //Viewport v = Game.Instance.GraphicsDevice.Viewport
             //            Vector2 livesPos = new Vector2(xStart + 19, yStart + 50) + multiplier * (new Vector2(236*v.Width/1280, 21*v.Height/720) - livesStringSize * 0.25f) - livesCenterOffset;
             Vector2 livesPos = new Vector2(xStart + 19, yStart + 50) + multiplier * (new Vector2(236, 21) - livesStringSize * 0.25f) - livesCenterOffset;
-            spriteBatch.DrawString(livesFont, livesString, livesPos, new Color(Color.White, 0.85f));
+            spriteBatch.DrawString(livesFont, livesString, livesPos, Color.White * 0.85F);
 
             for(int i = powerupPickupDetails.Count-1; i >= 0; i--)
             {
@@ -312,8 +313,8 @@ namespace ProjectMagma.Renderer
 
                 // draw it 
                 Vector2 detailsShadowPos = detailsPos + textShadowOffset;
-                spriteBatch.DrawString(powerupCollectFont, detailsString, detailsShadowPos, new Color(Color.DimGray, 1.0f - details.Age));
-                spriteBatch.DrawString(powerupCollectFont, detailsString, detailsPos, new Color(Color.White, 1.0f - details.Age));
+                spriteBatch.DrawString(powerupCollectFont, detailsString, detailsShadowPos, Color.DimGray * (1.0f - details.Age));
+                spriteBatch.DrawString(powerupCollectFont, detailsString, detailsPos, Color.White * (1.0f - details.Age));
 
                 if(details.Age >= 1.0f)
                 {

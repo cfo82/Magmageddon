@@ -145,9 +145,9 @@ technique RenderParticles
     pass Pass1
     {
        
-        AlphaTestEnable = true;
-        AlphaFunc = Greater;
-        AlphaRef = 0.1;
+        //AlphaTestEnable = true;
+        //AlphaFunc = Greater;
+        //AlphaRef = 0.1;
         
         AlphaBlendEnable = true;
         SrcBlend = One;

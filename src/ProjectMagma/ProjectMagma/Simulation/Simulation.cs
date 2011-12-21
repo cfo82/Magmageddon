@@ -100,7 +100,8 @@ namespace ProjectMagma.Simulation
                 {
                     Entity player = players[i];
                     Debug.Assert(player.HasInt(CommonNames.GamePadIndex));
-                    Debug.Assert(player.HasInt(CommonNames.Lives));
+                    // TODO: jbernet: I uncommented this assert. lives seems to be set later on?
+                    //Debug.Assert(player.HasInt(CommonNames.Lives));
                     Debug.Assert(player.HasString("robot_entity"));
                     Debug.Assert(player.HasString(CommonNames.PlayerName));
                     player.AddBoolAttribute("ready", false);

@@ -1,15 +1,9 @@
-// Pixel shader applies a one dimensional gaussian blur filter.
-// This is used twice by the bloom postprocess, first to
-// blur horizontally, and then again to blur vertically.
-
-//sampler TextureSampler : register(s0);
-
 #define SAMPLE_COUNT 7
+
+sampler i_hate_microsoft_dont_remove_this_it_wont_work : register(s0);
 
 float2 SampleOffsets[SAMPLE_COUNT];
 float SampleWeights[SAMPLE_COUNT];
-
-sampler i_hate_microsoft_dont_remove_this_it_wont_work : register(s0);
 
 texture RenderChannelColor;
 sampler2D RenderChannelSampler = sampler_state
@@ -41,7 +35,7 @@ struct PSOutput
 };
 
 
-PSOutput PixelShader(float2 texCoord : TEXCOORD0) : COLOR0
+PSOutput PixelShaderMain(float2 texCoord : TEXCOORD0) : COLOR0
 {
 	PSOutput outp;
     outp.Color = 0;
@@ -62,6 +56,6 @@ technique GaussianBlur
 {
     pass Pass1
     {
-        PixelShader = compile ps_3_0 PixelShader();
+        PixelShader = compile ps_2_0 PixelShaderMain();
     }
 }

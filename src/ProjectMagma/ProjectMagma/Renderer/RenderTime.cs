@@ -40,9 +40,9 @@ namespace ProjectMagma.Renderer
             {
                 return new GameTime(
                     new TimeSpan((long)(At * 10000d)),
-                    new TimeSpan((long)(DtMs * 10000d)),
+                    new TimeSpan((long)(DtMs * 10000d))/*,
                     new TimeSpan((long)(At * 10000d)),
-                    new TimeSpan((long)(DtMs * 10000d)));
+                    new TimeSpan((long)(DtMs * 10000d))*/);
             }
         }
 
@@ -84,9 +84,9 @@ namespace ProjectMagma.Renderer
             {
                 return new GameTime(
                     new TimeSpan((long)(PausableAt * 10000d)),
-                    new TimeSpan((long)(PausableDtMs * 10000d)),
+                    new TimeSpan((long)(PausableDtMs * 10000d))/*,
                     new TimeSpan((long)(PausableAt * 10000d)),
-                    new TimeSpan((long)(PausableDtMs * 10000d)));
+                    new TimeSpan((long)(PausableDtMs * 10000d))*/);
             }
         }
 

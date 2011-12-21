@@ -40,7 +40,7 @@ namespace ProjectMagma
             DrawPrevious = false;
 
             // initialize walking player hack
-            Effect clonedEffect = Game.Instance.ContentManager.Load<Effect>("Effects/Basic/Basic").Clone(Game.Instance.GraphicsDevice);
+            Effect clonedEffect = Game.Instance.ContentManager.Load<Effect>("Effects/Basic/Basic").Clone();
             playerModel = Game.Instance.ContentManager.Load<MagmaModel>("Models/Player/robot_grp").XnaModel;
             playerMesh = playerModel.Meshes[0];
             foreach (ModelMeshPart meshPart in playerMesh.MeshParts)
@@ -62,8 +62,8 @@ namespace ProjectMagma
             playerPreview = new RenderTarget2D[MaxPlayers];
             for (int i = 0; i < MaxPlayers; ++i)
             {
-                playerPreview[i] = new RenderTarget2D(Game.Instance.GraphicsDevice, 445, 445, 1, 
-                    Game.Instance.GraphicsDevice.PresentationParameters.BackBufferFormat);
+                playerPreview[i] = new RenderTarget2D(Game.Instance.GraphicsDevice, 445, 445, false, 
+                    Game.Instance.GraphicsDevice.PresentationParameters.BackBufferFormat, DepthFormat.Depth24Stencil8);
             }
 
             playerTexture = Game.Instance.ContentManager.Load<Texture2D>("Textures/Player/Robot_texture10");
@@ -170,8 +170,8 @@ namespace ProjectMagma
                 Vector3 color1 = entity.GetVector3(CommonNames.Color1);
                 Vector3 color2 = entity.GetVector3(CommonNames.Color2);
 
-                RenderTarget2D oldRenderTarget = (RenderTarget2D)Game.Instance.GraphicsDevice.GetRenderTarget(0);
-                Game.Instance.GraphicsDevice.SetRenderTarget(0, playerPreview[i]);
+                RenderTargetBinding[] oldRenderTarget = Game.Instance.GraphicsDevice.GetRenderTargets();
+                Game.Instance.GraphicsDevice.SetRenderTargets(playerPreview[i]);
                 Game.Instance.GraphicsDevice.Clear(new Color(0,0,0,0));
 
                 ////////playerModel.Meshes[0].Draw();
@@ -204,9 +204,9 @@ namespace ProjectMagma
 
                 GameTime myGameTime = new GameTime(
                         new TimeSpan((long)(now * 10000d)),
-                        new TimeSpan((long)((now - last) * 10000d)),
+                        new TimeSpan((long)((now - last) * 10000d))/*,
                         new TimeSpan((long)(now * 10000d)),
-                        new TimeSpan((long)((now - last) * 10000d)));
+                        new TimeSpan((long)((now - last) * 10000d))*/);
                 last = now;
 
                 animator.World = Matrix.Identity;
@@ -216,7 +216,7 @@ namespace ProjectMagma
 
                 playerMesh.Draw();
 
-                Game.Instance.GraphicsDevice.SetRenderTarget(0, oldRenderTarget);
+                Game.Instance.GraphicsDevice.SetRenderTargets(oldRenderTarget);
             }
         }
 
@@ -278,7 +278,7 @@ namespace ProjectMagma
 
                 if (active)
                 {
-                    Texture2D robot = playerPreview[i].GetTexture();
+                    Texture2D robot = playerPreview[i];
                     float width = PlayerIconRect.Width * scale;
                     float rscale = width / robot.Width;
                     //spriteBatch.Draw(robot, pos + new Vector2(PlayerIconRect.Left, PlayerIconRect.Top) * scale,

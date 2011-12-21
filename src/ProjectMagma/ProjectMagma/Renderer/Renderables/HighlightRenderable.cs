@@ -42,7 +42,8 @@ namespace ProjectMagma.Renderer
 
             foreach (ModelMesh mesh in model.Meshes)
             {
-                renderer.Device.RenderState.DepthBufferEnable = true;
+                // TODO: fix if necessary
+                //renderer.Device.RenderState.DepthBufferEnable = true;
                 Vector3[] diffuseColors = new Vector3[mesh.Effects.Count];
                 int i = 0;
                 foreach (BasicEffect effectx in mesh.Effects)
@@ -57,16 +58,18 @@ namespace ProjectMagma.Renderer
                 }
 
                 //renderer.Device.RenderState.DepthBufferEnable = false;
-                renderer.Device.RenderState.AlphaBlendEnable = true;
-                renderer.Device.RenderState.StencilFunction = CompareFunction.Always;
-                renderer.Device.RenderState.BlendFactor = new Color(0.5f, 0.5f, 0.5f, 0.5f);
-                renderer.Device.RenderState.SourceBlend = Blend.BlendFactor;
-                renderer.Device.RenderState.BlendFunction = BlendFunction.Add;
-                renderer.Device.RenderState.DestinationBlend = Blend.InverseBlendFactor;
+
+                // TODO: fix if necessary
+                //renderer.Device.RenderState.AlphaBlendEnable = true;
+                //renderer.Device.RenderState.StencilFunction = CompareFunction.Always;
+                //renderer.Device.RenderState.BlendFactor = new Color(0.5f, 0.5f, 0.5f, 0.5f);
+                //renderer.Device.RenderState.SourceBlend = Blend.BlendFactor;
+                //renderer.Device.RenderState.BlendFunction = BlendFunction.Add;
+                //renderer.Device.RenderState.DestinationBlend = Blend.InverseBlendFactor;
 
                 mesh.Draw();
 
-                renderer.Device.RenderState.AlphaBlendEnable = false;
+                //renderer.Device.RenderState.AlphaBlendEnable = false;
 
                 i = 0;
                 foreach (BasicEffect effectx in mesh.Effects)

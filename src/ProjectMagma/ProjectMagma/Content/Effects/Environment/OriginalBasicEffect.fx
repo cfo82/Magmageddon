@@ -667,36 +667,36 @@ int ShaderIndex = 0;
 
 VertexShader VSArray[12] =
 {
-	compile vs_1_1 VSBasic(),
-	compile vs_1_1 VSBasicVc(),
-	compile vs_1_1 VSBasicTx(),
-	compile vs_1_1 VSBasicTxVc(),
+	compile vs_3_0 VSBasic(),
+	compile vs_3_0 VSBasicVc(),
+	compile vs_3_0 VSBasicTx(),
+	compile vs_3_0 VSBasicTxVc(),
 
-	compile vs_1_1 VSBasicNm(),
-	compile vs_1_1 VSBasicNmVc(),
-	compile vs_1_1 VSBasicNmTx(),
-	compile vs_1_1 VSBasicNmTxVc(),
+	compile vs_3_0 VSBasicNm(),
+	compile vs_3_0 VSBasicNmVc(),
+	compile vs_3_0 VSBasicNmTx(),
+	compile vs_3_0 VSBasicNmTxVc(),
 	
-	compile vs_1_1 VSBasicPixelLightingNm(),
-	compile vs_1_1 VSBasicPixelLightingNmVc(),
-	compile vs_1_1 VSBasicPixelLightingNmTx(),
-	compile vs_1_1 VSBasicPixelLightingNmTxVc(),
+	compile vs_3_0 VSBasicPixelLightingNm(),
+	compile vs_3_0 VSBasicPixelLightingNmVc(),
+	compile vs_3_0 VSBasicPixelLightingNmTx(),
+	compile vs_3_0 VSBasicPixelLightingNmTxVc(),
 };
 
 
 PixelShader PSArray[12] =
 {
-	compile ps_1_1 PSBasic(),
-	compile ps_1_1 PSBasic(),
-	compile ps_1_1 PSBasicTx(),
-	compile ps_1_1 PSBasicTx(),
-	compile ps_1_1 PSBasic(),
-	compile ps_1_1 PSBasic(),
-	compile ps_1_1 PSBasicTx(),
-	compile ps_1_1 PSBasicTx(),
+	compile ps_3_0 PSBasic(),
+	compile ps_3_0 PSBasic(),
+	compile ps_3_0 PSBasicTx(),
+	compile ps_3_0 PSBasicTx(),
+	compile ps_3_0 PSBasic(),
+	compile ps_3_0 PSBasic(),
+	compile ps_3_0 PSBasicTx(),
+	compile ps_3_0 PSBasicTx(),
 	
-	compile ps_2_0 PSBasicPixelLighting(),
-	compile ps_2_0 PSBasicPixelLighting(),
+	compile ps_3_0 PSBasicPixelLighting(),
+	compile ps_3_0 PSBasicPixelLighting(),
 	compile ps_3_0 PSBasicPixelLightingTx(),
 	compile ps_3_0 PSBasicPixelLightingTx(),
 };

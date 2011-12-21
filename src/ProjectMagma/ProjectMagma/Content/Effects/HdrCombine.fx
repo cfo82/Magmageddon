@@ -1,4 +1,30 @@
+//#include "Sm3SpriteBatch.fx.inc"
+
 sampler i_hate_microsoft_dont_remove_this_it_wont_work : register(s0);
+
+float2 ViewportSize;
+ 
+void SpriteVertexShader(inout float4 color    : COLOR0,
+ 
+                       inout float2 texCoord : TEXCOORD0,
+ 
+                       inout float4 position : POSITION0)
+ 
+{
+ 
+   // Half pixel offset for correct texel centering.
+ 
+   position.xy -= 0.5;
+ 
+   // Viewport adjustment.
+ 
+   position.xy = position.xy / ViewportSize;
+ 
+   position.xy *= float2(2, -2);
+ 
+   position.xy -= float2(1, -1);
+ 
+}
 
 texture GeometryRender;
 sampler2D GeometryRenderSampler = sampler_state
@@ -282,6 +308,7 @@ technique BloomCombine
 {
     pass Pass1
     {
+		VertexShader = compile vs_3_0 SpriteVertexShader();
         PixelShader = compile ps_3_0 PostPixelShader();
         ZEnable = true;
         ZWriteEnable = true;

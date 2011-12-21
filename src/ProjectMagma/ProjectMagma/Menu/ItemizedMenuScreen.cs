@@ -131,7 +131,8 @@ namespace ProjectMagma
         public override void Draw(GameTime gameTime, SpriteBatch spriteBatch)
         {
             // this needs to be updated even if paused
-            DrawOffset.Update(gameTime.ElapsedRealTime.TotalMilliseconds);
+            //DrawOffset.Update(gameTime.ElapsedRealTime.TotalMilliseconds);
+            DrawOffset.Update(gameTime.ElapsedGameTime.TotalMilliseconds);
 
             // this is to compensate for the size overhead of the currently selected item
             Vector2 globalOffset = new Vector2(0, (selectedSize.Value-1)/2 + 0.1f);

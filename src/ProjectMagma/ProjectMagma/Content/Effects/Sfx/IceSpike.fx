@@ -104,9 +104,9 @@ Technique IceSpikeEffect
         SrcBlend = SrcAlpha;
         DestBlend = InvSrcAlpha;
         BlendOp = Add;
-        AlphaTestEnable = true;
-        AlphaFunc = Greater;
-        AlphaRef = 0.5;
+        //AlphaTestEnable = true;
+        //AlphaFunc = Greater;
+        //AlphaRef = 0.5;
         ZEnable = true;
         ZWriteEnable = false;
         CullMode = None;

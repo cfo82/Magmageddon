@@ -44,14 +44,14 @@ namespace ProjectMagma.Renderer
             playerArrowColorBlend.Start(renderer.Time.At);
             frozenColorBlend.Start(renderer.Time.At);
 
-            vertexPositionDeclaration = new VertexDeclaration(renderer.Device, VertexPositionTexture.VertexElements);
+            vertexPositionDeclaration = VertexPositionNormalTexture.VertexDeclaration;
         }
 
         private void LoadPlayerArrow()
         {
             playerArrowEffect = Game.Instance.ContentManager.Load<Effect>("Effects/Basic/Basic");
 
-            playerArrowVertices = new VertexPositionTexture[4];
+            playerArrowVertices = new VertexPositionNormalTexture[4];
             Vector3 arrowDims = Scale * 0.6f;
             playerArrowVertices[0].Position = new Vector3(-arrowDims.X, 0, -arrowDims.Z);
             playerArrowVertices[0].TextureCoordinate = new Vector2(0, 0);
@@ -294,8 +294,7 @@ namespace ProjectMagma.Renderer
             base.DrawAfterPost(renderer);
 
             playerArrowEffect.CurrentTechnique = playerArrowEffect.Techniques["TexturedAlphaNoCullNoDepth"];
-            playerArrowEffect.Begin();
-            playerArrowEffect.CurrentTechnique.Passes[0].Begin();
+            playerArrowEffect.CurrentTechnique.Passes[0].Apply();
             ApplyWorldViewProjection(renderer, playerArrowEffect);            
             playerArrowEffect.Parameters["Local"].SetValue(Matrix.Identity);
             playerArrowEffect.Parameters["AmbientLightColor"].SetValue(Vector3.One);
@@ -307,10 +306,8 @@ namespace ProjectMagma.Renderer
             }
             ApplyRenderChannel(playerArrowEffect, RenderChannelType.Three);
             ApplyEyePosition(renderer, playerArrowEffect);
-            renderer.Device.VertexDeclaration = vertexPositionDeclaration;
+            //renderer.Device.VertexDeclaration = vertexPositionDeclaration;
             renderer.Device.DrawUserPrimitives(PrimitiveType.TriangleStrip, playerArrowVertices, 0, 2);
-            playerArrowEffect.CurrentTechnique.Passes[0].End();
-            playerArrowEffect.End();
         }
 
         protected override void ApplyTechnique(Effect effect)
@@ -376,7 +373,7 @@ namespace ProjectMagma.Renderer
 
         
         // player arrow
-        VertexPositionTexture[] playerArrowVertices;
+        VertexPositionNormalTexture[] playerArrowVertices;
         Texture2D playerArrowTexture;
         Effect playerArrowEffect;
         SineFloat playerArrowColorBlend;

@@ -52,7 +52,7 @@ Technique Textured
 		ZEnable = true;
 		ZWriteEnable = true;
 		AlphaBlendEnable = false;
-		AlphaTestEnable = false;						
+		//AlphaTestEnable = false;						
 	}
 }
 
@@ -68,7 +68,7 @@ Technique TexturedAlphaNoCullNoDepth
 		BlendOp = Add;
 		SrcBlend = SrcAlpha;
 		DestBlend = InvSrcAlpha;
-		AlphaTestEnable = false;
+		//AlphaTestEnable = false;
 	}
 }
 
@@ -81,7 +81,7 @@ Technique Island
 		ZEnable = true;		
 		ZWriteEnable = true;
 		AlphaBlendEnable = false;
-		AlphaTestEnable = false;
+		//AlphaTestEnable = false;
 	}
 }
 
@@ -93,7 +93,7 @@ Technique IslandAlphaColor
 		PixelShader	 = compile ps_3_0 PSIslandAlphaColor();
 		ZEnable = true;		
 		ZWriteEnable = false;
-		AlphaTestEnable = false;
+		//AlphaTestEnable = false;
 
 		AlphaBlendEnable = true;
 		DestBlend = INVSRCALPHA;
@@ -109,7 +109,7 @@ Technique IslandAlphaRenderChannel
 		PixelShader	 = compile ps_3_0 PSIslandAlphaRenderChannel();
 		ZEnable = true;		
 		ZWriteEnable = false;
-		AlphaTestEnable = false;
+		//AlphaTestEnable = false;
 
 		AlphaBlendEnable = true;
 		DestBlend = INVSRCALPHA;
@@ -124,7 +124,7 @@ Technique IslandAlphaDepth
 		PixelShader	 = compile ps_3_0 PSIslandAlphaDepth();
 		ZEnable = true;		
 		ZWriteEnable = false;
-		AlphaTestEnable = false;
+		//AlphaTestEnable = false;
 
 		AlphaBlendEnable = true;
 		DestBlend = INVSRCALPHA;
@@ -141,9 +141,9 @@ Technique Environment
 		ZEnable = true;
 		ZWriteEnable = true;
 		AlphaBlendEnable = false;
-		AlphaTestEnable = true;		
-		AlphaFunc = Greater;
-        AlphaRef = 0.1;
+		//AlphaTestEnable = true;		
+		//AlphaFunc = Greater;
+        //AlphaRef = 0.1;
 	}
 }
 
@@ -156,7 +156,7 @@ Technique AnimatedPlayer
 		ZEnable = true;		
 		ZWriteEnable = true;
 		AlphaBlendEnable = false;
-		AlphaTestEnable = false;		
+		//AlphaTestEnable = false;		
 	}
 }
 
@@ -170,6 +170,6 @@ Technique DoublyColoredAnimatedPlayer
 		ZEnable = true;		
 		ZWriteEnable = true;
 		AlphaBlendEnable = false;
-		AlphaTestEnable = false;				
+		//AlphaTestEnable = false;				
 	}
 }

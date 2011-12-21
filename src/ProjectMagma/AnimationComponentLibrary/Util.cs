@@ -142,7 +142,7 @@ namespace Xclna.Xna.Animation
             GraphicsDevice device) where T : struct
         {
             T[] verts = new T[data.Length / vertexSize];
-            using (VertexBuffer vb = new VertexBuffer(device, data.Length, BufferUsage.None))            
+            using (VertexBuffer vb = new VertexBuffer(device, typeof(T), data.Length, BufferUsage.None))            
             {
                 vb.SetData<byte>(data);
                 vb.GetData<T>(verts);
@@ -276,7 +276,7 @@ namespace Xclna.Xna.Animation
         /// <returns>True if the part is skinned.</returns>
         public static bool IsSkinned(ModelMeshPart meshPart)
         {
-            VertexElement[] ves = meshPart.VertexDeclaration.GetVertexElements();
+            VertexElement[] ves = meshPart.VertexBuffer.VertexDeclaration.GetVertexElements();
             foreach (VertexElement ve in ves)
             {
                 //(BlendIndices with UsageIndex = 0) specifies matrix indices for fixed-function vertex 

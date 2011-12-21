@@ -479,7 +479,7 @@ namespace ProjectMagma
                 {
                     try
                     {
-                        storageSelectionResult = Guide.BeginShowStorageDeviceSelector(PlayerIndex.One, null, null);
+                        storageSelectionResult = StorageDevice.BeginShowSelector(PlayerIndex.One, null, null);
                     }
                     catch (GuideAlreadyVisibleException)
                     {
@@ -492,7 +492,7 @@ namespace ProjectMagma
                 // get storage device as soon as selected
                 if (storageSelectionResult != null && !storageAvailable && storageSelectionResult.IsCompleted)
                 {
-                    device = Guide.EndShowStorageDeviceSelector(storageSelectionResult);
+                    device = StorageDevice.EndShowSelector(storageSelectionResult);
                     storageAvailable = true;
                     LoadSettings();
                 }
@@ -591,13 +591,13 @@ namespace ProjectMagma
                     fpsFont,
                     renderingText,
                     new Vector2(titleSafeArea.X + 4, titleSafeArea.Y + titleSafeArea.Height / 2.0f - renderingTextSize.Y / 2.0f),
-                    new Color(Color.White, 0.7f)
+                    Color.White * 0.7f
                     );
                 spriteBatch.DrawString(
                    fpsFont,
                    simulationText,
                    new Vector2(titleSafeArea.X + titleSafeArea.Width - simulationTextSize.X - 4, titleSafeArea.Y + titleSafeArea.Height / 2.0f - simulationTextSize.Y / 2.0f),
-                   new Color(Color.White, 0.7f)
+                   Color.White * 0.7f
                );
             }
 
@@ -687,13 +687,15 @@ namespace ProjectMagma
         public void SaveSettings()
         {
             // Open a storage container.StorageContainer container =
-            StorageContainer container = device.OpenContainer(Window.Title);
+            IAsyncResult result = device.BeginOpenContainer(Window.Title, null, null);
 
-            // Get the path of the save game.
-            string filename = Path.Combine(container.Path, "settings.xml");
+            // wait for the waithandle to become signaled
+            result.AsyncWaitHandle.WaitOne();
+
+            StorageContainer container = device.EndOpenContainer(result);
 
             // Open the file, creating it if necessary.
-            using (FileStream stream = File.Open(filename, FileMode.Create))
+            using (Stream stream = container.OpenFile("settings.xml", FileMode.Create))
             {
                 XmlSerializer serializer = new XmlSerializer(typeof(Settings));
                 serializer.Serialize(stream, settings);
@@ -706,15 +708,17 @@ namespace ProjectMagma
         public void LoadSettings()
         {
             // Open a storage container.StorageContainer container =
-            StorageContainer container = device.OpenContainer(Window.Title);
+            IAsyncResult result = device.BeginOpenContainer(Window.Title, null, null);
 
-            // Get the path of the save game.
-            string filename = Path.Combine(container.Path, "settings.xml");
+            // wait for the waithandle to become signaled
+            result.AsyncWaitHandle.WaitOne();
+
+            StorageContainer container = device.EndOpenContainer(result);
 
             // Open the file, creating it if necessary.
-            if (File.Exists(filename))
+            if (container.FileExists("settings.xml"))
             {
-                using (FileStream stream = File.Open(filename, FileMode.Open))
+                using (Stream stream = container.OpenFile("settings.xml", FileMode.Open))
                 {
                     XmlSerializer serializer = new XmlSerializer(typeof(Settings));
                     settings = (Settings)serializer.Deserialize(stream);

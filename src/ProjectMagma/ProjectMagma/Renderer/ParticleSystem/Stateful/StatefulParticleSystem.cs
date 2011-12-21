@@ -52,30 +52,28 @@ namespace ProjectMagma.Renderer.ParticleSystem.Stateful
             velocityTextures[1] = renderer.StatefulParticleResourceManager.AllocateStateTexture(GetSystemSize());
 
             // initialize the first two textures
-            RenderTarget2D currentRenderTarget0 = (RenderTarget2D)device.GetRenderTarget(0);
-            RenderTarget2D currentRenderTarget1 = (RenderTarget2D)device.GetRenderTarget(1);
-            device.SetRenderTarget(0, positionTextures[0]);
-            device.SetRenderTarget(1, velocityTextures[0]);
+            RenderTargetBinding[] currentRenderTargets = device.GetRenderTargets();
+            device.SetRenderTargets(positionTextures[0], velocityTextures[0]);
             device.Clear(ClearOptions.Target, new Vector4(0, 0, 0, 0), 0, 0);
-            device.SetRenderTarget(0, currentRenderTarget0);
-            device.SetRenderTarget(1, currentRenderTarget1);
+            device.SetRenderTargets(currentRenderTargets);
 
             //positionTextures[0].GetTexture().Save("PositionMaps/initial.dds", ImageFileFormat.Dds);
 
             // create effect
             localCreateVertices = new CreateVertex[createVertexBufferSize];
-            createVertexBuffer = new DynamicVertexBuffer(device, CreateVertex.SizeInBytes * createVertexBufferSize, BufferUsage.Points | BufferUsage.WriteOnly);
-            createVertexDeclaration = new VertexDeclaration(device, CreateVertex.VertexElements);
+            createVertexDeclaration = new VertexDeclaration(CreateVertex.SizeInBytes, CreateVertex.VertexElements);
+            createVertexBuffer = new DynamicVertexBuffer(device, createVertexDeclaration, CreateVertex.SizeInBytes * createVertexBufferSize, /*BufferUsage.Points |*/ BufferUsage.WriteOnly);
+            // no more point sprites... :-( TODO: fix
 
-            particleCreateEffect = LoadCreateEffect(wrappedContent).Clone(device);
+            particleCreateEffect = LoadCreateEffect(wrappedContent).Clone();
             particleCreateEffect.CurrentTechnique = particleCreateEffect.Techniques["CreateParticles"];
 
             // update effect
-            particleUpdateEffect = LoadUpdateEffect(wrappedContent).Clone(device);
+            particleUpdateEffect = LoadUpdateEffect(wrappedContent).Clone();
             particleUpdateEffect.CurrentTechnique = particleUpdateEffect.Techniques["UpdateParticles"];
 
             // rendering effect
-            particleRenderingEffect = LoadRenderEffect(wrappedContent).Clone(device);
+            particleRenderingEffect = LoadRenderEffect(wrappedContent).Clone();
             particleRenderingEffect.CurrentTechnique = particleRenderingEffect.Techniques["RenderParticles"];
 
             spriteTexture = LoadSprite(wrappedContent);
@@ -148,10 +146,10 @@ namespace ProjectMagma.Renderer.ParticleSystem.Stateful
         {
             createVertexBuffer.SetData<CreateVertex>(createVertexBufferIndex * CreateVertex.SizeInBytes, localCreateVertices, 0, count, CreateVertex.SizeInBytes, SetDataOptions.NoOverwrite);
 
-            device.Vertices[0].SetSource(createVertexBuffer, createVertexBufferIndex * CreateVertex.SizeInBytes, CreateVertex.SizeInBytes);
-            device.VertexDeclaration = createVertexDeclaration;
+            device.SetVertexBuffer(createVertexBuffer, createVertexBufferIndex * CreateVertex.SizeInBytes);
+            //device.VertexDeclaration = createVertexDeclaration;
 
-            device.RenderState.AlphaBlendEnable = false;
+            // device.RenderState.AlphaBlendEnable = false; TODO: set this parameter again!
 
             particleCreateEffect.Parameters["View"].SetValue(renderer.Camera.View);
             particleCreateEffect.Parameters["Projection"].SetValue(renderer.Camera.Projection);
@@ -163,26 +161,21 @@ namespace ProjectMagma.Renderer.ParticleSystem.Stateful
             particleCreateEffect.Parameters["ViewportWidth"].SetValue(device.Viewport.Width);
             particleCreateEffect.Parameters["Time"].SetValue((float)currentFrameTime);
             particleCreateEffect.Parameters["Dt"].SetValue((float)dt);
-            particleCreateEffect.Parameters["PositionTexture"].SetValue(positionTextures[activeTexture].GetTexture());
-            particleCreateEffect.Parameters["VelocityTexture"].SetValue(velocityTextures[activeTexture].GetTexture());
+            particleCreateEffect.Parameters["PositionTexture"].SetValue(positionTextures[activeTexture]);
+            particleCreateEffect.Parameters["VelocityTexture"].SetValue(velocityTextures[activeTexture]);
             particleCreateEffect.Parameters["RandomTexture"].SetValue(renderer.VectorCloudTexture);
             particleCreateEffect.Parameters["SpriteTexture"].SetValue(spriteTexture);
             SetCreateParameters(particleCreateEffect.Parameters);
 
-            particleCreateEffect.Begin();
-
             foreach (EffectPass pass in particleCreateEffect.CurrentTechnique.Passes)
             {
-                pass.Begin();
+                pass.Apply();
 
-                device.DrawPrimitives(PrimitiveType.PointList, 0, count);
-
-                pass.End();
+                //device.DrawPrimitives(PrimitiveType.PointList, 0, count);
+                // TODO: fix: no more point sprites :-(
             }
 
-            particleCreateEffect.End();
-
-            device.Vertices[0].SetSource(null, 0, 0);
+            device.SetVertexBuffer(null);
         }
 
         private void CreateParticles(
@@ -315,10 +308,8 @@ namespace ProjectMagma.Renderer.ParticleSystem.Stateful
 
                 int nextTexture = (activeTexture + 1) % 2;
 
-                RenderTarget2D oldRenderTarget0 = (RenderTarget2D)device.GetRenderTarget(0);
-                RenderTarget2D oldRenderTarget1 = (RenderTarget2D)device.GetRenderTarget(1);
-                device.SetRenderTarget(0, positionTextures[nextTexture]);
-                device.SetRenderTarget(1, velocityTextures[nextTexture]);
+                RenderTargetBinding[] oldRenderTargets = device.GetRenderTargets();
+                device.SetRenderTargets(positionTextures[nextTexture], velocityTextures[nextTexture]);
                 
                 particleUpdateEffect.Parameters["View"].SetValue(renderer.Camera.View);
                 particleUpdateEffect.Parameters["Projection"].SetValue(renderer.Camera.Projection);
@@ -330,8 +321,8 @@ namespace ProjectMagma.Renderer.ParticleSystem.Stateful
                 particleUpdateEffect.Parameters["ViewportWidth"].SetValue(device.Viewport.Width);
                 particleUpdateEffect.Parameters["Time"].SetValue((float)intermediateCurrentFrameTime);
                 particleUpdateEffect.Parameters["Dt"].SetValue((float)SimulationStep);
-                particleUpdateEffect.Parameters["PositionTexture"].SetValue(positionTextures[activeTexture].GetTexture());
-                particleUpdateEffect.Parameters["VelocityTexture"].SetValue(velocityTextures[activeTexture].GetTexture());
+                particleUpdateEffect.Parameters["PositionTexture"].SetValue(positionTextures[activeTexture]);
+                particleUpdateEffect.Parameters["VelocityTexture"].SetValue(velocityTextures[activeTexture]);
                 particleUpdateEffect.Parameters["RandomTexture"].SetValue(renderer.VectorCloudTexture);
                 particleUpdateEffect.Parameters["SpriteTexture"].SetValue(spriteTexture);
                 SetUpdateParameters(particleUpdateEffect.Parameters);
@@ -339,9 +330,10 @@ namespace ProjectMagma.Renderer.ParticleSystem.Stateful
                 Debug.Assert(particleUpdateEffect.CurrentTechnique.Passes.Count == 1);
                 EffectPass pass = particleUpdateEffect.CurrentTechnique.Passes[0];
 
-                Texture2D positionTexture = positionTextures[activeTexture].GetTexture();
+                Texture2D positionTexture = positionTextures[activeTexture];
 
-                spriteBatch.Begin(SpriteBlendMode.None, SpriteSortMode.Immediate, SaveStateMode.None);
+                // TODO: fix rendering code!
+                /*spriteBatch.Begin(SpriteBlendMode.None, SpriteSortMode.Immediate, SaveStateMode.None);
 
                 particleUpdateEffect.Begin();
                 pass.Begin();
@@ -351,12 +343,11 @@ namespace ProjectMagma.Renderer.ParticleSystem.Stateful
                 spriteBatch.End();
 
                 pass.End();
-                particleUpdateEffect.End();
+                particleUpdateEffect.End();*/
 
                 CreateParticles(intermediateLastFrameTime, intermediateCurrentFrameTime, SimulationStep);
 
-                device.SetRenderTarget(1, oldRenderTarget1);
-                device.SetRenderTarget(0, oldRenderTarget0);
+                device.SetRenderTargets(oldRenderTargets);
 
                 activeTexture = nextTexture;
 
@@ -374,13 +365,13 @@ namespace ProjectMagma.Renderer.ParticleSystem.Stateful
             double currentFrameTime
         )
         {
-            SetParticleRenderStates(device.RenderState);
+            SetParticleRenderStates(device.BlendState, device.RasterizerState, device.DepthStencilState);
 
             VertexBuffer renderingVertexBuffer = renderer.StatefulParticleResourceManager.GetRenderingVertexBuffer(GetSystemSize());
             VertexDeclaration renderingVertexDeclaration = renderer.StatefulParticleResourceManager.GetRenderingVertexDeclaration();
 
-            device.Vertices[0].SetSource(renderingVertexBuffer, 0, RenderVertex.SizeInBytes);
-            device.VertexDeclaration = renderingVertexDeclaration;
+            device.SetVertexBuffer(renderingVertexBuffer, 0);
+            //device.VertexDeclaration = renderingVertexDeclaration;
 
             particleRenderingEffect.Parameters["View"].SetValue(renderer.Camera.View);
             particleRenderingEffect.Parameters["Projection"].SetValue(renderer.Camera.Projection);
@@ -392,58 +383,63 @@ namespace ProjectMagma.Renderer.ParticleSystem.Stateful
             particleRenderingEffect.Parameters["ViewportWidth"].SetValue(device.Viewport.Width);
             particleRenderingEffect.Parameters["Time"].SetValue((float)currentFrameTime);
             particleRenderingEffect.Parameters["Dt"].SetValue((float)(currentFrameTime-lastFrameTime));
-            particleRenderingEffect.Parameters["PositionTexture"].SetValue(positionTextures[activeTexture].GetTexture());
-            particleRenderingEffect.Parameters["VelocityTexture"].SetValue(velocityTextures[activeTexture].GetTexture());
+            particleRenderingEffect.Parameters["PositionTexture"].SetValue(positionTextures[activeTexture]);
+            particleRenderingEffect.Parameters["VelocityTexture"].SetValue(velocityTextures[activeTexture]);
             particleRenderingEffect.Parameters["RandomTexture"].SetValue(renderer.VectorCloudTexture);
             particleRenderingEffect.Parameters["SpriteTexture"].SetValue(spriteTexture);
 
             SetRenderingParameters(particleRenderingEffect.Parameters);
 
-            particleRenderingEffect.Begin();
-
             foreach (EffectPass pass in particleRenderingEffect.CurrentTechnique.Passes)
             {
-                pass.Begin();
+                pass.Apply();
 
                 int textureSize = textureSizes[(int)GetSystemSize()];
-                device.DrawPrimitives(PrimitiveType.PointList, 0, textureSize * textureSize);
-
-                pass.End();
+                //device.DrawPrimitives(PrimitiveType.PointList, 0, textureSize * textureSize);
+                // TODO: fix no more point sprites!
             }
 
-            particleRenderingEffect.End();
-
-            ResetParticleRenderStates(device.RenderState);
+            ResetParticleRenderStates(device.DepthStencilState);
         }
 
-        private void SetParticleRenderStates(RenderState renderState)
+        private void SetParticleRenderStates(BlendState blendState, RasterizerState rasterizerState, DepthStencilState depthStencilState)
         {
             // Enable point sprites.
-            renderState.PointSpriteEnable = true;
-            renderState.PointSizeMax = 256;
+            //renderState.PointSpriteEnable = true;
+            //renderState.PointSizeMax = 256;
+            // => no point sprites available :-(
 
             // Set the alpha blend mode.
-            renderState.AlphaBlendEnable = true;
-            renderState.AlphaBlendOperation = BlendFunction.Add;
-            renderState.SourceBlend = Blend.SourceAlpha;
-            renderState.DestinationBlend = Blend.InverseSourceAlpha;
+            blendState.AlphaBlendFunction = BlendFunction.Add;
+            blendState.ColorBlendFunction = BlendFunction.Add;
+            blendState.AlphaSourceBlend = Blend.SourceAlpha;
+            blendState.ColorSourceBlend = Blend.SourceAlpha;
+            blendState.AlphaDestinationBlend = Blend.InverseSourceAlpha;
+            blendState.ColorDestinationBlend = Blend.InverseSourceAlpha;
+            //renderState.AlphaBlendEnable = true;
+            //renderState.AlphaBlendOperation = BlendFunction.Add;
+            //renderState.SourceBlend = Blend.SourceAlpha;
+            //renderState.DestinationBlend = Blend.InverseSourceAlpha;
 
             // Set the alpha test mode.
-            renderState.AlphaTestEnable = true;
-            renderState.AlphaFunction = CompareFunction.Greater;
-            renderState.ReferenceAlpha = 0;
+            // TODO: fix
+            //renderState.AlphaTestEnable = true;
+            //renderState.AlphaFunction = CompareFunction.Greater;
+            //renderState.ReferenceAlpha = 0;
 
             // Enable the depth buffer (so particles will not be visible through
             // solid objects like the ground plane), but disable depth writes
             // (so particles will not obscure other particles).
-            renderState.DepthBufferEnable = true;
-            renderState.DepthBufferWriteEnable = false;
+            // TODO: fix
+            //renderState.DepthBufferEnable = true;
+            //renderState.DepthBufferWriteEnable = false;
         }
 
-        private void ResetParticleRenderStates(RenderState renderState)
+        private void ResetParticleRenderStates(DepthStencilState depthStencilState)
         {
-            renderState.PointSpriteEnable = false;
-            renderState.DepthBufferWriteEnable = true;
+            // TODO: fix
+            //renderState.PointSpriteEnable = false;
+            //renderState.DepthBufferWriteEnable = true;
         }
 
         protected Renderer Renderer

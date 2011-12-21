@@ -1,6 +1,7 @@
 ﻿using System;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
+using ProjectMagma.Bugslayer;
 
 namespace ProjectMagma.Renderer
 {
@@ -21,10 +22,10 @@ namespace ProjectMagma.Renderer
             )
         {
             // pass 1 horizontal blur
+            PIXHelper.BeginEvent("Horizontal Blur");
             SetBlurEffectParameters(
                 1.0f / hdrColorBuffer.Width,
                 0,
-                gaussianBlurEffect,
                 hdrColorBuffer,
                 renderChannelBuffer
                 );
@@ -33,16 +34,17 @@ namespace ProjectMagma.Renderer
                 targetIntermediateBlurredHDRColorBuffer, targetIntermediateBlurredRenderChannelBuffer,
                 gaussianBlurEffect
                 );
+            PIXHelper.EndEvent();
 
             // result
-            Texture2D intermediateBlurredHDRColorBuffer = targetIntermediateBlurredHDRColorBuffer.GetTexture();
-            Texture2D intermediateBlurredRenderChannelBuffer = targetIntermediateBlurredRenderChannelBuffer.GetTexture();
+            Texture2D intermediateBlurredHDRColorBuffer = targetIntermediateBlurredHDRColorBuffer;
+            Texture2D intermediateBlurredRenderChannelBuffer = targetIntermediateBlurredRenderChannelBuffer;
 
             // pass 2 vertical blurr
+            PIXHelper.BeginEvent("Vertical Blur");
             SetBlurEffectParameters(
                 0,
                 1.0f / hdrColorBuffer.Height,
-                gaussianBlurEffect,
                 intermediateBlurredHDRColorBuffer,
                 intermediateBlurredRenderChannelBuffer
                 );
@@ -51,22 +53,22 @@ namespace ProjectMagma.Renderer
                 targetBlurredHDRColorBuffer, targetBlurredRenderChannelBuffer,
                 gaussianBlurEffect
                 );
+            PIXHelper.EndEvent();
         }
 
         private void SetBlurEffectParameters(
             float dx,
             float dy,
-            Effect effect,
             Texture2D hdrColorBuffer,
             Texture2D renderChannelBuffer
             )
         {
             gaussianBlurEffect.Parameters["GeometryRender"].SetValue(hdrColorBuffer);
-            effect.Parameters["RenderChannelColor"].SetValue(renderChannelBuffer);
+            gaussianBlurEffect.Parameters["RenderChannelColor"].SetValue(renderChannelBuffer);
 
             // Look up the sample weight and offset effect parameters.
-            EffectParameter weightsParameter = effect.Parameters["SampleWeights"];
-            EffectParameter offsetsParameter = effect.Parameters["SampleOffsets"];
+            EffectParameter weightsParameter = gaussianBlurEffect.Parameters["SampleWeights"];
+            EffectParameter offsetsParameter = gaussianBlurEffect.Parameters["SampleOffsets"];
 
             // Look up how many samples our gaussian blur effect supports.
             int sampleCount = weightsParameter.Elements.Count;

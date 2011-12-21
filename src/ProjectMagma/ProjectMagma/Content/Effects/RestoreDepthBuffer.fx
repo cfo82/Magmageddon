@@ -1,4 +1,6 @@
 
+#include "Sm3SpriteBatch.fx.inc"
+
 // dominik käser's comment... in fact the SpriteBatch class which we
 // use to render fullscreen quads usually takes one texture as an input
 // and renders to a given rendertarget. the input texture is set as
@@ -12,9 +14,9 @@ texture DepthBuffer;
 sampler2D DepthSampler = sampler_state
 {
 	Texture = <DepthBuffer>;
-	MinFilter = Linear;
-	MagFilter = Linear;
-	MipFilter = Linear;
+	MinFilter = Point;
+	MagFilter = Point;
+	MipFilter = Point;
 	AddressU = Clamp;
 	AddressV = Clamp;
 };
@@ -37,6 +39,7 @@ technique RestoreDepth
 {
     pass Pass1
     {
+		VertexShader = compile vs_3_0 SpriteVertexShader();
         PixelShader = compile ps_3_0 ps_main();
 		ZEnable = true;		
 		ZWriteEnable = true;

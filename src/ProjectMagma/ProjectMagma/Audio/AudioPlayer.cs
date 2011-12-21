@@ -73,7 +73,7 @@ namespace ProjectMagma
             {
                 SoundEffectInstance instance = soundEffect.CreateInstance();
                 instance.Volume = volume;
-                instance.Play();
+                //instance.Play(); // TODO: 
                 effectInstances.Add(instance);
                 return instance;
             }

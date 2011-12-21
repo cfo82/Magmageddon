@@ -36,7 +36,7 @@ struct VS_OUTPUT
 };
 
 
-VS_OUTPUT VertexShader(VS_INPUT input)
+VS_OUTPUT VertexShaderMain(VS_INPUT input)
 {
     float width = BillboardWidth;
     float height = BillboardHeight;
@@ -65,7 +65,7 @@ VS_OUTPUT VertexShader(VS_INPUT input)
     return output;
 }
 
-float4 PixelShader(float2 texCoord : TEXCOORD0) : COLOR0
+float4 PixelShaderMain(float2 texCoord : TEXCOORD0) : COLOR0
 {
     return tex2D(BillboardSampler, texCoord) * BillboardColor;
 }
@@ -74,15 +74,15 @@ technique Billboards
 {
     pass Render
     {
-        VertexShader = compile vs_1_1 VertexShader();
-        PixelShader = compile ps_1_1 PixelShader();
+        VertexShader = compile vs_3_0 VertexShaderMain();
+        PixelShader = compile ps_3_0 PixelShaderMain();
 
         AlphaBlendEnable = true;
         BlendOp = Add;
         SrcBlend = One;
         DestBlend = One;
 
-        AlphaTestEnable = false;
+        //AlphaTestEnable = false;
         ZEnable = true;
         ZWriteEnable = false;
         CullMode = None;

@@ -11,6 +11,7 @@ namespace ProjectMagma.Simulation
         public static readonly string Position = "position";
         public static readonly string Scale = "scale";
         public static readonly string Rotation = "rotation";
+        public static readonly string PreviousPosition = "prev_position";
 
         public static readonly string Fueled = "fueled";
         public static readonly string Color1 = "color1";

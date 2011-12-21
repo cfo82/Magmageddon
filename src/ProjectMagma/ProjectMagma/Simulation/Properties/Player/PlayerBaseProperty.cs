@@ -12,15 +12,8 @@ using ProjectMagma.Shared.LevelData;
 
 namespace ProjectMagma.Simulation
 {
-    public abstract class PlayerBaseProperty : Property
+    public abstract class PlayerBaseProperty : RobotBaseProperty
     {
-        private double respawnStartedAt = 0;
-
-        internal Entity player;
-        internal Entity constants;
-        internal LevelData templates;
-        internal ControllerInput controllerInput;
-        internal PlayerIndex playerIndex;
 
         public PlayerBaseProperty()
         {
@@ -28,23 +21,16 @@ namespace ProjectMagma.Simulation
 
         public override void OnAttached(AbstractEntity player)
         {
-            (player as Entity).OnUpdate += OnUpdate;
-
-            this.player = player as Entity;
-            this.constants = Game.Instance.Simulation.EntityManager["player_constants"];
-            this.templates = Game.Instance.ContentManager.Load<LevelData>("Level/Common/DynamicTemplates");
-            this.playerIndex = (PlayerIndex)player.GetInt(CommonNames.GamePadIndex);
-            this.controllerInput = player.GetProperty<InputProperty>("input").ControllerInput;
+            base.OnAttached(player);
         }
 
         public override void OnDetached(AbstractEntity player)
         {
             ResetVibration();
-
-            (player as Entity).OnUpdate -= OnUpdate;
+            base.OnDetached(player);
         }
 
-        private void OnUpdate(Entity player, SimulationTime simTime)
+        protected override void OnUpdate(Entity player, SimulationTime simTime)
         {
             // stop vibration
             if (simTime.At > player.GetFloat("vibrateStartetAt") + 330) // todo: extract constant
@@ -52,33 +38,14 @@ namespace ProjectMagma.Simulation
                 ResetVibration();
             }
 
-            if (Game.Instance.Simulation.Phase == SimulationPhase.Intro
-                || player.GetBool("isRespawning"))
-            {
-                OnRespawn(player, simTime);
-            }
-            else
-            {
-                OnPlaying(player, simTime);
-            }
-
+            OnPlaying(player, simTime);
             CheckPlayerAttributeRanges(player);
         }
 
-        protected abstract void OnRespawn(Entity player, SimulationTime simTime);
         protected abstract void OnPlaying(Entity player, SimulationTime simTime);
 
         public void CheckPlayerAttributeRanges(Entity player)
         {
-            if (player.GetBool("isRespawning"))
-            {
-                // we cannot take damage on respawn
-                player.SetFloat(CommonNames.Health, constants.GetFloat(CommonNames.MaxHealth));
-                player.SetFloat(CommonNames.Energy, constants.GetFloat(CommonNames.MaxEnergy));
-                player.SetInt(CommonNames.Frozen, 0);
-                return;
-            }
-
             float health = player.GetFloat(CommonNames.Health);
             if (health < 0)
             {

@@ -245,6 +245,8 @@
     <Compile Include="Simulation\Properties\Player\PlayerBaseProperty.cs" />
     <Compile Include="Simulation\Properties\Player\PlayerControllerProperty.cs" />
     <Compile Include="Simulation\Properties\Player\RespawnLightControllerProperty.cs" />
+    <Compile Include="Simulation\Properties\Player\RobotBaseProperty.cs" />
+    <Compile Include="Simulation\Properties\Player\SpawnControllerProperty.cs" />
     <Compile Include="Simulation\Properties\Rendering\AlphaIslandRenderProperty.cs" />
     <Compile Include="Simulation\Properties\Rendering\ArrowRenderProperty.cs" />
     <Compile Include="Simulation\Properties\Rendering\BasicRenderProperty.cs" />

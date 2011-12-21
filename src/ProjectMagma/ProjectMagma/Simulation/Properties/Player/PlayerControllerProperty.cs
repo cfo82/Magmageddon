@@ -20,13 +20,8 @@ namespace ProjectMagma.Simulation
         public static readonly bool ImuneToIslandPush = true;
         #endregion
 
-        private float landedAt = -1;
         private bool won = false;
 
-        private Entity activeIsland = null;
-
-        private readonly Random rand = new Random(DateTime.Now.Millisecond);
-        private double respawnStartedAt = 0;
         private Entity deathExplosion = null;
 
         private bool jetpackActive = false;
@@ -55,7 +50,6 @@ namespace ProjectMagma.Simulation
         private Vector3 islandRepulsionLastStickDir = Vector3.Zero;
 
         Entity flame = null;
-        Entity spawnLight;
         Entity arrow;
 
         private SoundEffectInstance jetpackSoundInstance;
@@ -64,7 +58,6 @@ namespace ProjectMagma.Simulation
         // values which get reset on each update
         private float collisionAt = float.MinValue;
         private float movedAt = float.MinValue;
-        Vector3 previousPosition;
 
         public PlayerControllerProperty()
         {
@@ -73,9 +66,6 @@ namespace ProjectMagma.Simulation
         public override void OnAttached(AbstractEntity player)
         {
             base.OnAttached(player);
-
-            player.AddBoolAttribute("isRespawning", false);
-            player.AddBoolAttribute("abortRespawning", false);
 
             player.AddFloatAttribute("vibrateStartetAt", 0);
 
@@ -112,9 +102,7 @@ namespace ProjectMagma.Simulation
 
             Game.Instance.Simulation.EntityManager.Add(arrow, "arrow_base", templates);
 
-            PositionOnRandomIsland();
-
-            this.previousPosition = player.GetVector3(CommonNames.Position);
+            player.SetVector3(CommonNames.PreviousPosition, player.GetVector3(CommonNames.Position));
         }
 
         public override void OnDetached(AbstractEntity player)
@@ -144,54 +132,6 @@ namespace ProjectMagma.Simulation
             }
         }
 
-        private void AddSpawnLight(AbstractEntity player)
-        {
-            spawnLight = new Entity("spawn_light_" + player.Name);
-            spawnLight.AddStringAttribute("player", player.Name);
-            spawnLight.AddStringAttribute("island", activeIsland.Name);
-
-            Vector3 position = player.GetVector3(CommonNames.Position);
-            Vector3 surfacePos;
-            Simulation.GetPositionOnSurface(ref position, activeIsland, out surfacePos);
-            spawnLight.AddVector3Attribute(CommonNames.Position, surfacePos);
-
-            Game.Instance.Simulation.EntityManager.AddDeferred(spawnLight, "spawn_light_base", templates);
-
-            // and sound
-            Game.Instance.AudioPlayer.Play(Game.Instance.Simulation.SoundRegistry.Respawn);
-        }
-
-        protected override void OnRespawn(Entity player, SimulationTime simTime)
-        {
-            if (Game.Instance.Simulation.Phase == SimulationPhase.Intro)
-            {
-                // wait for preciding player to be ready
-                if ((PlayerIndex)player.GetInt(CommonNames.GamePadIndex) != PlayerIndex.One)
-                {
-                    foreach (Entity other in Game.Instance.Simulation.PlayerManager)
-                    {
-                        if (other.GetInt(CommonNames.GamePadIndex) < player.GetInt("game_pad_index"))
-                        {
-                            // if preceding player is not ready, w8
-                            if (!other.GetBool("ready"))
-                                return;
-                        }
-                    }
-                }
-
-                if (spawnLight == null && !player.GetBool("ready"))
-                {
-                    AddSpawnLight(player);
-                }
-            }
-
-            PerformSpawnMovement(player, simTime);
-
-            if (controllerInput.jumpButtonPressed)
-            {
-                player.SetBool("abortRespawning", true);
-            }
-        }
 
         protected override void OnPlaying(Entity player, SimulationTime simTime)
         {
@@ -237,7 +177,7 @@ namespace ProjectMagma.Simulation
 
 
             // reset some stuff
-            previousPosition = playerPosition;
+            player.SetVector3(CommonNames.PreviousPosition, player.GetVector3(CommonNames.Position));
 
             #region movement
 
@@ -331,6 +271,7 @@ namespace ProjectMagma.Simulation
                 Vector3 isectPt = Vector3.Zero;
                 if (Simulation.GetPositionOnSurface(ref playerPosition, activeIsland, out isectPt))
                 {
+                    Vector3 previousPosition = player.GetVector3(CommonNames.PreviousPosition);
                     // check movement no to high
                     if (previousPosition.Y < isectPt.Y
                         && isectPt.Y - previousPosition.Y > 20
@@ -357,7 +298,7 @@ namespace ProjectMagma.Simulation
                         // only reset position if not already being pushed inwards
                         if(inwardsPushVelocity == Vector3.Zero)
                         {
-                            playerPosition = previousPosition;
+                            playerPosition = player.GetVector3(CommonNames.PreviousPosition);
                         }
 
                 if(!canFallFromIsland)
@@ -393,56 +334,10 @@ namespace ProjectMagma.Simulation
             }
         }
 
-        private void PerformSpawnMovement(Entity player, SimulationTime simTime)
-        {
-            if (landedAt > 0)
-            {
-                if (simTime.At > landedAt + 2500 // extract constant
-                    && (!player.GetBool("ready") || player.GetBool("isRespawning"))) 
-                {
-                    player.SetBool("ready", true);
-                    Game.Instance.Simulation.EntityManager.RemoveDeferred(spawnLight);
-                    spawnLight = null;
-                    player.SetBool("isRespawning", false);
-                    player.SetBool("abortRespawning", true);
-                }
-                else
-                    if (simTime.At > landedAt + 1000
-                        && spawnLight != null
-                        && spawnLight.GetBool(CommonNames.Hide) == false) // todo: extract constant
-                    {
-                        spawnLight.SetBool(CommonNames.Hide, true);
-                    }
-                return;
-            }
-
-            Vector3 velocity = -Vector3.UnitY * constants.GetFloat("max_gravity_speed");
-            Vector3 position = player.GetVector3(CommonNames.Position) + velocity * simTime.Dt;
-
-            Vector3 surfacePos;
-            if (Simulation.GetPositionOnSurface(ref position, activeIsland, out surfacePos))
-            {
-                if (position.Y < surfacePos.Y
-                    || player.GetBool("abortRespawning"))
-                {
-                    position = surfacePos;
-
-                    player.GetProperty<RobotRenderProperty>("render").NextOnceState = "jump_end";
-                    activeIsland.GetProperty<IslandRenderProperty>("render").Squash();
-
-                    landedAt = simTime.At;
-                }
-            }
-            else
-            {
-                throw new Exception("island's gone :(");
-            }
-
-            player.SetVector3(CommonNames.Position, position);
-        }
 
         private void PerformSimpleJump(ref Vector3 playerPosition)
         {
+            Vector3 previousPosition = player.GetVector3(CommonNames.PreviousPosition);
             if (simpleJumpIsland != null)
             {
                 // check position a bit further in walking direction to be still on island
@@ -963,7 +858,7 @@ namespace ProjectMagma.Simulation
                             if (!Simulation.GetPositionOnSurface(ref checkPos, activeIsland, out isectPt))
                             {
                                 // check point outside of island -> prohibit movement
-                                playerPosition = previousPosition;
+                                playerPosition = player.GetVector3(CommonNames.PreviousPosition);
 
                                 // plus a bit further inwards
                                 Vector3 corrector = (activeIsland.GetVector3(CommonNames.Position) - playerPosition);
@@ -1156,9 +1051,9 @@ namespace ProjectMagma.Simulation
         {
             if (player.GetFloat(CommonNames.Health) <= 0)
             {
-                if (respawnStartedAt == 0)
+                if (false/*respawnStartedAt == 0*/)
                 {
-                    respawnStartedAt = at;
+                    //respawnStartedAt = at;
 
                     ResetVibration();
 
@@ -1228,7 +1123,7 @@ namespace ProjectMagma.Simulation
                 }
                 else
                 {
-                    if (respawnStartedAt + constants.GetInt("respawn_time") >= at)
+                    if (false/*respawnStartedAt + constants.GetInt("respawn_time") >= at*/)
                     {
                         // still dead
                         return true;
@@ -1248,7 +1143,7 @@ namespace ProjectMagma.Simulation
                         player.SetInt(CommonNames.Frozen, 0);
 
                         // random island selection
-                        PositionOnRandomIsland();
+                        // PositionOnRandomIsland();
 
                         // activate
                         player.AddProperty("collision", new CollisionProperty(), true);
@@ -1267,12 +1162,12 @@ namespace ProjectMagma.Simulation
                         }
 
                         // reset respawn timer
-                        respawnStartedAt = 0;
-                        landedAt = -1;
-                        player.SetBool("isRespawning", true);
+//                        respawnStartedAt = 0;
+                        // landedAt = -1;
+                        // player.SetBool("isRespawning", true);
 
                         // add light
-                        AddSpawnLight(player);
+//                        AddSpawnLight(player);
 
                         // alive again
                         return true;
@@ -1282,27 +1177,6 @@ namespace ProjectMagma.Simulation
 
             // not dead
             return false;
-        }
-
-        private Vector3 GetLandingPosition(Entity island)
-        {
-            return GetLandingPosition(player, island);
-        }
-
-        public static Vector3 GetLandingPosition(Entity player, Entity island)
-        {
-            Vector3 pos;
-            int pi = player.GetInt(CommonNames.GamePadIndex) + 1;
-            if (island.HasAttribute("landing_offset_p" + pi))
-            {
-                pos = island.GetVector3(CommonNames.Position) + island.GetVector3("landing_offset_p" + pi);
-            }
-            else
-            {
-                pos = island.GetVector3(CommonNames.Position) + island.GetVector3("landing_offset");
-//                Console.WriteLine("taking default landing offset");
-            }
-            return pos;
         }
 
         private void PlayerCollisionHandler(SimulationTime simTime, Contact contact)
@@ -1575,15 +1449,6 @@ namespace ProjectMagma.Simulation
             canFallFromIsland = false;
         }
 
-        private void IslandPositionHandler(Vector3Attribute sender, Vector3 oldValue, Vector3 newValue)
-        {
-            Vector3 position = player.GetVector3(CommonNames.Position);
-            Vector3 delta = newValue - oldValue;
-            position += delta;
-            previousPosition += delta;
-            player.SetVector3(CommonNames.Position, position);
-        }
-
         private void HealthChangeHandler(FloatAttribute sender, float oldValue, float newValue)
         {
             if (newValue < oldValue
@@ -1764,106 +1629,9 @@ namespace ProjectMagma.Simulation
 
 
         /// <summary>
-        /// positions the player randomly on an island
-        /// </summary>
-        private void PositionOnRandomIsland()
-        {
-            int cnt = Game.Instance.Simulation.IslandManager.Count;
-            Entity island = Game.Instance.Simulation.IslandManager[0];
-            // try at most rounds times
-            const int rounds = 3;
-            int start = rand.Next(cnt - 1);
-            for (int i = 0; i < cnt * rounds; i++)
-            {
-                bool valid = true;
-                int islandNo = (start + i) % cnt;
-                island = Game.Instance.Simulation.IslandManager[islandNo];
-
-                // check if there is an island above this one
-                foreach (Entity other in Game.Instance.Simulation.IslandManager)
-                {
-                    if (other != island)
-                    {
-                        float radius = (island.GetVector3(CommonNames.Scale) * new Vector3(1, 0, 1)).Length();
-                        float otherRadius = (other.GetVector3(CommonNames.Scale) * new Vector3(1, 0, 1)).Length();
-                        Vector3 pos = island.GetVector3(CommonNames.Position);
-                        Vector3 opos = other.GetVector3(CommonNames.Position);
-                        float dist = (pos - opos).Length();
-                        // are they overlapping in xz?
-                        if (dist < radius + otherRadius && opos.Y > pos.Y)
-                        {
-//                            Console.WriteLine("selected island "+other.Name+" above "+island.Name);
-                            island = other;
-                            break;
-                        }
-                    }
-                }
-
-                // check no players on island
-                if (island.GetInt("players_on_island") > 0)
-                {
-                    valid = false;
-//                    Console.WriteLine("player: " + player.Name + " rejected island: " + island.Name + " (" + island.GetInt("players_on_island") + ")");
-                }
-
-                // for 3rd round we accept low y islands
-                if (i < cnt * 2)
-                {
-                    // check island is high enough
-                    if (island.GetVector3(CommonNames.Position).Y < 100) // todo: extract constant
-                    {
-                        valid = false;
-                    }
-
-                    // for 2nd round (> cnt*2) we accept respawn on powerups
-                    if (i < cnt)
-                    {
-                        // check no powerup on island
-                        foreach (Entity powerup in Game.Instance.Simulation.PowerupManager)
-                        {
-                            if (island.Name == powerup.GetString("island_reference"))
-                            {
-                                valid = false;
-                                break;
-                            }
-                        }
-
-                        // check island is far enough away from other players,
-                        foreach (Entity p in Game.Instance.Simulation.PlayerManager)
-                        {
-                            Vector3 dist = island.GetVector3(CommonNames.Position) - p.GetVector3(CommonNames.Position);
-                            dist.Y = 0; // ignore y component
-                            if (dist.Length() < constants.GetFloat("respawn_min_distance_to_players"))
-                            {
-                                valid = false;
-                                break;
-                            }
-                        }
-                    }
-                }
-
-                // re-random each round
-                if (i % cnt == 0
-                    && i > 0)
-                {
-                    start = rand.Next(cnt - 1);
-                }
-
-                if (valid)
-                    break; // ok
-                else
-                    continue; // select another
-            }
-
-            SetActiveIsland(island);
-
-            player.SetVector3(CommonNames.Position, GetLandingPosition(island) + Vector3.UnitY * 500);
-        }
-
-        /// <summary>
         /// sets the activeisland
         /// </summary>
-        private void SetActiveIsland(Entity island)
+        protected override void SetActiveIsland(Entity island)
         {
             canFallFromIsland = false;
 
@@ -1888,15 +1656,8 @@ namespace ProjectMagma.Simulation
                 StopSimpleJump();
             }
 
-            // register with active
-            island.GetAttribute<Vector3Attribute>(CommonNames.Position).ValueChanged += IslandPositionHandler;
-            island.SetInt("players_on_island", island.GetInt("players_on_island") + 1);
-            
-            // set
-            activeIsland = island;
-            player.SetString("active_island", island.Name);
+            base.SetActiveIsland(island);
         }
-
 
         /// <summary>
         /// resets the activeisland

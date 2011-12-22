@@ -13,14 +13,16 @@
       <Attribute name="emissive_color" template="float3" value="0.25 0.25 0.25"/>
       <Attribute name="alpha" template="float" value="1.0"/>
       <Attribute name="lives" template="int" value="5"/>
+
+      <Attribute name="active_island" template="string" />
     </Attributes>
     <Properties>
       <Property name="input" type="ProjectMagma.Simulation.GamePadInputProperty" active="true"/>
       <!--Property name="input" type="ProjectMagma.Simulation.RandomInputProperty"/-->
 
       <Property name="collision" type="ProjectMagma.Simulation.Collision.CollisionProperty" active="true" />
-      <Property name="controller" type="ProjectMagma.Simulation.PlayerControllerProperty" active="false"/>
       <Property name="spawn_controller" type="ProjectMagma.Simulation.SpawnControllerProperty" active="true" />
+      <Property name="controller" type="ProjectMagma.Simulation.PlayerControllerProperty" active="false"/>
       <Property name="burnable" type="ProjectMagma.Simulation.BurnableProperty" active="false"/>
 
       <Property name="hud" type="ProjectMagma.Simulation.HUDProperty" active="false"/>

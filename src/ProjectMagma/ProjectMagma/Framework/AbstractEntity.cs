@@ -381,6 +381,11 @@ namespace ProjectMagma.Framework
             AddProperty(name, property, active);
         }
 
+        public void AddProperty(string name, Property property)
+        {
+            AddProperty(name, property, true);
+        }
+
         public void AddProperty(string name, Property property, bool active)
         {
             if (properties.ContainsKey(name))

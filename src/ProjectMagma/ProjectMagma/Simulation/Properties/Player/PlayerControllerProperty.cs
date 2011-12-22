@@ -88,7 +88,6 @@ namespace ProjectMagma.Simulation
             player.AddIntAttribute("deaths", 0);
 
             player.AddIntAttribute(CommonNames.Frozen, 0);
-            player.AddStringAttribute("active_island", "");
             player.AddStringAttribute("jump_island", "");
 
             Game.Instance.Simulation.EntityManager.EntityRemoved += EntityRemovedHandler;
@@ -1049,132 +1048,105 @@ namespace ProjectMagma.Simulation
         /// <returns>wheter the player is currently dead or not</returns>
         private bool CheckAndPerformDeath(Entity player, float at)
         {
-            return false; // FIXME: FOR NOW, we are invincible
-
-            if (player.GetFloat(CommonNames.Health) <= 0)
+            if (player.GetFloat(CommonNames.Health) < 0)
             {
-                if (false/*respawnStartedAt == 0*/)
+                ResetVibration();
+
+                if (jetpackSoundInstance != null)
+                    Game.Instance.AudioPlayer.Stop(jetpackSoundInstance);
+                if (flameThrowerSoundInstance != null)
+                    Game.Instance.AudioPlayer.Stop(flameThrowerSoundInstance);
+                jetpackActive = false;
+                if (destinationIsland != null)
+                    StopIslandJump();
+                if (repulsionActive)
+                    StopRepulsion();
+                LeaveActiveIsland();
+                if (simpleJumpIsland != null)
+                    StopSimpleJump();
+
+                Game.Instance.AudioPlayer.Play(Game.Instance.Simulation.SoundRegistry.PlayerDies);
+                player.SetInt("deaths", player.GetInt("deaths") + 1);
+                player.SetInt(CommonNames.Lives, player.GetInt(CommonNames.Lives) - 1);
+
+                player.GetProperty<CollisionProperty>("collision").OnContact -= PlayerCollisionHandler;
+
+                // deactivate
+                player.RemoveProperty("render");
+                player.RemoveProperty("shadow_cast");
+                player.RemoveProperty("collision");
+
+                if (selectedIsland != null)
                 {
-                    //respawnStartedAt = at;
+                    RemoveSelectionArrow();
+                }
 
-                    ResetVibration();
+                if (flame != null)
+                {
+                    // remove flamethrower flame
+                    Game.Instance.Simulation.EntityManager.RemoveDeferred(flame);
+                    flame = null;
+                }
 
-                    if (jetpackSoundInstance != null)
-                        Game.Instance.AudioPlayer.Stop(jetpackSoundInstance);
-                    if (flameThrowerSoundInstance != null)
-                        Game.Instance.AudioPlayer.Stop(flameThrowerSoundInstance);
-                    jetpackActive = false;
-                    if (destinationIsland != null)
-                        StopIslandJump();
-                    if (repulsionActive)
-                        StopRepulsion();
-                    LeaveActiveIsland();
-                    if (simpleJumpIsland != null)
-                        StopSimpleJump();
+                // explode!
 
-                    Game.Instance.AudioPlayer.Play(Game.Instance.Simulation.SoundRegistry.PlayerDies);
-                    player.SetInt("deaths", player.GetInt("deaths") + 1);
-                    player.SetInt(CommonNames.Lives, player.GetInt(CommonNames.Lives) - 1);
+                // remove old explosion if still there
+                if (deathExplosion != null
+                    && Game.Instance.Simulation.EntityManager.ContainsEntity(deathExplosion))
+                {
+                    Game.Instance.Simulation.EntityManager.RemoveDeferred(deathExplosion);
+                }
 
-                    player.GetProperty<CollisionProperty>("collision").OnContact -= PlayerCollisionHandler;
+                // add explosion
+                deathExplosion = new Entity(player.Name + "_explosion");
+                deathExplosion.AddStringAttribute("player", player.Name);
 
-                    // deactivate
-                    player.RemoveProperty("render");
-                    player.RemoveProperty("shadow_cast");
-                    player.RemoveProperty("collision");
+                Vector3 pos = player.GetVector3(CommonNames.Position);
+                deathExplosion.AddVector3Attribute(CommonNames.Position, pos);
 
-                    if (selectedIsland != null)
-                    {
-                        RemoveSelectionArrow();
-                    }
+                Game.Instance.Simulation.EntityManager.AddDeferred(deathExplosion, "player_explosion_base", templates);
 
-                    if (flame != null)
-                    {
-                        // remove flamethrower flame
-                        Game.Instance.Simulation.EntityManager.RemoveDeferred(flame);
-                        flame = null;
-                    }
+                // any lives left?
+                if (player.GetInt(CommonNames.Lives) <= 0 && !won)
+                {
+                    Game.Instance.Simulation.EntityManager.EntityRemoved -= EntityRemovedHandler;
+                    Game.Instance.Simulation.EntityManager.RemoveDeferred(player);
+                }
 
-                    // explode!
+                // reset
+                player.SetQuaternion(CommonNames.Rotation, Quaternion.Identity);
+                player.SetVector3(CommonNames.Velocity, Vector3.Zero);
 
-                    // remove old explosion if still there
-                    if (deathExplosion != null
-                        && Game.Instance.Simulation.EntityManager.ContainsEntity(deathExplosion))
-                    {
-                        Game.Instance.Simulation.EntityManager.RemoveDeferred(deathExplosion);
-                    }
+                player.SetVector3("collision_pushback_velocity", Vector3.Zero);
+                player.SetVector3("hit_pushback_velocity", Vector3.Zero);
 
-                    // add explosion
-                    deathExplosion = new Entity(player.Name + "_explosion");
-                    deathExplosion.AddStringAttribute("player", player.Name);
+                player.SetFloat(CommonNames.Energy, constants.GetFloat(CommonNames.MaxEnergy));
+                player.SetFloat(CommonNames.Health, constants.GetFloat(CommonNames.MaxHealth));
 
-                    Vector3 pos = player.GetVector3(CommonNames.Position);
-                    deathExplosion.AddVector3Attribute(CommonNames.Position, pos);
+                player.SetInt(CommonNames.Frozen, 0);
 
-                    Game.Instance.Simulation.EntityManager.AddDeferred(deathExplosion, "player_explosion_base", templates);
+                // activate
+                player.AddProperty("collision", new CollisionProperty(), true);
+                player.AddProperty("render", new RobotRenderProperty(), true);
+                //player.AddProperty("shadow_cast", new ShadowCastProperty());
+                player.GetProperty<CollisionProperty>("collision").OnContact += PlayerCollisionHandler;
 
-                    // any lives left?
-                    if (player.GetInt(CommonNames.Lives) <= 0 && !won)
-                    {
-                        Game.Instance.Simulation.EntityManager.EntityRemoved -= EntityRemovedHandler;
-                        Game.Instance.Simulation.EntityManager.RemoveDeferred(player);
-                    }
-
-                    // dead
-                    return true;
+                // indicate
+                if (won == true)
+                {
+                    player.GetProperty<RobotRenderProperty>("render").NextPermanentState = "win";
                 }
                 else
                 {
-                    if (false/*respawnStartedAt + constants.GetInt("respawn_time") >= at*/)
-                    {
-                        // still dead
-                        return true;
-                    }
-                    else
-                    {
-                        // reset
-                        player.SetQuaternion(CommonNames.Rotation, Quaternion.Identity);
-                        player.SetVector3(CommonNames.Velocity, Vector3.Zero);
-
-                        player.SetVector3("collision_pushback_velocity", Vector3.Zero);
-                        player.SetVector3("hit_pushback_velocity", Vector3.Zero);
-
-                        player.SetFloat(CommonNames.Energy, constants.GetFloat(CommonNames.MaxEnergy));
-                        player.SetFloat(CommonNames.Health, constants.GetFloat(CommonNames.MaxHealth));
-
-                        player.SetInt(CommonNames.Frozen, 0);
-
-                        // random island selection
-                        // PositionOnRandomIsland();
-
-                        // activate
-                        player.AddProperty("collision", new CollisionProperty(), true);
-                        player.AddProperty("render", new RobotRenderProperty(), true);
-                        //player.AddProperty("shadow_cast", new ShadowCastProperty());
-                        player.GetProperty<CollisionProperty>("collision").OnContact += PlayerCollisionHandler;
-
-                        // indicate
-                        if (won == true)
-                        {
-                            player.GetProperty<RobotRenderProperty>("render").NextPermanentState = "win";
-                        }
-                        else
-                        {
-                            player.GetProperty<RobotRenderProperty>("render").NextPermanentState = "idle";
-                        }
-
-                        // reset respawn timer
-//                        respawnStartedAt = 0;
-                        // landedAt = -1;
-                        // player.SetBool("isRespawning", true);
-
-                        // add light
-//                        AddSpawnLight(player);
-
-                        // alive again
-                        return true;
-                    }
+                    player.GetProperty<RobotRenderProperty>("render").NextPermanentState = "idle";
                 }
+
+                this.Deactivate();
+                player.GetProperty<Property>("burnable").Deactivate();
+
+                player.GetProperty<Property>("spawn_controller").Activate();
+
+                return true;
             }
 
             // not dead

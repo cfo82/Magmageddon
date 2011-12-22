@@ -47,38 +47,18 @@ namespace ProjectMagma.Simulation
         public void OnSelfActivated(Property property)
         {
             player.SetBool("abortRespawning", false);
-
-            if (spawnLight == null && !player.GetBool("ready"))
+            Debug.Assert(spawnLight == null);
+            if (spawnLight == null)
             {
                 PositionOnRandomIsland();
                 AddSpawnLight(player);
             }
         }
 
-        protected override void OnUpdate(Entity player, SimulationTime simTime)
-        {
-            if (player.GetBoolAttribute("ready").Value)
-            {
-                if (Game.Instance.Simulation.Phase != SimulationPhase.Intro)
-                {
-                    Deactivate();
-                }
-                return;
-            }
-
-            PerformSpawnMovement(player, simTime);
-
-            if (controllerInput.jumpButtonPressed)
-            {
-                player.SetBool("abortRespawning", true);
-            }
-        }
-
-
         /// <summary>
         /// positions the player randomly on an island
         /// </summary>
-        private void PositionOnRandomIsland()
+        protected void PositionOnRandomIsland()
         {
             int cnt = Game.Instance.Simulation.IslandManager.Count;
             Entity island = Game.Instance.Simulation.IslandManager[0];
@@ -171,6 +151,28 @@ namespace ProjectMagma.Simulation
 
             player.SetVector3(CommonNames.Position, GetLandingPosition(island) + Vector3.UnitY * 500);
         }
+
+        protected override void OnUpdate(Entity player, SimulationTime simTime)
+        {
+            if (player.GetBoolAttribute("ready").Value)
+            {
+                if (Game.Instance.Simulation.Phase != SimulationPhase.Intro)
+                {
+                    Deactivate();
+                }
+                return;
+            }
+
+            PerformSpawnMovement(player, simTime);
+
+            if (controllerInput.jumpButtonPressed)
+            {
+                player.SetBool("abortRespawning", true);
+            }
+        }
+
+
+
 
         private void AddSpawnLight(AbstractEntity player)
         {

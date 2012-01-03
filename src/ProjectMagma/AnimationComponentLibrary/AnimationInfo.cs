@@ -249,7 +249,7 @@ namespace Xclna.Xna.Animation
     /// <summary>
     /// A collection of AnimationInfo objects.
     /// </summary>
-    public class AnimationInfoCollection : SortedList<string, AnimationInfo>
+    public class AnimationInfoCollection : Dictionary<string, AnimationInfo>
     {
         // New instances should only be created by the AnimationReader
         internal AnimationInfoCollection()
@@ -277,6 +277,7 @@ namespace Xclna.Xna.Animation
             }
         }
 
+        /*
         /// <summary>
         /// Gets the AnimationInfo object at the given index.
         /// </summary>
@@ -288,7 +289,7 @@ namespace Xclna.Xna.Animation
             {
                 return this.Values[index];
             }
-        }
+        }*/
 
     }
 

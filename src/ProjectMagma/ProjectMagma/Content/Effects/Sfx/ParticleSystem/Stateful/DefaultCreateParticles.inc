@@ -5,11 +5,12 @@ CreateParticlesVertexShaderOutput CreateParticlesVertexShader(
 {
     CreateParticlesVertexShaderOutput output;
 
-	output.ParticleCoordinate = float4(input.ParticleCoordinate, 0, 1);
+	output.ParticleCoordinate = float4(input.ParticleCoordinate.x, -input.ParticleCoordinate.y, 0, 1);
+	output.TargetTextureCoordinate = input.TargetTextureCoordinate;
+
 	output.ParticlePosition = input.ParticlePosition;
 	output.ParticleVelocity = input.ParticleVelocity;
 	output.EmitterIndex = input.EmitterIndex;
-	output.Size = 1;
 
     return output;
 }
@@ -19,7 +20,8 @@ CreateParticlesVertexShaderOutput CreateParticlesVertexShader(
 
 //-----------------------------------------------------------------------------------------------------------
 CreateParticlesPixelShaderOutput CreateParticlesPixelShader(
-	CreateParticlesVertexShaderOutput input
+	CreateParticlesVertexShaderOutput input,
+	int2 inScreenPos : VPOS
 )
 {
 	CreateParticlesPixelShaderOutput output;

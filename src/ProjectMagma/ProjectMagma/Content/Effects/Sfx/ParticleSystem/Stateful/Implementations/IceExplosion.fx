@@ -16,9 +16,14 @@ float ExplosionVelocityDamping = 0.5;
 
 //-----------------------------------------------------------------------------------------------------------
 CreateParticlesPixelShaderOutput CreateExplosionPixelShader(
-	CreateParticlesVertexShaderOutput input
+	CreateParticlesVertexShaderOutput input,
+	int2 inScreenPos : VPOS
 )
 {
+	// clip if we're not on the correct screen pos!
+	int2 targetDiff = input.TargetTextureCoordinate - inScreenPos;
+	clip(-abs(targetDiff));
+
 	CreateParticlesPixelShaderOutput output;
 	output.PositionTimeToDeath = float4(input.ParticlePosition, ExplosionParticleLifetime);
 	output.Velocity = float4(input.ParticleVelocity, 0);
@@ -81,18 +86,32 @@ technique UpdateParticles
 
 
 //-----------------------------------------------------------------------------------------------------------
-RenderParticlesVertexShaderOutput RenderExplosionVertexShader(
+struct RenderExplosionParticlesVertexShaderOutput
+{
+    float4 Position : POSITION0;
+    float4 PositionCopy : COLOR1;
+    float4 Color : COLOR0;
+	float2 TextureCoordinate : TEXCOORD0;
+    float Size : PSIZE0;
+};
+
+
+
+
+//-----------------------------------------------------------------------------------------------------------
+RenderExplosionParticlesVertexShaderOutput RenderExplosionVertexShader(
 	RenderParticlesVertexShaderInput input
 )
 {
-    RenderParticlesVertexShaderOutput output;
+    RenderExplosionParticlesVertexShaderOutput output;
+	output.TextureCoordinate = input.Corner / 2.0f + 0.5f;
 
 	float4 position_sampler_value = tex2Dlod(PositionSampler, float4(input.ParticleCoordinate , 0, 0));
 
 	if (position_sampler_value.w > 0)
 	{
 		float3 position = position_sampler_value.xyz;
-		float4 random_sampler_value = tex2Dlod(RandomSampler, float4(input.ParticleCoordinate.x*31, input.ParticleCoordinate.y*57, 0, 0));
+		float4 random_sampler_value = tex2Dlod(RandomSamplerForVertexShader, float4(input.ParticleCoordinate.x*31, input.ParticleCoordinate.y*57, 0, 0));
 
 		float4 world_position = float4(position,1);
 		float4 view_position = mul(world_position, View);
@@ -104,7 +123,8 @@ RenderParticlesVertexShaderOutput RenderExplosionVertexShader(
 		output.PositionCopy = output.Position = mul(view_position, Projection);
 		output.Size = lerp(15, 130, random_sampler_value.x) * Projection._m11 / output.Position.w * ViewportHeight / 2;
 		output.Color = float4(1,1,1,1.0-normalized_age);
-		
+		output.Position.xy += input.Corner*output.Size;
+
 		// small hack...
 		output.PositionCopy.x = random_sampler_value.y;
 	}
@@ -113,6 +133,7 @@ RenderParticlesVertexShaderOutput RenderExplosionVertexShader(
 		output.PositionCopy = output.Position = float4(-10,-10,0,0);
 		output.Size = 0;
 		output.Color = float4(0,0,0,0);
+		output.TextureCoordinate = input.Corner / 2.0f + 0.5f;
 	}
 	
     return output;
@@ -123,12 +144,7 @@ RenderParticlesVertexShaderOutput RenderExplosionVertexShader(
 
 //-----------------------------------------------------------------------------------------------------------
 float4 RenderExplosionPixelShader(
-	RenderParticlesVertexShaderOutput input,
-#ifdef XBOX
-	float2 particleCoordinate : SPRITETEXCOORD
-#else
-	float2 particleCoordinate : TEXCOORD0
-#endif
+	RenderExplosionParticlesVertexShaderOutput input
 ) : COLOR0
 {
 	//int spriteNumber = ceil(input.PositionCopy.x*6) - 1;
@@ -139,7 +155,7 @@ float4 RenderExplosionPixelShader(
 	float horizontalIndex = floor(spriteNumber*0.25);
 	float verticalIndex = spriteNumber - horizontalIndex*4;
 
-	float2 modifiedTextureCoordinates = float2(particleCoordinate.x/4 + horizontalIndex*0.25, particleCoordinate.y/4 + verticalIndex*0.25);
+	float2 modifiedTextureCoordinates = float2(input.TextureCoordinate.x/4 + horizontalIndex*0.25, input.TextureCoordinate.y/4 + verticalIndex*0.25);
 
     float4 color = tex2D(SpriteSampler, modifiedTextureCoordinates);
     color.rgb *= 0.15 * input.Color.a;

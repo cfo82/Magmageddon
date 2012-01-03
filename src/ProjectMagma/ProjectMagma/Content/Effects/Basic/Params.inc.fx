@@ -18,7 +18,8 @@ float CutLight1 = 0; // bool
 float3 ToneColor = float3(1,1,1);
 float3 InvToneColor = float3(1,1,1);
 float BlinkingState;
-	
+
+#define NEARLY_NULL_VALUE (0.000001)
 
 float ShadowOpacity=0.3;
 
@@ -49,11 +50,11 @@ uniform const float		SpecularPower	: register(c9) = 16;
 // All directions and positions are in world space and must be unit vectors
 //-----------------------------------------------------------------------------
 
-uniform const float3	AmbientLightColor;		//: register(c10);
+uniform const float3	AmbientLightColor;						//: register(c10);
 
-uniform const float3	DirLight0Direction;		//: register(c11);
-uniform const float3	DirLight0DiffuseColor;	//: register(c12);
-uniform const float3	DirLight0SpecularColor;	//: register(c13);
+uniform const float3	DirLight0Direction;						//: register(c11);
+uniform const float3	DirLight0DiffuseColor;					//: register(c12);
+uniform const float3	DirLight0SpecularColor = float3(1,1,1);	//: register(c13);
 
 uniform const float3	DirLight1Direction;		//: register(c14);
 uniform const float3	DirLight1DiffuseColor;	//: register(c15);

@@ -36,11 +36,7 @@ namespace ProjectMagma.Renderer.Renderables
 
         public override void Draw(Renderer renderer)
         {
-            // TODO: fix
-            //spriteBatch.Begin(SpriteBlendMode.AlphaBlend, SpriteSortMode.Deferred,
-            //   SaveStateMode.None, Matrix.Identity*((float)Game.Instance.GraphicsDevice.Viewport.Width)/1280f);
-            spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend);
-
+            spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend, null, null, null, null, Matrix.Identity * ((float)Game.Instance.GraphicsDevice.Viewport.Width) / 1280f);
             DrawTools.DrawCenteredBorderedShadowString(spriteBatch, font, str, pos - Vector2.UnitY * 50, Color.White, 1.0f * scale.Value);
             DrawTools.DrawCenteredBorderedShadowString(spriteBatch, font, "CONGRATULATIONS!", pos + Vector2.UnitY * 50, Color.White, 0.65f * scale.Value);
             spriteBatch.End();

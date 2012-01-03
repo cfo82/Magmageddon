@@ -255,6 +255,7 @@ namespace ProjectMagma.Renderer
                 mesh.Draw();
             }*/
             //hackEffect.Parameters["yoffset"].SetValue(0.0f);
+
             base.DrawMesh(renderer, mesh);
         }
 

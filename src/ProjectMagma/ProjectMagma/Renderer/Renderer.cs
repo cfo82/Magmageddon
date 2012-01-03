@@ -9,6 +9,7 @@ using ProjectMagma.Renderer.ParticleSystem.Emitter;
 using ProjectMagma.Renderer.ParticleSystem.Stateful.Implementations;
 using ProjectMagma.Renderer.Renderables;
 using ProjectMagma.Bugslayer;
+using Microsoft.Xna.Framework.Graphics.PackedVector;
 
 namespace ProjectMagma.Renderer
 {
@@ -100,6 +101,21 @@ namespace ProjectMagma.Renderer
                                  );
 
             vectorCloudTexture = wrappedContent.Load<Texture2D>("Textures/Lava/vectorclouds");
+            Color[] vectorCloudTextureData = new Color[vectorCloudTexture.Width * vectorCloudTexture.Height];
+            vectorCloudTexture.GetData<Color>(vectorCloudTextureData);
+
+            HalfVector4[] vectorCloudTexture4vsData = new HalfVector4[vectorCloudTexture.Width * vectorCloudTexture.Height];
+            for (int i = 0; i < vectorCloudTexture.Width*vectorCloudTexture.Height; ++i)
+            {
+                Color current = vectorCloudTextureData[i];
+                float r = (float)current.R / (float)Byte.MaxValue;
+                float g = (float)current.G / (float)Byte.MaxValue;
+                float b = (float)current.B / (float)Byte.MaxValue;
+                vectorCloudTexture4vsData[i] = new HalfVector4(r, g, b, 1);
+            }
+
+            vectorCloudTextureForVertexShaders = new Texture2D(device, vectorCloudTexture.Width, vectorCloudTexture.Height, false, SurfaceFormat.HalfVector4);
+            vectorCloudTextureForVertexShaders.SetData(vectorCloudTexture4vsData);
 
             // set up render targets
             PresentationParameters pp = Device.PresentationParameters;
@@ -156,7 +172,7 @@ namespace ProjectMagma.Renderer
 
             // recreate the lava fires system using the new level parameters
             if (explosionSystem != null)
-            { explosionSystem.UnloadResources(); }
+                { explosionSystem.UnloadResources(); }
             explosionSystem = new LavaExplosion(this, Game.Instance.ContentManager, device,
                 entityManager["lavafire"].GetFloat("size"),
                 entityManager["lavafire"].GetFloat("rgb_multiplier"),
@@ -168,7 +184,7 @@ namespace ProjectMagma.Renderer
 
             // recreate the snow system using the new level parameters
             if (snowSystem != null)
-            { snowSystem.UnloadResources(); }
+                { snowSystem.UnloadResources(); }
             snowSystem = new Snow(this, Game.Instance.ContentManager, device,
                 entityManager["snow"].GetFloat("particle_lifetime"),
                 entityManager["snow"].GetFloat("max_alpha"),
@@ -183,19 +199,19 @@ namespace ProjectMagma.Renderer
             }
 
             if (iceExplosionSystem != null)
-            { iceExplosionSystem.UnloadResources(); }
+                { iceExplosionSystem.UnloadResources(); }
             iceExplosionSystem = new IceExplosion(this, Game.Instance.ContentManager, device);
 
             if (fireExplosionSystem != null)
-            { fireExplosionSystem.UnloadResources(); }
+               { fireExplosionSystem.UnloadResources(); }
             fireExplosionSystem = new FireExplosion(this, Game.Instance.ContentManager, device);
 
             if (flamethrowerSystem != null)
-            { flamethrowerSystem.UnloadResources(); }
+                { flamethrowerSystem.UnloadResources(); }
             flamethrowerSystem = new Flamethrower(this, Game.Instance.ContentManager, device);
 
             if (iceSpikeSystem != null)
-            { iceSpikeSystem.UnloadResources(); }
+                { iceSpikeSystem.UnloadResources(); }
             iceSpikeSystem = new IceSpike(this, Game.Instance.ContentManager, device);
         }
 
@@ -295,36 +311,48 @@ namespace ProjectMagma.Renderer
 
             Game.Instance.Profiler.BeginSection("particle_systems");
             PIXHelper.BeginEvent("Update Particles");
-            
+
+            PIXHelper.BeginEvent("Update lava flames");
             Game.Instance.Profiler.BeginSection("explosion_system");
             if (explosionSystem != null)
-            { explosionSystem.Update(Time.Last / 1000d, Time.At / 1000d); }
+                { explosionSystem.Update(Time.Last / 1000d, Time.At / 1000d); }
             Game.Instance.Profiler.EndSection("explosion_system");
+            PIXHelper.EndEvent();
 
+            PIXHelper.BeginEvent("Update snow");
             Game.Instance.Profiler.BeginSection("snow_system");
             if (snowSystem != null)
-            { snowSystem.Update(Time.Last / 1000d, Time.At / 1000d); }
+                { snowSystem.Update(Time.Last / 1000d, Time.At / 1000d); }
             Game.Instance.Profiler.EndSection("snow_system");
+            PIXHelper.EndEvent();
 
+            PIXHelper.BeginEvent("Update ice explosions");
             Game.Instance.Profiler.BeginSection("ice_explosion_system");
             if (iceExplosionSystem != null)
-            { iceExplosionSystem.Update(Time.PausableLast / 1000d, Time.PausableAt / 1000d); }
+                { iceExplosionSystem.Update(Time.PausableLast / 1000d, Time.PausableAt / 1000d); }
             Game.Instance.Profiler.EndSection("ice_explosion_system");
+            PIXHelper.EndEvent();
 
+            PIXHelper.BeginEvent("Update fire explosions");
             Game.Instance.Profiler.BeginSection("fire_explosion_system");
             if (fireExplosionSystem != null)
-            { fireExplosionSystem.Update(Time.PausableLast / 1000d, Time.PausableAt / 1000d); }
+                { fireExplosionSystem.Update(Time.PausableLast / 1000d, Time.PausableAt / 1000d); }
             Game.Instance.Profiler.EndSection("fire_explosion_system");
+            PIXHelper.EndEvent();
 
+            PIXHelper.BeginEvent("Update flamethrowers");
             Game.Instance.Profiler.BeginSection("flamethrower_system");
             if (flamethrowerSystem != null)
-            { flamethrowerSystem.Update(Time.PausableLast / 1000d, Time.PausableAt / 1000d); }
+                { flamethrowerSystem.Update(Time.PausableLast / 1000d, Time.PausableAt / 1000d); }
             Game.Instance.Profiler.EndSection("flamethrower_system");
+            PIXHelper.EndEvent();
 
+            PIXHelper.BeginEvent("Update ice spikes");
             Game.Instance.Profiler.BeginSection("ice_spike_system");
             if (iceSpikeSystem != null)
-            { iceSpikeSystem.Update(Time.PausableLast / 1000d, Time.PausableAt / 1000d); }
+                { iceSpikeSystem.Update(Time.PausableLast / 1000d, Time.PausableAt / 1000d); }
             Game.Instance.Profiler.EndSection("ice_spike_system");
+            PIXHelper.EndEvent();
 
             PIXHelper.EndEvent();
             Game.Instance.Profiler.EndSection("particle_systems");
@@ -437,7 +465,7 @@ namespace ProjectMagma.Renderer
                 Game.Instance.Profiler.EndSection("postprocessing");
             }
 
-            //RenderParticles();
+            RenderParticles();
             RenderSceneAfterPost();
 
             Game.Instance.Profiler.EndSection("rendering");
@@ -490,22 +518,25 @@ namespace ProjectMagma.Renderer
         private void RenderScene()
         {
             PIXHelper.BeginEvent("Render Scene");
-
+            
             if (EnablePostProcessing)
             {
                 Device.SetRenderTargets(targetOpaqueColorBuffer, targetOpaqueRenderChannels, targetOpaqueDepth);
             }
 
+            // clear the render targets
             Device.Clear(Color.White);
+
+            // make sure to disable blending. XNA does not like alpha blending on floating point surfaces. And
+            // it looks like it does not set them correctly when specified in .fx files. just disable it to make sure
+            // that everything works as it should!
+            Device.BlendState = BlendState.Opaque;
 
             foreach (Renderable renderable in opaqueRenderables)
             {
                 Debug.Assert(renderable.RenderMode == RenderMode.RenderToScene);
                 renderable.Draw(this);
             }
-
-            // need to sort transparent renderables by position and render them (back to front!!)
-            // TODO: validate sorting... 
 
             if (EnablePostProcessing)
             {
@@ -590,6 +621,7 @@ namespace ProjectMagma.Renderer
         private void RenderParticles()
         {
             //transparentRenderables.Sort(TransparentRenderableComparison);
+            PIXHelper.BeginEvent("Render particles");
 
             foreach (Renderable renderable in transparentRenderables)
             {
@@ -597,27 +629,48 @@ namespace ProjectMagma.Renderer
                 renderable.Draw(this);
             }
 
+            PIXHelper.BeginEvent("Render lava fires");
             if (explosionSystem != null)
-            { explosionSystem.Render(lastFrameTime, currentFrameTime); }
+                { explosionSystem.Render(lastFrameTime, currentFrameTime); }
+            PIXHelper.EndEvent();
+
+            PIXHelper.BeginEvent("Render Snow");
             if (snowSystem != null)
-            { snowSystem.Render(lastFrameTime, currentFrameTime); }
+                { snowSystem.Render(lastFrameTime, currentFrameTime); }
+            PIXHelper.EndEvent();
+
+            PIXHelper.BeginEvent("Render ice explosion");
             if (iceExplosionSystem != null)
-            { iceExplosionSystem.Render(Time.PausableLast / 1000d, Time.PausableAt / 1000d); }
+                { iceExplosionSystem.Render(Time.PausableLast / 1000d, Time.PausableAt / 1000d); }
+            PIXHelper.EndEvent();
+
+            PIXHelper.BeginEvent("Render robot explosion");
             if (fireExplosionSystem != null)
-            { fireExplosionSystem.Render(Time.PausableLast / 1000d, Time.PausableAt / 1000d); }
+                { fireExplosionSystem.Render(Time.PausableLast / 1000d, Time.PausableAt / 1000d); }
+            PIXHelper.EndEvent();
+
+            PIXHelper.BeginEvent("Render flamethrower");
             if (flamethrowerSystem != null)
-            { flamethrowerSystem.Render(Time.PausableLast / 1000d, Time.PausableAt / 1000d); }
+                { flamethrowerSystem.Render(Time.PausableLast / 1000d, Time.PausableAt / 1000d); }
+            PIXHelper.EndEvent();
+
+            PIXHelper.BeginEvent("Render ice spike");
             if (iceSpikeSystem != null)
-            { iceSpikeSystem.Render(Time.PausableLast / 1000d, Time.PausableAt / 1000d); }
+                { iceSpikeSystem.Render(Time.PausableLast / 1000d, Time.PausableAt / 1000d); }
+            PIXHelper.EndEvent();
+
+            PIXHelper.EndEvent();
         }
 
         private void RenderOverlays()
         {
+            PIXHelper.BeginEvent("Render overlays");
             foreach (Renderable renderable in overlays)
             {
                 Debug.Assert(renderable.RenderMode == RenderMode.RenderOverlays);
                 renderable.Draw(this);
             }
+            PIXHelper.EndEvent();
         }
 
         private List<Renderable> GetMatchingRenderableList(
@@ -637,7 +690,7 @@ namespace ProjectMagma.Renderer
 
         //public void RecomputeLavaTemperature(Renderable lava, List<Renderable> lava)
         //{
-        //    Texture2D tex = new Texture2D(device, 256, 256);
+        //    Texture2D tex = new Texture2D(device,2 56, 256);
 
         //    lava;
         //}
@@ -789,12 +842,18 @@ namespace ProjectMagma.Renderer
         private RenderTarget2D lightRenderTarget;
 
         private Texture2D vectorCloudTexture;
+        private Texture2D vectorCloudTextureForVertexShaders;
 
         public bool EnablePostProcessing { get; set; }
 
         public Texture2D VectorCloudTexture
         {
             get { return vectorCloudTexture; }
+        }
+
+        public Texture2D VectorCloudTextureForVertexShaders
+        {
+            get { return vectorCloudTextureForVertexShaders; }
         }
 
         public Camera Camera { get; set; }

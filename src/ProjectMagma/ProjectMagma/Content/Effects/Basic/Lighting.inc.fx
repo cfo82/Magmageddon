@@ -1,3 +1,14 @@
+
+
+// IMPORTANT!!
+//
+// Some notes to pow! (taken from here http://forums.create.msdn.com/forums/t/32167.aspx)
+// -------------
+//    When compiling code that looks like the following:
+//    pow(max(0, f), e)
+//    If the result of max(0,f) is 0, the statement will be evaluated as exp(-inf * e), which may cause the following error message: (error X4579: NaN and infinity literals not allowed by shader model). This is because pow(0, e) will be expanded to exp(log(0) * e), which will evaluated as exp(-inf * e).
+//    The workaround for compiling code like this, for a shader model that does not allow NaN or infinity literals, is to change 0 in max(0, f) to 0.00001f, or some other acceptably small non-zero value.
+
 //-----------------------------------------------------------------------------
 // Compute per-pixel lighting.
 // When compiling for pixel shader 2.0, the lit intrinsic uses more slots
@@ -18,7 +29,7 @@ ColorPair ComputePerPixelLights(float3 E, float3 N, float y)
 	float dt = max(0,dot(L,N));
     result.Diffuse += DirLight0DiffuseColor * dt;
     if (dt != 0)
-		result.Specular += DirLight0SpecularColor * pow(max(0,dot(H,N)), SpecularPower);
+		result.Specular += DirLight0SpecularColor * pow(max(NEARLY_NULL_VALUE,dot(H,N)), SpecularPower);
 
 	// Light1 supports linear decay of light. This works as follows: At the height
 	// of y=0, the light is amplified by the factor DirLight1BottomAmpStrength.
@@ -35,7 +46,7 @@ ColorPair ComputePerPixelLights(float3 E, float3 N, float y)
     result.Diffuse += DirLight1DiffuseColor * dt * multiplier;
     //result.Diffuse += float3(1,1,1)* dt * 1;
     if (dt != 0)
-	    result.Specular += DirLight1SpecularColor * pow(max(0,dot(H,N)), SpecularPower);
+	    result.Specular += DirLight1SpecularColor * pow(max(NEARLY_NULL_VALUE,dot(H,N)), SpecularPower);
     
 	// Light2
 	L = -DirLight2Direction;
@@ -43,7 +54,7 @@ ColorPair ComputePerPixelLights(float3 E, float3 N, float y)
 	dt = max(0,dot(L,N));
     result.Diffuse += DirLight2DiffuseColor * dt;
     if (dt != 0)
-	    result.Specular += DirLight2SpecularColor * pow(max(0,dot(H,N)), SpecularPower);
+	    result.Specular += DirLight2SpecularColor * pow(max(NEARLY_NULL_VALUE,dot(H,N)), SpecularPower);
     
     result.Diffuse *= DiffuseColor;
     result.Diffuse += EmissiveColor;

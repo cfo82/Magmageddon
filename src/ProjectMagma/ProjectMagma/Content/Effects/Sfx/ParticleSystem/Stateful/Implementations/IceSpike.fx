@@ -24,15 +24,21 @@ float3 IceSpikePositionArray[MAX_ICESPIKE_COUNT];
 float3 IceSpikeDirectionArray[MAX_ICESPIKE_COUNT];
 float IceSpikeGravityStartArray[MAX_ICESPIKE_COUNT];
 float IceSpikeRotationSpeed = 3000;
+float2 ViewportSize;
 
 
 
 
 //-----------------------------------------------------------------------------------------------------------
 CreateParticlesPixelShaderOutput CreateIceSpikePixelShader(
-	CreateParticlesVertexShaderOutput input
+	CreateParticlesVertexShaderOutput input,
+	int2 inScreenPos : VPOS
 )
 {
+	// clip if we're not on the correct screen pos!
+	int2 targetDiff = input.TargetTextureCoordinate - inScreenPos;
+	clip(-abs(targetDiff));
+
 	CreateParticlesPixelShaderOutput output;
 	output.PositionTimeToDeath = float4(input.ParticlePosition, IceSpikeParticleLifetime);
 	output.Velocity = float4(input.ParticleVelocity, input.EmitterIndex);
@@ -50,6 +56,25 @@ technique CreateParticles
         VertexShader = compile vs_3_0 CreateParticlesVertexShader();
         PixelShader = compile ps_3_0 CreateIceSpikePixelShader();
     }
+}
+
+
+
+
+//-----------------------------------------------------------------------------------------------------------
+void SpriteVertexShader(
+	inout float4 color    : COLOR0,
+	inout float2 texCoord : TEXCOORD0,
+	inout float4 position : POSITION0
+)
+{
+   // Half pixel offset for correct texel centering.
+   position.xy -= 0.5;
+
+   // Viewport adjustment.
+   position.xy = position.xy / ViewportSize;
+   position.xy *= float2(2, -2);
+   position.xy -= float2(1, -1);
 }
 
 
@@ -118,6 +143,7 @@ technique UpdateParticles
 {
     pass Pass1
     {
+		VertexShader = compile vs_3_0 SpriteVertexShader();
         PixelShader = compile ps_3_0 UpdateIceSpikePixelShader();
     }
 }
@@ -131,12 +157,13 @@ RenderParticlesVertexShaderOutput RenderIceSpikeVertexShader(
 )
 {
     RenderParticlesVertexShaderOutput output;
+	output.TextureCoordinate = input.Corner / 2.0f + 0.5f;
 
 	float4 position_sampler_value = tex2Dlod(PositionSampler, float4(input.ParticleCoordinate , 0, 0));
 
 	if (position_sampler_value.w > 0)
 	{
-		float4 random_sampler_value = tex2Dlod(RandomSampler, float4(input.ParticleCoordinate.x*31, input.ParticleCoordinate.y*57, 0, 0));
+		float4 random_sampler_value = tex2Dlod(RandomSamplerForVertexShader, float4(input.ParticleCoordinate.x*31, input.ParticleCoordinate.y*57, 0, 0));
 		float3 position = position_sampler_value.xyz;
 
 		float4 world_position = float4(position,1);
@@ -144,13 +171,14 @@ RenderParticlesVertexShaderOutput RenderIceSpikeVertexShader(
 	    
 		float normalizedAge = 1.0 - position_sampler_value.w/IceSpikeParticleLifetime;
 	    
-		output.PositionCopy = output.Position = mul(view_position, Projection);
+		output.Position = mul(view_position, Projection);
 		output.Size = 3 + 5*random_sampler_value.b;
 		output.Color = float4(1,1,1,1.0-normalizedAge);
+		output.Position.xy += input.Corner*output.Size;
 	}
 	else
 	{
-		output.PositionCopy = output.Position = float4(-10,-10,0,0);
+		output.Position = float4(-10,-10,0,0);
 		output.Size = 0;
 		output.Color = float4(0,0,0,0);
 	}
@@ -163,15 +191,10 @@ RenderParticlesVertexShaderOutput RenderIceSpikeVertexShader(
 
 //-----------------------------------------------------------------------------------------------------------
 float4 RenderIceSpikePixelShader(
-	RenderParticlesVertexShaderOutput input,
-#ifdef XBOX
-	float2 particleCoordinate : SPRITETEXCOORD
-#else
-	float2 particleCoordinate : TEXCOORD0
-#endif
+	RenderParticlesVertexShaderOutput input
 ) : COLOR0
 {
-	float4 value = tex2D(SpriteSampler, particleCoordinate);
+	float4 value = tex2D(SpriteSampler, input.TextureCoordinate);
 	value *= value.a;
     return input.Color.a*value;
 }

@@ -126,7 +126,7 @@ namespace ProjectMagma.Profiler
             FileStream fs = new FileStream(filename, FileMode.Create, FileAccess.Write, FileShare.Write);
             fs.Close();
 
-            StreamWriter sw = new StreamWriter(filename, true, Encoding.ASCII);
+            StreamWriter sw = new StreamWriter(filename, true);
             Write(sw);
             sw.Close();
         }

@@ -1,4 +1,4 @@
-//#include "Sm3SpriteBatch.fx.inc"
+//#include "Sm3SpriteBatch.inc"
 
 sampler i_hate_microsoft_dont_remove_this_it_wont_work : register(s0);
 

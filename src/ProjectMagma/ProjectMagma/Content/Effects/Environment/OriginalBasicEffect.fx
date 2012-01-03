@@ -1,3 +1,7 @@
+
+// modified by cob
+#define NEARLY_NULL_VALUE (0.000001)
+
 // modified by dpk
 texture Clouds;
 sampler2D CloudsSampler = sampler_state
@@ -315,7 +319,7 @@ ColorPair ComputePerPixelLights(float3 E, float3 N)
 	float dt = max(0,dot(L,N));
     result.Diffuse += DirLight0DiffuseColor * dt;
     if (dt != 0)
-		result.Specular += DirLight0SpecularColor * pow(max(0,dot(H,N)), SpecularPower);
+		result.Specular += DirLight0SpecularColor * pow(max(NEARLY_NULL_VALUE,dot(H,N)), SpecularPower);
 
 	// Light1
 	L = -DirLight1Direction;
@@ -323,7 +327,7 @@ ColorPair ComputePerPixelLights(float3 E, float3 N)
 	dt = max(0,dot(L,N));
     result.Diffuse += DirLight1DiffuseColor * dt;
     if (dt != 0)
-	    result.Specular += DirLight1SpecularColor * pow(max(0,dot(H,N)), SpecularPower);
+	    result.Specular += DirLight1SpecularColor * pow(max(NEARLY_NULL_VALUE,dot(H,N)), SpecularPower);
     
 	// Light2
 	L = -DirLight2Direction;
@@ -331,7 +335,7 @@ ColorPair ComputePerPixelLights(float3 E, float3 N)
 	dt = max(0,dot(L,N));
     result.Diffuse += DirLight2DiffuseColor * dt;
     if (dt != 0)
-	    result.Specular += DirLight2SpecularColor * pow(max(0,dot(H,N)), SpecularPower);
+	    result.Specular += DirLight2SpecularColor * pow(max(NEARLY_NULL_VALUE,dot(H,N)), SpecularPower);
     
     result.Diffuse *= DiffuseColor;
     result.Diffuse += EmissiveColor;
@@ -665,7 +669,7 @@ float4 PSBasicPixelLightingTx(PixelLightingPSInputTx pin) : COLOR
 int ShaderIndex = 0;
 
 
-VertexShader VSArray[12] =
+/*VertexShader VSArray[12] =
 {
 	compile vs_3_0 VSBasic(),
 	compile vs_3_0 VSBasicVc(),
@@ -699,14 +703,23 @@ PixelShader PSArray[12] =
 	compile ps_3_0 PSBasicPixelLighting(),
 	compile ps_3_0 PSBasicPixelLightingTx(),
 	compile ps_3_0 PSBasicPixelLightingTx(),
-};
+};*/
+
+Technique dummy
+{
+	Pass
+	{
+		VertexShader = compile vs_3_0 VSBasic();
+		PixelShader = compile ps_3_0 PSBasic();
+	}
+}
 
 
-Technique BasicEffect
+/*Technique BasicEffect
 {
 	Pass
 	{
 		VertexShader = (VSArray[ShaderIndex]);
 		PixelShader	 = (PSArray[ShaderIndex]);
 	}
-}
+}*/

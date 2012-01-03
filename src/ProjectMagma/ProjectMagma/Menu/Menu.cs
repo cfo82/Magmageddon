@@ -147,13 +147,9 @@ namespace ProjectMagma
                 float screenscale = (float)screenWidth / 1280f;
                 Matrix spriteScale = Matrix.CreateScale(screenscale, screenscale, 1);
 
-                // TODO: fix
-                //spriteBatch.Begin(SpriteBlendMode.AlphaBlend, SpriteSortMode.Deferred,
-                //    SaveStateMode.None, spriteScale);
-                spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend);
+                spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend, null, null, null, null, spriteScale);
 
                 spriteBatch.Draw(background, new Vector2(0, 0), new Color(125,125,125,160));
-                //spriteBatch.Draw(
 
                 // first traversal: sum up total width of all screens
                 int totalWidth = 0;
@@ -179,7 +175,7 @@ namespace ProjectMagma
                         screen.DrawOffset.TargetValue -= (screens.Last.Value as ItemizedMenuScreen).Width / 2;
                     }
                     //screen.DrawOffset.TargetValue = offset + totalWidth/2 - (screens.Last.Value as ItemizedMenuScreen).Width/2;
-                    
+
                     screen.Draw(gameTime, spriteBatch);
                     if (screen is ItemizedMenuScreen)
                     {

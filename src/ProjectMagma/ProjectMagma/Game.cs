@@ -1,5 +1,5 @@
-//#define ALWAYS_FOUR_PLAYERS
-//#define TEST_RELEASE
+#define ALWAYS_FOUR_PLAYERS
+#define TEST_RELEASE
 
 using System;
 using System.Diagnostics;
@@ -470,7 +470,7 @@ namespace ProjectMagma
                 return;
             }
 
-#if XBOX
+#if XBOX && !DEBUG
             try
             {
 #endif
@@ -527,7 +527,7 @@ namespace ProjectMagma
 
                     profiler.EndSection("update");
                 }
-#if XBOX
+#if XBOX && !DEBUG
             }
             catch (Exception e)
             {
@@ -616,10 +616,10 @@ namespace ProjectMagma
                 return;
             }
 
-#if XBOX
+/*#if XBOX && !DEBUG
             try
             {
-#endif
+#endif*/
                 profiler.TryBeginFrame();
                 profiler.BeginSection("draw");
 
@@ -640,13 +640,17 @@ namespace ProjectMagma
 
                 profiler.EndSection("draw");
                 profiler.EndFrame();
-#if XBOX
+/*#if XBOX && !DEBUG
             }
             catch (Exception e)
             {
+                // make sure to reset the render target (else it may happen that present fails)
+                // so that we can correctly display the crashDebugger!
+                renderer.Device.SetRenderTarget(null);
+
                 crashDebugger.Crash(e);
             }
-#endif
+#endif*/
         }
 
         #region Stuff to be moved by janick!

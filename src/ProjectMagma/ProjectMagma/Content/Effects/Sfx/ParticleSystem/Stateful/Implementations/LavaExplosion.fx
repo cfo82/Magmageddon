@@ -20,9 +20,14 @@ float ExplosionDotMultiplier = 0.025;
 
 //-----------------------------------------------------------------------------------------------------------
 CreateParticlesPixelShaderOutput CreateExplosionPixelShader(
-	CreateParticlesVertexShaderOutput input
+	CreateParticlesVertexShaderOutput input,
+	int2 inScreenPos : VPOS
 )
 {
+	// clip if we're not on the correct screen pos!
+	int2 targetDiff = input.TargetTextureCoordinate - inScreenPos;
+	clip(-abs(targetDiff));
+
 	CreateParticlesPixelShaderOutput output;
 	output.PositionTimeToDeath = float4(input.ParticlePosition, ExplosionParticleLifetime);
 	output.Velocity = float4(input.ParticleVelocity, 0);
@@ -90,6 +95,7 @@ RenderParticlesVertexShaderOutput RenderExplosionVertexShader(
 )
 {
     RenderParticlesVertexShaderOutput output;
+	output.TextureCoordinate = input.Corner / 2.0f + 0.5f;
 
 	float4 position_sampler_value = tex2Dlod(PositionSampler, float4(input.ParticleCoordinate , 0, 0));
 
@@ -105,14 +111,14 @@ RenderParticlesVertexShaderOutput RenderExplosionVertexShader(
 	    float normalized_time_to_death = time_to_life/ExplosionParticleLifetime;
 		float normalized_age = 1.0 - time_to_life/ExplosionParticleLifetime;
 	    
-		output.Position = mul(view_position, Projection);
-		output.PositionCopy = output.Position / output.Position.w;
 		output.Size = ExplosionSize*pow(normalized_time_to_death,4);
+		output.Position = mul(view_position, Projection);
+		output.Position.xy += input.Corner * output.Size;
 		output.Color = float4(1,1,1,1.0-normalized_age);
 	}
 	else
 	{
-		output.PositionCopy = output.Position = float4(-10,-10,0,-2);
+		output.Position = float4(-10,-10,0,-2);
 		output.Size = 0;
 		output.Color = float4(0,0,0,0);
 	}
@@ -125,16 +131,12 @@ RenderParticlesVertexShaderOutput RenderExplosionVertexShader(
 
 //-----------------------------------------------------------------------------------------------------------
 float4 RenderExplosionPixelShader(
-	RenderParticlesVertexShaderOutput input,
-	float2 PixelPosition : VPOS,
-#ifdef XBOX
-	float2 particleCoordinate : SPRITETEXCOORD
-#else
-	float2 particleCoordinate : TEXCOORD0
-#endif
+	RenderParticlesVertexShaderOutput input
 ) : COLOR0
 {
-    float4 color = input.Color*tex2D(SpriteSampler, particleCoordinate/4);
+    float4 color = input.Color*tex2D(SpriteSampler, input.TextureCoordinate/4);
+	clip(color.a - 0.5f);
+	color *= 4;
     color.rgb *= dot(float3(ExplosionDotMultiplier, ExplosionDotMultiplier, ExplosionDotMultiplier), color.rgb);
     color.rgb *= input.Color.a;
     color.rgb *= ExplosionRgbMultiplier;

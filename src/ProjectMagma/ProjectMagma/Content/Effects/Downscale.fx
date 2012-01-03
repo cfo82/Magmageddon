@@ -30,7 +30,7 @@ struct PSOutput
 	float4 DownscaledRenderChannel : COLOR1;
 };
 
-PSOutput downscale_ps(float2 texCoord : TEXCOORD0) : COLOR0
+PSOutput downscale_ps(float2 texCoord : TEXCOORD0)
 {
 	PSOutput outp;
     outp.DownscaledHDRColor = tex2D(HDRColorSampler, texCoord - HalfPixelSize);

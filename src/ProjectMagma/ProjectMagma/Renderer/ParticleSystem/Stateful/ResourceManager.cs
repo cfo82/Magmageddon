@@ -3,6 +3,7 @@ using System.Diagnostics;
 using System.Collections.Generic;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
+using Microsoft.Xna.Framework.Graphics.PackedVector;
 
 namespace ProjectMagma.Renderer.ParticleSystem.Stateful
 {
@@ -23,18 +24,40 @@ namespace ProjectMagma.Renderer.ParticleSystem.Stateful
             for (int i = 0; i < (int)Size.SizeCount; ++i)
             {
                 Vector2 positionHalfPixel = new Vector2(1.0f / (2.0f * SizeMap[i]), 1.0f / (2.0f * SizeMap[i]));
-                RenderVertex[] vertices = new RenderVertex[SizeMap[i]*SizeMap[i]];
+                RenderVertex[] vertices = new RenderVertex[SizeMap[i]*SizeMap[i]*6];
                 for (int x = 0; x < SizeMap[i]; ++x)
                 {
                     for (int y = 0; y < SizeMap[i]; ++y)
                     {
-                        vertices[y * SizeMap[i] + x].particleCoordinate = new Vector2(
+                        int particleIndex = y * SizeMap[i] + x;
+
+                        Vector2 particleCoordinate = new Vector2(
                             positionHalfPixel.X + 2 * x * positionHalfPixel.X,
-                            positionHalfPixel.Y + 2 * y * positionHalfPixel.Y);
+                            positionHalfPixel.Y + 2 * y * positionHalfPixel.Y
+                            );
+
+                        // corners are
+                        Short2[] corners = {
+                            new Short2(-1, -1),
+                            new Short2( 1, -1),
+                            new Short2( 1,  1),
+                            new Short2(-1,  1)
+                        };
+
+                        int[] cornerIndices = {
+                            0, 1, 2,
+                            0, 2, 3
+                        };
+
+                        for (int j = 0; j < 6; ++j)
+                        {
+                            vertices[particleIndex * 6 + j].corner = corners[cornerIndices[j]];
+                            vertices[particleIndex * 6 + j].particleCoordinate = particleCoordinate;
+                        }
                     }
                 }
-                // TODO: no more point sprites :-(
-                renderingVertexBuffers[i] = new VertexBuffer(device, renderingVertexDeclaration, RenderVertex.SizeInBytes * vertices.Length, BufferUsage.WriteOnly/* | BufferUsage.Points*/);
+                
+                renderingVertexBuffers[i] = new VertexBuffer(device, renderingVertexDeclaration, RenderVertex.SizeInBytes * vertices.Length, BufferUsage.WriteOnly);
                 renderingVertexBuffers[i].SetData<RenderVertex>(vertices);
             }
 

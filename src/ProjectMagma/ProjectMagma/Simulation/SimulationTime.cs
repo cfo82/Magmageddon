@@ -76,8 +76,14 @@ namespace ProjectMagma.Simulation
             last = at;
             double millis = Game.Instance.GlobalClock.PausableMilliseconds;
             dtMs = (millis + adjustmentMs) - last;
-            dt = dtMs / 1000d;
             at += dtMs;
+
+            // make steps smaller if necessary...
+            if (dtMs > 200)
+                { dtMs = 200; }
+
+            dt = dtMs / 1000d;
+            
             // increase frame counter
             ++frame;
         }

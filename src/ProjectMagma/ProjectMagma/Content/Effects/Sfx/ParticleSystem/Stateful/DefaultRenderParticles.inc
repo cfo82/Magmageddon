@@ -43,6 +43,7 @@ RenderParticlesVertexShaderOutput RenderParticlesVertexShader(
 )
 {
     RenderParticlesVertexShaderOutput output;
+	output.TextureCoordinate = input.Corner / 2.0f + 0.5f;
 
 	float4 position_sampler_value = tex2Dlod(PositionSampler, float4(input.ParticleCoordinate , 0, 0));
 
@@ -51,15 +52,17 @@ RenderParticlesVertexShaderOutput RenderParticlesVertexShader(
 		float3 position = position_sampler_value.xyz;
 		float4 world_position = float4(position,1);
 		float4 view_position = mul(world_position, View);
-		output.PositionCopy = output.Position = mul(view_position, Projection);
+		output.Position = mul(view_position, Projection);
 	    
 		float normalizedAge = 1.0 - position_sampler_value.w/7.0f;
 		output.Size = ComputeParticleSize(output.Position, 0.5, normalizedAge);
 		output.Color = ComputeParticleColor(0.25, normalizedAge);
+
+		output.Position.xy += input.Corner * output.Size;
 	}
 	else
 	{
-		output.PositionCopy = output.Position = float4(-10,-10,0,0);
+		output.Position = float4(-10,-10,0,0);
 		output.Size = 0;
 		output.Color = float4(0,0,0,0);
 	}
@@ -72,14 +75,8 @@ RenderParticlesVertexShaderOutput RenderParticlesVertexShader(
 
 //-----------------------------------------------------------------------------------------------------------
 half4 RenderParticlesPixelShader(
-	RenderParticlesVertexShaderOutput input,
-#ifdef XBOX
-	float2 particleCoordinate : SPRITETEXCOORD
-#else
-	float2 particleCoordinate : TEXCOORD0
-#endif
-
+	RenderParticlesVertexShaderOutput input
 ) : COLOR0
 {
-    return input.Color*tex2D(SpriteSampler, particleCoordinate);
+    return input.Color*tex2D(SpriteSampler, input.TextureCoordinate);
 }

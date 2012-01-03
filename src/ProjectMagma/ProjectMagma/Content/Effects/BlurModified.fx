@@ -35,7 +35,7 @@ struct PSOutput
 };
 
 
-PSOutput PixelShaderMain(float2 texCoord : TEXCOORD0) : COLOR0
+PSOutput PixelShaderMain(float2 texCoord : TEXCOORD0)
 {
 	PSOutput outp;
     outp.Color = 0;

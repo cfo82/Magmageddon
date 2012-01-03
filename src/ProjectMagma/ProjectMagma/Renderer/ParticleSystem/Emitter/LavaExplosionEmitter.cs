@@ -45,9 +45,16 @@ namespace ProjectMagma.Renderer.ParticleSystem.Emitter
         {
             for (int i = 0; i < length; ++i)
             {
-                array[start + i].ParticlePosition = currentPoint + RandomOffset();
-                array[start + i].ParticleVelocity = RandomVelocity();
-                array[start + i].EmitterIndex = EmitterIndex;
+                Vector3 particlePosition = currentPoint + RandomOffset();
+                Vector3 particleVelocity = RandomVelocity();
+                int emitterIndex = EmitterIndex;
+
+                for (int j = 0; j < 3; ++j)
+                {
+                    array[(start + i) * 3 + j].ParticlePosition = particlePosition;
+                    array[(start + i) * 3 + j].ParticleVelocity = particleVelocity;
+                    array[(start + i) * 3 + j].EmitterIndex = emitterIndex;
+                }
             }
         }
 

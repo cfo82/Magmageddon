@@ -118,7 +118,7 @@ namespace Xclna.Xna.Animation.Content
             // and we want to represent the exponential nature of light reflectance.
             // Finally, we multiply the result by the light color.
             spec0 = DirLight0SpecularColor *
-                (pow(val*dot(reflect(DirLight0Direction,normal),viewDirection),SpecularPower));
+                (pow(abs(val*dot(reflect(DirLight0Direction,normal),viewDirection)),SpecularPower));
         }
     }
     else
@@ -135,7 +135,7 @@ namespace Xclna.Xna.Animation.Content
         else
         {
             spec1 = DirLight1SpecularColor *
-                (pow(val*dot(reflect(DirLight1Direction,normal),viewDirection),SpecularPower));
+                (pow(abs(val*dot(reflect(DirLight1Direction,normal),viewDirection)),SpecularPower));
         }
     }
     else
@@ -152,7 +152,7 @@ namespace Xclna.Xna.Animation.Content
         else
         {
             spec2 = DirLight2SpecularColor *
-                (pow(val*dot(reflect(DirLight2Direction,normal),viewDirection),SpecularPower));
+                (pow(abs(val*dot(reflect(DirLight2Direction,normal),viewDirection)),SpecularPower));
         }
     }
     else

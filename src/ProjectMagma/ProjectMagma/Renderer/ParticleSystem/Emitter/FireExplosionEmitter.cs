@@ -86,9 +86,16 @@ namespace ProjectMagma.Renderer.ParticleSystem.Emitter
 
             for (int i = 0; i < primaryParticleCount; ++i)
             {
-                array[currentOffset].ParticlePosition = currentPoint + RandomOffset();
-                array[currentOffset].ParticleVelocity = RandomVelocity();
-                array[currentOffset].EmitterIndex = EmitterIndex;
+                Vector3 particlePosition = currentPoint + RandomOffset();
+                Vector3 particleVelocity = RandomVelocity();
+                int emitterIndex = EmitterIndex;
+
+                for (int j = 0; j < 3; ++j)
+                {
+                    array[currentOffset * 3 + j].ParticlePosition = particlePosition;
+                    array[currentOffset * 3 + j].ParticleVelocity = particleVelocity;
+                    array[currentOffset * 3 + j].EmitterIndex = emitterIndex;
+                }
                 ++currentOffset;
             }
 
@@ -96,9 +103,16 @@ namespace ProjectMagma.Renderer.ParticleSystem.Emitter
             {
                 for (int j = 0; j < secondaryEmitters[i].lastParticleCount; ++j)
                 {
-                    array[currentOffset].ParticlePosition = secondaryEmitters[i].point + RandomOffset();
-                    array[currentOffset].ParticleVelocity = RandomVelocity();
-                    array[currentOffset].EmitterIndex = EmitterIndex;
+                    Vector3 particlePosition = secondaryEmitters[i].point + RandomOffset();
+                    Vector3 particleVelocity = RandomVelocity();
+                    int emitterIndex = EmitterIndex;
+
+                    for (int k = 0; k < 3; ++k)
+                    {
+                        array[currentOffset * 3 + k].ParticlePosition = particlePosition;
+                        array[currentOffset * 3 + k].ParticleVelocity = particleVelocity;
+                        array[currentOffset * 3 + k].EmitterIndex = emitterIndex;
+                    }
                     ++currentOffset;
                 }
             }

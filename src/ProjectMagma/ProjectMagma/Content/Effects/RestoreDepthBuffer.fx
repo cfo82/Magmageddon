@@ -1,5 +1,5 @@
 
-#include "Sm3SpriteBatch.fx.inc"
+//#include "Sm3SpriteBatch.inc"
 
 // dominik käser's comment... in fact the SpriteBatch class which we
 // use to render fullscreen quads usually takes one texture as an input
@@ -9,6 +9,30 @@
 // gets s0 is up to the optimizer (we may influence it as well
 // by just assining s0 to the appropriate sampler below.
 sampler i_hate_microsoft_dont_remove_this_it_wont_work : register(s0);
+
+float2 ViewportSize;
+ 
+void SpriteVertexShader(inout float4 color    : COLOR0,
+ 
+                       inout float2 texCoord : TEXCOORD0,
+ 
+                       inout float4 position : POSITION0)
+ 
+{
+ 
+   // Half pixel offset for correct texel centering.
+ 
+   position.xy -= 0.5;
+ 
+   // Viewport adjustment.
+ 
+   position.xy = position.xy / ViewportSize;
+ 
+   position.xy *= float2(2, -2);
+ 
+   position.xy -= float2(1, -1);
+ 
+}
 
 texture DepthBuffer;
 sampler2D DepthSampler = sampler_state

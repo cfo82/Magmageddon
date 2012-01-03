@@ -24,9 +24,20 @@ sampler2D RandomSampler = sampler_state
 {
 	Texture = (RandomTexture);
 	
-	MinFilter = Linear;
-	MagFilter = Linear;
-	MipFilter = Linear;
+	MinFilter = Point;
+	MagFilter = Point;
+	MipFilter = Point;
+	
+	AddressU = Wrap;
+	AddressV = Wrap;
+};
+sampler2D RandomSamplerForVertexShader = sampler_state
+{
+	Texture = (RandomTextureForVertexShader);
+	
+	MinFilter = Point;
+	MagFilter = Point;
+	MipFilter = Point;
 	
 	AddressU = Wrap;
 	AddressV = Wrap;

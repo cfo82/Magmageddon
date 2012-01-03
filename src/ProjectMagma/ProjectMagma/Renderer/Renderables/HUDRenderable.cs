@@ -247,9 +247,7 @@ namespace ProjectMagma.Renderer
         private void DrawBars()
         {
             Rectangle barRect = new Rectangle(xStart, (int) (yStart + 30), (int)barAreaSize.X, (int)barAreaSize.Y);
-            //spriteBatch.Begin(SpriteBlendMode.AlphaBlend, SpriteSortMode.Immediate, SaveStateMode.None, spriteScale);
-            spriteBatch.Begin(SpriteSortMode.Immediate, BlendState.AlphaBlend);
-            // TODO: fix
+            spriteBatch.Begin(SpriteSortMode.Immediate, BlendState.AlphaBlend, null, null, null, null, spriteScale);
             barEffect.CurrentTechnique.Passes[0].Apply();
             spriteBatch.Draw(barBackgroundTexture, barRect, Color.White);
             spriteBatch.End();
@@ -259,9 +257,7 @@ namespace ProjectMagma.Renderer
         {
             double dt = currentFrameTime - lastFrameTime;
 
-            // TODO: fix
-            //spriteBatch.Begin(SpriteBlendMode.AlphaBlend, SpriteSortMode.Immediate, SaveStateMode.None, spriteScale);
-            spriteBatch.Begin(SpriteSortMode.Immediate, BlendState.AlphaBlend);
+            spriteBatch.Begin(SpriteSortMode.Immediate, BlendState.AlphaBlend, null, null, null, null, spriteScale);
             Vector3 textColor = defaultTextColor * (1 - frozenColorStrength.Value) + frozenTextColor * frozenColorStrength.Value;
 
 

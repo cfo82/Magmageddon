@@ -64,9 +64,12 @@ namespace ProjectMagma.Renderer.ParticleSystem.Emitter
                 Vector3 velocity = direction + displacement;
                 velocity *= ((1f - amount) * innerSpeed + amount * outerSpeed) * (0.7f + getRandom() * 0.3f);
 
-                array[start + i].ParticlePosition = point;
-                array[start + i].ParticleVelocity = velocity;
-                array[start + i].EmitterIndex = EmitterIndex;
+                for (int j = 0; j < 3; ++j)
+                {
+                    array[(start + i) * 3 + j].ParticlePosition = point;
+                    array[(start + i) * 3 + j].ParticleVelocity = velocity;
+                    array[(start + i) * 3 + j].EmitterIndex = EmitterIndex;
+                }
             }
         }
 

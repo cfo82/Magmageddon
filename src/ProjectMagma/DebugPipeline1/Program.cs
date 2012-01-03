@@ -94,7 +94,7 @@ namespace DebugPipeline1
         ///       Example:
         ///               private const string SingleItem = @"dude.fbx";
         /// </summary>
-        private const string SingleItem = @"Models\Environment\lava6c.fbx";
+        private const string SingleItem = @"Models\Player\austinrobot.x";
 
         /// <summary>
         /// TODO: Set the XnaProfile to HiDef or Reach, depending on your target graphics profile.

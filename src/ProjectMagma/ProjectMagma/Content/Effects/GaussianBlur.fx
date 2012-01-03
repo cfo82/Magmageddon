@@ -1,4 +1,4 @@
-//#include "Sm3SpriteBatch.fx.inc"
+//#include "Sm3SpriteBatch.inc"
 
 // Pixel shader applies a one dimensional gaussian blur filter.
 // This is used twice by the bloom postprocess, first to

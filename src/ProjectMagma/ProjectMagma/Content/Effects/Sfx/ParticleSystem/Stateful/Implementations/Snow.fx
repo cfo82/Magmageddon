@@ -13,7 +13,8 @@ float SnowVelocityDamping = 0.2;
 float SnowParticleMass = 0.01;
 float SnowMeltingStart = 600;
 float SnowMeltingEnd = 300;
-float SnowMaxAlpha = 0.6;		
+float SnowMaxAlpha = 0.6;
+float2 ViewPortScale;
 float3 Gravity = float3(0,-9.81,0);
 float3 WindForce;
 float SnowBaseSize = 5;
@@ -26,9 +27,9 @@ float SnowRandomSizeModification = 8;
 struct RenderSnowParticlesVertexShaderOutput
 {
     float4 Position : POSITION0;
-    float4 PositionCopy : POSITION1;
     float4 Color : COLOR0;
     float4 RandomValues : COLOR1;
+	float2 TextureCoordinate : TEXCOORD0;
     float Size : PSIZE0;
 };
 
@@ -37,9 +38,14 @@ struct RenderSnowParticlesVertexShaderOutput
 
 //-----------------------------------------------------------------------------------------------------------
 CreateParticlesPixelShaderOutput CreateSnowPixelShader(
-	CreateParticlesVertexShaderOutput input
+	CreateParticlesVertexShaderOutput input,
+	int2 inScreenPos : VPOS
 )
 {
+	// clip if we're not on the correct screen pos!
+	int2 targetDiff = input.TargetTextureCoordinate - inScreenPos;
+	clip(-abs(targetDiff));
+
 	CreateParticlesPixelShaderOutput output;
 	output.PositionTimeToDeath = float4(input.ParticlePosition, SnowParticleLifetime);
 	output.Velocity = float4(input.ParticleVelocity, 0);
@@ -112,6 +118,7 @@ RenderSnowParticlesVertexShaderOutput RenderSnowVertexShader(
 )
 {
     RenderSnowParticlesVertexShaderOutput output;
+	output.TextureCoordinate = input.Corner / 2.0f + 0.5f;
 
 	float4 position_sampler_value = tex2Dlod(PositionSampler, float4(input.ParticleCoordinate , 0, 0));
 
@@ -126,8 +133,9 @@ RenderSnowParticlesVertexShaderOutput RenderSnowVertexShader(
 	    
 		float normalizedAge = 1.0 - position_sampler_value.w/SnowParticleLifetime;
 	    
-		output.PositionCopy = output.Position = mul(view_position, Projection);
+		output.Position = mul(view_position, Projection);
 		output.Size = SnowBaseSize + random_sampler_value.x*SnowRandomSizeModification;
+		output.Position.xy += input.Corner*output.Size;
 		
 		// calculate alpha lerp between given SnowMeltingStart/SnowMeltingEnd based on height
 		float amount = (SnowMeltingStart - world_position.y) / (SnowMeltingStart - SnowMeltingEnd);
@@ -144,7 +152,7 @@ RenderSnowParticlesVertexShaderOutput RenderSnowVertexShader(
 	}
 	else
 	{
-		output.PositionCopy = output.Position = float4(-10,-10,0,0);
+		output.Position = float4(-10,-10,0,0);
 		output.Size = 0;
 		output.Color = float4(0,0,0,0);
 		output.RandomValues = float4(0,0,0,0);
@@ -158,12 +166,7 @@ RenderSnowParticlesVertexShaderOutput RenderSnowVertexShader(
 
 //-----------------------------------------------------------------------------------------------------------
 float4 RenderSnowPixelShader(
-	RenderSnowParticlesVertexShaderOutput input,
-#ifdef XBOX
-	float2 particleCoordinate : SPRITETEXCOORD
-#else
-	float2 particleCoordinate : TEXCOORD0
-#endif
+	RenderSnowParticlesVertexShaderOutput input
 ) : COLOR0
 {
 	//int spriteNumber = ceil(input.RandomValues.y*4) - 1;
@@ -174,7 +177,7 @@ float4 RenderSnowPixelShader(
 	float horizontalIndex = floor(spriteNumber*0.5);
 	float verticalIndex = spriteNumber - horizontalIndex*2;
 
-	float2 modifiedTextureCoordinates = float2(particleCoordinate.x/2 + horizontalIndex*0.5, particleCoordinate.y/2 + verticalIndex*0.5);
+	float2 modifiedTextureCoordinates = float2(input.TextureCoordinate.x/2 + horizontalIndex*0.5, input.TextureCoordinate.y/2 + verticalIndex*0.5);
     return input.Color*tex2D(SpriteSampler, modifiedTextureCoordinates);
 }
 

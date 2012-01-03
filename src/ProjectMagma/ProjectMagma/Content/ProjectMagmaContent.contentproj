@@ -237,12 +237,8 @@
       <Name>Basic</Name>
       <Importer>EffectImporter</Importer>
       <Processor>EffectProcessor</Processor>
+      <ProcessorParameters_DebugMode>Debug</ProcessorParameters_DebugMode>
     </Compile>
-    <Content Include="Effects\Sm3SpriteBatch.fx.inc">
-      <Name>Sm3SpriteBatch.fx</Name>
-      <Importer>EffectImporter</Importer>
-      <Processor>EffectProcessor</Processor>
-    </Content>
     <Compile Include="Effects\Lava\Lava.fx">
       <Name>Lava</Name>
       <Importer>EffectImporter</Importer>
@@ -346,6 +342,7 @@
       <Name>Island</Name>
       <Importer>EffectImporter</Importer>
       <Processor>EffectProcessor</Processor>
+      <ProcessorParameters_DebugMode>Debug</ProcessorParameters_DebugMode>
     </Compile>
     <Compile Include="Effects\Environment\Pillar.fx">
       <Name>Pillar</Name>
@@ -371,6 +368,7 @@
       <Name>HdrCombine</Name>
       <Importer>EffectImporter</Importer>
       <Processor>EffectProcessor</Processor>
+      <ProcessorParameters_DebugMode>Debug</ProcessorParameters_DebugMode>
     </Compile>
     <None Include="Effects\Lava\Params.inc">
       <Name>Params</Name>
@@ -545,6 +543,7 @@
       <Name>IceSpikeHead</Name>
       <Importer>TextureImporter</Importer>
       <Processor>TextureProcessor</Processor>
+      <ProcessorParameters_PremultiplyAlpha>False</ProcessorParameters_PremultiplyAlpha>
     </Compile>
   </ItemGroup>
   <ItemGroup>
@@ -552,6 +551,7 @@
       <Name>IceSpikeTrail</Name>
       <Importer>TextureImporter</Importer>
       <Processor>TextureProcessor</Processor>
+      <ProcessorParameters_PremultiplyAlpha>False</ProcessorParameters_PremultiplyAlpha>
     </Compile>
   </ItemGroup>
   <ItemGroup>
@@ -634,6 +634,7 @@
       <Name>LavaExplosion</Name>
       <Importer>TextureImporter</Importer>
       <Processor>TextureProcessor</Processor>
+      <ProcessorParameters_PremultiplyAlpha>False</ProcessorParameters_PremultiplyAlpha>
     </Compile>
   </ItemGroup>
   <ItemGroup>
@@ -641,6 +642,7 @@
       <Name>IceExplosion</Name>
       <Importer>TextureImporter</Importer>
       <Processor>TextureProcessor</Processor>
+      <ProcessorParameters_PremultiplyAlpha>False</ProcessorParameters_PremultiplyAlpha>
     </Compile>
   </ItemGroup>
   <ItemGroup>
@@ -648,6 +650,7 @@
       <Name>FireExplosion</Name>
       <Importer>TextureImporter</Importer>
       <Processor>TextureProcessor</Processor>
+      <ProcessorParameters_PremultiplyAlpha>False</ProcessorParameters_PremultiplyAlpha>
     </Compile>
   </ItemGroup>
   <ItemGroup>
@@ -667,6 +670,7 @@
       <Name>snow</Name>
       <Importer>TextureImporter</Importer>
       <Processor>TextureProcessor</Processor>
+      <ProcessorParameters_PremultiplyAlpha>False</ProcessorParameters_PremultiplyAlpha>
     </Compile>
   </ItemGroup>
   <ItemGroup>
@@ -824,6 +828,7 @@
       <Name>respawnspot</Name>
       <Importer>TextureImporter</Importer>
       <Processor>TextureProcessor</Processor>
+      <ProcessorParameters_PremultiplyAlpha>False</ProcessorParameters_PremultiplyAlpha>
     </Compile>
     <Compile Include="Textures\Lava\firefractal_orange.tga">
       <Name>firefractal_orange</Name>

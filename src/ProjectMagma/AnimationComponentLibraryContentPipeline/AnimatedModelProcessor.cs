@@ -615,14 +615,14 @@ namespace Xclna.Xna.Animation.Content
         // with BasicPaletteEffect.
         private void ReplaceBasicEffects(ModelMeshContent input)
         {
-            foreach (ModelMeshPartContent part in input.MeshParts)
+            /*foreach (ModelMeshPartContent part in input.MeshParts)
             {
                 SkinningType skinType = ContentUtil.GetSkinningType(part.VertexBuffer.VertexDeclaration);
                 if (skinType != SkinningType.None)
                 {
                     ReplaceBasicEffect(skinType, part);
                 }
-            }
+            }*/
         }
 
 

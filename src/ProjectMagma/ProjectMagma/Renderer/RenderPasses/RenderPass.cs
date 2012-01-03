@@ -16,7 +16,14 @@ namespace ProjectMagma.Renderer
             testSamplerState.AddressU = TextureAddressMode.Clamp;
             testSamplerState.AddressV = TextureAddressMode.Clamp;
             testSamplerState.AddressW = TextureAddressMode.Clamp;
+
+            if (dummyTexture == null)
+            {
+                dummyTexture = new Texture2D(Renderer.Device, 1, 1, false, SurfaceFormat.Color);
+            }
         }
+
+        private static Texture2D dummyTexture = null;
 
         protected Renderer Renderer { get; set; }
 
@@ -78,9 +85,9 @@ namespace ProjectMagma.Renderer
                 effect.Parameters["ViewportSize"].SetValue(viewportSize);
             }
 
-            spriteBatch.Begin(SpriteSortMode.Immediate, BlendState.Opaque, SamplerState.PointClamp, null, null, effect);
+            spriteBatch.Begin(SpriteSortMode.Immediate, BlendState.Opaque, null, null, null, effect);
 
-            spriteBatch.Draw(texture, new Rectangle(0, 0, width, height), Color.White);
+            spriteBatch.Draw(dummyTexture, new Rectangle(0, 0, width, height), Color.White);
 
             spriteBatch.End();
         }

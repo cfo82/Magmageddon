@@ -17,9 +17,14 @@ float3 Gravity = float3(0,-9.81,0);
 
 //-----------------------------------------------------------------------------------------------------------
 CreateParticlesPixelShaderOutput CreateFlamethrowerPixelShader(
-	CreateParticlesVertexShaderOutput input
+	CreateParticlesVertexShaderOutput input,
+	int2 inScreenPos : VPOS
 )
 {
+	// clip if we're not on the correct screen pos!
+	int2 targetDiff = input.TargetTextureCoordinate - inScreenPos;
+	clip(-abs(targetDiff));
+
 	CreateParticlesPixelShaderOutput output;
 	output.PositionTimeToDeath = float4(input.ParticlePosition, FlamethrowerParticleLifetime);
 	output.Velocity = float4(input.ParticleVelocity, 0);
@@ -87,11 +92,12 @@ technique UpdateParticles
 
 
 //-----------------------------------------------------------------------------------------------------------
-RenderParticlesVertexShaderOutput RenderIceSpikeVertexShader(
+RenderParticlesVertexShaderOutput RenderFlamethrowerVertexShader(
 	RenderParticlesVertexShaderInput input
 )
 {
     RenderParticlesVertexShaderOutput output;
+	output.TextureCoordinate = input.Corner / 2.0f + 0.5f;
 
 	float4 position_sampler_value = tex2Dlod(PositionSampler, float4(input.ParticleCoordinate , 0, 0));
 
@@ -105,14 +111,15 @@ RenderParticlesVertexShaderOutput RenderIceSpikeVertexShader(
 	    
 		float normalizedAge = 1.0 - position_sampler_value.w/FlamethrowerParticleLifetime;
 	    
-		output.PositionCopy = output.Position = mul(view_position, Projection);
+		output.Position = mul(view_position, Projection);
 		output.Size = lerp(6,50,normalizedAge) * (1-pow(normalizedAge,6));
+		output.Position.xy += input.Corner*output.Size;
 		//output.Color = float4(1,1-normalizedAge,(1-normalizedAge)/4,1.0);
 		output.Color = float4(1,1,1,1-pow(normalizedAge,6));
 	}
 	else
 	{
-		output.PositionCopy = output.Position = float4(-10,-10,0,0);
+		output.Position = float4(-10,-10,0,0);
 		output.Size = 0;
 		output.Color = float4(0,0,0,0);
 	}
@@ -124,16 +131,11 @@ RenderParticlesVertexShaderOutput RenderIceSpikeVertexShader(
 
 
 //-----------------------------------------------------------------------------------------------------------
-float4 RenderIceSpikePixelShader(
-	RenderParticlesVertexShaderOutput input,
-#ifdef XBOX
-	float2 particleCoordinate : SPRITETEXCOORD
-#else
-	float2 particleCoordinate : TEXCOORD0
-#endif
+float4 RenderFlamethrowerPixelShader(
+	RenderParticlesVertexShaderOutput input
 ) : COLOR0
 {
-    return tex2D(SpriteSampler, particleCoordinate/4)*0.025*input.Color.a;
+    return tex2D(SpriteSampler, input.TextureCoordinate/4)*0.025*input.Color.a;
 }
 
 
@@ -158,7 +160,7 @@ technique RenderParticles
         ZEnable = true;
         ZWriteEnable = false;        
 
-        VertexShader = compile vs_3_0 RenderIceSpikeVertexShader();
-        PixelShader = compile ps_3_0 RenderIceSpikePixelShader();
+        VertexShader = compile vs_3_0 RenderFlamethrowerVertexShader();
+        PixelShader = compile ps_3_0 RenderFlamethrowerPixelShader();
     }
 }

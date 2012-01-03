@@ -14,7 +14,7 @@
 //-----------------------------------------------------------------------------
 // Basic Unicolor Pixel Shader: used for various stuff
 //-----------------------------------------------------------------------------
-PSOutput PSBasicPixelLighting(PixelLightingPSInput pin) : COLOR
+PSOutput PSBasicPixelLighting(PixelLightingPSInput pin)
 {
 	PS_START
 	ComputeLighting(lightResult, normal, pin.PositionWS, pin.NormalWS);	
@@ -27,7 +27,7 @@ PSOutput PSBasicPixelLighting(PixelLightingPSInput pin) : COLOR
 //-----------------------------------------------------------------------------
 // Basic Textured Pixel Shader: used for various stuff
 //-----------------------------------------------------------------------------
-PSOutput PSBasicPixelLightingTx(PixelLightingPSInputTx pin) : COLOR
+PSOutput PSBasicPixelLightingTx(PixelLightingPSInputTx pin)
 {
 	PS_START
 	float2 texCoord = pin.TexCoord;
@@ -40,7 +40,7 @@ PSOutput PSBasicPixelLightingTx(PixelLightingPSInputTx pin) : COLOR
 //-----------------------------------------------------------------------------
 // Basic Textured Pixel Shader ignoring Island Depth: for player arrows
 //-----------------------------------------------------------------------------
-PSOutput PSBasicPixelLightingTxIgnoreIslandDepth(PixelLightingPSInputTx pin) : COLOR
+PSOutput PSBasicPixelLightingTxIgnoreIslandDepth(PixelLightingPSInputTx pin)
 {
 	PSOutput basic = PSBasicPixelLightingTx(pin);
 	//float2 depthTexCoord = pin.PositionPSP.xy/float2(1280*2,720*2)+float2(0.5,0.5);
@@ -58,7 +58,7 @@ PSOutput PSBasicPixelLightingTxIgnoreIslandDepth(PixelLightingPSInputTx pin) : C
 //-----------------------------------------------------------------------------
 // Island Pixel Shader: used for islands
 //-----------------------------------------------------------------------------
-PSOutput PSIsland(PixelLightingPSInputTx pin) : COLOR
+PSOutput PSIsland(PixelLightingPSInputTx pin)
 {
 	PS_START
 	float2 texCoord = pin.TexCoord;
@@ -88,7 +88,7 @@ float4 PSIslandAlphaDepth(PixelLightingPSInputTx pin) : COLOR0
 //-----------------------------------------------------------------------------
 // Environment Pixel Shader: used for pillars and cave
 //-----------------------------------------------------------------------------
-PSOutput PSEnvironment(PixelLightingPSInputTx pin) : COLOR
+PSOutput PSEnvironment(PixelLightingPSInputTx pin)
 {
 	PS_START
 	float2 texCoord = pin.TexCoord;
@@ -102,7 +102,7 @@ PSOutput PSEnvironment(PixelLightingPSInputTx pin) : COLOR
 //-----------------------------------------------------------------------------
 // Toned Textured Pixel Shader: used for colorizing players
 //-----------------------------------------------------------------------------
-PSOutput PSBasicPixelLightingTxTo(PixelLightingPSInputTx pin) : COLOR
+PSOutput PSBasicPixelLightingTxTo(PixelLightingPSInputTx pin)
 {
 	PS_START
 	float2 texCoord = pin.TexCoord;
@@ -117,7 +117,7 @@ PSOutput PSBasicPixelLightingTxTo(PixelLightingPSInputTx pin) : COLOR
 // Doubly Toned Textured Pixel Shader: used for colorizing players where the
 // skin color should be colored as well, e.g. when being frozen.
 //-----------------------------------------------------------------------------
-PSOutput PSBasicPixelLightingTxToDb(PixelLightingPSInputTx pin) : COLOR
+PSOutput PSBasicPixelLightingTxToDb(PixelLightingPSInputTx pin)
 {
 	PS_START
 	float2 texCoord = pin.TexCoord;

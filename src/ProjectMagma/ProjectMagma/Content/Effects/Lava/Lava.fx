@@ -146,7 +146,7 @@ float4 ComputeIlluminationCombo(
 //------------------------------------------------------------
 //                      PIXEL SHADER
 //------------------------------------------------------------
-PSOutput MultiPlanePS(PS_INPUT i) : COLOR0
+PSOutput MultiPlanePS(PS_INPUT i)
 {
 	PSOutput outp;
 	float minPlaneYb = 45;
@@ -206,6 +206,8 @@ technique MultiPlaneLava
 		//AlphaTestEnable = true;
 		//AlphaFunc = Greater;
 		//AlphaRef = 0.5;
+
+		AlphaBlendEnable = false;
 
         ZEnable = true;
         ZWriteEnable = true;

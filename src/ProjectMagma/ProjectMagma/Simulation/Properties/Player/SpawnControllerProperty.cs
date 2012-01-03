@@ -14,6 +14,8 @@ namespace ProjectMagma.Simulation
 {
     public class SpawnControllerProperty : RobotBaseProperty
     {
+        private bool ready = false;
+        private bool respawn = false;
         private float landedAt = -1;
 
         Entity spawnLight;
@@ -39,6 +41,7 @@ namespace ProjectMagma.Simulation
 
         private void OnSelfActivated(Property property)
         {
+            ready = false;
             player.SetBool("abortRespawning", false);
             Debug.Assert(spawnLight == null);
             if (spawnLight == null)
@@ -51,6 +54,8 @@ namespace ProjectMagma.Simulation
 
         private void OnSelfDectivated(Property property)
         {
+            respawn = true;
+
             Debug.Assert(spawnLight != null);
             Game.Instance.Simulation.EntityManager.RemoveDeferred(spawnLight);
             spawnLight = null;
@@ -159,7 +164,7 @@ namespace ProjectMagma.Simulation
 
         protected override void OnUpdate(Entity player, SimulationTime simTime)
         {
-            if (player.GetBoolAttribute("ready").Value && landedAt > -1)
+            if (ready && landedAt > -1)
             {
                 if (Game.Instance.Simulation.Phase != SimulationPhase.Intro)
                 {
@@ -198,9 +203,10 @@ namespace ProjectMagma.Simulation
         {
             if (landedAt > -1)
             {
-                if (simTime.At > landedAt + 2500) // extract constant
+                if (simTime.At > landedAt + ((respawn)?1500:2500)) // extract constant
                 {
                     player.SetBool("ready", true);
+                    ready = true;
                 }
                 else
                     if (simTime.At > landedAt + 1000
@@ -209,7 +215,6 @@ namespace ProjectMagma.Simulation
                     {
                         spawnLight.SetBool(CommonNames.Hide, true);
                     }
-                return;
             }
 
             Vector3 velocity = -Vector3.UnitY * constants.GetFloat("max_gravity_speed");
@@ -223,10 +228,13 @@ namespace ProjectMagma.Simulation
                 {
                     position = surfacePos;
 
-                    player.GetProperty<RobotRenderProperty>("render").NextOnceState = "jump_end";
-                    destinationIsland.GetProperty<IslandRenderProperty>("render").Squash();
+                    if (landedAt == -1)
+                    {
+                        player.GetProperty<RobotRenderProperty>("render").NextOnceState = "jump_end";
+                        destinationIsland.GetProperty<IslandRenderProperty>("render").Squash();
 
-                    landedAt = simTime.At;
+                        landedAt = simTime.At;
+                    }
                 }
             }
             else

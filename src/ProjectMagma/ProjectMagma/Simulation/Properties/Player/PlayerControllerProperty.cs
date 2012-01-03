@@ -1048,7 +1048,9 @@ namespace ProjectMagma.Simulation
         /// <returns>wheter the player is currently dead or not</returns>
         private bool CheckAndPerformDeath(Entity player, float at)
         {
-            if (player.GetFloat(CommonNames.Health) < 0)
+            /// TODO: bring back respawn delay!!!!!!!!!!!!!!!!!
+
+            if (player.GetFloat(CommonNames.Health) <= 0)
             {
                 ResetVibration();
 
@@ -1636,7 +1638,7 @@ namespace ProjectMagma.Simulation
         /// <summary>
         /// resets the activeisland
         /// </summary>
-        private void LeaveActiveIsland()
+        protected override void LeaveActiveIsland()
         {
             if (activeIsland != null)
             {
@@ -1649,8 +1651,6 @@ namespace ProjectMagma.Simulation
                     }
                 }
 
-                activeIsland.GetAttribute<Vector3Attribute>(CommonNames.Position).ValueChanged -= IslandPositionHandler;
-                activeIsland.SetInt("players_on_island", activeIsland.GetInt("players_on_island") - 1);
                 // ensure repulsion is reset
                 if (repulsionActive)
                     StopRepulsion();
@@ -1658,9 +1658,7 @@ namespace ProjectMagma.Simulation
                 if(activeIsland.GetString("repulsed_by") == player.Name)
                     activeIsland.SetString("repulsed_by", player.Name);
 
-
-                activeIsland = null;
-                player.SetString("active_island", "");
+                base.LeaveActiveIsland();
 
                 // disable selection
                 if (selectedIsland != null)

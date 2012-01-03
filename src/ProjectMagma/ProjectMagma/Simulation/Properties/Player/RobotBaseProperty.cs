@@ -51,6 +51,8 @@ namespace ProjectMagma.Simulation
         /// </summary>
         protected virtual void SetActiveIsland(Entity island)
         {
+            Debug.Assert(activeIsland != island);
+
             // register with active
             island.GetAttribute<Vector3Attribute>(CommonNames.Position).ValueChanged += IslandPositionHandler;
             island.SetInt("players_on_island", island.GetInt("players_on_island") + 1);
@@ -60,13 +62,26 @@ namespace ProjectMagma.Simulation
             player.SetString("active_island", island.Name);
         }
 
+        /// <summary>
+        /// resets the activeisland
+        /// </summary>
+        protected virtual void LeaveActiveIsland()
+        {
+            if (activeIsland != null)
+            {
+                activeIsland.GetAttribute<Vector3Attribute>(CommonNames.Position).ValueChanged -= IslandPositionHandler;
+                activeIsland.SetInt("players_on_island", activeIsland.GetInt("players_on_island") - 1);
+
+                activeIsland = null;
+                player.SetString("active_island", "");
+            }
+        }
+
         protected void IslandPositionHandler(Vector3Attribute sender, Vector3 oldValue, Vector3 newValue)
         {
-            Vector3 position = player.GetVector3(CommonNames.Position);
             Vector3 delta = newValue - oldValue;
-            position += delta;
-            player.SetVector3(CommonNames.PreviousPosition, position);
-            player.SetVector3(CommonNames.Position, position);
+            player.SetVector3(CommonNames.PreviousPosition, player.GetVector3(CommonNames.PreviousPosition) + delta);
+            player.SetVector3(CommonNames.Position, player.GetVector3(CommonNames.Position) + delta);
         }
 
         protected Vector3 GetLandingPosition(Entity island)

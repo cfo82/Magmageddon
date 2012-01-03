@@ -39,6 +39,10 @@ namespace ProjectMagma.Simulation
 
         public void OnSelfDectivated(Property property)
         {
+            Debug.Assert(spawnLight != null);
+            Game.Instance.Simulation.EntityManager.RemoveDeferred(spawnLight);
+            spawnLight = null;
+
             player.GetProperty<Property>("controller").Activate();
             player.GetProperty<Property>("burnable").Activate();
             player.GetProperty<Property>("hud").Activate();
@@ -53,6 +57,7 @@ namespace ProjectMagma.Simulation
                 PositionOnRandomIsland();
                 AddSpawnLight(player);
             }
+            landedAt = -1;
         }
 
         /// <summary>
@@ -154,7 +159,7 @@ namespace ProjectMagma.Simulation
 
         protected override void OnUpdate(Entity player, SimulationTime simTime)
         {
-            if (player.GetBoolAttribute("ready").Value)
+            if (player.GetBoolAttribute("ready").Value && landedAt > -1)
             {
                 if (Game.Instance.Simulation.Phase != SimulationPhase.Intro)
                 {
@@ -170,9 +175,6 @@ namespace ProjectMagma.Simulation
                 player.SetBool("abortRespawning", true);
             }
         }
-
-
-
 
         private void AddSpawnLight(AbstractEntity player)
         {
@@ -193,14 +195,11 @@ namespace ProjectMagma.Simulation
 
         private void PerformSpawnMovement(Entity player, SimulationTime simTime)
         {
-            if (landedAt > 0)
+            if (landedAt > -1)
             {
                 if (simTime.At > landedAt + 2500) // extract constant
                 {
                     player.SetBool("ready", true);
-                    Debug.Assert(spawnLight != null);
-                    Game.Instance.Simulation.EntityManager.RemoveDeferred(spawnLight);
-                    spawnLight = null;
                 }
                 else
                     if (simTime.At > landedAt + 1000
@@ -231,7 +230,8 @@ namespace ProjectMagma.Simulation
             }
             else
             {
-                throw new Exception("island's gone :(");
+                Debug.Write("island's gone :(");
+                position = GetLandingPosition(activeIsland);
             }
 
             player.SetVector3(CommonNames.Position, position);

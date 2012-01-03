@@ -38,7 +38,6 @@ namespace ProjectMagma.Simulation
         private float islandSelectedAt = 0;
         private Entity selectedIsland = null;
         private Vector3 islandSelectionLastStickDir = Vector3.Zero;
-        private Entity destinationIsland = null;
         private float destinationOrigDist = 0;
         private float destinationOrigY = 0;
         private Vector3 lastIslandDir = Vector3.Zero;
@@ -67,10 +66,14 @@ namespace ProjectMagma.Simulation
         {
             base.OnAttached(player);
 
+            this.OnActivated += OnSelfActivated;
+            this.OnDeactivated += OnSelfDectivated;
+
             player.AddFloatAttribute("vibrateStartetAt", 0);
 
             player.AddQuaternionAttribute(CommonNames.Rotation, Quaternion.Identity);
             player.AddVector3Attribute(CommonNames.Velocity, Vector3.Zero);
+            player.AddVector3Attribute(CommonNames.PreviousPosition, player.GetVector3(CommonNames.Position));
 
             player.AddVector3Attribute("collision_pushback_velocity", Vector3.Zero);
             player.AddVector3Attribute("hit_pushback_velocity", Vector3.Zero);
@@ -79,7 +82,6 @@ namespace ProjectMagma.Simulation
 
             player.AddFloatAttribute(CommonNames.Energy, constants.GetFloat(CommonNames.MaxEnergy));
             player.AddFloatAttribute(CommonNames.Health, constants.GetFloat(CommonNames.MaxHealth));
-            player.GetAttribute<FloatAttribute>(CommonNames.Health).ValueChanged += HealthChangeHandler;
 
             player.AddIntAttribute("jumps", 0);
             player.AddFloatAttribute("repulsion_seconds", 0);
@@ -90,9 +92,6 @@ namespace ProjectMagma.Simulation
             player.AddIntAttribute(CommonNames.Frozen, 0);
             player.AddStringAttribute("jump_island", "");
 
-            Game.Instance.Simulation.EntityManager.EntityRemoved += EntityRemovedHandler;
-            player.GetProperty<CollisionProperty>("collision").OnContact += PlayerCollisionHandler;
-
             arrow = new Entity("arrow_" + player.Name);
             arrow.AddStringAttribute("player", player.Name);
 
@@ -100,13 +99,14 @@ namespace ProjectMagma.Simulation
             arrow.AddVector3Attribute(CommonNames.Color2, player.GetVector3("color2"));
 
             Game.Instance.Simulation.EntityManager.Add(arrow, "arrow_base", templates);
-
-            player.AddVector3Attribute(CommonNames.PreviousPosition, player.GetVector3(CommonNames.Position));
         }
 
         public override void OnDetached(AbstractEntity player)
         {
             base.OnDetached(player);
+
+            this.OnActivated -= OnSelfActivated;
+            this.OnDeactivated -= OnSelfDectivated;
 
             if (arrow != null && Game.Instance.Simulation.EntityManager.ContainsEntity(arrow))
             {
@@ -120,7 +120,17 @@ namespace ProjectMagma.Simulation
 
             if (flameThrowerSoundInstance != null)
                 Game.Instance.AudioPlayer.Stop(flameThrowerSoundInstance);
+        }
 
+        private void OnSelfActivated(Property property)
+        {
+            Game.Instance.Simulation.EntityManager.EntityRemoved += EntityRemovedHandler;
+            player.GetAttribute<FloatAttribute>(CommonNames.Health).ValueChanged += HealthChangeHandler;
+            player.GetProperty<CollisionProperty>("collision").OnContact += PlayerCollisionHandler;
+        }
+
+        private void OnSelfDectivated(Property property)
+        {
             Game.Instance.Simulation.EntityManager.EntityRemoved -= EntityRemovedHandler;
 
             player.GetAttribute<FloatAttribute>(CommonNames.Health).ValueChanged -= HealthChangeHandler;
@@ -130,7 +140,6 @@ namespace ProjectMagma.Simulation
                 player.GetProperty<CollisionProperty>("collision").OnContact -= PlayerCollisionHandler;
             }
         }
-
 
         protected override void OnPlaying(Entity player, SimulationTime simTime)
         {
@@ -414,18 +423,15 @@ namespace ProjectMagma.Simulation
         {
             Game.Instance.AudioPlayer.Play(Game.Instance.Simulation.SoundRegistry.JumpStart);
 
-            destinationIsland = island;
-
+            SetDestinationIsland(island);
             LeaveActiveIsland();
 
-            // calculate time to travel to island (in xz plane) using an iterative approach
+            // start calculating time to travel to island (in xz plane) using an iterative approach
             Vector3 islandDir = GetLandingPosition(destinationIsland) - playerPosition;
             islandDir.Y = 0;
             lastIslandDir = islandDir;
             destinationOrigDist = islandDir.Length();
             destinationOrigY = playerPosition.Y;
-
-            island.GetAttribute<Vector3Attribute>(CommonNames.Position).ValueChanged += IslandPositionHandler;
 
             player.GetProperty<RobotRenderProperty>("render").NextPermanentState = "jump";
         }
@@ -950,7 +956,7 @@ namespace ProjectMagma.Simulation
                     SetActiveIsland(destinationIsland);
 
                     player.GetProperty<RobotRenderProperty>("render").Squash();
-                    destinationIsland.GetProperty<IslandRenderProperty>("render").Squash();
+                    activeIsland.GetProperty<IslandRenderProperty>("render").Squash();
 
                     playerPosition = isectPt;
 
@@ -989,8 +995,8 @@ namespace ProjectMagma.Simulation
             {
                 player.GetProperty<RobotRenderProperty>("render").NextPermanentState = "idle";
             }
-            destinationIsland.GetAttribute<Vector3Attribute>(CommonNames.Position).ValueChanged -= IslandPositionHandler;
-            destinationIsland = null;
+
+            ResetDestinationIsland();
         }
 
         private void PerformJetpackMovement(SimulationTime simTime, float dt, ref Vector3 playerVelocity)
@@ -1131,7 +1137,6 @@ namespace ProjectMagma.Simulation
                 player.AddProperty("collision", new CollisionProperty(), true);
                 player.AddProperty("render", new RobotRenderProperty(), true);
                 //player.AddProperty("shadow_cast", new ShadowCastProperty());
-                player.GetProperty<CollisionProperty>("collision").OnContact += PlayerCollisionHandler;
 
                 // indicate
                 if (won == true)
@@ -1475,12 +1480,11 @@ namespace ProjectMagma.Simulation
             }
             if (entity == destinationIsland)
             {
-                destinationIsland = null;
+                ResetDestinationIsland();
             }
             if (entity == activeIsland)
             {
-                activeIsland = null;
-                player.SetString("active_island", "");
+                LeaveActiveIsland();
             }
 
             // check if player was removed (lost all his lives)
@@ -1632,6 +1636,7 @@ namespace ProjectMagma.Simulation
                 StopSimpleJump();
             }
 
+            Debug.Write("PlayerControllerProperty: -");
             base.SetActiveIsland(island);
         }
 

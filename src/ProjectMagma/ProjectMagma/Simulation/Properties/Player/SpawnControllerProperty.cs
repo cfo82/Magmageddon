@@ -37,18 +37,7 @@ namespace ProjectMagma.Simulation
             base.OnDetached(player);
         }
 
-        public void OnSelfDectivated(Property property)
-        {
-            Debug.Assert(spawnLight != null);
-            Game.Instance.Simulation.EntityManager.RemoveDeferred(spawnLight);
-            spawnLight = null;
-
-            player.GetProperty<Property>("controller").Activate();
-            player.GetProperty<Property>("burnable").Activate();
-            player.GetProperty<Property>("hud").Activate();
-        }
-
-        public void OnSelfActivated(Property property)
+        private void OnSelfActivated(Property property)
         {
             player.SetBool("abortRespawning", false);
             Debug.Assert(spawnLight == null);
@@ -60,10 +49,21 @@ namespace ProjectMagma.Simulation
             landedAt = -1;
         }
 
+        private void OnSelfDectivated(Property property)
+        {
+            Debug.Assert(spawnLight != null);
+            Game.Instance.Simulation.EntityManager.RemoveDeferred(spawnLight);
+            spawnLight = null;
+
+            player.GetProperty<Property>("controller").Activate();
+            player.GetProperty<Property>("burnable").Activate();
+            player.GetProperty<Property>("hud").Activate();
+        }
+
         /// <summary>
         /// positions the player randomly on an island
         /// </summary>
-        protected void PositionOnRandomIsland()
+        private void PositionOnRandomIsland()
         {
             int cnt = Game.Instance.Simulation.IslandManager.Count;
             Entity island = Game.Instance.Simulation.IslandManager[0];
@@ -97,7 +97,7 @@ namespace ProjectMagma.Simulation
                 }
 
                 // check no players on island
-                if (island.GetInt("players_on_island") > 0)
+                if (island.GetInt("players_targeting_island") > 0)
                 {
                     valid = false;
                     //                    Console.WriteLine("player: " + player.Name + " rejected island: " + island.Name + " (" + island.GetInt("players_on_island") + ")");
@@ -152,7 +152,7 @@ namespace ProjectMagma.Simulation
                     continue; // select another
             }
 
-            SetActiveIsland(island);
+            SetDestinationIsland(island);
 
             player.SetVector3(CommonNames.Position, GetLandingPosition(island) + Vector3.UnitY * 500);
         }
@@ -163,6 +163,7 @@ namespace ProjectMagma.Simulation
             {
                 if (Game.Instance.Simulation.Phase != SimulationPhase.Intro)
                 {
+                    SetActiveIsland(destinationIsland);
                     Deactivate();
                 }
                 return;
@@ -180,11 +181,11 @@ namespace ProjectMagma.Simulation
         {
             spawnLight = new Entity("spawn_light_" + player.Name);
             spawnLight.AddStringAttribute("player", player.Name);
-            spawnLight.AddStringAttribute("island", activeIsland.Name);
+            spawnLight.AddStringAttribute("island", destinationIsland.Name);
 
             Vector3 position = player.GetVector3(CommonNames.Position);
             Vector3 surfacePos;
-            Simulation.GetPositionOnSurface(ref position, activeIsland, out surfacePos);
+            Simulation.GetPositionOnSurface(ref position, destinationIsland, out surfacePos);
             spawnLight.AddVector3Attribute(CommonNames.Position, surfacePos);
 
             Game.Instance.Simulation.EntityManager.AddDeferred(spawnLight, "spawn_light_base", templates);
@@ -215,7 +216,7 @@ namespace ProjectMagma.Simulation
             Vector3 position = player.GetVector3(CommonNames.Position) + velocity * simTime.Dt;
 
             Vector3 surfacePos;
-            if (Simulation.GetPositionOnSurface(ref position, activeIsland, out surfacePos))
+            if (Simulation.GetPositionOnSurface(ref position, destinationIsland, out surfacePos))
             {
                 if (position.Y < surfacePos.Y
                     || player.GetBool("abortRespawning"))
@@ -223,7 +224,7 @@ namespace ProjectMagma.Simulation
                     position = surfacePos;
 
                     player.GetProperty<RobotRenderProperty>("render").NextOnceState = "jump_end";
-                    activeIsland.GetProperty<IslandRenderProperty>("render").Squash();
+                    destinationIsland.GetProperty<IslandRenderProperty>("render").Squash();
 
                     landedAt = simTime.At;
                 }
@@ -231,7 +232,7 @@ namespace ProjectMagma.Simulation
             else
             {
                 Debug.Write("island's gone :(");
-                position = GetLandingPosition(activeIsland);
+                position = GetLandingPosition(destinationIsland);
             }
 
             player.SetVector3(CommonNames.Position, position);

@@ -27,6 +27,7 @@ namespace ProjectMagma.Framework
         {
             foreach (Property property in properties.Values)
             {
+                property.IsActive = false;
                 property.OnDetached(this);
             }
             // currently no recycling necessary for attributes
@@ -403,6 +404,7 @@ namespace ProjectMagma.Framework
             if (properties.ContainsKey(name))
             {
                 Property property = properties[name];
+                property.IsActive = false;
                 property.OnDetached(this);
                 properties.Remove(name);
             }

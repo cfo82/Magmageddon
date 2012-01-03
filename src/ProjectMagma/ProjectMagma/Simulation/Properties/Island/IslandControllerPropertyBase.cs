@@ -38,6 +38,7 @@ namespace ProjectMagma.Simulation
 
             entity.AddStringAttribute("repulsed_by", "");
             entity.AddIntAttribute("players_on_island", 0);
+            entity.AddIntAttribute("players_targeting_island", 0);
 
             // approximation of island's radius and height
             Vector3 scale = island.GetVector3(CommonNames.Scale);
@@ -111,11 +112,11 @@ namespace ProjectMagma.Simulation
             // set repositioning on players left
             if (playersOnIsland == 0)
             {
-                if (simTime.At > playerLeftAt + constants.GetInt("rising_delay"))
+                if (simTime.At > lastPlayerLeftAt + constants.GetInt("rising_delay"))
                 {
                     // rising using normal repositioning
                     state = IslandState.Repositioning;
-                    playerLeftAt = double.MaxValue;
+                    lastPlayerLeftAt = double.MaxValue;
                 }
             }
 
@@ -167,8 +168,8 @@ namespace ProjectMagma.Simulation
                 Vector3 desiredPosition = repositioningPosition;
                 // if players are standing on island, we only reposition in xz
                 if (playersOnIsland > 0
-                    || (simTime.At < playerLeftAt + constants.GetInt("rising_delay") // also wait for the delay
-                    && playerLeftAt < float.MaxValue)) 
+                    || (simTime.At < lastPlayerLeftAt + constants.GetInt("rising_delay") // also wait for the delay
+                    && lastPlayerLeftAt < float.MaxValue)) 
                 {
                     // stay on y
                     desiredPosition.Y = position.Y;
@@ -386,9 +387,10 @@ namespace ProjectMagma.Simulation
 
         protected void PlayersOnIslandChangeHandler(IntAttribute sender, int oldVlaue, int newValue)
         {
+            Debug.WriteLine("Number of players on island " + island.Name + " changed from " + oldVlaue + " to " + newValue);
             if (newValue == 0)
             {
-                playerLeftAt = Game.Instance.Simulation.Time.At;
+                lastPlayerLeftAt = Game.Instance.Simulation.Time.At;
             }
         }
 
@@ -440,7 +442,7 @@ namespace ProjectMagma.Simulation
         protected Entity constants;
         protected Entity playerConstants;
         protected Entity island;
-        private double playerLeftAt = double.MaxValue;
+        private double lastPlayerLeftAt = double.MaxValue;
 
         protected enum IslandState
         {

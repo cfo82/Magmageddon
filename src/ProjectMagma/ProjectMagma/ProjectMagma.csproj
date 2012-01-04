@@ -269,6 +269,7 @@
     <Compile Include="Framework\Attributes\Events\Vector3ChangeHandler.cs" />
     <Compile Include="Simulation\Event\UpdateHandler.cs" />
     <Compile Include="Simulation\OrientationHelper.cs" />
+    <Compile Include="Simulation\Properties\Base\ActiveProperty.cs" />
     <Compile Include="Simulation\Properties\Base\RendererUpdatableProperty.cs" />
     <Compile Include="Simulation\Properties\Environment\DecorationPositionController.cs" />
     <Compile Include="Simulation\Properties\Environment\PowerUpControllerLives.cs" />

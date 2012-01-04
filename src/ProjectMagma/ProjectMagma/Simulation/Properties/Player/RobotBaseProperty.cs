@@ -12,7 +12,7 @@ using ProjectMagma.Shared.LevelData;
 
 namespace ProjectMagma.Simulation
 {
-    public abstract class RobotBaseProperty : Property
+    public abstract class RobotBaseProperty : ActiveProperty
     {
         internal Entity player;
         internal Entity constants;
@@ -56,8 +56,7 @@ namespace ProjectMagma.Simulation
 
         public override void OnAttached(AbstractEntity player)
         {
-            this.OnActivated += OnSelfActivated;
-            this.OnDeactivated += OnSelfDectivated;
+            base.OnAttached(player);
 
             this.player = player as Entity;
             this.constants = Game.Instance.Simulation.EntityManager["player_constants"];
@@ -71,21 +70,11 @@ namespace ProjectMagma.Simulation
 
         public override void OnDetached(AbstractEntity player)
         {
-            this.OnActivated -= OnSelfActivated;
-            this.OnDeactivated -= OnSelfDectivated;
-        }
+            base.OnDetached(player);
 
-        private void OnSelfActivated(Property property)
-        {
-            (player as Entity).OnUpdate += OnUpdate;
+            this.player.GetStringAttribute("active_island").ValueChanged -= OnActiveIslandChanged;
+            this.player.GetStringAttribute("destination_island").ValueChanged -= OnDestinationIslandChanged;
         }
-
-        private void OnSelfDectivated(Property property)
-        {
-            (player as Entity).OnUpdate -= OnUpdate;
-        }
-
-        protected abstract void OnUpdate(Entity player, SimulationTime simTime);
 
         private void OnActiveIslandChanged(StringAttribute sender, string oldValue, string newValue)
         {

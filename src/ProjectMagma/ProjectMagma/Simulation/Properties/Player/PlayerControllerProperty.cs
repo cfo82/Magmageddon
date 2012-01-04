@@ -1149,9 +1149,13 @@ namespace ProjectMagma.Simulation
                 }
 
                 this.Deactivate();
-                player.GetProperty<Property>("burnable").Deactivate();
+                player.GetProperty<Property>("burnable").Deactivate(); // TODO: what dwill this do?
 
-                player.GetProperty<Property>("spawn_controller").Activate();
+
+                this.scheduleOnce(at, 5000, delegate(Entity entity, SimulationTime simTime)
+                {
+                    player.GetProperty<Property>("spawn_controller").Activate();
+                });
 
                 return true;
             }

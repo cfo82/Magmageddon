@@ -18,6 +18,8 @@
       <Attribute name="destination_island" template="string" />
     </Attributes>
     <Properties>
+      <Property name="position_handler" type="ProjectMagma.Simulation.RobotPositioningProperty" active="true"/>
+
       <Property name="input" type="ProjectMagma.Simulation.GamePadInputProperty" active="true"/>
       <!--Property name="input" type="ProjectMagma.Simulation.RandomInputProperty"/-->
 

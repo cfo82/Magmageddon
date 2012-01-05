@@ -58,6 +58,8 @@ namespace ProjectMagma.Simulation
         {
             base.OnAttached(player);
 
+            Debug.Assert(player.HasProperty("position_handler"));
+
             this.player = player as Entity;
             this.constants = Game.Instance.Simulation.EntityManager["player_constants"];
             this.templates = Game.Instance.ContentManager.Load<LevelData>("Level/Common/DynamicTemplates");
@@ -104,6 +106,16 @@ namespace ProjectMagma.Simulation
             }
         }
 
+        protected void registerIslandPositionHandler(Entity island)
+        {
+            player.GetProperty<RobotPositioningProperty>("position_handler").registerIslandPositionHandler(island);
+        }
+
+        protected void unregisterIslandPositionHandler(Entity island)
+        {
+            player.GetProperty<RobotPositioningProperty>("position_handler").unregisterIslandPositionHandler(island);
+        }
+
         protected virtual void SetDestinationIsland(Entity island)
         {
             Debug.Assert(island != null);
@@ -111,7 +123,7 @@ namespace ProjectMagma.Simulation
 
             Debug.Assert(destinationIsland != island);
 
-            island.GetAttribute<Vector3Attribute>(CommonNames.Position).ValueChanged += IslandPositionHandler;
+            registerIslandPositionHandler(island);
             island.SetInt("players_targeting_island", island.GetInt("players_targeting_island") + 1);
 
             destinationIsland = island;
@@ -123,7 +135,7 @@ namespace ProjectMagma.Simulation
             {
                 Debug.WriteLine("Reset destination island of " + player.Name + " from " + destinationIsland.Name);
 
-                destinationIsland.GetAttribute<Vector3Attribute>(CommonNames.Position).ValueChanged -= IslandPositionHandler;
+                unregisterIslandPositionHandler(destinationIsland);
                 destinationIsland.SetInt("players_targeting_island", destinationIsland.GetInt("players_targeting_island") - 1);
 
                 destinationIsland = null;
@@ -145,7 +157,7 @@ namespace ProjectMagma.Simulation
             Debug.Assert(player.GetStringAttribute("active_island").StringValue == "");
 
             // register with active
-            island.GetAttribute<Vector3Attribute>(CommonNames.Position).ValueChanged += IslandPositionHandler;
+            registerIslandPositionHandler(island);
             island.SetInt("players_on_island", island.GetInt("players_on_island") + 1);
 
             // set
@@ -158,19 +170,11 @@ namespace ProjectMagma.Simulation
             {
                 Debug.WriteLine("Reset active island of " + player.Name + " from " + activeIsland.Name);
 
-                activeIsland.GetAttribute<Vector3Attribute>(CommonNames.Position).ValueChanged -= IslandPositionHandler;
+                unregisterIslandPositionHandler(activeIsland);
                 activeIsland.SetInt("players_on_island", activeIsland.GetInt("players_on_island") - 1);
 
                 activeIsland = null;
             }
-        }
-
-        protected void IslandPositionHandler(Vector3Attribute sender, Vector3 oldValue, Vector3 newValue)
-        {
-            //Debug.WriteLine(Game.Instance.Simulation.Time.At+": position of " + player.Name + " changed to " + newValue);
-            Vector3 delta = newValue - oldValue;
-            player.SetVector3(CommonNames.PreviousPosition, player.GetVector3(CommonNames.PreviousPosition) + delta);
-            player.SetVector3(CommonNames.Position, player.GetVector3(CommonNames.Position) + delta);
         }
 
         protected Vector3 GetLandingPosition(Entity island)

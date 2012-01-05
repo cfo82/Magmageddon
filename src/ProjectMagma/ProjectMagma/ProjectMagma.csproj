@@ -283,6 +283,7 @@
     <Compile Include="Simulation\Properties\Environment\PowerUpControllerHealth.cs" />
     <Compile Include="Simulation\Properties\Environment\ExplosionControllerProperty.cs" />
     <Compile Include="Simulation\Properties\Player\BurnableProperty.cs" />
+    <Compile Include="Simulation\Properties\Player\RobotPositioningProperty.cs" />
     <Compile Include="Simulation\Properties\Player\SpawnControllerProperty.cs" />
     <Compile Include="Simulation\Properties\Player\RobotBaseProperty.cs" />
     <Compile Include="Simulation\Properties\Player\Input\KeyboardInputProperty.cs" />

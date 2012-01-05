@@ -409,7 +409,7 @@ namespace ProjectMagma.Simulation
             player.SetString("jump_island", simpleJumpIsland.Name);
 
             // ensure we trak island movement
-            simpleJumpIsland.GetAttribute<Vector3Attribute>(CommonNames.Position).ValueChanged += IslandPositionHandler;
+            registerIslandPositionHandler(simpleJumpIsland);
 
             // initiate jump
             playerVelocity = (float)Math.Sqrt(constants.GetFloat("simple_jump_height") / constants.GetVector3("gravity_acceleration").Length())
@@ -1681,7 +1681,7 @@ namespace ProjectMagma.Simulation
         {
             Game.Instance.AudioPlayer.Play(Game.Instance.Simulation.SoundRegistry.JumpEnd);
 
-            simpleJumpIsland.GetAttribute<Vector3Attribute>(CommonNames.Position).ValueChanged -= IslandPositionHandler;
+            unregisterIslandPositionHandler(simpleJumpIsland);
             player.GetProperty<RobotRenderProperty>("render").NextPermanentState = "idle";
             player.SetString("jump_island", "");
             simpleJumpIsland = null;

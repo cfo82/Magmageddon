@@ -29,7 +29,7 @@ namespace ProjectMagma.Simulation
         {
             private set
             {
-                player.SetString("active_island", (value != null)?value.Name:"");
+                player.SetString("active_island", (value != null) ? value.Name : "");
             }
 
             get
@@ -81,6 +81,7 @@ namespace ProjectMagma.Simulation
             if (newValue != "")
             {
                 Debug.Assert(Game.Instance.Simulation.EntityManager[newValue] != null);
+                Debug.Assert(this._activeIsland == null);
                 this._activeIsland = Game.Instance.Simulation.EntityManager[newValue];
             }
             else
@@ -94,6 +95,7 @@ namespace ProjectMagma.Simulation
             if (newValue != "")
             {
                 Debug.Assert(Game.Instance.Simulation.EntityManager[newValue] != null);
+                Debug.Assert(this._destinationIsland == null); 
                 this._destinationIsland = Game.Instance.Simulation.EntityManager[newValue];
             }
             else
@@ -165,6 +167,7 @@ namespace ProjectMagma.Simulation
 
         protected void IslandPositionHandler(Vector3Attribute sender, Vector3 oldValue, Vector3 newValue)
         {
+            //Debug.WriteLine(Game.Instance.Simulation.Time.At+": position of " + player.Name + " changed to " + newValue);
             Vector3 delta = newValue - oldValue;
             player.SetVector3(CommonNames.PreviousPosition, player.GetVector3(CommonNames.PreviousPosition) + delta);
             player.SetVector3(CommonNames.Position, player.GetVector3(CommonNames.Position) + delta);

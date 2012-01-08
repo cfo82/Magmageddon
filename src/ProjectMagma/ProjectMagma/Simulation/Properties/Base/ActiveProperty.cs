@@ -1,12 +1,5 @@
-﻿using System;
-using System.Diagnostics;
+﻿using ProjectMagma.Framework;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using Microsoft.Xna.Framework;
-using Microsoft.Xna.Framework.Graphics;
-using ProjectMagma.Shared.Math.Integration;
-using ProjectMagma.Framework;
 
 namespace ProjectMagma.Simulation
 {
@@ -46,34 +39,11 @@ namespace ProjectMagma.Simulation
             (entity as Entity).OnUpdate -= OnUpdate;
         }
 
-        protected virtual void CheckScheduledEvents(Entity entity, SimulationTime simTime)
-        {
-            int m = -1;
-            foreach (KeyValuePair<double, ScheduledEventHandler> pair in timeouts)
-            {
-                if (pair.Key < simTime.At)
-                    break;
-                pair.Value.Invoke(entity, simTime);
-                m++;
-            }
-            for (int i = m; i >= 0; i--)
-            {
-                timeouts.RemoveAt(i);
-            }
-
-        }
-
-        protected abstract void OnUpdate(Entity entity, SimulationTime simTime);
-  
-#region scheduling
-
-        readonly System.Collections.Generic.SortedList<double, ScheduledEventHandler> timeouts = new SortedList<double,ScheduledEventHandler>();
-
         private struct Timeout
         {
-            bool repeat;
-            double timeoutAt;
-            ScheduledEventHandler handler;
+            public bool repeat;
+            public double timeoutAt;
+            public ScheduledEventHandler handler;
 
             public Timeout(bool r, double t, ScheduledEventHandler h)
             {
@@ -83,9 +53,28 @@ namespace ProjectMagma.Simulation
             }
         }
 
+        protected virtual void CheckScheduledEvents(Entity entity, SimulationTime simTime)
+        {
+            for (int i = timeouts.Count - 1; i >= 0; --i)
+            {
+                Timeout timeout = timeouts[i];
+                if (timeout.timeoutAt <= simTime.At)
+                {
+                    timeout.handler.Invoke(entity, simTime);
+                    timeouts.RemoveAt(i);
+                }
+            }
+        }
+
+        protected abstract void OnUpdate(Entity entity, SimulationTime simTime);
+  
+#region scheduling
+
+        readonly List<Timeout> timeouts = new List<Timeout>();
+
         protected void scheduleOnce(double at, double delay, ScheduledEventHandler handler)
         {
-            timeouts.Add(at + delay, handler);
+            timeouts.Add(new Timeout(false, at + delay, handler));
         }
 
 #endregion

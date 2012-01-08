@@ -239,7 +239,7 @@ namespace ProjectMagma.Simulation
             }
             else
             {
-                Debug.Write("island's gone :(");
+                Debug.WriteLine("island's gone :(");
                 position = GetLandingPosition(destinationIsland);
             }
 

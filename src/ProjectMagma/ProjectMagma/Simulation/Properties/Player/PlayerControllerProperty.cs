@@ -1640,7 +1640,7 @@ namespace ProjectMagma.Simulation
                 StopSimpleJump();
             }
 
-            Debug.Write("PlayerControllerProperty: -");
+            Debug.WriteLine("PlayerControllerProperty: -");
             base.SetActiveIsland(island);
         }
 

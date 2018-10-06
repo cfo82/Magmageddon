@@ -1,2 +1,2 @@
 # Magmageddon
-ETH Game Laboratory 2009 Project
+![Magmageddon](https://github.com/cfo82/Magmageddon/blob/master/documentation/pics/vulcano_title.jpg)
